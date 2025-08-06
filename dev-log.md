@@ -24,6 +24,26 @@
 - **Aug 3, 2025**: Fixed an issue with the session not being cleared between requests.
 - **Aug 3, 2025**: Identified a new issue with scraping certain websites, resulting in a "403 Client Error: Forbidden" error. This is likely due to websites blocking requests from automated scripts.
 
+## Dev Log - August 6, 2025
+
+**Goal:** Fix the Guided Learning module, which is failing to generate summaries and has a number of other issues.
+
+**Summary of Actions Taken:**
+
+*   **Identified and fixed an invalid Hugging Face API key.** You provided a new, valid key, which we have confirmed is working correctly.
+*   **Added `python-dotenv` to `requirements.txt`** to ensure that environment variables are loaded correctly.
+*   **Cleaned up the global Python environment.** You have uninstalled all packages that were installed with `pip` outside of the virtual environment to prevent conflicts.
+*   **Confirmed that the web server is configured to use the virtual environment.** The Apache configuration file is correctly pointing to the virtual environment's Python interpreter.
+*   **Attempted to debug the application by running it directly from the command line.** The application starts correctly, but it does not log any output when a request is made to it.
+
+**Current Status:**
+
+The application is still not working correctly. The root cause of the issue is unknown, but it seems to be related to the application not logging any output, which makes it impossible to debug.
+
+**Next Steps:**
+
+*   Start a new task with a fresh environment to rule out any issues with the current environment.
+*   Systematically debug the application, starting with the most basic functionality and working up to the more complex features.
 
 ## Notes
 - Log issues, fixes, and progress here.
