@@ -3,3 +3,4 @@ venv/
 *.key
 /etc/letsencrypt/
 __pycache__/
+.env

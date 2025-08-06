@@ -3,13 +3,15 @@ import httpx
 from bs4 import BeautifulSoup
 import re
 import json
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # It's important to set a secret key for sessions
 
 # --- Hugging Face API Configuration ---
-# Replace with your actual Hugging Face API key
-HUGGING_FACE_API_KEY = "placeholder"
+HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 
 def query_huggingface_api(payload):
@@ -109,8 +111,8 @@ def learn():
             return redirect(url_for('results'))
     else:
         session['scraped_text'] = learning_text
-
     # Summarize the text
+#added this comment to ensure Grok can see the indentations required for this block
     print("Starting summarization...")
     try:
         scraped_text = session.get('scraped_text', '')
@@ -129,24 +131,22 @@ def learn():
                     summaries.append(summary_data[0]['summary_text'])
                 else:
                     print(f"Could not summarize chunk {i+1}. API response: {summary_data}")
-        if summaries:
-            session['summary'] = "\n".join(summaries)
+            session['summary'] = "\n".join(summaries) if summaries else "Could not generate a summary."
         else:
-            session['summary'] = "Could not generate a summary."
-    elif scraped_text:
-        print("Text is short, summarizing directly...")
-        summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
-        summary_data = query_huggingface_api(summary_payload)
-        print(f"API response: {summary_data}")
-        if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
-            session['summary'] = summary_data[0]['summary_text']
-        else:
-            print(f"Could not summarize text. API response: {summary_data}")
-            session['summary'] = "Could not summarize the text."
+            print("Text is short, summarizing directly...")
+            summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
+            summary_data = query_huggingface_api(summary_payload)
+            print(f"API response: {summary_data}")
+            if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
+                session['summary'] = summary_data[0]['summary_text']
+            else:
+                print(f"Could not summarize text. API response: {summary_data}")
+                session['summary'] = "Could not summarize the text."
     except Exception as e:
         print(f"An error occurred during summarization: {e}")
         session['summary'] = "An error occurred during summarization."
     print("Summarization finished.")
+#added this comment to ensure Grok can see the indentations required for this block
 
     return redirect(url_for('results'))
 
