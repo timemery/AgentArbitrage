@@ -14,9 +14,15 @@ app.secret_key = 'supersecretkey'  # It's important to set a secret key for sess
 HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 
+@app.route('/debug')
+def debug():
+    with open('api_key_log.txt', 'w') as f:
+        f.write(f"API Key: {HUGGING_FACE_API_KEY}")
+    return "Debug log written"
+
 def query_huggingface_api(payload):
     headers = {"Authorization": f"Bearer {HUGGING_FACE_API_KEY}"}
-    with httpx.Client() as client:
+    with httpx.Client(timeout=None) as client:
         response = client.post(API_URL, headers=headers, json=payload)
         return response.json()
 
@@ -135,13 +141,14 @@ def learn():
         else:
             print("Text is short, summarizing directly...")
             summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
+            print(f"Summary payload: {summary_payload}")
             summary_data = query_huggingface_api(summary_payload)
             print(f"API response: {summary_data}")
             if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
                 session['summary'] = summary_data[0]['summary_text']
             else:
                 print(f"Could not summarize text. API response: {summary_data}")
-                session['summary'] = "Could not summarize the text."
+                session['summary'] = f"Could not summarize the text. API Response: {summary_data}"
     except Exception as e:
         print(f"An error occurred during summarization: {e}")
         session['summary'] = "An error occurred during summarization."
