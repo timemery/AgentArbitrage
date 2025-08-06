@@ -1,116 +1,45 @@
 # Agent Arbitrage
+Flask app on Hostinger VPS (Ubuntu 22.04) for AI-driven Amazon FBA arbitrage.
+- Root: https://agentarbitrage.co (renders templates/index.html with AIGIRL.jpg background)
+- App: https://agentarbitrage.co/app (username: tester, password: OnceUponaBurgerTree-12monkeys)
+- Repo: https://github.com/timemery/AgentArbitrage
+- Project Plan: See `Agent Arbitrage Project Plan Draft 1.md`
 
-This project is an autonomous AI agent that identifies high-profit books for Amazon FBA arbitrage.
+## Setup for Development
+### Local Development (Jules)
+1. Clone: `git clone https://github.com/timemery/AgentArbitrage.git`
+2. Navigate: `cd AgentArbitrage`
+3. Create virtual environment: `python3 -m venv venv`
+4. Activate: `source venv/bin/activate` (Windows: `venv\Scripts\activate`)
+5. Install dependencies: `pip install -r requirements.txt`
+6. Run: `python app.py`
+7. Test: Visit `http://localhost:5000` and `http://localhost:5000/app`
+8. Develop Guided Learning (URL scraping, Hugging Face API)
+9. Push: `git add .`, `git commit -m "Update Guided Learning"`, `git push origin main`
+- Note: Place images in `static` folder, reference as `/static/filename.jpg` in HTML.
 
-## Project Plan
+### VPS Deployment (Tim)
+1. SSH: `ssh root@31.97.11.61`
+2. Navigate: `cd /var/www/agentarbitrage`
+3. Pull: `git pull origin main`
+4. Update dependencies: `source venv/bin/activate`, `pip install -r requirements.txt`
+5. Apply changes (see below).
 
-The project is divided into two phases:
-
-*   **Phase 1A: AI Agent Development (Weeks 1-6)**
-*   **Phase 1B: Web Interface and Refinement (Weeks 7-10)
-
-A more detailed project plan can be found in the `Agent_Arbitrage - Jules_Grok.md` file.
-
-## Server Information
-
-*   **VPS Provider**: Hostinger
-*   **OS**: Ubuntu 22.04
-*   **IP Address**: `31.97.11.61`
-*   **SSH Access**: `ssh root@31.97.11.61`
-
-## Deployment
-
-The application is a Flask web application served by Apache with `mod_wsgi`.
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/timemery/AgentArbitrage.git
-```
-
-### 2. Set up the Python Environment
-
-The project uses a Python virtual environment.
-
+#### Applying Changes on VPS
+**For most changes** (e.g., `app.py`, `templates/index.html`, `templates/guided_learning.html`, `static/AIGIRL.jpg`):
 ```bash
 cd /var/www/agentarbitrage
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Application Files
-
-**app.py**
-```python
-from flask import Flask
-
-app = Flask(__name__)
-
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-if __name__ == '__main__':
-    app.run(debug=True)
-```
-
-**wsgi.py**
-```python
-import sys
-sys.path.insert(0, '/var/www/agentarbitrage')
-from app import app as application
-```
-
-### 5. Configure Apache
-
-**`/etc/apache2/sites-available/agentarbitrage.conf`**
-```apache
-<VirtualHost *:80>
-    ServerName agentarbitrage.co
-    ServerAlias www.agentarbitrage.co
-    WSGIScriptAlias / /var/www/agentarbitrage/wsgi.py
-    <Directory /var/www/agentarbitrage>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-    ErrorLog ${APACHE_LOG_DIR}/agentarbitrage_error.log
-    CustomLog ${APACHE_LOG_DIR}/agentarbitrage_access.log combined
-</VirtualHost>
-```
-
-**`/etc/apache2/sites-available/agentarbitrage-le-ssl.conf`**
-```apache
-<IfModule mod_ssl.c>
-<VirtualHost *:443>
-    ServerName agentarbitrage.co
-    ServerAlias www.agentarbitrage.co
-    WSGIScriptAlias / /var/www/agentarbitrage/wsgi.py
-    <Directory /var/www/agentarbitrage>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-    WSGIDaemonProcess agentarbitrage python-home=/var/www/agentarbitrage/venv python-path=/var/www/agentarbitrage
-    WSGIProcessGroup agentarbitrage
-    ErrorLog ${APACHE_LOG_DIR}/agentarbitrage_error.log
-    CustomLog ${APACHE_LOG_DIR}/agentarbitrage_access.log combined
-    SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/agentarbitrage.co/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/agentarbitrage.co/privkey.pem
-    Include /etc/letsencrypt/options-ssl-apache.conf
-</VirtualHost>
-</IfModule>
-```
-
-### 6. Restart Apache
-
-```bash
+sudo chown -R www-data:www-data /var/www/agentarbitrage
+sudo chmod -R 755 /var/www/agentarbitrage
+touch wsgi.py
 sudo systemctl restart apache2
-```
+sudo systemctl status apache2
+For Apache configuration changes (e.g., agentarbitrage.conf, agentarbitrage-le-ssl.conf):
+
+cd /var/www/agentarbitrage
+sudo cp agentarbitrage.conf /etc/apache2/sites-available/
+sudo cp agentarbitrage-le-ssl.conf /etc/apache2/sites-available/
+sudo a2ensite agentarbitrage.conf
+sudo a2ensite agentarbitrage-le-ssl.conf
+sudo systemctl restart apache2
+sudo systemctl status apache2

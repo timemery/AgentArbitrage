@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Saira', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            padding: 20px;
+            border: 1px solid #6699CC;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        h1 {
+            text-align: center;
+            color: #6699CC;
+        }
+        .result-section {
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #6699CC;
+            border-bottom: 1px solid #6699CC;
+            padding-bottom: 5px;
+        }
+        .content {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap; /* Preserve whitespace and newlines */
+            word-wrap: break-word;
+        }
+        a {
+            color: #6699CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analysis Results</h1>
+        
+        <div class="result-section">
+            <h2>Original Input</h2>
+            <div class="content">
+                <p>{{ session.get('original_input', 'No input provided.') }}</p>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <h2>Scraped Text</h2>
+            <div class="content">
+                <p>{{ session.get('scraped_text', 'No text was scraped.') }}</p>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <h2>AI-Generated Summary (Editable)</h2>
+            <form action="/approve" method="post">
+                <textarea name="approved_rules" class="editable-summary">{{ session.get('summary', 'No summary was generated.') }}</textarea>
+                <div style="text-align: right; margin-top: 10px;">
+                    <button type="submit" class="approve-button">Approve Rules</button>
+                </div>
+            </form>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('main_app') }}">Back to Guided Learning</a>
+        </div>
+    </div>
+    <style>
+        .editable-summary {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 1em;
+            background-color: #333;
+            color: white;
+            border: 1px solid #6699CC;
+            border-radius: 5px;
+        }
+        .approve-button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #6699CC;
+            color: white;
+            border: 1px solid #006699;
+            border-radius: 5px;
+        }
+        .approve-button:hover {
+            background-color: #5577AA;
+        }
+    </style>
+    </div>
+</body>
+</html>
