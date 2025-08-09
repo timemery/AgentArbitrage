@@ -4,3 +4,5 @@ venv/
 /etc/letsencrypt/
 __pycache__/
 .env
+app.log
+*.bak

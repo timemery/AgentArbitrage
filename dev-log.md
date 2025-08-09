@@ -45,6 +45,22 @@ The application is still not working correctly. The root cause of the issue is u
 *   Start a new task with a fresh environment to rule out any issues with the current environment.
 *   Systematically debug the application, starting with the most basic functionality and working up to the more complex features.
 
+Dev Log - August 6, 2025
+
+Issue: Recurring Double Authentication Prompt
+
+Description: A recurring issue has been identified where you are required to authenticate twice. The first login occurs on the main page (/) via the Flask application's form. After being redirected to /app, you are prompted with a second, browser-native login dialog.
+
+Root Cause: The application is protected by two separate authentication mechanisms:
+
+Application-Level (Flask): The app.py code uses a session-based login system that checks for session['logged_in'].
+Server-Level (Apache): The Apache configuration files (agentarbitrage.conf and agentarbitrage-le-ssl.conf) enforce HTTP Basic Authentication on the /app location.
+These two mechanisms are redundant and create a confusing user experience.
+
+Resolution: The server-level Apache Basic Authentication is unnecessary, as the Flask application handles authentication correctly. The fix is to remove the <Location /app> block from the Apache configuration files (agentarbitrage.conf and agentarbitrage-le-ssl.conf).
+
+- Aug 8, 2025: Confirmed /app not needed, updated index.html and results.html, verified UX and login flow.
+
 ## Notes
 - Log issues, fixes, and progress here.
 - Use `git status` and `cat /var/log/apache2/agentarbitrage_error.log` for troubleshooting.

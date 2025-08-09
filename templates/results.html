@@ -60,21 +60,21 @@
         <div class="result-section">
             <h2>Original Input</h2>
             <div class="content">
-                <p>{{ session.get('original_input', 'No input provided.') }}</p>
+                <p>{{ original_input }}</p>
             </div>
         </div>
         
         <div class="result-section">
             <h2>Scraped Text</h2>
             <div class="content">
-                <p>{{ session.get('scraped_text', 'No text was scraped.') }}</p>
+                <p>{{ scraped_text }}</p>
             </div>
         </div>
         
         <div class="result-section">
             <h2>AI-Generated Summary (Editable)</h2>
             <form action="/approve" method="post">
-                <textarea name="approved_rules" class="editable-summary">{{ session.get('summary', 'No summary was generated.') }}</textarea>
+                <textarea name="approved_rules" class="editable-summary">{{ summary }}</textarea>
                 <div style="text-align: right; margin-top: 10px;">
                     <button type="submit" class="approve-button">Approve Rules</button>
                 </div>
@@ -82,7 +82,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-            <a href="{{ url_for('main_app') }}">Back to Guided Learning</a>
+            <a href="{{ url_for('guided_learning') }}">Back to Guided Learning</a>
         </div>
     </div>
     <style>

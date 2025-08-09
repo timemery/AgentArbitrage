@@ -47,14 +47,60 @@
             padding: 10px 20px;
             font-size: 1.2em;
             cursor: pointer;
+            border: 1px solid;
+            border-radius: 5px;
+        }
+        button.submit {
             background-color: #6699CC;
             color: white;
-            border: 1px solid #006699;
-            border-radius: 5px;
-            align-self: flex-end;
+            border-color: #006699;
         }
-        button:hover {
+        button.submit:hover:not(:disabled) {
             background-color: #5577AA;
+        }
+        button.clear-session {
+            background-color: #CC6666;
+            color: white;
+            border-color: #990000;
+        }
+        button.clear-session:hover:not(:disabled) {
+            background-color: #AA5555;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .flash {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .flash.success {
+            background-color: #6699CC;
+            color: white;
+        }
+        .progress-container {
+            display: none;
+            text-align: center;
+            margin: 0 10px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -70,29 +116,30 @@
             {% endif %}
         {% endwith %}
         <h1>Guided Learning</h1>
-        <form action="/learn" method="post">
+        <form action="{{ url_for('learn') }}" method="post">
             <textarea name="learning_text" placeholder="Paste a URL or enter text-based guidance..."></textarea>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <a href="/clear_session" class="clear-session-button">Clear Session</a>
-                <button type="submit">Submit for Analysis</button>
+                <button type="button" class="clear-session" onclick="window.location.href='/clear_session'">Clear Session</button>
+                <div id="progress" class="progress-container">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+                <button type="submit" class="submit">Submit for Analysis</button>
             </div>
         </form>
     </div>
-    <style>
-        .flashes {
-            list-style-type: none;
-            padding: 0;
-            margin: 0 0 20px 0;
-        }
-        .flash {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .flash.success {
-            background-color: #6699CC;
-            color: white;
-        }
-    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const submitButton = document.querySelector('button.submit');
+            const clearButton = document.querySelector('button.clear-session');
+            const progress = document.getElementById('progress');
+            form.addEventListener('submit', function() {
+                progress.style.display = 'block';
+                submitButton.disabled = true;
+                clearButton.disabled = true;
+            });
+        });
+    </script>
 </body>
 </html>
