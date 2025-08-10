@@ -1,0 +1,296 @@
+/* Global Styles */
+body {
+  margin: 0;
+  min-height: 100vh;
+  /* Using width instead of min-width to avoid overflow issues with some viewport sizes */
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'DM Sans', sans-serif;
+  color: #ffffff;
+  overflow-x: hidden; /* Prevent horizontal scrollbar from gradient animation */
+  position: relative; /* Needed for z-indexing context */
+  letter-spacing: -0.02em;
+}
+
+/* Animated Gradient Background - apply to body */
+body.gradient-background {
+  background: linear-gradient(295deg,#001028,#003852,#012b50);
+  background-size: 180% 180%;
+  animation: gradient-animation 30s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Home page specific background image */
+body.home-background::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/AIGIRL.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.25;
+    z-index: -1; /* Place it behind the content */
+}
+
+
+/* Make sure content is above the background image pseudo-element */
+.container, h1, .login-container {
+    z-index: 2;
+}
+
+/* Vexel-inspired styles */
+.container {
+  width: 80%; /* Adjusted from 90% to match guided_learning/results */
+  max-width: 900px; /* Adjusted to match results */
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  margin: 20px auto;
+}
+
+h1, h2, h3 {
+  color: #ffffff;
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 20px;
+  letter-spacing: -0.06em;
+}
+
+button, .button, input[type="submit"] {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 12px 24px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none; /* For <a> tags styled as buttons */
+  display: inline-block; /* For <a> tags */
+}
+
+button:hover:not(:disabled), .button:hover, input[type="submit"]:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Styles from guided_learning.html & results.html */
+textarea {
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 1em;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+    border: 1px solid rgba(102, 153, 204, 0.5);
+    border-radius: 5px;
+}
+
+/* Dark-transparent treatment for tables/results */
+.result-section {
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h2 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 5px;
+}
+
+.content {
+    background-color: transparent;
+    padding: 15px 0;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Special h1 style for index.html */
+#agent-arbitrage-h1 {
+    font-family: 'Saira', sans-serif;
+    color: white;
+    font-size: 4vw;
+    font-weight: 400;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    max-width: 50vw;
+    white-space: nowrap;
+    text-transform: uppercase;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.1) 40%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0.1) 60%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Login form styles from index.html */
+.login-container {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.login-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+}
+
+.login-form {
+    display: none;
+    margin-right: 10px;
+}
+
+.login-form input[type="text"], .login-form input[type="password"] {
+    padding: 10px;
+    font-size: 1em;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.show-form .login-button {
+    display: none;
+}
+
+.show-form .login-form {
+    display: flex;
+}
+
+/* Flash Messages */
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+.flash {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.flash.success {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    color: white;
+}
+.flash.warning {
+    background-color: rgba(255, 255, 0, 0.1);
+    border: 1px solid rgba(255, 255, 0, 0.2);
+    color: white;
+}
+.flash.error {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    color: white;
+}
+
+/* Spinner/Progress */
+.progress-container {
+    display: none;
+    text-align: center;
+    margin: 0 10px;
+}
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Special Buttons */
+button.clear-session {
+    border-color: #CC6666;
+}
+button.clear-session:hover:not(:disabled) {
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: #ff4d4d;
+}
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    body {
+        justify-content: flex-start; /* Align content to the top on small screens */
+        padding-top: 5vh;
+    }
+    #agent-arbitrage-h1 {
+        font-size: 10vw;
+        max-width: 90vw;
+        padding: 10px;
+    }
+    .login-container {
+        top: 10px;
+        right: 10px;
+        flex-direction: column;
+        gap: 10px;
+        position: static; /* Let it flow with the content */
+        margin-top: 20px;
+    }
+    .login-button, .login-form button {
+        width: 200px;
+    }
+    .login-form {
+        margin-right: 0;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .login-form input {
+        width: 200px;
+        font-size: 0.9em;
+        margin-right: 0;
+    }
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+}

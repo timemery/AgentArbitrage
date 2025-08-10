@@ -5,56 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysis Results</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Saira:wght@400&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: 'Saira', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            width: 80%;
-            max-width: 900px;
-            padding: 20px;
-            border: 1px solid #6699CC;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        h1 {
-            text-align: center;
-            color: #6699CC;
-        }
-        .result-section {
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #6699CC;
-            border-bottom: 1px solid #6699CC;
-            padding-bottom: 5px;
-        }
-        .content {
-            background-color: #333;
-            padding: 15px;
-            border-radius: 5px;
-            white-space: pre-wrap; /* Preserve whitespace and newlines */
-            word-wrap: break-word;
-        }
-        a {
-            color: #6699CC;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
 </head>
-<body>
+<body class="gradient-background">
     <div class="container">
         <h1>Analysis Results</h1>
         
@@ -75,47 +31,22 @@
         <form action="/approve" method="post">
             <div class="result-section">
                 <h2>AI-Generated Summary (Editable)</h2>
-                <textarea name="approved_summary" class="editable-summary">{{ summary }}</textarea>
+                <textarea name="approved_summary">{{ summary }}</textarea>
             </div>
 
             <div class="result-section">
                 <h2>Extracted Strategies (Editable)</h2>
-                <textarea name="approved_strategies" class="editable-summary">{{ extracted_strategies }}</textarea>
+                <textarea name="approved_strategies">{{ extracted_strategies }}</textarea>
             </div>
 
             <div style="text-align: right; margin-top: 10px;">
-                <button type="submit" class="approve-button">Approve</button>
+                <button type="submit">Approve</button>
             </div>
         </form>
 
         <div style="text-align: center; margin-top: 20px;">
             <a href="{{ url_for('guided_learning') }}">Back to Guided Learning</a>
         </div>
-    </div>
-    <style>
-        .editable-summary {
-            width: 100%;
-            height: 150px;
-            padding: 10px;
-            font-size: 1em;
-            background-color: #333;
-            color: white;
-            border: 1px solid #6699CC;
-            border-radius: 5px;
-        }
-        .approve-button {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-            background-color: #6699CC;
-            color: white;
-            border: 1px solid #006699;
-            border-radius: 5px;
-        }
-        .approve-button:hover {
-            background-color: #5577AA;
-        }
-    </style>
     </div>
 </body>
 </html>

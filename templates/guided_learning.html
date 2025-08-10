@@ -5,107 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guided Learning</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Saira:wght@400&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: 'Saira', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            width: 80%;
-            max-width: 800px;
-            padding: 20px;
-            border: 1px solid #6699CC;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        h1 {
-            text-align: center;
-            color: #6699CC;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        textarea {
-            width: 100%;
-            height: 300px;
-            margin-bottom: 20px;
-            padding: 10px;
-            font-size: 1em;
-            background-color: #333;
-            color: white;
-            border: 1px solid #6699CC;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border: 1px solid;
-            border-radius: 5px;
-        }
-        button.submit {
-            background-color: #6699CC;
-            color: white;
-            border-color: #006699;
-        }
-        button.submit:hover:not(:disabled) {
-            background-color: #5577AA;
-        }
-        button.clear-session {
-            background-color: #CC6666;
-            color: white;
-            border-color: #990000;
-        }
-        button.clear-session:hover:not(:disabled) {
-            background-color: #AA5555;
-        }
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .flashes {
-            list-style-type: none;
-            padding: 0;
-            margin: 0 0 20px 0;
-        }
-        .flash {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .flash.success {
-            background-color: #6699CC;
-            color: white;
-        }
-        .progress-container {
-            display: none;
-            text-align: center;
-            margin: 0 10px;
-        }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin: auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
 </head>
-<body>
+<body class="gradient-background">
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
