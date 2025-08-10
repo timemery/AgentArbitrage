@@ -34,6 +34,7 @@
 *   [ ] Integrate a lightweight LLM (via Hugging Face API) to:
     *   [ ] Summarize scraped text.
     *   [ ] Extract key strategies and parameters (e.g., "sales rank between X and Y").
+    *   [ ] Add support for extracting transcripts from YouTube videos.
 *   [ ] Create an interface to review, edit, and approve the extracted rules.
 
 **Week 4-5: Core Data Processing and Rule-Based Engine**

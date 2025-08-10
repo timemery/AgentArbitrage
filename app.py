@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import httpx
 from bs4 import BeautifulSoup
 import re
@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 import logging
 import tempfile
+import time
 load_dotenv('/var/www/agentarbitrage/.env')
 
 app = Flask(__name__)
@@ -18,19 +19,75 @@ app.secret_key = 'supersecretkey'  # It's important to set a secret key for sess
 
 # --- Hugging Face API Configuration ---
 HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
-API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+SUMMARY_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+STRATEGY_API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
 
 app.logger.info(f"Loaded HF_TOKEN: {HUGGING_FACE_API_KEY}")
 
-def query_huggingface_api(payload):
+def query_huggingface_api(payload, api_url):
     headers = {"Authorization": f"Bearer {HUGGING_FACE_API_KEY}"}
-    with httpx.Client(timeout=None) as client:
-        response = client.post(API_URL, headers=headers, json=payload)
+    for i in range(3): # Retry up to 3 times
+        with httpx.Client(timeout=None) as client:
+            response = client.post(api_url, headers=headers, json=payload)
+        if response.status_code == 200:
+            try:
+                return response.json()
+            except json.JSONDecodeError:
+                app.logger.error(f"Failed to decode JSON from Hugging Face API. Response status: {response.status_code}, content: {response.text}")
+                return {"error": "Invalid response from API"}
+        elif response.status_code == 503:
+            app.logger.warning(f"API request failed with status 503 (model loading?). Retrying in 5 seconds... (Attempt {i+1}/3)")
+            time.sleep(5)
+            continue
+        else:
+            break # Don't retry for other errors
+    
+    app.logger.error(f"API request failed after retries. Status: {response.status_code}, Response: {response.text}")
     try:
         return response.json()
     except json.JSONDecodeError:
-        app.logger.error(f"Failed to decode JSON from Hugging Face API. Response status: {response.status_code}, content: {response.text}")
-        return {"error": "Invalid response from API"}
+        return {"error": f"API request failed with status {response.status_code}", "content": response.text}
+
+def extract_strategies(summary_text):
+    prompt = f"""
+    From the following text, extract the key strategies and parameters for online book arbitrage.
+    Present them as a list of rules. For example: "Sales rank between 100,000 and 500,000".
+
+    Text:
+    {summary_text}
+    """
+    # Attempt 1: Primary Model (flan-t5-large)
+    primary_payload = {"inputs": prompt, "parameters": {"max_new_tokens": 512, "temperature": 0.7, "do_sample": True}}
+    primary_data = query_huggingface_api(primary_payload, STRATEGY_API_URL)
+
+    if isinstance(primary_data, list) and primary_data and 'generated_text' in primary_data[0]:
+        flash("Successfully extracted strategies using the primary model (google/flan-t5-large).", "success")
+        app.logger.info(f"Successfully extracted strategies using {STRATEGY_API_URL}.")
+        return primary_data[0]['generated_text']
+
+    # Attempt 2: Fallback Model (bart-large-cnn)
+    app.logger.warning(f"Primary strategy extraction failed: {primary_data}. Falling back to summary model.")
+    flash(f"Primary model failed ({primary_data.get('error', 'Unknown Error')}). Falling back to a secondary model.", "warning")
+
+    fallback_payload = {"inputs": prompt, "parameters": {"min_length": 20, "max_length": 100}}
+    fallback_data = query_huggingface_api(fallback_payload, SUMMARY_API_URL)
+
+    if isinstance(fallback_data, list) and fallback_data:
+        if 'summary_text' in fallback_data[0]:
+            flash("Fallback model succeeded.", "success")
+            app.logger.info(f"Successfully generated fallback strategies using {SUMMARY_API_URL}.")
+            return f"FALLBACK: The primary strategy model is currently unavailable. The following is a response from the backup model:\n\n{fallback_data[0]['summary_text']}"
+        elif 'generated_text' in fallback_data[0]: # Some models might return this key instead
+            flash("Fallback model succeeded.", "success")
+            app.logger.info(f"Successfully generated fallback strategies using {SUMMARY_API_URL} (generated_text).")
+            return f"FALLBACK: The primary strategy model is currently unavailable. The following is a response from the backup model:\n\n{fallback_data[0]['generated_text']}"
+
+    # Final Failure
+    error_message = f"Primary model failed ({primary_data.get('error', 'Unknown Error')}). Fallback model also failed or returned invalid data: {fallback_data}"
+    app.logger.error(error_message)
+    flash("Error: Both the primary and fallback models failed to extract strategies.", "error")
+    return "Could not extract strategies. Both primary and fallback models failed. Please check the logs."
+
 
 def chunk_text(text, chunk_size=512): # Smaller chunks - changed from 1024 to 512
     """Splits the text into chunks of a specified size."""
@@ -125,9 +182,7 @@ def learn():
     else:
         scraped_text = learning_text
 
-# added this line below on Groks advice - but I'm totally guessing at its position and indents.
         scraped_text = scraped_text[:50000]  # Limit to 50,000 characters for summarization
-# added this line above on Groks advice - but I'm totally guessing at its position and indents.
 
     with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
         f.write(scraped_text)
@@ -144,7 +199,7 @@ def learn():
             for i, chunk in enumerate(text_chunks):
                 app.logger.info(f"Summarizing chunk {i+1}/{len(text_chunks)}")
                 summary_payload = {"inputs": chunk, "parameters": {"min_length": 30, "max_length": 150}}
-                summary_data = query_huggingface_api(summary_payload)
+                summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
                 if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
                     summaries.append(summary_data[0]['summary_text'])
                 else:
@@ -153,7 +208,7 @@ def learn():
         else:
             app.logger.info("Text is short, summarizing directly...")
             summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
-            summary_data = query_huggingface_api(summary_payload)
+            summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
             if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
                 summary_text = summary_data[0]['summary_text']
             else:
@@ -167,6 +222,11 @@ def learn():
     with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
         f.write(summary_text)
         session['summary_file'] = f.name
+
+    extracted_strategies = extract_strategies(summary_text)
+    with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
+        f.write(extracted_strategies)
+        session['extracted_strategies_file'] = f.name
 
     return redirect(url_for('results'))
 
@@ -193,49 +253,49 @@ def results():
         except FileNotFoundError:
             summary = "Could not find summary."
 
-    return render_template('results.html', original_input=original_input, scraped_text=scraped_text, summary=summary)
+    extracted_strategies = ""
+    if 'extracted_strategies_file' in session:
+        try:
+            with open(session['extracted_strategies_file'], 'r', encoding='utf-8') as f:
+                extracted_strategies = f.read()
+        except FileNotFoundError:
+            extracted_strategies = "Could not find extracted strategies."
+
+    return render_template('results.html', original_input=original_input, scraped_text=scraped_text, summary=summary, extracted_strategies=extracted_strategies)
 
 @app.route('/approve', methods=['POST'])
 def approve():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
     
-    approved_rules = request.form.get('approved_rules')
-    app.logger.info("Approved rules:")
-    app.logger.info(approved_rules)
+    approved_summary = request.form.get('approved_summary')
+    approved_strategies = request.form.get('approved_strategies')
+    
+    app.logger.info("Approved Summary:")
+    app.logger.info(approved_summary)
+    
+    app.logger.info("Approved Strategies:")
+    app.logger.info(approved_strategies)
     
     # For now, just redirect back to the main app page
     return redirect(url_for('guided_learning'))
 
-from flask import flash
-
 @app.route('/clear_session')
 def clear_session():
     # Clean up old temp files
-    for key in ['scraped_text_file', 'summary_file']:
+    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file']:
         if key in session:
             try:
                 os.remove(session[key])
             except OSError:
                 pass
-# Update to session.clear stuff commented out below
-    for key in ['scraped_text_file', 'summary_file', 'original_input', 'logged_in']:
-        if key in session:
-            try:
-                if key in ['scraped_text_file', 'summary_file']:
-                    os.remove(session[key])
-            except OSError:
-                pass
             session.pop(key, None)
+    
+    # Also remove original_input from session, but keep 'logged_in'
+    session.pop('original_input', None)
+
     flash('Session cleared!', 'success')
-    return render_template('guided_learning.html')
-# Update to session.clear stuff commented out below
-
-
-# Commented this out because I'm not sure of the indents of the new block above
-#    session.clear()
-#    flash('Session cleared!', 'success')
-#    return redirect(url_for('guided_learning'))
+    return redirect(url_for('guided_learning'))
 
 @app.route('/test_route', methods=['POST'])
 def test_route():

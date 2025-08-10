@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysis Results</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Saira:wght@400&display=swap" rel="stylesheet">
     <style>
         body {
@@ -71,15 +72,21 @@
             </div>
         </div>
         
-        <div class="result-section">
-            <h2>AI-Generated Summary (Editable)</h2>
-            <form action="/approve" method="post">
-                <textarea name="approved_rules" class="editable-summary">{{ summary }}</textarea>
-                <div style="text-align: right; margin-top: 10px;">
-                    <button type="submit" class="approve-button">Approve Rules</button>
-                </div>
-            </form>
-        </div>
+        <form action="/approve" method="post">
+            <div class="result-section">
+                <h2>AI-Generated Summary (Editable)</h2>
+                <textarea name="approved_summary" class="editable-summary">{{ summary }}</textarea>
+            </div>
+
+            <div class="result-section">
+                <h2>Extracted Strategies (Editable)</h2>
+                <textarea name="approved_strategies" class="editable-summary">{{ extracted_strategies }}</textarea>
+            </div>
+
+            <div style="text-align: right; margin-top: 10px;">
+                <button type="submit" class="approve-button">Approve</button>
+            </div>
+        </form>
 
         <div style="text-align: center; margin-top: 20px;">
             <a href="{{ url_for('guided_learning') }}">Back to Guided Learning</a>

@@ -1,7 +1,7 @@
 # Agent Arbitrage
 Flask app on Hostinger VPS (Ubuntu 22.04) for AI-driven Amazon FBA arbitrage.
 - Root: https://agentarbitrage.co (renders templates/index.html with AIGIRL.jpg background)
-- App: https://agentarbitrage.co/app (username: tester, password: OnceUponaBurgerTree-12monkeys)
+- App: https://agentarbitrage.co/guided_learning (username: tester, password: OnceUponaBurgerTree-12monkeys)
 - Repo: https://github.com/timemery/AgentArbitrage
 - Project Plan: See `Agent Arbitrage Project Plan Draft 1.md`
 
@@ -13,10 +13,20 @@ Flask app on Hostinger VPS (Ubuntu 22.04) for AI-driven Amazon FBA arbitrage.
 4. Activate: `source venv/bin/activate` (Windows: `venv\Scripts\activate`)
 5. Install dependencies: `pip install -r requirements.txt`
 6. Run: `python app.py`
-7. Test: Visit `http://localhost:5000` and `http://localhost:5000/app`
+7. Test: Visit `http://localhost:5000`
 8. Develop Guided Learning (URL scraping, Hugging Face API)
 9. Push: `git add .`, `git commit -m "Update Guided Learning"`, `git push origin main`
 - Note: Place images in `static` folder, reference as `/static/filename.jpg` in HTML.
+
+## Models and API
+
+This project relies on the Hugging Face API for its AI capabilities.
+
+*   **Summarization Model:** `facebook/bart-large-cnn`
+*   **Strategy Extraction Model:** `google/flan-t5-large` (previously attempted `mistralai/Mistral-7B-Instruct-v0.1`)
+
+**Subscription:** A Hugging Face **Pro subscription** is recommended to ensure the stability and performance of the API calls and to avoid rate limits or "model loading" delays.
+
 
 ### VPS Deployment (Tim)
 1. SSH: `ssh root@31.97.11.61`

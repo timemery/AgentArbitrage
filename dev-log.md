@@ -1,66 +1,73 @@
 # Agent Arbitrage Development Log
 
 ## August 2025
-- **Aug 2, 2025**: Fixed "Forbidden" error on `https://agentarbitrage.co` by resolving duplicate WSGI daemon in `agentarbitrage-le-ssl.conf`. Updated `app.py`, `index.html`, `guided_learning.html` to handle main page and login (`tester`/`OnceUponaBurgerTree-12monkeys`). Moved `AIGIRL.jpg` to `static` and fixed path in `index.html`.
-- **Aug 2, 2025**: Encountered "Hello World" issue after `git reset --hard origin/main` reverted to outdated commit (`93720e9`). Restored `app.py`, `guided_learning.html`, and `index.html` from backup. Forced Git push to sync all files to `https://github.com/timemery/AgentArbitrage`.
-- **Aug 3, 2025**: Added Hugging Face API key setup for Jules’ Guided Learning module (Weeks 2-3: URL scraping, summarization). Documented VPS change commands in `README.md`.
-- **Aug 3, 2025**: Confirmed commands to apply changes: `touch wsgi.py` for Python changes, Apache restart for templates/static files, and config copying for Apache config updates.
-- **Aug 3, 2025**: Identified an issue with the summarization of long texts. The current model fails on long inputs.
-- **Aug 3, 2025**: Planned next steps for the Guided Learning module:
-  - Implement chunking to handle long texts without truncation.
-  - Add support for YouTube transcripts.
-  - Explore other summarization models for different types of content.
-- **Aug 3, 2025**: Implemented the initial version of the Guided Learning module.
-  - Added URL scraping functionality to extract text from web pages.
-  - Integrated the Hugging Face API for text summarization.
-  - Created a results page to display the scraped text and the AI-generated summary.
-  - Added a rule review interface to allow users to edit and approve the generated rules.
-- **Aug 3, 2025**: Identified an issue with the summarization of long texts. The current model fails on long inputs.
-- **Aug 3, 2025**: Implemented a chunking mechanism to handle long texts without truncation.
-- **Aug 3, 2025**: Discovered that the summarization is still failing, even with the chunking mechanism. The summary is not being displayed on the results page.
-- **Aug 3, 2025**: Added debugging statements to `app.py` to investigate the summarization issue. The new code will print information about the summarization process to the Apache error log.
-- **Aug 3, 2025**: Increased the timeout limit in the Apache configuration to prevent the summarization request from timing out.
-- **Aug 3, 2025**: Fixed an issue with duplicate WSGI daemon definitions in the Apache configuration.
-- **Aug 3, 2025**: Fixed an issue with the session not being cleared between requests.
-- **Aug 3, 2025**: Identified a new issue with scraping certain websites, resulting in a "403 Client Error: Forbidden" error. This is likely due to websites blocking requests from automated scripts.
 
-## Dev Log - August 6, 2025
+This log provides a summary of the key development activities for the Agent Arbitrage project.
 
-**Goal:** Fix the Guided Learning module, which is failing to generate summaries and has a number of other issues.
+### **Week 1-2: Initial Setup and Guided Learning MVP (Early August)**
 
-**Summary of Actions Taken:**
+*   **Project Initialization:**
+    *   Set up the Flask application structure on the Hostinger VPS.
+    *   Established the initial technology stack: Python, Flask, `httpx`, `BeautifulSoup`.
+    *   Configured the Apache server with WSGI to serve the Flask application.
 
-*   **Identified and fixed an invalid Hugging Face API key.** You provided a new, valid key, which we have confirmed is working correctly.
-*   **Added `python-dotenv` to `requirements.txt`** to ensure that environment variables are loaded correctly.
-*   **Cleaned up the global Python environment.** You have uninstalled all packages that were installed with `pip` outside of the virtual environment to prevent conflicts.
-*   **Confirmed that the web server is configured to use the virtual environment.** The Apache configuration file is correctly pointing to the virtual environment's Python interpreter.
-*   **Attempted to debug the application by running it directly from the command line.** The application starts correctly, but it does not log any output when a request is made to it.
+*   **Guided Learning - Phase 1 (Scraping & Summarization):**
+    *   Developed the `/guided_learning` page with a form for users to submit a URL or text.
+    *   Implemented a scraping function in `app.py` to fetch and parse content from submitted URLs, stripping HTML tags to extract clean text.
+    *   Integrated the Hugging Face API (`facebook/bart-large-cnn` model) to perform text summarization.
 
-**Current Status:**
+### **Week 2-3: Debugging and UX Improvements (Mid August)**
 
-The application is still not working correctly. The root cause of the issue is unknown, but it seems to be related to the application not logging any output, which makes it impossible to debug.
+*   **Hugging Face API Authentication:**
+    *   **Issue:** The application was failing to connect to the Hugging Face API, resulting in a `401 Unauthorized` error on the VPS.
+    *   **Troubleshooting:** Discovered that the `.env` file containing the `HF_TOKEN` was not loading correctly in the Apache/mod_wsgi environment.
+    *   **Resolution:** Modified `app.py` to use `load_dotenv('/var/www/agentarbitrage/.env')`, providing an explicit path to the `.env` file. Added logging to confirm the token was loaded successfully.
 
-**Next Steps:**
+*   **Improving User Experience (UX):**
+    *   **Issue:** The scraping and summarization process could take a significant amount of time, making the application feel unresponsive.
+    *   **Resolution:**
+        *   Added a progress spinner and a "Processing..." message to the `/guided_learning` page. The spinner appears after the user clicks "Submit for Analysis."
+        *   Disabled the "Submit" and "Clear Session" buttons during processing to prevent multiple submissions.
+        *   Improved the visual distinction between the "Submit" (blue) and "Clear Session" (red) buttons.
 
-*   Start a new task with a fresh environment to rule out any issues with the current environment.
-*   Systematically debug the application, starting with the most basic functionality and working up to the more complex features.
+*   **Routing and Code Cleanup:**
+    *   **Issue:** Redundant routing and authentication. The `/app` route was protected by Apache's Basic Authentication, creating a confusing double login.
+    *   **Resolution:**
+        *   Removed the `/app` route from `app.py` and the corresponding `<Location /app>` block from the Apache configuration.
+        *   The root URL (`/`) now serves the login page (`index.html`), which submits to `/login` and redirects to `/guided_learning` on success.
+        *   Updated `index.html` and `results.html` to use `url_for('guided_learning')` instead of the old `/app` route.
 
-Dev Log - August 6, 2025
+*   **Performance and Stability:**
+    *   **Issue:** Summarization of very long texts was slow and sometimes failed.
+    *   **Resolution:**
+        *   Implemented a chunking mechanism in `app.py` to split long texts into smaller pieces (512 words) before sending them to the Hugging Face API.
+        *   Limited the input text for summarization to 50,000 characters to prevent excessive processing times.
+    *   **Issue:** Sensitive information (like `.env` files) could be accidentally committed.
+    *   **Resolution:** Verified that the `.gitignore` file correctly excludes `.env`, `app.log`, and other sensitive files.
 
-Issue: Recurring Double Authentication Prompt
+*   **Session Management:**
+    *   **Issue:** Data persisted between sessions, causing confusion.
+    *   **Resolution:** Improved the `/clear_session` route to properly clear all relevant data from the session and delete temporary files, providing a "Session cleared!" message to the user.
 
-Description: A recurring issue has been identified where you are required to authenticate twice. The first login occurs on the main page (/) via the Flask application's form. After being redirected to /app, you are prompted with a second, browser-native login dialog.
+### **Next Steps (Week 2-3 Continued)**
 
-Root Cause: The application is protected by two separate authentication mechanisms:
+*   **Extract Key Strategies:** Implement functionality to extract specific, actionable strategies and parameters (e.g., "sales rank between X and Y") from the summarized text.
+*   **Approval Interface:** Display these extracted strategies on the `/results` page for user review, editing, and approval.
 
-Application-Level (Flask): The app.py code uses a session-based login system that checks for session['logged_in'].
-Server-Level (Apache): The Apache configuration files (agentarbitrage.conf and agentarbitrage-le-ssl.conf) enforce HTTP Basic Authentication on the /app location.
-These two mechanisms are redundant and create a confusing user experience.
 
-Resolution: The server-level Apache Basic Authentication is unnecessary, as the Flask application handles authentication correctly. The fix is to remove the <Location /app> block from the Apache configuration files (agentarbitrage.conf and agentarbitrage-le-ssl.conf).
 
-- Aug 8, 2025: Confirmed /app not needed, updated index.html and results.html, verified UX and login flow.
+**Date: August 9, 2025**
 
-## Notes
-- Log issues, fixes, and progress here.
-- Use `git status` and `cat /var/log/apache2/agentarbitrage_error.log` for troubleshooting.
+- **Task:** Debug and resolve strategy extraction failure.
+- **Issue:** The initial implementation using `mistralai/Mistral-7B-Instruct-v0.1` failed to extract strategies, returning an error.
+- Troubleshooting:
+  1. Enhanced error reporting in `app.py` to get detailed API responses.
+  2. Added a retry mechanism to handle potential `503` errors caused by model loading times.
+  3. The detailed error was a `404 Not Found`, indicating the Mistral model is not available on the standard Inference API.
+  4. Upgraded to a Hugging Face Pro subscription to improve overall API stability and performance.
+- **Resolution:** Decided to switch the strategy extraction model to `google/flan-t5-large`, which is a powerful and reliably available model for this task.
+
+**Date: August 9, 2025**
+- I have changed the strategy extraction model to t5-small in app.py.
+
+
