@@ -70,4 +70,15 @@ This log provides a summary of the key development activities for the Agent Arbi
 **Date: August 9, 2025**
 - I have changed the strategy extraction model to t5-small in app.py.
 
+**Date: August 12-15, 2025**
+
+- **Task:** Debug persistent 404 errors for strategy extraction models and enhance strategy output.
+- **Issue:** POST requests to `google/flan-t5-large`, `t5-small`, `bert-base-uncased`, `distilbert-base-uncased`, and `mistralai/Mixtral-8x7B-Instruct-v0.1` returned 404 ("Not Found", "X-Cache: Error from cloudfront") despite Pro account and correct headers/payloads.
+- **Troubleshooting:**
+  1. Tested models with curl (`facebook/bart-large-cnn` worked; others failed).
+  2. Posted to Hugging Face General forum[](https://discuss.huggingface.co/c/general/10) and Discord #help, confirming non-`facebook/` models are not deployed on Inference API.
+  3. Disabled leaked API key [REDACTED_HF_TOKEN_1] and generated new one [REDACTED_HF_TOKEN_1].
+  4. Tested `mistralai/Mixtral-8x7B-Instruct-v0.1` (404, not deployed despite listing).
+- **Resolution:** Reverted to `facebook/bart-large-cnn` for scraping and summarization. Optimized `app.py` prompt for actionable rules (e.g., sales rank, profit margin). Plan to test xAI API (free credit) for strategy extraction due to its reasoning capabilities.
+- **Proposed Fix:** Update `app.py` to use `facebook/bart-large-cnn` for summarization, add xAI API fallback for strategy extraction, and refine regex for precise rules. Test 100-200 articles with xAI to align with project goal of failproof arbitrage.
 
