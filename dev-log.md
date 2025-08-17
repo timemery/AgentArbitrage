@@ -113,3 +113,52 @@ This log provides a summary of the key development activities for the Agent Arbi
   - The standard HTML scraping logic is preserved as the default behavior for all non-YouTube URLs.
 
 - **Outcome**: This new feature dramatically increases the scope of content the application can analyze, unlocking a major source of valuable information for arbitrage strategies.
+
+
+### Dev Log Entry: Debugging Session of Aug 17
+
+**Objective:** Resolve a `SessionNotCreatedException` in a Flask application running under Apache/mod_wsgi.
+
+**Initial Analysis:** The error (`user data directory is already in use`) suggested that multiple Selenium instances were conflicting. The initial fix attempt was to add the process ID (`os.getpid()`) to the `--user-data-dir` path in `app.py`.
+
+**Debugging Journey:**
+
+1. **Configuration Mismatch:** Initial efforts were hampered by a misconfiguration where Apache was pointing to an old `wsgi.py` instead of the updated `app.py`. This led to a series of debugging steps involving updating the `agentarbitrage.conf` file.
+
+2. **500 Internal Server Error:** After correcting the config to point to `app.py`, the server began returning a 500 Internal Server Error. The Apache `error.log` was clean, and the application's own `app.log` showed that the new code was not being loaded, indicating a severe caching issue with `mod_wsgi`.
+
+3. Forced Reload Attempts:
+
+    
+
+   Numerous strategies were employed to force
+
+    
+
+   ```
+   mod_wsgi
+   ```
+
+    
+
+   to reload the code, including:
+
+   - Touching the script file.
+   - Killing `mod_wsgi` and python processes.
+   - Deleting `.pyc` cache files.
+   - Renaming the main application file from `app.py` to `wsgi_handler.py` and updating the Apache config to match. None of these attempts resolved the issue.
+
+4. **Permissions Issues:** An `ls -l` command revealed the newly-named `wsgi_handler.py` was owned by `root`, making it unreadable by the `www-data` user that Apache runs as. This was corrected with `chown`.
+
+5. **Environment Issues:** After fixing permissions, the 500 error persisted. The `app.log` showed the new code was still not running. A hypothesis was formed that the app was crashing very early, before logging was configured, possibly due to a missing `.env` file. The Python code was rewritten to be more resilient and initialize logging first.
+
+6. **"Hello World" Test:** With the 500 error still present and no useful logs, a minimal "Hello World" application was deployed in `test_app.py`. **This test was successful.** It proved conclusively that the server environment (Apache, `mod_wsgi`, Python venv, file permissions) is fundamentally working.
+
+7. **Isolating the Fault:** The problem is definitively in the application code. An attempt was made to iteratively add code back to a minimal `wsgi_handler.py`. This was blocked by a recurring platform issue with the agent's `message_user` tool, preventing code from being communicated to the user.
+
+**Current Status:** The application is broken. The server is configured to run a minimal, working version of `wsgi_handler.py`. The full application code causes a silent crash.
+
+**Remaining Tasks:**
+
+1. Systematically debug `wsgi_handler.py` to find the line(s) of code causing the crash.
+2. Once the application is stable and running, fix the original `SessionNotCreatedException` from Selenium.

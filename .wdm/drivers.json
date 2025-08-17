@@ -4,7 +4,7 @@
         "binary_path": "/var/www/agentarbitrage/.wdm/drivers/chromedriver/linux64/114.0.5735.90/chromedriver"
     },
     "linux64_chromedriver_139.0.7258.68_for_139.0.7258": {
-        "timestamp": "16/08/2025",
+        "timestamp": "17/08/2025",
         "binary_path": "/var/www/agentarbitrage/.wdm/drivers/chromedriver/linux64/139.0.7258.68/chromedriver-linux64/chromedriver"
     }
 }
