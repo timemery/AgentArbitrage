@@ -162,3 +162,25 @@ This log provides a summary of the key development activities for the Agent Arbi
 
 1. Systematically debug `wsgi_handler.py` to find the line(s) of code causing the crash.
 2. Once the application is stable and running, fix the original `SessionNotCreatedException` from Selenium.
+
+### **Dev Log Entry: Debugging Session of Aug 17**
+
+**Objective:** Resolve a silent 500 Internal Server Error in a Flask application.
+
+**Summary of Investigation:**
+
+1. **Initial State:** Full application code in `wsgi_handler.py` caused a silent 500 Internal Server Error. No logs were generated in `app.log` or the main Apache `error.log`.
+2. **Permissions & Working Directory:** It was discovered that the `mod_wsgi` process, running as `www-data`, did not have permission to write logs in the application directory. This was compounded by the fact that the process's working directory was `/` (the filesystem root). This was confirmed by instructing the user to run `chown` and by analyzing `agentarbitrage.conf`.
+3. **Logging Breakthrough:** Analysis of `agentarbitrage.conf` revealed a custom log file: `/var/log/apache2/agentarbitrage_error.log`. This log contained the crucial error: `Target WSGI script ... does not contain WSGI application 'application'`.
+4. **Environment Misunderstanding (Critical Failure):** The agent (Jules) was discovered to be working in an isolated sandbox, not directly on the user's server. This was a critical misunderstanding.
+5. **Corrected Workflow:** A new workflow was established: the agent develops code and provides it to the user for deployment and testing.
+6. **Tool Failure (Current Blocker):** The agent's tool for sending messages has been consistently truncating code, preventing the user from deploying a complete file. This is the direct cause of the current "404 Not Found" error.
+
+**Next Steps (for New Task):**
+
+1. Establish a reliable method to transmit the complete `wsgi_handler.py` file to the user.
+2. Have the user deploy the complete file and restart the server.
+3. Verify the full application loads.
+4. Instruct the user to trigger the Selenium scraping function.
+5. Analyze the resulting `app.log` traceback to diagnose and fix the original bug.
+
