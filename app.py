@@ -8,6 +8,16 @@ import os
 import logging
 import tempfile
 import time
+import requests
+import shutil
+import psutil
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 load_dotenv('/var/www/agentarbitrage/.env')
 
 app = Flask(__name__)
@@ -20,9 +30,13 @@ app.secret_key = 'supersecretkey'  # It's important to set a secret key for sess
 # --- Hugging Face API Configuration ---
 HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
 SUMMARY_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-STRATEGY_API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
+
+# --- xAI API Configuration ---
+XAI_API_KEY = os.getenv("XAI_TOKEN")
+XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 
 app.logger.info(f"Loaded HF_TOKEN: {HUGGING_FACE_API_KEY}")
+app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 'Not found'}")
 
 def query_huggingface_api(payload, api_url):
     headers = {"Authorization": f"Bearer {HUGGING_FACE_API_KEY}"}
@@ -48,6 +62,26 @@ def query_huggingface_api(payload, api_url):
     except json.JSONDecodeError:
         return {"error": f"API request failed with status {response.status_code}", "content": response.text}
 
+def query_xai_api(payload):
+    if not XAI_API_KEY:
+        app.logger.error("XAI_TOKEN is not set.")
+        return {"error": "XAI_TOKEN is not configured."}
+    headers = {
+        "Authorization": f"Bearer {XAI_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    with httpx.Client(timeout=30.0) as client:
+        try:
+            response = client.post(XAI_API_URL, headers=headers, json=payload)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as e:
+            app.logger.error(f"xAI API request failed with status {e.response.status_code}: {e.response.text}")
+            return {"error": f"API request failed with status {e.response.status_code}", "content": e.response.text}
+        except (httpx.RequestError, json.JSONDecodeError) as e:
+            app.logger.error(f"xAI API request failed: {e}")
+            return {"error": str(e)}
+
 def extract_strategies(summary_text):
     prompt = f"""
     From the following text, extract the key strategies and parameters for online book arbitrage.
@@ -56,18 +90,36 @@ def extract_strategies(summary_text):
     Text:
     {summary_text}
     """
-    # Attempt 1: Primary Model (flan-t5-large)
-    primary_payload = {"inputs": prompt, "parameters": {"max_new_tokens": 512, "temperature": 0.7, "do_sample": True}}
-    primary_data = query_huggingface_api(primary_payload, STRATEGY_API_URL)
 
-    if isinstance(primary_data, list) and primary_data and 'generated_text' in primary_data[0]:
-        flash("Successfully extracted strategies using the primary model (google/flan-t5-large).", "success")
-        app.logger.info(f"Successfully extracted strategies using {STRATEGY_API_URL}.")
-        return primary_data[0]['generated_text']
+    # Attempt 1: Primary Model (xAI)
+    xai_payload = {
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are an expert in online book arbitrage. Your task is to extract key strategies and parameters from the provided text and present them as a list of clear, actionable rules."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "model": "grok-4-latest",
+        "stream": False,
+        "temperature": 0.2
+    }
+    
+    primary_data = query_xai_api(xai_payload)
+
+    if primary_data and 'choices' in primary_data and primary_data['choices']:
+        content = primary_data['choices'][0].get('message', {}).get('content')
+        if content:
+            flash("Successfully extracted strategies.", "success")
+            app.logger.info("Successfully extracted strategies using xAI API.")
+            return content
 
     # Attempt 2: Fallback Model (bart-large-cnn)
-    app.logger.warning(f"Primary strategy extraction failed: {primary_data}. Falling back to summary model.")
-    flash(f"Primary model failed ({primary_data.get('error', 'Unknown Error')}). Falling back to a secondary model.", "warning")
+    app.logger.warning(f"Primary strategy extraction with xAI failed: {primary_data}. Falling back to summary model.")
+    flash(f"xAI API failed ({primary_data.get('error', 'Unknown Error')}). Falling back to a secondary model.", "warning")
 
     fallback_payload = {"inputs": prompt, "parameters": {"min_length": 20, "max_length": 100}}
     fallback_data = query_huggingface_api(fallback_payload, SUMMARY_API_URL)
@@ -83,7 +135,7 @@ def extract_strategies(summary_text):
             return f"FALLBACK: The primary strategy model is currently unavailable. The following is a response from the backup model:\n\n{fallback_data[0]['generated_text']}"
 
     # Final Failure
-    error_message = f"Primary model failed ({primary_data.get('error', 'Unknown Error')}). Fallback model also failed or returned invalid data: {fallback_data}"
+    error_message = f"Primary model (xAI) failed ({primary_data.get('error', 'Unknown Error')}). Fallback model also failed or returned invalid data: {fallback_data}"
     app.logger.error(error_message)
     flash("Error: Both the primary and fallback models failed to extract strategies.", "error")
     return "Could not extract strategies. Both primary and fallback models failed. Please check the logs."
@@ -117,6 +169,7 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
     if username == VALID_USERNAME and password == VALID_PASSWORD:
+        session.clear()  # Clear all session data
         session['logged_in'] = True
         return redirect(url_for('guided_learning'))
     else:
@@ -135,7 +188,7 @@ def learn():
         return redirect(url_for('index'))
     
     # Clean up old temp files
-    for key in ['scraped_text_file', 'summary_file']:
+    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file']:
         if key in session:
             try:
                 os.remove(session[key])
@@ -150,14 +203,21 @@ def learn():
     if 'learning_text' in request.form:
         learning_text = request.form['learning_text']
         app.logger.info(f"Received learning text: {learning_text}")
-        session['original_input'] = learning_text[:5000]  # Reduce to 5,000 chars   
+        session['original_input'] = learning_text[:5000]
     else:
         app.logger.warning("learning_text not in request.form")
         learning_text = ""
         session['original_input'] = ""
     
     scraped_text = ""
-    if re.match(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', learning_text):
+    # Regex to find YouTube video ID from various URL formats
+    youtube_regex = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(?:embed\/)?(?:v\/)?(?:shorts\/)?([\w-]{11})(?:\S+)?'
+    youtube_match = re.match(youtube_regex, learning_text)
+
+    if youtube_match:
+        scraped_text = get_youtube_transcript_with_selenium(learning_text)
+    elif re.match(r'http[s]?://', learning_text):
+        app.logger.info("Non-YouTube URL detected. Scraping page.")
         try:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -169,20 +229,20 @@ def learn():
                 response = client.get(learning_text)
                 response.raise_for_status()
                 soup = BeautifulSoup(response.text, 'html.parser')
-                for script in soup(["script", "style"]):
-                    script.extract()
-                scraped_text = soup.get_text()
-                lines = (line.strip() for line in scraped_text.splitlines())
-                chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-                scraped_text = '\n'.join(chunk for chunk in chunks if chunk)
+                for element in soup(["script", "style", "nav", "footer", "header"]):
+                    element.extract()
+                scraped_text = soup.get_text(separator='\n', strip=True)
         except httpx.HTTPStatusError as e:
             scraped_text = f"Error scraping URL: {e.response.status_code} {e.response.reason_phrase} for url: {e.request.url}"
+            app.logger.error(scraped_text)
         except httpx.RequestError as e:
             scraped_text = f"Error scraping URL: {e}"
+            app.logger.error(scraped_text)
     else:
+        app.logger.info("Plain text input detected.")
         scraped_text = learning_text
 
-        scraped_text = scraped_text[:50000]  # Limit to 50,000 characters for summarization
+    scraped_text = scraped_text[:50000]
 
     with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
         f.write(scraped_text)
@@ -191,13 +251,10 @@ def learn():
     summary_text = ""
     app.logger.info("Starting summarization...")
     try:
-        app.logger.info(f"Text to summarize (first 100 chars): {scraped_text[:100]}")
         if len(scraped_text) > 1024:
-            app.logger.info("Text is long, chunking...")
             text_chunks = chunk_text(scraped_text)
             summaries = []
             for i, chunk in enumerate(text_chunks):
-                app.logger.info(f"Summarizing chunk {i+1}/{len(text_chunks)}")
                 summary_payload = {"inputs": chunk, "parameters": {"min_length": 30, "max_length": 150}}
                 summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
                 if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
@@ -206,13 +263,11 @@ def learn():
                     app.logger.error(f"Could not summarize chunk {i+1}. API response: {summary_data}")
             summary_text = "\n".join(summaries) if summaries else "Could not generate a summary."
         else:
-            app.logger.info("Text is short, summarizing directly...")
             summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
             summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
             if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
                 summary_text = summary_data[0]['summary_text']
             else:
-                app.logger.error(f"Could not summarize text. API response: {summary_data}")
                 summary_text = f"Could not summarize the text. API Response: {summary_data}"
     except Exception as e:
         app.logger.error(f"An error occurred during summarization: {e}", exc_info=True)
@@ -282,18 +337,15 @@ def approve():
 
 @app.route('/clear_session')
 def clear_session():
-    # Clean up old temp files
-    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file']:
+    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file', 'original_input']:
         if key in session:
             try:
-                os.remove(session[key])
-            except OSError:
+                if session[key] and os.path.exists(session[key]):
+                    os.remove(session[key])
+            except (OSError, TypeError):
                 pass
             session.pop(key, None)
-    
-    # Also remove original_input from session, but keep 'logged_in'
-    session.pop('original_input', None)
-
+    session.clear()
     flash('Session cleared!', 'success')
     return redirect(url_for('guided_learning'))
 
@@ -301,6 +353,109 @@ def clear_session():
 def test_route():
     app.logger.info("Test route called!")
     return "Test route called!"
+
+def get_youtube_transcript_with_selenium(url: str) -> str:
+    """
+    Fetches the transcript of a YouTube video using a headless Selenium browser.
+    """
+    app.logger.info(f"Attempting to fetch transcript for {url} using Selenium.")
+    app.logger.info(f"Running get_youtube_transcript_with_selenium from app.py with user-data-dir=/tmp/chrome-profile-{os.getpid()}")
+    
+    os.environ["WDM_LOCAL"] = "1"
+    os.environ["WDM_DIR"] = "/tmp/wdm"
+    app.logger.info(f"Set WDM_DIR to /tmp/wdm")
+
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-extensions')
+    options.add_argument('--disable-infobars')
+    options.add_argument('--disable-background-networking')
+    options.add_argument(f'--user-data-dir=/tmp/chrome-profile-{os.getpid()}')
+    options.binary_location = "/usr/bin/google-chrome"
+
+    # Configure Bright Data proxy if credentials are available
+    bd_user = os.getenv("BRIGHTDATA_USERNAME")
+    bd_pass = os.getenv("BRIGHTDATA_PASSWORD")
+    bd_host = os.getenv("BRIGHTDATA_HOST")
+    bd_port = os.getenv("BRIGHTDATA_PORT")
+
+    if all([bd_user, bd_pass, bd_host, bd_port]):
+        proxy_url = f"http://{bd_user}:{bd_pass}@{bd_host}:{bd_port}"
+        options.add_argument(f'--proxy-server={proxy_url}')
+        app.logger.info("Using Bright Data proxy for Selenium request.")
+    else:
+        app.logger.warning("Bright Data credentials not configured. Proceeding without proxy.")
+
+    driver = None
+    service = None
+    try:
+        # Pre-cleanup: Kill any existing Chrome/Chromedriver processes
+        for proc in psutil.process_iter(['name', 'pid']):
+            try:
+                if proc.info['name'] in ['chrome', 'chromedriver']:
+                    proc.kill()
+                    app.logger.info(f"Pre-cleanup: Killed process {proc.info['name']} (PID: {proc.info['pid']})")
+            except Exception as e:
+                app.logger.error(f"Pre-cleanup: Error killing process {proc.info['name']}: {e}")
+
+        driver_path = ChromeDriverManager().install()
+        service = ChromeService(driver_path)
+        service.start()
+        driver = webdriver.Chrome(service=service, options=options)
+        
+        driver.get(url)
+        
+        more_actions_button_xpath = "//button[@aria-label='More actions']"
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, more_actions_button_xpath))
+        ).click()
+        
+        show_transcript_button_xpath = "//yt-formatted-string[text()='Show transcript']"
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, show_transcript_button_xpath))
+        ).click()
+        
+        transcript_segment_xpath = "//yt-formatted-string[contains(@class, 'segment-text')]"
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, transcript_segment_xpath))
+        )
+        
+        transcript_elements = driver.find_elements(By.XPATH, transcript_segment_xpath)
+        transcript_text = " ".join([elem.text for elem in transcript_elements])
+        
+        app.logger.info("Successfully fetched transcript with Selenium.")
+        return transcript_text
+        
+    except TimeoutException:
+        app.logger.error("Timeout while waiting for transcript elements.")
+        return "Error: Timed out waiting for transcript to load."
+    except Exception as e:
+        app.logger.error(f"Selenium error: {e}", exc_info=True)
+        return f"Error: Failed to fetch transcript with Selenium: {e}"
+    finally:
+        if driver:
+            try:
+                driver.quit()
+                app.logger.info("Driver quit successfully")
+            except Exception as e:
+                app.logger.error(f"Error quitting driver: {e}")
+        if service:
+            try:
+                service.stop()
+                app.logger.info("Service stopped successfully")
+            except Exception as e:
+                app.logger.error(f"Error stopping service: {e}")
+        # Post-cleanup: Kill any lingering Chrome/Chromedriver processes
+        for proc in psutil.process_iter(['name', 'pid']):
+            try:
+                if proc.info['name'] in ['chrome', 'chromedriver']:
+                    proc.kill()
+                    app.logger.info(f"Post-cleanup: Killed process {proc.info['name']} (PID: {proc.info['pid']})")
+            except Exception as e:
+                app.logger.error(f"Post-cleanup: Error killing process {proc.info['name']}: {e}")
 
 if __name__ == '__main__':
     app.run(debug=True)

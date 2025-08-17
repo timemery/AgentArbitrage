@@ -82,3 +82,34 @@ This log provides a summary of the key development activities for the Agent Arbi
 - **Resolution:** Reverted to `facebook/bart-large-cnn` for scraping and summarization. Optimized `app.py` prompt for actionable rules (e.g., sales rank, profit margin). Plan to test xAI API (free credit) for strategy extraction due to its reasoning capabilities.
 - **Proposed Fix:** Update `app.py` to use `facebook/bart-large-cnn` for summarization, add xAI API fallback for strategy extraction, and refine regex for precise rules. Test 100-200 articles with xAI to align with project goal of failproof arbitrage.
 
+#### 1. Task Complete: xAI API Integration
+
+- **Objective**: To resolve persistent 404 errors from the Hugging Face Inference API for models critical to strategy extraction (e.g., `google/flan-t5-large`).
+
+- Actions Taken
+
+  :
+
+  - The core issue was identified: the specified models were not deployed on the Hugging Face Inference API, meaning the issue was with the service, not our code.
+  - The `app.py` logic was refactored to replace the failing Hugging Face model with the xAI API (`grok-4-latest` model), which is specifically designed for complex reasoning tasks.
+  - A new `query_xai_api` function was created to handle authentication and requests to the new endpoint.
+  - The `extract_strategies` function was updated to use the xAI API as its primary method, ensuring more precise and reliable rule extraction. The existing `facebook/bart-large-cnn` model was retained as a robust fallback.
+  - Based on user feedback, the success message "Successfully extracted strategies using the xAI API." was updated to the more concise "Successfully extracted strategies."
+
+- **Outcome**: The application is no longer subject to the Hugging Face API errors and can now reliably extract high-quality, actionable strategies from text.
+
+#### 2. New Feature: YouTube Transcript Extraction
+
+- **Objective**: To expand the application's data analysis capabilities to include spoken content from YouTube videos.
+
+- Actions Taken
+
+  :
+
+  - The `youtube-transcript-api` library was identified as a lightweight and effective solution and was added to the project's dependencies.
+  - The `learn` route in `app.py` was significantly enhanced. It now uses a regular expression to detect a wide range of YouTube URL formats.
+  - If a YouTube URL is submitted, the application now bypasses the standard web scraper and instead calls the new library to fetch the video's full transcript.
+  - The extracted transcript text is then seamlessly passed into the existing pipeline for summarization and strategy analysis.
+  - The standard HTML scraping logic is preserved as the default behavior for all non-YouTube URLs.
+
+- **Outcome**: This new feature dramatically increases the scope of content the application can analyze, unlocking a major source of valuable information for arbitrage strategies.
