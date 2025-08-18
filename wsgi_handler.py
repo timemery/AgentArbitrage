@@ -20,7 +20,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 load_dotenv('/var/www/agentarbitrage/.env')
 
-logging.getLogger('app').info(f"Loaded app.py from /var/www/agentarbitrage/app.py at {os.getpid()}")
+logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitrage/wsgi_handler.py at {os.getpid()}")
 
 app = Flask(__name__)
 
@@ -403,7 +403,7 @@ def get_youtube_transcript_with_selenium(url: str) -> str:
             except Exception as e:
                 app.logger.error(f"Pre-cleanup: Error killing process {proc.info['name']}: {e}")
 
-        driver_path = ChromeDriverManager().install()
+        driver_path = "/usr/local/bin/chromedriver"
         service = ChromeService(driver_path)
         service.start()
         driver = webdriver.Chrome(service=service, options=options)
