@@ -97,12 +97,11 @@ try:
 
     def extract_strategies(summary_text):
         # Using a triple-quoted f-string for better readability and to avoid escaping quotes.
-        prompt = f"""From the following text, extract the key strategies and parameters for online book arbitrage.
+        prompt = f'''From the following text, extract the key strategies and parameters for online book arbitrage.
 Present them as a list of rules. For example: "Sales rank between 100,000 and 500,000".
 
 Text:
-{summary_text}
-"""
+{summary_text}'''
         xai_payload = {
             "messages": [{"role": "system", "content": "You are an expert in online book arbitrage. Your task is to extract key strategies and parameters from the provided text and present them as a list of clear, actionable rules."}, {"role": "user", "content": prompt}],
             "model": "grok-4-latest", "stream": False, "temperature": 0.2

@@ -96,13 +96,7 @@ try:
                 return {"error": str(e)}
 
     def extract_strategies(summary_text):
-        # Using a triple-quoted f-string for better readability and to avoid escaping quotes.
-        prompt = f"""From the following text, extract the key strategies and parameters for online book arbitrage.
-Present them as a list of rules. For example: "Sales rank between 100,000 and 500,000".
-
-Text:
-{summary_text}
-"""
+        prompt = f"From the following text, extract the key strategies and parameters for online book arbitrage. Present them as a list of rules. For example: \"Sales rank between 100,000 and 500,000\".\n\nText:\n{summary_text}"
         xai_payload = {
             "messages": [{"role": "system", "content": "You are an expert in online book arbitrage. Your task is to extract key strategies and parameters from the provided text and present them as a list of clear, actionable rules."}, {"role": "user", "content": prompt}],
             "model": "grok-4-latest", "stream": False, "temperature": 0.2
@@ -145,8 +139,9 @@ Text:
         if current_chunk:
             chunks.append(current_chunk)
         return chunks
-
+# get_youtube_transcript_with_selenium function STARTS
     def get_youtube_transcript_with_selenium(url: str) -> str:
+# but the actual start of the function is here:
         app.logger.info(f"Attempting to fetch transcript for {url} using Selenium.")
 
         # Use a managed temporary directory for the user profile.
@@ -203,6 +198,7 @@ Text:
                     driver.quit()
                 if service:
                     service.stop()
+# get_youtube_transcript_with_selenium function ENDS
 
     # --- Flask Routes ---
 
@@ -224,7 +220,7 @@ Text:
     @app.route('/guided_learning')
     def guided_learning():
         if session.get('logged_in'):
-            return render_template('guided_learning.html')
+            return render_template('guided_learning.html', app_version="v2.0_debug_test")
         else:
             return redirect(url_for('index'))
 
@@ -271,8 +267,7 @@ Text:
                         summaries.append(summary_data[0]['summary_text'])
                     else:
                         app.logger.error(f"Could not summarize chunk {i+1}. API response: {summary_data}")
-                # Fixed bug: was using "\\n" which is a literal backslash-n, not a newline.
-                summary_text = "\n".join(summaries) if summaries else "Could not generate a summary."
+                summary_text = "\\n".join(summaries) if summaries else "Could not generate a summary."
             else:
                 summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
                 summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
