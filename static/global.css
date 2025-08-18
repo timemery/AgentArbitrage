@@ -18,8 +18,9 @@ body {
 /* Animated Gradient Background - apply to body */
 body.gradient-background {
   background: linear-gradient(295deg,#001028,#003852,#012b50);
+/*   background: linear-gradient(295deg,#001028,#003852,#012b50);  */
   background-size: 180% 180%;
-  animation: gradient-animation 30s ease infinite;
+  animation: gradient-animation 20s ease infinite;
 }
 
 @keyframes gradient-animation {
@@ -40,7 +41,7 @@ body.home-background::before {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.25;
+    opacity: 0.10;
     z-index: -1; /* Place it behind the content */
 }
 

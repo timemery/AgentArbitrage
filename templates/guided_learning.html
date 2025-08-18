@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
 </head>
 <body class="gradient-background">
+    <p style="color:red; font-weight:bold;">Code Version: {{ app_version }}</p>
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
