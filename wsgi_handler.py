@@ -147,15 +147,14 @@ Text:
         return chunks
 
     def get_youtube_transcript_with_selenium(url: str) -> str:
-        app.logger.info(f"Attempting to fetch transcript for {url} using Selenium.")
+        app.logger.info(f"Attempting to fetch transcript for {url} using Selenium with a hard-coded driver path.")
 
-        # Use a managed temporary directory for the user profile.
-        # This directory and its contents will be automatically removed when the 'with' block is exited.
+        # Using a hard-coded path is more stable in a server environment than ChromeDriverManager.
+        CHROME_DRIVER_PATH = "/var/www/agentarbitrage/.wdm/drivers/chromedriver/linux64/139.0.7258.68/chromedriver-linux64/chromedriver"
+
         with tempfile.TemporaryDirectory() as user_data_dir:
             app.logger.info(f"Using managed temporary user-data-dir: {user_data_dir}")
 
-            os.environ["WDM_LOCAL"] = "1"
-            os.environ["WDM_DIR"] = "/tmp/wdm"
             options = webdriver.ChromeOptions()
             options.add_argument('--headless')
             options.add_argument('--no-sandbox')
@@ -167,8 +166,8 @@ Text:
             driver = None
             service = None
             try:
-                driver_path = ChromeDriverManager().install()
-                service = ChromeService(driver_path)
+                # We use the direct, hard-coded path to the executable.
+                service = ChromeService(executable_path=CHROME_DRIVER_PATH)
                 driver = webdriver.Chrome(service=service, options=options)
 
                 driver.get(url)
