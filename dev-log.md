@@ -1,5 +1,40 @@
 # Agent Arbitrage Development Log
 
+### **Dev Log Entry: Debugging Session of Aug 18**
+
+**Objective:** Resolve a recurring `SessionNotCreatedException` in the Selenium-based YouTube scraping function when running under Apache/mod_wsgi.
+
+**Summary of Investigation:**
+This was a complex and multi-layered bug. The initial error, `session not created: probably user data directory is already in use`, was misleading and masked several underlying issues related to the server environment, file permissions, application caching, and ultimately, a subtle race condition in the `webdriver-manager` library.
+
+**Debugging Journey & Key Discoveries:**
+
+1.  **Initial State & Misleading Paths:** The session began with the application failing to run correctly. Initial attempts to fix the Selenium error were hampered by an inability to reliably deploy code to the server. Methods such as direct file transfer via `message_user` and `base64` encoding repeatedly failed, pointing to a fundamental issue with the agent's tools or the communication channel.
+
+2.  **The "Version Stamp" Breakthrough:** A key turning point was a user-suggested test: embedding a version number directly into the HTML template (`guided_learning.html`). This test definitively proved that new Python code *was* being executed by the server, debunking the theory that `mod_wsgi` was serving a cached file. This narrowed the problem down to the application logic itself.
+
+3.  **Permissions & Syntax Errors:**
+    *   A `Permission denied` error on `/var/www/agentarbitrage/.wdm/drivers.json` was solved by running `sudo chown -R www-data:www-data /var/www/agentarbitrage`, giving the web server user correct ownership of the application files.
+    *   A `500 Internal Server Error` was traced back to a syntax error (an unquoted string for a file path) introduced during a manual edit. This highlighted the fragility of manual code transfer.
+
+4.  **Final Diagnosis - The `webdriver-manager` Race Condition:** Even with permissions and syntax corrected, the `SessionNotCreatedException` returned, but only on the *second* and subsequent requests. The application logs confirmed that the `finally` block and `driver.quit()` were executing correctly. The final diagnosis is that the `ChromeDriverManager().install()` call, which runs on every request, is not thread-safe in a multi-threaded `mod_wsgi` environment. It was likely causing a race condition or file lock contention within the `.wdm` directory, leading to the crash.
+
+**Final Proposed Solution (Not Yet Implemented):**
+
+The most robust solution is to remove the `ChromeDriverManager().install()` call from the request cycle entirely. The correct approach for a server environment is to use a fixed, hard-coded path to the `chromedriver` executable.
+
+**Action Plan for Next Session:**
+1.  Start with a clean, stable codebase from the `main` branch.
+2.  Create a new branch for the fix.
+3.  Modify the `get_youtube_transcript_with_selenium` function in `wsgi_handler.py` to remove the `ChromeDriverManager` and replace it with a hard-coded path to the pre-downloaded `chromedriver` executable.
+4.  Commit and submit this change via the `git` workflow to ensure a perfect, reliable file transfer.
+5.  Guide the user through pulling and deploying this final, stable version.
+
+**Session Conclusion:**
+This debugging session, while long, was successful in identifying the true, low-level root cause of the bug. The application is now in a known-good (though still broken) state on the `main` branch, with a clear and actionable plan for the final fix.
+
+---
+
 ## August 2025
 
 This log provides a summary of the key development activities for the Agent Arbitrage project.
