@@ -1,11 +1,12 @@
+import sys
+import logging
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import httpx
 from bs4 import BeautifulSoup
 import re
 import json
 from dotenv import load_dotenv
-import os
-import logging
 import tempfile
 import time
 import requests
@@ -18,16 +19,18 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-load_dotenv('/var/www/agentarbitrage/.env')
 
+log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
+logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.getLogger('app').info(f"Starting wsgi_handler.py from /var/www/agentarbitrage/wsgi_handler.py")
+logging.getLogger('app').info(f"Python version: {sys.version}")
+logging.getLogger('app').info(f"Python path: {sys.path}")
+
+load_dotenv('/var/www/agentarbitrage/.env')
 logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitrage/wsgi_handler.py at {os.getpid()}")
 
 app = Flask(__name__)
-
-# Configure logging
-log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
-logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-app.secret_key = 'supersecretkey'  # It's important to set a secret key for sessions
+app.secret_key = 'supersecretkey'
 
 # --- Hugging Face API Configuration ---
 HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
@@ -356,16 +359,25 @@ def test_route():
     app.logger.info("Test route called!")
     return "Test route called!"
 
+# new shit just added below (updated)
 def get_youtube_transcript_with_selenium(url: str) -> str:
     """
     Fetches the transcript of a YouTube video using a headless Selenium browser.
     """
     app.logger.info(f"Attempting to fetch transcript for {url} using Selenium.")
-    app.logger.info(f"Running get_youtube_transcript_with_selenium from app.py with user-data-dir=/tmp/chrome-profile-{os.getpid()}")
     
     os.environ["WDM_LOCAL"] = "1"
     os.environ["WDM_DIR"] = "/tmp/wdm"
     app.logger.info(f"Set WDM_DIR to /tmp/wdm")
+
+    profile_dir = f"/tmp/chrome-profile-{os.getpid()}-{int(time.time())}"
+    app.logger.info(f"Running get_youtube_transcript_with_selenium with user-data-dir={profile_dir}")
+    
+    # Configure Bright Data proxy if credentials are available
+    bd_user = os.getenv("BRIGHTDATA_USERNAME")
+    bd_pass = os.getenv("BRIGHTDATA_PASSWORD")
+    bd_host = os.getenv("BRIGHTDATA_HOST")
+    bd_port = os.getenv("BRIGHTDATA_PORT")
 
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
@@ -375,14 +387,8 @@ def get_youtube_transcript_with_selenium(url: str) -> str:
     options.add_argument('--disable-extensions')
     options.add_argument('--disable-infobars')
     options.add_argument('--disable-background-networking')
-    options.add_argument(f'--user-data-dir=/tmp/chrome-profile-{os.getpid()}')
+    options.add_argument(f'--user-data-dir={profile_dir}')
     options.binary_location = "/usr/bin/google-chrome"
-
-    # Configure Bright Data proxy if credentials are available
-    bd_user = os.getenv("BRIGHTDATA_USERNAME")
-    bd_pass = os.getenv("BRIGHTDATA_PASSWORD")
-    bd_host = os.getenv("BRIGHTDATA_HOST")
-    bd_port = os.getenv("BRIGHTDATA_PORT")
 
     if all([bd_user, bd_pass, bd_host, bd_port]):
         proxy_url = f"http://{bd_user}:{bd_pass}@{bd_host}:{bd_port}"
@@ -394,6 +400,7 @@ def get_youtube_transcript_with_selenium(url: str) -> str:
     driver = None
     service = None
     try:
+        os.makedirs(profile_dir, exist_ok=True)
         # Pre-cleanup: Kill any existing Chrome/Chromedriver processes
         for proc in psutil.process_iter(['name', 'pid']):
             try:
@@ -450,6 +457,12 @@ def get_youtube_transcript_with_selenium(url: str) -> str:
                 app.logger.info("Service stopped successfully")
             except Exception as e:
                 app.logger.error(f"Error stopping service: {e}")
+        if os.path.exists(profile_dir):
+            try:
+                shutil.rmtree(profile_dir)
+                app.logger.info(f"Removed profile directory: {profile_dir}")
+            except Exception as e:
+                app.logger.error(f"Error removing profile directory {profile_dir}: {e}")
         # Post-cleanup: Kill any lingering Chrome/Chromedriver processes
         for proc in psutil.process_iter(['name', 'pid']):
             try:

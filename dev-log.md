@@ -1,5 +1,40 @@
 # Agent Arbitrage Development Log
 
+### **Dev Log Entry: Debugging Session of Aug 18**
+
+**Objective:** Resolve a recurring `SessionNotCreatedException` in the Selenium-based YouTube scraping function when running under Apache/mod_wsgi.
+
+**Summary of Investigation:**
+This was a complex and multi-layered bug. The initial error, `session not created: probably user data directory is already in use`, was misleading and masked several underlying issues related to the server environment, file permissions, application caching, and ultimately, a subtle race condition in the `webdriver-manager` library.
+
+**Debugging Journey & Key Discoveries:**
+
+1.  **Initial State & Misleading Paths:** The session began with the application failing to run correctly. Initial attempts to fix the Selenium error were hampered by an inability to reliably deploy code to the server. Methods such as direct file transfer via `message_user` and `base64` encoding repeatedly failed, pointing to a fundamental issue with the agent's tools or the communication channel.
+
+2.  **The "Version Stamp" Breakthrough:** A key turning point was a user-suggested test: embedding a version number directly into the HTML template (`guided_learning.html`). This test definitively proved that new Python code *was* being executed by the server, debunking the theory that `mod_wsgi` was serving a cached file. This narrowed the problem down to the application logic itself.
+
+3.  **Permissions & Syntax Errors:**
+    *   A `Permission denied` error on `/var/www/agentarbitrage/.wdm/drivers.json` was solved by running `sudo chown -R www-data:www-data /var/www/agentarbitrage`, giving the web server user correct ownership of the application files.
+    *   A `500 Internal Server Error` was traced back to a syntax error (an unquoted string for a file path) introduced during a manual edit. This highlighted the fragility of manual code transfer.
+
+4.  **Final Diagnosis - The `webdriver-manager` Race Condition:** Even with permissions and syntax corrected, the `SessionNotCreatedException` returned, but only on the *second* and subsequent requests. The application logs confirmed that the `finally` block and `driver.quit()` were executing correctly. The final diagnosis is that the `ChromeDriverManager().install()` call, which runs on every request, is not thread-safe in a multi-threaded `mod_wsgi` environment. It was likely causing a race condition or file lock contention within the `.wdm` directory, leading to the crash.
+
+**Final Proposed Solution (Not Yet Implemented):**
+
+The most robust solution is to remove the `ChromeDriverManager().install()` call from the request cycle entirely. The correct approach for a server environment is to use a fixed, hard-coded path to the `chromedriver` executable.
+
+**Action Plan for Next Session:**
+1.  Start with a clean, stable codebase from the `main` branch.
+2.  Create a new branch for the fix.
+3.  Modify the `get_youtube_transcript_with_selenium` function in `wsgi_handler.py` to remove the `ChromeDriverManager` and replace it with a hard-coded path to the pre-downloaded `chromedriver` executable.
+4.  Commit and submit this change via the `git` workflow to ensure a perfect, reliable file transfer.
+5.  Guide the user through pulling and deploying this final, stable version.
+
+**Session Conclusion:**
+This debugging session, while long, was successful in identifying the true, low-level root cause of the bug. The application is now in a known-good (though still broken) state on the `main` branch, with a clear and actionable plan for the final fix.
+
+---
+
 ## August 2025
 
 This log provides a summary of the key development activities for the Agent Arbitrage project.
@@ -183,4 +218,170 @@ This log provides a summary of the key development activities for the Agent Arbi
 3. Verify the full application loads.
 4. Instruct the user to trigger the Selenium scraping function.
 5. Analyze the resulting `app.log` traceback to diagnose and fix the original bug.
+
+### Dev Log Entry: August 20, 2025 (Update 7)
+
+**Objective**: Resolve 500 error and restore core functionality of Agent Arbitrage Flask application.
+
+**Background**: The application was throwing a 500 error due to a misconfigured WSGI setup. Initial logs indicated that wsgi_handler.py did not contain a WSGI application callable, causing mod_wsgi to fail. Additionally, a prior rename of app.py to wsgi_handler.py (to bypass caching issues) and the presence of a wsgi.py file with invalid Apache directives complicated the setup. A syntax error in wsgi_handler.py’s get_youtube_transcript_with_selenium function further hindered progress.
+
+**Struggles and Challenges**:
+
+1. 500 Error Diagnosis
+
+   :
+
+   - Initial error: [Wed Aug 20 17:51:13.169498 2025] [wsgi:error] ... mod_wsgi (pid=122586): Target WSGI script '/var/www/agentarbitrage/wsgi_handler.py' does not contain WSGI application 'application'.
+   - Confirmed wsgi_handler.py contained the full Flask app but lacked the application callable required by mod_wsgi.
+   - Discovered wsgi.py existed, attempting to import app from a non-existent app.py, and included invalid Apache directives (LoadModule, WSGIPythonHome, WSGIPythonPath).
+
+2. File Naming Confusion
+
+   :
+
+   - Previous rename of app.py to wsgi_handler.py was done to address caching issues, but it led to confusion about which file should serve as the WSGI entry point.
+   - Considered reintroducing app.py but avoided it to prevent ripple effects (e.g., updating references in Apache config or other scripts).
+   - Decided to keep wsgi_handler.py as the Flask app and use wsgi.py as the WSGI entry point to maintain existing structure.
+
+3. Syntax Error in wsgi_handler.py
+
+   :
+
+   - The get_youtube_transcript_with_selenium function had a syntax error due to misplaced Bright Data proxy configuration code and a non-comment line (# new shit just added above - this one is not being read as a comment...).
+   - The error caused the function to be incomplete, potentially contributing to runtime issues.
+
+4. Apache Configuration Issues
+
+   :
+
+   - Apache config (agentarbitrage.conf) initially pointed to wsgi_handler.py instead of wsgi.py, causing the 500 error.
+   - Missing LoadModule wsgi_module directive in agentarbitrage.conf, though mod_wsgi was already loaded (evidenced by AH01574: module wsgi_module is already loaded, skipping).
+   - Invalid Apache directives in wsgi.py needed to be moved to agentarbitrage.conf.
+
+5. Testing and Validation Challenges
+
+   :
+
+   - Multiple iterations of curl tests, log checks, and browser tests were required to confirm fixes.
+   - Ensuring the virtual environment (venv) was correctly referenced in WSGIDaemonProcess (python-home=/var/www/agentarbitrage/venv).
+   - Verifying SSL setup and redirects (http to https) in Apache config.
+
+**Actions Taken**:
+
+1. Fixed WSGI Setup
+
+   :
+
+   - Updated 
+
+     wsgi.py
+
+      to:
+
+     python
+
+     `import sys import os sys.path.insert(0, '/var/www/agentarbitrage') from wsgi_handler import app as application`
+
+     This correctly imports the Flask app from 
+
+     wsgi_handler.py
+
+      and exposes the 
+
+     application
+
+      callable.
+
+   - Removed invalid Apache directives from wsgi.py (LoadModule, WSGIPythonHome, WSGIPythonPath).
+
+2. Corrected wsgi_handler.py Syntax
+
+   :
+
+   - Replaced the get_youtube_transcript_with_selenium function (from # new shit just added below to just before if __name__ == '__main__':) with a corrected version, consolidating proxy configuration and cleanup logic.
+   - Preserved if __name__ == '__main__': app.run(debug=True) for local testing.
+
+3. Updated Apache Config
+
+   :
+
+   - Modified 
+
+     /etc/apache2/sites-available/agentarbitrage.conf
+
+      to:
+
+     - Ensure WSGIScriptAlias / /var/www/agentarbitrage/wsgi.py.
+     - Add LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so to guarantee mod_wsgi loading.
+     - Retain existing WSGIDaemonProcess and WSGIProcessGroup for virtual environment and path setup.
+
+   - Ran sudo apache2ctl configtest and sudo systemctl restart apache2 to apply changes.
+
+4. Tested Application
+
+   :
+
+   - Ran curl -I https://localhost --insecure and curl https://localhost --insecure on the server, confirming HTTP 200 and homepage rendering.
+   - Ran curl -I https://agentarbitrage.co --insecure and curl https://agentarbitrage.co --insecure from a Mac, confirming identical results.
+   - Visited https://agentarbitrage.co in a browser, logged in with tester/OnceUponaBurgerTree-12monkeys, submitted https://youtu.be/YaF5JRqUm3c?si=8Qu5NVIz_3odJOSG, and reached /results.
+
+5. Checked Logs
+
+   :
+
+   - Reviewed /var/log/apache2/agentarbitrage_error.log, /var/log/apache2/error.log, and /var/www/agentarbitrage/app.log.
+   - Confirmed WSGI initialization and Python path setup in logs.
+   - Identified new error in /results: Service /usr/local/bin/chromedriver unexpectedly exited. Status code was: 1.
+
+**Current Status**:
+
+- Homepage (https://agentarbitrage.co) is accessible, and login works, resolving the 500 error.
+- Submission of a YouTube URL (https://youtu.be/YaF5JRqUm3c?si=8Qu5NVIz_3odJOSG) reaches /results, but transcript extraction fails due to a ChromeDriver error.
+- Logs show successful API calls to Hugging Face and xAI, indicating summarization and strategy extraction are attempted, but the Selenium error prevents transcript retrieval.
+
+**Next Steps**:
+
+- Resolve ChromeDriver Error
+
+  :
+
+  - Investigate why /usr/local/bin/chromedriver exits with status code 1.
+  - Verify ChromeDriver installation, version compatibility with Chrome, and permissions.
+  - Check if Bright Data proxy credentials are configured (BRIGHTDATA_USERNAME, etc.) or if they’re needed to avoid YouTube blocks.
+
+- Test Full Workflow
+
+  :
+
+  - Re-test YouTube URL submission after fixing ChromeDriver.
+  - Confirm transcript extraction, summarization, and strategy extraction on /results.
+
+- Evaluate Transcript Rules
+
+  :
+
+  - Once transcript extraction works, assess if extracted rules are actionable for book arbitrage.
+
+- Check Bright Data Proxy
+
+  :
+
+  - Determine if proxy is required for reliable YouTube scraping.
+
+- Update Repository
+
+  :
+
+  - Commit changes to wsgi.py, wsgi_handler.py, and agentarbitrage.conf.
+  - Push to Git: git add wsgi.py wsgi_handler.py; git commit -m "Fixed WSGI setup and syntax error"; git push origin main.
+
+**Lessons Learned**:
+
+- Separating the Flask app (wsgi_handler.py) from the WSGI entry point (wsgi.py) is critical for mod_wsgi.
+- Apache directives must reside in config files, not Python scripts.
+- Syntax errors in critical functions (e.g., get_youtube_transcript_with_selenium) can be subtle and require careful validation.
+- Comprehensive logging (app.log, Apache logs) is essential for debugging.
+- Avoiding unnecessary file renames prevents configuration drift and reduces risk of breaking references.
+
+**Timestamp**: August 20, 2025, 19:18 EDT
 
