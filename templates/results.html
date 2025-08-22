@@ -1,52 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Results</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
-</head>
-<body class="gradient-background">
-    <div class="container">
-        <h1>Analysis Results</h1>
-        
-        <div class="result-section">
-            <h2>Original Input</h2>
-            <div class="content">
-                <p>{{ original_input }}</p>
-            </div>
-        </div>
-        
-        <div class="result-section">
-            <h2>Scraped Text</h2>
-            <div class="content">
-                <p>{{ scraped_text }}</p>
-            </div>
-        </div>
-        
-        <form action="/approve" method="post">
-            <div class="result-section">
-                <h2>AI-Generated Summary (Editable)</h2>
-                <textarea name="approved_summary">{{ summary }}</textarea>
-            </div>
-
-            <div class="result-section">
-                <h2>Extracted Strategies (Editable)</h2>
-                <textarea name="approved_strategies">{{ extracted_strategies }}</textarea>
-            </div>
-
-            <div style="text-align: right; margin-top: 10px;">
-                <button type="submit">Approve</button>
-            </div>
-        </form>
-
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="{{ url_for('guided_learning') }}">Back to Guided Learning</a>
+{% extends "layout.html" %}
+{% block title %}Analysis Results - Agent Arbitrage{% endblock %}
+{% block content %}
+    <h1>Analysis Results</h1>
+    
+    <div class="result-section">
+        <h2>Original Input</h2>
+        <div class="content">
+            <p>{{ original_input }}</p>
         </div>
     </div>
-</body>
-</html>
+    
+    <div class="result-section">
+        <h2>Scraped Text</h2>
+        <div class="content">
+            <p>{{ scraped_text }}</p>
+        </div>
+    </div>
+    
+    <form action="/approve" method="post">
+        <div class="result-section">
+            <h2>AI-Generated Summary (Editable)</h2>
+            <textarea name="approved_summary">{{ summary }}</textarea>
+        </div>
+
+        <div class="result-section">
+            <h2>Extracted Strategies (Editable)</h2>
+            <textarea name="approved_strategies">{{ extracted_strategies }}</textarea>
+        </div>
+
+        <div style="text-align: right; margin-top: 10px;">
+            <button type="submit">Approve</button>
+        </div>
+    </form>
+{% endblock %}

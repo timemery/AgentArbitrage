@@ -1,52 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guided Learning</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
-</head>
-<body class="gradient-background">
-    <p style="color:red; font-weight:bold;">Code Version: {{ app_version }}</p>
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flashes">
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-        <h1>Guided Learning</h1>
-        <form action="{{ url_for('learn') }}" method="post">
-            <textarea name="learning_text" placeholder="Paste a URL or enter text-based guidance..."></textarea>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <button type="button" class="clear-session" onclick="window.location.href='/clear_session'">Clear Session</button>
-                <div id="progress" class="progress-container">
-                    <div class="spinner"></div>
-                    <p>Processing...</p>
-                </div>
-                <button type="submit" class="submit">Submit for Analysis</button>
+{% extends "layout.html" %}
+{% block title %}Guided Learning - Agent Arbitrage{% endblock %}
+{% block content %}
+    <h1>Guided Learning</h1>
+    <form action="{{ url_for('learn') }}" method="post">
+        <textarea name="learning_text" placeholder="Paste a URL or enter text-based guidance..."></textarea>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" class="clear-session" onclick="window.location.href='/clear_session'">Clear Session</button>
+            <div id="progress" class="progress-container">
+                <div class="spinner"></div>
+                <p>Processing...</p>
             </div>
-        </form>
-    </div>
+            <button type="submit" class="submit">Submit for Analysis</button>
+        </div>
+    </form>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const submitButton = document.querySelector('button.submit');
             const clearButton = document.querySelector('button.clear-session');
             const progress = document.getElementById('progress');
+            const textarea = document.querySelector('textarea[name="learning_text"]');
+
             form.addEventListener('submit', function() {
                 progress.style.display = 'block';
                 submitButton.disabled = true;
                 clearButton.disabled = true;
             });
+
+            textarea.addEventListener('keydown', function(event) {
+                // Submit on Enter, but allow newlines with Shift+Enter
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault(); // Prevent default Enter behavior (newline)
+                    form.submit();
+                }
+            });
         });
     </script>
-</body>
-</html>
+{% endblock %}

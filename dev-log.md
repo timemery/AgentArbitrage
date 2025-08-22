@@ -385,3 +385,55 @@ This log provides a summary of the key development activities for the Agent Arbi
 
 **Timestamp**: August 20, 2025, 19:18 EDT
 
+---
+
+### Dev Log Entry: August 22, 2025 - Postponing YouTube Scraper Fix
+
+**Objective:** Resolve the final errors in the YouTube transcript scraping functionality.
+
+**Summary of Investigation:**
+After resolving authentication and proxy configuration issues, the application was successfully refactored to use the `youtube-transcript-api` library. However, a persistent `AttributeError` (`'YouTubeTranscriptApi' object has no attribute 'list_transcripts'`) blocked progress.
+
+**Debugging Journey:**
+1.  **Initial `AttributeError`:** The first error indicated that `get_transcript` was not a valid method. The code was refactored to use the documented `list_transcripts` method.
+2.  **Second `AttributeError`:** The error persisted, but changed to indicate `list_transcripts` was also not a valid method. This led to the discovery that the API class needed to be instantiated first (`api = YouTubeTranscriptApi()`).
+3.  **Third `AttributeError`:** A final error (`'YouTubeTranscriptApi' object has no attribute 'list_transcripts'`) occurred after the instantiation fix. This was traced to a typo in the method name (`list_transcripts` instead of the correct `list`).
+4.  **Final State & Discrepancy:** A final version of the code, correcting the method to `api.list()`, was provided to the user. However, the user reported that this correct code was already on their server, yet the error persisted. A significant and unresolved discrepancy exists between the code I am able to read from the environment and the code the user reports is running on the server.
+
+**Decision:**
+Due to the persistent and unresolvable nature of this bug, and the risk of spending more time without progress, the user has made the decision to **postpone this feature**. The current (non-functional) YouTube transcript code will remain, but we will move on to other development tasks to keep the project on track.
+
+**Action Plan:**
+1.  Document this issue in `dev-log.md`.
+2.  Add a "Postponed Tasks" section to the main project plan to ensure this is not forgotten.
+3.  Proceed with the next development task as defined by the user.
+
+---
+
+### Dev Log Entry: August 22, 2025 - UX, Navigation, and Strategy Persistence
+
+**Objective:** Transition the application from a set of disconnected tools into a more cohesive web application by implementing core UX features and the ability to save and view approved strategies.
+
+**Summary of Features and Fixes:**
+
+1.  **Admin Navigation and Layout:**
+    *   **New Base Template:** Created a `templates/layout.html` file to serve as a consistent base for all admin-facing pages.
+    *   **Persistent Navigation:** Added a navigation bar to the layout with links to "Guided Learning," "Strategies," and "Logout."
+    *   **Template Refactoring:** Updated `guided_learning.html` and `results.html` to extend the new base layout, unifying the application's look and feel.
+    *   **Logout Functionality:** Implemented a `/logout` route that successfully clears the user's session and redirects to the login page.
+
+2.  **User Experience (UX) Improvements:**
+    *   **"Enter-to-Submit":** Added a JavaScript listener to the Guided Learning page so that pressing "Enter" in the textarea submits the form for analysis.
+    *   **Results Page Layout:** Adjusted the CSS in `static/global.css` to improve the layout of the results page. The non-editable "Original Input" and "Scraped Text" boxes are now fixed-height with scrollbars, while the editable "Summary" and "Strategies" textareas have a larger default size for easier editing.
+    *   **API Timeout:** Increased the timeout for the xAI API call from 30 to 90 seconds to handle longer processing times for strategy extraction from large texts.
+    *   **AI Fallback Behavior:** Modified the prompt sent to the xAI model to prevent it from providing generic, non-contextual advice when it cannot find relevant strategies in the provided text.
+
+3.  **Strategy Persistence:**
+    *   **Saving Strategies:** Implemented logic in the `/approve` route to save the content of the "Extracted Strategies" textarea. The strategies are treated as a newline-separated list, deduplicated against existing strategies, and saved to `strategies.json`.
+    *   **Displaying Strategies:** The `/strategies` route now reads the `strategies.json` file and passes the list of saved strategies to the `strategies.html` template for display.
+    *   **Bug Fixes:**
+        *   Resolved a `PermissionError` by changing the `strategies.json` file path from relative to absolute, ensuring the web server process always writes to the correct directory.
+        *   Diagnosed and fixed a display issue on the strategies page by changing the rendering from an `<ol>` to a series of `<p>` tags.
+
+**Current Status:**
+The core admin workflow is now significantly improved. An admin can log in, submit text for analysis, approve the results, have those results saved permanently, and view the collection of all saved results. The application has a consistent navigation structure and a more polished user experience.

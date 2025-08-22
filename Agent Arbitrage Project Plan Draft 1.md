@@ -94,3 +94,14 @@
 *   **"Guided Learning":** The AI's learning will be guided by the user, who will provide resources and approve the extracted rules.
 *   **User Interface:** The user interface will be developed with a focus on usability and a clear user flow.
 *   **Code Management:** The project will be developed in a separate repository to keep the code clean and organized.
+
+---
+
+## 5. Postponed Tasks
+
+### YouTube Transcript Scraping
+
+*   **Status:** Partially Implemented, Currently Non-Functional.
+*   **Issue:** The feature to extract transcripts from YouTube videos is currently broken. After a lengthy debugging process, the root cause appears to be a persistent, unresolvable bug related to either the `youtube-transcript-api` library, the server environment, or a discrepancy in the code visible to the agent. The feature was refactored from a Selenium-based approach to use the API, but a final `AttributeError` could not be resolved despite the code appearing correct on the server.
+*   **Decision:** To maintain project momentum, the decision has been made to postpone fixing this feature. The non-functional code remains in the repository.
+*   **Next Steps:** This feature should be revisited at a later stage in the project, potentially after major components are complete or if a new approach is discovered.

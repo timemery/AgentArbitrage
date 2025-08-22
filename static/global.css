@@ -97,6 +97,8 @@ textarea {
     color: white;
     border: 1px solid rgba(102, 153, 204, 0.5);
     border-radius: 5px;
+    min-height: 250px;
+    resize: vertical;
 }
 
 /* Dark-transparent treatment for tables/results */
@@ -115,10 +117,13 @@ h2 {
 
 .content {
     background-color: transparent;
-    padding: 15px 0;
+    padding: 15px;
     border-radius: 5px;
     white-space: pre-wrap;
     word-wrap: break-word;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 a {

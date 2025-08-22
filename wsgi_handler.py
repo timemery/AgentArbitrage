@@ -1,6 +1,7 @@
 import sys
 import logging
 import os
+import subprocess
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import httpx
 from bs4 import BeautifulSoup
@@ -9,16 +10,8 @@ import json
 from dotenv import load_dotenv
 import tempfile
 import time
-import requests
-import shutil
-import psutil
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.proxies import GenericProxyConfig
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -31,6 +24,8 @@ logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitr
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
+
+STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
 
 # --- Hugging Face API Configuration ---
 HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
@@ -75,7 +70,7 @@ def query_xai_api(payload):
         "Authorization": f"Bearer {XAI_API_KEY}",
         "Content-Type": "application/json"
     }
-    with httpx.Client(timeout=30.0) as client:
+    with httpx.Client(timeout=90.0) as client:
         try:
             response = client.post(XAI_API_URL, headers=headers, json=payload)
             response.raise_for_status()
@@ -91,6 +86,9 @@ def extract_strategies(summary_text):
     prompt = f"""
     From the following text, extract the key strategies and parameters for online book arbitrage.
     Present them as a list of rules. For example: "Sales rank between 100,000 and 500,000".
+
+    Only use the information from the text provided. Do not add any external knowledge.
+    If the text is not about online book arbitrage or contains no actionable strategies, respond with the single phrase: "No actionable strategies found in the provided text."
 
     Text:
     {summary_text}
@@ -121,29 +119,12 @@ def extract_strategies(summary_text):
             flash("Successfully extracted strategies.", "success")
             app.logger.info("Successfully extracted strategies using xAI API.")
             return content
-
-    # Attempt 2: Fallback Model (bart-large-cnn)
-    app.logger.warning(f"Primary strategy extraction with xAI failed: {primary_data}. Falling back to summary model.")
-    flash(f"xAI API failed ({primary_data.get('error', 'Unknown Error')}). Falling back to a secondary model.", "warning")
-
-    fallback_payload = {"inputs": prompt, "parameters": {"min_length": 20, "max_length": 100}}
-    fallback_data = query_huggingface_api(fallback_payload, SUMMARY_API_URL)
-
-    if isinstance(fallback_data, list) and fallback_data:
-        if 'summary_text' in fallback_data[0]:
-            flash("Fallback model succeeded.", "success")
-            app.logger.info(f"Successfully generated fallback strategies using {SUMMARY_API_URL}.")
-            return f"FALLBACK: The primary strategy model is currently unavailable. The following is a response from the backup model:\n\n{fallback_data[0]['summary_text']}"
-        elif 'generated_text' in fallback_data[0]: # Some models might return this key instead
-            flash("Fallback model succeeded.", "success")
-            app.logger.info(f"Successfully generated fallback strategies using {SUMMARY_API_URL} (generated_text).")
-            return f"FALLBACK: The primary strategy model is currently unavailable. The following is a response from the backup model:\n\n{fallback_data[0]['generated_text']}"
-
-    # Final Failure
-    error_message = f"Primary model (xAI) failed ({primary_data.get('error', 'Unknown Error')}). Fallback model also failed or returned invalid data: {fallback_data}"
+    
+    # If xAI API fails, report the error directly.
+    error_message = f"Strategy extraction failed. The primary model (xAI) returned an error: {primary_data.get('error', 'Unknown Error')}"
     app.logger.error(error_message)
-    flash("Error: Both the primary and fallback models failed to extract strategies.", "error")
-    return "Could not extract strategies. Both primary and fallback models failed. Please check the logs."
+    flash("Error: Could not extract strategies. The primary model failed.", "error")
+    return "Could not extract strategies. Please check the logs for details."
 
 
 def chunk_text(text, chunk_size=512): # Smaller chunks - changed from 1024 to 512
@@ -180,12 +161,39 @@ def login():
     else:
         return 'Invalid credentials', 401
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been successfully logged out.', 'success')
+    return redirect(url_for('index'))
+
 @app.route('/guided_learning')
 def guided_learning():
     if session.get('logged_in'):
         return render_template('guided_learning.html')
     else:
         return redirect(url_for('index'))
+
+@app.route('/strategies')
+def strategies():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    
+    strategies_list = []
+    app.logger.info(f"Attempting to read strategies from: {STRATEGIES_FILE}")
+    if os.path.exists(STRATEGIES_FILE):
+        app.logger.info(f"Strategies file found.")
+        try:
+            with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+                strategies_list = json.load(f)
+            app.logger.info(f"Successfully loaded {len(strategies_list)} strategies.")
+        except (IOError, json.JSONDecodeError) as e:
+            app.logger.error(f"Error reading strategies file: {e}", exc_info=True)
+            flash("Error reading the strategies file.", "error")
+    else:
+        app.logger.warning(f"Strategies file not found at: {STRATEGIES_FILE}")
+
+    return render_template('strategies.html', strategies=strategies_list)
 
 @app.route('/learn', methods=['POST'])
 def learn():
@@ -220,7 +228,7 @@ def learn():
     youtube_match = re.match(youtube_regex, learning_text)
 
     if youtube_match:
-        scraped_text = get_youtube_transcript_with_selenium(learning_text)
+        scraped_text = get_youtube_transcript(learning_text)
     elif re.match(r'http[s]?://', learning_text):
         app.logger.info("Non-YouTube URL detected. Scraping page.")
         try:
@@ -336,8 +344,44 @@ def approve():
     
     app.logger.info("Approved Strategies:")
     app.logger.info(approved_strategies)
+
+    # Save the approved strategies to a file
+    if approved_strategies:
+        try:
+            # Load existing strategies
+            if os.path.exists(STRATEGIES_FILE):
+                with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+                    strategies = json.load(f)
+            else:
+                strategies = []
+            
+            # Add new strategy (or strategies)
+            # Assuming strategies are newline-separated
+            new_strategies = [s.strip() for s in approved_strategies.strip().split('\n') if s.strip()]
+            strategies.extend(new_strategies)
+            
+            # Remove duplicates and save
+            unique_strategies = list(dict.fromkeys(strategies))
+            with open(STRATEGIES_FILE, 'w', encoding='utf-8') as f:
+                json.dump(unique_strategies, f, indent=4)
+            
+            flash(f"{len(new_strategies)} new strategies have been approved and saved.", "success")
+        except Exception as e:
+            app.logger.error(f"Error saving strategies: {e}", exc_info=True)
+            flash("An error occurred while saving the strategies.", "error")
+
+
+    # Clean up the session to prevent cookie size issues
+    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file', 'original_input']:
+        if key in session:
+            try:
+                if session[key] and os.path.exists(session[key]):
+                    os.remove(session[key])
+            except (OSError, TypeError):
+                pass
+            session.pop(key, None)
     
-    # For now, just redirect back to the main app page
+    flash('Strategies approved and session cleared.', 'success')
     return redirect(url_for('guided_learning'))
 
 @app.route('/clear_session')
@@ -359,118 +403,58 @@ def test_route():
     app.logger.info("Test route called!")
     return "Test route called!"
 
-# new shit just added below (updated)
-def get_youtube_transcript_with_selenium(url: str) -> str:
+def get_youtube_transcript(url: str) -> str:
     """
-    Fetches the transcript of a YouTube video using a headless Selenium browser.
+    Fetches the transcript of a YouTube video using the youtube-transcript-api library.
     """
-    app.logger.info(f"Attempting to fetch transcript for {url} using Selenium.")
+    app.logger.info(f"Attempting to fetch transcript for {url} using youtube-transcript-api.")
     
-    os.environ["WDM_LOCAL"] = "1"
-    os.environ["WDM_DIR"] = "/tmp/wdm"
-    app.logger.info(f"Set WDM_DIR to /tmp/wdm")
+    # Regex to find YouTube video ID
+    youtube_regex = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(?:embed\/)?(?:v\/)?(?:shorts\/)?([\w-]{11})(?:\S+)?'
+    match = re.search(youtube_regex, url)
+    if not match:
+        app.logger.error(f"Could not extract YouTube video ID from URL: {url}")
+        return "Error: Could not extract YouTube video ID from URL."
 
-    profile_dir = f"/tmp/chrome-profile-{os.getpid()}-{int(time.time())}"
-    app.logger.info(f"Running get_youtube_transcript_with_selenium with user-data-dir={profile_dir}")
+    video_id = match.group(1)
     
-    # Configure Bright Data proxy if credentials are available
-    bd_user = os.getenv("BRIGHTDATA_USERNAME")
-    bd_pass = os.getenv("BRIGHTDATA_PASSWORD")
-    bd_host = os.getenv("BRIGHTDATA_HOST")
-    bd_port = os.getenv("BRIGHTDATA_PORT")
-
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-extensions')
-    options.add_argument('--disable-infobars')
-    options.add_argument('--disable-background-networking')
-    options.add_argument(f'--user-data-dir={profile_dir}')
-    options.binary_location = "/usr/bin/google-chrome"
-
-    if all([bd_user, bd_pass, bd_host, bd_port]):
-        proxy_url = f"http://{bd_user}:{bd_pass}@{bd_host}:{bd_port}"
-        options.add_argument(f'--proxy-server={proxy_url}')
-        app.logger.info("Using Bright Data proxy for Selenium request.")
-    else:
-        app.logger.warning("Bright Data credentials not configured. Proceeding without proxy.")
-
-    driver = None
-    service = None
     try:
-        os.makedirs(profile_dir, exist_ok=True)
-        # Pre-cleanup: Kill any existing Chrome/Chromedriver processes
-        for proc in psutil.process_iter(['name', 'pid']):
-            try:
-                if proc.info['name'] in ['chrome', 'chromedriver']:
-                    proc.kill()
-                    app.logger.info(f"Pre-cleanup: Killed process {proc.info['name']} (PID: {proc.info['pid']})")
-            except Exception as e:
-                app.logger.error(f"Pre-cleanup: Error killing process {proc.info['name']}: {e}")
+        # --- Bright Data Proxy Configuration ---
+        bd_user = os.getenv("BRIGHTDATA_USERNAME")
+        bd_pass = os.getenv("BRIGHTDATA_PASSWORD")
+        bd_host = os.getenv("BRIGHTDATA_HOST")
 
-        driver_path = "/usr/local/bin/chromedriver"
-        service = ChromeService(driver_path)
-        service.start()
-        driver = webdriver.Chrome(service=service, options=options)
+        proxy_config = None
+        if all([bd_user, bd_pass, bd_host]):
+            proxy_url = f'http://{bd_user}:{bd_pass}@{bd_host}:9222'
+            proxy_config = GenericProxyConfig(
+                http_url=proxy_url,
+                https_url=proxy_url,
+            )
+            app.logger.info(f"Using Bright Data proxy: {bd_host}")
+        else:
+            app.logger.warning("Bright Data credentials not fully configured. Proceeding without proxy.")
+
+        # Create an instance of the API, passing the proxy config if it exists
+        api = YouTubeTranscriptApi(proxy_config=proxy_config)
         
-        driver.get(url)
+        # The method is .list(), not .list_transcripts()
+        transcript_list_obj = api.list(video_id)
+
+        # Find the English transcript
+        transcript = transcript_list_obj.find_transcript(['en'])
         
-        more_actions_button_xpath = "//button[@aria-label='More actions']"
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, more_actions_button_xpath))
-        ).click()
+        # Fetch the transcript data
+        transcript_data = transcript.fetch()
         
-        show_transcript_button_xpath = "//yt-formatted-string[text()='Show transcript']"
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, show_transcript_button_xpath))
-        ).click()
+        # Join the text segments
+        transcript_text = " ".join([item['text'] for item in transcript_data])
         
-        transcript_segment_xpath = "//yt-formatted-string[contains(@class, 'segment-text')]"
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, transcript_segment_xpath))
-        )
-        
-        transcript_elements = driver.find_elements(By.XPATH, transcript_segment_xpath)
-        transcript_text = " ".join([elem.text for elem in transcript_elements])
-        
-        app.logger.info("Successfully fetched transcript with Selenium.")
+        app.logger.info(f"Successfully fetched transcript for video ID: {video_id}")
         return transcript_text
-        
-    except TimeoutException:
-        app.logger.error("Timeout while waiting for transcript elements.")
-        return "Error: Timed out waiting for transcript to load."
     except Exception as e:
-        app.logger.error(f"Selenium error: {e}", exc_info=True)
-        return f"Error: Failed to fetch transcript with Selenium: {e}"
-    finally:
-        if driver:
-            try:
-                driver.quit()
-                app.logger.info("Driver quit successfully")
-            except Exception as e:
-                app.logger.error(f"Error quitting driver: {e}")
-        if service:
-            try:
-                service.stop()
-                app.logger.info("Service stopped successfully")
-            except Exception as e:
-                app.logger.error(f"Error stopping service: {e}")
-        if os.path.exists(profile_dir):
-            try:
-                shutil.rmtree(profile_dir)
-                app.logger.info(f"Removed profile directory: {profile_dir}")
-            except Exception as e:
-                app.logger.error(f"Error removing profile directory {profile_dir}: {e}")
-        # Post-cleanup: Kill any lingering Chrome/Chromedriver processes
-        for proc in psutil.process_iter(['name', 'pid']):
-            try:
-                if proc.info['name'] in ['chrome', 'chromedriver']:
-                    proc.kill()
-                    app.logger.info(f"Post-cleanup: Killed process {proc.info['name']} (PID: {proc.info['pid']})")
-            except Exception as e:
-                app.logger.error(f"Post-cleanup: Error killing process {proc.info['name']}: {e}")
+        app.logger.error(f"Could not fetch transcript for video ID {video_id}: {e}", exc_info=True)
+        return f"Error: Could not retrieve transcript. The video may have transcripts disabled, or an API error occurred: {str(e)}"
 
 if __name__ == '__main__':
     app.run(debug=True)
