@@ -7,19 +7,25 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Saira:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
 </head>
 <body class="gradient-background">
-    <nav class="main-nav">
-        <div class="nav-left">
+    <header class="main-header">
+        <div class="header-brand">
+            <a href="{{ url_for('guided_learning') }}" class="header-logo">
+                <img src="{{ url_for('static', filename='AgentArbitrage.png') }}" alt="Agent Arbitrage Logo">
+            </a>
+            <div class="header-wordmark">AGENT ARBITRAGE</div>
+        </div>
+        <nav class="main-nav">
             <a href="{{ url_for('guided_learning') }}">Guided Learning</a>
             <a href="{{ url_for('strategies') }}">Strategies</a>
-        </div>
-        <div class="nav-right">
+        </nav>
+        <div class="header-logout">
             <a href="{{ url_for('logout') }}">Logout</a>
         </div>
-    </nav>
+    </header>
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

@@ -11,7 +11,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
 </head>
 <body class="gradient-background home-background">
-    <h1 id="agent-arbitrage-h1">AGENT&nbsp;ARBITRAGE</h1>
+    <video autoplay muted loop id="background-video">
+        <source src="{{ url_for('static', filename='AvaSmile.mp4') }}" type="video/mp4">
+    </video>
+    <div class="index-brand">
+        <img src="/static/AgentArbitrage.png" alt="Agent Arbitrage Logo" class="index-logo">
+        <div class="index-wordmark">AGENT ARBITRAGE</div>
+    </div>
     <div class="login-container">
         <button class="login-button" onclick="toggleForm()">Log In</button>
         <form class="login-form" action="/login" method="post">
