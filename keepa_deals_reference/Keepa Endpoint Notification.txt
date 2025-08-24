@@ -1,0 +1,170 @@
+Keepa Endpoint Notification.txt
+
+THIS IS JUST EXPLORATORY NOTES - NOT DIRECTION FOR NOW... 
+
+How to Use Keepa Webhook Endpoint
+Keepa’s webhook endpoint allows real-time notifications for events like token refills or low token thresholds, sent as JSON via HTTP POST to a user-specified HTTPS URL. This is more reliable than parsing headers in Keepa_Deals.py for token management, as it avoids rate-limiting issues (e.g., 429 errors) by proactively notifying your server.
+
+Steps:
+
+Create Webhook Endpoint:
+Use https://webhook.site to generate a free, unique HTTPS URL for testing.
+Copy the URL (e.g., https://webhook.site/12345).
+
+Configure on Keepa:
+Log into keepa.com, navigate to API settings.
+Paste the URL into the “Notification webhook endpoint” field.
+Click “Save”.
+Test Notification:
+Click “Send test notification” to verify setup.
+Check webhook.site for the JSON payload (e.g., token count, event type).
+Integrate in Script:
+For production, set up an HTTPS endpoint (e.g., using Flask in Python) to handle POST requests.
+Example Flask handler
+
+# Chunk 1 starts: Webhook handler (REFERENCE ONLY)
+from flask import Flask, request
+app = Flask(__name__)
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.json
+    print(f"Received: {data}")  # Log token event
+    return '', 200
+# Chunk 1 ends
+
+Analyze Payload:
+Inspect asin_000136068X_log_combined.txt for token-related logs.
+Update Keepa_Deals.py to pause on low-token notifications.
+Utility:
+
+Proactive Token Management: Avoid 429 errors by pausing fetches when tokens are low.
+Automation: Integrate with Discord or email for alerts.
+Reliability: More accurate than header parsing.
+Share:
+
+Webhook.site payload or errors.
+Token refresh plan.
+Notes:
+
+Backup config.json before changes.
+Verify Keepa_Deals_Export.csv for ASINs.
+Check https://github.com/timemery/keepa-deals/security/dependabot.
+If issues arise, share the webhook payload or logs. Great idea to explore this!
+
+-----------------------------------
+
+Actual generated URL: https://webhook.site/ceef202a-dc14-4283-b6be-0467a29334d3
+Added to the form on Keepa
+
+Saved the url, with this result:
+
+"Webhook URL updated!
+Your webhook URL was successfully updated."
+
+then tested it with this result:
+
+"Webhook test
+The server response status code to our test payload was: 200
+
+Note: Only the status code 200 will be interpreted as a success."
+
+Raw coontent displayed at webhook.site test URL:
+
+{"asin":"1449308929","title":"APIs: A Strategy Guide: Creating Channels with Application Programming Interfaces","image":"51RXC8YhjPL.jpg","createDate":7631684,"domainId":1,"notificationDomainId":1,"csvType":0,"trackingNotificationCause":1,"currentPrices":[1984,1454,1369,154741,2499,-1,-1,-1,-1,-1,-1,35,24,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"sentNotificationVia":null,"metaData":"https://www.youtube.com/watch?v=DLzxrzFCyOs","trackingListName":null,"isDrop":null,"coupon":0}
+
+
+##########################################
+
+Thank you for your request to research batch querying of product details for multiple ASINs in a single call using the Keepa API for your `timemery/keepa-deals` project on your MacBook (macOS 10.15, Python 3.11, `/Users/timemery/keepa_api/keepa-deals`, received at 04:34 PM EDT, July 5, 2025). You’re debugging `Keepa_Deals.py` and exploring ways to optimize API calls to reduce token usage and avoid 429 errors. I’ve researched official and unofficial sources to confirm if the Keepa API supports batch requests, keeping the response under 350 words per your preference for minimal, non-technical instructions, adhering to your style guide (inline code, chunk markers, correct case: `Keepa_Deals.py`, `debug_log.txt`).
+
+### Findings
+The Keepa API officially supports batch querying of product details for up to 100 ASINs in a single call, as documented in the Keepa API documentation and community forums. Each ASIN consumes one token, but a single request reduces overhead compared to individual calls. The `keepa` Python library facilitates this via the `api.query()` method, accepting a list of ASINs.
+
+**Official Sources**:
+- **Keepa Documentation**: The `product` endpoint allows a comma-separated list of up to 100 ASINs in the `asin` parameter.[](https://keepaapi.readthedocs.io/en/latest/product_query.html)
+- **Java Framework**: The `getProductRequest` method supports batch requests for up to 100 ASINs.[](https://github.com/keepacom/api_backend/blob/master/src/main/java/com/keepa/api/backend/structs/Request.java)
+- **Python Library**: The `keepa.Keepa.query()` method accepts a list of ASINs, returning a list of product dictionaries.[](https://keepaapi.readthedocs.io/en/latest/product_query.html)
+
+**Unofficial Sources**:
+- **Medium Article**: Confirms batch querying for multiple ASINs, with examples using `api.query(['ASIN1', 'ASIN2'])`.[](https://andrewkushnerov.medium.com/get-amazon-price-history-from-keepa-a313e0fc95bb)
+- **Stack Overflow**: Discusses batch queries with `api.query(asins)`, noting successful retrieval of multiple ASINs.[](https://stackoverflow.com/questions/71640479/i-am-not-able-to-fetch-retrieve-all-the-results-from-keepa-api)
+
+### Implementation
+Update `Keepa_Deals.py` to batch ASINs (e.g., `000136068X`, `0805489878`):
+```python
+# Chunk 1 starts: Batch query example (REFERENCE ONLY)
+import keepa
+api = keepa.Keepa('<YOUR_API_KEY>')
+asins = ['000136068X', '0805489878']
+products = api.query(asins, history=True, offers=20)
+for product in products:
+    print(f"ASIN: {product['asin']}, Title: {product['title']}")
+# Chunk 1 ends
+```
+
+**What to Do**:
+1. Modify `Keepa_Deals.py` to group ASINs in lists (max 100).
+2. Run:
+   ```plaintext
+   # Chunk 2 starts: Test script (REFERENCE ONLY)
+   cd /Users/timemery/keepa_api/keepa-deals
+   source keepa_venv/bin/activate
+   python3 Keepa_Deals.py --no-cache
+   # Chunk 2 ends
+   ```
+3. Check `asin_000136068X_log_combined.txt` for token usage.
+4. Verify `Keepa_Deals_Export.csv`.
+
+**Share**:
+- Log snippet or errors.
+- Token usage from keepa.com.
+
+
+---------- more on the same topic ----------
+
+Thank you for your questions about batch querying the Keepa API’s product endpoint (`https://api.keepa.com/product`) for your `timemery/keepa-deals` project on your MacBook (macOS 10.15, Python 3.11, `/Users/timemery/keepa_api/keepa-deals`, received at 05:06 PM EDT, July 5, 2025). You’re optimizing `Keepa_Deals.py` to fetch multiple ASINs (e.g., `000136068X`, `0805489878`) in a single call and need details on token cost, response structure, and rate-limiting behavior. I’ll address each question based on official Keepa documentation and community sources, keeping the response under 350 words per your preference for minimal, non-technical instructions, adhering to your style guide (inline code, chunk markers, correct case: `Keepa_Deals.py`, `debug_log.txt`).
+
+### Token Cost
+- **Cost**: 1 token per ASIN in a batch request (up to 100 ASINs). Additional tokens may apply for parameters like `offers` (2 extra tokens per ASIN) or `buybox`. No discount for batching; a request for 100 ASINs costs 100 tokens (or more with optional parameters).[](https://keepaapi.readthedocs.io/en/latest/api_methods.html)[](https://discuss.keepa.com/t/request-products/110)
+
+### Response Structure
+- **Format**: The JSON response contains a `products` array, with one dictionary per ASIN. Each dictionary includes keys like `asin`, `title`, `data` (price history), and optional fields (e.g., `stats`, `offers`).
+- **Example**:
+  ```json
+  # Chunk 1 starts: Example response (REFERENCE ONLY)
+  {
+    "products": [
+      {
+        "asin": "000136068X",
+        "title": "Example Book 1",
+        "data": {"NEW": [1984, 1454], "NEW_time": ["2025-07-01", "2025-07-02"]}
+      },
+      {
+        "asin": "0805489878",
+        "title": "Example Book 2",
+        "data": {"NEW": [2499, 2399], "NEW_time": ["2025-07-01", "2025-07-02"]}
+      }
+    ],
+    "tokensLeft": 137,
+    "refillIn": 300000
+  }
+  # Chunk 1 ends
+  ```
+  Invalid ASINs return no data but consume tokens.[](https://keepaapi.readthedocs.io/en/latest/api_methods.html)[](https://keepaapi.readthedocs.io/en/latest/product_query.html)
+
+### Rate Limiting Behavior
+- **Behavior**: A batch request (up to 100 ASINs) is treated as a single HTTP request, subject to Keepa’s token-based rate limiting (tokens refill 5% hourly, expire after 60 minutes). No per-second/minute limits are documented, but a 429 error (`NOT_ENOUGH_TOKEN`) occurs if tokens are depleted. Safe frequency: 1–2 batch requests per minute with `wait=True` to avoid throttling. Use exponential backoff (e.g., 5–60 seconds) on 429 errors.[](https://github.com/keepacom/api_backend/blob/master/src/main/java/com/keepa/api/backend/structs/Response.java)[](https://www.linkedin.com/pulse/api-rate-limiting-how-avoid-hitting-limits-olga-annenko)
+
+### Next Steps
+1. Update `Keepa_Deals.py` for batch queries:
+   ```python
+   # Chunk 2 starts: Batch query (REFERENCE ONLY)
+   import keepa
+   api = keepa.Keepa('<YOUR_API_KEY>')
+   products = api.query(['000136068X', '0805489878'], wait=True)
+   # Chunk 2 ends
+   ```
+
+
+
+
