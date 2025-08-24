@@ -437,3 +437,10 @@ Due to the persistent and unresolvable nature of this bug, and the risk of spend
 
 **Current Status:**
 The core admin workflow is now significantly improved. An admin can log in, submit text for analysis, approve the results, have those results saved permanently, and view the collection of all saved results. The application has a consistent navigation structure and a more polished user experience.
+
+## 2025-08-24
+
+-   **Resolved 504 Gateway Timeout on Large Inputs**: Increased the WSGI request timeout in the Apache configuration (`agentarbitrage.conf`) to 600 seconds. This prevents timeouts during long-running AI processing on the Guided Learning page, allowing for analysis of much larger documents.
+-   **Standardized Page Layout**: Modified the global CSS for the `<body>` tag to use `justify-content: flex-start`, ensuring all pages are top-aligned. This provides a consistent layout foundation for the new site-wide header and prevents content from being vertically centered on pages with little content.
+-   **Verified Template Inheritance**: Confirmed that all interior pages (`guided_learning.html`, `strategies.html`, `results.html`) properly extend the base `layout.html` template, ensuring consistent application of the site-wide header and simplifying future maintenance.
+
