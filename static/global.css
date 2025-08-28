@@ -199,6 +199,17 @@ a:hover {
     color: white;
 }
 
+/* Status Message Box */
+.status-message {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 /* Spinner/Progress */
 .progress-container {
     display: none;

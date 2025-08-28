@@ -2,7 +2,7 @@ import sys
 import logging
 import os
 import subprocess
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 import httpx
 from bs4 import BeautifulSoup
 import re
@@ -10,8 +10,11 @@ import json
 from dotenv import load_dotenv
 import tempfile
 import time
+from datetime import datetime
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
+import click
+from keepa_deals.Keepa_Deals import run_keepa_script
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -35,8 +38,12 @@ SUMMARY_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-lar
 XAI_API_KEY = os.getenv("XAI_TOKEN")
 XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 
+# --- Keepa API Configuration ---
+KEEPA_API_KEY = os.getenv("KEEPA_API_KEY")
+
 app.logger.info(f"Loaded HF_TOKEN: {HUGGING_FACE_API_KEY}")
 app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 'Not found'}")
+app.logger.info(f"Loaded KEEPA_API_KEY: {'*' * len(KEEPA_API_KEY) if KEEPA_API_KEY else 'Not found'}")
 
 def query_huggingface_api(payload, api_url):
     headers = {"Authorization": f"Bearer {HUGGING_FACE_API_KEY}"}
@@ -455,6 +462,178 @@ def get_youtube_transcript(url: str) -> str:
     except Exception as e:
         app.logger.error(f"Could not fetch transcript for video ID {video_id}: {e}", exc_info=True)
         return f"Error: Could not retrieve transcript. The video may have transcripts disabled, or an API error occurred: {str(e)}"
+
+# --- Keepa Scan Status Management ---
+STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_status.json')
+LOGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/logs')
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+
+def get_scan_status():
+    if not os.path.exists(STATUS_FILE):
+        return {"status": "Idle"}
+    try:
+        with open(STATUS_FILE, 'r') as f:
+            return json.load(f)
+    except (IOError, json.JSONDecodeError):
+        return {"status": "Error", "message": "Could not read status file."}
+
+def set_scan_status(status_data):
+    try:
+        with open(STATUS_FILE, 'w') as f:
+            json.dump(status_data, f, indent=4)
+    except IOError:
+        app.logger.error(f"Could not write to status file: {STATUS_FILE}")
+
+@app.route('/data_sourcing')
+def data_sourcing():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    
+    status_data = get_scan_status()
+    # Check if the process is still running to catch crashes
+    if status_data.get('status') == 'Running' and status_data.get('pid'):
+        try:
+            os.kill(status_data['pid'], 0)
+        except OSError:
+            status_data['status'] = 'Failed'
+            status_data['message'] = 'The process disappeared unexpectedly. Check logs for details.'
+            set_scan_status(status_data)
+            
+    return render_template('data_sourcing.html', status=status_data)
+
+@app.route('/start-keepa-scan', methods=['POST'])
+def start_keepa_scan():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    
+    status = get_scan_status()
+    if status.get('status') == 'Running':
+        if status.get('pid'):
+            try:
+                os.kill(status['pid'], 0)
+                flash('A scan is already in progress.', 'warning')
+                return redirect(url_for('data_sourcing'))
+            except OSError:
+                # Stale PID, allow starting a new scan
+                pass
+    
+    os.makedirs(LOGS_DIR, exist_ok=True)
+    stdout_log_path = os.path.join(LOGS_DIR, 'keepa_scan.log')
+    stderr_log_path = os.path.join(LOGS_DIR, 'keepa_scan.err')
+    
+    command = [sys.executable, "-m", "flask", "fetch-keepa-deals", "--output-dir", "data"]
+    
+    # Add the limit to the command if provided
+    limit = request.form.get('limit')
+    if limit and limit.isdigit() and int(limit) > 0:
+        command.extend(["--limit", str(limit)])
+        flash(f'Scan initiated with a limit of {limit} deals.', 'info')
+    else:
+        flash('Scan initiated with no limit. All deals will be processed.', 'info')
+
+    try:
+        # Create a copy of the current environment and set FLASK_APP
+        env = os.environ.copy()
+        env['FLASK_APP'] = 'wsgi_handler.py'
+
+        with open(stdout_log_path, 'w') as stdout_log, open(stderr_log_path, 'w') as stderr_log:
+            process = subprocess.Popen(command, stdout=stdout_log, stderr=stderr_log, env=env, cwd=os.path.dirname(os.path.abspath(__file__)))
+        
+        new_status = {
+            "status": "Running",
+            "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            "pid": process.pid,
+            "output_file": None,
+            "log_file": "logs/keepa_scan.log",
+            "error_log_file": "logs/keepa_scan.err"
+        }
+        set_scan_status(new_status)
+        flash('Keepa scan initiated successfully!', 'success')
+    except Exception as e:
+        app.logger.error(f"Failed to start Keepa scan process: {e}")
+        flash('Error starting Keepa scan process. Check application logs.', 'error')
+        set_scan_status({"status": "Failed", "message": f"Failed to launch process: {e}"})
+
+    return redirect(url_for('data_sourcing'))
+
+@app.route('/download/<path:filename>')
+def download_file(filename):
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    return send_from_directory(DATA_DIR, filename, as_attachment=True)
+
+@app.route('/settings')
+def settings():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    return render_template('settings.html')
+
+@app.cli.command("fetch-keepa-deals")
+@click.option('--no-cache', is_flag=True, help="Force fresh Keepa API calls.")
+@click.option('--output-dir', default='data', help="Directory to save the output CSV file.")
+@click.option('--limit', type=int, default=None, help="Limit the number of deals to process for testing.")
+def fetch_keepa_deals_command(no_cache, output_dir, limit):
+    """
+    Runs the Keepa deals fetching script, wrapped with status reporting.
+    """
+    cli_status_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_status.json')
+
+    def _update_cli_status(new_status_dict):
+        try:
+            # Ensure we read the latest status before writing to avoid race conditions
+            current_status = {}
+            if os.path.exists(cli_status_file):
+                with open(cli_status_file, 'r') as f:
+                    current_status = json.load(f)
+            
+            current_status.update(new_status_dict)
+
+            with open(cli_status_file, 'w') as f:
+                json.dump(current_status, f, indent=4)
+        except (IOError, json.JSONDecodeError) as e:
+            print(f"CLI Error: Could not write to status file: {cli_status_file}. Error: {e}", file=sys.stderr)
+
+    try:
+        print("--- Running fetch-keepa-deals command ---")
+        dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+        load_dotenv(dotenv_path=dotenv_path)
+        KEEPA_API_KEY = os.getenv("KEEPA_API_KEY")
+        if not KEEPA_API_KEY:
+            print("KEEPA_API_KEY not found in environment.", file=sys.stderr)
+            raise ValueError("KEEPA_API_KEY not found")
+        
+        print(f"KEEPA_API_KEY loaded: {'*' * len(KEEPA_API_KEY)}")
+        app.logger.info("Starting Keepa deals fetching command...")
+        
+        run_keepa_script(
+            api_key=KEEPA_API_KEY,
+            logger=app.logger,
+            no_cache=no_cache,
+            output_dir=output_dir,
+            deal_limit=limit,
+            status_update_callback=_update_cli_status
+        )
+        
+        print("run_keepa_script finished successfully.")
+        app.logger.info("Keepa deals fetching command finished successfully.")
+
+        # On success, update status
+        _update_cli_status({
+            'status': 'Completed',
+            'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            'output_file': f"{output_dir}/Keepa_Deals_Export.csv",
+            'message': 'Scan completed successfully.'
+        })
+
+    except Exception as e:
+        print(f"An error occurred during fetch-keepa-deals: {e}", file=sys.stderr)
+        app.logger.error(f"An error occurred during fetch-keepa-deals: {e}", exc_info=True)
+        # On failure, update status
+        _update_cli_status({
+            'status': 'Failed',
+            'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            'message': f"An error occurred: {str(e)}"
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)

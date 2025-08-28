@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block title %}Data Sourcing{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Keepa Data Sourcing</h1>
+    <p>Use this page to start a new data scan from the Keepa API. The process can take several hours to complete.</p>
+
+    <div class="card my-4">
+        <div class="card-header">
+            Scan Control
+        </div>
+        <div class="card-body">
+            <form id="scan-form" action="{{ url_for('start_keepa_scan') }}" method="POST">
+                <div class="form-group mb-3">
+                    <label for="limit" class="form-label">Process Limit (Optional)</label>
+                    <input type="number" class="form-control" id="limit" name="limit" placeholder="Enter number of deals to process (e.g., 10)" style="max-width: 300px; background-color: rgba(0,0,0,0.2); color: white; border-color: rgba(102, 153, 204, 0.5);">
+                    <small class="form-text text-light">If left blank, the script will process all deals found.</small>
+                </div>
+                <button type="submit" class="btn btn-primary" {% if status.status == 'Running' %}disabled{% endif %}>
+                    {% if status.status == 'Running' %}
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Scan in Progress...
+                    {% else %}
+                        Start New Keepa Scan
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card my-4">
+        <div class="card-header">
+            Current Status
+        </div>
+        <div class="card-body" id="status-container">
+            <p><strong>Status:</strong> 
+                <span class="
+                    {% if status.status == 'Running' %}text-primary{% endif %}
+                    {% if status.status == 'Completed' %}text-success{% endif %}
+                    {% if status.status == 'Failed' or status.status == 'Error' %}text-danger{% endif %}
+                " style="font-weight: bold;">
+                    {{ status.status | default('Idle') }}
+                </span>
+            </p>
+            {% if status.status == 'Running' and status.total_deals %}
+                <p><strong>Progress:</strong> {{ status.processed_deals }} / {{ status.total_deals }} deals processed</p>
+            {% endif %}
+            {% if status.start_time %}
+                <p><strong>Started:</strong> <span id="start-time" data-timestamp="{{ status.start_time }}">{{ status.start_time }} UTC</span></p>
+            {% endif %}
+            {% if status.status == 'Running' %}
+                 <p><strong>Elapsed Time:</strong> <span id="elapsed-time">Calculating...</span></p>
+                 <p><strong>Est. Time Remaining:</strong> <span id="etr" data-etr-seconds="{{ status.etr_seconds }}">Calculating...</span></p>
+            {% endif %}
+            {% if status.end_time %}
+                <p><strong>Finished:</strong> <span id="end-time" data-timestamp="{{ status.end_time }}">{{ status.end_time }} UTC</span></p>
+            {% endif %}
+            {% if status.message %}
+                <p><strong>Message:</strong></p>
+                <pre class="status-message">{{ status.message }}</pre>
+            {% endif %}
+            {% if status.output_file and status.status == 'Completed' %}
+                <p><strong>Output File:</strong> <a href="{{ url_for('download_file', filename=status.output_file.split('/')[-1]) }}">Download Results (Keepa_Deals_Export.csv)</a></p>
+            {% endif %}
+             {% if status.log_file %}
+                <p><a href="{{ url_for('static', filename=status.log_file) }}" target="_blank">View Scan Log</a></p>
+            {% endif %}
+            {% if status.error_log_file %}
+                <p><a href="{{ url_for('static', filename=status.error_log_file) }}" target="_blank">View Error Log</a></p>
+            {% endif %}
+
+            {% if status.debug_etr %}
+            <hr>
+            <p><small><strong>Debug Info:</strong></small></p>
+            <p><small>ETR Elapsed Seconds: {{ status.debug_etr.elapsed | round(2) }}s</small></p>
+            <p><small>ETR Processed Count: {{ status.debug_etr.processed }}</small></p>
+            <p><small>ETR Time Per Deal: {{ status.debug_etr.time_per_deal | round(2) }}s</small></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to format a timestamp element
+        const formatTimestamp = (elementId) => {
+            const el = document.getElementById(elementId);
+            if (el) {
+                const utcTimestamp = el.getAttribute('data-timestamp');
+                if (utcTimestamp) {
+                    const date = new Date(utcTimestamp);
+                    // Options for a more readable format
+                    const options = {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: 'numeric', minute: '2-digit', second: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    el.textContent = date.toLocaleString(undefined, options);
+                }
+            }
+        };
+
+        // Function to format seconds into a human-readable string (Hh Mm Ss)
+        const formatSeconds = (seconds) => {
+            if (isNaN(seconds) || seconds < 0) return "N/A";
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'm ' : ''}${s}s`;
+        };
+
+        // Format the start and end times
+        formatTimestamp('start-time');
+        formatTimestamp('end-time');
+
+        // Calculate and display elapsed time and ETR if a scan is running
+        const startTimeEl = document.getElementById('start-time');
+        if (startTimeEl && "{{ status.status }}" === "Running") {
+            const startTime = new Date(startTimeEl.getAttribute('data-timestamp'));
+            const elapsedTimeEl = document.getElementById('elapsed-time');
+            const etrEl = document.getElementById('etr');
+
+            // Calculate and display elapsed time
+            const updateElapsedTime = () => {
+                const now = new Date();
+                const elapsedSeconds = Math.floor((now - startTime) / 1000);
+                elapsedTimeEl.textContent = formatSeconds(elapsedSeconds);
+            };
+            
+            if (elapsedTimeEl) {
+                updateElapsedTime(); // Initial call
+                setInterval(updateElapsedTime, 1000); // Update every second
+            }
+            
+            // Format ETR
+            if (etrEl) {
+                const etrSeconds = etrEl.getAttribute('data-etr-seconds');
+                if (etrSeconds && etrSeconds !== "None") {
+                    etrEl.textContent = formatSeconds(parseFloat(etrSeconds));
+                } else {
+                    etrEl.textContent = "Calculating...";
+                }
+            }
+        }
+
+        // Auto-refresh the page every 30 seconds if a scan is running
+        {% if status.status == 'Running' %}
+            setTimeout(function(){
+               window.location.reload(1);
+            }, 30000);
+        {% endif %}
+    });
+</script>
+
+<style>
+    .text-primary { color: #007bff; }
+    .text-success { color: #28a745; }
+    .text-danger { color: #dc3545; }
+</style>
+{% endblock %}

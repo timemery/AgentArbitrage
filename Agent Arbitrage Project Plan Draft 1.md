@@ -76,6 +76,26 @@
 *   [ ] Write a developer guide explaining the different components of the system.
 *   [ ] Update the GitHub repository with the final code and documentation.
 
+### Phase 1C: Data Presentation and Configuration (Evolution from original plan)
+
+**Objective:** To build the necessary UI components for managing application settings and viewing the collected data, which is a prerequisite for the AI analysis phase.
+
+*   **Settings Page / Dashboard:**
+    *   [ ] Create a secure page for users to input and manage essential information.
+    *   [ ] Form fields for API Keys (Keepa, Amazon SP-API).
+    *   [ ] Form fields for user-specific business costs (e.g., prep fees, shipping costs, desired profit margin).
+    *   [ ] Implement backend logic to securely store and retrieve these settings.
+
+*   **Raw Data Viewer:**
+    *   [ ] Develop a new page to display the contents of the `Keepa_Deals_Export.csv` file.
+    *   [ ] Present the data in a clean, sortable HTML table.
+    *   [ ] This provides transparency and allows the user to inspect the raw data before AI analysis.
+
+*   **Analyzed Deals View:**
+    *   [ ] Design and implement a page where the AI will present its findings.
+    *   [ ] This view will only show deals that the AI has determined to be profitable, based on the user's learned strategies and configured costs.
+    *   This is the core "hands-off" value proposition of the application.
+
 ---
 
 ## 3. Future Phases
@@ -84,6 +104,16 @@
 *   **Phase 3: Web Application V1:** Develop a subscriber-accessible web application with user authentication and subscription management.
 *   **Phase 4: Semi-Autonomous AI Agent:** Integrate with Amazon's Selling Partner API (SP-API) to allow the agent to perform real-world actions.
 *   **Phase 5: Full Autonomy and Scaling:** Enhance the agent's learning capabilities to adapt to market trends and scale the system to handle more users and products.
+
+### Future Architecture: "Listen and Update" Model
+
+As an alternative to the batch-processing model, a more advanced architecture can be implemented for real-time updates. This involves:
+*   **Persistent Database:** Migrating from CSV files to a structured database (e.g., MySQL, PostgreSQL) to store a master list of all known deals.
+*   **Background Worker/Daemon:** A standalone, persistent process that runs 24/7 on the server.
+*   **Intelligent Polling:** The worker will be responsible for all Keepa API interactions. It will periodically poll the `/deal` endpoint for new ASINs to add to the database. It will also intelligently re-check existing ASINs in the database to get the latest price and rank data.
+*   **Live Web Dashboard:** The web application will read directly from the database, providing users with a constantly up-to-date view of the available deals without needing to manually run a scan.
+
+This architecture represents a significant increase in complexity but is the ideal model for a production-level, "always-on" service. It is recommended to pursue this after the core features of the MVP (data collection, settings, and AI analysis) have been validated.
 
 ---
 
