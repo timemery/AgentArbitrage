@@ -30,13 +30,8 @@ The project uses several external APIs for its functionality. These require API 
 
 ### Environment Variables (.env file)
 Your `.env` file should contain the following keys:
-```
-HF_TOKEN="your_hugging_face_api_key"
-XAI_TOKEN="your_xai_api_key"
-BRIGHTDATA_USERNAME="your_brightdata_username"
-BRIGHTDATA_PASSWORD="your_brightdata_password"
-BRIGHTDATA_HOST="your_brightdata_host"
-```
+HF_TOKEN="your_hugging_face_api_key" XAI_TOKEN="your_xai_api_key" BRIGHTDATA_USERNAME="your_brightdata_username" BRIGHTDATA_PASSWORD="your_brightdata_password" BRIGHTDATA_HOST="your_brightdata_host"
+
 - The Bright Data credentials are used as a proxy by the `youtube-transcript-api` to prevent getting blocked by YouTube.
 
 ## VPS Deployment
@@ -56,36 +51,40 @@ sudo chmod -R 755 /var/www/agentarbitrage
 touch wsgi.py
 sudo systemctl restart apache2
 sudo systemctl status apache2
-```
-
-**For Apache configuration changes** (e.g., /etc/apache2/sites-available/agentarbitrage.conf):
+For Apache configuration changes (e.g., /etc/apache2/sites-available/agentarbitrage.conf):
 
 bash
 
-```
 cd /var/www/agentarbitrage sudo cp agentarbitrage.conf /etc/apache2/sites-available/ sudo a2ensite agentarbitrage.conf sudo apache2ctl configtest sudo systemctl restart apache2 sudo systemctl status apache2
-```
+Verify setup:
 
-**Verify setup**:
+Check logs: sudo tail -n 50 /var/log/apache2/agentarbitrage_error.log, sudo tail -n 50 /var/log/apache2/error.log, sudo tail -n 50 /var/www/agentarbitrage/app.log
+Test site: curl -I https://localhost --insecure, curl https://localhost --insecure
+Test remotely: curl -I https://agentarbitrage.co --insecure, curl https://agentarbitrage.co --insecure
+Browser test: Visit https://agentarbitrage.co, log in, submit a YouTube URL (e.g., https://youtu.be/YaF5JRqUm3c), check /results.
+Troubleshooting
+500 Error (WSGI): Ensure wsgi.py imports app from wsgi_handler.py as application. Verify WSGIScriptAlias / /var/www/agentarbitrage/wsgi.py in agentarbitrage.conf.
 
-- Check logs: sudo tail -n 50 /var/log/apache2/agentarbitrage_error.log, sudo tail -n 50 /var/log/apache2/error.log, sudo tail -n 50 /var/www/agentarbitrage/app.log
-- Test site: curl -I https://localhost --insecure, curl https://localhost --insecure
-- Test remotely: curl -I https://agentarbitrage.co --insecure, curl https://agentarbitrage.co --insecure
-- Browser test: Visit https://agentarbitrage.co, log in, submit a YouTube URL (e.g., https://youtu.be/YaF5JRqUm3c), check /results.
+API Failures: Ensure HF_TOKEN, XAI_TOKEN, and BRIGHTDATA_ variables are set correctly in the .env file. Check app.log for detailed API error messages.
 
-## Troubleshooting
+Caching/Deployment Issues: If code changes don’t appear to apply, run touch wsgi.py and then sudo systemctl restart apache2 to force a full reload of the application.
 
-- **500 Error (WSGI)**: Ensure `wsgi.py` imports `app` from `wsgi_handler.py` as `application`. Verify `WSGIScriptAlias / /var/www/agentarbitrage/wsgi.py` in `agentarbitrage.conf`.
-- **API Failures**: Ensure `HF_TOKEN`, `XAI_TOKEN`, and `BRIGHTDATA_` variables are set correctly in the `.env` file. Check `app.log` for detailed API error messages.
-- **Caching/Deployment Issues**: If code changes don’t appear to apply, run `touch wsgi.py` and then `sudo systemctl restart apache2` to force a full reload of the application.
+Logs: Always check app.log, agentarbitrage_error.log, and error.log for detailed errors.
 
-- **Logs**: Always check app.log, agentarbitrage_error.log, and error.log for detailed errors.
+Notes
+The app was renamed from app.py to wsgi_handler.py to resolve caching issues. Avoid reintroducing app.py to prevent configuration conflicts.
+agentarbitrage.conf handles both HTTP (redirect to HTTPS) and HTTPS with Let’s Encrypt SSL.
+The youtube-transcript-api uses the Bright Data proxy to prevent IP blocking from YouTube. Ensure credentials in .env are correct.
+Update dev-log.md with summaries of significant changes and debugging sessions.
+API Integration Notes
+Finding the Buy Box Seller ID
+A key requirement for evaluating products is to identify the seller who currently holds the Buy Box, especially to determine if the seller is Amazon (ATVPDKIKX0DER). Finding this information via the Keepa API proved to be non-trivial.
 
-## Notes
+Our process was as follows:
 
-- The app was renamed from `app.py` to `wsgi_handler.py` to resolve caching issues. Avoid reintroducing `app.py` to prevent configuration conflicts.
-- `agentarbitrage.conf` handles both HTTP (redirect to HTTPS) and HTTPS with Let’s Encrypt SSL.
-- The `youtube-transcript-api` uses the Bright Data proxy to prevent IP blocking from YouTube. Ensure credentials in `.env` are correct.
-- Update `dev-log.md` with summaries of significant changes and debugging sessions.
+Initial Approach (Trial and Error): We initially assumed a top-level buyBoxSellerId field would be present in the /product endpoint response, as this field name is used in the /productfinder query parameters. We implemented a function to extract this field.
+Testing and Diagnosis: Testing revealed this field was consistently empty. This led to the hypothesis that using the offers=100 parameter in our API calls was altering the response structure, causing this field to be omitted.
+External Research: Further research, aided by the user, pointed towards the Keepa API Documentation. While this documentation doesn't explicitly name the field for the current Buy Box seller ID, it suggests that Buy Box information is embedded within other data structures when using the offers parameter. Specifically, Grok's summary indicated the information might be inferred from the BUY_BOX_SHIPPING history field.
+The current strategy is to use enhanced logging within the application to inspect the raw product data object returned by the API. This will allow us to definitively identify the correct field or combination of fields (such as buyBoxSellerIdHistory) needed to extract the current Buy Box seller's ID.
 
-**Last Updated**: August 22, 2025
+Last Updated: August 22, 2025

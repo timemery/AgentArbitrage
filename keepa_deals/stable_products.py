@@ -1828,4 +1828,17 @@ def get_shipping_included(product_data):
     return {'Shipping Included': 'no'}
 # Shipping Included ends
 
+# Buy Box Seller ID starts
+def get_buy_box_seller_id(product):
+    """
+    Retrieves the seller ID of the current Buy Box winner.
+    """
+    asin = product.get('asin', 'unknown')
+    buy_box_seller_id = product.get('buyBoxSellerId', '-')
+    if not buy_box_seller_id:
+        buy_box_seller_id = '-'
+    logger.info(f"ASIN {asin}: Buy Box Seller ID is '{buy_box_seller_id}'.")
+    return {'Buy Box Seller ID': buy_box_seller_id}
+# Buy Box Seller ID ends
+
 #### END of stable_products.py ####
