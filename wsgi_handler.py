@@ -594,6 +594,19 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
             print(f"CLI Error: Could not write to status file: {cli_status_file}. Error: {e}", file=sys.stderr)
 
     try:
+        # Robustly reconfigure logging for this command
+        root_logger = logging.getLogger()
+        # Set level to INFO to capture all desired logs
+        root_logger.setLevel(logging.INFO)
+        # Remove any handlers configured by the main app
+        root_logger.handlers = []
+        # Add a new handler that writes to stdout
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        root_logger.addHandler(handler)
+
         print("--- Running fetch-keepa-deals command ---")
         dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
         load_dotenv(dotenv_path=dotenv_path)

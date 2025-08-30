@@ -1825,47 +1825,38 @@ def get_shipping_included(product_data):
 # Buy Box Seller ID starts
 def get_buy_box_seller_id(product):
     """
-    DIAGNOSTIC VERSION
-    Logs the structure of the product data to help find the Buy Box Seller ID.
+    Extracts the Buy Box Seller ID from the product data by checking the direct
+    'buyBoxSellerId' field first, then falling back to the 'buyBoxSellerIdHistory'.
     """
     asin = product.get('asin', 'unknown')
-    # logger and json are available in the module scope.
+    logger = logging.getLogger(__name__)
+
+    # --- Method 1: Check for the direct 'buyBoxSellerId' key ---
+    seller_id = product.get('buyBoxSellerId')
+    if seller_id and isinstance(seller_id, str) and seller_id not in ['-1', '-2']:
+        logger.info(f"ASIN {asin}: Found Buy Box Seller ID directly from 'buyBoxSellerId' field: {seller_id}")
+        return {'Buy Box Seller ID': seller_id}
     
-    logger.info(f"--- DIAGNOSTIC LOG FOR get_buy_box_seller_id (ASIN: {asin}) ---")
+    logger.info(f"ASIN {asin}: Direct 'buyBoxSellerId' not found or invalid ('{seller_id}'). Checking 'buyBoxSellerIdHistory'.")
 
-    # Log all top-level keys to see what's available
-    logger.info(f"Top-level keys in product data: {list(product.keys())}")
+    # --- Method 2: Fallback to parsing 'buyBoxSellerIdHistory' ---
+    history = product.get('buyBoxSellerIdHistory', [])
+    if not history or not isinstance(history, list):
+        logger.warning(f"ASIN {asin}: 'buyBoxSellerIdHistory' not found or is not a list. Cannot determine seller.")
+        return {'Buy Box Seller ID': '-'}
 
-    # Log the full product data object, pretty-printed
-    try:
-        pretty_product_data = json.dumps(product, indent=2, default=str)
-        logger.info(f"Full product data for ASIN {asin}:\n{pretty_product_data}")
-    except Exception as e:
-        logger.error(f"Could not serialize product data for ASIN {asin}: {e}")
+    # The history is a flat list: [timestamp1, sellerId1, timestamp2, sellerId2, ...]
+    # We iterate backwards by pairs to find the most recent valid seller ID.
+    for i in range(len(history) - 1, 0, -2):
+        # i is the index of the sellerId, i-1 is the timestamp
+        potential_seller_id = history[i]
+        if isinstance(potential_seller_id, str) and potential_seller_id not in ['-1', '-2']:
+            timestamp = history[i-1]
+            logger.info(f"ASIN {asin}: Found last valid Buy Box Seller ID from history: {potential_seller_id} (at timestamp {timestamp})")
+            return {'Buy Box Seller ID': potential_seller_id}
 
-    # Specifically check for 'buyBoxSellerIdHistory'
-    if 'buyBoxSellerIdHistory' in product:
-        logger.info(f"Found 'buyBoxSellerIdHistory': {product['buyBoxSellerIdHistory']}")
-    else:
-        logger.info("'buyBoxSellerIdHistory' key NOT found.")
-
-    # Specifically check the 'offers' array for any flags
-    if 'offers' in product and product['offers']:
-        logger.info(f"Found {len(product['offers'])} offers. Inspecting the first few for Buy Box flags...")
-        for i, offer in enumerate(product['offers'][:5]): # Log first 5 offers
-            # The 'isBuyBoxWinner' key is a guess, the logs will show the real keys.
-            is_buybox_winner = offer.get('isBuyBoxWinner', 'KeyNotPresent') 
-            offer_seller_id = offer.get('sellerId', 'N/A')
-            logger.info(f"  Offer #{i}: SellerID='{offer_seller_id}', isBuyBoxWinner='{is_buybox_winner}', Full Offer Keys: {list(offer.keys())}")
-            if is_buybox_winner is True:
-                logger.info(f"  ----> POTENTIAL BUY BOX WINNER FOUND IN OFFERS ARRAY: Seller ID {offer_seller_id}")
-    else:
-        logger.info("'offers' key NOT found or is empty.")
-        
-    logger.info(f"--- END DIAGNOSTIC LOG FOR get_buy_box_seller_id (ASIN: {asin}) ---")
-
-    # Return a placeholder for now
-    return {'Buy Box Seller ID': 'DIAGNOSTIC_RUN'}
+    logger.warning(f"ASIN {asin}: Could not find a valid seller ID in the history. Last entry was '{history[-1] if history else 'N/A'}'.")
+    return {'Buy Box Seller ID': '-'}
 # Buy Box Seller ID ends
 
 #### END of stable_products.py ####
