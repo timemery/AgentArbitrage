@@ -1003,10 +1003,7 @@ def new_3rd_party_fbm_365_days_avg(product_data):
         # Index 7 is for "New, 3rd Party FBM" (NEW_FBM) average price
         fbm_avg_index = 7
 
-        if len(avg365_array) > fbm_avg_index and \
-           avg365_array[fbm_avg_index] is not None and \
-           isinstance(avg365_array[fbm_avg_index], (int, float)) and \
-           avg365_array[fbm_avg_index] > 0:
+        if len(avg365_array) > fbm_avg_index and            avg365_array[fbm_avg_index] is not None and            isinstance(avg365_array[fbm_avg_index], (int, float)) and            avg365_array[fbm_avg_index] > 0:
             
             price_in_cents = avg365_array[fbm_avg_index]
             price_in_dollars = price_in_cents / 100.0
@@ -1639,10 +1636,7 @@ def new_3rd_party_fba_365_days_avg(product_data):
         # Index 10 is assumed for "New, 3rd Party FBA" average price
         fba_avg_index = 10
 
-        if len(avg365_array) > fba_avg_index and \
-           avg365_array[fba_avg_index] is not None and \
-           isinstance(avg365_array[fba_avg_index], (int, float)) and \
-           avg365_array[fba_avg_index] > 0:
+        if len(avg365_array) > fba_avg_index and            avg365_array[fba_avg_index] is not None and            isinstance(avg365_array[fba_avg_index], (int, float)) and            avg365_array[fba_avg_index] > 0:
             
             price_in_cents = avg365_array[fba_avg_index]
             price_in_dollars = price_in_cents / 100.0
@@ -1831,14 +1825,47 @@ def get_shipping_included(product_data):
 # Buy Box Seller ID starts
 def get_buy_box_seller_id(product):
     """
-    Retrieves the seller ID of the current Buy Box winner.
+    DIAGNOSTIC VERSION
+    Logs the structure of the product data to help find the Buy Box Seller ID.
     """
     asin = product.get('asin', 'unknown')
-    buy_box_seller_id = product.get('buyBoxSellerId', '-')
-    if not buy_box_seller_id:
-        buy_box_seller_id = '-'
-    logger.info(f"ASIN {asin}: Buy Box Seller ID is '{buy_box_seller_id}'.")
-    return {'Buy Box Seller ID': buy_box_seller_id}
+    # logger and json are available in the module scope.
+    
+    logger.info(f"--- DIAGNOSTIC LOG FOR get_buy_box_seller_id (ASIN: {asin}) ---")
+
+    # Log all top-level keys to see what's available
+    logger.info(f"Top-level keys in product data: {list(product.keys())}")
+
+    # Log the full product data object, pretty-printed
+    try:
+        pretty_product_data = json.dumps(product, indent=2, default=str)
+        logger.info(f"Full product data for ASIN {asin}:\n{pretty_product_data}")
+    except Exception as e:
+        logger.error(f"Could not serialize product data for ASIN {asin}: {e}")
+
+    # Specifically check for 'buyBoxSellerIdHistory'
+    if 'buyBoxSellerIdHistory' in product:
+        logger.info(f"Found 'buyBoxSellerIdHistory': {product['buyBoxSellerIdHistory']}")
+    else:
+        logger.info("'buyBoxSellerIdHistory' key NOT found.")
+
+    # Specifically check the 'offers' array for any flags
+    if 'offers' in product and product['offers']:
+        logger.info(f"Found {len(product['offers'])} offers. Inspecting the first few for Buy Box flags...")
+        for i, offer in enumerate(product['offers'][:5]): # Log first 5 offers
+            # The 'isBuyBoxWinner' key is a guess, the logs will show the real keys.
+            is_buybox_winner = offer.get('isBuyBoxWinner', 'KeyNotPresent') 
+            offer_seller_id = offer.get('sellerId', 'N/A')
+            logger.info(f"  Offer #{i}: SellerID='{offer_seller_id}', isBuyBoxWinner='{is_buybox_winner}', Full Offer Keys: {list(offer.keys())}")
+            if is_buybox_winner is True:
+                logger.info(f"  ----> POTENTIAL BUY BOX WINNER FOUND IN OFFERS ARRAY: Seller ID {offer_seller_id}")
+    else:
+        logger.info("'offers' key NOT found or is empty.")
+        
+    logger.info(f"--- END DIAGNOSTIC LOG FOR get_buy_box_seller_id (ASIN: {asin}) ---")
+
+    # Return a placeholder for now
+    return {'Buy Box Seller ID': 'DIAGNOSTIC_RUN'}
 # Buy Box Seller ID ends
 
 #### END of stable_products.py ####
