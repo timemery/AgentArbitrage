@@ -2,6 +2,12 @@
 # (Last update: Version 5)
 
 import logging
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+# Keepa epoch is minutes from 2011-01-01
+KEEPA_EPOCH = datetime(2011, 1, 1)
 
 # Percent Down 365 starts
 def percent_down_365(product):
@@ -64,3 +70,244 @@ def percent_down_365(product):
 # Percent Down 365 ends
 
 ### END of stable_calculations.py ###
+
+def _convert_ktm_to_datetime(df):
+    """Converts a DataFrame's timestamp column from Keepa Time Minutes to datetime objects."""
+    # Coerce to numeric, turning any non-numeric strings into NaN (which becomes NaT)
+    numeric_timestamps = pd.to_numeric(df['timestamp'], errors='coerce')
+    df['timestamp'] = pd.to_datetime(numeric_timestamps, unit='m', origin=KEEPA_EPOCH)
+    return df
+
+def infer_sale_events(product):
+    """
+    Analyzes historical product data to infer sale events using a search-window logic.
+    A sale is inferred when a drop in used offer count is followed by a drop
+    in sales rank within a defined time window.
+    """
+    asin = product.get('asin', 'N/A')
+    logger = logging.getLogger(__name__)
+    logger.debug(f"ASIN {asin}: Starting sale event inference with search-window logic.")
+
+    try:
+        csv_data = product.get('csv', [])
+        if not isinstance(csv_data, list) or len(csv_data) < 13:
+            logger.debug(f"ASIN {asin}: 'csv' data is missing or too short.")
+            return [], 0
+
+        # Robustly get history arrays
+        rank_history = csv_data[3] if isinstance(csv_data[3], list) and len(csv_data[3]) > 1 else None
+        price_history = csv_data[2] if isinstance(csv_data[2], list) and len(csv_data[2]) > 1 else None
+        offer_count_history = csv_data[12] if isinstance(csv_data[12], list) and len(csv_data[12]) > 1 else None
+
+        if not all([rank_history, price_history, offer_count_history]):
+            logger.debug(f"ASIN {asin}: One or more required history arrays are missing or empty.")
+            return [], 0
+        
+        if any(len(h) % 2 != 0 for h in [rank_history, price_history, offer_count_history]):
+            logger.warning(f"ASIN {asin}: Malformed history data, array length is not even.")
+            return [], 0
+
+        # Create DataFrames
+        df_rank = pd.DataFrame(np.array(rank_history).reshape(-1, 2), columns=['timestamp', 'rank']).pipe(_convert_ktm_to_datetime)
+        df_price = pd.DataFrame(np.array(price_history).reshape(-1, 2), columns=['timestamp', 'price_cents']).pipe(_convert_ktm_to_datetime)
+        df_offers = pd.DataFrame(np.array(offer_count_history).reshape(-1, 2), columns=['timestamp', 'offer_count']).pipe(_convert_ktm_to_datetime)
+
+        # --- Filter data to the last two years ---
+        two_years_ago = datetime.now() - timedelta(days=730)
+        df_rank = df_rank[df_rank['timestamp'] >= two_years_ago]
+        df_price = df_price[df_price['timestamp'] >= two_years_ago]
+        df_offers = df_offers[df_offers['timestamp'] >= two_years_ago]
+
+        if df_rank.empty or df_offers.empty:
+            logger.debug(f"ASIN {asin}: No historical rank or offer data found within the last two years.")
+            return [], 0
+
+        # --- New "Search Window" Logic ---
+        
+        # 1. Find all instances of offer drops
+        df_offers['offer_diff'] = df_offers['offer_count'].diff()
+        offer_drops = df_offers[df_offers['offer_diff'] == -1.0]
+
+        if offer_drops.empty:
+            logger.info(f"ASIN {asin}: No instances of offer count dropping by 1 were found.")
+            return [], 0
+            
+        logger.debug(f"ASIN {asin}: Found {len(offer_drops)} potential sale trigger points (offer drops).")
+
+        # 2. For each offer drop, search for subsequent signals
+        confirmed_sales = []
+        search_window = timedelta(hours=24)
+
+        # Prepare rank and buybox data
+        df_rank = df_rank.sort_values('timestamp').reset_index(drop=True)
+        df_rank['rank_diff'] = df_rank['rank'].diff()
+        
+        buybox_history = product.get('buyBoxSellerIdHistory', [])
+        if buybox_history and len(buybox_history) > 1 and len(buybox_history) % 2 == 0:
+            df_buybox = pd.DataFrame(np.array(buybox_history).reshape(-1, 2), columns=['timestamp', 'sellerId']).pipe(_convert_ktm_to_datetime)
+            df_buybox['sellerId_diff'] = df_buybox['sellerId'].ne(df_buybox['sellerId'].shift())
+        else:
+            df_buybox = pd.DataFrame(columns=['timestamp', 'sellerId', 'sellerId_diff'])
+
+
+        for _, drop in offer_drops.iterrows():
+            start_time = drop['timestamp']
+            end_time = start_time + search_window
+            
+            # Signal 1: Rank Drop
+            rank_changes_in_window = df_rank[(df_rank['timestamp'] > start_time) & (df_rank['timestamp'] <= end_time)]
+            has_rank_drop = not rank_changes_in_window.empty and (rank_changes_in_window['rank_diff'] < 0).any()
+
+            # Signal 2: Buy Box Seller Change
+            buybox_changes_in_window = df_buybox[(df_buybox['timestamp'] > start_time) & (df_buybox['timestamp'] <= end_time)]
+            has_buybox_change = not buybox_changes_in_window.empty and buybox_changes_in_window['sellerId_diff'].any()
+
+            if has_rank_drop: # A rank drop is the minimum requirement for a confirmed sale
+                price_at_sale_time = pd.merge_asof(pd.DataFrame([drop]), df_price, on='timestamp', direction='nearest')['price_cents'].iloc[0]
+                
+                first_rank_drop_in_window = rank_changes_in_window[rank_changes_in_window['rank_diff'] < 0].iloc[0]
+                rank_after = first_rank_drop_in_window['rank']
+                rank_before_index = df_rank[df_rank['timestamp'] == first_rank_drop_in_window['timestamp']].index[0] - 1
+                rank_before = df_rank.iloc[rank_before_index]['rank'] if rank_before_index >= 0 else -1
+
+                confidence = 'High' if has_buybox_change else 'Medium'
+
+                confirmed_sales.append({
+                    'event_timestamp': start_time,
+                    'inferred_sale_price_cents': price_at_sale_time,
+                    'rank_before': rank_before,
+                    'rank_after': rank_after,
+                    'offer_count_before': drop['offer_count'] + 1,
+                    'offer_count_after': drop['offer_count'],
+                    'confidence': confidence
+                })
+        
+        if not confirmed_sales:
+            logger.info(f"ASIN {asin}: Found 0 confirmed sale events out of {len(offer_drops)} offer drops.")
+            return [], len(offer_drops)
+
+        # --- Outlier Rejection ---
+        prices = [sale['inferred_sale_price_cents'] for sale in confirmed_sales]
+        q1 = np.percentile(prices, 25)
+        q3 = np.percentile(prices, 75)
+        iqr = q3 - q1
+        upper_bound = q3 + (1.5 * iqr)
+        
+        sane_sales = [sale for sale in confirmed_sales if sale['inferred_sale_price_cents'] <= upper_bound]
+        
+        outliers_found = len(confirmed_sales) - len(sane_sales)
+        if outliers_found > 0:
+            logger.info(f"ASIN {asin}: Rejected {outliers_found} outlier(s) from inferred sales list (e.g., prices > {upper_bound / 100:.2f}).")
+
+        logger.info(f"ASIN {asin}: Found {len(sane_sales)} sane sale events after outlier rejection.")
+        return sane_sales, len(offer_drops)
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Error during sale event inference: {e}", exc_info=True)
+        return [], 0
+
+def inferred_sale_price_recent(product):
+    """
+    Gets the most recent inferred sale price.
+    """
+    logger = logging.getLogger(__name__)
+    sale_events, _ = infer_sale_events(product)
+    if not sale_events:
+        return {'Inferred Sale Price (Recent)': '-'}
+    
+    # Events are already sorted by timestamp
+    most_recent_event = sale_events[-1]
+    price_cents = most_recent_event.get('inferred_sale_price_cents', -1)
+
+    if price_cents and price_cents > 0:
+        return {'Inferred Sale Price (Recent)': f"${price_cents / 100:.2f}"}
+    else:
+        return {'Inferred Sale Price (Recent)': '-'}
+
+def analyze_sales_cycles(sale_events):
+    """
+    Analyzes a list of inferred sale events to find seasonal trends.
+    Uses median to be robust against outliers and requires a minimum number of sales.
+    """
+    MIN_SALES_FOR_SEASON = 2
+    if not sale_events or len(sale_events) < MIN_SALES_FOR_SEASON:
+        return {} # Not enough data to find a cycle
+
+    df = pd.DataFrame(sale_events)
+    df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
+    df['month'] = df['event_timestamp'].dt.month
+
+    # Group by month to find median sale price and count per month
+    monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
+    
+    # Filter out months that don't meet the minimum sales threshold
+    reliable_months = monthly_stats[monthly_stats['count'] >= MIN_SALES_FOR_SEASON]
+
+    if len(reliable_months) < 2:
+        return {} # Not enough reliable monthly data to determine a cycle
+
+    # Identify peak and trough seasons from the reliable months
+    peak_season_month = reliable_months['median'].idxmax()
+    trough_season_month = reliable_months['median'].idxmin()
+
+    peak_price_cents = reliable_months.loc[peak_season_month]['median']
+    trough_price_cents = reliable_months.loc[trough_season_month]['median']
+
+    analysis = {
+        'peak_season_month': int(peak_season_month),
+        'expected_peak_sell_price_cents': int(peak_price_cents),
+        'trough_season_month': int(trough_season_month),
+        'target_buy_price_cents': int(trough_price_cents),
+        'total_inferred_sales': int(df.shape[0])
+    }
+    
+    return analysis
+
+def peak_season_month(product):
+    """Wrapper function to get the peak sale season month."""
+    sale_events, _ = infer_sale_events(product)
+    analysis = analyze_sales_cycles(sale_events)
+    if not analysis:
+        return {'Peak Season (Month)': '-'}
+    month_name = datetime(1900, analysis['peak_season_month'], 1).strftime('%B')
+    return {'Peak Season (Month)': month_name}
+
+def expected_peak_sell_price(product):
+    """Wrapper function to get the expected peak sell price."""
+    sale_events, _ = infer_sale_events(product)
+    analysis = analyze_sales_cycles(sale_events)
+    if not analysis:
+        return {'Expected Peak Sell Price': '-'}
+    price_cents = analysis.get('expected_peak_sell_price_cents', -1)
+    if price_cents > 0:
+        return {'Expected Peak Sell Price': f"${price_cents / 100:.2f}"}
+    return {'Expected Peak Sell Price': '-'}
+
+def trough_season_month(product):
+    """Wrapper function to get the trough sale season month."""
+    sale_events, _ = infer_sale_events(product)
+    analysis = analyze_sales_cycles(sale_events)
+    if not analysis:
+        return {'Trough Season (Month)': '-'}
+    month_name = datetime(1900, analysis['trough_season_month'], 1).strftime('%B')
+    return {'Trough Season (Month)': month_name}
+
+def target_buy_price(product):
+    """Wrapper function to get the target buy price."""
+    sale_events, _ = infer_sale_events(product)
+    analysis = analyze_sales_cycles(sale_events)
+    if not analysis:
+        return {'Target Buy Price': '-'}
+    price_cents = analysis.get('target_buy_price_cents', -1)
+    if price_cents > 0:
+        return {'Target Buy Price': f"${price_cents / 100:.2f}"}
+    return {'Target Buy Price': '-'}
+
+def profit_confidence(product):
+    """Calculates a confidence score based on how many offer drops correlate with a rank drop."""
+    sale_events, total_offer_drops = infer_sale_events(product)
+    if total_offer_drops == 0:
+        return {'Profit Confidence': '-'}
+    
+    confidence = (len(sale_events) / total_offer_drops) * 100
+    return {'Profit Confidence': f"{confidence:.0f}%"}

@@ -91,13 +91,19 @@ def query_xai_api(payload):
 
 def extract_strategies(summary_text):
     prompt = f"""
-    From the following text, extract the key strategies and parameters for online book arbitrage.
-    Present them as a list of rules. For example: "Sales rank between 100,000 and 500,000".
+    From the following text, extract key strategies, parameters, and "tricks" for online book arbitrage.
+    Present them as a list of clear, actionable rules.
 
-    Only use the information from the text provided. Do not add any external knowledge.
-    If the text is not about online book arbitrage or contains no actionable strategies, respond with the single phrase: "No actionable strategies found in the provided text."
+    **Instructions:**
+    1.  Focus on specific numbers, ranges, and conditions (e.g., "Sales rank between 100,000 and 500,000").
+    2.  **Pay special attention to inferential strategies.** These are "tricks" or methods to figure out information that isn't directly stated, often by combining two or more data points.
+    3.  Only use the information from the text provided. Do not add any external knowledge.
+    4.  If the text contains no actionable strategies, respond with the single phrase: "No actionable strategies found in the provided text."
 
-    Text:
+    **Example of an Inferential Strategy to capture:**
+    *   "You can infer the actual sale price of a book by watching for a simultaneous drop in the number of used offers and a drop in the sales rank on the Keepa chart. The price at that point is likely the true sale price."
+
+    **Text to Analyze:**
     {summary_text}
     """
 
@@ -596,7 +602,7 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
     try:
         # Robustly reconfigure logging for this command
         root_logger = logging.getLogger()
-        # Set level to INFO to capture all desired logs
+        # Set level to INFO for standard operation
         root_logger.setLevel(logging.INFO)
         # Remove any handlers configured by the main app
         root_logger.handlers = []

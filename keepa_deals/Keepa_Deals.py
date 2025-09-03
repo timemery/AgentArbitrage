@@ -226,7 +226,7 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                 logger.info(f"Pre-emptive pause for product batch: Last API call was {time_since_last_api_call_batch:.2f}s ago. Waiting {batch_wait_duration:.2f}s.")
                 time.sleep(batch_wait_duration)
 
-            batch_product_data_list, api_info, actual_batch_cost = fetch_product_batch(api_key, batch_asins)
+            batch_product_data_list, api_info, actual_batch_cost = fetch_product_batch(api_key, batch_asins, history=1)
             LAST_API_CALL_TIMESTAMP = time.time()
 
             batch_had_critical_error = False

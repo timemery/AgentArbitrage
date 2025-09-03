@@ -235,6 +235,12 @@ from .stable_products import (
 )
 from .stable_calculations import (
     percent_down_365,               # Percent Down 365
+    inferred_sale_price_recent,     # Inferred Sale Price (Recent)
+    peak_season_month,              # Peak Season (Month)
+    expected_peak_sell_price,       # Expected Peak Sell Price
+    trough_season_month,            # Trough Season (Month)
+    target_buy_price,               # Target Buy Price
+    profit_confidence,              # Profit Confidence
 )
 from .stable_deals import (
     # Percent Down 90,
@@ -674,7 +680,13 @@ FUNCTION_LIST = [
     None,                           # Used Offer Count - 60 days avg.
     None,                           # Used Offer Count - 90 days avg.
     None,                           # Used Offer Count - 180 days avg.
-    used_offer_count_365_days_avg   # Used Offer Count - 365 days avg.
+    used_offer_count_365_days_avg,  # Used Offer Count - 365 days avg.
+    inferred_sale_price_recent,     # Inferred Sale Price (Recent)
+    peak_season_month,              # Peak Season (Month)
+    expected_peak_sell_price,       # Expected Peak Sell Price
+    trough_season_month,            # Trough Season (Month)
+    target_buy_price,               # Target Buy Price
+    profit_confidence               # Profit Confidence
 ]
 # Chunk 2 ends
 
