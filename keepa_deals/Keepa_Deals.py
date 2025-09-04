@@ -436,7 +436,11 @@ def save_to_database(rows, headers, logger):
         # Insert data
         logger.info(f"Inserting {len(rows)} rows into '{TABLE_NAME}' table.")
         
-        insert_sql = f"INSERT INTO {TABLE_NAME} ({', '.join(f'\"{h}\"' for h in sanitized_headers)}) VALUES ({', '.join(['?'] * len(sanitized_headers))})"
+        # Corrected f-string syntax to avoid backslash issue.
+        # This wraps each sanitized header in double quotes for the SQL statement.
+        column_names = ', '.join(f'"{h}"' for h in sanitized_headers)
+        placeholders = ', '.join(['?'] * len(sanitized_headers))
+        insert_sql = f"INSERT INTO {TABLE_NAME} ({column_names}) VALUES ({placeholders})"
         logger.debug(f"INSERT statement: {insert_sql}")
 
         data_to_insert = []
