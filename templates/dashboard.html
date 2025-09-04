@@ -1,0 +1,218 @@
+{% extends "layout.html" %}
+{% block title %}Deals Dashboard - Agent Arbitrage{% endblock %}
+{% block content %}
+<style>
+    .dashboard-container {
+        display: flex;
+        gap: 20px;
+    }
+    .filters-container {
+        flex: 0 0 250px;
+    }
+    .table-container {
+        flex: 1;
+    }
+    #deals-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    #deals-table th, #deals-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    #deals-table th {
+        background-color: #f2f2f2;
+        cursor: pointer;
+    }
+    #deals-table th:hover {
+        background-color: #ddd;
+    }
+    .pagination-controls {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .pagination-controls button {
+        padding: 8px 16px;
+        margin: 0 5px;
+    }
+</style>
+
+<h1>Deals Dashboard</h1>
+<div class="dashboard-container">
+    <div class="filters-container">
+        <h2>Filters</h2>
+        <form id="filter-form">
+            <div class="filter-group">
+                <label for="max_sales_rank">Max Sales Rank:</label>
+                <input type="number" id="max_sales_rank" name="sales_rank_current_lte">
+            </div>
+            <div class="filter-group">
+                <label for="min_profit_margin">Min Profit Margin (%):</label>
+                <input type="number" id="min_profit_margin" name="profit_margin_gte">
+            </div>
+            <div class="filter-group">
+                <label for="title_contains">Title Contains:</label>
+                <input type="text" id="title_contains" name="title_like">
+            </div>
+            <button type="submit">Apply Filters</button>
+            <button type="reset" id="reset-filters">Reset</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <div id="deals-table"></div>
+        <div class="pagination-controls">
+            <button id="prev-page">Previous</button>
+            <span id="page-info"></span>
+            <button id="next-page">Next</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableContainer = document.getElementById('deals-table');
+    const pageInfo = document.getElementById('page-info');
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    const filterForm = document.getElementById('filter-form');
+    const resetBtn = document.getElementById('reset-filters');
+
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentSort = { by: 'id', order: 'asc' };
+
+    const columnsToShow = [
+        "Title", "ASIN", "Target_Buy_Price", "Sales_Rank_Current", 
+        "Expected_Peak_Sell_Price", "Profit_Confidence"
+    ];
+
+    function getFilters() {
+        const formData = new FormData(filterForm);
+        const filters = {};
+        for (const [key, value] of formData.entries()) {
+            if (value) {
+                filters[key] = value;
+            }
+        }
+        return filters;
+    }
+
+    async function fetchDeals(page = 1, sortBy = 'id', order = 'asc') {
+        const limit = 50;
+        const filters = getFilters();
+        let query = `page=${page}&limit=${limit}&sort=${sortBy}&order=${order}`;
+
+        for (const key in filters) {
+            if (filters[key]) {
+                query += `&${key}=${encodeURIComponent(filters[key])}`;
+            }
+        }
+
+        try {
+            const response = await fetch(`/api/deals?${query}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            renderTable(data.deals);
+            renderPagination(data.pagination);
+        } catch (error) {
+            console.error('Error fetching deals:', error);
+            tableContainer.innerHTML = '<p>Error loading deals. Please try again later.</p>';
+        }
+    }
+
+    function renderTable(deals) {
+        if (!deals || deals.length === 0) {
+            tableContainer.innerHTML = '<p>No deals found matching the criteria.</p>';
+            return;
+        }
+
+        let table = '<table border="1"><thead><tr>';
+        columnsToShow.forEach(header => {
+            table += `<th data-sort="${header}">${header.replace(/_/g, ' ')}</th>`;
+        });
+        table += '</tr></thead><tbody>';
+
+        deals.forEach(deal => {
+            const cleanAsin = deal.ASIN ? deal.ASIN.replace(/=|\"/g, '') : '';
+            table += `<tr data-asin="${cleanAsin}" style="cursor: pointer;">`;
+            columnsToShow.forEach(col => {
+                let value = deal[col] !== null ? deal[col] : '-';
+                if (col.includes('Price') || col.includes('Profit')) {
+                    value = typeof value === 'number' ? `$${value.toFixed(2)}` : value;
+                }
+                table += `<td>${value}</td>`;
+            });
+            table += '</tr>';
+        });
+
+        table += '</tbody></table>';
+        tableContainer.innerHTML = table;
+        
+        // Add event listeners AFTER the table is in the DOM
+        document.querySelectorAll('#deals-table tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                const asin = row.dataset.asin;
+                if (asin) {
+                    window.location.href = '/deal/' + asin;
+                }
+            });
+        });
+
+        document.querySelectorAll('#deals-table th').forEach(th => {
+            th.addEventListener('click', () => {
+                const sortBy = th.dataset.sort;
+                let order = 'asc';
+                if (currentSort.by === sortBy && currentSort.order === 'asc') {
+                    order = 'desc';
+                }
+                currentSort = { by: sortBy, order: order };
+                fetchDeals(currentPage, currentSort.by, currentSort.order);
+            });
+        });
+    }
+
+    function renderPagination(pagination) {
+        currentPage = pagination.current_page;
+        totalPages = pagination.total_pages;
+        
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        
+        prevButton.disabled = currentPage <= 1;
+        nextButton.disabled = currentPage >= totalPages;
+    }
+
+    // --- Event Listeners ---
+
+    filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        currentPage = 1; // Reset to page 1 on new filter
+        fetchDeals(currentPage, currentSort.by, currentSort.order);
+    });
+
+    resetBtn.addEventListener('click', function() {
+        filterForm.reset();
+        currentPage = 1;
+        currentSort = { by: 'id', order: 'asc' };
+        fetchDeals(currentPage, currentSort.by, currentSort.order);
+    });
+
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            fetchDeals(currentPage - 1, currentSort.by, currentSort.order);
+        }
+    });
+
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            fetchDeals(currentPage + 1, currentSort.by, currentSort.order);
+        }
+    });
+
+    // Initial fetch
+    fetchDeals();
+});
+</script>
+{% endblock %}

@@ -2,9 +2,10 @@ import sys
 import logging
 import os
 import subprocess
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
 import httpx
 from bs4 import BeautifulSoup
+import sqlite3
 import re
 import json
 from dotenv import load_dotenv
@@ -29,10 +30,7 @@ app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
-
-# --- Hugging Face API Configuration ---
-HUGGING_FACE_API_KEY = os.getenv("HF_TOKEN")
-SUMMARY_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+AGENT_BRAIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agent_brain.json')
 
 # --- xAI API Configuration ---
 XAI_API_KEY = os.getenv("XAI_TOKEN")
@@ -41,33 +39,8 @@ XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 # --- Keepa API Configuration ---
 KEEPA_API_KEY = os.getenv("KEEPA_API_KEY")
 
-app.logger.info(f"Loaded HF_TOKEN: {HUGGING_FACE_API_KEY}")
 app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded KEEPA_API_KEY: {'*' * len(KEEPA_API_KEY) if KEEPA_API_KEY else 'Not found'}")
-
-def query_huggingface_api(payload, api_url):
-    headers = {"Authorization": f"Bearer {HUGGING_FACE_API_KEY}"}
-    for i in range(3): # Retry up to 3 times
-        with httpx.Client(timeout=None) as client:
-            response = client.post(api_url, headers=headers, json=payload)
-        if response.status_code == 200:
-            try:
-                return response.json()
-            except json.JSONDecodeError:
-                app.logger.error(f"Failed to decode JSON from Hugging Face API. Response status: {response.status_code}, content: {response.text}")
-                return {"error": "Invalid response from API"}
-        elif response.status_code == 503:
-            app.logger.warning(f"API request failed with status 503 (model loading?). Retrying in 5 seconds... (Attempt {i+1}/3)")
-            time.sleep(5)
-            continue
-        else:
-            break # Don't retry for other errors
-    
-    app.logger.error(f"API request failed after retries. Status: {response.status_code}, Response: {response.text}")
-    try:
-        return response.json()
-    except json.JSONDecodeError:
-        return {"error": f"API request failed with status {response.status_code}", "content": response.text}
 
 def query_xai_api(payload):
     if not XAI_API_KEY:
@@ -89,7 +62,7 @@ def query_xai_api(payload):
             app.logger.error(f"xAI API request failed: {e}")
             return {"error": str(e)}
 
-def extract_strategies(summary_text):
+def extract_strategies(full_text):
     prompt = f"""
     From the following text, extract key strategies, parameters, and "tricks" for online book arbitrage.
     Present them as a list of clear, actionable rules.
@@ -104,7 +77,7 @@ def extract_strategies(summary_text):
     *   "You can infer the actual sale price of a book by watching for a simultaneous drop in the number of used offers and a drop in the sales rank on the Keepa chart. The price at that point is likely the true sale price."
 
     **Text to Analyze:**
-    {summary_text}
+    {full_text}
     """
 
     # Attempt 1: Primary Model (xAI)
@@ -129,31 +102,63 @@ def extract_strategies(summary_text):
     if primary_data and 'choices' in primary_data and primary_data['choices']:
         content = primary_data['choices'][0].get('message', {}).get('content')
         if content:
-            flash("Successfully extracted strategies.", "success")
             app.logger.info("Successfully extracted strategies using xAI API.")
             return content
     
     # If xAI API fails, report the error directly.
     error_message = f"Strategy extraction failed. The primary model (xAI) returned an error: {primary_data.get('error', 'Unknown Error')}"
     app.logger.error(error_message)
-    flash("Error: Could not extract strategies. The primary model failed.", "error")
     return "Could not extract strategies. Please check the logs for details."
 
 
-def chunk_text(text, chunk_size=512): # Smaller chunks - changed from 1024 to 512
-    """Splits the text into chunks of a specified size."""
-    words = text.split()
-    chunks = []
-    current_chunk = ""
-    for word in words:
-        if len(current_chunk) + len(word) + 1 < chunk_size:
-            current_chunk += word + " "
-        else:
-            chunks.append(current_chunk)
-            current_chunk = word + " "
-    if current_chunk:
-        chunks.append(current_chunk)
-    return chunks
+def extract_conceptual_ideas(full_text):
+    prompt = f"""
+    From the following text about online book arbitrage, extract high-level conceptual ideas, mental models, and overarching methodologies.
+    Do not focus on specific, quantitative rules (e.g., "sales rank > 10,000"). Instead, focus on the "why" behind the actions.
+    Present them as a list of insightful concepts.
+
+    **Instructions:**
+    1.  Identify the core principles or philosophies for sourcing, pricing, and selling.
+    2.  Look for explanations of market dynamics (e.g., "why prices spike when Amazon goes out of stock").
+    3.  Extract ideas about risk management, inventory strategy, and long-term thinking.
+    4.  Only use the information from the text provided. Do not add any external knowledge.
+    5.  If the text contains no conceptual ideas, respond with the single phrase: "No conceptual ideas found in the provided text."
+
+    **Example of a Conceptual Idea to capture:**
+    *   "The core arbitrage model is to capitalize on pricing inefficiencies between different fulfillment methods (FBM vs. FBA), buying from merchant-fulfilled sellers and reselling through Amazon's FBA network to command a higher price due to the Prime badge."
+    *   "A long-term inventory strategy involves balancing fast-selling, low-ROI books with slow-selling, high-ROI 'long-tail' books to ensure consistent cash flow while building long-term value."
+
+    **Text to Analyze:**
+    {full_text}
+    """
+
+    xai_payload = {
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a strategic analyst. Your task is to extract high-level concepts, mental models, and methodologies from the provided text."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "model": "grok-4-latest",
+        "stream": False,
+        "temperature": 0.3
+    }
+    
+    response_data = query_xai_api(xai_payload)
+
+    if response_data and 'choices' in response_data and response_data['choices']:
+        content = response_data['choices'][0].get('message', {}).get('content')
+        if content:
+            app.logger.info("Successfully extracted conceptual ideas using xAI API.")
+            return content
+    
+    error_message = f"Conceptual idea extraction failed. The model returned an error: {response_data.get('error', 'Unknown Error')}"
+    app.logger.error(error_message)
+    return "Could not extract conceptual ideas. Please check the logs for details."
 
 # Credentials from README.md
 VALID_USERNAME = 'tester'
@@ -208,13 +213,77 @@ def strategies():
 
     return render_template('strategies.html', strategies=strategies_list)
 
+
+@app.route('/agent_brain')
+def agent_brain():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    
+    ideas_list = []
+    app.logger.info(f"Attempting to read agent brain from: {AGENT_BRAIN_FILE}")
+    if os.path.exists(AGENT_BRAIN_FILE):
+        app.logger.info(f"Agent Brain file found.")
+        try:
+            with open(AGENT_BRAIN_FILE, 'r', encoding='utf-8') as f:
+                ideas_list = json.load(f)
+            app.logger.info(f"Successfully loaded {len(ideas_list)} ideas from Agent Brain.")
+        except (IOError, json.JSONDecodeError) as e:
+            app.logger.error(f"Error reading Agent Brain file: {e}", exc_info=True)
+            flash("Error reading the Agent Brain file.", "error")
+    else:
+        app.logger.warning(f"Agent Brain file not found at: {AGENT_BRAIN_FILE}")
+
+    return render_template('agent_brain.html', ideas=ideas_list)
+
+@app.route('/dashboard')
+def dashboard():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    return render_template('dashboard.html')
+
+@app.route('/deal/<string:asin>')
+def deal_detail(asin):
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+
+    DB_PATH = 'deals.db'
+    TABLE_NAME = 'deals'
+    deal = None
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # The ASIN in the DB is stored like '="B00..."', so we need to match that format
+        db_asin_format = f'="{asin}"'
+        cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN = ?", (db_asin_format,))
+        row = cursor.fetchone()
+        
+        if row:
+            deal = dict(row)
+        
+    except sqlite3.Error as e:
+        app.logger.error(f"Database error on deal detail page for ASIN {asin}: {e}")
+        flash("A database error occurred while fetching deal details.", "error")
+    finally:
+        if conn:
+            conn.close()
+            
+    if not deal:
+        flash(f"Deal with ASIN {asin} not found.", "error")
+        return redirect(url_for('dashboard'))
+
+    return render_template('deal_detail.html', deal=deal)
+
+
 @app.route('/learn', methods=['POST'])
 def learn():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
     
     # Clean up old temp files
-    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file']:
+    for key in ['scraped_text_file', 'extracted_strategies_file', 'extracted_ideas_file']:
         if key in session:
             try:
                 os.remove(session[key])
@@ -274,40 +343,35 @@ def learn():
         f.write(scraped_text)
         session['scraped_text_file'] = f.name
 
-    summary_text = ""
-    app.logger.info("Starting summarization...")
-    try:
-        if len(scraped_text) > 1024:
-            text_chunks = chunk_text(scraped_text)
-            summaries = []
-            for i, chunk in enumerate(text_chunks):
-                summary_payload = {"inputs": chunk, "parameters": {"min_length": 30, "max_length": 150}}
-                summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
-                if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
-                    summaries.append(summary_data[0]['summary_text'])
-                else:
-                    app.logger.error(f"Could not summarize chunk {i+1}. API response: {summary_data}")
-            summary_text = "\n".join(summaries) if summaries else "Could not generate a summary."
-        else:
-            summary_payload = {"inputs": scraped_text, "parameters": {"min_length": 30, "max_length": 150}}
-            summary_data = query_huggingface_api(summary_payload, SUMMARY_API_URL)
-            if isinstance(summary_data, list) and summary_data and 'summary_text' in summary_data[0]:
-                summary_text = summary_data[0]['summary_text']
-            else:
-                summary_text = f"Could not summarize the text. API Response: {summary_data}"
-    except Exception as e:
-        app.logger.error(f"An error occurred during summarization: {e}", exc_info=True)
-        summary_text = "An error occurred during summarization."
-    app.logger.info("Summarization finished.")
+    # The summarization step has been removed. We now pass the scraped_text directly.
+    # A thread pool is used to run the two extraction API calls concurrently to improve performance.
+    from concurrent.futures import ThreadPoolExecutor
 
-    with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
-        f.write(summary_text)
-        session['summary_file'] = f.name
+    with ThreadPoolExecutor() as executor:
+        future_strategies = executor.submit(extract_strategies, scraped_text)
+        future_ideas = executor.submit(extract_conceptual_ideas, scraped_text)
+        
+        extracted_strategies = future_strategies.result()
+        extracted_ideas = future_ideas.result()
 
-    extracted_strategies = extract_strategies(summary_text)
+    # Flash messages in the main request context
+    if "Could not extract" in extracted_strategies:
+        flash("Error: Could not extract strategies. The primary model failed.", "error")
+    else:
+        flash("Successfully extracted strategies.", "success")
+
+    if "Could not extract" in extracted_ideas:
+        flash("Error: Could not extract conceptual ideas.", "error")
+    else:
+        flash("Successfully extracted conceptual ideas.", "success")
+
     with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
         f.write(extracted_strategies)
         session['extracted_strategies_file'] = f.name
+
+    with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as f:
+        f.write(extracted_ideas)
+        session['extracted_ideas_file'] = f.name
 
     return redirect(url_for('results'))
 
@@ -326,14 +390,6 @@ def results():
         except FileNotFoundError:
             scraped_text = "Could not find scraped text."
 
-    summary = ""
-    if 'summary_file' in session:
-        try:
-            with open(session['summary_file'], 'r', encoding='utf-8') as f:
-                summary = f.read()
-        except FileNotFoundError:
-            summary = "Could not find summary."
-
     extracted_strategies = ""
     if 'extracted_strategies_file' in session:
         try:
@@ -342,21 +398,29 @@ def results():
         except FileNotFoundError:
             extracted_strategies = "Could not find extracted strategies."
 
-    return render_template('results.html', original_input=original_input, scraped_text=scraped_text, summary=summary, extracted_strategies=extracted_strategies)
+    extracted_ideas = ""
+    if 'extracted_ideas_file' in session:
+        try:
+            with open(session['extracted_ideas_file'], 'r', encoding='utf-8') as f:
+                extracted_ideas = f.read()
+        except FileNotFoundError:
+            extracted_ideas = "Could not find extracted ideas."
+
+    return render_template('results.html', original_input=original_input, scraped_text=scraped_text, extracted_strategies=extracted_strategies, extracted_ideas=extracted_ideas)
 
 @app.route('/approve', methods=['POST'])
 def approve():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
     
-    approved_summary = request.form.get('approved_summary')
     approved_strategies = request.form.get('approved_strategies')
-    
-    app.logger.info("Approved Summary:")
-    app.logger.info(approved_summary)
+    approved_ideas = request.form.get('approved_ideas')
     
     app.logger.info("Approved Strategies:")
     app.logger.info(approved_strategies)
+
+    app.logger.info("Approved Conceptual Ideas:")
+    app.logger.info(approved_ideas)
 
     # Save the approved strategies to a file
     if approved_strategies:
@@ -383,9 +447,30 @@ def approve():
             app.logger.error(f"Error saving strategies: {e}", exc_info=True)
             flash("An error occurred while saving the strategies.", "error")
 
+    # Save the approved ideas to the agent_brain.json file
+    if approved_ideas:
+        try:
+            if os.path.exists(AGENT_BRAIN_FILE):
+                with open(AGENT_BRAIN_FILE, 'r', encoding='utf-8') as f:
+                    ideas = json.load(f)
+            else:
+                ideas = []
+            
+            new_ideas = [i.strip() for i in approved_ideas.strip().split('\n') if i.strip()]
+            ideas.extend(new_ideas)
+            
+            unique_ideas = list(dict.fromkeys(ideas))
+            with open(AGENT_BRAIN_FILE, 'w', encoding='utf-8') as f:
+                json.dump(unique_ideas, f, indent=4)
+
+            flash(f"{len(new_ideas)} new conceptual ideas have been approved and saved to the Agent Brain.", "success")
+        except Exception as e:
+            app.logger.error(f"Error saving conceptual ideas: {e}", exc_info=True)
+            flash("An error occurred while saving the conceptual ideas.", "error")
+
 
     # Clean up the session to prevent cookie size issues
-    for key in ['scraped_text_file', 'summary_file', 'extracted_strategies_file', 'original_input']:
+    for key in ['scraped_text_file', 'extracted_strategies_file', 'original_input', 'extracted_ideas_file']:
         if key in session:
             try:
                 if session[key] and os.path.exists(session[key]):
@@ -653,6 +738,111 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
             'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
             'message': f"An error occurred: {str(e)}"
         })
+
+@app.route('/api/deals')
+def api_deals():
+    DB_PATH = 'deals.db'
+    TABLE_NAME = 'deals'
+
+    # --- Connect and get column names ---
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        # Check if table exists first
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (TABLE_NAME,))
+        if cursor.fetchone() is None:
+            conn.close()
+            return jsonify({
+                "pagination": {"total_records": 0, "total_pages": 0, "current_page": 1, "limit": 50},
+                "deals": [],
+                "message": "No data found. Please run a scan from the Data Sourcing page."
+            })
+
+        cursor.execute(f"PRAGMA table_info({TABLE_NAME})")
+        available_columns = [row['name'] for row in cursor.fetchall()]
+    except sqlite3.Error as e:
+        app.logger.error(f"Database error when fetching column info: {e}")
+        return jsonify({"error": "Database error", "message": str(e)}), 500
+    
+    # --- Pagination ---
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 50, type=int)
+    offset = (page - 1) * limit
+
+    # --- Sorting ---
+    sort_by = request.args.get('sort', 'id')
+    if sort_by not in available_columns:
+        sort_by = 'id' # Default to id if invalid column is provided
+    
+    order = request.args.get('order', 'asc').lower()
+    if order not in ['asc', 'desc']:
+        order = 'asc'
+
+    # --- Filtering ---
+    filters = {
+        "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
+        "profit_margin_gte": request.args.get('profit_margin_gte', type=int),
+        "title_like": request.args.get('title_like', type=str)
+    }
+
+    where_clauses = []
+    filter_params = []
+
+    if filters.get("sales_rank_current_lte") is not None:
+        # Assuming sanitized column name is 'Sales_Rank_Current'
+        where_clauses.append("\"Sales_Rank_Current\" <= ?")
+        filter_params.append(filters["sales_rank_current_lte"])
+    
+    if filters.get("profit_margin_gte") is not None:
+        # The sanitized column name for "Profit Margin %"
+        where_clauses.append("\"Profit_Margin_Percent\" >= ?")
+        filter_params.append(filters["profit_margin_gte"])
+
+    if filters.get("title_like"):
+        where_clauses.append("\"Title\" LIKE ?")
+        filter_params.append(f"%{filters['title_like']}%")
+
+    # --- Build and Execute Query ---
+    try:
+        # Get total count with filters
+        where_sql = ""
+        if where_clauses:
+            where_sql = " WHERE " + " AND ".join(where_clauses)
+        
+        count_query = f"SELECT COUNT(*) FROM {TABLE_NAME}{where_sql}"
+        total_records = cursor.execute(count_query, filter_params).fetchone()[0]
+        total_pages = (total_records + limit - 1) // limit if limit > 0 else 1
+
+        # Get data with sorting and pagination
+        data_query = f"SELECT * FROM {TABLE_NAME}{where_sql} ORDER BY \"{sort_by}\" {order} LIMIT ? OFFSET ?"
+        
+        query_params = filter_params + [limit, offset]
+        
+        deal_rows = cursor.execute(data_query, query_params).fetchall()
+        deals_list = [dict(row) for row in deal_rows]
+
+    except sqlite3.Error as e:
+        app.logger.error(f"Database query error: {e}")
+        return jsonify({"error": "Database query failed", "message": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+
+    # --- Format and Return Response ---
+    response = {
+        "pagination": {
+            "total_records": total_records,
+            "total_pages": total_pages,
+            "current_page": page,
+            "limit": limit
+        },
+        "deals": deals_list
+    }
+    
+    return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

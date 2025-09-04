@@ -1822,6 +1822,57 @@ def get_shipping_included(product_data):
     return {'Shipping Included': 'no'}
 # Shipping Included ends
 
+# Target Buy Price starts
+def target_buy_price(product):
+    """
+    Calculates the target buy price by finding the lowest current offer price for a book
+    in 'Good' or better condition (Like New, Very Good, Good).
+    """
+    asin = product.get('asin', 'unknown')
+    logger = logging.getLogger(__name__)
+    
+    offers = product.get('offers')
+    if not offers or not isinstance(offers, list):
+        logger.warning(f"ASIN {asin}: 'offers' array is missing or not a list. Cannot calculate Target Buy Price.")
+        return {'Target Buy Price': '-'}
+
+    # Condition codes inferred from stats array order and Amazon standards:
+    # 2: Used - Like New, 3: Used - Very Good, 4: Used - Good
+    # We are looking for the lowest price among these conditions.
+    good_or_better_conditions = {2, 3, 4}
+    
+    eligible_offers = []
+    for offer in offers:
+        # Ensure offer is a dictionary and has the required keys
+        if not isinstance(offer, dict):
+            continue
+        
+        condition = offer.get('condition')
+        price = offer.get('price') # Price is in cents
+        
+        # Basic validation
+        if condition is None or price is None:
+            continue
+            
+        if condition in good_or_better_conditions and isinstance(price, int) and price > 0:
+            eligible_offers.append(price)
+            
+    if not eligible_offers:
+        logger.info(f"ASIN {asin}: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.")
+        return {'Target Buy Price': '-'}
+        
+    # Find the minimum price from the eligible offers
+    min_price_cents = min(eligible_offers)
+    
+    try:
+        formatted_price = f"${min_price_cents / 100:.2f}"
+        logger.info(f"ASIN {asin}: Target Buy Price calculated as {formatted_price} from {len(eligible_offers)} eligible offer(s).")
+        return {'Target Buy Price': formatted_price}
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Error formatting Target Buy Price ({min_price_cents}): {str(e)}")
+        return {'Target Buy Price': '-'}
+# Target Buy Price ends
+
 # Buy Box Seller ID starts
 def get_buy_box_seller_id(product):
     """
@@ -1858,5 +1909,40 @@ def get_buy_box_seller_id(product):
     logger.warning(f"ASIN {asin}: Could not find a valid seller ID in the history. Last entry was '{history[-1] if history else 'N/A'}'.")
     return {'Buy Box Seller ID': '-'}
 # Buy Box Seller ID ends
+
+# Profit Margin % starts
+def profit_margin_percent(product):
+    """
+    Calculates the profit margin based on Target Buy Price and Expected Peak Sell Price.
+    This function depends on other functions for its inputs.
+    """
+    from .stable_calculations import expected_peak_sell_price # Local import to avoid circular dependency issues
+
+    logger = logging.getLogger(__name__)
+    asin = product.get('asin', 'unknown')
+
+    # Get Target Buy Price (from this file)
+    buy_price_str = target_buy_price(product).get('Target Buy Price', '-')
+    
+    # Get Expected Peak Sell Price (from stable_calculations)
+    sell_price_str = expected_peak_sell_price(product).get('Expected Peak Sell Price', '-')
+
+    if buy_price_str == '-' or sell_price_str == '-':
+        return {'Profit Margin %': '-'}
+
+    try:
+        buy_price = float(buy_price_str.replace('$', ''))
+        sell_price = float(sell_price_str.replace('$', ''))
+
+        if buy_price <= 0:
+            return {'Profit Margin %': '-'}
+            
+        margin = ((sell_price - buy_price) / buy_price) * 100
+        return {'Profit Margin %': f"{margin:.0f}%"}
+
+    except (ValueError, TypeError) as e:
+        logger.error(f"ASIN {asin}: Could not calculate profit margin. Buy: '{buy_price_str}', Sell: '{sell_price_str}'. Error: {e}")
+        return {'Profit Margin %': '-'}
+# Profit Margin % ends
 
 #### END of stable_products.py ####

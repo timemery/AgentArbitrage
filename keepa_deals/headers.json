@@ -221,5 +221,6 @@
   "Expected Peak Sell Price",
   "Trough Season (Month)",
   "Target Buy Price",
-  "Profit Confidence"
+    "Profit Confidence",
+    "Profit Margin %"
 ]

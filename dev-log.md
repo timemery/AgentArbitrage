@@ -691,4 +691,22 @@ Dual-Path Analysis: Enhance the strategy extraction logic to perform two paralle
 Knowledge Base Storage: Create a new storage mechanism (idea_playbook.json) to save the extracted concepts, keeping them separate from the machine-readable rules.
 "Idea Playbook" UI: Develop a new page in the web application to display the contents of the knowledge base, creating a browsable library of high-level strategies and ideas.
 
+### Dev Log Entry
+
+**Date:** 2025-09-04
+
+**Issue:** 500 Internal Server Error after deploying the Knowledge Engine & Deals Dashboard feature.
+
+**Debugging Summary:**
+
+- Initial investigation pointed towards missing dependencies (`pandas`, `numpy`) or outdated Python files.
+- Apache error logs were checked but contained no Python traceback, suggesting a crash very early in the application's startup sequence.
+- We confirmed `requirements.txt` was correct.
+- We systematically checked key modified files. `stable_calculations.py` and `Keepa_Deals.py` were confirmed to be up-to-date.
+- We identified `keepa_deals/stable_deals.py` as being an outdated version on the server.
+- Due to tool failures (diff window not displaying, message tool failing on long code blocks), we manually transferred the correct code for `stable_deals.py` in three parts.
+- **Outcome:** The 500 error persists even after updating the key file. This suggests another file mismatch or a more subtle issue.
+
+**Next Step:** Per user's direction, documenting this session and starting a new task with a fully synced repository to debug from a clean state.
+
 

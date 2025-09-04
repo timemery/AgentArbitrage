@@ -1,5 +1,5 @@
 # stable_deals.py 
-# (Last update: Version 5.1)
+# (Last update: Version 8)
 
 import logging
 import json
@@ -51,7 +51,6 @@ def deal_found(deal_object, logger_param=None): # Renamed logger to logger_param
     else:
         return {'Deal found': '-'}
 # Deal Found ends
-
 # Last update starts
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
 def last_update(deal_object, logger_param, product_data=None): # Renamed logger to logger_param
@@ -127,7 +126,6 @@ def last_update(deal_object, logger_param, product_data=None): # Renamed logger 
         current_logger.error(f"last_update failed: {str(e)}")
         return {'last update': '-'}
 # Last update ends
-
 # Last price change starts
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
 def last_price_change(deal_object, logger_param=None, product_data=None): # Renamed logger, added product_data

@@ -381,6 +381,96 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                 final_processed_rows[i] = placeholder
         
         write_csv(final_processed_rows, deals_to_process)
+        
+        # Save results to database
+        save_to_database(final_processed_rows, HEADERS, logger)
+
         logger.info("Script completed!")
     except Exception as e:
         logger.error(f"Main failed: {str(e)}")
+
+def save_to_database(rows, headers, logger):
+    import sqlite3
+    import re
+
+    # Use a path relative to the app's instance folder if possible, or root for now.
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+    TABLE_NAME = 'deals'
+    
+    logger.info(f"Connecting to database at {DB_PATH}...")
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+
+        # Sanitize headers for column names
+        def sanitize_col_name(name):
+            # Replace spaces and special characters with underscores
+            name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent')
+            # Remove any other non-alphanumeric characters except underscore
+            return re.sub(r'[^a-zA-Z0-9_]', '', name)
+
+        sanitized_headers = [sanitize_col_name(h) for h in headers]
+        
+        # Create table schema
+        # Drop table if it exists to ensure a fresh start
+        logger.info(f"Dropping existing '{TABLE_NAME}' table if it exists.")
+        cursor.execute(f"DROP TABLE IF EXISTS {TABLE_NAME}")
+
+        # Create table with sanitized column names
+        create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        cols_sql = []
+        for header in sanitized_headers:
+            # Simple type inference
+            if 'Price' in header or 'Fee' in header or 'Margin' in header or 'Percent' in header or 'Profit' in header:
+                cols_sql.append(f'"{header}" REAL')
+            elif 'Rank' in header or 'Count' in header or 'Drops' in header:
+                 cols_sql.append(f'"{header}" INTEGER')
+            else:
+                cols_sql.append(f'"{header}" TEXT')
+        create_table_sql += ", ".join(cols_sql) + ")"
+        
+        logger.info(f"Creating new '{TABLE_NAME}' table.")
+        logger.debug(f"CREATE TABLE statement: {create_table_sql}")
+        cursor.execute(create_table_sql)
+
+        # Insert data
+        logger.info(f"Inserting {len(rows)} rows into '{TABLE_NAME}' table.")
+        
+        insert_sql = f"INSERT INTO {TABLE_NAME} ({', '.join(f'\"{h}\"' for h in sanitized_headers)}) VALUES ({', '.join(['?'] * len(sanitized_headers))})"
+        logger.debug(f"INSERT statement: {insert_sql}")
+
+        data_to_insert = []
+        for row_dict in rows:
+            row_tuple = []
+            for header in headers: # Use original headers to look up in dict
+                value = row_dict.get(header, None)
+                
+                # Sanitize data for DB insertion
+                if isinstance(value, str):
+                    if value == '-':
+                        row_tuple.append(None)
+                    else:
+                        try:
+                            # Attempt to convert to number if it looks like one (e.g., "$12.34", "50%")
+                            cleaned_value = value.replace('$', '').replace(',', '').replace('%', '')
+                            row_tuple.append(float(cleaned_value))
+                        except (ValueError, TypeError):
+                            # If conversion fails, keep it as text
+                            row_tuple.append(value)
+                else:
+                    row_tuple.append(value)
+            data_to_insert.append(tuple(row_tuple))
+
+        cursor.executemany(insert_sql, data_to_insert)
+        
+        conn.commit()
+        logger.info(f"Successfully inserted {cursor.rowcount} rows into the database.")
+
+    except sqlite3.Error as e:
+        logger.error(f"Database error: {e}")
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during database operation: {e}")
+    finally:
+        if conn:
+            conn.close()
+            logger.info("Database connection closed.")

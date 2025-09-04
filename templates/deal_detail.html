@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block title %}Deal Detail - {{ deal.ASIN.strip('=') }}{% endblock %}
+{% block content %}
+<style>
+    .detail-container {
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+    }
+    .deal-header {
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 15px;
+    }
+    .deal-header h1 {
+        margin: 0;
+    }
+    .deal-header p {
+        margin: 5px 0 0;
+        color: #666;
+    }
+    .tab-nav {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+    .tab-nav button {
+        padding: 10px 20px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-bottom: 3px solid transparent;
+    }
+    .tab-nav button.active {
+        border-bottom-color: #007bff;
+        font-weight: bold;
+    }
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .grid-item {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    .grid-item h3 {
+        margin-top: 0;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+    .grid-item p {
+        display: flex;
+        justify-content: space-between;
+    }
+    .grid-item p strong {
+        color: #333;
+    }
+</style>
+
+<div class="detail-container">
+    <div class="deal-header">
+        <h1>{{ deal.Title }}</h1>
+        <p>ASIN: {{ deal.ASIN.strip('=') }}</p>
+    </div>
+
+    <div class="tab-nav">
+        <button class="tab-link active" data-tab="profit">Profit Analysis</button>
+        <button class="tab-link" data-tab="prep">Prep & Listing</button>
+        <button class="tab-link" data-tab="sales">Sales Tracking</button>
+    </div>
+
+    <div id="profit" class="tab-content active">
+        <h2>Profit Analysis</h2>
+        <div class="grid-container">
+            <div class="grid-item">
+                <h3>Pricing</h3>
+                <p><span>Target Buy Price:</span> <strong>${{ "%.2f"|format(deal.Target_Buy_Price) if deal.Target_Buy_Price is not none else '-' }}</strong></p>
+                <p><span>Expected Peak Sell Price:</span> <strong>${{ "%.2f"|format(deal.Expected_Peak_Sell_Price) if deal.Expected_Peak_Sell_Price is not none else '-' }}</strong></p>
+                <p><span>Profit Confidence:</span> <strong>{{ "%.0f"|format(deal.Profit_Confidence) if deal.Profit_Confidence is not none else '-' }}%</strong></p>
+            </div>
+            <div class="grid-item">
+                <h3>Sales Rank</h3>
+                <p><span>Current:</span> <strong>{{ "{:,}".format(deal.Sales_Rank_Current) if deal.Sales_Rank_Current is not none else '-' }}</strong></p>
+                <p><span>Drops (365d):</span> <strong>{{ deal.Sales_Rank_Drops_last_365_days if deal.Sales_Rank_Drops_last_365_days is not none else '-' }}</strong></p>
+            </div>
+            <div class="grid-item">
+                <h3>External Links</h3>
+                <p><a href="{{ deal['AMZ_link'] }}" target="_blank">View on Amazon</a></p>
+                <p><a href="{{ deal['Keepa_Link'] }}" target="_blank">View on Keepa</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="prep" class="tab-content">
+        <h2>Prep & Listing</h2>
+        <p>(Prep and listing tracking form will go here.)</p>
+    </div>
+
+    <div id="sales" class="tab-content">
+        <h2>Sales Tracking</h2>
+        <p>(Sales tracking form will go here.)</p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab-link');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(item => item.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+});
+</script>
+{% endblock %}
