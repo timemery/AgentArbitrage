@@ -246,7 +246,7 @@ def deal_detail(asin):
     if not session.get('logged_in'):
         return redirect(url_for('index'))
 
-    DB_PATH = 'deals.db'
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db')
     TABLE_NAME = 'deals'
     deal = None
 
@@ -255,9 +255,8 @@ def deal_detail(asin):
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        # The ASIN in the DB is stored like '="B00..."', so we need to match that format
-        db_asin_format = f'="{asin}"'
-        cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN = ?", (db_asin_format,))
+        # The ASIN in the DB is stored as a plain string.
+        cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN = ?", (asin,))
         row = cursor.fetchone()
         
         if row:
@@ -741,7 +740,7 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
 
 @app.route('/api/deals')
 def api_deals():
-    DB_PATH = 'deals.db'
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db')
     TABLE_NAME = 'deals'
 
     # --- Connect and get column names ---
@@ -791,8 +790,8 @@ def api_deals():
     filter_params = []
 
     if filters.get("sales_rank_current_lte") is not None:
-        # Assuming sanitized column name is 'Sales_Rank_Current'
-        where_clauses.append("\"Sales_Rank_Current\" <= ?")
+        # The sanitized column name for "Sales Rank: Current" is "Sales_Rank___Current"
+        where_clauses.append("\"Sales_Rank___Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
     
     if filters.get("profit_margin_gte") is not None:

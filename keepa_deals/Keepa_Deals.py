@@ -446,20 +446,23 @@ def save_to_database(rows, headers, logger):
         data_to_insert = []
         for row_dict in rows:
             row_tuple = []
-            for header in headers: # Use original headers to look up in dict
+            for header in headers:  # Use original headers to look up in dict
                 value = row_dict.get(header, None)
                 
-                # Sanitize data for DB insertion
+                # Special handling for ASIN to ensure it's always a string
+                if header == 'ASIN':
+                    row_tuple.append(str(value) if value is not None else None)
+                    continue
+
+                # Sanitize other data for DB insertion
                 if isinstance(value, str):
                     if value == '-':
                         row_tuple.append(None)
                     else:
                         try:
-                            # Attempt to convert to number if it looks like one (e.g., "$12.34", "50%")
                             cleaned_value = value.replace('$', '').replace(',', '').replace('%', '')
                             row_tuple.append(float(cleaned_value))
                         except (ValueError, TypeError):
-                            # If conversion fails, keep it as text
                             row_tuple.append(value)
                 else:
                     row_tuple.append(value)

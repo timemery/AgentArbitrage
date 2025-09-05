@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Deal Detail - {{ deal.ASIN.strip('=') }}{% endblock %}
+{% block title %}Deal Detail - {{ deal['ASIN'] }}{% endblock %}
 {% block content %}
 <style>
     .detail-container {
@@ -66,10 +66,10 @@
     }
 </style>
 
-<div class="detail-container">
+<div class="detail-container light-theme">
     <div class="deal-header">
-        <h1>{{ deal.Title }}</h1>
-        <p>ASIN: {{ deal.ASIN.strip('=') }}</p>
+        <h1>{{ deal['Title'] }}</h1>
+        <p>ASIN: {{ deal['ASIN'] }}</p>
     </div>
 
     <div class="tab-nav">
@@ -83,14 +83,14 @@
         <div class="grid-container">
             <div class="grid-item">
                 <h3>Pricing</h3>
-                <p><span>Target Buy Price:</span> <strong>${{ "%.2f"|format(deal.Target_Buy_Price) if deal.Target_Buy_Price is not none else '-' }}</strong></p>
-                <p><span>Expected Peak Sell Price:</span> <strong>${{ "%.2f"|format(deal.Expected_Peak_Sell_Price) if deal.Expected_Peak_Sell_Price is not none else '-' }}</strong></p>
-                <p><span>Profit Confidence:</span> <strong>{{ "%.0f"|format(deal.Profit_Confidence) if deal.Profit_Confidence is not none else '-' }}%</strong></p>
+                <p><span>Target Buy Price:</span> <strong>${{ "%.2f"|format(deal['Target_Buy_Price']) if deal['Target_Buy_Price'] is not none else '-' }}</strong></p>
+                <p><span>Expected Peak Sell Price:</span> <strong>${{ "%.2f"|format(deal['Expected_Peak_Sell_Price']) if deal['Expected_Peak_Sell_Price'] is not none else '-' }}</strong></p>
+                <p><span>Profit Confidence:</span> <strong>{{ "%.0f"|format(deal['Profit_Confidence']) if deal['Profit_Confidence'] is not none else '-' }}%</strong></p>
             </div>
             <div class="grid-item">
                 <h3>Sales Rank</h3>
-                <p><span>Current:</span> <strong>{{ "{:,}".format(deal.Sales_Rank_Current) if deal.Sales_Rank_Current is not none else '-' }}</strong></p>
-                <p><span>Drops (365d):</span> <strong>{{ deal.Sales_Rank_Drops_last_365_days if deal.Sales_Rank_Drops_last_365_days is not none else '-' }}</strong></p>
+                <p><span>Current:</span> <strong>{{ "{:,}".format(deal['Sales_Rank___Current']) if deal['Sales_Rank___Current'] is not none else '-' }}</strong></p>
+                <p><span>Drops (365d):</span> <strong>{{ deal['Sales_Rank___Drops_last_365_days'] if deal['Sales_Rank___Drops_last_365_days'] is not none else '-' }}</strong></p>
             </div>
             <div class="grid-item">
                 <h3>External Links</h3>
