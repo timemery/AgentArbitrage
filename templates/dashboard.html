@@ -7,17 +7,25 @@
         border-collapse: collapse;
     }
     #deals-table th, #deals-table td {
-        border: 1px solid #ddd;
+        border: 1px solid rgba(102, 153, 204, 0.5);
         padding: 8px;
         text-align: left;
     }
     #deals-table th {
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.2);
         color: white;
         cursor: pointer;
     }
+    .th-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .sort-arrow {
+        padding-left: 5px; /* Use padding-left to space from text */
+    }
     #deals-table th:hover {
-        background-color: #ddd;
+        background-color: rgba(0, 0, 0, 0.25);
     }
     .pagination-controls {
         margin-top: 20px;
@@ -26,6 +34,12 @@
     .pagination-controls button {
         padding: 8px 16px;
         margin: 0 5px;
+    }
+    .title-cell {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 
@@ -125,7 +139,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let table = '<table border="1"><thead><tr>';
         columnsToShow.forEach(header => {
-            table += `<th data-sort="${header}">${header.replace(/_/g, ' ')}</th>`;
+            const headerText = header.replace(/_/g, ' ');
+            let arrow = '';
+            if (header === currentSort.by) {
+                arrow = currentSort.order === 'asc' ? '↑' : '↓';
+            }
+            table += `<th data-sort="${header}"><div class="th-content"><span>${headerText}</span><span class="sort-arrow">${arrow}</span></div></th>`;
         });
         table += '</tr></thead><tbody>';
 
@@ -134,10 +153,28 @@ document.addEventListener('DOMContentLoaded', function() {
             table += `<tr data-asin="${cleanAsin}" style="cursor: pointer;">`;
             columnsToShow.forEach(col => {
                 let value = deal[col] !== null ? deal[col] : '-';
-                if (col.includes('Price') || col.includes('Profit')) {
+                let cellHtml = '';
+
+                // Formatting logic
+                if (col === 'Profit_Confidence') {
+                    value = typeof value === 'number' ? `${Math.round(value)}%` : value;
+                } else if (col.includes('Price') || col.includes('Profit')) {
                     value = typeof value === 'number' ? `$${value.toFixed(2)}` : value;
                 }
-                table += `<td>${value}</td>`;
+                
+                // Title cell specific attributes
+                if (col === 'Title') {
+                    const fullTitle = deal[col] || '';
+                    // Use textContent to prevent HTML injection issues with the title attribute
+                    const tempEl = document.createElement('div');
+                    tempEl.textContent = fullTitle;
+                    const safeTitle = tempEl.innerHTML;
+                    
+                    cellHtml = `<td class="title-cell" title="${safeTitle}">${value}</td>`;
+                } else {
+                    cellHtml = `<td>${value}</td>`;
+                }
+                table += cellHtml;
             });
             table += '</tr>';
         });

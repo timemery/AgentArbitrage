@@ -1,72 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Deal Detail - {{ deal['ASIN'] }}{% endblock %}
 {% block content %}
-<style>
-    .detail-container {
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-    }
-    .deal-header {
-        margin-bottom: 20px;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 15px;
-    }
-    .deal-header h1 {
-        margin: 0;
-    }
-    .deal-header p {
-        margin: 5px 0 0;
-        color: #666;
-    }
-    .tab-nav {
-        display: flex;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 20px;
-    }
-    .tab-nav button {
-        padding: 10px 20px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        font-size: 16px;
-        border-bottom: 3px solid transparent;
-    }
-    .tab-nav button.active {
-        border-bottom-color: #007bff;
-        font-weight: bold;
-    }
-    .tab-content {
-        display: none;
-    }
-    .tab-content.active {
-        display: block;
-    }
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-    }
-    .grid-item {
-        background: #f9f9f9;
-        padding: 15px;
-        border-radius: 5px;
-    }
-    .grid-item h3 {
-        margin-top: 0;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 5px;
-    }
-    .grid-item p {
-        display: flex;
-        justify-content: space-between;
-    }
-    .grid-item p strong {
-        color: #333;
-    }
-</style>
 
-<div class="detail-container light-theme">
+<div class="container">
     <div class="deal-header">
         <h1>{{ deal['Title'] }}</h1>
         <p>ASIN: {{ deal['ASIN'] }}</p>
