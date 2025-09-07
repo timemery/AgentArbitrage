@@ -194,6 +194,22 @@ a:hover {
     display: flex;
 }
 
+/* Custom Tooltip */
+.custom-tooltip {
+    position: absolute;
+    display: none;
+    background-color: #336699;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #003366;
+    z-index: 1000;
+    pointer-events: none;
+    font-size: 0.9em;
+    white-space: nowrap; /* Prevent title from wrapping */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
 /* Flash Messages */
 .flashes {
     list-style-type: none;

@@ -70,9 +70,9 @@
                 <button id="next-page">Next</button>
             </div>
         </div>
+<div id="custom-tooltip" class="custom-tooltip"></div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Find the parent .container and replace it with .container-full-width
     const container = document.querySelector('.container');
     if (container) {
         container.classList.remove('container');
@@ -85,23 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextButton = document.getElementById('next-page');
     const filterForm = document.getElementById('filter-form');
     const resetBtn = document.getElementById('reset-filters');
+    const tooltip = document.getElementById('custom-tooltip');
 
     let currentPage = 1;
     let totalPages = 1;
     let currentSort = { by: 'id', order: 'asc' };
 
     const columnsToShow = [
-        "Title", "ASIN", "Target_Buy_Price", "Sales_Rank___Current", 
-        "Expected_Peak_Sell_Price", "Profit_Confidence"
+        "Title", "ASIN", "Best_Price", "Seller_Rank", "Target_Buy_Price", 
+        "Sales_Rank___Current", "Expected_Peak_Sell_Price", "Profit_Confidence"
     ];
 
     function getFilters() {
         const formData = new FormData(filterForm);
         const filters = {};
         for (const [key, value] of formData.entries()) {
-            if (value) {
-                filters[key] = value;
-            }
+            if (value) filters[key] = value;
         }
         return filters;
     }
@@ -110,18 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const limit = 50;
         const filters = getFilters();
         let query = `page=${page}&limit=${limit}&sort=${sortBy}&order=${order}`;
-
         for (const key in filters) {
-            if (filters[key]) {
-                query += `&${key}=${encodeURIComponent(filters[key])}`;
-            }
+            if (filters[key]) query += `&${key}=${encodeURIComponent(filters[key])}`;
         }
 
         try {
             const response = await fetch(`/api/deals?${query}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             renderTable(data.deals);
             renderPagination(data.pagination);
@@ -137,44 +131,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        let table = '<table border="1"><thead><tr>';
+        let table = '<table><thead><tr>';
         columnsToShow.forEach(header => {
             const headerText = header.replace(/_/g, ' ');
             let arrow = '';
-            if (header === currentSort.by) {
-                arrow = currentSort.order === 'asc' ? '↑' : '↓';
-            }
+            if (header === currentSort.by) arrow = currentSort.order === 'asc' ? '↑' : '↓';
             table += `<th data-sort="${header}"><div class="th-content"><span>${headerText}</span><span class="sort-arrow">${arrow}</span></div></th>`;
         });
         table += '</tr></thead><tbody>';
 
         deals.forEach(deal => {
-            const cleanAsin = deal.ASIN ? deal.ASIN.replace(/=|\"/g, '') : '';
+            const cleanAsin = deal.ASIN ? String(deal.ASIN).replace(/=|\"/g, '') : '';
             table += `<tr data-asin="${cleanAsin}" style="cursor: pointer;">`;
             columnsToShow.forEach(col => {
-                let value = deal[col] !== null ? deal[col] : '-';
-                let cellHtml = '';
-
-                // Formatting logic
-                if (col === 'Profit_Confidence') {
-                    value = typeof value === 'number' ? `${Math.round(value)}%` : value;
-                } else if (col.includes('Price') || col.includes('Profit')) {
-                    value = typeof value === 'number' ? `$${value.toFixed(2)}` : value;
-                }
+                let value = deal[col] != null ? deal[col] : '-';
+                if (col === 'Profit_Confidence' && typeof value === 'number') value = `${Math.round(value)}%`;
+                else if ((col.includes('Price') || col.includes('Profit')) && typeof value === 'number') value = `$${value.toFixed(2)}`;
                 
-                // Title cell specific attributes
                 if (col === 'Title') {
                     const fullTitle = deal[col] || '';
-                    // Use textContent to prevent HTML injection issues with the title attribute
-                    const tempEl = document.createElement('div');
-                    tempEl.textContent = fullTitle;
-                    const safeTitle = tempEl.innerHTML;
-                    
-                    cellHtml = `<td class="title-cell" title="${safeTitle}">${value}</td>`;
+                    table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
                 } else {
-                    cellHtml = `<td>${value}</td>`;
+                    table += `<td>${value}</td>`;
                 }
-                table += cellHtml;
             });
             table += '</tr>';
         });
@@ -182,25 +161,39 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '</tbody></table>';
         tableContainer.innerHTML = table;
         
-        // Add event listeners AFTER the table is in the DOM
+        // Add event listeners for navigation, sorting, and tooltips
+        addEventListeners();
+    }
+    
+    function addEventListeners() {
         document.querySelectorAll('#deals-table tbody tr').forEach(row => {
             row.addEventListener('click', () => {
                 const asin = row.dataset.asin;
-                if (asin) {
-                    window.location.href = '/deal/' + asin;
-                }
+                if (asin) window.location.href = '/deal/' + asin;
             });
         });
 
         document.querySelectorAll('#deals-table th').forEach(th => {
             th.addEventListener('click', () => {
                 const sortBy = th.dataset.sort;
-                let order = 'asc';
-                if (currentSort.by === sortBy && currentSort.order === 'asc') {
-                    order = 'desc';
-                }
-                currentSort = { by: sortBy, order: order };
+                let order = (currentSort.by === sortBy && currentSort.order === 'asc') ? 'desc' : 'asc';
+                currentSort = { by: sortBy, order };
                 fetchDeals(currentPage, currentSort.by, currentSort.order);
+            });
+        });
+
+        document.querySelectorAll('.title-cell').forEach(cell => {
+            cell.addEventListener('mouseenter', e => {
+                const fullTitle = unescape(e.target.dataset.fullTitle);
+                tooltip.innerHTML = fullTitle;
+                tooltip.style.display = 'block';
+
+                const rect = e.target.getBoundingClientRect();
+                tooltip.style.left = `${rect.left}px`;
+                tooltip.style.top = `${rect.bottom + window.scrollY}px`;
+            });
+            cell.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
             });
         });
     }
@@ -208,22 +201,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderPagination(pagination) {
         currentPage = pagination.current_page;
         totalPages = pagination.total_pages;
-        
         pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-        
         prevButton.disabled = currentPage <= 1;
         nextButton.disabled = currentPage >= totalPages;
     }
 
-    // --- Event Listeners ---
-
-    filterForm.addEventListener('submit', function(e) {
+    filterForm.addEventListener('submit', e => {
         e.preventDefault();
-        currentPage = 1; // Reset to page 1 on new filter
+        currentPage = 1;
         fetchDeals(currentPage, currentSort.by, currentSort.order);
     });
 
-    resetBtn.addEventListener('click', function() {
+    resetBtn.addEventListener('click', () => {
         filterForm.reset();
         currentPage = 1;
         currentSort = { by: 'id', order: 'asc' };
@@ -231,18 +220,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            fetchDeals(currentPage - 1, currentSort.by, currentSort.order);
-        }
+        if (currentPage > 1) fetchDeals(currentPage - 1, currentSort.by, currentSort.order);
     });
 
     nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            fetchDeals(currentPage + 1, currentSort.by, currentSort.order);
-        }
+        if (currentPage < totalPages) fetchDeals(currentPage + 1, currentSort.by, currentSort.order);
     });
 
-    // Initial fetch
     fetchDeals();
 });
 </script>

@@ -232,7 +232,6 @@ from .stable_products import (
     get_fba_pick_pack_fee, # Added import for FBA Pick&Pack Fee
     get_referral_fee_percent, # Added import for Referral Fee %
     get_shipping_included,
-    target_buy_price as new_target_buy_price_from_products, # Import with an alias to avoid name clash
     profit_margin_percent
 )
 from .stable_calculations import (
@@ -241,7 +240,12 @@ from .stable_calculations import (
     peak_season_month,              # Peak Season (Month)
     expected_peak_sell_price,       # Expected Peak Sell Price
     trough_season_month,            # Trough Season (Month)
+    target_buy_price,               # Target Buy Price
     profit_confidence,              # Profit Confidence
+)
+from .best_price import (
+    get_seller_rank,
+    get_best_price,
 )
 from .stable_deals import (
     # Percent Down 90,
@@ -682,11 +686,13 @@ FUNCTION_LIST = [
     None,                           # Used Offer Count - 90 days avg.
     None,                           # Used Offer Count - 180 days avg.
     used_offer_count_365_days_avg,  # Used Offer Count - 365 days avg.
+    get_seller_rank,                # Seller Rank
+    get_best_price,                 # Best Price
     inferred_sale_price_recent,     # Inferred Sale Price (Recent)
     peak_season_month,              # Peak Season (Month)
     expected_peak_sell_price,       # Expected Peak Sell Price
     trough_season_month,            # Trough Season (Month)
-    new_target_buy_price_from_products, # Target Buy Price
+    target_buy_price,               # Target Buy Price
     profit_confidence,              # Profit Confidence
     profit_margin_percent           # Profit Margin %
 ]

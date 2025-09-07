@@ -726,3 +726,21 @@ Knowledge Base Storage: Create a new storage mechanism (idea_playbook.json) to s
    - Made several attempts to adjust the page width and container styles to achieve a responsive, full-width layout as specified by the user.
 
 **Outcome:** The core functionality of the Deals Dashboard and Deal Detail pages has been successfully restored. The dashboard now loads data, and clicking a deal correctly navigates to its detail page. While some styling refinements are still needed, the primary goals of the task were achieved.
+
+### **Dev Log Entry: September 6, 2025**
+
+- **Objective:** Fix a bug with the 'Target Buy Price' column and implement a new 'Best Price' feature.
+- Actions Taken:
+  1. **Fixed 'Target Buy Price':** Diagnosed and fixed a bug in `keepa_deals/field_mappings.py` that was causing an incorrect function to be used. The user confirmed this fix was successful.
+  2. Implemented 'Best Price' & 'Seller Rank':
+     - Created a new module `keepa_deals/best_price.py` to house the new logic.
+     - Updated `Keepa_Deals.py` to request offer data from the Keepa API.
+     - Added the new columns to `headers.json` and `field_mappings.py`.
+  3. Improved Dashboard Tooltip:
+     - Re-engineered the title tooltip on the dashboard to be instant, have a custom blue style, and position itself correctly over the cell.
+  4. Debugging:
+     - Encountered and fixed a circular import error.
+     - Added debug logging to `best_price.py` and `Keepa_Deals.py` to diagnose an issue where the 'Best Price' column is not being populated.
+- Current Status:
+  - **Blocked:** The 'Best Price' column is still not working. We are waiting on logs from a new data scan to inspect the raw `offers` data from the Keepa API.
+  - **Blocked:** The tool failed to transmit the final, crucial changes to `templates/dashboard.html`.
