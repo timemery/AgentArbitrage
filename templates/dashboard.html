@@ -181,21 +181,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetchDeals(currentPage, currentSort.by, currentSort.order);
             });
         });
-
+// updated manually below
         document.querySelectorAll('.title-cell').forEach(cell => {
             cell.addEventListener('mouseenter', e => {
                 const fullTitle = unescape(e.target.dataset.fullTitle);
-                tooltip.innerHTML = fullTitle;
-                tooltip.style.display = 'block';
-
-                const rect = e.target.getBoundingClientRect();
-                tooltip.style.left = `${rect.left}px`;
-                tooltip.style.top = `${rect.bottom + window.scrollY}px`;
+                if (fullTitle && fullTitle !== '-') {
+                    tooltip.innerHTML = fullTitle;
+                    tooltip.style.display = 'block';
+                }
             });
+
+            cell.addEventListener('mousemove', e => {
+                if (tooltip.style.display === 'block') {
+                    // Position tooltip relative to the mouse cursor with a small offset
+                    tooltip.style.left = `${e.pageX + 15}px`;
+                    tooltip.style.top = `${e.pageY + 15}px`;
+                }
+            });
+
             cell.addEventListener('mouseleave', () => {
                 tooltip.style.display = 'none';
             });
         });
+// updated manyally above
     }
 
     function renderPagination(pagination) {
