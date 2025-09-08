@@ -1,18 +1,18 @@
 {
     "status": "Completed",
-    "start_time": "2025-09-08T16:59:01.975Z",
-    "pid": 212812,
+    "start_time": "2025-09-08T20:05:32.758Z",
+    "pid": 213414,
     "output_file": "data/Keepa_Deals_Export.csv",
     "log_file": "logs/keepa_scan.log",
     "error_log_file": "logs/keepa_scan.err",
     "message": "Scan completed successfully.",
-    "total_deals": 30,
-    "processed_deals": 30,
+    "total_deals": 10,
+    "processed_deals": 10,
     "etr_seconds": 0.0,
     "debug_etr": {
-        "elapsed": 501.6046929359436,
-        "processed": 30,
-        "time_per_deal": 16.72015643119812
+        "elapsed": 498.19067001342773,
+        "processed": 10,
+        "time_per_deal": 49.81906700134277
     },
-    "end_time": "2025-09-08T17:08:11.993Z"
+    "end_time": "2025-09-08T20:14:02.604Z"
 }

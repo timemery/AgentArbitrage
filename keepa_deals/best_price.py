@@ -1,5 +1,6 @@
 import logging
 from .keepa_api import fetch_seller_data
+from .stable_calculations import calculate_seller_quality_score
 
 # updated manually below
 def _get_best_offer_analysis(product, api_key=None):
@@ -28,7 +29,7 @@ def _get_best_offer_analysis(product, api_key=None):
         offers = product.get('offers', [])
         if not offers:
             logger.debug(f"ASIN {asin}: No 'offers' array in product data, cannot determine Best Price.")
-            analysis = {'best_price': '-', 'seller_rank': '-'}
+            analysis = {'best_price': '-', 'seller_rank': '-', 'seller_quality_score': 0.0}
             _get_best_offer_analysis.cache[asin] = analysis
             return analysis
 
@@ -52,7 +53,7 @@ def _get_best_offer_analysis(product, api_key=None):
 
         if not valid_offers_with_prices:
             logger.info(f"ASIN {asin}: No offers with valid prices found.")
-            analysis = {'best_price': '-', 'seller_rank': '-'}
+            analysis = {'best_price': '-', 'seller_rank': '-', 'seller_quality_score': 0.0}
             _get_best_offer_analysis.cache[asin] = analysis
             return analysis
 
@@ -60,15 +61,22 @@ def _get_best_offer_analysis(product, api_key=None):
         best_price_cents = best_offer['calculated_price']
         
         seller_rank_str = "-"
+        seller_quality_score = 0.0
         seller_id = best_offer.get('sellerId')
         if seller_id and api_key:
             seller_data = fetch_seller_data(api_key, seller_id)
             if seller_data:
                 seller_rank_str = seller_data.get('rank', '-')
-        
+                rating_percentage = seller_data.get('rating_percentage', 0)
+                rating_count = seller_data.get('rating_count', 0)
+                if rating_count > 0:
+                    positive_ratings = round((rating_percentage / 100.0) * rating_count)
+                    seller_quality_score = calculate_seller_quality_score(positive_ratings, rating_count)
+
         analysis = {
             'best_price': f"${best_price_cents / 100:.2f}",
-            'seller_rank': seller_rank_str
+            'seller_rank': seller_rank_str,
+            'seller_quality_score': seller_quality_score
         }
         
         logger.info(f"ASIN {asin}: Best offer found. Price: {analysis['best_price']}, Seller Rank: {analysis['seller_rank']}.")
@@ -78,7 +86,7 @@ def _get_best_offer_analysis(product, api_key=None):
 
     except Exception as e:
         logger.error(f"Error in _get_best_offer_analysis for ASIN {asin}: {e}", exc_info=True)
-        analysis = {'best_price': '-', 'seller_rank': '-'}
+        analysis = {'best_price': '-', 'seller_rank': '-', 'seller_quality_score': 0.0}
         _get_best_offer_analysis.cache[asin] = analysis
         return analysis
 # updated manually above
@@ -95,3 +103,10 @@ def get_seller_rank(product, api_key=None):
     """
     analysis = _get_best_offer_analysis(product, api_key=api_key)
     return {'Seller Rank': analysis['seller_rank']}
+
+def get_seller_quality_score(product, api_key=None):
+    """
+    Wrapper function to get the 'Seller Quality Score' from the analysis.
+    """
+    analysis = _get_best_offer_analysis(product, api_key=api_key)
+    return {'Seller_Quality_Score': analysis['seller_quality_score']}

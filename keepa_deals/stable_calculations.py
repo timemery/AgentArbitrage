@@ -2,6 +2,7 @@
 # (Last update: Version 5)
 
 import logging
+import math
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -311,3 +312,26 @@ def profit_confidence(product):
     
     confidence = (len(sale_events) / total_offer_drops) * 100
     return {'Profit Confidence': f"{confidence:.0f}%"}
+
+def calculate_seller_quality_score(positive_ratings, total_ratings):
+    """
+    Calculates the Wilson Score Confidence Interval for a seller's rating.
+    """
+    if total_ratings == 0:
+        return 0.0
+
+    p_hat = positive_ratings / total_ratings
+    n = total_ratings
+    z = 1.96  # Z-score for 95% confidence interval
+
+    try:
+        # Wilson score lower bound calculation
+        numerator = p_hat + (z**2 / (2 * n)) - z * math.sqrt((p_hat * (1 - p_hat) / n) + (z**2 / (4 * n**2)))
+        denominator = 1 + (z**2 / n)
+        
+        score = numerator / denominator
+        return score
+
+    except Exception as e:
+        logging.error(f"Error calculating Wilson score for {positive_ratings} positive ratings and {total_ratings} total ratings: {e}")
+        return 0.0

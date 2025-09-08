@@ -246,6 +246,7 @@ from .stable_calculations import (
 from .best_price import (
     get_seller_rank,
     get_best_price,
+    get_seller_quality_score,
 )
 from .stable_deals import (
     # Percent Down 90,
@@ -687,6 +688,7 @@ FUNCTION_LIST = [
     None,                           # Used Offer Count - 180 days avg.
     used_offer_count_365_days_avg,  # Used Offer Count - 365 days avg.
     get_seller_rank,                # Seller Rank
+    get_seller_quality_score,       # Seller_Quality_Score
     get_best_price,                 # Best Price
     inferred_sale_price_recent,     # Inferred Sale Price (Recent)
     peak_season_month,              # Peak Season (Month)

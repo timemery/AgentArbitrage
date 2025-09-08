@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSort = { by: 'id', order: 'asc' };
 
     const columnsToShow = [
-        "Title", "ASIN", "Best_Price", "Seller_Rank", "Target_Buy_Price", 
+        "Title", "ASIN", "Best_Price", "Seller_Rank", "Seller_Quality_Score", "Target_Buy_Price",
         "Sales_Rank___Current", "Expected_Peak_Sell_Price", "Profit_Confidence"
     ];
 
@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
             columnsToShow.forEach(col => {
                 let value = deal[col] != null ? deal[col] : '-';
                 if (col === 'Profit_Confidence' && typeof value === 'number') value = `${Math.round(value)}%`;
+                else if (col === 'Seller_Quality_Score' && typeof value === 'number') value = value.toFixed(3);
                 else if ((col.includes('Price') || col.includes('Profit')) && typeof value === 'number') value = `$${value.toFixed(2)}`;
                 
                 if (col === 'Title') {
