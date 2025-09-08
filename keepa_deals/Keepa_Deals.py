@@ -342,6 +342,8 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                                 result = func(original_deal_obj, logger, product)
                             elif func.__name__ == 'deal_found':
                                 result = func(original_deal_obj, logger)
+                            elif func.__name__ in ['get_best_price', 'get_seller_rank']:
+                                result = func(product, api_key=api_key)
                             else:
                                 result = func(product)
                             

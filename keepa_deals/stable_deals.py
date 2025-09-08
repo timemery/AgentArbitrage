@@ -201,7 +201,7 @@ def last_price_change(deal_object, logger_param=None, product_data=None): # Rena
             
             if len(current_stats_array) > buy_box_is_used_index and current_stats_array[buy_box_is_used_index] == 1: # buyBoxIsUsed is true
                 current_logger.debug(f"ASIN: {asin} - Buy Box is Used (deal_object.current[{buy_box_is_used_index}]==1). Checking currentSince[{buy_box_used_price_ts_index}] for Used Buy Box timestamp.")
-                if len(current_since_array) > buy_box_used_price_ts_.index:
+                if len(current_since_array) > buy_box_used_price_ts_index:
                     ts_val_buy_box_used = current_since_array[buy_box_used_price_ts_index]
                     if isinstance(ts_val_buy_box_used, (int, float)) and ts_val_buy_box_used > 100000:
                         valid_current_since_ts.append(ts_val_buy_box_used)

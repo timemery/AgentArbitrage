@@ -151,7 +151,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
-                } else {
+                } else if (col === 'Best Price' && cleanAsin) {
+                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}/" target="_blank">${value}</a></td>`;
+                }
+                else {
                     table += `<td>${value}</td>`;
                 }
             });

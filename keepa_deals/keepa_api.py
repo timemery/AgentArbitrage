@@ -300,3 +300,50 @@ def update_and_check_quota(logger, current_available_tokens, last_refill_calcula
 
 
     return current_available_tokens, last_refill_calculation_time
+
+@retry(stop_max_attempt_number=3, wait_fixed=5000)
+def fetch_seller_data(api_key, seller_id):
+    """
+    Fetches data for a specific seller from the Keepa API.
+    """
+    if not seller_id:
+        logger.warning("fetch_seller_data called with no seller_id.")
+        return None
+
+    logger.info(f"Fetching seller data for seller ID: {seller_id}")
+    
+    url = f"https://api.keepa.com/seller?key={api_key}&domain=1&seller={seller_id}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        if data.get('sellers'):
+            seller_info = data['sellers'].get(seller_id)
+            if seller_info:
+                # Use the correct keys based on the log file analysis
+                rating_percentage = seller_info.get('currentRating', -1)
+                rating_count = seller_info.get('currentRatingCount', 0)
+                
+                if rating_percentage != -1:
+                    return {
+                        "rank": f"{rating_percentage}% ({rating_count} ratings)",
+                        "rating_percentage": rating_percentage,
+                        "rating_count": rating_count
+                    }
+                else:
+                    logger.warning(f"Seller {seller_id}: 'currentRating' field not found in seller object. Full object: {seller_info}")
+                    return None
+        else:
+            logger.warning(f"No 'sellers' data found for seller ID {seller_id} in response.")
+            return None
+
+    except requests.exceptions.RequestException as e:
+        logger.error(f"HTTP fetch failed for seller ID {seller_id}: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"An unexpected error occurred while fetching seller data for {seller_id}: {e}")
+        return None
