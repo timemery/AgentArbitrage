@@ -1099,4 +1099,35 @@ Handles Non-Seasonal Books: The "Year-Round" classification would correctly iden
 This is just a high-level strategy for now, but I believe it addresses your concerns and provides a solid foundation for a much more accurate and reliable calculation.
 
 What are your thoughts on this approach?
+
+### **Dev Log Entry**
+
+**Dev Log: 2025-09-09**
+
+**Task:** Investigate and correct "Expected Peak Sell Price" calculation.
+
+**Initial Request:**
+
+- User requested confirmation that the "Expected Peak Sell Price" calculation was based on a 365-day period.
+- If not, the request was to change it to 365 days.
+
+**Investigation & Initial Change:**
+
+1. Analyzed `keepa_deals/stable_calculations.py` and discovered the `infer_sale_events` function used a **730-day (2-year)** window, not 365 days.
+2. Based on the user's initial request, I modified the function to use a 365-day period and submitted the change.
+
+**Revert & Root Cause Analysis:**
+
+1. User clarified that the 730-day period was, in fact, correct, and the request to change it was a misunderstanding. The core issue was the high frequency of "-" results, which was mistakenly attributed to an incorrect time period.
+2. Reverted the change in `keepa_deals/stable_calculations.py` back to the original 730-day period using `restore_file`.
+
+**Brainstorming & Future Strategy Development:**
+
+- Investigated the root cause of the frequent "-" results for "Expected Peak Sell Price".
+- **Theory:** The calculation is overly restrictive. It requires a very specific pattern (offer count drop of exactly 1, followed by a rank drop within 24 hours) and a demanding seasonal analysis (at least 2 sales in 2 different months) to produce a result. This tight coupling of sale inference and seasonality is likely the primary cause of failure for many books.
+- Proposed Solution (Strategy for a new task):
+  - Decouple the logic into two modules:
+    1. **Sale Inference Module:** Focus solely on identifying sale events with more forgiving criteria (e.g., any net offer drop, longer 48-72 hour rank drop window). This would provide a more reliable "Recent Inferred Sale Price".
+    2. **Seasonal Analysis Module:** Analyze the *density* and *timing* of the inferred sales to identify seasonal patterns. This module would be informed by known seasons (e.g., textbook seasons in Jan/Aug-Sep, niche seasons for gardening/grilling books) and would classify books as "Seasonal" or "Year-Round", providing peak/trough price estimates only when a clear pattern exists.
+- This new strategy was discussed with the user and received positive feedback. A detailed task description for implementing this new strategy has been prepared for a future session.
  
