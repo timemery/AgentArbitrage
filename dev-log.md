@@ -918,3 +918,83 @@ This task proved to be exceptionally challenging due to two primary factors: sev
 - A "known good state" is critical. Reverting the file to its original, working version was a key step in diagnosing the regression.
 - Tooling and environment failures can be as significant as code-level bugs and require adaptive strategies to overcome.
 
+-------
+
+Notes on Target Buy Price and Expected Peak Sell Price is "-" and yet there is a Profit Confidence rank
+
+That's an excellent question, and it points to a subtle but important part of how these metrics are designed to work together.
+
+The reason you can have a Profit Confidence rank even when Target Buy Price and Expected Peak Sell Price are "-" is that they are calculated from different sets of data and answer different questions.
+
+Here’s a likely breakdown of what's happening:
+
+Target Buy Price: This metric is very specific. It depends on finding currently active offers on Amazon that are in "Good" or better condition. If, at the moment the data is pulled, there are no sellers listing the item in those specific conditions, this field will correctly be "-". It answers the question: "Is there a good copy available to buy right now?"
+
+Expected Peak Sell Price: This is a historical calculation, likely based on the average price over a specific period (e.g., 90 or 180 days). If a product is very new, has an inconsistent sales history, or lacks enough data points within that period, a reliable average cannot be calculated, so it would also be "-". It answers the question: "What has this item sold for in the past?"
+
+Profit Confidence: This is the most different of the three. It's not calculated from a simple (Sell Price - Buy Price) formula. Instead, it's a qualitative score that assesses the overall health and predictability of the market for that item. It likely uses more stable, long-term indicators that can exist even when the other two conditions aren't met. These factors probably include:
+
+Sales Rank: A consistently good sales rank indicates steady demand.
+Price Stability: A history of low price volatility suggests the value is stable.
+Offer Count: A healthy number of competing offers (but not an excessive amount) can signal a stable market.
+In short: Profit Confidence tells you "this is a good, stable product to invest in," while the other two fields tell you "there may not be a specific buying or selling opportunity at this exact moment."
+
+So, you can absolutely have a scenario where a book is known to be a great, consistent seller (giving it a high Profit Confidence), but there just happen to be no "Good" condition copies available for purchase right now, resulting in a "-" for the Target Buy Price.
+
+---- 
+
+Notes on how to present Seller Quality Score:
+
+Ok, there are some tweaks I'd like to make based on this information, but first, I'm wondering if there's an easier way for the user to "read" and understand the Seller Quality Score? Because for a user looking a seller with a 97% rank and only 67 ratings that third number should be significantly different to a seller with 97% rank and 216,431 ratings, but the first is 0.89753249958117 and the second is 0.969272596506546 which to me appears to be much less significant than the difference between those two %rank+ratings... I hope that question makes sense... We do need those columns captured, but I'm not sure the user needs to see both Rank and Quality Score as that might actually be more confusing. WE CERTAINLY need both in order to assess the quality of those acceptable books... I would certainly rather buy a book from a seller with 97% rank and 216,431 ratings, than a seller who also has a 97% rank but only 67 ratings. But in any case, even if all we show them is the Seller Quality Score, and not the Seller Rank+ratings, that Seller Quality Score number should be easier to understand, and the difference between a rank of 97%, one with just 67 ratings, and one with 216,431 ratings should be more significant if it is to be easily understandable to a user. I'm just brainstorming here, but am really interested to know your thoughts on this. No action is required other than some brainstorming on a potentially better way to present the Seller Quality Score to the user. Let me know what you think. Sorry for the rambling question... hope it makes sense.
+
+That's an excellent question, and it doesn't sound rambling at all! You've hit on a core challenge in user experience and data design: how to make complex data feel intuitive to a human user. You are absolutely right that while the two sellers have the same 97% rating, the one with over 200,000 ratings is in a completely different league of trustworthiness, and the current score (0.89 vs 0.96) doesn't communicate that dramatic difference effectively.
+
+My thoughts align very much with yours. Here's a breakdown of why this is happening and some ideas for how we could improve it:
+
+### The "Why" Behind the Current Score
+
+The current `Seller_Quality_Score` is likely based on a statistical formula (probably a Wilson score interval or similar) that tries to answer the question: "Given the rating percentage and the number of ratings, what is the *lowest* plausible 'true' quality score for this seller with 95% confidence?" This is why a seller with only 67 ratings gets a slightly lower score (0.89) than the one with 216,431 ratings (0.96) – the smaller sample size means there's less confidence, so the "worst-case" plausible score is lower.
+
+While statistically sound for our internal filtering, you're right that it's not intuitive for a person. The perceived difference should be much larger.
+
+### Brainstorming a Better Way to Present Seller Quality
+
+I think we should separate the **internal logic** (which needs the precise score for filtering) from the **user-facing display** (which needs to be intuitive). Here are a couple of ideas:
+
+**1. The Tier System (My Recommendation)**
+
+This is the most common and, I believe, most effective solution. Instead of showing a raw number, we classify sellers into named tiers. The user immediately understands the meaning of a tier without having to interpret a number.
+
+We could define tiers based on both rating count and percentage:
+
+- **💎 Top Rated Seller:** > 100,000 ratings AND > 98% positive
+- **🥇 Established Seller:** > 10,000 ratings AND > 95% positive
+- **🥈 Reliable Seller:** > 1,000 ratings AND > 92% positive
+- **🥉 Standard Seller:** > 100 ratings AND > 90% positive
+- **New Seller:** <= 100 ratings
+- **⚠️ Use With Caution:** < 90% positive (regardless of count)
+
+Under this system, the difference is crystal clear:
+
+- The seller with `97%` and `216,431` ratings would be **🥇 Established Seller**.
+- The seller with `97%` and `67` ratings would be a **New Seller**.
+
+This approach lets us keep the precise `Seller_Quality_Score` for our internal filtering logic for "Acceptable" books, but we would show this simple, intuitive tier to the user instead of the score itself.
+
+**2. A Scaled "Reputation Score"**
+
+This is closer to your idea of making the number itself more significant. We could create a new score, say from 1-1000, that more heavily weights the number of ratings.
+
+For example, we could design a formula that gives points for the percentage and bonus points for the volume of ratings (perhaps on a logarithmic scale, since the difference between 10 and 100 ratings is much more significant than the difference between 100,000 and 110,000).
+
+- **Challenge:** While possible, this can sometimes feel a bit arbitrary, and the user still has to interpret what a score of "850" vs "950" means. The tier system often achieves the same goal more cleanly.
+
+**Conclusion & My Opinion**
+
+I think you've made a fantastic point. For the user, the `Seller_Quality_Score` as a raw number is more confusing than helpful.
+
+My recommendation would be the **Tier System**. It's a proven method in e-commerce for conveying seller reputation effectively. We can display a simple tier name (or even a badge icon) that users will instantly understand, while still using our precise statistical score under the hood to make smart filtering decisions.
+
+What are your thoughts on that approach? I'm happy to explore any of these ideas further.
+
+------
