@@ -1,530 +1,527 @@
 --- Running fetch-keepa-deals command ---
 KEEPA_API_KEY loaded: ****************************************************************
-2025-09-08 20:05:33,350 - wsgi_handler - INFO - Starting Keepa deals fetching command...
-2025-09-08 20:05:33,350 - wsgi_handler - INFO - Starting Keepa_Deals script...
-2025-09-08 20:05:33,350 - wsgi_handler - INFO - Fetching deals page 0...
-2025-09-08 20:05:33,350 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:06:34,428 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 0
-2025-09-08 20:06:34,428 - wsgi_handler - INFO - Token consumed for deal page 0. Cost: 1. Tokens remaining: 299.00
-2025-09-08 20:06:34,428 - wsgi_handler - INFO - Fetched 150 deals from page 0. Total deals so far: 150
-2025-09-08 20:06:34,428 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:05:33). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:06:33
-2025-09-08 20:06:34,428 - wsgi_handler - INFO - Fetching deals page 1...
-2025-09-08 20:06:34,429 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:07:35,483 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 1
-2025-09-08 20:07:35,483 - wsgi_handler - INFO - Token consumed for deal page 1. Cost: 1. Tokens remaining: 299.00
-2025-09-08 20:07:35,483 - wsgi_handler - INFO - Fetched 150 deals from page 1. Total deals so far: 300
-2025-09-08 20:07:35,483 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:06:33). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:07:33
-2025-09-08 20:07:35,483 - wsgi_handler - INFO - Fetching deals page 2...
-2025-09-08 20:07:35,483 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:08:36,528 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 2
-2025-09-08 20:08:36,528 - wsgi_handler - INFO - Token consumed for deal page 2. Cost: 1. Tokens remaining: 299.00
-2025-09-08 20:08:36,528 - wsgi_handler - INFO - Fetched 150 deals from page 2. Total deals so far: 450
-2025-09-08 20:08:36,528 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:07:33). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:08:33
-2025-09-08 20:08:36,528 - wsgi_handler - INFO - Fetching deals page 3...
-2025-09-08 20:08:36,528 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:09:37,532 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 3
-2025-09-08 20:09:37,533 - wsgi_handler - INFO - Token consumed for deal page 3. Cost: 1. Tokens remaining: 299.00
-2025-09-08 20:09:37,533 - wsgi_handler - INFO - Fetched 150 deals from page 3. Total deals so far: 600
-2025-09-08 20:09:37,533 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:08:33). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:09:33
-2025-09-08 20:09:37,533 - wsgi_handler - INFO - Fetching deals page 4...
-2025-09-08 20:09:37,533 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:10:38,748 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 4
-2025-09-08 20:10:38,749 - wsgi_handler - INFO - Token consumed for deal page 4. Cost: 1. Tokens remaining: 299.00
-2025-09-08 20:10:38,749 - wsgi_handler - INFO - Fetched 150 deals from page 4. Total deals so far: 750
-2025-09-08 20:10:38,749 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:09:33). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:10:33
-2025-09-08 20:10:38,749 - wsgi_handler - INFO - Fetching deals page 5...
-2025-09-08 20:10:38,749 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:11:39,726 - keepa_deals.keepa_api - INFO - Fetched 106 deals from page 5
-2025-09-08 20:11:39,726 - wsgi_handler - INFO - Token consumed for deal page 5. Cost: 1. Tokens remaining: 299.00
-2025-09-08 20:11:39,726 - wsgi_handler - INFO - Fetched 106 deals from page 5. Total deals so far: 856
-2025-09-08 20:11:39,726 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:10:33). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:11:33
-2025-09-08 20:11:39,726 - wsgi_handler - INFO - Fetching deals page 6...
-2025-09-08 20:11:39,726 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:12:40,267 - keepa_deals.keepa_api - INFO - Fetched 0 deals from page 6
-2025-09-08 20:12:40,267 - wsgi_handler - INFO - No more deals found on page 6.
-2025-09-08 20:12:40,267 - wsgi_handler - INFO - Total deals fetched: 856
-2025-09-08 20:12:40,267 - wsgi_handler - WARNING - PROCESSING LIMIT ACTIVE: Processing only the first 10 of 856 deals.
-2025-09-08 20:12:40,267 - wsgi_handler - INFO - Deals to process: 10
-2025-09-08 20:12:40,268 - wsgi_handler - INFO - Starting ASIN processing, found 10 deals (after potential temporary limit)
-2025-09-08 20:12:40,268 - wsgi_handler - INFO - Collected 10 valid ASINs for batch processing.
-2025-09-08 20:12:40,268 - wsgi_handler - INFO - Created 1 batches for API calls.
-2025-09-08 20:12:40,268 - wsgi_handler - INFO - Processing Batch 1/1 (Attempt 1) with 10 ASINs: ['1888429151', '9586073300', '0752853317']...
-2025-09-08 20:12:40,268 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-08 20:11:33). Tokens before: 300.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-08 20:12:33
-2025-09-08 20:12:40,268 - wsgi_handler - INFO - Pre-emptive pause for product batch: Last API call was 0.00s ago. Waiting 60.00s.
-2025-09-08 20:13:40,299 - keepa_deals.keepa_api - INFO - fetch_product_batch: Attempting to fetch batch of 10 ASINs: 1888429151,9586073300,0752853317...
-2025-09-08 20:13:51,540 - keepa_deals.keepa_api - INFO - Batch API call cost 60 tokens according to 'tokensConsumed' field in response.
-2025-09-08 20:13:51,540 - keepa_deals.keepa_api - INFO - Successfully fetched data for 10 products in batch for 10 requested ASINs.
-2025-09-08 20:13:51,541 - wsgi_handler - INFO - Tokens consumed for BATCH. Cost: 60. Tokens remaining: 240.00.
-2025-09-08 20:13:51,541 - root - INFO - ASIN 1888429151: Percent Down 365 calculated. Current: 22.81, Avg365: 133.97, Diff: 82.97%, Result: 83%
-2025-09-08 20:13:51,541 - keepa_deals.stable_products - INFO - ASIN 1888429151: No indication of free shipping found for Used - Current offer.
-2025-09-08 20:13:51,541 - wsgi_handler - INFO - ASIN: 1888429151 - last_update: Selected latest_ts=7725372 from candidates [7725280, 7725372]. Sources considered: ['deal_object.lastUpdate (7725280)', 'product_data.stats.lastOffersUpdate (7725372)']
-2025-09-08 20:13:51,541 - wsgi_handler - INFO - ASIN: 1888429151 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:51,541 - wsgi_handler - INFO - ASIN: 1888429151 - Using deal_object.currentSince for last used price change. Max timestamp: 7723980. All considered: [7723980, 7007208, 7720732, 7723980]
-2025-09-08 20:13:51,541 - wsgi_handler - INFO - ASIN: 1888429151 - last price change (focused on used) result: 2025-09-07 17:00:00 (from ts 7723980 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - ASIN 1888429151: FBA Pick&Pack Fee found: $3.53 (from raw 353)
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - ASIN 1888429151: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - ASIN 1888429151: Parsed integer 200305 as YYYYMM -> 2003-05.
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - ASIN 1888429151: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - ASIN 1888429151: Could not find a valid seller ID in the history. Last entry was '-1'.
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 1888429151 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 1888429151 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 1888429151 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 1888429151
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 1888429151: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 1888429151: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - ASIN 1888429151: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 34289, 13397, 2635607, 1595, -1, -1, 34074, -1, -1, -1, 0, 3, -1, -1, -1, 45, 12, -1, -1, 8613, 13388, 33531, -1, -1, -1, -1, -1, -1, -1, -1, -1, 21355, -1]
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 1888429151: stats.min[10] is not a valid pair: None
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1888429151: Using stats.current[7], value: $495.15
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1888429151: Final result: $495.15, Source: stats.current[7]
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - ASIN 1888429151: New, 3rd Party FBM - 365 days avg. found: $340.74 from stats.avg365[7]
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 1888429151: Price found via primary logic. FBM item price: 2860 + shipping: 499 = 3359. Formatted: $33.59
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 1888429151: Using stats.avg365[32], value: $213.55
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 1888429151: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 1888429151: Using stats.avg365[20], value: $86.13
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 1888429151: Using stats.avg365[21], value: $133.88
-2025-09-08 20:13:51,542 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 1888429151: Using stats.avg365[22], value: $335.31
-2025-09-08 20:13:51,543 - keepa_deals.stable_products - INFO - ASIN 1888429151: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
-2025-09-08 20:13:51,543 - keepa_deals.stable_products - INFO - ASIN 1888429151: New Offer Count - 365 days avg. from stats.avg365[11]: 0
-2025-09-08 20:13:51,543 - keepa_deals.stable_products - INFO - ASIN 1888429151: Used Offer Count - Current calculated as 7 (Total: 8, New FBA: 0, New FBM: 1).
-2025-09-08 20:13:51,543 - keepa_deals.stable_products - INFO - ASIN 1888429151: Used Offer Count - 365 days avg. from stats.avg365[12]: 3
-2025-09-08 20:13:51,543 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: AHT0AG4W2ZKIX
-2025-09-08 20:13:51,859 - keepa_deals.best_price - INFO - ASIN 1888429151: Best offer found. Price: $9.99, Seller Rank: 90% (1702 ratings).
-2025-09-08 20:13:51,979 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:51,979 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,101 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:52,101 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,211 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:52,211 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,327 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:52,327 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,436 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:52,436 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,547 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:52,547 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,547 - keepa_deals.stable_products - INFO - ASIN 1888429151: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:52,661 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
-2025-09-08 20:13:52,661 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:52,663 - root - INFO - ASIN 9586073300: Percent Down 365 calculated. Current: 20.00, Avg365: 360.51, Diff: 94.45%, Result: 94%
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - INFO - ASIN 9586073300: No indication of free shipping found for Used - Current offer.
-2025-09-08 20:13:52,663 - wsgi_handler - INFO - ASIN: 9586073300 - last_update: Selected latest_ts=7725372 from candidates [7725334, 7725372]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725372)']
-2025-09-08 20:13:52,663 - wsgi_handler - INFO - ASIN: 9586073300 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:52,663 - wsgi_handler - INFO - ASIN: 9586073300 - Using deal_object.currentSince for last used price change. Max timestamp: 7725336. All considered: [7725336, 7434030, 7552866, 7720840]
-2025-09-08 20:13:52,663 - wsgi_handler - INFO - ASIN: 9586073300 - last price change (focused on used) result: 2025-09-08 15:36:00 (from ts 7725336 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - INFO - ASIN 9586073300: FBA Pick&Pack Fee found: $3.33 (from raw 333)
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - INFO - ASIN 9586073300: Referral Fee Percentage found (product_data.referralFeePercentage): 15.02% (from raw 15.02)
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - INFO - ASIN 9586073300: Parsed integer 2014 as YYYY -> 2014.
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - INFO - ASIN 9586073300: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - INFO - ASIN 9586073300: Found last valid Buy Box Seller ID from history: A1M1J9WQYAEQ76 (at timestamp 6420664)
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 9586073300 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:13:52,663 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 9586073300 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 9586073300 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 9586073300
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 9586073300: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN 9586073300
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 9586073300: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - ASIN 9586073300: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 36051, 3683815, 895, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 45, 6, -1, 7899, 61240, 32569, 213177, -1, -1, -1, -1, -1, -1, -1, -1, -1, 55595, -1]
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 9586073300: stats.min[10] is not a valid pair: None
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN 9586073300: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 9586073300: Final result: -, Source: stats.current[7] (invalid value)
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - ASIN 9586073300: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 36051, 3683815, 895, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 45, 6, -1, 7899, 61240, 32569, 213177, -1, -1, -1, -1, -1, -1, -1, -1, -1, 55595, -1]
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 9586073300: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 9586073300: Fallback stats.current[32] is missing, None or invalid (-1).
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN 9586073300: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 9586073300: Using stats.avg365[32], value: $555.95
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 9586073300: Using stats.avg365[19], value: $78.99
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 9586073300: Using stats.avg365[20], value: $612.40
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 9586073300: Using stats.avg365[21], value: $325.69
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 9586073300
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 9586073300: Using stats.avg365[22], value: $2131.77
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - ASIN 9586073300: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - ASIN 9586073300: New Offer Count - 365 days avg. from stats.avg365[11]: -
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - ASIN 9586073300: Used Offer Count - Current calculated as 1 (Total: 1, New FBA: 0, New FBM: 0).
-2025-09-08 20:13:52,664 - keepa_deals.stable_products - INFO - ASIN 9586073300: Used Offer Count - 365 days avg. from stats.avg365[12]: 1
-2025-09-08 20:13:52,664 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: AU64Z6DD0V70I
-2025-09-08 20:13:52,975 - keepa_deals.best_price - INFO - ASIN 9586073300: Best offer found. Price: $8.95, Seller Rank: 85% (54 ratings).
-2025-09-08 20:13:53,004 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,029 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,057 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,084 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,111 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,137 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,137 - keepa_deals.stable_products - INFO - ASIN 9586073300: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:53,164 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
-2025-09-08 20:13:53,166 - root - INFO - ASIN 0752853317: Percent Down 365 calculated. Current: 20.09, Avg365: 70.69, Diff: 71.58%, Result: 72%
-2025-09-08 20:13:53,166 - keepa_deals.stable_products - INFO - ASIN 0752853317: Found buyBoxUsedShipping to be 0, shipping is included.
-2025-09-08 20:13:53,167 - wsgi_handler - INFO - ASIN: 0752853317 - last_update: Selected latest_ts=7725336 from candidates [7725334, 7725336]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725336)']
-2025-09-08 20:13:53,167 - wsgi_handler - INFO - ASIN: 0752853317 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:53,167 - wsgi_handler - INFO - ASIN: 0752853317 - Using deal_object.currentSince for last used price change. Max timestamp: 7725336. All considered: [7725336, 7153472, 7725336, 7725336]
-2025-09-08 20:13:53,167 - wsgi_handler - INFO - ASIN: 0752853317 - last price change (focused on used) result: 2025-09-08 15:36:00 (from ts 7725336 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: FBA Pick&Pack Fee found: $4.15 (from raw 415)
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: Parsed integer 2004 as YYYY -> 2004.
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2184340) for ASIN 0752853317
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: Found last valid Buy Box Seller ID from history: A2VMKCV4FSTN1U (at timestamp 7352814)
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0752853317 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0752853317 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0752853317 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0752853317
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0752853317: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0752853317: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 27787, 7069, 3950715, -1, -1, -1, 45187, -1, -1, -1, 0, 5, -1, -1, -1, 40, 8, -1, -1, 9223, 3781, 5309, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3079, -1]
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0752853317: stats.min[10] is not a valid pair: None
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0752853317: Using stats.current[7], value: $634.34
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0752853317: Final result: $634.34, Source: stats.current[7]
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: New, 3rd Party FBM - 365 days avg. found: $451.87 from stats.avg365[7]
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0752853317: Price found via primary logic. FBM item price: 2009 + shipping: 0 = 2009. Formatted: $20.09
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0752853317: Using stats.avg365[32], value: $30.79
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0752853317: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0752853317: Using stats.avg365[20], value: $92.23
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0752853317: Using stats.avg365[21], value: $37.81
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 0752853317
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0752853317: Using stats.avg365[22], value: $53.09
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - WARNING - No valid List Price - Current (value=-1, current_length=34) for ASIN 0752853317
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: New Offer Count - 365 days avg. from stats.avg365[11]: 0
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: Used Offer Count - Current calculated as 9 (Total: 10, New FBA: 0, New FBM: 1).
-2025-09-08 20:13:53,167 - keepa_deals.stable_products - INFO - ASIN 0752853317: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
-2025-09-08 20:13:53,168 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A16ET7DS3ZNK1W
-2025-09-08 20:13:53,680 - keepa_deals.best_price - INFO - ASIN 0752853317: Best offer found. Price: $4.95, Seller Rank: 94% (158763 ratings).
-2025-09-08 20:13:53,740 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:53,793 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:53,853 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:53,911 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:53,968 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:54,022 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:54,022 - keepa_deals.stable_products - INFO - ASIN 0752853317: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:54,080 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:13:54,082 - root - INFO - ASIN 0761542566: Percent Down 365 calculated. Current: 23.98, Avg365: 52.51, Diff: 54.33%, Result: 54%
-2025-09-08 20:13:54,082 - keepa_deals.stable_products - INFO - ASIN 0761542566: Found buyBoxUsedShipping to be 0, shipping is included.
-2025-09-08 20:13:54,083 - wsgi_handler - INFO - ASIN: 0761542566 - last_update: Selected latest_ts=7725336 from candidates [7725334, 7725336]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725336)']
-2025-09-08 20:13:54,083 - wsgi_handler - INFO - ASIN: 0761542566 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:54,083 - wsgi_handler - INFO - ASIN: 0761542566 - Using deal_object.currentSince for last used price change. Max timestamp: 7725336. All considered: [7725334, 7140132, 7722660, 7725336]
-2025-09-08 20:13:54,083 - wsgi_handler - INFO - ASIN: 0761542566 - last price change (focused on used) result: 2025-09-08 15:36:00 (from ts 7725336 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: FBA Pick&Pack Fee found: $4.55 (from raw 455)
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: Parsed integer 20030325 as YYYYMMDD -> 2003-03-25.
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2826720) for ASIN 0761542566
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: Found last valid Buy Box Seller ID from history: AUZOLEU9XUH4C (at timestamp 7274544)
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0761542566 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0761542566 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0761542566 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0761542566
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0761542566: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN 0761542566
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0761542566: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: New, 3rd Party FBA - 365 days avg. found: $48.23
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 0761542566: Found price $33.60 from stats.min[10][1]
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN 0761542566: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0761542566: Final result: -, Source: stats.current[7] (invalid value)
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - ASIN 0761542566: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, 4879, 5251, 830711, 1499, 12553, -1, -1, -1, -1, 4823, 0, 6, -1, 1, -1, 47, 150, 6199, -1, 23720, 6044, 5306, -1, 4497, 13499, 6994, -1, 5768, 2259, -1, -1, 9963, -1]
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0761542566: Price found via primary logic. FBA item price: 8375. Formatted: $83.75
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0761542566: Using stats.avg365[32], value: $99.63
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0761542566: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0761542566: Using stats.avg365[20], value: $237.20
-2025-09-08 20:13:54,083 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0761542566: Using stats.avg365[21], value: $60.44
-2025-09-08 20:13:54,084 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0761542566: Using stats.avg365[22], value: $53.06
-2025-09-08 20:13:54,084 - keepa_deals.stable_products - INFO - ASIN 0761542566: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
-2025-09-08 20:13:54,084 - keepa_deals.stable_products - INFO - ASIN 0761542566: New Offer Count - 365 days avg. from stats.avg365[11]: 0
-2025-09-08 20:13:54,084 - keepa_deals.stable_products - INFO - ASIN 0761542566: Used Offer Count - Current calculated as 9 (Total: 9, New FBA: 0, New FBM: 0).
-2025-09-08 20:13:54,084 - keepa_deals.stable_products - INFO - ASIN 0761542566: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
-2025-09-08 20:13:54,084 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A9OE9NRYGISW3
-2025-09-08 20:13:54,596 - keepa_deals.best_price - INFO - ASIN 0761542566: Best offer found. Price: $5.95, Seller Rank: 97% (216431 ratings).
-2025-09-08 20:13:55,022 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:55,022 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:55,432 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:55,432 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:55,848 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:55,848 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:56,270 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:56,271 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:56,683 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:56,683 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:57,110 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:57,110 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:57,110 - keepa_deals.stable_products - INFO - ASIN 0761542566: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:57,506 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
-2025-09-08 20:13:57,506 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
-2025-09-08 20:13:57,509 - root - INFO - ASIN 1501764276: Percent Down 365 calculated. Current: 24.95, Avg365: 107.41, Diff: 76.77%, Result: 77%
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - ASIN 1501764276: No indication of free shipping found for Used - Current offer.
-2025-09-08 20:13:57,509 - wsgi_handler - INFO - ASIN: 1501764276 - last_update: Selected latest_ts=7725336 from candidates [7725334, 7725336]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725336)']
-2025-09-08 20:13:57,509 - wsgi_handler - INFO - ASIN: 1501764276 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:57,509 - wsgi_handler - INFO - ASIN: 1501764276 - Using deal_object.currentSince for last used price change. Max timestamp: 7725188. All considered: [7692378, 7725188, 6452252, 7695058]
-2025-09-08 20:13:57,509 - wsgi_handler - INFO - ASIN: 1501764276 - last price change (focused on used) result: 2025-09-08 13:08:00 (from ts 7725188 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - ASIN 1501764276: FBA Pick&Pack Fee found: $4.99 (from raw 499)
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - ASIN 1501764276: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - ASIN 1501764276: Parsed integer 20220415 as YYYYMMDD -> 2022-04-15.
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - ASIN 1501764276: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - ASIN 1501764276: Found last valid Buy Box Seller ID from history: ATVPDKIKX0DER (at timestamp 7724704)
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - Buy Box - Current for ASIN 1501764276: Using 'buyBoxPrice', value: $71.89
-2025-09-08 20:13:57,509 - keepa_deals.stable_products - INFO - Amazon - 365 days avg. for ASIN 1501764276: Using stats.avg365[0], value: $110.95
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 1501764276: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - ASIN 1501764276: New, 3rd Party FBA - 365 days avg. found: $98.38
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 1501764276: Found price $98.39 from stats.min[10][1]
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1501764276: Using stats.current[7], value: $82.29
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1501764276: Final result: $82.29, Source: stats.current[7]
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - ASIN 1501764276: New, 3rd Party FBM - 365 days avg. found: $123.29 from stats.avg365[7]
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 1501764276: Price found via primary logic. FBM item price: 4800 + shipping: 399 = 5199. Formatted: $51.99
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 1501764276: Using stats.avg365[32], value: $99.62
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 1501764276: Using stats.avg365[19], value: $153.02
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - WARNING - Used, very good - 365 days avg. for ASIN 1501764276: Invalid or non-positive price at stats.avg365[20] (-1). Setting to '-'
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 1501764276: Using stats.avg365[21], value: $108.32
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 1501764276
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - WARNING - Used, acceptable - 365 days avg. for ASIN 1501764276: Invalid or non-positive price at stats.avg365[22] (-1). Setting to '-'
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - ASIN 1501764276: New Offer Count - Current calculated as 8 (FBA: 1, FBM: 7).
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - ASIN 1501764276: New Offer Count - 365 days avg. from stats.avg365[11]: 11
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - ASIN 1501764276: Used Offer Count - Current calculated as 4 (Total: 12, New FBA: 1, New FBM: 7).
-2025-09-08 20:13:57,510 - keepa_deals.stable_products - INFO - ASIN 1501764276: Used Offer Count - 365 days avg. from stats.avg365[12]: 2
-2025-09-08 20:13:57,510 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A1JKYGWZN0EKN
-2025-09-08 20:13:57,870 - keepa_deals.best_price - INFO - ASIN 1501764276: Best offer found. Price: $28.94, Seller Rank: 97% (67 ratings).
-2025-09-08 20:13:57,897 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:57,924 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:57,951 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:57,978 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,006 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,033 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,033 - keepa_deals.stable_products - INFO - ASIN 1501764276: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:58,058 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,060 - root - INFO - ASIN 0763628964: Percent Down 365 calculated. Current: 23.87, Avg365: 35.80, Diff: 33.32%, Result: 33%
-2025-09-08 20:13:58,060 - keepa_deals.stable_products - INFO - ASIN 0763628964: No indication of free shipping found for Used - Current offer.
-2025-09-08 20:13:58,060 - wsgi_handler - INFO - ASIN: 0763628964 - last_update: Selected latest_ts=7725336 from candidates [7725334, 7725336]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725336)']
-2025-09-08 20:13:58,060 - wsgi_handler - INFO - ASIN: 0763628964 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:58,060 - wsgi_handler - INFO - ASIN: 0763628964 - Using deal_object.currentSince for last used price change. Max timestamp: 7722700. All considered: [7722504, 7416778, 7719642, 7722700]
-2025-09-08 20:13:58,060 - wsgi_handler - INFO - ASIN: 0763628964 - last price change (focused on used) result: 2025-09-06 19:40:00 (from ts 7722700 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:58,060 - keepa_deals.stable_products - INFO - ASIN 0763628964: FBA Pick&Pack Fee found: $3.24 (from raw 324)
-2025-09-08 20:13:58,060 - keepa_deals.stable_products - INFO - ASIN 0763628964: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:58,060 - keepa_deals.stable_products - INFO - ASIN 0763628964: Parsed integer 20051011 as YYYYMMDD -> 2005-10-11.
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2227144) for ASIN 0763628964
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: Found last valid Buy Box Seller ID from history: A1Y2YUWYO93EA6 (at timestamp 5832548)
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0763628964 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0763628964 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0763628964 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0763628964
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0763628964: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0763628964: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 120260, 3580, 3612164, 699, -1, -1, 125005, -1, -1, -1, 0, 5, -1, -1, -1, 45, 116, -1, 1070, 8375, 1869, 2439, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1119, -1]
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0763628964: stats.min[10] is not a valid pair: None
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0763628964: Using stats.current[7], value: $1461.22
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0763628964: Final result: $1461.22, Source: stats.current[7]
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: New, 3rd Party FBM - 365 days avg. found: $1250.05 from stats.avg365[7]
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0763628964: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0763628964: Fallback stats.current[32] is missing, None or invalid (-1).
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN 0763628964: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0763628964: Using stats.avg365[32], value: $11.19
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 0763628964: Using stats.avg365[19], value: $10.70
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0763628964: Using stats.avg365[20], value: $83.75
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0763628964: Using stats.avg365[21], value: $18.69
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0763628964: Using stats.avg365[22], value: $24.39
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: New Offer Count - 365 days avg. from stats.avg365[11]: 0
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: Used Offer Count - Current calculated as 3 (Total: 4, New FBA: 0, New FBM: 1).
-2025-09-08 20:13:58,061 - keepa_deals.stable_products - INFO - ASIN 0763628964: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
-2025-09-08 20:13:58,061 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A2BJYEQOW8BLB8
-2025-09-08 20:13:58,572 - keepa_deals.best_price - INFO - ASIN 0763628964: Best offer found. Price: $5.15, Seller Rank: 93% (28220 ratings).
-2025-09-08 20:13:58,600 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,625 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,652 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,680 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,707 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,734 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,734 - keepa_deals.stable_products - INFO - ASIN 0763628964: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:58,763 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
-2025-09-08 20:13:58,765 - root - INFO - ASIN 0689841841: Percent Down 365 calculated. Current: 21.72, Avg365: 47.46, Diff: 54.24%, Result: 54%
-2025-09-08 20:13:58,765 - keepa_deals.stable_products - INFO - ASIN 0689841841: Found buyBoxUsedShipping to be 0, shipping is included.
-2025-09-08 20:13:58,765 - wsgi_handler - INFO - ASIN: 0689841841 - last_update: Selected latest_ts=7725336 from candidates [7725334, 7725336]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725336)']
-2025-09-08 20:13:58,765 - wsgi_handler - INFO - ASIN: 0689841841 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:58,765 - wsgi_handler - INFO - ASIN: 0689841841 - Using deal_object.currentSince for last used price change. Max timestamp: 7725160. All considered: [7725160, 6362356, 7724440, 7725160]
-2025-09-08 20:13:58,765 - wsgi_handler - INFO - ASIN: 0689841841 - last price change (focused on used) result: 2025-09-08 12:40:00 (from ts 7725160 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:58,765 - keepa_deals.stable_products - INFO - ASIN 0689841841: FBA Pick&Pack Fee found: $3.15 (from raw 315)
-2025-09-08 20:13:58,765 - keepa_deals.stable_products - INFO - ASIN 0689841841: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:58,765 - keepa_deals.stable_products - INFO - ASIN 0689841841: Parsed integer 2001 as YYYY -> 2001.
-2025-09-08 20:13:58,765 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2129522) for ASIN 0689841841
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: Found last valid Buy Box Seller ID from history: A2LAZA9IUFPA4W (at timestamp 7352274)
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0689841841 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0689841841 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0689841841 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0689841841
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0689841841: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0689841841: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 12494, 4746, 2768347, 399, -1, -1, 16778, -1, -1, -1, 0, 4, -1, -1, -1, 45, 11, -1, -1, 6320, 4447, 3293, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6890, -1]
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 0689841841: Found price $25.34 from stats.min[10][1]
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0689841841: Using stats.current[7], value: $135.71
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0689841841: Final result: $135.71, Source: stats.current[7]
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: New, 3rd Party FBM - 365 days avg. found: $167.78 from stats.avg365[7]
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0689841841: Price found via primary logic. FBM item price: 2173 + shipping: 0 = 2173. Formatted: $21.73
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0689841841: Using stats.avg365[32], value: $68.90
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0689841841: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0689841841: Using stats.avg365[20], value: $63.20
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0689841841: Using stats.avg365[21], value: $44.47
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 0689841841
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0689841841: Using stats.avg365[22], value: $32.93
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: New Offer Count - 365 days avg. from stats.avg365[11]: 0
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: Used Offer Count - Current calculated as 4 (Total: 5, New FBA: 0, New FBM: 1).
-2025-09-08 20:13:58,766 - keepa_deals.stable_products - INFO - ASIN 0689841841: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
-2025-09-08 20:13:58,766 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: APMMBWRRPQC7L
-2025-09-08 20:13:59,077 - keepa_deals.best_price - INFO - ASIN 0689841841: Best offer found. Price: $3.99, Seller Rank: 50% (2 ratings).
-2025-09-08 20:13:59,171 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,171 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,263 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,263 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,360 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,360 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,458 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,458 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,561 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,561 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,659 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,659 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,659 - keepa_deals.stable_products - INFO - ASIN 0689841841: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:13:59,750 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 29.69).
-2025-09-08 20:13:59,751 - keepa_deals.stable_calculations - INFO - ASIN 0689841841: Found 27 sane sale events after outlier rejection.
-2025-09-08 20:13:59,753 - root - INFO - ASIN 1588902595: Percent Down 365 calculated. Current: 20.12, Avg365: 95.43, Diff: 78.92%, Result: 79%
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: Found buyBoxUsedShipping to be 0, shipping is included.
-2025-09-08 20:13:59,753 - wsgi_handler - INFO - ASIN: 1588902595 - last_update: Selected latest_ts=7725372 from candidates [7725280, 7725372]. Sources considered: ['deal_object.lastUpdate (7725280)', 'product_data.stats.lastOffersUpdate (7725372)']
-2025-09-08 20:13:59,753 - wsgi_handler - INFO - ASIN: 1588902595 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:13:59,753 - wsgi_handler - INFO - ASIN: 1588902595 - Using deal_object.currentSince for last used price change. Max timestamp: 7725280. All considered: [7725280, 7381972, 7546276, 7725160]
-2025-09-08 20:13:59,753 - wsgi_handler - INFO - ASIN: 1588902595 - last price change (focused on used) result: 2025-09-08 14:40:00 (from ts 7725280 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: FBA Pick&Pack Fee found: $7.56 (from raw 756)
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: Parsed integer 20041216 as YYYYMMDD -> 2004-12-16.
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2108428) for ASIN 1588902595
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: Found last valid Buy Box Seller ID from history: ATVPDKIKX0DER (at timestamp 7723024)
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - Buy Box - Current for ASIN 1588902595: Using 'buyBoxPrice', value: $121.91
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - Amazon - 365 days avg. for ASIN 1588902595: Using stats.avg365[0], value: $205.35
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 1588902595: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: New, 3rd Party FBA - 365 days avg. found: $172.90
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 1588902595: Found price $25.00 from stats.min[10][1]
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1588902595: Using stats.current[7], value: $213.00
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1588902595: Final result: $213.00, Source: stats.current[7]
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - ASIN 1588902595: New, 3rd Party FBM - 365 days avg. found: $200.20 from stats.avg365[7]
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 1588902595: Price found via primary logic. FBA item price: 2117. Formatted: $21.17
-2025-09-08 20:13:59,753 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 1588902595: Using stats.avg365[32], value: $95.92
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 1588902595: Using stats.avg365[19], value: $270.05
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 1588902595: Using stats.avg365[20], value: $93.06
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 1588902595: Using stats.avg365[21], value: $94.69
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 1588902595: Using stats.avg365[22], value: $20.13
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - ASIN 1588902595: New Offer Count - Current calculated as 2 (FBA: 1, FBM: 1).
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - ASIN 1588902595: New Offer Count - 365 days avg. from stats.avg365[11]: 3
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - ASIN 1588902595: Used Offer Count - Current calculated as 5 (Total: 7, New FBA: 1, New FBM: 1).
-2025-09-08 20:13:59,754 - keepa_deals.stable_products - INFO - ASIN 1588902595: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
-2025-09-08 20:13:59,754 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: AS9URBKYEGR93
-2025-09-08 20:14:00,224 - keepa_deals.best_price - INFO - ASIN 1588902595: Best offer found. Price: $9.49, Seller Rank: 99% (120 ratings).
-2025-09-08 20:14:00,291 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,291 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,354 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,354 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,419 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,419 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,483 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,483 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,551 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,551 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,616 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,616 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,616 - keepa_deals.stable_products - INFO - ASIN 1588902595: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:14:00,682 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
-2025-09-08 20:14:00,682 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
-2025-09-08 20:14:00,684 - root - INFO - ASIN 0672525135: Percent Down 365 calculated. Current: 20.26, Avg365: 90.92, Diff: 77.72%, Result: 78%
-2025-09-08 20:14:00,684 - keepa_deals.stable_products - INFO - ASIN 0672525135: No indication of free shipping found for Used - Current offer.
-2025-09-08 20:14:00,685 - wsgi_handler - INFO - ASIN: 0672525135 - last_update: Selected latest_ts=7725372 from candidates [7725280, 7725372]. Sources considered: ['deal_object.lastUpdate (7725280)', 'product_data.stats.lastOffersUpdate (7725372)']
-2025-09-08 20:14:00,685 - wsgi_handler - INFO - ASIN: 0672525135 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:14:00,685 - wsgi_handler - INFO - ASIN: 0672525135 - Using deal_object.currentSince for last used price change. Max timestamp: 7725082. All considered: [7723792, 5517424, 7478808, 7725082, 7725082]
-2025-09-08 20:14:00,685 - wsgi_handler - INFO - ASIN: 0672525135 - last price change (focused on used) result: 2025-09-08 11:22:00 (from ts 7725082 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: FBA Pick&Pack Fee found: $4.55 (from raw 455)
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: Parsed integer 1978 as YYYY -> 1978.
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2226730) for ASIN 0672525135
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: Found last valid Buy Box Seller ID from history: A2VMKCV4FSTN1U (at timestamp 7354252)
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0672525135 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0672525135 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0672525135 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0672525135
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0672525135: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN 0672525135
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0672525135: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 25609, 9092, 4946231, 0, 14083, -1, -1, -1, -1, -1, 0, 3, -1, 1, -1, 44, 13, -1, -1, 9630, 9446, 9732, 14900, -1, 5438, -1, -1, -1, -1, -1, -1, 9521, -1]
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0672525135: stats.min[10] is not a valid pair: None
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN 0672525135: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0672525135: Final result: -, Source: stats.current[7] (invalid value)
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - ASIN 0672525135: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, 25609, 9092, 4946231, 0, 14083, -1, -1, -1, -1, -1, 0, 3, -1, 1, -1, 44, 13, -1, -1, 9630, 9446, 9732, 14900, -1, 5438, -1, -1, -1, -1, -1, -1, 9521, -1]
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0672525135: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0672525135: Fallback stats.current[32] is missing, None or invalid (-1).
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN 0672525135: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
-2025-09-08 20:14:00,685 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0672525135: Using stats.avg365[32], value: $95.21
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0672525135: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0672525135: Using stats.avg365[20], value: $96.30
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0672525135: Using stats.avg365[21], value: $94.46
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 0672525135
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0672525135: Using stats.avg365[22], value: $97.32
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - WARNING - No valid List Price - Current (value=0, current_length=34) for ASIN 0672525135
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - ASIN 0672525135: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - ASIN 0672525135: New Offer Count - 365 days avg. from stats.avg365[11]: 0
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - ASIN 0672525135: Used Offer Count - Current calculated as 2 (Total: 2, New FBA: 0, New FBM: 0).
-2025-09-08 20:14:00,686 - keepa_deals.stable_products - INFO - ASIN 0672525135: Used Offer Count - 365 days avg. from stats.avg365[12]: 3
-2025-09-08 20:14:00,686 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: ADA4TVZMALFG4
-2025-09-08 20:14:01,538 - keepa_deals.best_price - INFO - ASIN 0672525135: Best offer found. Price: $8.96, Seller Rank: 97% (112990 ratings).
-2025-09-08 20:14:01,570 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,600 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,632 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,659 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,688 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,713 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,713 - keepa_deals.stable_products - INFO - ASIN 0672525135: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:14:01,743 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
-2025-09-08 20:14:01,745 - root - INFO - ASIN 0997444622: Percent Down 365 calculated. Current: 26.45, Avg365: 92.55, Diff: 71.42%, Result: 71%
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: Found buyBoxUsedShipping to be 0, shipping is included.
-2025-09-08 20:14:01,746 - wsgi_handler - INFO - ASIN: 0997444622 - last_update: Selected latest_ts=7725372 from candidates [7725280, 7725372]. Sources considered: ['deal_object.lastUpdate (7725280)', 'product_data.stats.lastOffersUpdate (7725372)']
-2025-09-08 20:14:01,746 - wsgi_handler - INFO - ASIN: 0997444622 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
-2025-09-08 20:14:01,746 - wsgi_handler - INFO - ASIN: 0997444622 - Using deal_object.currentSince for last used price change. Max timestamp: 7723004. All considered: [7723004, 7664852, 7649006, 7723004, 7723004]
-2025-09-08 20:14:01,746 - wsgi_handler - INFO - ASIN: 0997444622 - last price change (focused on used) result: 2025-09-07 00:44:00 (from ts 7723004 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: FBA Pick&Pack Fee found: $3.53 (from raw 353)
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: Parsed integer 20190101 as YYYYMMDD -> 2019-01-01.
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: Found last valid Buy Box Seller ID from history: AAWQ1A976EWBO (at timestamp 7717942)
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - Buy Box - Current for ASIN 0997444622: Using 'buyBoxPrice', value: $29.99
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - Amazon - 365 days avg. for ASIN 0997444622: Using stats.avg365[0], value: $29.85
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0997444622: Invalid or missing price at stats.current[10] (-1). Setting to '-'
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - INFO - ASIN 0997444622: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [2985, 4219, 9255, 1949253, 2427, 13840, -1, 4237, -1, -1, -1, 3, 2, -1, 1, -1, 50, 1, 5214, 11832, 6964, 10998, 36204, -1, 14152, -1, -1, -1, 3546, 6248, -1, -1, 11337, -1]
-2025-09-08 20:14:01,746 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0997444622: stats.min[10] is not a valid pair: None
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0997444622: Using stats.current[7], value: $29.37
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0997444622: Final result: $29.37, Source: stats.current[7]
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - ASIN 0997444622: New, 3rd Party FBM - 365 days avg. found: $42.37 from stats.avg365[7]
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0997444622: Price found via primary logic. FBA item price: 2645. Formatted: $26.45
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0997444622: Using stats.avg365[32], value: $113.37
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 0997444622: Using stats.avg365[19], value: $118.32
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0997444622: Using stats.avg365[20], value: $69.64
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0997444622: Using stats.avg365[21], value: $109.98
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0997444622: Using stats.avg365[22], value: $362.04
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - ASIN 0997444622: New Offer Count - Current calculated as 5 (FBA: 1, FBM: 4).
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - ASIN 0997444622: New Offer Count - 365 days avg. from stats.avg365[11]: 3
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - ASIN 0997444622: Used Offer Count - Current calculated as 4 (Total: 9, New FBA: 1, New FBM: 4).
-2025-09-08 20:14:01,747 - keepa_deals.stable_products - INFO - ASIN 0997444622: Used Offer Count - 365 days avg. from stats.avg365[12]: 2
-2025-09-08 20:14:01,747 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A3G2WS12W50L6Z
-2025-09-08 20:14:02,254 - keepa_deals.keepa_api - WARNING - No 'sellers' data found for seller ID A3G2WS12W50L6Z in response.
-2025-09-08 20:14:02,254 - keepa_deals.best_price - INFO - ASIN 0997444622: Best offer found. Price: $18.99, Seller Rank: -.
-2025-09-08 20:14:02,311 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,362 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,410 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,448 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,492 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,539 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,540 - keepa_deals.stable_products - INFO - ASIN 0997444622: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
-2025-09-08 20:14:02,583 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
-2025-09-08 20:14:02,586 - wsgi_handler - INFO - Entering write_csv. Number of deals to process: 10. Number of rows generated: 10.
-2025-09-08 20:14:02,587 - wsgi_handler - INFO - CSV written: data/Keepa_Deals_Export.csv with 10 data rows.
-2025-09-08 20:14:02,587 - wsgi_handler - INFO - Connecting to database at /var/www/agentarbitrage/keepa_deals/../deals.db...
-2025-09-08 20:14:02,588 - wsgi_handler - INFO - Dropping existing 'deals' table if it exists.
-2025-09-08 20:14:02,590 - wsgi_handler - INFO - Creating new 'deals' table.
-2025-09-08 20:14:02,593 - wsgi_handler - INFO - Inserting 10 rows into 'deals' table.
-2025-09-08 20:14:02,596 - wsgi_handler - INFO - Successfully inserted 10 rows into the database.
-2025-09-08 20:14:02,596 - wsgi_handler - INFO - Database connection closed.
-2025-09-08 20:14:02,596 - wsgi_handler - INFO - Script completed!
+2025-09-09 00:24:25,871 - wsgi_handler - INFO - Starting Keepa deals fetching command...
+2025-09-09 00:24:25,871 - wsgi_handler - INFO - Starting Keepa_Deals script...
+2025-09-09 00:24:25,871 - wsgi_handler - INFO - Fetching deals page 0...
+2025-09-09 00:24:25,871 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:25:27,612 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 0
+2025-09-09 00:25:27,612 - wsgi_handler - INFO - Token consumed for deal page 0. Cost: 1. Tokens remaining: 299.00
+2025-09-09 00:25:27,612 - wsgi_handler - INFO - Fetched 150 deals from page 0. Total deals so far: 150
+2025-09-09 00:25:27,612 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:24:25). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:25:25
+2025-09-09 00:25:27,613 - wsgi_handler - INFO - Fetching deals page 1...
+2025-09-09 00:25:27,613 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:26:28,413 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 1
+2025-09-09 00:26:28,413 - wsgi_handler - INFO - Token consumed for deal page 1. Cost: 1. Tokens remaining: 299.00
+2025-09-09 00:26:28,413 - wsgi_handler - INFO - Fetched 150 deals from page 1. Total deals so far: 300
+2025-09-09 00:26:28,413 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:25:25). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:26:25
+2025-09-09 00:26:28,413 - wsgi_handler - INFO - Fetching deals page 2...
+2025-09-09 00:26:28,413 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:27:29,646 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 2
+2025-09-09 00:27:29,647 - wsgi_handler - INFO - Token consumed for deal page 2. Cost: 1. Tokens remaining: 299.00
+2025-09-09 00:27:29,647 - wsgi_handler - INFO - Fetched 150 deals from page 2. Total deals so far: 450
+2025-09-09 00:27:29,647 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:26:25). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:27:25
+2025-09-09 00:27:29,647 - wsgi_handler - INFO - Fetching deals page 3...
+2025-09-09 00:27:29,647 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:28:30,686 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 3
+2025-09-09 00:28:30,686 - wsgi_handler - INFO - Token consumed for deal page 3. Cost: 1. Tokens remaining: 299.00
+2025-09-09 00:28:30,686 - wsgi_handler - INFO - Fetched 150 deals from page 3. Total deals so far: 600
+2025-09-09 00:28:30,686 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:27:25). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:28:25
+2025-09-09 00:28:30,686 - wsgi_handler - INFO - Fetching deals page 4...
+2025-09-09 00:28:30,686 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:29:32,064 - keepa_deals.keepa_api - INFO - Fetched 150 deals from page 4
+2025-09-09 00:29:32,065 - wsgi_handler - INFO - Token consumed for deal page 4. Cost: 1. Tokens remaining: 299.00
+2025-09-09 00:29:32,065 - wsgi_handler - INFO - Fetched 150 deals from page 4. Total deals so far: 750
+2025-09-09 00:29:32,065 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:28:25). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:29:25
+2025-09-09 00:29:32,065 - wsgi_handler - INFO - Fetching deals page 5...
+2025-09-09 00:29:32,065 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:30:32,996 - keepa_deals.keepa_api - INFO - Fetched 107 deals from page 5
+2025-09-09 00:30:32,998 - wsgi_handler - INFO - Token consumed for deal page 5. Cost: 1. Tokens remaining: 299.00
+2025-09-09 00:30:32,998 - wsgi_handler - INFO - Fetched 107 deals from page 5. Total deals so far: 857
+2025-09-09 00:30:32,999 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:29:25). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:30:25
+2025-09-09 00:30:32,999 - wsgi_handler - INFO - Fetching deals page 6...
+2025-09-09 00:30:32,999 - wsgi_handler - INFO - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:31:33,391 - keepa_deals.keepa_api - INFO - Fetched 0 deals from page 6
+2025-09-09 00:31:33,391 - wsgi_handler - INFO - No more deals found on page 6.
+2025-09-09 00:31:33,391 - wsgi_handler - INFO - Total deals fetched: 857
+2025-09-09 00:31:33,391 - wsgi_handler - WARNING - PROCESSING LIMIT ACTIVE: Processing only the first 10 of 857 deals.
+2025-09-09 00:31:33,391 - wsgi_handler - INFO - Deals to process: 10
+2025-09-09 00:31:33,392 - wsgi_handler - INFO - Starting ASIN processing, found 10 deals (after potential temporary limit)
+2025-09-09 00:31:33,392 - wsgi_handler - INFO - Collected 10 valid ASINs for batch processing.
+2025-09-09 00:31:33,392 - wsgi_handler - INFO - Created 1 batches for API calls.
+2025-09-09 00:31:33,392 - wsgi_handler - INFO - Processing Batch 1/1 (Attempt 1) with 10 ASINs: ['1888429151', '9586073300', '0752853317']...
+2025-09-09 00:31:33,392 - wsgi_handler - INFO - Quota Refill: Processed 1 interval(s) of 60s (from 2025-09-09 00:30:25). Tokens before: 300.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-09-09 00:31:25
+2025-09-09 00:31:33,392 - wsgi_handler - INFO - Pre-emptive pause for product batch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-09-09 00:32:33,450 - keepa_deals.keepa_api - INFO - fetch_product_batch: Attempting to fetch batch of 10 ASINs: 1888429151,9586073300,0752853317...
+2025-09-09 00:32:41,305 - keepa_deals.keepa_api - INFO - Batch API call cost 60 tokens according to 'tokensConsumed' field in response.
+2025-09-09 00:32:41,305 - keepa_deals.keepa_api - INFO - Successfully fetched data for 10 products in batch for 10 requested ASINs.
+2025-09-09 00:32:41,306 - wsgi_handler - INFO - Tokens consumed for BATCH. Cost: 60. Tokens remaining: 240.00.
+2025-09-09 00:32:41,306 - root - INFO - ASIN 1888429151: Percent Down 365 calculated. Current: 22.81, Avg365: 133.96, Diff: 82.97%, Result: 83%
+2025-09-09 00:32:41,306 - keepa_deals.stable_products - INFO - ASIN 1888429151: No indication of free shipping found for Used - Current offer.
+2025-09-09 00:32:41,307 - wsgi_handler - INFO - ASIN: 1888429151 - last_update: Selected latest_ts=7725584 from candidates [7725584, 7725584]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:41,307 - wsgi_handler - INFO - ASIN: 1888429151 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:41,307 - wsgi_handler - INFO - ASIN: 1888429151 - Using deal_object.currentSince for last used price change. Max timestamp: 7723980. All considered: [7723980, 7007208, 7720732, 7723980]
+2025-09-09 00:32:41,307 - wsgi_handler - INFO - ASIN: 1888429151 - last price change (focused on used) result: 2025-09-07 17:00:00 (from ts 7723980 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - INFO - ASIN 1888429151: FBA Pick&Pack Fee found: $3.53 (from raw 353)
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - INFO - ASIN 1888429151: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - INFO - ASIN 1888429151: Parsed integer 200305 as YYYYMM -> 2003-05.
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - INFO - ASIN 1888429151: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - ASIN 1888429151: Could not find a valid seller ID in the history. Last entry was '-1'.
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 1888429151 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 1888429151 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 1888429151 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 1888429151
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 1888429151: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 1888429151: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:41,307 - keepa_deals.stable_products - INFO - ASIN 1888429151: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 34700, 13396, 2634797, 1595, -1, -1, 34507, -1, -1, -1, 1, 3, -1, -1, -1, 45, 12, -1, -1, 8611, 13385, 33527, -1, -1, -1, -1, -1, -1, -1, -1, -1, 21354, -1]
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 1888429151: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1888429151: Using stats.current[7], value: $305.96
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1888429151: Final result: $305.96, Source: stats.current[7]
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - ASIN 1888429151: New, 3rd Party FBM - 365 days avg. found: $345.07 from stats.avg365[7]
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 1888429151: Price found via primary logic. FBM item price: 2860 + shipping: 499 = 3359. Formatted: $33.59
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 1888429151: Using stats.avg365[32], value: $213.54
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 1888429151: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 1888429151: Using stats.avg365[20], value: $86.11
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 1888429151: Using stats.avg365[21], value: $133.85
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 1888429151: Using stats.avg365[22], value: $335.27
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - ASIN 1888429151: New Offer Count - Current calculated as 2 (FBA: 0, FBM: 2).
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - ASIN 1888429151: New Offer Count - 365 days avg. from stats.avg365[11]: 1
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - ASIN 1888429151: Used Offer Count - Current calculated as 7 (Total: 9, New FBA: 0, New FBM: 2).
+2025-09-09 00:32:41,308 - keepa_deals.stable_products - INFO - ASIN 1888429151: Used Offer Count - 365 days avg. from stats.avg365[12]: 3
+2025-09-09 00:32:41,308 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: AHT0AG4W2ZKIX
+2025-09-09 00:32:41,618 - keepa_deals.best_price - INFO - ASIN 1888429151: Best offer found. Price: $9.99, Seller Rank: 90% (1702 ratings).
+2025-09-09 00:32:41,742 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:41,742 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:41,868 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:41,868 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:41,971 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:41,971 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:42,099 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:42,099 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:42,209 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:42,209 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:42,329 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:42,329 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:42,329 - keepa_deals.stable_products - INFO - ASIN 1888429151: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:42,441 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 284.00).
+2025-09-09 00:32:42,441 - keepa_deals.stable_calculations - INFO - ASIN 1888429151: Found 27 sane sale events after outlier rejection.
+2025-09-09 00:32:42,443 - root - INFO - ASIN 9586073300: Percent Down 365 calculated. Current: 20.00, Avg365: 360.49, Diff: 94.45%, Result: 94%
+2025-09-09 00:32:42,443 - keepa_deals.stable_products - INFO - ASIN 9586073300: No indication of free shipping found for Used - Current offer.
+2025-09-09 00:32:42,443 - wsgi_handler - INFO - ASIN: 9586073300 - last_update: Selected latest_ts=7725632 from candidates [7725540, 7725632]. Sources considered: ['deal_object.lastUpdate (7725540)', 'product_data.stats.lastOffersUpdate (7725632)']
+2025-09-09 00:32:42,443 - wsgi_handler - INFO - ASIN: 9586073300 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:42,443 - wsgi_handler - INFO - ASIN: 9586073300 - Using deal_object.currentSince for last used price change. Max timestamp: 7725336. All considered: [7725336, 7434030, 7552866, 7720840]
+2025-09-09 00:32:42,443 - wsgi_handler - INFO - ASIN: 9586073300 - last price change (focused on used) result: 2025-09-08 15:36:00 (from ts 7725336 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:42,443 - keepa_deals.stable_products - INFO - ASIN 9586073300: FBA Pick&Pack Fee found: $3.33 (from raw 333)
+2025-09-09 00:32:42,443 - keepa_deals.stable_products - INFO - ASIN 9586073300: Referral Fee Percentage found (product_data.referralFeePercentage): 15.02% (from raw 15.02)
+2025-09-09 00:32:42,443 - keepa_deals.stable_products - INFO - ASIN 9586073300: Parsed integer 2014 as YYYY -> 2014.
+2025-09-09 00:32:42,443 - keepa_deals.stable_products - INFO - ASIN 9586073300: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:42,443 - keepa_deals.stable_products - INFO - ASIN 9586073300: Found last valid Buy Box Seller ID from history: A1M1J9WQYAEQ76 (at timestamp 6420664)
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 9586073300 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 9586073300 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 9586073300 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 9586073300
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 9586073300: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN 9586073300
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 9586073300: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - ASIN 9586073300: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 36049, 3682236, 895, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 45, 6, -1, 7899, 61183, 32552, 213177, -1, -1, -1, -1, -1, -1, -1, -1, -1, 55577, -1]
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 9586073300: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN 9586073300: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 9586073300: Final result: -, Source: stats.current[7] (invalid value)
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - ASIN 9586073300: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 36049, 3682236, 895, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 45, 6, -1, 7899, 61183, 32552, 213177, -1, -1, -1, -1, -1, -1, -1, -1, -1, 55577, -1]
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 9586073300: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 9586073300: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN 9586073300: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 9586073300: Using stats.avg365[32], value: $555.77
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 9586073300: Using stats.avg365[19], value: $78.99
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 9586073300: Using stats.avg365[20], value: $611.83
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 9586073300: Using stats.avg365[21], value: $325.52
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 9586073300
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 9586073300: Using stats.avg365[22], value: $2131.77
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - ASIN 9586073300: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - ASIN 9586073300: New Offer Count - 365 days avg. from stats.avg365[11]: -
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - ASIN 9586073300: Used Offer Count - Current calculated as 1 (Total: 1, New FBA: 0, New FBM: 0).
+2025-09-09 00:32:42,444 - keepa_deals.stable_products - INFO - ASIN 9586073300: Used Offer Count - 365 days avg. from stats.avg365[12]: 1
+2025-09-09 00:32:42,444 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: AU64Z6DD0V70I
+2025-09-09 00:32:42,756 - keepa_deals.best_price - INFO - ASIN 9586073300: Best offer found. Price: $8.95, Seller Rank: 85% (54 ratings).
+2025-09-09 00:32:42,788 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,815 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,845 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,874 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,901 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,928 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,929 - keepa_deals.stable_products - INFO - ASIN 9586073300: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:42,953 - keepa_deals.stable_calculations - INFO - ASIN 9586073300: Found 6 sane sale events after outlier rejection.
+2025-09-09 00:32:42,955 - root - INFO - ASIN 0752853317: Percent Down 365 calculated. Current: 20.06, Avg365: 70.69, Diff: 71.62%, Result: 72%
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-09-09 00:32:42,955 - wsgi_handler - INFO - ASIN: 0752853317 - last_update: Selected latest_ts=7725584 from candidates [7725584, 7725584]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:42,955 - wsgi_handler - INFO - ASIN: 0752853317 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:42,955 - wsgi_handler - INFO - ASIN: 0752853317 - Using deal_object.currentSince for last used price change. Max timestamp: 7725584. All considered: [7725584, 7153472, 7725584, 7725584]
+2025-09-09 00:32:42,955 - wsgi_handler - INFO - ASIN: 0752853317 - last price change (focused on used) result: 2025-09-08 19:44:00 (from ts 7725584 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: FBA Pick&Pack Fee found: $4.15 (from raw 415)
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: Parsed integer 2004 as YYYY -> 2004.
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2184340) for ASIN 0752853317
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: Found last valid Buy Box Seller ID from history: A2VMKCV4FSTN1U (at timestamp 7352814)
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0752853317 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0752853317 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0752853317 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0752853317
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0752853317: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0752853317: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - INFO - ASIN 0752853317: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 27925, 7069, 3949290, -1, -1, -1, 48882, -1, -1, -1, 0, 5, -1, -1, -1, 40, 8, -1, -1, 9223, 3782, 5309, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3079, -1]
+2025-09-09 00:32:42,955 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0752853317: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0752853317: Using stats.current[7], value: $812.93
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0752853317: Final result: $812.93, Source: stats.current[7]
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - ASIN 0752853317: New, 3rd Party FBM - 365 days avg. found: $488.82 from stats.avg365[7]
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0752853317: Price found via primary logic. FBM item price: 2006 + shipping: 0 = 2006. Formatted: $20.06
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0752853317: Using stats.avg365[32], value: $30.79
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0752853317: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0752853317: Using stats.avg365[20], value: $92.23
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0752853317: Using stats.avg365[21], value: $37.82
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 0752853317
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0752853317: Using stats.avg365[22], value: $53.09
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - WARNING - No valid List Price - Current (value=-1, current_length=34) for ASIN 0752853317
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - ASIN 0752853317: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - ASIN 0752853317: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - ASIN 0752853317: Used Offer Count - Current calculated as 9 (Total: 10, New FBA: 0, New FBM: 1).
+2025-09-09 00:32:42,956 - keepa_deals.stable_products - INFO - ASIN 0752853317: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
+2025-09-09 00:32:42,956 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A16ET7DS3ZNK1W
+2025-09-09 00:32:43,476 - keepa_deals.best_price - INFO - ASIN 0752853317: Best offer found. Price: $4.95, Seller Rank: 94% (158763 ratings).
+2025-09-09 00:32:43,550 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,623 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,699 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,774 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,844 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,902 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,902 - keepa_deals.stable_products - INFO - ASIN 0752853317: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:43,955 - keepa_deals.stable_calculations - INFO - ASIN 0752853317: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:43,957 - root - INFO - ASIN 0761542566: Percent Down 365 calculated. Current: 23.98, Avg365: 52.50, Diff: 54.32%, Result: 54%
+2025-09-09 00:32:43,957 - keepa_deals.stable_products - INFO - ASIN 0761542566: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-09-09 00:32:43,957 - wsgi_handler - INFO - ASIN: 0761542566 - last_update: Selected latest_ts=7725584 from candidates [7725584, 7725584]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:43,957 - wsgi_handler - INFO - ASIN: 0761542566 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:43,957 - wsgi_handler - INFO - ASIN: 0761542566 - Using deal_object.currentSince for last used price change. Max timestamp: 7725584. All considered: [7725334, 7140132, 7722660, 7725584]
+2025-09-09 00:32:43,957 - wsgi_handler - INFO - ASIN: 0761542566 - last price change (focused on used) result: 2025-09-08 19:44:00 (from ts 7725584 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:43,957 - keepa_deals.stable_products - INFO - ASIN 0761542566: FBA Pick&Pack Fee found: $4.55 (from raw 455)
+2025-09-09 00:32:43,957 - keepa_deals.stable_products - INFO - ASIN 0761542566: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: Parsed integer 20030325 as YYYYMMDD -> 2003-03-25.
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2826720) for ASIN 0761542566
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: Found last valid Buy Box Seller ID from history: AUZOLEU9XUH4C (at timestamp 7274544)
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0761542566 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0761542566 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0761542566 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0761542566
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0761542566: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN 0761542566
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0761542566: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: New, 3rd Party FBA - 365 days avg. found: $48.23
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 0761542566: Found price $33.60 from stats.min[10][1]
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN 0761542566: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0761542566: Final result: -, Source: stats.current[7] (invalid value)
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, 4879, 5250, 830439, 1499, 12553, -1, -1, -1, -1, 4823, 0, 6, -1, 1, -1, 47, 150, 6199, -1, 23756, 6047, 5306, -1, 4497, 13499, 6994, -1, 5768, 2259, -1, -1, 9967, -1]
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0761542566: Price found via primary logic. FBA item price: 8374. Formatted: $83.74
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0761542566: Using stats.avg365[32], value: $99.67
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0761542566: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0761542566: Using stats.avg365[20], value: $237.56
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0761542566: Using stats.avg365[21], value: $60.47
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0761542566: Using stats.avg365[22], value: $53.06
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: Used Offer Count - Current calculated as 9 (Total: 9, New FBA: 0, New FBM: 0).
+2025-09-09 00:32:43,958 - keepa_deals.stable_products - INFO - ASIN 0761542566: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+2025-09-09 00:32:43,959 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A9OE9NRYGISW3
+2025-09-09 00:32:44,476 - keepa_deals.best_price - INFO - ASIN 0761542566: Best offer found. Price: $5.95, Seller Rank: 97% (216431 ratings).
+2025-09-09 00:32:44,921 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:44,921 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:45,390 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:45,390 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:45,862 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:45,862 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:46,281 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:46,281 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:46,734 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:46,734 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:47,248 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:47,248 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:47,248 - keepa_deals.stable_products - INFO - ASIN 0761542566: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:47,775 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 59.46).
+2025-09-09 00:32:47,775 - keepa_deals.stable_calculations - INFO - ASIN 0761542566: Found 154 sane sale events after outlier rejection.
+2025-09-09 00:32:47,779 - root - INFO - ASIN 1501764276: Percent Down 365 calculated. Current: 24.95, Avg365: 107.37, Diff: 76.76%, Result: 77%
+2025-09-09 00:32:47,779 - keepa_deals.stable_products - INFO - ASIN 1501764276: No indication of free shipping found for Used - Current offer.
+2025-09-09 00:32:47,779 - wsgi_handler - INFO - ASIN: 1501764276 - last_update: Selected latest_ts=7725604 from candidates [7725604, 7725584]. Sources considered: ['deal_object.lastUpdate (7725604)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:47,779 - wsgi_handler - INFO - ASIN: 1501764276 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:47,779 - wsgi_handler - INFO - ASIN: 1501764276 - Using deal_object.currentSince for last used price change. Max timestamp: 7725584. All considered: [7692378, 7725584, 6452252, 7695058]
+2025-09-09 00:32:47,779 - wsgi_handler - INFO - ASIN: 1501764276 - last price change (focused on used) result: 2025-09-08 19:44:00 (from ts 7725584 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:47,779 - keepa_deals.stable_products - INFO - ASIN 1501764276: FBA Pick&Pack Fee found: $4.99 (from raw 499)
+2025-09-09 00:32:47,779 - keepa_deals.stable_products - INFO - ASIN 1501764276: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:47,779 - keepa_deals.stable_products - INFO - ASIN 1501764276: Parsed integer 20220415 as YYYYMMDD -> 2022-04-15.
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: Found last valid Buy Box Seller ID from history: ATVPDKIKX0DER (at timestamp 7724704)
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - Buy Box - Current for ASIN 1501764276: Using 'buyBoxPrice', value: $71.89
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - Amazon - 365 days avg. for ASIN 1501764276: Using stats.avg365[0], value: $110.94
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 1501764276: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: New, 3rd Party FBA - 365 days avg. found: $98.38
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 1501764276: Found price $98.39 from stats.min[10][1]
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1501764276: Using stats.current[7], value: $82.29
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1501764276: Final result: $82.29, Source: stats.current[7]
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: New, 3rd Party FBM - 365 days avg. found: $123.28 from stats.avg365[7]
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 1501764276: Price found via primary logic. FBM item price: 4800 + shipping: 399 = 5199. Formatted: $51.99
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 1501764276: Using stats.avg365[32], value: $99.55
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 1501764276: Using stats.avg365[19], value: $152.99
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - WARNING - Used, very good - 365 days avg. for ASIN 1501764276: Invalid or non-positive price at stats.avg365[20] (-1). Setting to '-'
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 1501764276: Using stats.avg365[21], value: $108.27
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 1501764276
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - WARNING - Used, acceptable - 365 days avg. for ASIN 1501764276: Invalid or non-positive price at stats.avg365[22] (-1). Setting to '-'
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: New Offer Count - Current calculated as 8 (FBA: 1, FBM: 7).
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: New Offer Count - 365 days avg. from stats.avg365[11]: 11
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: Used Offer Count - Current calculated as 4 (Total: 12, New FBA: 1, New FBM: 7).
+2025-09-09 00:32:47,780 - keepa_deals.stable_products - INFO - ASIN 1501764276: Used Offer Count - 365 days avg. from stats.avg365[12]: 2
+2025-09-09 00:32:47,780 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A1JKYGWZN0EKN
+2025-09-09 00:32:48,091 - keepa_deals.best_price - INFO - ASIN 1501764276: Best offer found. Price: $28.94, Seller Rank: 97% (67 ratings).
+2025-09-09 00:32:48,121 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,150 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,182 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,212 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,240 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,271 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,271 - keepa_deals.stable_products - INFO - ASIN 1501764276: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:48,295 - keepa_deals.stable_calculations - INFO - ASIN 1501764276: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,297 - root - INFO - ASIN 0763628964: Percent Down 365 calculated. Current: 23.87, Avg365: 35.81, Diff: 33.34%, Result: 33%
+2025-09-09 00:32:48,297 - keepa_deals.stable_products - INFO - ASIN 0763628964: No indication of free shipping found for Used - Current offer.
+2025-09-09 00:32:48,297 - wsgi_handler - INFO - ASIN: 0763628964 - last_update: Selected latest_ts=7725584 from candidates [7725584, 7725584]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:48,297 - wsgi_handler - INFO - ASIN: 0763628964 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:48,297 - wsgi_handler - INFO - ASIN: 0763628964 - Using deal_object.currentSince for last used price change. Max timestamp: 7722700. All considered: [7722504, 7416778, 7719642, 7722700]
+2025-09-09 00:32:48,297 - wsgi_handler - INFO - ASIN: 0763628964 - last price change (focused on used) result: 2025-09-06 19:40:00 (from ts 7722700 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:48,297 - keepa_deals.stable_products - INFO - ASIN 0763628964: FBA Pick&Pack Fee found: $3.24 (from raw 324)
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: Parsed integer 20051011 as YYYYMMDD -> 2005-10-11.
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2227144) for ASIN 0763628964
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: Found last valid Buy Box Seller ID from history: A1Y2YUWYO93EA6 (at timestamp 5832548)
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0763628964 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0763628964 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0763628964 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0763628964
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0763628964: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0763628964: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 120410, 3581, 3611230, 699, -1, -1, 125172, -1, -1, -1, 0, 5, -1, -1, -1, 45, 116, -1, 1070, 8375, 1870, 2439, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1119, -1]
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0763628964: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0763628964: Using stats.current[7], value: $1461.22
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0763628964: Final result: $1461.22, Source: stats.current[7]
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: New, 3rd Party FBM - 365 days avg. found: $1251.72 from stats.avg365[7]
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0763628964: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0763628964: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN 0763628964: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0763628964: Using stats.avg365[32], value: $11.19
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 0763628964: Using stats.avg365[19], value: $10.70
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0763628964: Using stats.avg365[20], value: $83.75
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0763628964: Using stats.avg365[21], value: $18.70
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0763628964: Using stats.avg365[22], value: $24.39
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: Used Offer Count - Current calculated as 3 (Total: 4, New FBA: 0, New FBM: 1).
+2025-09-09 00:32:48,298 - keepa_deals.stable_products - INFO - ASIN 0763628964: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
+2025-09-09 00:32:48,298 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A2BJYEQOW8BLB8
+2025-09-09 00:32:48,812 - keepa_deals.best_price - INFO - ASIN 0763628964: Best offer found. Price: $5.15, Seller Rank: 93% (28220 ratings).
+2025-09-09 00:32:48,841 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,868 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,895 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,922 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,950 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,976 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:48,976 - keepa_deals.stable_products - INFO - ASIN 0763628964: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:49,001 - keepa_deals.stable_calculations - INFO - ASIN 0763628964: Found 4 sane sale events after outlier rejection.
+2025-09-09 00:32:49,004 - root - INFO - ASIN 1588902595: Percent Down 365 calculated. Current: 20.09, Avg365: 95.44, Diff: 78.95%, Result: 79%
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-09-09 00:32:49,004 - wsgi_handler - INFO - ASIN: 1588902595 - last_update: Selected latest_ts=7725584 from candidates [7725584, 7725584]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:49,004 - wsgi_handler - INFO - ASIN: 1588902595 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:49,004 - wsgi_handler - INFO - ASIN: 1588902595 - Using deal_object.currentSince for last used price change. Max timestamp: 7725548. All considered: [7725548, 7381972, 7546276, 7725520]
+2025-09-09 00:32:49,004 - wsgi_handler - INFO - ASIN: 1588902595 - last price change (focused on used) result: 2025-09-08 19:08:00 (from ts 7725548 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: FBA Pick&Pack Fee found: $7.56 (from raw 756)
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: Parsed integer 20041216 as YYYYMMDD -> 2004-12-16.
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2108428) for ASIN 1588902595
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: Found last valid Buy Box Seller ID from history: ATVPDKIKX0DER (at timestamp 7723024)
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - Buy Box - Current for ASIN 1588902595: Using 'buyBoxPrice', value: $121.91
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - Amazon - 365 days avg. for ASIN 1588902595: Using stats.avg365[0], value: $205.09
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 1588902595: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:49,004 - keepa_deals.stable_products - INFO - ASIN 1588902595: New, 3rd Party FBA - 365 days avg. found: $172.90
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - New, 3rd Party FBA - Lowest for ASIN 1588902595: Found price $25.00 from stats.min[10][1]
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1588902595: Using stats.current[7], value: $213.00
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 1588902595: Final result: $213.00, Source: stats.current[7]
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - ASIN 1588902595: New, 3rd Party FBM - 365 days avg. found: $200.21 from stats.avg365[7]
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 1588902595: Price found via primary logic. FBA item price: 2115. Formatted: $21.15
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 1588902595: Using stats.avg365[32], value: $95.92
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 1588902595: Using stats.avg365[19], value: $270.10
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 1588902595: Using stats.avg365[20], value: $93.12
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 1588902595: Using stats.avg365[21], value: $94.69
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 1588902595: Using stats.avg365[22], value: $20.12
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - ASIN 1588902595: New Offer Count - Current calculated as 2 (FBA: 1, FBM: 1).
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - ASIN 1588902595: New Offer Count - 365 days avg. from stats.avg365[11]: 3
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - ASIN 1588902595: Used Offer Count - Current calculated as 5 (Total: 7, New FBA: 1, New FBM: 1).
+2025-09-09 00:32:49,005 - keepa_deals.stable_products - INFO - ASIN 1588902595: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+2025-09-09 00:32:49,005 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: AS9URBKYEGR93
+2025-09-09 00:32:49,316 - keepa_deals.best_price - INFO - ASIN 1588902595: Best offer found. Price: $9.49, Seller Rank: 99% (120 ratings).
+2025-09-09 00:32:49,379 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,379 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,438 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,439 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,502 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,502 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,564 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,564 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,623 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,623 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,685 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,685 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,685 - keepa_deals.stable_products - INFO - ASIN 1588902595: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:49,748 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 31.28).
+2025-09-09 00:32:49,748 - keepa_deals.stable_calculations - INFO - ASIN 1588902595: Found 11 sane sale events after outlier rejection.
+2025-09-09 00:32:49,750 - root - INFO - ASIN 0672525135: Percent Down 365 calculated. Current: 20.26, Avg365: 90.89, Diff: 77.71%, Result: 78%
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - ASIN 0672525135: No indication of free shipping found for Used - Current offer.
+2025-09-09 00:32:49,750 - wsgi_handler - INFO - ASIN: 0672525135 - last_update: Selected latest_ts=7725632 from candidates [7725584, 7725632]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725632)']
+2025-09-09 00:32:49,750 - wsgi_handler - INFO - ASIN: 0672525135 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:49,750 - wsgi_handler - INFO - ASIN: 0672525135 - Using deal_object.currentSince for last used price change. Max timestamp: 7725082. All considered: [7723792, 5517424, 7478808, 7725082, 7725082]
+2025-09-09 00:32:49,750 - wsgi_handler - INFO - ASIN: 0672525135 - last price change (focused on used) result: 2025-09-08 11:22:00 (from ts 7725082 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - ASIN 0672525135: FBA Pick&Pack Fee found: $4.55 (from raw 455)
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - ASIN 0672525135: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - ASIN 0672525135: Parsed integer 1978 as YYYY -> 1978.
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-2226730) for ASIN 0672525135
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - ASIN 0672525135: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - INFO - ASIN 0672525135: Found last valid Buy Box Seller ID from history: A2VMKCV4FSTN1U (at timestamp 7354252)
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0672525135 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0672525135 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN 0672525135 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN 0672525135
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN 0672525135: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:49,750 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN 0672525135
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0672525135: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - ASIN 0672525135: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 25609, 9089, 4943505, 0, 14093, -1, -1, -1, -1, -1, 0, 3, -1, 1, -1, 44, 13, -1, -1, 9632, 9440, 9731, 14900, -1, 5439, -1, -1, -1, -1, -1, -1, 9519, -1]
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0672525135: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN 0672525135: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0672525135: Final result: -, Source: stats.current[7] (invalid value)
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - ASIN 0672525135: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, 25609, 9089, 4943505, 0, 14093, -1, -1, -1, -1, -1, 0, 3, -1, 1, -1, 44, 13, -1, -1, 9632, 9440, 9731, 14900, -1, 5439, -1, -1, -1, -1, -1, -1, 9519, -1]
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0672525135: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0672525135: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN 0672525135: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0672525135: Using stats.avg365[32], value: $95.19
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN 0672525135: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0672525135: Using stats.avg365[20], value: $96.32
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0672525135: Using stats.avg365[21], value: $94.40
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN 0672525135
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0672525135: Using stats.avg365[22], value: $97.31
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - WARNING - No valid List Price - Current (value=0, current_length=34) for ASIN 0672525135
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - ASIN 0672525135: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - ASIN 0672525135: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - ASIN 0672525135: Used Offer Count - Current calculated as 2 (Total: 2, New FBA: 0, New FBM: 0).
+2025-09-09 00:32:49,751 - keepa_deals.stable_products - INFO - ASIN 0672525135: Used Offer Count - 365 days avg. from stats.avg365[12]: 3
+2025-09-09 00:32:49,751 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: ADA4TVZMALFG4
+2025-09-09 00:32:50,165 - keepa_deals.best_price - INFO - ASIN 0672525135: Best offer found. Price: $8.96, Seller Rank: 97% (112990 ratings).
+2025-09-09 00:32:50,193 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,219 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,248 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,279 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,308 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,338 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,338 - keepa_deals.stable_products - INFO - ASIN 0672525135: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:50,366 - keepa_deals.stable_calculations - INFO - ASIN 0672525135: Found 3 sane sale events after outlier rejection.
+2025-09-09 00:32:50,368 - root - INFO - ASIN 0997444622: Percent Down 365 calculated. Current: 26.45, Avg365: 92.49, Diff: 71.40%, Result: 71%
+2025-09-09 00:32:50,368 - keepa_deals.stable_products - INFO - ASIN 0997444622: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-09-09 00:32:50,368 - wsgi_handler - INFO - ASIN: 0997444622 - last_update: Selected latest_ts=7725584 from candidates [7725584, 7725584]. Sources considered: ['deal_object.lastUpdate (7725584)', 'product_data.stats.lastOffersUpdate (7725584)']
+2025-09-09 00:32:50,368 - wsgi_handler - INFO - ASIN: 0997444622 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:50,369 - wsgi_handler - INFO - ASIN: 0997444622 - Using deal_object.currentSince for last used price change. Max timestamp: 7723004. All considered: [7723004, 7664852, 7649006, 7723004, 7723004]
+2025-09-09 00:32:50,369 - wsgi_handler - INFO - ASIN: 0997444622 - last price change (focused on used) result: 2025-09-07 00:44:00 (from ts 7723004 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: FBA Pick&Pack Fee found: $3.53 (from raw 353)
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: Parsed integer 20190101 as YYYYMMDD -> 2019-01-01.
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: Found last valid Buy Box Seller ID from history: AAWQ1A976EWBO (at timestamp 7717942)
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Buy Box - Current for ASIN 0997444622: Using 'buyBoxPrice', value: $29.99
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Amazon - 365 days avg. for ASIN 0997444622: Using stats.avg365[0], value: $29.86
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN 0997444622: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [2986, 4207, 9249, 1949185, 2427, 13836, -1, 4228, -1, -1, -1, 3, 2, -1, 1, -1, 50, 1, 5197, 11832, 6964, 10991, 36167, -1, 14148, -1, -1, -1, 3546, 6243, -1, -1, 11320, -1]
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN 0997444622: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0997444622: Using stats.current[7], value: $29.37
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN 0997444622: Final result: $29.37, Source: stats.current[7]
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: New, 3rd Party FBM - 365 days avg. found: $42.28 from stats.avg365[7]
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN 0997444622: Price found via primary logic. FBA item price: 2645. Formatted: $26.45
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN 0997444622: Using stats.avg365[32], value: $113.20
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Used, like new - 365 days avg. for ASIN 0997444622: Using stats.avg365[19], value: $118.32
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Used, very good - 365 days avg. for ASIN 0997444622: Using stats.avg365[20], value: $69.64
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN 0997444622: Using stats.avg365[21], value: $109.91
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - Used, acceptable - 365 days avg. for ASIN 0997444622: Using stats.avg365[22], value: $361.67
+2025-09-09 00:32:50,369 - keepa_deals.stable_products - INFO - ASIN 0997444622: New Offer Count - Current calculated as 5 (FBA: 1, FBM: 4).
+2025-09-09 00:32:50,370 - keepa_deals.stable_products - INFO - ASIN 0997444622: New Offer Count - 365 days avg. from stats.avg365[11]: 3
+2025-09-09 00:32:50,370 - keepa_deals.stable_products - INFO - ASIN 0997444622: Used Offer Count - Current calculated as 4 (Total: 9, New FBA: 1, New FBM: 4).
+2025-09-09 00:32:50,370 - keepa_deals.stable_products - INFO - ASIN 0997444622: Used Offer Count - 365 days avg. from stats.avg365[12]: 2
+2025-09-09 00:32:50,370 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A3G2WS12W50L6Z
+2025-09-09 00:32:50,682 - keepa_deals.keepa_api - WARNING - No 'sellers' data found for seller ID A3G2WS12W50L6Z in response.
+2025-09-09 00:32:50,682 - keepa_deals.best_price - INFO - ASIN 0997444622: Best offer found. Price: $18.99, Seller Rank: -.
+2025-09-09 00:32:50,728 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,766 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,807 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,847 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,890 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,932 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,933 - keepa_deals.stable_products - INFO - ASIN 0997444622: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:50,976 - keepa_deals.stable_calculations - INFO - ASIN 0997444622: Found 10 sane sale events after outlier rejection.
+2025-09-09 00:32:50,978 - root - INFO - ASIN B000HI0WF8: Percent Down 365 calculated. Current: 26.90, Avg365: 176.31, Diff: 84.74%, Result: 85%
+2025-09-09 00:32:50,978 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: No indication of free shipping found for Used - Current offer.
+2025-09-09 00:32:50,978 - wsgi_handler - INFO - ASIN: B000HI0WF8 - last_update: Selected latest_ts=7725632 from candidates [7725334, 7725632]. Sources considered: ['deal_object.lastUpdate (7725334)', 'product_data.stats.lastOffersUpdate (7725632)']
+2025-09-09 00:32:50,978 - wsgi_handler - INFO - ASIN: B000HI0WF8 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-09-09 00:32:50,979 - wsgi_handler - INFO - ASIN: B000HI0WF8 - Using deal_object.currentSince for last used price change. Max timestamp: 7721774. All considered: [7666564, 7721774]
+2025-09-09 00:32:50,979 - wsgi_handler - INFO - ASIN: B000HI0WF8 - last price change (focused on used) result: 2025-09-06 04:14:00 (from ts 7721774 via deal_object.currentSince (max of 2 used item timestamps including potential Used Buy Box))
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - ASIN B000HI0WF8: 'fbaFees' is not a dictionary or is missing. Value: None. Returning '-'.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - ASIN B000HI0WF8: Referral Fee Percentage not found with any known keys. Returning '-'.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: Parsed integer 1970 as YYYY -> 1970.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - No valid listedSince (ts=-428196) for ASIN B000HI0WF8
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: Direct 'buyBoxSellerId' not found or invalid ('None'). Checking 'buyBoxSellerIdHistory'.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - ASIN B000HI0WF8: Could not find a valid seller ID in the history. Last entry was '-1'.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN B000HI0WF8 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN B000HI0WF8 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Buy Box - Current - ASIN B000HI0WF8 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - No valid Amazon - Current price for ASIN B000HI0WF8
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Amazon - 365 days avg. for ASIN B000HI0WF8: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - No valid New - Current (value=-1, current_length=34) for ASIN B000HI0WF8
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Current for ASIN B000HI0WF8: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 17631, 11702139, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 44, 27, -1, -1, -1, 19998, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 19998, -1]
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - New, 3rd Party FBA - Lowest for ASIN B000HI0WF8: stats.min[10] is not a valid pair: None
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - New, 3rd Party FBM - Current for ASIN B000HI0WF8: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - New, 3rd Party FBM - Current for ASIN B000HI0WF8: Final result: -, Source: stats.current[7] (invalid value)
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 17631, 11702139, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 44, 27, -1, -1, -1, 19998, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 19998, -1]
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN B000HI0WF8: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - Buy Box Used - Current for ASIN B000HI0WF8: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Buy Box Used - Current for ASIN B000HI0WF8: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - Buy Box Used - 365 days avg. for ASIN B000HI0WF8: Using stats.avg365[32], value: $199.98
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Used, like new - 365 days avg. for ASIN B000HI0WF8: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Used, very good - 365 days avg. for ASIN B000HI0WF8: Invalid or non-positive price at stats.avg365[20] (-1). Setting to '-'
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - INFO - Used, good - 365 days avg. for ASIN B000HI0WF8: Using stats.avg365[21], value: $199.98
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - No valid Used - Acceptable price for ASIN B000HI0WF8
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - Used, acceptable - 365 days avg. for ASIN B000HI0WF8: Invalid or non-positive price at stats.avg365[22] (-1). Setting to '-'
+2025-09-09 00:32:50,979 - keepa_deals.stable_products - WARNING - No valid List Price - Current (value=-1, current_length=34) for ASIN B000HI0WF8
+2025-09-09 00:32:50,980 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-09-09 00:32:50,980 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: New Offer Count - 365 days avg. from stats.avg365[11]: -
+2025-09-09 00:32:50,980 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: Used Offer Count - Current calculated as 1 (Total: 1, New FBA: 0, New FBM: 0).
+2025-09-09 00:32:50,980 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: Used Offer Count - 365 days avg. from stats.avg365[12]: 1
+2025-09-09 00:32:50,980 - keepa_deals.keepa_api - INFO - Fetching seller data for seller ID: A2ZCCG9AB2UZ4R
+2025-09-09 00:32:51,292 - keepa_deals.best_price - INFO - ASIN B000HI0WF8: Best offer found. Price: $30.89, Seller Rank: 58% (116 ratings).
+2025-09-09 00:32:51,299 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,305 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,311 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,317 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,324 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,332 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,332 - keepa_deals.stable_products - INFO - ASIN B000HI0WF8: No current offers found in 'Good' or better condition. Cannot determine Target Buy Price.
+2025-09-09 00:32:51,339 - keepa_deals.stable_calculations - INFO - ASIN B000HI0WF8: Found 0 confirmed sale events out of 2 offer drops.
+2025-09-09 00:32:51,339 - wsgi_handler - INFO - Entering write_csv. Number of deals to process: 10. Number of rows generated: 10.
+2025-09-09 00:32:51,340 - wsgi_handler - INFO - CSV written: data/Keepa_Deals_Export.csv with 10 data rows.
+2025-09-09 00:32:51,340 - wsgi_handler - INFO - Connecting to database at /var/www/agentarbitrage/keepa_deals/../deals.db...
+2025-09-09 00:32:51,341 - wsgi_handler - INFO - Dropping existing 'deals' table if it exists.
+2025-09-09 00:32:51,344 - wsgi_handler - INFO - Creating new 'deals' table.
+2025-09-09 00:32:51,347 - wsgi_handler - INFO - Inserting 10 rows into 'deals' table.
+2025-09-09 00:32:51,351 - wsgi_handler - INFO - Successfully inserted 10 rows into the database.
+2025-09-09 00:32:51,351 - wsgi_handler - INFO - Database connection closed.
+2025-09-09 00:32:51,351 - wsgi_handler - INFO - Script completed!
 run_keepa_script finished successfully.
-2025-09-08 20:14:02,604 - wsgi_handler - INFO - Keepa deals fetching command finished successfully.
+2025-09-09 00:32:51,358 - wsgi_handler - INFO - Keepa deals fetching command finished successfully.

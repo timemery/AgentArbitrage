@@ -2,6 +2,8 @@ import logging
 from .keepa_api import fetch_seller_data
 from .stable_calculations import calculate_seller_quality_score
 
+MIN_SELLER_QUALITY_FOR_ACCEPTABLE = 0.70
+
 # updated manually below
 def _get_best_offer_analysis(product, api_key=None):
     """
@@ -34,13 +36,43 @@ def _get_best_offer_analysis(product, api_key=None):
             return analysis
 
         valid_offers_with_prices = []
+        seller_quality_cache = {} # Cache for seller quality scores
+
         for offer in offers:
             offer_csv = offer.get('offerCSV', [])
-            if len(offer_csv) >= 2:
+            
+            # Hypothesis: condition at [1], price at [-2], shipping at [-1]
+            # This requires the array to have at least 4 elements to be safe.
+            if len(offer_csv) >= 4:
+                condition = offer_csv[1]
+                
+                # If condition is "Acceptable" (5) or "Collectible" (6-11), check seller quality
+                if condition in {5, 6, 7, 8, 9, 10, 11}:
+                    seller_id = offer.get('sellerId')
+                    if seller_id and api_key:
+                        if seller_id not in seller_quality_cache:
+                            # Fetch, calculate, and cache seller score
+                            seller_data = fetch_seller_data(api_key, seller_id)
+                            score = 0.0
+                            if seller_data:
+                                rating_percentage = seller_data.get('rating_percentage', 0)
+                                rating_count = seller_data.get('rating_count', 0)
+                                if rating_count > 0:
+                                    positive_ratings = round((rating_percentage / 100.0) * rating_count)
+                                    score = calculate_seller_quality_score(positive_ratings, rating_count)
+                            seller_quality_cache[seller_id] = {'score': score, 'data': seller_data}
+                        
+                        seller_quality_info = seller_quality_cache[seller_id]
+                        
+                        if seller_quality_info['score'] < MIN_SELLER_QUALITY_FOR_ACCEPTABLE:
+                            logger.info(f"ASIN {asin}: Excluding offer from seller {seller_id} with quality score {seller_quality_info['score']:.2f} below threshold.")
+                            continue # Skip this offer
+
+                # Proceed with price calculation if not skipped
                 price = offer_csv[-2]
                 shipping = offer_csv[-1]
                 
-                if shipping == -1:
+                if shipping == -1: # -1 means free shipping
                     shipping = 0
                 
                 total_price = price + shipping
@@ -48,11 +80,20 @@ def _get_best_offer_analysis(product, api_key=None):
                 if total_price > 0:
                     offer['calculated_price'] = total_price
                     valid_offers_with_prices.append(offer)
+            elif len(offer_csv) >= 2: # Fallback to original logic for offers that don't fit the new structure
+                price = offer_csv[-2]
+                shipping = offer_csv[-1]
+                if shipping == -1:
+                    shipping = 0
+                total_price = price + shipping
+                if total_price > 0:
+                    offer['calculated_price'] = total_price
+                    valid_offers_with_prices.append(offer)
             else:
-                logger.debug(f"ASIN {asin}: Skipping offer due to empty or incomplete offerCSV: {offer_csv}")
+                logger.debug(f"ASIN {asin}: Skipping offer due to incomplete offerCSV (len < 2): {offer_csv}")
 
         if not valid_offers_with_prices:
-            logger.info(f"ASIN {asin}: No offers with valid prices found.")
+            logger.info(f"ASIN {asin}: No offers with valid prices found after filtering.")
             analysis = {'best_price': '-', 'seller_rank': '-', 'seller_quality_score': 0.0}
             _get_best_offer_analysis.cache[asin] = analysis
             return analysis
@@ -63,16 +104,25 @@ def _get_best_offer_analysis(product, api_key=None):
         seller_rank_str = "-"
         seller_quality_score = 0.0
         seller_id = best_offer.get('sellerId')
-        if seller_id and api_key:
-            seller_data = fetch_seller_data(api_key, seller_id)
-            if seller_data:
-                seller_rank_str = seller_data.get('rank', '-')
-                rating_percentage = seller_data.get('rating_percentage', 0)
-                rating_count = seller_data.get('rating_count', 0)
-                if rating_count > 0:
-                    positive_ratings = round((rating_percentage / 100.0) * rating_count)
-                    seller_quality_score = calculate_seller_quality_score(positive_ratings, rating_count)
 
+        if seller_id and api_key:
+            if seller_id in seller_quality_cache:
+                # Data is already cached from the filtering step
+                cached_info = seller_quality_cache[seller_id]
+                seller_quality_score = cached_info['score']
+                if cached_info['data']:
+                    seller_rank_str = cached_info['data'].get('rank', '-')
+            else:
+                # Fetch data for sellers of non-filtered offers
+                seller_data = fetch_seller_data(api_key, seller_id)
+                if seller_data:
+                    seller_rank_str = seller_data.get('rank', '-')
+                    rating_percentage = seller_data.get('rating_percentage', 0)
+                    rating_count = seller_data.get('rating_count', 0)
+                    if rating_count > 0:
+                        positive_ratings = round((rating_percentage / 100.0) * rating_count)
+                        seller_quality_score = calculate_seller_quality_score(positive_ratings, rating_count)
+        
         analysis = {
             'best_price': f"${best_price_cents / 100:.2f}",
             'seller_rank': seller_rank_str,
