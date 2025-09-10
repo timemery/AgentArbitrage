@@ -92,8 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSort = { by: 'id', order: 'asc' };
 
     const columnsToShow = [
-        "Title", "ASIN", "Best_Price", "Seller_Rank", "Seller_Quality_Score",
-        "Sales_Rank___Current", "Expected_Peak_Sell_Price", "Profit_Confidence"
+        "Title", "ASIN", "Best_Price", "Seller_Quality_Score",
+        "Sales_Rank___Current", "Seasonality_Type", 
+        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence"
     ];
 
     function getFilters() {
@@ -141,18 +142,32 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '</tr></thead><tbody>';
 
         deals.forEach(deal => {
-            const cleanAsin = deal.ASIN ? String(deal.ASIN).replace(/=|\"/g, '') : '';
+            let cleanAsin = deal.ASIN ? String(deal.ASIN).replace(/=|\"/g, '') : '';
+            if (cleanAsin.length === 9) {
+                cleanAsin = '0' + cleanAsin;
+            }
             table += `<tr data-asin="${cleanAsin}" style="cursor: pointer;">`;
             columnsToShow.forEach(col => {
                 let value = deal[col] != null ? deal[col] : '-';
-                if (col === 'Profit_Confidence' && typeof value === 'number') value = `${Math.round(value)}%`;
-                else if (col === 'Seller_Quality_Score' && typeof value === 'number') value = value.toFixed(3);
-                else if ((col.includes('Price') || col.includes('Profit')) && typeof value === 'number') value = `$${value.toFixed(2)}`;
+                if (col === 'Profit_Confidence' && typeof value === 'number') {
+                    value = `${Math.round(value)}%`;
+                } else if (col === 'Seller_Quality_Score') {
+                    const numValue = parseFloat(value);
+                    if (!isNaN(numValue)) {
+                        value = `${Math.round(numValue * 10)}/10`;
+                    }
+                } else if (col === 'Sales_Rank___Current' && typeof value === 'number') {
+                    value = value.toLocaleString('en-US');
+                } else if ((col.includes('Price') || col.includes('Profit')) && typeof value === 'number') {
+                    value = `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                }
                 
                 if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
-                } else if (col === 'Best Price' && cleanAsin) {
+                } else if (col === 'ASIN') {
+                    table += `<td>${cleanAsin}</td>`;
+                } else if (col === 'Best_Price' && cleanAsin) {
                     table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}/" target="_blank">${value}</a></td>`;
                 }
                 else {

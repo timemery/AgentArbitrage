@@ -127,17 +127,17 @@ def infer_sale_events(product):
         
         # 1. Find all instances of offer drops
         df_offers['offer_diff'] = df_offers['offer_count'].diff()
-        offer_drops = df_offers[df_offers['offer_diff'] == -1.0]
+        offer_drops = df_offers[df_offers['offer_diff'] < 0]
 
         if offer_drops.empty:
-            logger.info(f"ASIN {asin}: No instances of offer count dropping by 1 were found.")
+            logger.info(f"ASIN {asin}: No instances of offer count decreasing were found.")
             return [], 0
             
         logger.debug(f"ASIN {asin}: Found {len(offer_drops)} potential sale trigger points (offer drops).")
 
         # 2. For each offer drop, search for subsequent signals
         confirmed_sales = []
-        search_window = timedelta(hours=24)
+        search_window = timedelta(hours=72)
 
         # Prepare rank and buybox data
         df_rank = df_rank.sort_values('timestamp').reset_index(drop=True)
@@ -207,102 +207,137 @@ def infer_sale_events(product):
         logger.error(f"ASIN {asin}: Error during sale event inference: {e}", exc_info=True)
         return [], 0
 
-def inferred_sale_price_recent(product):
+def recent_inferred_sale_price(product):
     """
     Gets the most recent inferred sale price.
     """
     logger = logging.getLogger(__name__)
     sale_events, _ = infer_sale_events(product)
     if not sale_events:
-        return {'Inferred Sale Price (Recent)': '-'}
+        return {'Recent Inferred Sale Price': '-'}
     
     # Events are already sorted by timestamp
     most_recent_event = sale_events[-1]
     price_cents = most_recent_event.get('inferred_sale_price_cents', -1)
 
     if price_cents and price_cents > 0:
-        return {'Inferred Sale Price (Recent)': f"${price_cents / 100:.2f}"}
+        return {'Recent Inferred Sale Price': f"${price_cents / 100:.2f}"}
     else:
-        return {'Inferred Sale Price (Recent)': '-'}
+        return {'Recent Inferred Sale Price': '-'}
 
-def analyze_sales_cycles(sale_events):
+def analyze_seasonality(sale_events):
     """
-    Analyzes a list of inferred sale events to find seasonal trends.
-    Uses median to be robust against outliers and requires a minimum number of sales.
+    Analyzes inferred sale events to identify seasonal patterns and pricing.
     """
-    MIN_SALES_FOR_SEASON = 2
-    if not sale_events or len(sale_events) < MIN_SALES_FOR_SEASON:
-        return {} # Not enough data to find a cycle
+    logger = logging.getLogger(__name__)
+    MIN_SALES_FOR_ANALYSIS = 3
+    SEASONAL_STD_DEV_THRESHOLD = 0.35  # Heuristic for seasonality detection
+
+    if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
+        return {}
 
     df = pd.DataFrame(sale_events)
     df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
     df['month'] = df['event_timestamp'].dt.month
-
-    # Group by month to find median sale price and count per month
-    monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
     
-    # Filter out months that don't meet the minimum sales threshold
-    reliable_months = monthly_stats[monthly_stats['count'] >= MIN_SALES_FOR_SEASON]
+    prices = df['inferred_sale_price_cents'].tolist()
+    logger.debug(f"Analyzing seasonality with {len(prices)} sale prices: {prices}")
 
-    if len(reliable_months) < 2:
-        return {} # Not enough reliable monthly data to determine a cycle
 
-    # Identify peak and trough seasons from the reliable months
-    peak_season_month = reliable_months['median'].idxmax()
-    trough_season_month = reliable_months['median'].idxmin()
-
-    peak_price_cents = reliable_months.loc[peak_season_month]['median']
-    trough_price_cents = reliable_months.loc[trough_season_month]['median']
-
-    analysis = {
-        'peak_season_month': int(peak_season_month),
-        'expected_peak_sell_price_cents': int(peak_price_cents),
-        'trough_season_month': int(trough_season_month),
-        'target_buy_price_cents': int(trough_price_cents),
-        'total_inferred_sales': int(df.shape[0])
+    # --- Seasonality Analysis (New Pattern-Based Logic) ---
+    
+    # Define seasonal patterns
+    seasons = {
+        "Textbook": {"months": {1, 2, 8, 9}, "peak_str": "Aug-Sep, Jan-Feb", "trough_str": "Apr-May"},
+        # Future seasons like "Grilling" or "Christmas" can be added here
     }
+    SEASON_SALES_THRESHOLD = 0.4 # 40% of sales must be in-season to be classified
+
+    sales_per_month = df['month'].value_counts()
+    total_sales = sales_per_month.sum()
     
+    seasonality_type = "Year-Round" # Default
+    peak_season_str = "-"
+    trough_season_str = "-"
+
+    # Check against defined seasonal patterns
+    for season_name, season_details in seasons.items():
+        in_season_sales = sales_per_month[sales_per_month.index.isin(season_details["months"])].sum()
+        if total_sales > 0 and (in_season_sales / total_sales) >= SEASON_SALES_THRESHOLD:
+            seasonality_type = season_name
+            peak_season_str = season_details["peak_str"]
+            trough_season_str = season_details["trough_str"]
+            logger.info(f"ASIN classified as '{season_name}'. In-season sales: {in_season_sales}/{total_sales} ({in_season_sales/total_sales:.2%})")
+            break # Stop after finding the first matching season
+
+    # --- Peak/Trough Price Calculation (runs for all items) ---
+    monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
+    if len(monthly_stats) < 2:
+         # Not enough data for price analysis, return with type only
+        return {'seasonality_type': seasonality_type, 'peak_season': peak_season_str, 'expected_peak_price_cents': -1, 'trough_season': trough_season_str, 'expected_trough_price_cents': -1}
+
+    peak_month = monthly_stats['median'].idxmax()
+    trough_month = monthly_stats['median'].idxmin()
+    peak_price_cents = monthly_stats.loc[peak_month]['median']
+    trough_price_cents = monthly_stats.loc[trough_month]['median']
+
+    logger.debug(f"Peak price of {peak_price_cents} calculated from month {peak_month}. Trough price of {trough_price_cents} from month {trough_month}.")
+
+
+    return {
+        'seasonality_type': seasonality_type,
+        'peak_season': peak_season_str,
+        'expected_peak_price_cents': peak_price_cents,
+        'trough_season': trough_season_str,
+        'expected_trough_price_cents': trough_price_cents,
+    }
+
+# --- Memoization cache for analysis results ---
+_analysis_cache = {}
+
+def _get_analysis(product):
+    """Helper to get or compute analysis, caching the result."""
+    asin = product.get('asin')
+    if asin and asin in _analysis_cache:
+        return _analysis_cache[asin]
+    
+    sale_events, _ = infer_sale_events(product)
+    analysis = analyze_seasonality(sale_events)
+    
+    if asin:
+        _analysis_cache[asin] = analysis
     return analysis
 
-def peak_season_month(product):
-    """Wrapper function to get the peak sale season month."""
-    sale_events, _ = infer_sale_events(product)
-    analysis = analyze_sales_cycles(sale_events)
-    if not analysis:
-        return {'Peak Season (Month)': '-'}
-    month_name = datetime(1900, analysis['peak_season_month'], 1).strftime('%B')
-    return {'Peak Season (Month)': month_name}
+def get_seasonality_type(product):
+    """Wrapper to get the Seasonality Type."""
+    analysis = _get_analysis(product)
+    return {'Seasonality Type': analysis.get('seasonality_type', 'Year-Round')}
 
-def expected_peak_sell_price(product):
-    """Wrapper function to get the expected peak sell price."""
-    sale_events, _ = infer_sale_events(product)
-    analysis = analyze_sales_cycles(sale_events)
-    if not analysis:
-        return {'Expected Peak Sell Price': '-'}
-    price_cents = analysis.get('expected_peak_sell_price_cents', -1)
-    if price_cents > 0:
-        return {'Expected Peak Sell Price': f"${price_cents / 100:.2f}"}
-    return {'Expected Peak Sell Price': '-'}
+def get_peak_season(product):
+    """Wrapper to get the Peak Season."""
+    analysis = _get_analysis(product)
+    return {'Peak Season': analysis.get('peak_season', '-')}
 
-def trough_season_month(product):
-    """Wrapper function to get the trough sale season month."""
-    sale_events, _ = infer_sale_events(product)
-    analysis = analyze_sales_cycles(sale_events)
-    if not analysis:
-        return {'Trough Season (Month)': '-'}
-    month_name = datetime(1900, analysis['trough_season_month'], 1).strftime('%B')
-    return {'Trough Season (Month)': month_name}
+def get_expected_peak_price(product):
+    """Wrapper to get the Expected Peak Price."""
+    analysis = _get_analysis(product)
+    price_cents = analysis.get('expected_peak_price_cents', -1)
+    if price_cents and price_cents > 0:
+        return {'Expected Peak Price': f"${price_cents / 100:.2f}"}
+    return {'Expected Peak Price': '-'}
 
-def target_buy_price(product):
-    """Wrapper function to get the target buy price."""
-    sale_events, _ = infer_sale_events(product)
-    analysis = analyze_sales_cycles(sale_events)
-    if not analysis:
-        return {'Target Buy Price': '-'}
-    price_cents = analysis.get('target_buy_price_cents', -1)
-    if price_cents > 0:
-        return {'Target Buy Price': f"${price_cents / 100:.2f}"}
-    return {'Target Buy Price': '-'}
+def get_trough_season(product):
+    """Wrapper to get the Trough Season."""
+    analysis = _get_analysis(product)
+    return {'Trough Season': analysis.get('trough_season', '-')}
+
+def get_expected_trough_price(product):
+    """Wrapper to get the Expected Trough Price."""
+    analysis = _get_analysis(product)
+    price_cents = analysis.get('expected_trough_price_cents', -1)
+    if price_cents and price_cents > 0:
+        return {'Expected Trough Price': f"${price_cents / 100:.2f}"}
+    return {'Expected Trough Price': '-'}
 
 def profit_confidence(product):
     """Calculates a confidence score based on how many offer drops correlate with a rank drop."""

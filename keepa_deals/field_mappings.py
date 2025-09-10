@@ -236,11 +236,12 @@ from .stable_products import (
 )
 from .stable_calculations import (
     percent_down_365,               # Percent Down 365
-    inferred_sale_price_recent,     # Inferred Sale Price (Recent)
-    peak_season_month,              # Peak Season (Month)
-    expected_peak_sell_price,       # Expected Peak Sell Price
-    trough_season_month,            # Trough Season (Month)
-    target_buy_price,               # Target Buy Price
+    recent_inferred_sale_price,
+    get_seasonality_type,
+    get_peak_season,
+    get_expected_peak_price,
+    get_trough_season,
+    get_expected_trough_price,
     profit_confidence,              # Profit Confidence
 )
 from .best_price import (
@@ -690,11 +691,12 @@ FUNCTION_LIST = [
     get_seller_rank,                # Seller Rank
     get_seller_quality_score,       # Seller_Quality_Score
     get_best_price,                 # Best Price
-    inferred_sale_price_recent,     # Inferred Sale Price (Recent)
-    peak_season_month,              # Peak Season (Month)
-    expected_peak_sell_price,       # Expected Peak Sell Price
-    trough_season_month,            # Trough Season (Month)
-    target_buy_price,               # Target Buy Price
+    recent_inferred_sale_price,     # Recent Inferred Sale Price
+    get_seasonality_type,           # Seasonality Type
+    get_peak_season,                # Peak Season
+    get_expected_peak_price,        # Expected Peak Price
+    get_trough_season,              # Trough Season
+    get_expected_trough_price,      # Expected Trough Price
     profit_confidence,              # Profit Confidence
     profit_margin_percent           # Profit Margin %
 ]

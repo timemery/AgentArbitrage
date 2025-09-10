@@ -160,8 +160,10 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
             })
 
         if not deals_to_process:
-            logger.warning("No deals fetched or all filtered out by temporary limit, writing diagnostic CSV")
+            logger.warning("No deals fetched or all filtered out by temporary limit, writing diagnostic CSV and clearing database.")
             write_csv([], [], diagnostic=True)
+            save_to_database([], HEADERS, logger)
+            logger.info("Script completed with no deals processed.")
             return
         
         logger.info(f"Starting ASIN processing, found {len(deals_to_process)} deals (after potential temporary limit)")

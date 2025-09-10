@@ -219,11 +219,12 @@
   "Seller Rank",
   "Seller_Quality_Score",
   "Best Price",
-  "Inferred Sale Price (Recent)",
-  "Peak Season (Month)",
-  "Expected Peak Sell Price",
-  "Trough Season (Month)",
-  "Target Buy Price",
-    "Profit Confidence",
-    "Profit Margin %"
+  "Recent Inferred Sale Price",
+  "Seasonality Type",
+  "Peak Season",
+  "Expected Peak Price",
+  "Trough Season",
+  "Expected Trough Price",
+  "Profit Confidence",
+  "Profit Margin %"
 ]
