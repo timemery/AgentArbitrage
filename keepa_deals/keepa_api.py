@@ -305,77 +305,35 @@ def update_and_check_quota(logger, current_available_tokens, last_refill_calcula
 def fetch_seller_data(api_key, seller_id):
     """
     Fetches data for a specific seller from the Keepa API.
-    DEPRECATED in favor of fetch_seller_data_batch.
     """
     if not seller_id:
         logger.warning("fetch_seller_data called with no seller_id.")
         return None
-    
-    # This function is now a simple wrapper for the batch call
-    # for compatibility, in case it's called from somewhere else.
-    batch_result = fetch_seller_data_batch(api_key, [seller_id])
-    return batch_result.get(seller_id)
 
+    logger.info(f"Fetching data for seller ID: {seller_id}")
+    url = f"https://api.keepa.com/seller?key={api_key}&domain=1&seller={seller_id}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
 
-@retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_seller_data_batch(api_key, seller_ids):
-    """
-    Fetches data for a list of sellers from the Keepa API, handling batching to avoid rate limits.
-    Returns a dictionary of seller data keyed by seller ID.
-    """
-    if not seller_ids:
-        logger.warning("fetch_seller_data_batch called with no seller_ids.")
-        return {}
-
-    unique_seller_ids = list(set(seller_ids))
-    all_sellers_data = {}
-    CHUNK_SIZE = 100
-
-    for i in range(0, len(unique_seller_ids), CHUNK_SIZE):
-        chunk = unique_seller_ids[i:i + CHUNK_SIZE]
-        logger.info(f"Fetching seller data batch {i//CHUNK_SIZE + 1}/{(len(unique_seller_ids) + CHUNK_SIZE - 1)//CHUNK_SIZE} with {len(chunk)} IDs.")
+    try:
+        response = requests.get(url, headers=headers, timeout=60)
+        response.raise_for_status()
+        data = response.json()
         
-        comma_separated_ids = ','.join(chunk)
-        url = f"https://api.keepa.com/seller?key={api_key}&domain=1&seller={comma_separated_ids}"
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+        if data.get('sellers'):
+            seller_info = data['sellers'].get(seller_id)
+            if seller_info:
+                rating_percentage = seller_info.get('currentRating', -1)
+                rating_count = seller_info.get('currentRatingCount', 0)
+                
+                if rating_percentage != -1:
+                    return {
+                        "rank": f"{rating_percentage}% ({rating_count} ratings)",
+                        "rating_percentage": rating_percentage,
+                        "rating_count": rating_count
+                    }
+    except requests.exceptions.RequestException as e:
+        logger.error(f"HTTP fetch failed for seller {seller_id}: {e}")
+    except Exception as e:
+        logger.error(f"An unexpected error occurred while fetching data for seller {seller_id}: {e}")
 
-        try:
-            response = requests.get(url, headers=headers, timeout=60)
-            logger.debug(f"Raw response from /seller batch endpoint for chunk {i//CHUNK_SIZE + 1}: {response.text}")
-            response.raise_for_status()
-            
-            data = response.json()
-            
-            if data.get('sellers'):
-                for seller_id, seller_info in data['sellers'].items():
-                    if seller_info:
-                        rating_percentage = seller_info.get('currentRating', -1)
-                        rating_count = seller_info.get('currentRatingCount', 0)
-                        
-                        if rating_percentage != -1:
-                            all_sellers_data[seller_id] = {
-                                "rank": f"{rating_percentage}% ({rating_count} ratings)",
-                                "rating_percentage": rating_percentage,
-                                "rating_count": rating_count
-                            }
-                        else:
-                            logger.warning(f"Seller {seller_id}: 'currentRating' field not found in seller object. Full object: {seller_info}")
-                    else:
-                        logger.warning(f"Seller {seller_id}: Received empty seller_info object.")
-                logger.info(f"Successfully processed chunk {i//CHUNK_SIZE + 1}. Total sellers processed so far: {len(all_sellers_data)}")
-            else:
-                logger.warning(f"No 'sellers' key found in batch response for chunk starting with seller ID: {chunk[0]}")
-
-        except requests.exceptions.RequestException as e:
-            logger.error(f"HTTP fetch failed for seller batch chunk: {e}")
-            # Continue to next chunk, this one failed
-        except Exception as e:
-            logger.error(f"An unexpected error occurred while fetching seller data batch chunk: {e}")
-            # Continue to next chunk
-        
-        # Per dev logs, a significant delay is needed between batch calls to avoid rate limiting.
-        if i + CHUNK_SIZE < len(unique_seller_ids):
-            logger.info("Pausing for 60 seconds between seller data batch calls to respect API limits.")
-            time.sleep(60)
-
-    return all_sellers_data
+    return None

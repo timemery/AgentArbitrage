@@ -6,6 +6,7 @@ import math
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+from .seasonal_config import SEASONAL_KEYWORD_MAP
 
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
@@ -225,16 +226,40 @@ def recent_inferred_sale_price(product):
     else:
         return {'Recent Inferred Sale Price': '-'}
 
-def analyze_seasonality(sale_events):
+def analyze_seasonality(product, sale_events):
     """
-    Analyzes inferred sale events to identify seasonal patterns and pricing.
+    Analyzes product category and inferred sale events to identify seasonal patterns and pricing.
+    First checks for keywords in the product's category tree. If a match is found,
+    it uses the predefined seasonal data. Otherwise, it falls back to analyzing sale event density.
     """
     logger = logging.getLogger(__name__)
-    MIN_SALES_FOR_ANALYSIS = 3
-    SEASONAL_STD_DEV_THRESHOLD = 0.35  # Heuristic for seasonality detection
+    asin = product.get('asin', 'N/A')
 
+    # --- Category-Aware Analysis (New) ---
+    category_tree = product.get('categoryTree', [])
+    category_string = ' > '.join(cat['name'] for cat in category_tree).lower() if category_tree else ''
+
+    if category_string:
+        for season_name, season_details in SEASONAL_KEYWORD_MAP.items():
+            for keyword in season_details['keywords']:
+                if keyword in category_string:
+                    logger.info(f"ASIN {asin}: Found keyword '{keyword}' for season '{season_name}' in category tree. Applying predefined seasonality.")
+                    # For category-based seasons, we don't calculate peak/trough prices from sales,
+                    # as the season is predefined. We can enhance this later if needed.
+                    return {
+                        'seasonality_type': season_name,
+                        'peak_season': season_details['peak_season'],
+                        'trough_season': season_details['trough_season'],
+                        'expected_peak_price_cents': -1, # Indicates price should be calculated from historical avg if needed
+                        'expected_trough_price_cents': -1
+                    }
+
+    # --- Fallback to Sales-Density Analysis ---
+    logger.debug(f"ASIN {asin}: No seasonal keyword match. Falling back to sales-density analysis.")
+    MIN_SALES_FOR_ANALYSIS = 3
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
-        return {}
+        return {'seasonality_type': 'Year-Round', 'peak_season': '-', 'expected_peak_price_cents': -1, 'trough_season': '-', 'expected_trough_price_cents': -1}
+
 
     df = pd.DataFrame(sale_events)
     df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
@@ -242,44 +267,27 @@ def analyze_seasonality(sale_events):
     
     prices = df['inferred_sale_price_cents'].tolist()
     logger.debug(f"Analyzing seasonality with {len(prices)} sale prices: {prices}")
-
-
-    # --- Seasonality Analysis (New Pattern-Based Logic) ---
-    
-    # Define seasonal patterns
-    seasons = {
-        "Textbook": {"months": {1, 2, 8, 9}, "peak_str": "Aug-Sep, Jan-Feb", "trough_str": "Apr-May"},
-        # Future seasons like "Grilling" or "Christmas" can be added here
-    }
-    SEASON_SALES_THRESHOLD = 0.4 # 40% of sales must be in-season to be classified
-
-    sales_per_month = df['month'].value_counts()
-    total_sales = sales_per_month.sum()
     
     seasonality_type = "Year-Round" # Default
-    peak_season_str = "-"
-    trough_season_str = "-"
-
-    # Check against defined seasonal patterns
-    for season_name, season_details in seasons.items():
-        in_season_sales = sales_per_month[sales_per_month.index.isin(season_details["months"])].sum()
-        if total_sales > 0 and (in_season_sales / total_sales) >= SEASON_SALES_THRESHOLD:
-            seasonality_type = season_name
-            peak_season_str = season_details["peak_str"]
-            trough_season_str = season_details["trough_str"]
-            logger.info(f"ASIN classified as '{season_name}'. In-season sales: {in_season_sales}/{total_sales} ({in_season_sales/total_sales:.2%})")
-            break # Stop after finding the first matching season
-
-    # --- Peak/Trough Price Calculation (runs for all items) ---
+    
+    # --- Peak/Trough Price Calculation (based on sales density) ---
     monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
     if len(monthly_stats) < 2:
          # Not enough data for price analysis, return with type only
-        return {'seasonality_type': seasonality_type, 'peak_season': peak_season_str, 'expected_peak_price_cents': -1, 'trough_season': trough_season_str, 'expected_trough_price_cents': -1}
+        return {'seasonality_type': seasonality_type, 'peak_season': '-', 'expected_peak_price_cents': -1, 'trough_season': '-', 'expected_trough_price_cents': -1}
+
+    # Determine if seasonal based on sales volume deviation
+    if monthly_stats['count'].std() / monthly_stats['count'].mean() > 0.35: # Heuristic
+        seasonality_type = "Seasonal"
 
     peak_month = monthly_stats['median'].idxmax()
     trough_month = monthly_stats['median'].idxmin()
     peak_price_cents = monthly_stats.loc[peak_month]['median']
     trough_price_cents = monthly_stats.loc[trough_month]['median']
+    
+    # For density-based analysis, peak/trough season is just the month name
+    peak_season_str = datetime(2000, int(peak_month), 1).strftime('%b')
+    trough_season_str = datetime(2000, int(trough_month), 1).strftime('%b')
 
     logger.debug(f"Peak price of {peak_price_cents} calculated from month {peak_month}. Trough price of {trough_price_cents} from month {trough_month}.")
 
@@ -302,7 +310,8 @@ def _get_analysis(product):
         return _analysis_cache[asin]
     
     sale_events, _ = infer_sale_events(product)
-    analysis = analyze_seasonality(sale_events)
+    # The product object is passed to analyze_seasonality to allow for category-based analysis
+    analysis = analyze_seasonality(product, sale_events)
     
     if asin:
         _analysis_cache[asin] = analysis
