@@ -65,7 +65,7 @@ from .stable_products import (
     # Sales Rank - Drops last 90 days,
     # Sales Rank - Drops last 180 days,
     sales_rank_drops_last_365_days, # Sales Rank - Drops last 365 days
-    get_buy_box_seller_id,          # Buy Box Seller ID
+    # get_buy_box_seller_id,          # Buy Box Seller ID
     buy_box_current,                # Buy Box - Current
     # Buy Box - 30 days avg.,
     # Buy Box - 60 days avg.,
@@ -248,6 +248,7 @@ from .best_price import (
     get_seller_rank,
     get_best_price,
     get_seller_quality_score,
+    get_seller_id,
 )
 from .stable_deals import (
     # Percent Down 90,
@@ -531,7 +532,7 @@ FUNCTION_LIST = [
     None,                           # Sales Rank - Drops last 90 days
     None,                           # Sales Rank - Drops last 180 days
     sales_rank_drops_last_365_days, # Sales Rank - Drops last 365 days
-    get_buy_box_seller_id,          # Buy Box Seller ID
+    get_seller_id,                  # Seller ID
     buy_box_current,                # Buy Box - Current
     None,                           # Buy Box - 30 days avg.
     None,                           # Buy Box - 60 days avg.

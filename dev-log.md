@@ -1230,4 +1230,44 @@ Key changes:
 
 ---------------- 
 
+### **Dev Log Entry: September 11, 2025 - The Seller ID Saga**
+
+**Objective:**
+
+1. Modify the data export to show the Seller ID of the best-priced offer, not just the Buy Box seller.
+2. Rename the "Buy Box Seller ID" column to "Seller ID".
+3. For sellers with no rating history, display "New Seller" in the `Seller_Quality_Score` column instead of "0".
+
+**Summary of a Very Difficult Debugging Process:** This task, which seemed straightforward, turned into a multi-day debugging ordeal due to a single, critical, and overlooked bug that was masked by several incorrect assumptions and tooling issues.
+
+**The Initial "Fix" and the Regression:** The initial implementation correctly identified the best-priced seller and modified the necessary files (`best_price.py`, `field_mappings.py`, `headers.json`). However, this immediately caused a regression where the `Seller Rank` and `Seller_Quality_Score` columns became blank.
+
+**The Debugging Rabbit Hole:**
+
+1. **Incorrect Theory #1 (API Failures):** My first assumption was that the Keepa API was failing silently for these new, non-Buy-Box sellers. I spent significant time hardening the `fetch_seller_data` function in `keepa_deals/keepa_api.py` to handle "Unknown Seller" and "API Error" cases. While this made the code more robust, it did not fix the underlying issue.
+2. **The User's Insight & Documentation:** The user correctly questioned my theory and pointed me to the official Keepa documentation located within the repository itself at `keepa_deals_reference/Keepa_Documentation-official-2.md`. This was a critical oversight on my part. The documentation confirmed that the API can return no data for an untracked seller, validating my robustness improvements but still not solving the root problem.
+3. **Tooling Failures & Manual Intervention:** Throughout this process, I struggled with my file editing tools (`replace_with_git_merge_diff` and `overwrite_file_with_block`), which led to multiple failed deployments and required me to ask the user for manual assistance. This significantly slowed down the debugging cycle.
+
+**The True Root Cause:** After many failed attempts, the final log analysis revealed the true, simple, and embarrassing root cause:
+
+- The `api_key` was not being passed to the new `get_seller_id` function.
+- In `keepa_deals/Keepa_Deals.py`, there is a hardcoded list of function names that are intended to receive the `api_key`. I had added `get_seller_id` to the main function list but had forgotten to add its name to this specific list.
+- As a result, `get_seller_id` was called without an API key. This caused the first call to `_get_best_offer_analysis` to fail to fetch seller data. It then cached this empty result. All subsequent calls for the same product (like `get_seller_rank`) received the bad, cached data, resulting in the blank columns.
+
+**The Final, One-Line Fix:** The entire issue was resolved by adding `'get_seller_id'` to the list of functions that receive the API key in `keepa_deals/Keepa_Deals.py`:
+
+```
+# In keepa_deals/Keepa_Deals.py
+elif func.__name__ in ['get_best_price', 'get_seller_rank', 'get_seller_quality_score', 'get_seller_id']:
+    result = func(product, api_key=api_key)
+```
+
+**Key Learnings:**
+
+1. **Trust, but Verify Logs:** The logs consistently showed that `fetch_seller_data` was not being called (due to the missing log messages from that module). I should have trusted this signal earlier instead of theorizing about API failures.
+2. **Check the Call Stack:** When a variable is `None`, always trace its origin up the full call stack. The `api_key` was being lost at the highest level of the logic loop.
+3. **The Importance of Documentation:** The user's guidance to the local documentation was invaluable and should have been part of my initial exploration.
+4. **Acknowledge Tooling Issues:** My struggles with the file editing tools compounded the problem. Escalating this or finding a workaround earlier would have saved significant time.
+
+This was a humbling debugging experience, but a valuable one. The feature is now working correctly.
 

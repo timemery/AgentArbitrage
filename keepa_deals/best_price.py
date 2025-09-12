@@ -18,7 +18,7 @@ def _get_best_offer_analysis(product, api_key=None):
         logger.debug(f"ASIN {asin}: Using cached best offer analysis.")
         return _get_best_offer_analysis.cache[asin]
 
-    final_analysis = {'best_price': '-', 'seller_rank': '-', 'seller_quality_score': 0.0}
+    final_analysis = {'best_price': '-', 'seller_rank': '-', 'seller_quality_score': 0.0, 'seller_id': '-'}
 
     try:
         offers = product.get('offers', [])
@@ -45,6 +45,7 @@ def _get_best_offer_analysis(product, api_key=None):
         sorted_offers = sorted(valid_offers, key=lambda o: o['calculated_price'])
 
         best_offer_found = None
+        best_offer_seller_data = None # Variable to store seller data if fetched during the loop
         
         for offer in sorted_offers:
             condition_code = offer['offerCSV'][1] if len(offer['offerCSV']) >= 4 else None
@@ -58,6 +59,7 @@ def _get_best_offer_analysis(product, api_key=None):
                     continue
 
                 seller_data = fetch_seller_data(api_key, seller_id)
+                best_offer_seller_data = seller_data # Store the data
                 
                 # If seller data is available, calculate score. Otherwise, treat as passing.
                 if seller_data and seller_data.get('rating_count', 0) > 0:
@@ -82,22 +84,30 @@ def _get_best_offer_analysis(product, api_key=None):
             seller_rank_str = '-'
             seller_quality_score = 0.0
 
-            if best_seller_id and api_key:
-                seller_data = fetch_seller_data(api_key, best_seller_id)
-                if seller_data:
-                    seller_rank_str = seller_data.get('rank', '-')
-                    rating_percentage = seller_data.get('rating_percentage', 0)
-                    rating_count = seller_data.get('rating_count', 0)
-                    if rating_count > 0:
-                        positive_ratings = round((rating_percentage / 100.0) * rating_count)
-                        seller_quality_score = calculate_seller_quality_score(positive_ratings, rating_count)
+            # Use already fetched seller data if available, otherwise fetch it now.
+            seller_data_to_use = best_offer_seller_data
+            if not seller_data_to_use and best_seller_id and api_key:
+                seller_data_to_use = fetch_seller_data(api_key, best_seller_id)
+
+            if seller_data_to_use:
+                seller_rank_str = seller_data_to_use.get('rank', '-')
+                rating_percentage = seller_data_to_use.get('rating_percentage', 0)
+                rating_count = seller_data_to_use.get('rating_count', 0)
+                
+                if rating_count == 0 or rating_percentage == -1:
+                    seller_quality_score = "New Seller"
+                else:
+                    positive_ratings = round((rating_percentage / 100.0) * rating_count)
+                    seller_quality_score = calculate_seller_quality_score(positive_ratings, rating_count)
 
             final_analysis = {
                 'best_price': f"${best_offer_found['calculated_price'] / 100:.2f}",
                 'seller_rank': seller_rank_str,
-                'seller_quality_score': seller_quality_score
+                'seller_quality_score': seller_quality_score,
+                'seller_id': best_seller_id
             }
-            logger.info(f"ASIN {asin}: Best offer selected. Price: {final_analysis['best_price']}, Seller: {best_seller_id}, Rank: {final_analysis['seller_rank']}, Score: {final_analysis['seller_quality_score']:.3f}.")
+            log_score = seller_quality_score if isinstance(seller_quality_score, str) else f"{seller_quality_score:.3f}"
+            logger.info(f"ASIN {asin}: Best offer selected. Price: {final_analysis['best_price']}, Seller: {best_seller_id}, Rank: {final_analysis['seller_rank']}, Score: {log_score}.")
         else:
             logger.warning(f"ASIN {asin}: No suitable offer found. All 'Acceptable' offers checked were from sellers with low quality scores.")
 
@@ -122,6 +132,13 @@ def get_seller_rank(product, api_key=None):
     """
     analysis = _get_best_offer_analysis(product, api_key=api_key)
     return {'Seller Rank': analysis['seller_rank']}
+
+def get_seller_id(product, api_key=None):
+    """
+    Wrapper function to get the 'Seller ID' of the seller who has the best price.
+    """
+    analysis = _get_best_offer_analysis(product, api_key=api_key)
+    return {'Seller ID': analysis['seller_id']}
 
 def get_seller_quality_score(product, api_key=None):
     """

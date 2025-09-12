@@ -21,8 +21,25 @@
         justify-content: space-between;
         align-items: center;
     }
+    .sort-arrows-container {
+        display: flex;
+        flex-direction: column;
+        margin-left: 8px;
+    }
     .sort-arrow {
-        padding-left: 5px; /* Use padding-left to space from text */
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 0.8;
+        transform: scaleX(1.5); /* Make arrows thicker */
+    }
+    .sort-arrow-up {
+        margin-bottom: 2px; /* Add space between arrows */
+    }
+    .sort-arrow.on {
+        color: white;
+    }
+    .sort-arrow.off {
+        color: #6699CC;
     }
     #deals-table th:hover {
         background-color: rgba(0, 0, 0, 0.25);
@@ -40,6 +57,24 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    .score-bar-container {
+        display: flex;
+        align-items: center;
+    }
+    .score-square {
+        width: 10px;
+        height: 10px;
+        margin-right: 1px;
+        box-sizing: border-box;
+        border: 1px solid transparent; /* Add a transparent border to all squares */
+    }
+    .score-square-filled {
+        background-color: #6699CC; /* A color that fits the theme */
+    }
+    .score-square-empty {
+        background-color: #e0e0e0; /* A light grey for empty */
+        border-color: #ccc; /* Only change the color for empty squares */
     }
 </style>
 
@@ -134,10 +169,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let table = '<table><thead><tr>';
         columnsToShow.forEach(header => {
-            const headerText = header.replace(/_/g, ' ');
-            let arrow = '';
-            if (header === currentSort.by) arrow = currentSort.order === 'asc' ? '↑' : '↓';
-            table += `<th data-sort="${header}"><div class="th-content"><span>${headerText}</span><span class="sort-arrow">${arrow}</span></div></th>`;
+            let headerText = header.replace(/_/g, ' ');
+            if (header === 'Expected_Peak_Price') {
+                headerText = 'Peak Price';
+            } else if (header === 'Expected_Trough_Price') {
+                headerText = 'Trough Price';
+            }
+            const upArrowClass = (currentSort.by === header && currentSort.order === 'asc') ? 'on' : 'off';
+            const downArrowClass = (currentSort.by === header && currentSort.order === 'desc') ? 'on' : 'off';
+            const arrowsHtml = `
+                <div class="sort-arrows-container">
+                    <span class="sort-arrow sort-arrow-up ${upArrowClass}" data-order="asc">▲</span>
+                    <span class="sort-arrow sort-arrow-down ${downArrowClass}" data-order="desc">▼</span>
+                </div>
+            `;
+            table += `<th data-sort="${header}"><div class="th-content"><span>${headerText}</span>${arrowsHtml}</div></th>`;
         });
         table += '</tr></thead><tbody>';
 
@@ -154,7 +200,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (col === 'Seller_Quality_Score') {
                     const numValue = parseFloat(value);
                     if (!isNaN(numValue)) {
-                        value = `${Math.round(numValue * 10)}/10`;
+                        const score = Math.round(numValue * 10);
+                        let squaresHtml = '';
+                        for (let i = 0; i < 10; i++) {
+                            const squareClass = i < score ? 'score-square-filled' : 'score-square-empty';
+                            squaresHtml += `<div class="score-square ${squareClass}"></div>`;
+                        }
+                        value = `<div class="score-bar-container"><span>[${score}]</span><div style="width: 5px;"></div>${squaresHtml}</div>`;
                     }
                 } else if (col === 'Sales_Rank___Current' && typeof value === 'number') {
                     value = value.toLocaleString('en-US');
@@ -192,12 +244,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        document.querySelectorAll('#deals-table th').forEach(th => {
-            th.addEventListener('click', () => {
-                const sortBy = th.dataset.sort;
-                let order = (currentSort.by === sortBy && currentSort.order === 'asc') ? 'desc' : 'asc';
-                currentSort = { by: sortBy, order };
-                fetchDeals(currentPage, currentSort.by, currentSort.order);
+        document.querySelectorAll('.sort-arrow').forEach(arrow => {
+            arrow.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent the parent th click listener from firing if it ever gets re-added
+                const th = arrow.closest('th');
+                if (th) {
+                    const sortBy = th.dataset.sort;
+                    const order = arrow.dataset.order;
+                    currentSort = { by: sortBy, order: order };
+                    fetchDeals(currentPage, currentSort.by, currentSort.order);
+                }
             });
         });
 // updated manually below
