@@ -31,6 +31,7 @@ app.secret_key = 'supersecretkey'
 
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
 AGENT_BRAIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agent_brain.json')
+SETTINGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json')
 
 # --- xAI API Configuration ---
 XAI_API_KEY = os.getenv("XAI_TOKEN")
@@ -652,11 +653,40 @@ def download_file(filename):
         return redirect(url_for('index'))
     return send_from_directory(DATA_DIR, filename, as_attachment=True)
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 def settings():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
-    return render_template('settings.html')
+
+    if request.method == 'POST':
+        try:
+            settings_data = {
+                'prep_fee_per_book': request.form.get('prep_fee_per_book', type=float),
+                'estimated_shipping_per_book': request.form.get('estimated_shipping_per_book', type=float),
+                'estimated_tax_per_book': request.form.get('estimated_tax_per_book', type=int),
+                'tax_exempt': 'tax_exempt' in request.form,
+                'default_markup': request.form.get('default_markup', type=int)
+            }
+            with open(SETTINGS_FILE, 'w') as f:
+                json.dump(settings_data, f, indent=4)
+            flash('Settings saved successfully!', 'success')
+        except Exception as e:
+            flash(f'Error saving settings: {e}', 'error')
+        return redirect(url_for('settings'))
+
+    # GET request
+    try:
+        with open(SETTINGS_FILE, 'r') as f:
+            settings_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        settings_data = {
+            "prep_fee_per_book": 2.50,
+            "estimated_shipping_per_book": 2.00,
+            "estimated_tax_per_book": 15,
+            "tax_exempt": False,
+            "default_markup": 10
+        }
+    return render_template('settings.html', settings=settings_data)
 
 @app.cli.command("fetch-keepa-deals")
 @click.option('--no-cache', is_flag=True, help="Force fresh Keepa API calls.")
