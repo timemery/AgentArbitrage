@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSort = { by: 'id', order: 'asc' };
 
     const columnsToShow = [
-        "Title", "ASIN", "Best_Price", "Seller_Quality_Score",
+        "Title", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller_Quality_Score",
         "Sales_Rank___Current", "Seasonality_Type", 
-        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found"
+        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Buy_Now"
     ];
 
     function formatTimeAgo(dateString) {
@@ -213,10 +213,9 @@ document.addEventListener('DOMContentLoaded', function() {
             table += `<tr data-asin="${cleanAsin}" style="cursor: pointer;">`;
             columnsToShow.forEach(col => {
                 let value = deal[col] != null ? deal[col] : '-';
-                if (col === 'Profit_Confidence' && typeof value === 'number') {
-                    value = `${Math.round(value)}%`;
-                } else if (col === 'Seller_Quality_Score') {
-                    const numValue = parseFloat(value);
+                // Re-written formatting logic for robustness
+                const numValue = parseFloat(value);
+                if (col === 'Seller_Quality_Score') {
                     if (!isNaN(numValue)) {
                         const score = Math.round(numValue * 10);
                         let squaresHtml = '';
@@ -225,16 +224,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             squaresHtml += `<div class="score-square ${squareClass}"></div>`;
                         }
                         value = `<div class="score-bar-container"><span>[${score}]</span><div style="width: 5px;"></div>${squaresHtml}</div>`;
+                    } else if (typeof value === 'string' && value) {
+                        // Handle string values like "New Seller"
+                        value = `<span>${value}</span>`;
                     }
-                } else if (col === 'Sales_Rank___Current' && typeof value === 'number') {
-                    value = value.toLocaleString('en-US');
                 } else if (col === 'Deal_found') {
                     value = formatTimeAgo(value);
-                } else if ((col.includes('Price') || col.includes('Profit')) && typeof value === 'number') {
-                    value = `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                } else if (!isNaN(numValue)) { // Check if the parsed value is a number
+                    if (col === 'Profit_Confidence') {
+                        value = `${Math.round(numValue)}%`;
+                    } else if (col === 'Sales_Rank___Current') {
+                        value = numValue.toLocaleString('en-US');
+                    } else if (col === 'Margin') {
+                        value = `${numValue.toFixed(2)}%`;
+                    } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost')) {
+                        value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    }
                 }
-                
-                if (col === 'Title') {
+
+                if (col === 'Buy_Now') {
+                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}/" target="_blank" onclick="event.stopPropagation()" style="text-decoration: none; font-size: 1.5em; color: #6699CC;">►</a></td>`;
+                } else if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
                 } else if (col === 'ASIN') {

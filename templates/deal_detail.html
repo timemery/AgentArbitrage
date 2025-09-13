@@ -25,6 +25,13 @@
                 <p><span>Profit Confidence:</span> <strong>{{ "%.0f"|format(deal['Profit_Confidence']) if deal['Profit_Confidence'] is not none else '-' }}%</strong></p>
             </div>
             <div class="grid-item">
+                <h3>Profit Calculation</h3>
+                <p><span>All-in Cost:</span> <strong>${{ "{:,.2f}".format(deal['All_in_Cost']) if deal['All_in_Cost'] is not none else '-' }}</strong></p>
+                <p><span>Profit:</span> <strong>${{ "{:,.2f}".format(deal['Profit']) if deal['Profit'] is not none else '-' }}</strong></p>
+                <p><span>Margin:</span> <strong>{{ "%.2f"|format(deal['Margin']) if deal['Margin'] is not none else '-' }}%</strong></p>
+                <p><span>Min. Listing Price:</span> <strong>${{ "{:,.2f}".format(deal['Min_Listing_Price']) if deal['Min_Listing_Price'] is not none else '-' }}</strong></p>
+            </div>
+            <div class="grid-item">
                 <h3>Sales Rank</h3>
                 <p><span>Current:</span> <strong>{{ "{:,}".format(deal['Sales_Rank___Current']) if deal['Sales_Rank___Current'] is not none else '-' }}</strong></p>
                 <p><span>Drops (365d):</span> <strong>{{ deal['Sales_Rank___Drops_last_365_days'] if deal['Sales_Rank___Drops_last_365_days'] is not none else '-' }}</strong></p>

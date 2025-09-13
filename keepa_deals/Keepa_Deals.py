@@ -387,6 +387,78 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
         logger.info("Finished decoupled seller information processing.")
         # --- End of New Loop ---
 
+        # --- New Business Logic Calculations Loop ---
+        from .business_calculations import (
+            load_settings,
+            calculate_total_amz_fees,
+            calculate_all_in_cost,
+            calculate_profit_and_margin,
+            calculate_min_listing_price,
+        )
+        
+        logger.info("Starting business logic calculations...")
+        business_settings = load_settings()
+
+        for item in temp_rows_data:
+            row_data = item['data']
+            asin = row_data.get('ASIN')
+            if not asin:
+                continue
+            
+            try:
+                # Safely parse required values from the row_data dictionary
+                def parse_price(value_str):
+                    if isinstance(value_str, str):
+                        return float(value_str.replace('$', '').replace(',', ''))
+                    return float(value_str)
+
+                def parse_percent(value_str):
+                    if isinstance(value_str, str):
+                        return float(value_str.replace('%', ''))
+                    return float(value_str)
+
+                peak_price = parse_price(row_data.get('Expected Peak Price', '0'))
+                fba_fee = parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
+                referral_percent = parse_percent(row_data.get('Referral Fee %', '0'))
+                best_price = parse_price(row_data.get('Best Price', '0'))
+
+                # Perform calculations only if we have a valid peak price and best price
+                if peak_price > 0 and best_price > 0:
+                    # Check the shipping included flag
+                    shipping_included_str = row_data.get('Shipping Included', 'no')
+                    shipping_included_flag = shipping_included_str.lower() == 'yes'
+
+                    total_amz_fees = calculate_total_amz_fees(peak_price, fba_fee, referral_percent)
+                    all_in_cost = calculate_all_in_cost(best_price, total_amz_fees, business_settings, shipping_included_flag)
+                    profit_margin_dict = calculate_profit_and_margin(peak_price, all_in_cost)
+                    min_listing_price = calculate_min_listing_price(all_in_cost, business_settings)
+
+                    # Update the row data with new calculated fields as raw floats
+                    row_data['Total AMZ fees'] = total_amz_fees
+                    row_data['All-in Cost'] = all_in_cost
+                    row_data['Profit'] = profit_margin_dict['profit']
+                    row_data['Margin'] = profit_margin_dict['margin']
+                    row_data['Min. Listing Price'] = min_listing_price
+                else:
+                    # If inputs are invalid, fill with default float values
+                    row_data['Total AMZ fees'] = 0.0
+                    row_data['All-in Cost'] = 0.0
+                    row_data['Profit'] = 0.0
+                    row_data['Margin'] = 0.0
+                    row_data['Min. Listing Price'] = 0.0
+
+            except (ValueError, TypeError) as e:
+                logger.error(f"ASIN {asin}: Could not perform business calculations due to a parsing error: {e}")
+                # Ensure fields exist even if calculation fails
+                row_data['Total AMZ fees'] = '-'
+                row_data['All-in Cost'] = '-'
+                row_data['Profit'] = '-'
+                row_data['Margin'] = '-'
+                row_data['Min. Listing Price'] = '-'
+        
+        logger.info("Finished business logic calculations.")
+        # --- End of Business Logic Loop ---
+
         final_processed_rows = [None] * len(deals_to_process)
 
         for item in temp_rows_data:
@@ -473,25 +545,29 @@ def save_to_database(rows, headers, logger):
         for row_dict in rows:
             row_tuple = []
             for header in headers:  # Use original headers to look up in dict
-                value = row_dict.get(header, None)
-                
-                # Special handling for ASIN to ensure it's always a string
-                if header == 'ASIN':
-                    row_tuple.append(str(value) if value is not None else None)
-                    continue
+                value = row_dict.get(header)
 
-                # Sanitize other data for DB insertion
-                if isinstance(value, str):
-                    if value == '-':
+                # Define which columns should be treated as numeric
+                is_numeric_column = any(keyword in header for keyword in ['Price', 'Fee', 'Margin', 'Percent', 'Profit', 'Cost', 'Rank', 'Count', 'Drops'])
+
+                if is_numeric_column:
+                    if value is None or (isinstance(value, str) and value == '-'):
                         row_tuple.append(None)
                     else:
                         try:
-                            cleaned_value = value.replace('$', '').replace(',', '').replace('%', '')
+                            # Clean and convert to float
+                            cleaned_value = str(value).replace('$', '').replace(',', '').replace('%', '')
                             row_tuple.append(float(cleaned_value))
                         except (ValueError, TypeError):
-                            row_tuple.append(value)
+                            # If conversion fails, store as NULL
+                            logger.warning(f"Could not convert value '{value}' to float for numeric column '{header}'. Storing as NULL.")
+                            row_tuple.append(None)
                 else:
-                    row_tuple.append(value)
+                    # Handle non-numeric columns (mostly text)
+                    if value is None or (isinstance(value, str) and value == '-'):
+                        row_tuple.append(None)
+                    else:
+                        row_tuple.append(str(value)) # Ensure it's always a string
             data_to_insert.append(tuple(row_tuple))
 
         cursor.executemany(insert_sql, data_to_insert)

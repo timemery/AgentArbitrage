@@ -262,6 +262,8 @@ def deal_detail(asin):
         
         if row:
             deal = dict(row)
+            app.logger.info(f"Deal data for ASIN {asin}: {deal}")
+            app.logger.info(f"Keys available in deal dictionary: {list(deal.keys())}")
         
     except sqlite3.Error as e:
         app.logger.error(f"Database error on deal detail page for ASIN {asin}: {e}")

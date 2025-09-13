@@ -1389,3 +1389,58 @@ The combination of architectural decoupling and the subsequent bug fix has resol
 2. **Enforce Data Contracts:** When passing dictionaries between functions or modules (especially dictionaries), ensure the "data contract" (i.e., the exact keys, data types, and structure) is strictly maintained. A simple case mismatch in dictionary keys can lead to silent failures that are hard to debug.
 3. **Trust, But Verify Logs:** The user-provided logs were essential in diagnosing *both* the initial architectural problem and the subsequent implementation bug. The logs confirmed the new loop was running but that the data was being dropped, which led directly to finding the key mismatch.
 
+### **Dev Log Entry: September 13, 2025 - Profitability Metrics & UI Bug Squashing**
+
+**Objective:** Implement a suite of new profitability calculation columns on the Deals Dashboard to provide at-a-glance financial analysis. This involved creating new backend calculations, integrating them into the data pipeline, and fixing several subtle but critical frontend and data integrity bugs that arose during development.
+
+**Feature Summary:**
+
+- **New Columns:** Added `Min. Listing Price`, `All-in Cost`, `Profit`, `Margin` to the UI, and a `Total AMZ fees` column to the backend data.
+- **New Module:** Created `keepa_deals/business_calculations.py` to cleanly encapsulate all new business logic, including reading from `settings.json`.
+- **"Buy Now" Link:** Added a new column to the dashboard with a direct link to the Amazon product page for quick purchasing.
+
+**Debugging Journey & Resolutions:**
+
+This task involved a multi-stage debugging process that revealed several important issues in the data pipeline and frontend rendering.
+
+1. **Initial Implementation & Flawed Assumptions:**
+
+   - The first version of the `All-in Cost` calculation was initially wrong because it didn't handle the conditional shipping logic based on the `Shipping Included` flag.
+   - **Fix:** The `calculate_all_in_cost` function was refactored to accept a `shipping_included_flag` and conditionally add the `estimated_shipping_per_book` cost from settings.
+
+2. **Data Integrity & Formatting Bugs (Round 1):**
+
+   - Problem:
+
+      
+
+     The initial implementation passed pre-formatted strings (e.g.,
+
+      
+
+     ```
+     "$12.34"
+     ```
+
+     ) from the backend to the frontend. This caused two major issues:
+
+     1. A **500 Internal Server Error** on the `/deal/<asin>` page because the Jinja2 template's `format` filter cannot be used on a string.
+     2. Inconsistent number formatting on the main dashboard because the JavaScript check `typeof value === 'number'` would fail.
+
+   - Fix:
+
+     - The data processing loop in `Keepa_Deals.py` was modified to store all new calculated values as raw `float` numbers instead of strings.
+     - The JavaScript in `dashboard.html` was updated to be more robust, using `parseFloat()` to handle values before applying currency or percentage formatting.
+
+3. **UI & Data Type Bugs (Round 2):**
+
+   - **Problem 1: "Buy Now" Link Hijacking:** The new "Buy Now" link was navigating to the internal deal detail page instead of Amazon. This was because the click event on the link was "bubbling up" to the parent table row (`<tr>`), which has its own click listener for navigation.
+   - **Fix 1:** The issue was resolved by adding `onclick="event.stopPropagation()"` directly to the "Buy Now" `<a>` tag in `dashboard.html`, which stops the event from reaching the parent row.
+   - **Problem 2: The Root Cause of the 500 Error:** Even after fixing the string formatting, the 500 error persisted intermittently. The final root cause was identified in the `save_to_database` function in `Keepa_Deals.py`. If a string value (like `"New Seller"`) was passed for a column that was supposed to be a number (`REAL`), the old logic would insert the raw string into the numeric column. This corrupted the database entry and caused the template to fail during rendering.
+   - **Fix 2:** The `save_to_database` function was significantly "hardened." It now explicitly checks if a column is supposed to be numeric. If it is, the function forces the value to a `float` or, if conversion fails, stores it as `NULL`. This ensures the database maintains strict data integrity for numeric columns.
+
+**Key Learnings for Future Development:**
+
+- **Data Flow Integrity is Paramount:** The backend should always provide raw, unformatted data (`float`, `int`, etc.) to the data storage layer (database) and the API endpoints. All display formatting should be handled exclusively by the frontend (Jinja2 templates or JavaScript). This was the root cause of multiple bugs in this task.
+- **Database Type Enforcement:** The application code must be the gatekeeper for data types. The `save_to_database` function is a critical point to enforce that only numbers and `NULL` are saved to numeric columns.
+- **JavaScript Event Propagation:** When adding clickable elements inside other clickable elements (like a link inside a table row), always consider event bubbling and use `event.stopPropagation()` to prevent unintended behavior.
