@@ -16,6 +16,7 @@ from .keepa_api import (
     update_and_check_quota,
 )
 from .field_mappings import FUNCTION_LIST
+from .seller_info import get_all_seller_info
 
 def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
     """
@@ -365,6 +366,27 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                 placeholder_row_content = {'ASIN': asin}
                 temp_rows_data.append({'original_index': deal_info['original_index'], 'data': placeholder_row_content})
         
+        # --- New Seller Info Processing Loop ---
+        logger.info("Starting decoupled seller information processing...")
+        for item in temp_rows_data:
+            row_data = item['data']
+            asin = row_data.get('ASIN')
+            if not asin:
+                continue
+
+            product = all_fetched_products_map.get(asin)
+            if product and not product.get('error'):
+                try:
+                    seller_info = get_all_seller_info(product, api_key=api_key)
+                    row_data.update(seller_info)
+                    logger.info(f"ASIN {asin}: Successfully processed and updated seller info.")
+                except Exception as e:
+                    logger.error(f"ASIN {asin}: Failed to get seller info in decoupled loop: {e}", exc_info=True)
+            else:
+                logger.warning(f"ASIN {asin}: Skipping seller info processing due to missing or error in product data.")
+        logger.info("Finished decoupled seller information processing.")
+        # --- End of New Loop ---
+
         final_processed_rows = [None] * len(deals_to_process)
 
         for item in temp_rows_data:

@@ -1336,3 +1336,56 @@ This was a humbling debugging experience, but a valuable one. The feature is now
 - The Playwright verification script required debugging to correctly handle the login form's dynamic visibility, which was resolved by adding steps to properly trigger the form before filling it out.
 
 **Outcome:** The "Deal Found" column is now a functional part of the dashboard, providing users with at-a-glance information about how recently a deal was discovered, as per the requirements.
+
+### **Dev Log Entry: September 13, 2025 - Decoupling Seller Info Logic for Stability**
+
+**Objective:** Resolve a recurring, high-impact bug where the `Seller Rank`, `Seller_Quality_Score`, and `Best Price` columns would frequently break and show no data after unrelated changes were made elsewhere in the data processing pipeline. The goal was to refactor this fragile logic to make it robust and resilient.
+
+**Initial Analysis & Problem:**
+
+- The functions responsible for these columns (`get_seller_rank`, `get_best_price`, etc.) were being called at the very end of a long, monolithic processing loop in `Keepa_Deals.py`.
+- This architecture made them highly vulnerable. Any error or unexpected data change in an *upstream* function within that loop could cause the seller functions to fail or be skipped, leading to the empty columns.
+- This explained why the feature was so fragile and appeared to break randomly when other parts of the code were modified.
+
+**Implementation Journey & Key Changes:**
+
+This was a two-phase fix. The first phase involved a major architectural refactoring, and the second was a targeted bug fix for that new implementation.
+
+**Phase 1: Architectural Refactoring (Decoupling the Logic)**
+
+1. **Consolidated Seller Logic:** Created a new, dedicated module `keepa_deals/seller_info.py`. All logic for fetching and analyzing seller data was moved into this file from the now-deprecated `keepa_deals/best_price.py`.
+
+2. **Created a Single Entry Point:** A new public function, `get_all_seller_info()`, was created in the new module. This function acts as a single, efficient entry point to get all four seller-related data points at once, leveraging an internal cache to avoid redundant API calls.
+
+3. Decoupled the Main Script:
+
+    
+
+   The core script,
+
+    
+
+   ```
+   Keepa_Deals.py
+   ```
+
+   , was refactored.
+
+   - The old seller functions were removed from the primary processing loop by setting them to `None` in `field_mappings.py`.
+   - A new, separate processing loop was added. This loop runs *after* all the primary data has been processed. It iterates through the results and calls the new `get_all_seller_info()` function to add the seller data to each row.
+
+**Phase 2: Fixing the Follow-up Bug**
+
+1. **The Bug:** The initial refactoring, while architecturally sound, contained a subtle bug. The internal analysis function in `seller_info.py` was returning a dictionary with capitalized keys (e.g., `'Best Price'`), but the public wrapper function was trying to access it using lowercase keys (e.g., `'best_price'`). This caused the data to be dropped, resulting in the same empty columns.
+2. **The Fix:** The `seller_info.py` module was corrected to ensure that the dictionary keys were consistently capitalized throughout the entire module, perfectly matching the column headers defined in `headers.json`.
+
+**Final Outcome:**
+
+The combination of architectural decoupling and the subsequent bug fix has resolved the issue. The seller information logic is now isolated from the rest of the data processing pipeline, making it significantly more robust and less likely to break from future, unrelated changes.
+
+**Key Learnings for Future Development:**
+
+1. **Isolate Fragile Components:** When a feature relies on multiple, complex steps or external API calls (like the seller info feature), it should be decoupled from the main processing loop to protect it from upstream errors.
+2. **Enforce Data Contracts:** When passing dictionaries between functions or modules (especially dictionaries), ensure the "data contract" (i.e., the exact keys, data types, and structure) is strictly maintained. A simple case mismatch in dictionary keys can lead to silent failures that are hard to debug.
+3. **Trust, But Verify Logs:** The user-provided logs were essential in diagnosing *both* the initial architectural problem and the subsequent implementation bug. The logs confirmed the new loop was running but that the data was being dropped, which led directly to finding the key mismatch.
+
