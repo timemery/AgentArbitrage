@@ -129,8 +129,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const columnsToShow = [
         "Title", "ASIN", "Best_Price", "Seller_Quality_Score",
         "Sales_Rank___Current", "Seasonality_Type", 
-        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence"
+        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found"
     ];
+
+    function formatTimeAgo(dateString) {
+        if (!dateString || dateString === '-') return '-';
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.round((now - date) / 1000);
+        
+        if (seconds <= 60) return "Just Now";
+        
+        const minutes = Math.round(seconds / 60);
+        if (minutes < 60) return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+        
+        const hours = Math.round(minutes / 60);
+        if (hours < 24) return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+        
+        const days = Math.round(hours / 24);
+        return days === 1 ? "1 day ago" : `${days} days ago`;
+    }
 
     function getFilters() {
         const formData = new FormData(filterForm);
@@ -210,6 +228,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } else if (col === 'Sales_Rank___Current' && typeof value === 'number') {
                     value = value.toLocaleString('en-US');
+                } else if (col === 'Deal_found') {
+                    value = formatTimeAgo(value);
                 } else if ((col.includes('Price') || col.includes('Profit')) && typeof value === 'number') {
                     value = `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                 }

@@ -1271,3 +1271,68 @@ elif func.__name__ in ['get_best_price', 'get_seller_rank', 'get_seller_quality_
 
 This was a humbling debugging experience, but a valuable one. The feature is now working correctly.
 
+**Dev Log Entry: 2025-09-12**
+
+**Task:** Add business cost fields to Settings page.
+
+**Summary:** Implemented a new "Business Costs" section on the Settings page as requested. This involved adding several new input fields and a locking mechanism to prevent accidental edits.
+
+**Changes:**
+
+1. **Created `settings.json`:** A new JSON file was created to persist the settings for business costs. It is initialized with default values for each field.
+2. Updated `wsgi_handler.py`:
+   - The `/settings` route was modified to handle both `GET` and `POST` requests.
+   - The `GET` handler reads from `settings.json` and passes the data to the template. If the file doesn't exist, it uses a set of default values.
+   - The `POST` handler receives the form data, saves it to `settings.json`, and then reloads the page.
+3. Updated `templates/settings.html`:
+   - The HTML was updated to include a form with all the requested input fields: Prep Fee, Estimated Shipping, Estimated Tax, Tax Exempt checkbox, and Default Markup.
+   - JavaScript was added to implement the "Edit" / "Save Changes" functionality. Clicking "Edit" enables the form fields, and the button changes to "Save Changes". Clicking "Save Changes" submits the form.
+   - The JavaScript also handles the logic for the "Tax Exempt" checkbox, which disables the tax input field when checked.
+4. Debugging and Resolution:
+   - The user initially reported that the settings were not saving.
+   - After adding logging to the backend, I determined the code was functioning as expected.
+   - The issue was identified as a file permissions problem on the user's testing server, where the web server process did not have write access to the `settings.json` file.
+   - Provided the user with the necessary `chmod` and `chown` commands to resolve the permissions issue, which confirmed the fix.
+
+**Outcome:** The new settings page is fully functional and meets all the user's requirements. The settings are now correctly saved and reloaded.
+
+
+### **Dev Log Entry**
+
+**Date:** 2025-09-12
+
+**Task:** Add "Deal Found" column to dashboard.
+
+**Summary:** Successfully added a new "Deal Found" column to the deals dashboard. This column displays a human-readable, relative timestamp (e.g., "5 minutes ago", "1 day ago") and is sortable by age.
+
+**Changes:**
+
+- **Backend:** Modified `keepa_deals/stable_deals.py` to provide the "Deal found" timestamp in the standard ISO 8601 format. This ensures that timezone differences between the server and various users are handled correctly.
+
+- Frontend:
+
+   
+
+  Updated
+
+   
+
+  ```
+  templates/dashboard.html
+  ```
+
+   
+
+  to:
+
+  - Add the "Deal Found" column to the table display.
+  - Implement a new JavaScript function, `formatTimeAgo`, which takes the ISO timestamp from the server and converts it into the required relative time string. The function correctly handles singular vs. plural cases (e.g., "1 day ago" vs. "2 days ago") and a "Just Now" state for very recent deals.
+
+- **Verification:** Created a new Playwright script to automate the process of logging in and verifying that the new column and its formatting appear correctly on the dashboard.
+
+**Debugging and Resolution:**
+
+- The initial implementation was refined to address a user concern about timezone handling, leading to the adoption of the more robust ISO 8601 format.
+- The Playwright verification script required debugging to correctly handle the login form's dynamic visibility, which was resolved by adding steps to properly trigger the form before filling it out.
+
+**Outcome:** The "Deal Found" column is now a functional part of the dashboard, providing users with at-a-glance information about how recently a deal was discovered, as per the requirements.

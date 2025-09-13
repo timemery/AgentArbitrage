@@ -47,7 +47,7 @@ def deal_found(deal_object, logger_param=None): # Renamed logger to logger_param
         current_logger.debug(f"ASIN: {asin} - Timezone Debug ({func_name}) - toronto_dt.tzinfo: {toronto_dt.tzinfo}")
         current_logger.debug(f"ASIN: {asin} - Timezone Debug ({func_name}) - toronto_dt.utcoffset(): {toronto_dt.utcoffset()}")
         
-        return {'Deal found': toronto_dt.strftime('%Y-%m-%d %H:%M:%S')}
+        return {'Deal found': toronto_dt.isoformat()}
     else:
         return {'Deal found': '-'}
 # Deal Found ends
