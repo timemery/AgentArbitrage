@@ -1444,3 +1444,36 @@ This task involved a multi-stage debugging process that revealed several importa
 - **Data Flow Integrity is Paramount:** The backend should always provide raw, unformatted data (`float`, `int`, etc.) to the data storage layer (database) and the API endpoints. All display formatting should be handled exclusively by the frontend (Jinja2 templates or JavaScript). This was the root cause of multiple bugs in this task.
 - **Database Type Enforcement:** The application code must be the gatekeeper for data types. The `save_to_database` function is a critical point to enforce that only numbers and `NULL` are saved to numeric columns.
 - **JavaScript Event Propagation:** When adding clickable elements inside other clickable elements (like a link inside a table row), always consider event bubbling and use `event.stopPropagation()` to prevent unintended behavior.
+
+### Dev Log Entry: 2025-09-14
+
+**Title:** Debugging Persistent 'Best Price' and 'Seller Score' Issues
+
+**Problem Summary:** The "Best Price" calculation was fundamentally flawed, pulling historical "lowest ever" prices instead of currently available offers. Additionally, the "Seller_Quality_Score" was incorrectly defaulting to `0.0` for almost all sellers, rendering it useless for filtering.
+
+**Debugging Journey & Discoveries:** The resolution process was complex and hampered by significant file synchronization issues between the agent's environment and the user's view (the "diff window").
+
+1. **Initial Hypothesis & Failure**: Initial attempts focused on patching the logic in `keepa_deals/seller_info.py`. These patches failed to resolve the issue, suggesting a deeper problem in the data being processed.
+2. **RAW Data Analysis**: To get an accurate view of the data, the script was modified to dump the entire raw JSON response from the `/product` endpoint into a `RAW_PRODUCT_DATA` column in the output CSV. A snapshot of this data was saved for future reference in `keepa_deals_reference/raw_product_data_snapshot.csv`.
+3. **Key Discovery 1 (Best Price):** Analysis of the raw data and Keepa documentation revealed that the `/product` endpoint, when called with the `offers` parameter, returns both historical and live offers by default. The root cause of the incorrect "Best Price" was that we were not explicitly requesting *only live offers*.
+   - **Fix:** The `fetch_product_batch` function in `keepa_api.py` must be modified to include the `&only_live_offers=1` parameter in the API call URL.
+4. **Key Discovery 2 (Seller Score):** The "Seller Quality Score" was defaulting to zero because the `fetch_seller_data` function in `keepa_api.py` was likely failing silently (e.g., due to API errors, throttling, or unexpected `null` responses) and returning `None`. The existing error handling was not sufficient to identify the root cause.
+   - **Fix:** The `fetch_seller_data` function must be modified to include more robust logging. Specifically, it should log the full text of the HTTP response from Keepa if the expected 'sellers' data is not found or if the request fails, allowing for direct inspection of the API's feedback.
+
+**Tooling & Environment Issues:** A significant portion of the task was spent battling a persistent file synchronization issue. All attempts by the agent to modify `keepa_api.py` (using `overwrite_file_with_block`, `replace_with_git_merge_diff`, `create_file_with_block`, and `message_user` with the full code) failed to be reflected in the user's environment. This prevented the application of the fixes.
+
+**Final Resolution:** The task was concluded with the agreement that a new task would be started. This is intended to reset the environment and resolve the file synchronization issue, allowing the two key fixes identified above to be applied to `keepa_api.py`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
