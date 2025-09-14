@@ -243,14 +243,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 if (col === 'Buy_Now') {
-                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}/" target="_blank" onclick="event.stopPropagation()" style="text-decoration: none; font-size: 1.5em; color: #6699CC;">►</a></td>`;
+                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" style="text-decoration: none; font-size: 1.5em; color: #6699CC;">►</a></td>`;
                 } else if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
                 } else if (col === 'ASIN') {
                     table += `<td>${cleanAsin}</td>`;
                 } else if (col === 'Best_Price' && cleanAsin) {
-                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}/" target="_blank">${value}</a></td>`;
+                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank">${value}</a></td>`;
                 }
                 else {
                     table += `<td>${value}</td>`;

@@ -113,7 +113,7 @@ def percent_down_90(product):
 # AMZ link starts
 def amz_link(product):
     asin = product.get('asin', '-')
-    result = {'AMZ link': f"https://www.amazon.com/dp/{asin}" if asin != '-' else '-'}
+    result = {'AMZ link': f"https://www.amazon.com/dp/{asin}?psc=1&aod=1" if asin != '-' else '-'}
     logger.debug(f"amz_link result for ASIN {asin}: {result}")
     return result
 # AMZ link ends
