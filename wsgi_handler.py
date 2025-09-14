@@ -718,13 +718,13 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
     try:
         # Robustly reconfigure logging for this command
         root_logger = logging.getLogger()
-        # Set level to INFO for standard operation
-        root_logger.setLevel(logging.INFO)
+        # Set level to DEBUG for detailed analysis
+        root_logger.setLevel(logging.DEBUG)
         # Remove any handlers configured by the main app
         root_logger.handlers = []
         # Add a new handler that writes to stdout
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.INFO)
+        handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         root_logger.addHandler(handler)

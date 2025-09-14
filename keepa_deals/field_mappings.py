@@ -699,7 +699,12 @@ FUNCTION_LIST = [
     get_trough_season,              # Trough Season
     get_expected_trough_price,      # Expected Trough Price
     profit_confidence,              # Profit Confidence
-    profit_margin_percent           # Profit Margin %
+    None,                           # Min. Listing Price
+    None,                           # All-in Cost
+    None,                           # Profit
+    None,                           # Margin
+    None,                           # Total AMZ fees
+    None                            # RAW_PRODUCT_DATA
 ]
 # Chunk 2 ends
 

@@ -379,6 +379,10 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                 try:
                     seller_info = get_all_seller_info(product, api_key=api_key)
                     row_data.update(seller_info)
+                    
+                    # Add the raw product data here, after all other processing for the row
+                    row_data['RAW_PRODUCT_DATA'] = json.dumps(product)
+
                     logger.info(f"ASIN {asin}: Successfully processed and updated seller info.")
                 except Exception as e:
                     logger.error(f"ASIN {asin}: Failed to get seller info in decoupled loop: {e}", exc_info=True)
