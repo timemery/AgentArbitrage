@@ -125,7 +125,7 @@ def fetch_product(api_key, asin, no_cache, days=365, offers=100, rating=1, histo
         rate_limit_info_on_error = {'limit': None, 'remaining': None, 'reset': None, 'error_status_code': 'VALIDATION_ERROR'}
         return {'stats': {'current': [-1] * 30}, 'asin': asin, 'error': True, 'status_code': 'VALIDATION_ERROR', 'message': 'Invalid ASIN format'}, rate_limit_info_on_error
 
-    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={asin}&stats={days}&offers={offers}&rating={rating}&history={history}&stock=1&buybox=1"
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={asin}&stats={days}&offers={offers}&rating={rating}&history={history}&stock=1&buybox=1&only_live_offers=1"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
     try:
         logger.debug(f"fetch_product (Attempt #{attempt_num}): Making HTTP GET request for ASIN {asin} to {url}")
@@ -184,7 +184,7 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=100, rating=1, his
     logger.info(f"fetch_product_batch: Attempting to fetch batch of {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
     comma_separated_asins = ','.join(asins_list)
-    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&stock=1&buybox=1"
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&stock=1&buybox=1&only_live_offers=1"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'} # Standard User-Agent
 
     try:
@@ -302,38 +302,55 @@ def update_and_check_quota(logger, current_available_tokens, last_refill_calcula
     return current_available_tokens, last_refill_calculation_time
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_seller_data(api_key, seller_id):
+def fetch_seller_data(api_key, seller_ids):
     """
-    Fetches data for a specific seller from the Keepa API.
+    Fetches data for one or more sellers from the Keepa API.
+    Handles both single seller IDs and lists for batching.
     """
-    if not seller_id:
-        logger.warning("fetch_seller_data called with no seller_id.")
+    if not seller_ids:
+        logger.warning("fetch_seller_data called with no seller_ids.")
         return None
 
-    logger.info(f"Fetching data for seller ID: {seller_id}")
-    url = f"https://api.keepa.com/seller?key={api_key}&domain=1&seller={seller_id}"
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+    is_batch = isinstance(seller_ids, list)
+    if is_batch:
+        if len(seller_ids) > 100:
+            logger.error(f"fetch_seller_data called with a batch of {len(seller_ids)} which is over the 100 limit.")
+            return None
+        seller_ids_str = ','.join(seller_ids)
+        log_id_str = f"batch of {len(seller_ids)} sellers"
+    else: # is a single string
+        seller_ids_str = seller_ids
+        log_id_str = f"seller ID: {seller_ids}"
 
+
+    logger.info(f"Fetching data for {log_id_str}")
+    url = f"https://api.keepa.com/seller?key={api_key}&domain=1&seller={seller_ids_str}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+    
+    response = None
     try:
         response = requests.get(url, headers=headers, timeout=60)
         response.raise_for_status()
         data = response.json()
         
-        if data.get('sellers'):
-            seller_info = data['sellers'].get(seller_id)
-            if seller_info:
-                rating_percentage = seller_info.get('currentRating', -1)
-                rating_count = seller_info.get('currentRatingCount', 0)
-                
-                if rating_percentage != -1:
-                    return {
-                        "rank": f"{rating_percentage}% ({rating_count} ratings)",
-                        "rating_percentage": rating_percentage,
-                        "rating_count": rating_count
-                    }
+        sellers_data = data.get('sellers')
+        if sellers_data:
+            return sellers_data
+        else:
+            logger.warning(f"No 'sellers' object found for {log_id_str} in a successful API response.")
+            logger.error(f"Full response for {log_id_str}: {response.text}")
+            return None
+
     except requests.exceptions.RequestException as e:
-        logger.error(f"HTTP fetch failed for seller {seller_id}: {e}")
+        status_code = e.response.status_code if e.response else "N/A"
+        logger.error(f"HTTP fetch failed for {log_id_str} with status {status_code}: {e}")
+        if e.response:
+            logger.error(f"Full error response for {log_id_str}: {e.response.text}")
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to decode JSON for {log_id_str}: {e}")
+        if response:
+             logger.error(f"Full malformed JSON response for {log_id_str}: {response.text}")
     except Exception as e:
-        logger.error(f"An unexpected error occurred while fetching data for seller {seller_id}: {e}")
+        logger.error(f"An unexpected error occurred while fetching data for {log_id_str}: {e}", exc_info=True)
 
     return None

@@ -23,7 +23,7 @@ logging.getLogger('app').info(f"Starting wsgi_handler.py from /var/www/agentarbi
 logging.getLogger('app').info(f"Python version: {sys.version}")
 logging.getLogger('app').info(f"Python path: {sys.path}")
 
-load_dotenv('/var/www/agentarbitrage/.env')
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
 logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitrage/wsgi_handler.py at {os.getpid()}")
 
 app = Flask(__name__)

@@ -318,6 +318,55 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                         batch_retry_counts[batch_idx] = 0
                 continue
 
+        # --- Pre-fetch all seller data in batches to avoid rate limiting ---
+        logger.info("Starting pre-fetch of all unique seller data...")
+        all_seller_ids = set()
+        for product in all_fetched_products_map.values():
+            if product and not product.get('error'):
+                for offer in product.get('offers', []):
+                    seller_id = offer.get('sellerId')
+                    if seller_id:
+                        all_seller_ids.add(seller_id)
+        
+        logger.info(f"Found {len(all_seller_ids)} unique seller IDs to fetch.")
+        
+        seller_id_list = list(all_seller_ids)
+        MAX_SELLERS_PER_BATCH = 100
+        seller_batches = [seller_id_list[i:i + MAX_SELLERS_PER_BATCH] for i in range(0, len(seller_id_list), MAX_SELLERS_PER_BATCH)]
+        
+        from .seller_info import seller_data_cache
+        from .keepa_api import fetch_seller_data
+
+        for i, seller_batch in enumerate(seller_batches):
+            logger.info(f"Fetching seller data batch {i + 1}/{len(seller_batches)}...")
+            
+            time_since_last_api_call_sellers = time.time() - LAST_API_CALL_TIMESTAMP
+            if time_since_last_api_call_sellers < MIN_TIME_SINCE_LAST_CALL_SECONDS:
+                seller_wait_duration = MIN_TIME_SINCE_LAST_CALL_SECONDS - time_since_last_api_call_sellers
+                logger.info(f"Pre-emptive pause for seller batch: Waiting {seller_wait_duration:.2f}s.")
+                time.sleep(seller_wait_duration)
+
+            fetched_sellers_data = fetch_seller_data(api_key, seller_batch)
+            LAST_API_CALL_TIMESTAMP = time.time()
+            
+            if fetched_sellers_data:
+                for seller_id, seller_data in fetched_sellers_data.items():
+                    if seller_data:
+                        rating_percentage = seller_data.get('currentRating', -1)
+                        rating_count = seller_data.get('currentRatingCount', 0)
+                        if rating_percentage != -1:
+                             seller_data_cache[seller_id] = {
+                                "rank": f"{rating_percentage}% ({rating_count} ratings)",
+                                "rating_percentage": rating_percentage,
+                                "rating_count": rating_count
+                            }
+                logger.info(f"Cached data for {len(fetched_sellers_data)} sellers from batch {i + 1}.")
+            else:
+                logger.warning(f"Seller data batch {i + 1} returned no data.")
+        
+        logger.info("Finished pre-fetching all seller data.")
+        # --- End of seller data pre-fetch ---
+
         temp_rows_data = []
 
         for deal_info in valid_deals_to_process:
@@ -380,9 +429,6 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
                     seller_info = get_all_seller_info(product, api_key=api_key)
                     row_data.update(seller_info)
                     
-                    # Add the raw product data here, after all other processing for the row
-                    row_data['RAW_PRODUCT_DATA'] = json.dumps(product)
-
                     logger.info(f"ASIN {asin}: Successfully processed and updated seller info.")
                 except Exception as e:
                     logger.error(f"ASIN {asin}: Failed to get seller info in decoupled loop: {e}", exc_info=True)

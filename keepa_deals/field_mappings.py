@@ -703,8 +703,7 @@ FUNCTION_LIST = [
     None,                           # All-in Cost
     None,                           # Profit
     None,                           # Margin
-    None,                           # Total AMZ fees
-    None                            # RAW_PRODUCT_DATA
+    None                            # Total AMZ fees
 ]
 # Chunk 2 ends
 
