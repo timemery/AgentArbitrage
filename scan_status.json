@@ -1,11 +1,11 @@
 {
-    "status": "Completed",
+    "status": "Failed",
     "start_time": "2025-09-15T21:01:37.851Z",
     "pid": 243308,
     "output_file": "data/Keepa_Deals_Export.csv",
     "log_file": "logs/keepa_scan.log",
     "error_log_file": "logs/keepa_scan.err",
-    "message": "Scan completed successfully.",
+    "message": "An error occurred: KEEPA_API_KEY not found",
     "total_deals": 5,
     "processed_deals": 5,
     "etr_seconds": 0.0,
@@ -14,5 +14,5 @@
         "processed": 5,
         "time_per_deal": 101.00896816253662
     },
-    "end_time": "2025-09-15T21:18:14.688Z"
+    "end_time": "2025-09-16T14:28:30.265Z"
 }

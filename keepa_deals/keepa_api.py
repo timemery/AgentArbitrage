@@ -86,7 +86,9 @@ def fetch_deals_for_deals(page, api_key):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
     logger.debug(f"Deal URL: {url}")
     try:
+        logger.info(f"Executing requests.get for deals page {page}...")
         response = requests.get(url, headers=headers, timeout=30)
+        logger.info(f"Requests.get for deals page {page} completed with status {response.status_code}.")
         logger.debug(f"Full deal response: {response.text}")
         if response.status_code != 200:
             logger.error(f"Deal fetch failed: {response.status_code}, {response.text}")

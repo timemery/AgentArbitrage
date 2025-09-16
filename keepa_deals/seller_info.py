@@ -48,13 +48,18 @@ def _get_best_offer_analysis(product, api_key=None):
         
         # Rule: Exclude Warehouse Deals and offers without a seller ID
         if not seller_id or seller_id == WAREHOUSE_SELLER_ID:
+            logger.debug(f"ASIN {asin}: Skipping offer because sellerId is '{seller_id}'.")
             continue
 
-        # Price extraction from offerCSV
+        # Price and Condition extraction from offerCSV
         offer_csv = offer.get('offerCSV', [])
-        if len(offer_csv) < 2:
+        # A valid offerCSV with condition, price, and shipping must have at least 3 elements.
+        # Check for at least 4 for safety as per dev logs, to avoid index errors.
+        if len(offer_csv) < 4:
+            logger.debug(f"ASIN {asin}: Skipping offer from seller {seller_id} due to short offerCSV (len: {len(offer_csv)}): {offer_csv}")
             continue
         
+        condition_code = offer_csv[1]
         price = offer_csv[-2]
         shipping = offer_csv[-1]
         if shipping == -1: shipping = 0
@@ -64,9 +69,12 @@ def _get_best_offer_analysis(product, api_key=None):
             all_priced_offers.append({
                 'sellerId': seller_id,
                 'price': total_price,
-                'condition': CONDITION_MAP.get(offer.get('condition')),
+                'condition': CONDITION_MAP.get(condition_code), # Use the code from offerCSV
+                'condition_code': condition_code, # Keep code for logging
                 'isFBA': offer.get('isFBA', False)
             })
+        else:
+            logger.debug(f"ASIN {asin}: Skipping offer from seller {seller_id} due to zero or negative total price.")
 
     if not all_priced_offers:
         logger.warning(f"ASIN {asin}: No valid priced offers found after initial filter.")
