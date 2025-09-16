@@ -28,90 +28,84 @@ def load_settings():
             "default_markup": 10
         }
 
+def _is_valid_numeric(*args):
+    """Helper function to check if all arguments are valid numbers (int or float)."""
+    for arg in args:
+        if not isinstance(arg, (int, float)) or arg < 0:
+            return False
+    return True
+
 def calculate_total_amz_fees(peak_price, fba_fee, referral_fee_percent):
     """
     Calculates the total Amazon fees for a given peak price.
-    User request: "calculated by adding the FBA Pick&Pack Fee and Referral Fee % to the Peak Price, then subtracting the Peak Price"
-    This is interpreted as calculating the total fee amount, not price + fees.
-    Formula: (Peak Price * Referral Fee %) + FBA Pick&Pack Fee
-    Returns the total fee amount in dollars.
+    Returns the total fee amount in dollars or '-' if inputs are invalid.
     """
     logger = logging.getLogger(__name__)
-    if peak_price <= 0:
-        return 0.0
+    if not _is_valid_numeric(peak_price, fba_fee, referral_fee_percent):
+        logger.debug(f"Skipping AMZ fee calculation due to invalid inputs: peak_price={peak_price}, fba_fee={fba_fee}, referral_fee_percent={referral_fee_percent}")
+        return '-'
     
-    try:
-        referral_fee_decimal = referral_fee_percent / 100.0
-        referral_fee_amount = peak_price * referral_fee_decimal
-        total_fees = referral_fee_amount + fba_fee
-        logger.debug(f"Calculated AMZ Fees: (Peak Price {peak_price:.2f} * {referral_fee_decimal:.2f}) + FBA Fee {fba_fee:.2f} = {total_fees:.2f}")
-        return total_fees
-    except (TypeError, ValueError) as e:
-        logger.error(f"Error calculating AMZ fees with inputs: peak_price={peak_price}, fba_fee={fba_fee}, referral_fee_percent={referral_fee_percent}. Error: {e}")
-        return 0.0
+    referral_fee_decimal = referral_fee_percent / 100.0
+    referral_fee_amount = peak_price * referral_fee_decimal
+    total_fees = referral_fee_amount + fba_fee
+    logger.debug(f"Calculated AMZ Fees: (Peak Price {peak_price:.2f} * {referral_fee_decimal:.2f}) + FBA Fee {fba_fee:.2f} = {total_fees:.2f}")
+    return total_fees
 
 def calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_included_flag):
     """
     Calculates the all-in cost for acquiring a book.
-    This includes the book price, tax, prep fees, Amazon fees, and conditional shipping.
+    Returns the all-in cost in dollars or '-' if inputs are invalid.
     """
     logger = logging.getLogger(__name__)
-    try:
-        prep_fee = settings.get('prep_fee_per_book', 0.0)
-        tax_percent = settings.get('estimated_tax_per_book', 0)
-        is_tax_exempt = settings.get('tax_exempt', False)
-        estimated_shipping = settings.get('estimated_shipping_per_book', 0.0)
+    if not _is_valid_numeric(best_price, total_amz_fees):
+        logger.debug(f"Skipping All-in Cost calculation due to invalid inputs: best_price={best_price}, total_amz_fees={total_amz_fees}")
+        return '-'
 
-        tax_amount = 0.0
-        if not is_tax_exempt and best_price > 0:
-            tax_amount = best_price * (tax_percent / 100.0)
-        
-        shipping_cost_to_add = 0.0
-        if not shipping_included_flag:
-            shipping_cost_to_add = estimated_shipping
-            logger.debug(f"Shipping not included in Best Price, adding estimated shipping of {shipping_cost_to_add:.2f}")
-        
-        all_in_cost = best_price + tax_amount + prep_fee + total_amz_fees + shipping_cost_to_add
-        logger.debug(f"All-in Cost: Best Price {best_price:.2f} + Tax {tax_amount:.2f} + Prep {prep_fee:.2f} + AMZ Fees {total_amz_fees:.2f} + Added Shipping {shipping_cost_to_add:.2f} = {all_in_cost:.2f}")
-        return all_in_cost
-    except (TypeError, ValueError) as e:
-        logger.error(f"Error calculating All-in Cost with inputs: best_price={best_price}, total_amz_fees={total_amz_fees}. Error: {e}")
-        return 0.0
+    prep_fee = settings.get('prep_fee_per_book', 0.0)
+    tax_percent = settings.get('estimated_tax_per_book', 0)
+    is_tax_exempt = settings.get('tax_exempt', False)
+    estimated_shipping = settings.get('estimated_shipping_per_book', 0.0)
 
+    tax_amount = 0.0
+    if not is_tax_exempt and best_price > 0:
+        tax_amount = best_price * (tax_percent / 100.0)
+
+    shipping_cost_to_add = 0.0
+    if not shipping_included_flag:
+        shipping_cost_to_add = estimated_shipping
+        logger.debug(f"Shipping not included in Best Price, adding estimated shipping of {shipping_cost_to_add:.2f}")
+
+    all_in_cost = best_price + tax_amount + prep_fee + total_amz_fees + shipping_cost_to_add
+    logger.debug(f"All-in Cost: Best Price {best_price:.2f} + Tax {tax_amount:.2f} + Prep {prep_fee:.2f} + AMZ Fees {total_amz_fees:.2f} + Added Shipping {shipping_cost_to_add:.2f} = {all_in_cost:.2f}")
+    return all_in_cost
 
 def calculate_profit_and_margin(peak_price, all_in_cost):
     """
     Calculates the potential profit and profit margin.
-    Returns a dictionary with 'profit' and 'margin'.
+    Returns a dictionary with 'profit' and 'margin', or '-' if inputs are invalid.
     """
     logger = logging.getLogger(__name__)
-    if peak_price <= 0 or all_in_cost <= 0:
-        return {'profit': 0.0, 'margin': 0.0}
+    if not _is_valid_numeric(peak_price, all_in_cost):
+        logger.debug(f"Skipping Profit/Margin calculation due to invalid inputs: peak_price={peak_price}, all_in_cost={all_in_cost}")
+        return {'profit': '-', 'margin': '-'}
         
-    try:
-        profit = peak_price - all_in_cost
-        margin = (profit / peak_price) * 100 if peak_price != 0 else 0
-        logger.debug(f"Profit/Margin: (Peak {peak_price:.2f} - Cost {all_in_cost:.2f}) = Profit {profit:.2f}, Margin {margin:.2f}%")
-        return {'profit': profit, 'margin': margin}
-    except (TypeError, ValueError) as e:
-        logger.error(f"Error calculating Profit/Margin with inputs: peak_price={peak_price}, all_in_cost={all_in_cost}. Error: {e}")
-        return {'profit': 0.0, 'margin': 0.0}
-
+    profit = peak_price - all_in_cost
+    margin = (profit / peak_price) * 100 if peak_price != 0 else 0
+    logger.debug(f"Profit/Margin: (Peak {peak_price:.2f} - Cost {all_in_cost:.2f}) = Profit {profit:.2f}, Margin {margin:.2f}%")
+    return {'profit': profit, 'margin': margin}
 
 def calculate_min_listing_price(all_in_cost, settings):
     """
     Calculates the minimum listing price based on the default markup.
+    Returns the minimum price in dollars or '-' if inputs are invalid.
     """
     logger = logging.getLogger(__name__)
-    if all_in_cost <= 0:
-        return 0.0
+    if not _is_valid_numeric(all_in_cost):
+        logger.debug(f"Skipping Min Listing Price calculation due to invalid input: all_in_cost={all_in_cost}")
+        return '-'
         
-    try:
-        markup_percent = settings.get('default_markup', 0)
-        markup_decimal = 1 + (markup_percent / 100.0)
-        min_price = all_in_cost * markup_decimal
-        logger.debug(f"Min Listing Price: Cost {all_in_cost:.2f} * Markup ({markup_decimal:.2f}) = {min_price:.2f}")
-        return min_price
-    except (TypeError, ValueError) as e:
-        logger.error(f"Error calculating Min Listing Price with input: all_in_cost={all_in_cost}. Error: {e}")
-        return 0.0
+    markup_percent = settings.get('default_markup', 0)
+    markup_decimal = 1 + (markup_percent / 100.0)
+    min_price = all_in_cost * markup_decimal
+    logger.debug(f"Min Listing Price: Cost {all_in_cost:.2f} * Markup ({markup_decimal:.2f}) = {min_price:.2f}")
+    return min_price

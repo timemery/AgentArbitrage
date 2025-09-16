@@ -30,8 +30,14 @@ The project uses several external APIs for its functionality. These require API 
 
 ### Environment Variables (.env file)
 Your `.env` file should contain the following keys:
-HF_TOKEN="your_hugging_face_api_key" XAI_TOKEN="your_xai_api_key" BRIGHTDATA_USERNAME="your_brightdata_username" BRIGHTDATA_PASSWORD="your_brightdata_password" BRIGHTDATA_HOST="your_brightdata_host"
+HF_TOKEN="your_hugging_face_api_key"
+XAI_TOKEN="your_xai_api_key"
+BRIGHTDATA_USERNAME="your_brightdata_username"
+BRIGHTDATA_PASSWORD="your_brightdata_password"
+BRIGHTDATA_HOST="your_brightdata_host"
+KEEPA_API_KEY="your_keepa_api_key"
 
+- The **Keepa API Key** is required for all deal sourcing and product data analysis.
 - The Bright Data credentials are used as a proxy by the `youtube-transcript-api` to prevent getting blocked by YouTube.
 
 ## VPS Deployment

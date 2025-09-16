@@ -426,6 +426,12 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
             product = all_fetched_products_map.get(asin)
             if product and not product.get('error'):
                 try:
+                    # --- JULES: DIAGNOSTIC LOGGING ---
+                    # Log the offers array being passed to the analysis function to debug incorrect price selection.
+                    offers_to_log = product.get('offers', [])
+                    logger.debug(f"ASIN {asin}: Passing {len(offers_to_log)} offers to get_all_seller_info. Data: {json.dumps(offers_to_log)}")
+                    # --- END DIAGNOSTIC LOGGING ---
+
                     seller_info = get_all_seller_info(product, api_key=api_key)
                     row_data.update(seller_info)
                     
