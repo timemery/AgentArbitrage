@@ -86,9 +86,7 @@ def fetch_deals_for_deals(page, api_key):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
     logger.debug(f"Deal URL: {url}")
     try:
-        logger.info(f"Executing requests.get for deals page {page}...")
         response = requests.get(url, headers=headers, timeout=30)
-        logger.info(f"Requests.get for deals page {page} completed with status {response.status_code}.")
         logger.debug(f"Full deal response: {response.text}")
         if response.status_code != 200:
             logger.error(f"Deal fetch failed: {response.status_code}, {response.text}")
@@ -106,7 +104,7 @@ def fetch_deals_for_deals(page, api_key):
         return []
 
 @retry(stop_max_attempt_number=3, wait_fixed=10)
-def fetch_product(api_key, asin, no_cache, days=365, offers=100, rating=1, history=1):
+def fetch_product(api_key, asin, no_cache, days=365, offers=50, rating=1, history=1):
     global current_available_tokens # Moved to top of function for all reads/writes
     # Increment and log attempt number for this ASIN
     # This requires a way to store attempt counts across calls triggered by @retry for the same ASIN.
@@ -176,7 +174,7 @@ def fetch_product(api_key, asin, no_cache, days=365, offers=100, rating=1, histo
         return {'stats': {'current': [-1] * 30}, 'asin': asin, 'error': True, 'status_code': None}, rate_limit_info
 
 @retry(stop_max_attempt_number=3, wait_fixed=15000) # Increased wait for batch calls
-def fetch_product_batch(api_key, asins_list, days=365, offers=100, rating=1, history=1):
+def fetch_product_batch(api_key, asins_list, days=365, offers=50, rating=1, history=1):
     global current_available_tokens # For logging current token state if 429 occurs
 
     if not asins_list:

@@ -141,9 +141,12 @@ def _get_best_offer_analysis(product, api_key=None):
     seller_data = seller_data_cache[best_seller_id]
 
     if seller_data:
-        final_analysis['Seller Rank'] = seller_data.get('rank', '-')
-        rating_percentage = seller_data.get('rating_percentage', 0)
+        # Return the raw rating count for the 'Seller Rank' column to ensure it's a numeric type.
+        # The frontend can handle the display formatting.
         rating_count = seller_data.get('rating_count', 0)
+        final_analysis['Seller Rank'] = rating_count if rating_count > 0 else '-'
+
+        rating_percentage = seller_data.get('rating_percentage', 0)
 
         if rating_count == 0 or rating_percentage == -1:
             final_analysis['Seller_Quality_Score'] = "New Seller"
