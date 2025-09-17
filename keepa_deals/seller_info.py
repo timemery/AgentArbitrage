@@ -12,7 +12,7 @@ AMAZON_SELLER_ID = 'ATVPDKIKX0DER'
 # Cache for seller data to avoid redundant API calls within a script run
 seller_data_cache = {}
 
-def _get_simplified_best_price(product, api_key=None):
+def _get_best_offer_analysis(product, api_key=None):
     """
     Finds the absolute lowest-priced offer from the live offers list,
     then fetches the quality score for that specific seller.
@@ -104,4 +104,4 @@ def get_all_seller_info(product, api_key=None):
     Public function to get all seller-related information in a single dictionary.
     This now calls the simplified best price logic.
     """
-    return _get_simplified_best_price(product, api_key=api_key)
+    return _get_best_offer_analysis(product, api_key=api_key)

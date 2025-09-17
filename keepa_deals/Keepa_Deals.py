@@ -464,24 +464,24 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
             try:
                 # Safely parse required values from the row_data dictionary
                 def parse_price(value_str):
-                    if not value_str or (isinstance(value_str, str) and value_str in ['-', 'N/A']):
+                    if isinstance(value_str, (int, float)):
+                        return float(value_str)
+                    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']:
                         return 0.0
                     try:
-                        if isinstance(value_str, str):
-                            return float(value_str.replace('$', '').replace(',', ''))
-                        return float(value_str)
-                    except (ValueError, TypeError):
+                        return float(value_str.strip().replace('$', '').replace(',', ''))
+                    except ValueError:
                         logger.warning(f"Could not parse price value '{value_str}'. Defaulting to 0.0.")
                         return 0.0
 
                 def parse_percent(value_str):
-                    if not value_str or (isinstance(value_str, str) and value_str in ['-', 'N/A']):
+                    if isinstance(value_str, (int, float)):
+                        return float(value_str)
+                    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']:
                         return 0.0
                     try:
-                        if isinstance(value_str, str):
-                            return float(value_str.replace('%', ''))
-                        return float(value_str)
-                    except (ValueError, TypeError):
+                        return float(value_str.strip().replace('%', ''))
+                    except ValueError:
                         logger.warning(f"Could not parse percent value '{value_str}'. Defaulting to 0.0.")
                         return 0.0
 
