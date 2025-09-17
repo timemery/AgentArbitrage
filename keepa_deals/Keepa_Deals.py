@@ -464,14 +464,26 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
             try:
                 # Safely parse required values from the row_data dictionary
                 def parse_price(value_str):
-                    if isinstance(value_str, str):
-                        return float(value_str.replace('$', '').replace(',', ''))
-                    return float(value_str)
+                    if not value_str or (isinstance(value_str, str) and value_str in ['-', 'N/A']):
+                        return 0.0
+                    try:
+                        if isinstance(value_str, str):
+                            return float(value_str.replace('$', '').replace(',', ''))
+                        return float(value_str)
+                    except (ValueError, TypeError):
+                        logger.warning(f"Could not parse price value '{value_str}'. Defaulting to 0.0.")
+                        return 0.0
 
                 def parse_percent(value_str):
-                    if isinstance(value_str, str):
-                        return float(value_str.replace('%', ''))
-                    return float(value_str)
+                    if not value_str or (isinstance(value_str, str) and value_str in ['-', 'N/A']):
+                        return 0.0
+                    try:
+                        if isinstance(value_str, str):
+                            return float(value_str.replace('%', ''))
+                        return float(value_str)
+                    except (ValueError, TypeError):
+                        logger.warning(f"Could not parse percent value '{value_str}'. Defaulting to 0.0.")
+                        return 0.0
 
                 peak_price = parse_price(row_data.get('Expected Peak Price', '0'))
                 fba_fee = parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
@@ -598,32 +610,34 @@ def save_to_database(rows, headers, logger):
         logger.debug(f"INSERT statement: {insert_sql}")
 
         data_to_insert = []
+        # Get the schema to check column types
+        cursor.execute(f"PRAGMA table_info({TABLE_NAME})")
+        schema_info = {row[1]: row[2] for row in cursor.fetchall()} # Maps sanitized_col_name -> type
+
         for row_dict in rows:
             row_tuple = []
-            for header in headers:  # Use original headers to look up in dict
+            for header in headers:
+                sanitized_header = sanitize_col_name(header)
+                col_type = schema_info.get(sanitized_header, 'TEXT')
+                is_numeric_column = 'REAL' in col_type or 'INT' in col_type
+
                 value = row_dict.get(header)
 
-                # Define which columns should be treated as numeric
-                is_numeric_column = any(keyword in header for keyword in ['Price', 'Fee', 'Margin', 'Percent', 'Profit', 'Cost', 'Rank', 'Count', 'Drops'])
-
                 if is_numeric_column:
-                    if value is None or (isinstance(value, str) and value == '-'):
+                    if value is None or (isinstance(value, str) and value in ['-', 'N/A', '']):
                         row_tuple.append(None)
                     else:
                         try:
-                            # Clean and convert to float
-                            cleaned_value = str(value).replace('$', '').replace(',', '').replace('%', '')
+                            cleaned_value = str(value).replace('$', '').replace(',', '').replace('%', '').strip()
                             row_tuple.append(float(cleaned_value))
                         except (ValueError, TypeError):
-                            # If conversion fails, store as NULL
                             logger.warning(f"Could not convert value '{value}' to float for numeric column '{header}'. Storing as NULL.")
                             row_tuple.append(None)
                 else:
-                    # Handle non-numeric columns (mostly text)
                     if value is None or (isinstance(value, str) and value == '-'):
                         row_tuple.append(None)
                     else:
-                        row_tuple.append(str(value)) # Ensure it's always a string
+                        row_tuple.append(str(value))
             data_to_insert.append(tuple(row_tuple))
 
         cursor.executemany(insert_sql, data_to_insert)

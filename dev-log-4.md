@@ -25,3 +25,17 @@ When `offer.get('condition')` returned `None`, the script incorrectly evaluated 
 
 **Final Status:** The logical code fix has been implemented in `keepa_deals/seller_info.py`, and I have submitted the change. The code is now correct and ready to be tested as soon as the API key token issue is resolved.
 
+### **Dev Log Entry for This Session**
+
+**Date:** 2025-09-17 **Task:** Final "Best Price" and Stability Fix **Branch:** `fix-best-price-and-stability` (Note: Changes in this branch are incomplete and flawed)
+
+**Summary of Investigation and Failures:** This task was intended to be a final, consolidated effort to fix the "Best Price" calculation and a recurring 500 error on the application's deal detail page.
+
+1. **Initial Fix & Continued Failure:** The initial plan was to add a simple safeguard to the `seller_info.py` module to prevent it from using historical data when no live offers were present. While the safeguard was implemented, user testing revealed that the core problems persisted: the "Best Price" was still pulling incorrect historical low prices, and the 500 error remained for most items.
+2. **"Extreme Logging" and Root Cause Analysis:** "Extreme logging" was added to the offer evaluation logic. The user ran another test, and the resulting logs were instrumental in diagnosing the true root causes:
+   - **Best Price Flaw:** The logic was fundamentally misinterpreting the structure of the `offerCSV` array returned by the Keepa API. It was not correctly identifying the offer's condition, causing the seller quality filter to be bypassed entirely. This led to the script simply selecting the cheapest offer it found, regardless of seller quality or condition.
+   - **500 Error Flaw:** The error was traced to a `ValueError` occurring *during* the business logic calculations in `Keepa_Deals.py`. The helper functions responsible for parsing prices were not robust enough to handle non-numeric string values (like `'-'`).
+3. **Tooling Instability:** The session was critically hampered by persistent and repeated failures of my file modification abilities. Multiple attempts to apply the correct fixes to `Keepa_Deals.py` and `seller_info.py` failed because I could not reliably apply patches.
+
+**Final Status & Next Steps:** Due to the critical failures, this task is being aborted. We have a clear diagnosis of all remaining issues and a robust, user-approved plan for the final fix. A new task will be initiated to provide a stable environment to apply these changes correctly.
+
