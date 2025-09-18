@@ -15,6 +15,7 @@ from datetime import datetime
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
+from celery_config import celery
 from keepa_deals.Keepa_Deals import run_keepa_script
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
@@ -597,57 +598,45 @@ def data_sourcing():
 @app.route('/start-keepa-scan', methods=['POST'])
 def start_keepa_scan():
     if not session.get('logged_in'):
-        return redirect(url_for('index'))
-    
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
     status = get_scan_status()
     if status.get('status') == 'Running':
-        if status.get('pid'):
-            try:
-                os.kill(status['pid'], 0)
-                flash('A scan is already in progress.', 'warning')
-                return redirect(url_for('data_sourcing'))
-            except OSError:
-                # Stale PID, allow starting a new scan
-                pass
-    
-    os.makedirs(LOGS_DIR, exist_ok=True)
-    stdout_log_path = os.path.join(LOGS_DIR, 'keepa_scan.log')
-    stderr_log_path = os.path.join(LOGS_DIR, 'keepa_scan.err')
-    
-    command = [sys.executable, "-m", "flask", "fetch-keepa-deals", "--output-dir", "data"]
-    
-    # Add the limit to the command if provided
-    limit = request.form.get('limit')
-    if limit and limit.isdigit() and int(limit) > 0:
-        command.extend(["--limit", str(limit)])
-        flash(f'Scan initiated with a limit of {limit} deals.', 'info')
-    else:
-        flash('Scan initiated with no limit. All deals will be processed.', 'info')
+        # Optionally, you could check the task state if you store the task_id
+        flash('A scan is already in progress.', 'warning')
+        return redirect(url_for('data_sourcing'))
 
-    try:
-        # Create a copy of the current environment and set FLASK_APP
-        env = os.environ.copy()
-        env['FLASK_APP'] = 'wsgi_handler.py'
+    limit_str = request.form.get('limit')
+    limit = int(limit_str) if limit_str and limit_str.isdigit() else None
 
-        with open(stdout_log_path, 'w') as stdout_log, open(stderr_log_path, 'w') as stderr_log:
-            process = subprocess.Popen(command, stdout=stdout_log, stderr=stderr_log, env=env, cwd=os.path.dirname(os.path.abspath(__file__)))
-        
-        new_status = {
-            "status": "Running",
-            "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-            "pid": process.pid,
-            "output_file": None,
-            "log_file": "logs/keepa_scan.log",
-            "error_log_file": "logs/keepa_scan.err"
-        }
-        set_scan_status(new_status)
-        flash('Keepa scan initiated successfully!', 'success')
-    except Exception as e:
-        app.logger.error(f"Failed to start Keepa scan process: {e}")
-        flash('Error starting Keepa scan process. Check application logs.', 'error')
-        set_scan_status({"status": "Failed", "message": f"Failed to launch process: {e}"})
+    # Trigger the task
+    task = run_keepa_script.delay(
+        api_key=KEEPA_API_KEY,
+        no_cache=True, # Or get this from the form
+        output_dir='data',
+        deal_limit=limit,
+        status_update_callback=None # Cannot pass this from here
+    )
 
+    # Store initial status
+    new_status = {
+        "status": "Running",
+        "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+        "task_id": task.id,
+        "message": "Scan initiated..."
+    }
+    set_scan_status(new_status)
+
+    flash('Keepa scan has been initiated in the background.', 'success')
     return redirect(url_for('data_sourcing'))
+
+@app.route('/scan-status')
+def scan_status_endpoint():
+    if not session.get('logged_in'):
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    status_data = get_scan_status()
+    return jsonify(status_data)
 
 @app.route('/download/<path:filename>')
 def download_file(filename):
