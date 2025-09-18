@@ -1,0 +1,10 @@
+3843:C 18 Sep 2025 16:16:54.928 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+3843:C 18 Sep 2025 16:16:54.928 # Redis version=7.0.15, bits=64, commit=00000000, modified=0, pid=3843, just started
+3843:C 18 Sep 2025 16:16:54.928 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+3843:M 18 Sep 2025 16:16:54.929 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+3843:M 18 Sep 2025 16:16:54.929 * monotonic clock: POSIX clock_gettime
+3843:M 18 Sep 2025 16:16:54.930 # Warning: Could not create server TCP listening socket ::*:6379: unable to bind socket, errno: 97
+3843:M 18 Sep 2025 16:16:54.930 * Running mode=standalone, port=6379.
+3843:M 18 Sep 2025 16:16:54.931 # Server initialized
+3843:M 18 Sep 2025 16:16:54.931 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+3843:M 18 Sep 2025 16:16:54.932 * Ready to accept connections

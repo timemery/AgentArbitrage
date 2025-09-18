@@ -1,0 +1,18 @@
+
+ -------------- celery@devbox v5.5.3 (immunity)
+--- ***** -----
+-- ******* ---- Linux-6.8.0-x86_64-with-glibc2.39 2025-09-18 16:29:33
+- *** --- * ---
+- ** ---------- [config]
+- ** ---------- .> app:         agentarbitrage:0x7fb69e3bcf20
+- ** ---------- .> transport:   redis://localhost:6379/0
+- ** ---------- .> results:     redis://localhost:6379/0
+- *** --- * --- .> concurrency: 4 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** -----
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+
+
+[tasks]
+  . keepa_deals.Keepa_Deals.run_keepa_script

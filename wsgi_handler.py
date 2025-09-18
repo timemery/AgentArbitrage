@@ -1,7 +1,6 @@
 import sys
 import logging
 import os
-import subprocess
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
 import httpx
 from bs4 import BeautifulSoup
@@ -559,7 +558,6 @@ def get_youtube_transcript(url: str) -> str:
 
 # --- Keepa Scan Status Management ---
 STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_status.json')
-LOGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/logs')
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 def get_scan_status():
