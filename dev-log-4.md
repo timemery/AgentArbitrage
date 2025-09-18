@@ -89,3 +89,44 @@ When `offer.get('condition')` returned `None`, the script incorrectly evaluated 
     - **Solution:** The function was rewritten to use a more robust cross-referencing strategy. It first compiles a set of all valid, current prices from the `product['stats']['current']` array (the source of truth for live prices). It then iterates through `product['offers']`, only considering an offer if its price is present in this set of validated live prices. This guarantees the selected "Best Price" is always a real, current offer.
 
 - **Final Status:** The script now runs to completion without crashing and calculates "Best Price" correctly. A remaining issue where the user sees a 500 error due to a web server timeout (not a script crash) has been identified. This is an architectural issue to be addressed in a separate task.
+
+### **Dev Log: Implementation of Celery Background Task Queue**
+
+**Date:** September 18, 2025
+
+**Author:** Jules
+
+**Problem Statement:** The "Start New Scan" feature was executing a very long-running process (`run_keepa_script`) directly within the web server's request-response cycle. This caused web requests to hang for minutes, eventually leading to server timeouts and 500 Internal Server Errors, making the feature unusable.
+
+**Solution Overview:** To solve the timeout issue, the process was re-architected to run asynchronously. A background task queue was implemented using Celery as the task runner and Redis as the message broker. This allows the web server to immediately respond to the user's request by dispatching the job to the background, while the long-running scan is executed by a separate Celery worker process.
+
+**Key Implementation Steps:**
+
+1. **Dependencies:** Added `celery` and `redis` to `requirements.txt`.
+2. **Configuration:** Created `celery_config.py` to define the Celery application instance and configure its connection to the Redis broker.
+3. **Task Refactoring:** The core `run_keepa_script` function in `keepa_deals/Keepa_Deals.py` was decorated with `@celery.task`, officially turning it into a Celery task.
+4. **Endpoint Modification:** The `/start-keepa-scan` endpoint in `wsgi_handler.py` was modified to call the task asynchronously using the `.delay()` method, which places the job onto the Redis queue.
+5. **Status Tracking:** Logic was added to the task to update a `scan_status.json` file at various stages (start, progress, completion), providing a mechanism for the frontend to monitor the status of a background scan.
+
+**Challenges & Debugging Chronology:**
+
+- **Initial `SyntaxError`:** The first deployment resulted in a persistent 500 error that crashed the application on startup. Diagnosis via the Apache error log (`/var/log/apache2/agentarbitrage_error.log`) revealed a basic `SyntaxError` in a `try...except` block that had been introduced during refactoring.
+
+- **Deployment & Sync Issues:** A file synchronization issue between my development environment and the user's server delayed the application of the syntax fix. This was resolved by committing all changes to a new git branch (`feature/celery-background-tasks`), allowing the user to pull a clean, complete version of the code.
+
+- Celery Worker Startup Failure:
+
+   
+
+  The Celery worker process would not start, exiting immediately. This was a complex issue:
+
+  - **Initial Analysis:** The worker failed with an `AttributeError: 'EntryPoints' object has no attribute 'get'`.
+  - **Misdiagnosis:** An initial search suggested this was an `importlib-metadata` version conflict. Pinning this dependency to `4.13.0` did not solve the problem.
+  - **Correct Diagnosis:** A more thorough analysis revealed the root cause was an incompatibility between the installed Celery version (`5.2.7`) and the modern Python environment (3.10+). The older Celery code was using a deprecated method for finding plugins.
+  - **Resolution:** The fix was to upgrade Celery to the latest stable version (`5.5.3`). This was done by running `pip install --upgrade celery`, which resolved the startup error.
+
+- **Service Management:** We discovered that the Redis server and Celery worker processes needed to be started and managed directly on the user's server. I provided the user with the correct `systemctl` and `celery --detach` commands to run these as persistent background services.
+
+**Final Outcome:** The implementation was a success. The web application is now responsive, and the long-running Keepa scan executes reliably in the background. The immediate issue of server timeouts has been fully resolved. The test scan revealed, however, that the underlying script's API and token management logic is highly inefficient, leading to excessively long run times. This has been identified as the highest priority for the next development cycle.
+
+

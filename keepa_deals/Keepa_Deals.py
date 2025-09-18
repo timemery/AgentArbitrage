@@ -8,6 +8,8 @@ import sys
 import time
 import math
 import os
+from celery_config import celery
+from datetime import datetime
 
 from .keepa_api import (
     fetch_deals_for_deals,
@@ -18,10 +20,44 @@ from .keepa_api import (
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 
-def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
+def set_scan_status(status_data):
+    """Helper to write to the status file."""
+    STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'scan_status.json')
+    try:
+        with open(STATUS_FILE, 'w') as f:
+            json.dump(status_data, f, indent=4)
+    except IOError as e:
+        # This will be logged by the Celery worker
+        print(f"Error writing status file: {e}")
+
+@celery.task(bind=True)
+def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
     """
-    Main function to run the Keepa deals fetching and processing script.
+    Main Celery task to run the Keepa deals fetching and processing script.
     """
+    logger = logging.getLogger(__name__) # Use standard logging
+
+    def _update_cli_status(status_dict):
+        # Read current status, update, and write back
+        current_status = {}
+        STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'scan_status.json')
+        if os.path.exists(STATUS_FILE):
+            try:
+                with open(STATUS_FILE, 'r') as f:
+                    current_status = json.load(f)
+            except (IOError, json.JSONDecodeError):
+                pass
+        current_status.update(status_dict)
+        set_scan_status(current_status)
+
+    # Initial status update from within the task
+    _update_cli_status({
+        "status": "Running",
+        "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+        "task_id": self.request.id,
+        "message": "Worker has started processing the scan."
+    })
+
     scan_start_time = time.time() # Start timer at the very beginning
     os.makedirs(output_dir, exist_ok=True)
     CSV_PATH = os.path.join(output_dir, "Keepa_Deals_Export.csv")
@@ -147,6 +183,9 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
         
         logger.info(f"Deals to process: {len(deals_to_process)}")
 
+        if status_update_callback is None:
+            status_update_callback = _update_cli_status
+
         # Initial status update with total deals
         if status_update_callback:
             # Provide a rough initial ETR based on a conservative guess of time per deal
@@ -166,6 +205,11 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
             write_csv([], [], diagnostic=True)
             save_to_database([], HEADERS, logger)
             logger.info("Script completed with no deals processed.")
+            _update_cli_status({
+                'status': 'Completed',
+                'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+                'message': 'Scan finished. No deals were found matching the criteria.'
+            })
             return
         
         logger.info(f"Starting ASIN processing, found {len(deals_to_process)} deals (after potential temporary limit)")
@@ -590,8 +634,19 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
         save_to_database(final_processed_rows, HEADERS, logger)
 
         logger.info("Script completed!")
+        _update_cli_status({
+            'status': 'Completed',
+            'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            'message': 'Scan completed successfully.',
+            'output_file': f"{output_dir}/Keepa_Deals_Export.csv"
+        })
     except Exception as e:
-        logger.error(f"Main failed: {str(e)}")
+        logger.error(f"Main failed: {str(e)}", exc_info=True)
+        _update_cli_status({
+            'status': 'Failed',
+            'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            'message': f"An error occurred: {str(e)}"
+        })
 
 def save_to_database(rows, headers, logger):
     import sqlite3
