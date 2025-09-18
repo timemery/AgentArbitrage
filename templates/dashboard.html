@@ -1,83 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}Deals Dashboard - Agent Arbitrage{% endblock %}
 {% block content %}
-<style>
-    #deals-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    #deals-table th, #deals-table td {
-        border: 1px solid rgba(102, 153, 204, 0.5);
-        padding: 8px;
-        text-align: left;
-    }
-    #deals-table th {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: white;
-        cursor: pointer;
-    }
-    .th-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .sort-arrows-container {
-        display: flex;
-        flex-direction: column;
-        margin-left: 8px;
-    }
-    .sort-arrow {
-        cursor: pointer;
-        font-size: 12px;
-        line-height: 0.8;
-        transform: scaleX(1.5); /* Make arrows thicker */
-    }
-    .sort-arrow-up {
-        margin-bottom: 2px; /* Add space between arrows */
-    }
-    .sort-arrow.on {
-        color: white;
-    }
-    .sort-arrow.off {
-        color: #6699CC;
-    }
-    #deals-table th:hover {
-        background-color: rgba(0, 0, 0, 0.25);
-    }
-    .pagination-controls {
-        margin-top: 20px;
-        text-align: center;
-    }
-    .pagination-controls button {
-        padding: 8px 16px;
-        margin: 0 5px;
-    }
-    .title-cell {
-        max-width: 300px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .score-bar-container {
-        display: flex;
-        align-items: center;
-    }
-    .score-square {
-        width: 10px;
-        height: 10px;
-        margin-right: 1px;
-        box-sizing: border-box;
-        border: 1px solid transparent; /* Add a transparent border to all squares */
-    }
-    .score-square-filled {
-        background-color: #6699CC; /* A color that fits the theme */
-    }
-    .score-square-empty {
-        background-color: #e0e0e0; /* A light grey for empty */
-        border-color: #ccc; /* Only change the color for empty squares */
-    }
-</style>
-
 <h1>Deals Dashboard</h1>
 <div class="filters-container">
             <form id="filter-form">
@@ -193,15 +116,23 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (header === 'Expected_Trough_Price') {
                 headerText = 'Trough Price';
             }
-            const upArrowClass = (currentSort.by === header && currentSort.order === 'asc') ? 'on' : 'off';
-            const downArrowClass = (currentSort.by === header && currentSort.order === 'desc') ? 'on' : 'off';
-            const arrowsHtml = `
-                <div class="sort-arrows-container">
-                    <span class="sort-arrow sort-arrow-up ${upArrowClass}" data-order="asc">▲</span>
-                    <span class="sort-arrow sort-arrow-down ${downArrowClass}" data-order="desc">▼</span>
-                </div>
-            `;
-            table += `<th data-sort="${header}"><div class="th-content"><span>${headerText}</span>${arrowsHtml}</div></th>`;
+
+            let arrowsHtml = '';
+            let thTag = '<th>';
+
+            if (header !== 'Buy_Now') {
+                const upArrowClass = (currentSort.by === header && currentSort.order === 'asc') ? 'on' : 'off';
+                const downArrowClass = (currentSort.by === header && currentSort.order === 'desc') ? 'on' : 'off';
+                arrowsHtml = `
+                    <div class="sort-arrows-container">
+                        <span class="sort-arrow sort-arrow-up ${upArrowClass}" data-order="asc">▲</span>
+                        <span class="sort-arrow sort-arrow-down ${downArrowClass}" data-order="desc">▼</span>
+                    </div>
+                `;
+                thTag = `<th data-sort="${header}">`;
+            }
+            
+            table += `${thTag}<div class="th-content"><span>${headerText}</span>${arrowsHtml}</div></th>`;
         });
         table += '</tr></thead><tbody>';
 
