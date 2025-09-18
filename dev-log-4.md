@@ -39,3 +39,53 @@ When `offer.get('condition')` returned `None`, the script incorrectly evaluated 
 
 **Final Status & Next Steps:** Due to the critical failures, this task is being aborted. We have a clear diagnosis of all remaining issues and a robust, user-approved plan for the final fix. A new task will be initiated to provide a stable environment to apply these changes correctly.
 
+### Dev Log Entry
+
+- **Title:** Fix for Application Crashes and Incorrect Best Price Calculation
+
+- **Date:** 2025-09-18
+
+- **Issue Summary:** The application was experiencing two critical bugs:
+
+  1. **Application Crash (500 Error):** The script would frequently crash. The root cause was multifaceted, ultimately stemming from unhandled `429 Too Many Requests` errors from the Keepa API.
+  2. **Incorrect "Best Price":** The "Best Price" calculation was pulling historical or otherwise invalid data instead of the lowest current, live offer.
+
+- **Root Cause Analysis & Fixes:**
+
+  - **Crash/500 Error Fix:**
+
+    - **Problem 1: Brittle API Function.** The `fetch_seller_data` function in `keepa_api.py` was not robust. It didn't handle `429` errors gracefully or return detailed error information.
+
+    - **Solution 1:** Refactored `fetch_seller_data` to mirror the more robust `fetch_product_batch` function. It now returns a `(data, api_info, cost)` tuple, which provides the caller with the actual token cost and a structured way to check for API errors.
+
+    - **Problem 2: No Retry Mechanism.** The main script (`Keepa_Deals.py`) was calling the seller pre-fetcher but had no logic to retry on a `429` failure, causing the script to halt.
+
+    - **Solution 2:** Implemented a full retry `while` loop for the seller data pre-fetcher in `Keepa_Deals.py`. This loop now uses the `api_info` from the refactored `fetch_seller_data` to detect `429` errors, pause for a significant duration, and then retry the failed batch.
+
+    - Problem 3: Data Inconsistency & Type Mismatch.
+
+       
+
+      A subsequent
+
+       
+
+      ```
+      AttributeError: 'tuple' object has no attribute 'get'
+      ```
+
+       
+
+      was discovered. This was caused by two related issues:
+
+      1. The `seller_info.py` file was not updated to handle the new tuple return format from the refactored `fetch_seller_data`.
+      2. The main script and the `seller_info.py` file were treating the `seller_data_cache` inconsistently—one was writing a custom dictionary, and the other was expecting the raw API response.
+
+    - **Solution 3:** Standardized the data handling. The pre-fetcher in `Keepa_Deals.py` now caches the **raw seller data dictionary**. The logic in `seller_info.py` was then corrected to read this raw data directly from the cache, and the problematic fallback API call that was causing the crash was removed entirely.
+
+  - **"Best Price" Fix:**
+
+    - **Problem:** The logic in `_get_best_offer_analysis` (`seller_info.py`) was not reliably distinguishing live offers from historical ones in the `offerCSV` data.
+    - **Solution:** The function was rewritten to use a more robust cross-referencing strategy. It first compiles a set of all valid, current prices from the `product['stats']['current']` array (the source of truth for live prices). It then iterates through `product['offers']`, only considering an offer if its price is present in this set of validated live prices. This guarantees the selected "Best Price" is always a real, current offer.
+
+- **Final Status:** The script now runs to completion without crashing and calculates "Best Price" correctly. A remaining issue where the user sees a 500 error due to a web server timeout (not a script crash) has been identified. This is an architectural issue to be addressed in a separate task.

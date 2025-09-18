@@ -14,94 +14,111 @@ seller_data_cache = {}
 
 def _get_best_offer_analysis(product, api_key=None):
     """
-    Finds the absolute lowest-priced offer from the live offers list,
-    then fetches the quality score for that specific seller.
-    This function is decoupled from any complex filtering.
+    Finds the best live offer by cross-referencing the 'stats.current' array
+    with the 'offers' array to ensure price accuracy and retrieve seller info.
     """
     asin = product.get('asin', 'N/A')
+    stats = product.get('stats', {})
+    current_prices_from_stats = stats.get('current', [])
+    
+    # Indices for various "Current" prices in the stats.current array.
+    price_indices = [0, 1, 2, 7, 10, 19, 20, 21, 22, 32]
+    
+    # Create a set of valid current prices from the reliable stats array.
+    valid_stat_prices = set()
+    for index in price_indices:
+        if len(current_prices_from_stats) > index and current_prices_from_stats[index] is not None and current_prices_from_stats[index] > 0:
+            valid_stat_prices.add(current_prices_from_stats[index])
+            
+    if not valid_stat_prices:
+        logger.warning(f"ASIN {asin}: No valid current prices found in stats.current. Cannot determine best price.")
+        return {'Best Price': '-', 'Seller ID': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
+
+    # Now, find the best offer by iterating through the live offers and validating their price.
+    best_offer_details = {
+        'price': float('inf'),
+        'seller_id': None,
+        'offer_obj': None
+    }
+    
     raw_offers = product.get('offers', [])
-
-    # Safeguard: If the raw offers list from Keepa is empty, exit immediately.
     if not raw_offers:
-        logger.warning(f"ASIN {asin}: No live offers returned from Keepa. Cannot determine best price.")
-        return {'Best Price': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-', 'Seller ID': '-'}
+        logger.warning(f"ASIN {asin}: No offers array to search for seller, but found valid prices in stats: {valid_stat_prices}")
+    else:
+        for offer in raw_offers:
+            if not isinstance(offer, dict) or offer.get('sellerId') == WAREHOUSE_SELLER_ID:
+                continue
 
-    lowest_offer = None
-    lowest_price = float('inf')
+            # Get the most recent price from the offer's history
+            offer_history = offer.get('offerCSV', [])
+            if len(offer_history) >= 2:
+                try:
+                    price = int(offer_history[-2])
+                    shipping = int(offer_history[-1])
+                    if shipping == -1: shipping = 0
+                    
+                    # This is the crucial step: validate the offer's price against our set of true current prices.
+                    if price in valid_stat_prices:
+                        total_price = price + shipping
+                        if total_price < best_offer_details['price']:
+                            best_offer_details['price'] = total_price
+                            best_offer_details['seller_id'] = offer.get('sellerId')
+                            best_offer_details['offer_obj'] = offer
+                except (ValueError, IndexError):
+                    continue
 
-    # Step 1: Find the absolute lowest-priced offer
-    for offer in raw_offers:
-        seller_id = offer.get('sellerId')
-        if not seller_id or seller_id == WAREHOUSE_SELLER_ID:
-            continue
-
-        offer_csv = offer.get('offerCSV', [])
-        # A simple offer has [timestamp, price, shipping]
-        if len(offer_csv) < 2:
-            continue
+    if best_offer_details['price'] == float('inf'):
+        logger.warning(f"ASIN {asin}: Could not find any live offer whose price matched a valid price in stats.current. Stats prices: {valid_stat_prices}")
+        # Fallback: just use the minimum price from stats if no offer matches
+        min_price_cents = min(valid_stat_prices)
+        return {
+            'Best Price': f"${min_price_cents / 100:.2f}",
+            'Seller ID': 'N/A (No matching offer)',
+            'Seller Rank': '-',
+            'Seller_Quality_Score': '-'
+        }
         
-        try:
-            # The price is the second-to-last element, shipping is the last.
-            price = int(offer_csv[-2])
-            shipping = int(offer_csv[-1])
-            if shipping == -1: shipping = 0
-            total_price = price + shipping
-
-            if 0 < total_price < lowest_price:
-                lowest_price = total_price
-                lowest_offer = offer
-        except (ValueError, IndexError):
-            logger.debug(f"ASIN {asin}: Could not parse price/shipping from offerCSV for seller {seller_id}: {offer_csv}")
-            continue
-
-    if not lowest_offer:
-        logger.warning(f"ASIN {asin}: No valid, priced offers found in the raw offer list.")
-        return {'Best Price': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-', 'Seller ID': '-'}
-
-    # Step 2: We have the lowest offer. Now get its seller's data.
-    best_seller_id = lowest_offer.get('sellerId')
+    # We have the best offer. Proceed to build the final analysis.
+    best_seller_id = best_offer_details['seller_id']
     final_analysis = {
-        'Best Price': f"${lowest_price / 100:.2f}",
+        'Best Price': f"${best_offer_details['price'] / 100:.2f}",
         'Seller ID': best_seller_id,
         'Seller Rank': '-',
         'Seller_Quality_Score': '-'
     }
     
-    logger.info(f"ASIN {asin}: Found lowest price offer: ${lowest_price/100:.2f} from Seller ID: {best_seller_id}")
+    logger.info(f"ASIN {asin}: Found best price {final_analysis['Best Price']} from validated live offers, matched to Seller ID: {best_seller_id}")
 
     if not api_key or not best_seller_id:
         logger.warning(f"ASIN {asin}: Cannot fetch seller score. No API key or seller ID.")
         return final_analysis
 
-    # Step 3: Fetch seller data and calculate score for THAT seller
-    if best_seller_id not in seller_data_cache:
-        seller_data_cache[best_seller_id] = fetch_seller_data(api_key, best_seller_id)
-    
+    # Fetch seller data from the pre-fetched cache and calculate score
     seller_data = seller_data_cache.get(best_seller_id)
-
+    
     if seller_data:
-        # This part of the logic is now greatly simplified
-        # It gets the data for the specific seller of the lowest-priced item
-        seller_ratings = seller_data.get(best_seller_id, {})
-        rating_count = seller_ratings.get('currentRatingCount', 0)
+        # The cache should contain the raw seller data dictionary.
+        # The previous logic was flawed. We directly use the 'seller_data' object.
+        rating_count = seller_data.get('currentRatingCount', 0)
         
         if rating_count > 0:
             final_analysis['Seller Rank'] = rating_count
-            rating_percentage = seller_ratings.get('currentRating', 0)
+            rating_percentage = seller_data.get('currentRating', 0)
             positive_ratings = round((rating_percentage / 100.0) * rating_count)
             score = calculate_seller_quality_score(positive_ratings, rating_count)
-            final_analysis['Seller_Quality_Score'] = f"{score:.2f}/10" # Format as a score out of 10
+            final_analysis['Seller_Quality_Score'] = f"{score:.2f}/10"
         else:
             final_analysis['Seller_Quality_Score'] = "New Seller"
     else:
-        logger.warning(f"ASIN {asin}: No seller data returned for the best price seller ID: {best_seller_id}")
-        final_analysis['Seller_Quality_Score'] = "New Seller"
+        # If the seller data is not in the cache, it means the pre-fetch failed or missed this ID.
+        # We do not make a new API call here to avoid rate-limiting issues.
+        logger.warning(f"ASIN {asin}: Seller data for ID {best_seller_id} not found in pre-fetched cache. Score cannot be calculated.")
+        final_analysis['Seller_Quality_Score'] = "Data Unavailable"
 
     return final_analysis
 
 def get_all_seller_info(product, api_key=None):
     """
     Public function to get all seller-related information in a single dictionary.
-    This now calls the simplified best price logic.
     """
     return _get_best_offer_analysis(product, api_key=api_key)
