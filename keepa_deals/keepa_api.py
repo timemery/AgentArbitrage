@@ -48,6 +48,26 @@ def validate_asin(asin):
         return False
     return True
 
+def get_token_status(api_key):
+    """
+    Makes a request to the /token endpoint to get the current token status.
+    """
+    logger.info("Requesting current token status from Keepa...")
+    url = f"https://api.keepa.com/token?key={api_key}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        logger.info(f"Successfully retrieved token status: {data}")
+        return data
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to get token status: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"An unexpected error occurred while getting token status: {e}")
+        return None
+
 # Do not modify fetch_deals_for_deals! It mirrors the "Show API query" (https://api.keepa.com/deal), with critical parameters.
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
 def fetch_deals_for_deals(page, api_key):
@@ -90,7 +110,7 @@ def fetch_deals_for_deals(page, api_key):
         logger.debug(f"Full deal response: {response.text}")
         if response.status_code != 200:
             logger.error(f"Deal fetch failed: {response.status_code}, {response.text}")
-            return []
+            return None
         data = response.json()
         deals = data.get('deals', {}).get('dr', [])
         logger.debug(f"Fetched {len(deals)} deals: {[d.get('asin', '-') for d in deals]}")
@@ -98,10 +118,10 @@ def fetch_deals_for_deals(page, api_key):
         logger.debug(f"All deal keys: {[list(d.keys()) for d in deals]}")
         logger.debug(f"Deals data: {[{'asin': d.get('asin', '-'), 'current': d.get('current', []), 'current[9]': d.get('current', [-1] * 20)[9] if len(d.get('current', [])) > 9 else -1, 'current[1]': d.get('current', [-1] * 20)[1] if len(d.get('current', [])) > 1 else -1} for d in deals]}")
         logger.info(f"Fetched {len(deals)} deals from page {page}")
-        return deals
+        return data
     except Exception as e:
         logger.error(f"Deal fetch exception: {str(e)}")
-        return []
+        return None
 
 @retry(stop_max_attempt_number=3, wait_fixed=10)
 def fetch_product(api_key, asin, no_cache, days=365, offers=50, rating=1, history=1):
@@ -179,7 +199,7 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=50, rating=1, hist
 
     if not asins_list:
         logger.warning("fetch_product_batch called with an empty list of ASINs.")
-        return [], {'requestTokens': 0, 'tokensLeft': None, 'refillIn': None, 'refillRate': None, 'error_status_code': 'EMPTY_ASIN_LIST'}, 0
+        return None, {'requestTokens': 0, 'tokensLeft': None, 'refillIn': None, 'refillRate': None, 'error_status_code': 'EMPTY_ASIN_LIST'}, 0
 
     logger.info(f"fetch_product_batch: Attempting to fetch batch of {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
@@ -214,11 +234,9 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=50, rating=1, hist
         products_data = data.get('products', [])
         if not products_data and len(asins_list) > 0: # Successful call but no product data for any ASIN
             logger.error(f"No product data in batch response for ASINs {','.join(asins_list[:3])}... despite 2xx status. Cost was {actual_batch_cost} tokens.")
-            error_products = [{'asin': asin, 'error': True, 'status_code': response.status_code, 'message': 'No product data found in batch response'} for asin in asins_list]
-            return error_products, api_info, actual_batch_cost
 
         logger.info(f"Successfully fetched data for {len(products_data)} products in batch for {len(asins_list)} requested ASINs.")
-        return products_data, api_info, actual_batch_cost
+        return data, api_info, actual_batch_cost
 
     except requests.exceptions.RequestException as e:
         logger.error(f"HTTP Fetch failed for batch ASINs {','.join(asins_list[:3])}...: {str(e)}")
@@ -246,15 +264,13 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=50, rating=1, hist
         if status_code == 429:
              logger.error(f"Batch ASINs - 429 ERROR. Script tokens at time of call: {current_available_tokens:.2f}. Keepa reported {tokens_consumed_on_error} tokens consumed for this failed call.")
 
-        error_products = [{'asin': asin, 'error': True, 'status_code': status_code, 'message': str(e)} for asin in asins_list]
-        return error_products, api_info_on_error, cost_to_report
+        return None, api_info_on_error, cost_to_report
 
     except Exception as e: # Generic exceptions (e.g., JSONDecodeError for successful status but bad body, though less likely here)
         logger.error(f"Generic Fetch failed for batch ASINs {','.join(asins_list[:3])}...: {str(e)}")
         api_info_on_error = {'tokensConsumed': None, 'error_status_code': 'GENERIC_SCRIPT_ERROR'}
         cost_to_report_generic_error = 0
-        error_products = [{'asin': asin, 'error': True, 'status_code': 'GENERIC_SCRIPT_ERROR', 'message': str(e)} for asin in asins_list]
-        return error_products, api_info_on_error, cost_to_report_generic_error
+        return None, api_info_on_error, cost_to_report_generic_error
 
 def update_and_check_quota(logger, current_available_tokens, last_refill_calculation_time, min_quota_threshold, pause_seconds, tokens_per_minute, refill_interval_seconds, max_tokens):
     """
@@ -343,10 +359,10 @@ def fetch_seller_data(api_key, seller_ids):
         sellers_data = data.get('sellers')
 
         if sellers_data:
-            return sellers_data, api_info, actual_cost
+            return data, api_info, actual_cost
         else:
             logger.warning(f"No 'sellers' object found for {log_id_str} in a successful API response.")
-            return None, api_info, actual_cost
+            return data, api_info, actual_cost
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response else "N/A"
