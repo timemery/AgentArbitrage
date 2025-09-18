@@ -301,27 +301,24 @@ def update_and_check_quota(logger, current_available_tokens, last_refill_calcula
 
     return current_available_tokens, last_refill_calculation_time
 
-@retry(stop_max_attempt_number=3, wait_fixed=5000)
 def fetch_seller_data(api_key, seller_ids):
     """
-    Fetches data for one or more sellers from the Keepa API.
-    Handles both single seller IDs and lists for batching.
+    Fetches data for a list of sellers from the Keepa API.
+    Mirrors the robust error handling and return structure of fetch_product_batch.
     """
+    global current_available_tokens
+    TOKEN_COST_PER_SELLER_ID = 1 # Keepa cost is 1 token per seller ID
+
     if not seller_ids:
         logger.warning("fetch_seller_data called with no seller_ids.")
-        return None
+        return None, {'error_status_code': 'EMPTY_SELLER_ID_LIST'}, 0
 
-    is_batch = isinstance(seller_ids, list)
-    if is_batch:
-        if len(seller_ids) > 100:
-            logger.error(f"fetch_seller_data called with a batch of {len(seller_ids)} which is over the 100 limit.")
-            return None
-        seller_ids_str = ','.join(seller_ids)
-        log_id_str = f"batch of {len(seller_ids)} sellers"
-    else: # is a single string
-        seller_ids_str = seller_ids
-        log_id_str = f"seller ID: {seller_ids}"
+    if len(seller_ids) > 100:
+        logger.error(f"fetch_seller_data called with a batch of {len(seller_ids)} which is over the 100 limit.")
+        return None, {'error_status_code': 'BATCH_SIZE_EXCEEDED'}, 0
 
+    seller_ids_str = ','.join(seller_ids)
+    log_id_str = f"batch of {len(seller_ids)} sellers"
 
     logger.info(f"Fetching data for {log_id_str}")
     url = f"https://api.keepa.com/seller?key={api_key}&domain=1&seller={seller_ids_str}"
@@ -333,24 +330,51 @@ def fetch_seller_data(api_key, seller_ids):
         response.raise_for_status()
         data = response.json()
         
+        tokens_consumed_from_api = data.get('tokensConsumed')
+        actual_cost = 0
+        if tokens_consumed_from_api is not None:
+            actual_cost = int(tokens_consumed_from_api)
+        else:
+            # Fallback to estimation if 'tokensConsumed' is missing from a successful response
+            actual_cost = len(seller_ids) * TOKEN_COST_PER_SELLER_ID
+            logger.warning(f"'tokensConsumed' not found in seller API response. Using estimated cost: {actual_cost}")
+
+        api_info = {'error_status_code': None}
         sellers_data = data.get('sellers')
+
         if sellers_data:
-            return sellers_data
+            return sellers_data, api_info, actual_cost
         else:
             logger.warning(f"No 'sellers' object found for {log_id_str} in a successful API response.")
-            logger.error(f"Full response for {log_id_str}: {response.text}")
-            return None
+            return None, api_info, actual_cost
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response else "N/A"
         logger.error(f"HTTP fetch failed for {log_id_str} with status {status_code}: {e}")
+
+        tokens_consumed_on_error = 0
         if e.response:
-            logger.error(f"Full error response for {log_id_str}: {e.response.text}")
+            try:
+                error_data = e.response.json()
+                if error_data.get('tokensConsumed') is not None:
+                    tokens_consumed_on_error = int(error_data['tokensConsumed'])
+            except json.JSONDecodeError:
+                pass # No JSON in error response body
+
+        if status_code == 429:
+             logger.error(f"Seller Batch - 429 ERROR. Script tokens at time of call: {current_available_tokens:.2f}. Keepa reported {tokens_consumed_on_error} tokens consumed.")
+
+        api_info_on_error = {'error_status_code': status_code}
+        return None, api_info_on_error, tokens_consumed_on_error
+
     except json.JSONDecodeError as e:
         logger.error(f"Failed to decode JSON for {log_id_str}: {e}")
         if response:
              logger.error(f"Full malformed JSON response for {log_id_str}: {response.text}")
+        api_info_on_error = {'error_status_code': 'JSON_DECODE_ERROR'}
+        return None, api_info_on_error, 0
+
     except Exception as e:
         logger.error(f"An unexpected error occurred while fetching data for {log_id_str}: {e}", exc_info=True)
-
-    return None
+        api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
+        return None, api_info_on_error, 0

@@ -41,6 +41,7 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
     TOKENS_PER_MINUTE_REFILL = 5
     REFILL_CALCULATION_INTERVAL_SECONDS = 60
     ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH = 6
+    TOKEN_COST_PER_SELLER_ID = 1
     TOKEN_COST_PER_DEAL_PAGE = 1
     MIN_QUOTA_THRESHOLD_BEFORE_PAUSE = 25
     DEFAULT_LOW_QUOTA_PAUSE_SECONDS = 900
@@ -330,6 +331,7 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
         
         logger.info(f"Found {len(all_seller_ids)} unique seller IDs to fetch.")
         
+        TOKEN_COST_PER_SELLER_ID = 1 # Define cost for seller data
         seller_id_list = list(all_seller_ids)
         MAX_SELLERS_PER_BATCH = 100
         seller_batches = [seller_id_list[i:i + MAX_SELLERS_PER_BATCH] for i in range(0, len(seller_id_list), MAX_SELLERS_PER_BATCH)]
@@ -337,32 +339,68 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
         from .seller_info import seller_data_cache
         from .keepa_api import fetch_seller_data
 
-        for i, seller_batch in enumerate(seller_batches):
-            logger.info(f"Fetching seller data batch {i + 1}/{len(seller_batches)}...")
+        seller_batch_idx = 0
+        max_retries_for_seller_batch = 2
+        seller_batch_retry_counts = [0] * len(seller_batches)
+
+        while seller_batch_idx < len(seller_batches):
+            seller_batch = seller_batches[seller_batch_idx]
+            logger.info(f"Fetching seller data batch {seller_batch_idx + 1}/{len(seller_batches)} (Attempt {seller_batch_retry_counts[seller_batch_idx] + 1})...")
+
+            # Token management for seller batches
+            current_available_tokens, last_refill_calculation_time = update_and_check_quota(logger, current_available_tokens, last_refill_calculation_time, MIN_QUOTA_THRESHOLD_BEFORE_PAUSE, DEFAULT_LOW_QUOTA_PAUSE_SECONDS, TOKENS_PER_MINUTE_REFILL, REFILL_CALCULATION_INTERVAL_SECONDS, MAX_QUOTA_TOKENS)
             
+            required_tokens_for_seller_batch = len(seller_batch) * TOKEN_COST_PER_SELLER_ID
+            if current_available_tokens < required_tokens_for_seller_batch:
+                tokens_needed = required_tokens_for_seller_batch - current_available_tokens
+                wait_time_seconds = math.ceil((tokens_needed / TOKENS_PER_MINUTE_REFILL) * 60) if TOKENS_PER_MINUTE_REFILL > 0 else DEFAULT_LOW_QUOTA_PAUSE_SECONDS
+                logger.warning(f"Insufficient tokens for seller batch {seller_batch_idx + 1}. Have: {current_available_tokens:.2f}, Need: {required_tokens_for_seller_batch}. Waiting for approx. {wait_time_seconds // 60} minutes.")
+                time.sleep(wait_time_seconds)
+                current_available_tokens, last_refill_calculation_time = update_and_check_quota(logger, current_available_tokens, last_refill_calculation_time, MIN_QUOTA_THRESHOLD_BEFORE_PAUSE, DEFAULT_LOW_QUOTA_PAUSE_SECONDS, TOKENS_PER_MINUTE_REFILL, REFILL_CALCULATION_INTERVAL_SECONDS, MAX_QUOTA_TOKENS)
+
+            # Time-based delay
             time_since_last_api_call_sellers = time.time() - LAST_API_CALL_TIMESTAMP
             if time_since_last_api_call_sellers < MIN_TIME_SINCE_LAST_CALL_SECONDS:
                 seller_wait_duration = MIN_TIME_SINCE_LAST_CALL_SECONDS - time_since_last_api_call_sellers
                 logger.info(f"Pre-emptive pause for seller batch: Waiting {seller_wait_duration:.2f}s.")
                 time.sleep(seller_wait_duration)
 
-            fetched_sellers_data = fetch_seller_data(api_key, seller_batch)
+            fetched_sellers_data, api_info, actual_seller_cost = fetch_seller_data(api_key, seller_batch)
             LAST_API_CALL_TIMESTAMP = time.time()
             
-            if fetched_sellers_data:
-                for seller_id, seller_data in fetched_sellers_data.items():
-                    if seller_data:
-                        rating_percentage = seller_data.get('currentRating', -1)
-                        rating_count = seller_data.get('currentRatingCount', 0)
-                        if rating_percentage != -1:
-                             seller_data_cache[seller_id] = {
-                                "rank": f"{rating_percentage}% ({rating_count} ratings)",
-                                "rating_percentage": rating_percentage,
-                                "rating_count": rating_count
-                            }
-                logger.info(f"Cached data for {len(fetched_sellers_data)} sellers from batch {i + 1}.")
+            batch_had_critical_error = api_info.get('error_status_code') and api_info.get('error_status_code') != 200
+
+            if not batch_had_critical_error:
+                current_available_tokens -= actual_seller_cost
+                logger.info(f"Tokens consumed for SELLER BATCH. Actual Cost: {actual_seller_cost}. Tokens remaining: {current_available_tokens:.2f}.")
+
+                if fetched_sellers_data:
+                    for seller_id, seller_data_item in fetched_sellers_data.items():
+                        if seller_data_item:
+                            # Store the raw seller data dictionary in the cache for later use
+                            seller_data_cache[seller_id] = seller_data_item
+                    logger.info(f"Cached raw data for {len(fetched_sellers_data)} sellers from batch {seller_batch_idx + 1}.")
+                else:
+                    logger.warning(f"Seller data batch {seller_batch_idx + 1} returned no data despite a successful API call.")
+
+                seller_batch_idx += 1
+                continue
             else:
-                logger.warning(f"Seller data batch {i + 1} returned no data.")
+                current_available_tokens -= actual_seller_cost
+                logger.warning(f"Seller batch fetch failed but Keepa reported {actual_seller_cost} tokens consumed. Deducting. Tokens remaining: {current_available_tokens:.2f}.")
+
+                if api_info.get('error_status_code') == 429:
+                    if seller_batch_retry_counts[seller_batch_idx] < max_retries_for_seller_batch:
+                        seller_batch_retry_counts[seller_batch_idx] += 1
+                        pause_duration_seconds = 600 # 10 minute pause for seller 429
+                        logger.error(f"Seller batch API call received 429 error. Attempt {seller_batch_retry_counts[seller_batch_idx] + 1}/{max_retries_for_seller_batch + 1}. Pausing for {pause_duration_seconds // 60} mins.")
+                        time.sleep(pause_duration_seconds)
+                    else:
+                        logger.error(f"Seller batch API call received 429 error on max retries. Skipping batch {seller_batch_idx + 1}.")
+                        seller_batch_idx += 1
+                else:
+                    logger.error(f"Seller batch API call failed with non-429 error code: {api_info.get('error_status_code')}. Skipping batch.")
+                    seller_batch_idx += 1
         
         logger.info("Finished pre-fetching all seller data.")
         # --- End of seller data pre-fetch ---
@@ -464,24 +502,24 @@ def run_keepa_script(api_key, logger, no_cache=False, output_dir='data', deal_li
             try:
                 # Safely parse required values from the row_data dictionary
                 def parse_price(value_str):
-                    if not value_str or (isinstance(value_str, str) and value_str in ['-', 'N/A']):
+                    if isinstance(value_str, (int, float)):
+                        return float(value_str)
+                    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']:
                         return 0.0
                     try:
-                        if isinstance(value_str, str):
-                            return float(value_str.replace('$', '').replace(',', ''))
-                        return float(value_str)
-                    except (ValueError, TypeError):
+                        return float(value_str.strip().replace('$', '').replace(',', ''))
+                    except ValueError:
                         logger.warning(f"Could not parse price value '{value_str}'. Defaulting to 0.0.")
                         return 0.0
 
                 def parse_percent(value_str):
-                    if not value_str or (isinstance(value_str, str) and value_str in ['-', 'N/A']):
+                    if isinstance(value_str, (int, float)):
+                        return float(value_str)
+                    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']:
                         return 0.0
                     try:
-                        if isinstance(value_str, str):
-                            return float(value_str.replace('%', ''))
-                        return float(value_str)
-                    except (ValueError, TypeError):
+                        return float(value_str.strip().replace('%', ''))
+                    except ValueError:
                         logger.warning(f"Could not parse percent value '{value_str}'. Defaulting to 0.0.")
                         return 0.0
 
