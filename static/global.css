@@ -388,15 +388,30 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
+    border-spacing: 0; /* Set spacing to 0 */
+    border-collapse: separate; /* Use separate model for manual control */
     font-family: 'Roboto', sans-serif;
 }
 
 #deals-table th, #deals-table td {
     padding: 8px;
     text-align: left;
-    border: 1px solid rgba(102, 153, 204, 0.4);
+    /* Set border on bottom and right of each cell */
+    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    border-right: 1px solid rgba(102, 153, 204, 0.4);
+    border-top: 0;
+    border-left: 0;
+}
+
+/* Add top border to all header cells */
+#deals-table th {
+    border-top: 1px solid rgba(102, 153, 204, 0.4);
+}
+
+/* Add left border to the first cell of each row */
+#deals-table tr > th:first-child,
+#deals-table tr > td:first-child {
+    border-left: 1px solid rgba(102, 153, 204, 0.4);
 }
 
 #deals-table th {
