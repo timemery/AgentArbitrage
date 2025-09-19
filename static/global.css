@@ -388,52 +388,89 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 100%;
-    border-collapse: collapse;
-    font-family: 'Roboto', sans-serif; /* New font */
+    border-collapse: collapse; /* Ensures single lines */
+    font-family: 'Roboto', sans-serif;
 }
+
 #deals-table th, #deals-table td {
-    border: 1px solid rgba(102, 153, 204, 0.5);
     padding: 8px;
     text-align: left;
+    /* A single, lighter border for all cells to remove 3D effect */
+    border: 1px solid rgba(102, 153, 204, 0.35);
 }
+
 #deals-table th {
     background-color: rgba(0, 0, 0, 0.2);
     color: white;
     cursor: pointer;
-    font-size: 16px; /* New font size for headers */
+    font-size: 14px;
     font-weight: 500;
 }
+
 #deals-table td {
-    font-size: 14px; /* New font size for data cells */
+    font-size: 14px;
+    font-weight: 300;
 }
+
+.deal-row:hover td {
+    background-color: rgba(102, 153, 204, 0.15);
+}
+
 .th-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .sort-arrows-container {
     display: flex;
     flex-direction: column;
-    margin-left: 8px;
+    margin-left: 12px;
 }
+
 .sort-arrow {
     cursor: pointer;
-    font-size: 12px;
-    line-height: 0.8;
-    transform: scaleX(1.5); /* Make arrows thicker */
+    font-size: 10px;
+    line-height: 1;
+    transform: scaleX(1.5);
+    /* Attempt to soften/round the arrow corners */
+    text-shadow: 0 0 1px currentColor;
 }
+
 .sort-arrow-up {
-    margin-bottom: 2px; /* Add space between arrows */
+    margin-bottom: 4px;
 }
+
 .sort-arrow.on {
     color: white;
 }
+
 .sort-arrow.off {
-    color: #6699CC;
+    /* Using a consistent light color for all arrows */
+    color: rgba(102, 153, 204, 0.8);
 }
-#deals-table th:hover {
-    background-color: rgba(0, 0, 0, 0.25);
+
+.buy-now-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.2em;
+    /* Using a consistent light color for all arrows */
+    color: rgba(102, 153, 204, 0.8);
+    /* Attempt to soften/round the arrow corners */
+    text-shadow: 0 0 1px rgba(102, 153, 204, 0.5);
 }
+
+.buy-now-link:hover {
+    text-decoration: none; /* Remove underline on hover */
+}
+
+.trust-suffix {
+    font-size: 70%;
+    vertical-align: baseline;
+    color: rgba(102, 153, 204, 0.8);
+}
+
 .pagination-controls {
     margin-top: 20px;
     text-align: center;
@@ -447,24 +484,6 @@ button:disabled {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.score-bar-container {
-    display: flex;
-    align-items: center;
-}
-.score-square {
-    width: 10px;
-    height: 10px;
-    margin-right: 1px;
-    box-sizing: border-box;
-    border: 1px solid transparent; /* Add a transparent border to all squares */
-}
-.score-square-filled {
-    background-color: #6699CC; /* A color that fits the theme */
-}
-.score-square-empty {
-    background-color: #e0e0e0; /* A light grey for empty */
-    border-color: #ccc; /* Only change the color for empty squares */
 }
 
 /* --- Video Background Styles --- */

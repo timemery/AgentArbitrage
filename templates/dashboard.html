@@ -55,6 +55,17 @@ document.addEventListener('DOMContentLoaded', function() {
         "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Buy_Now"
     ];
 
+    const headerTitleMap = {
+        "Min_Listing_Price": "Min. List $",
+        "Seller_Quality_Score": "Seller Trust",
+        "Sales_Rank___Current": "Sales Rank",
+        "Seasonality_Type": "Seasonality",
+        "Expected_Peak_Price": "Peak $",
+        "Expected_Trough_Price": "Trough $",
+        "Profit_Confidence": "Profit Reliability",
+        "Deal_found": "Found"
+    };
+
     function formatTimeAgo(dateString) {
         if (!dateString || dateString === '-') return '-';
         const date = new Date(dateString);
@@ -110,12 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let table = '<table><thead><tr>';
         columnsToShow.forEach(header => {
-            let headerText = header.replace(/_/g, ' ');
-            if (header === 'Expected_Peak_Price') {
-                headerText = 'Peak Price';
-            } else if (header === 'Expected_Trough_Price') {
-                headerText = 'Trough Price';
-            }
+            let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
 
             let arrowsHtml = '';
             let thTag = '<th>';
@@ -141,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cleanAsin.length === 9) {
                 cleanAsin = '0' + cleanAsin;
             }
-            table += `<tr data-asin="${cleanAsin}" style="cursor: pointer;">`;
+            table += `<tr class="deal-row" data-asin="${cleanAsin}" style="cursor: pointer;">`;
             columnsToShow.forEach(col => {
                 let value = deal[col] != null ? deal[col] : '-';
                 // Re-written formatting logic for robustness
@@ -149,12 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (col === 'Seller_Quality_Score') {
                     if (!isNaN(numValue)) {
                         const score = Math.round(numValue * 10);
-                        let squaresHtml = '';
-                        for (let i = 0; i < 10; i++) {
-                            const squareClass = i < score ? 'score-square-filled' : 'score-square-empty';
-                            squaresHtml += `<div class="score-square ${squareClass}"></div>`;
-                        }
-                        value = `<div class="score-bar-container"><span>[${score}]</span><div style="width: 5px;"></div>${squaresHtml}</div>`;
+                        value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
                     } else if (typeof value === 'string' && value) {
                         // Handle string values like "New Seller"
                         value = `<span>${value}</span>`;
@@ -174,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 if (col === 'Buy_Now') {
-                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" style="text-decoration: none; font-size: 1.5em; color: #6699CC;">►</a></td>`;
+                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
                 } else if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
@@ -193,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '</tbody></table>';
         tableContainer.innerHTML = table;
         
-        // Add event listeners for navigation, sorting, and tooltips
+        // Add event listeners for navigation and sorting
         addEventListeners();
     }
     
@@ -207,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.querySelectorAll('.sort-arrow').forEach(arrow => {
             arrow.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent the parent th click listener from firing if it ever gets re-added
+                e.stopPropagation();
                 const th = arrow.closest('th');
                 if (th) {
                     const sortBy = th.dataset.sort;
@@ -217,29 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-// updated manually below
-        document.querySelectorAll('.title-cell').forEach(cell => {
-            cell.addEventListener('mouseenter', e => {
-                const fullTitle = unescape(e.target.dataset.fullTitle);
-                if (fullTitle && fullTitle !== '-') {
-                    tooltip.innerHTML = fullTitle;
-                    tooltip.style.display = 'block';
-                }
-            });
-
-            cell.addEventListener('mousemove', e => {
-                if (tooltip.style.display === 'block') {
-                    // Position tooltip relative to the mouse cursor with a small offset
-                    tooltip.style.left = `${e.pageX + 15}px`;
-                    tooltip.style.top = `${e.pageY + 15}px`;
-                }
-            });
-
-            cell.addEventListener('mouseleave', () => {
-                tooltip.style.display = 'none';
-            });
-        });
-// updated manyally above
     }
 
     function renderPagination(pagination) {
