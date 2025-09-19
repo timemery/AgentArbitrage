@@ -194,7 +194,7 @@ def fetch_product(api_key, asin, no_cache, days=365, offers=50, rating=1, histor
         return {'stats': {'current': [-1] * 30}, 'asin': asin, 'error': True, 'status_code': None}, rate_limit_info
 
 @retry(stop_max_attempt_number=3, wait_fixed=15000) # Increased wait for batch calls
-def fetch_product_batch(api_key, asins_list, days=365, offers=50, rating=1, history=1):
+def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=1):
     global current_available_tokens # For logging current token state if 429 occurs
 
     if not asins_list:
