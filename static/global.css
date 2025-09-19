@@ -388,52 +388,100 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 100%;
-    border-collapse: collapse;
-    font-family: 'Roboto', sans-serif; /* New font */
+    border-spacing: 0; /* Set spacing to 0 */
+    border-collapse: separate; /* Use separate model for manual control */
+    font-family: 'Roboto', sans-serif;
 }
+
 #deals-table th, #deals-table td {
-    border: 1px solid rgba(102, 153, 204, 0.5);
     padding: 8px;
     text-align: left;
+    /* Set border on bottom and right of each cell */
+    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    border-right: 1px solid rgba(102, 153, 204, 0.4);
+    border-top: 0;
+    border-left: 0;
 }
+
+/* Add top border to all header cells */
+#deals-table th {
+    border-top: 1px solid rgba(102, 153, 204, 0.4);
+}
+
+/* Add left border to the first cell of each row */
+#deals-table tr > th:first-child,
+#deals-table tr > td:first-child {
+    border-left: 1px solid rgba(102, 153, 204, 0.4);
+}
+
 #deals-table th {
     background-color: rgba(0, 0, 0, 0.2);
     color: white;
     cursor: pointer;
-    font-size: 16px; /* New font size for headers */
+    font-size: 14px;
     font-weight: 500;
 }
+
 #deals-table td {
-    font-size: 14px; /* New font size for data cells */
+    font-size: 14px;
+    font-weight: 300;
 }
+
+.deal-row:hover td {
+    background-color: rgba(102, 153, 204, 0.15);
+}
+
 .th-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .sort-arrows-container {
     display: flex;
     flex-direction: column;
-    margin-left: 8px;
+    margin-left: 12px;
 }
+
 .sort-arrow {
     cursor: pointer;
-    font-size: 12px;
-    line-height: 0.8;
-    transform: scaleX(1.5); /* Make arrows thicker */
+    font-size: 8px; /* Final reduction to 85% of previous size */
+    line-height: 1;
+    transform: scaleX(1.5);
+    text-shadow: 0 0 1.5px currentColor;
 }
+
 .sort-arrow-up {
-    margin-bottom: 2px; /* Add space between arrows */
+    margin-bottom: 4px;
 }
+
 .sort-arrow.on {
     color: white;
 }
+
 .sort-arrow.off {
-    color: #6699CC;
+    color: rgba(102, 153, 204, 0.8); 
 }
-#deals-table th:hover {
-    background-color: rgba(0, 0, 0, 0.25);
+
+.buy-now-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.2em;
+    color: rgba(102, 153, 204, 0.8); 
+    text-shadow: 0 0 2px rgba(102, 153, 204, 0.5);
 }
+
+.buy-now-link:hover {
+    text-decoration: none;
+}
+
+.trust-suffix, .time-suffix {
+    font-size: 90%;
+    vertical-align: baseline;
+    color: rgba(102, 153, 204, 0.9);
+}
+
 .pagination-controls {
     margin-top: 20px;
     text-align: center;
@@ -447,24 +495,6 @@ button:disabled {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.score-bar-container {
-    display: flex;
-    align-items: center;
-}
-.score-square {
-    width: 10px;
-    height: 10px;
-    margin-right: 1px;
-    box-sizing: border-box;
-    border: 1px solid transparent; /* Add a transparent border to all squares */
-}
-.score-square-filled {
-    background-color: #6699CC; /* A color that fits the theme */
-}
-.score-square-empty {
-    background-color: #e0e0e0; /* A light grey for empty */
-    border-color: #ccc; /* Only change the color for empty squares */
 }
 
 /* --- Video Background Styles --- */
