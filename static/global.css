@@ -445,7 +445,7 @@ button:disabled {
 
 .sort-arrow {
     cursor: pointer;
-    font-size: 9px; /* Reduced size to match x-height of header */
+    font-size: 8px; /* Final reduction to 85% of previous size */
     line-height: 1;
     transform: scaleX(1.5);
     text-shadow: 0 0 1.5px currentColor;
