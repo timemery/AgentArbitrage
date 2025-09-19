@@ -129,4 +129,35 @@ When `offer.get('condition')` returned `None`, the script incorrectly evaluated 
 
 **Final Outcome:** The implementation was a success. The web application is now responsive, and the long-running Keepa scan executes reliably in the background. The immediate issue of server timeouts has been fully resolved. The test scan revealed, however, that the underlying script's API and token management logic is highly inefficient, leading to excessively long run times. This has been identified as the highest priority for the next development cycle.
 
+### **Dev Log Entry: 2025-09-18**
 
+**Task:** Refactor Token Management and Diagnose Extreme Script Slowness
+
+**Objective:** The initial goal was to refactor the token management logic from `keepa_deals/Keepa_Deals.py` into a new `TokenManager` class. This was intended to improve code quality and solve what was believed to be performance issues caused by inefficient code and hardcoded `time.sleep()` calls.
+
+**Problem Summary:** After successfully refactoring the code into a stable `TokenManager` class, user testing revealed that the script's performance was still extremely slow. A test run with a full 300-token balance took over 1.5 hours to process just 3 deals, consuming ~250 tokens in the process. This indicated a fundamental misunderstanding of the Keepa API's cost structure, not just an inefficient implementation.
+
+**Debugging Journey & Root Cause Analysis:**
+
+1. **Initial Hypothesis (Incorrect):** My initial analysis suggested the slowness was the new `TokenManager` correctly waiting for a *minor* token deficit to refill. This was proven wrong by the user's test data, which showed a massive token expenditure (~80 tokens per ASIN) that could not be explained by our existing token cost model.
+2. **Breakthrough via Historical Data (User-Provided):** The root cause was definitively identified when the user provided past email correspondence with Keepa API Support. This information revealed several critical, low-level API behaviors that were not previously documented in our project:
+   - **`tokensConsumed` Field is Authoritative:** The most critical discovery was that **every API response, including 429 errors, contains a `tokensConsumed` field in its JSON body.** This field provides the true cost of the request and is the only reliable way to track token usage. Our implementation was not using this on failed requests.
+   - **The `offers` Parameter Cost:** The primary driver of our high token usage was identified as the `&offers=N` parameter. The cost is **6 tokens per page of offers retrieved** (where one page contains up to 10 offers). Our setting of `&offers=20` was costing 12 tokens per ASIN, which, combined with other parameters, resulted in the extremely high per-ASIN cost.
+   - **Hidden Throughput Limit:** A second email revealed a previously unknown constraint: **a rate limit of approximately 5 ASINs per minute** for expensive requests (like those using the `offers` parameter). This explains why we were still seeing `429` errors even when our token balance should have been sufficient. The API was limiting us based on ASIN processing velocity, not just token cost.
+
+**Implemented Solution (Current State):**
+
+- The foundational refactoring was completed successfully. The `TokenManager` class exists and correctly handles basic rate-limiting and token refills. The main script is stable and no longer crashes.
+
+**Final Status & Next Steps:**
+
+The current implementation is **stable but not yet optimized** with this new, detailed knowledge. It does not yet use the `tokensConsumed` field from error responses, nor does it manage the "ASINs per minute" throughput limit.
+
+A new, detailed task has been defined to overhaul the `TokenManager` to incorporate these new rules. The next steps will be to:
+
+1. Modify the `TokenManager` to use `tokensConsumed` from all responses for accounting.
+2. Implement the ASIN-per-minute rate limiting.
+3. Reduce the `offers` parameter to a more cost-effective value, now that we understand its impact.
+4. Fully leverage batch requests to work efficiently within these new constraints.
+
+This will be the final step to creating a truly fast and compliant script.
