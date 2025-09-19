@@ -75,13 +75,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (seconds <= 60) return "Just Now";
         
         const minutes = Math.round(seconds / 60);
-        if (minutes < 60) return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+        if (minutes < 60) {
+            const unit = minutes === 1 ? "minute ago" : "minutes ago";
+            return `${minutes} <span class="time-suffix">${unit}</span>`;
+        }
         
         const hours = Math.round(minutes / 60);
-        if (hours < 24) return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+        if (hours < 24) {
+            const unit = hours === 1 ? "hour ago" : "hours ago";
+            return `${hours} <span class="time-suffix">${unit}</span>`;
+        }
         
         const days = Math.round(hours / 24);
-        return days === 1 ? "1 day ago" : `${days} days ago`;
+        const unit = days === 1 ? "day ago" : "days ago";
+        return `${days} <span class="time-suffix">${unit}</span>`;
     }
 
     function getFilters() {

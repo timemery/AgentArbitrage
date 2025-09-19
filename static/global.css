@@ -388,15 +388,15 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 100%;
-    border-collapse: collapse; /* Ensures single lines */
+    border-collapse: collapse;
+    border-spacing: 0;
     font-family: 'Roboto', sans-serif;
 }
 
 #deals-table th, #deals-table td {
     padding: 8px;
     text-align: left;
-    /* A single, lighter border for all cells to remove 3D effect */
-    border: 1px solid rgba(102, 153, 204, 0.35);
+    border: 1px solid rgba(102, 153, 204, 0.4);
 }
 
 #deals-table th {
@@ -430,11 +430,10 @@ button:disabled {
 
 .sort-arrow {
     cursor: pointer;
-    font-size: 10px;
+    font-size: 9px; /* Reduced size to match x-height of header */
     line-height: 1;
     transform: scaleX(1.5);
-    /* Attempt to soften/round the arrow corners */
-    text-shadow: 0 0 1px currentColor;
+    text-shadow: 0 0 1.5px currentColor;
 }
 
 .sort-arrow-up {
@@ -446,7 +445,6 @@ button:disabled {
 }
 
 .sort-arrow.off {
-    /* Using a consistent light color for all arrows */
     color: rgba(102, 153, 204, 0.8);
 }
 
@@ -455,20 +453,18 @@ button:disabled {
     text-align: center;
     text-decoration: none;
     font-size: 1.2em;
-    /* Using a consistent light color for all arrows */
     color: rgba(102, 153, 204, 0.8);
-    /* Attempt to soften/round the arrow corners */
-    text-shadow: 0 0 1px rgba(102, 153, 204, 0.5);
+    text-shadow: 0 0 2px rgba(102, 153, 204, 0.5);
 }
 
 .buy-now-link:hover {
-    text-decoration: none; /* Remove underline on hover */
+    text-decoration: none;
 }
 
-.trust-suffix {
-    font-size: 70%;
+.trust-suffix, .time-suffix {
+    font-size: 90%;
     vertical-align: baseline;
-    color: rgba(102, 153, 204, 0.8);
+    color: rgba(102, 153, 204, 0.9);
 }
 
 .pagination-controls {
