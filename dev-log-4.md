@@ -161,3 +161,44 @@ A new, detailed task has been defined to overhaul the `TokenManager` to incorpor
 4. Fully leverage batch requests to work efficiently within these new constraints.
 
 This will be the final step to creating a truly fast and compliant script.
+
+### **Dev Log Entry: September 19, 2025**
+
+**Task:** Implement Intelligent Batching & Diagnose Subsequent Performance Collapse
+
+**Objective:** To re-architect the Keepa API interaction to dramatically improve performance and reliability by handling API constraints intelligently. The secondary, emergency objective was to diagnose and fix a severe performance degradation that occurred immediately after the initial refactor.
+
+**Phase 1: The "Intelligent Batching" Refactor**
+
+- **Problem:** The previous script was slow and inefficient because it relied on estimated token costs and simple `time.sleep()` calls, which did not respect the true nature of the Keepa API's rate limits.
+
+- Key Discoveries from Documentation & History:
+
+  1. The `tokensConsumed` field returned in *every* API response (including errors) is the only authoritative source for token cost.
+  2. A hard, undocumented throughput limit of approximately 5 ASINs per minute exists for "expensive" API calls (those using the `offers` parameter).
+
+- Implementation Summary:
+
+  1. `token_manager.py` Overhaul:
+
+      
+
+     This file was completely rewritten to be the central brain for all rate-limiting.
+
+     - **Authoritative Accounting:** The logic was changed to abandon estimations. The manager now relies exclusively on being told the `tokensConsumed` value after each API call to update its internal token count.
+     - **ASIN Throughput Limiter:** A new mechanism using a `collections.deque` was implemented to track the timestamps of recently processed ASINs. Before granting permission for a new product batch call, the manager now checks if processing the new batch would violate the 5 ASINs/minute limit and waits if necessary.
+
+  2. **`keepa_api.py` Simplification:** All old, redundant quota management constants and functions were removed from this file to eliminate confusion and make the `TokenManager` the single source of truth.
+
+  3. **`Keepa_Deals.py` Integration:** The main script was updated to correctly interact with the new `TokenManager`, passing the number of ASINs for permission requests and reporting back the `tokensConsumed` after each call.
+
+**Phase 2: Diagnosing the Performance Collapse (The Hotfix)**
+
+- **Problem:** Immediately following the refactor, a test run on just 3 books took over 74 minutes to run, which was far worse than before the "fix".
+- Debugging & Root Cause Analysis:
+  - **The Critical Clue:** The user reported that the 74-minute run had consumed ~285 tokens. This was the key. A simple calculation showed that `285 tokens / 5 tokens/min refill rate = 57 minutes`. This confirmed the long runtime was not an arbitrary stall but was almost entirely caused by the `TokenManager` correctly waiting for a massive token deficit to refill.
+  - **The "Why":** The token cost was averaging an astronomical ~95 tokens per book. This was far too high for the parameters being used. The investigation then focused on the `offers` parameter in `fetch_product_batch`. As part of the refactor, I had changed this value to `10` to be cost-effective.
+  - **The "Aha!" Moment:** A final, careful re-reading of the Keepa API documentation for the `/product` endpoint revealed the critical mistake: the valid range for the `offers` parameter is explicitly stated as **"between 20 and 100"**.
+  - **Conclusion:** By providing an invalid value of `10`, the Keepa API was likely ignoring the parameter and defaulting to its maximum value (e.g., 100 offers), causing the massive, unexpected token cost.
+- **The Fix:** The solution was a one-line change in `keepa_deals/keepa_api.py`, modifying the default value of the `offers` parameter in the `fetch_product_batch` function from `10` to `20`.
+- **Outcome:** The user confirmed the fix was successful, with the script's runtime for the same 3 books dropping from 74 minutes to just 9 minutes. The system is now both fast and robust.
