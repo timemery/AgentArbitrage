@@ -843,6 +843,28 @@ def api_deals():
         deal_rows = cursor.execute(data_query, query_params).fetchall()
         deals_list = [dict(row) for row in deal_rows]
 
+        # --- Shorten Binding and Condition values ---
+        binding_map = {
+            "Audio CD": "CD", "Board book": "BB", "Bonded Leather": "BL", "Cards": "C",
+            "Flexibound": "FB", "Hardcover": "HC", "Imitation Leather": "IL",
+            "Leather Bound": "LB", "leather_bound": "LB", "Loose Leaf": "LL",
+            "loose_leaf": "LL", "Map": "M", "Mass Market Paperback": "MMP",
+            "mass_market": "MM", "Misc. Supplies": "MS", "MP3 CD": "CD",
+            "Paperback": "PB", "perfect": "P", "Perfect Paperback": "PPB",
+            "Plastic Comb": "PC", "Printed Access Code": "AC",
+            "School & Library Binding": "SLB", "spiral_bound": "SB", "Spiral-bound": "SB"
+        }
+        condition_map = {
+            "New": "N", "Used, like new": "U - LN", "Used, very good": "U - VG",
+            "Used, good": "U - G", "Used, acceptable": "U - A"
+        }
+
+        for deal in deals_list:
+            if 'Binding' in deal and deal['Binding'] in binding_map:
+                deal['Binding'] = binding_map[deal['Binding']]
+            if 'Condition' in deal and deal['Condition'] in condition_map:
+                deal['Condition'] = condition_map[deal['Condition']]
+
     except sqlite3.Error as e:
         app.logger.error(f"Database query error: {e}")
         return jsonify({"error": "Database query failed", "message": str(e)}), 500

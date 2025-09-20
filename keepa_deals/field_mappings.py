@@ -258,6 +258,7 @@ from .stable_deals import (
     # Price Now,
     # Price Now Source,
     deal_found,                     # Deal found
+    get_condition,                  # Condition
     # AMZ link,
     # Keepa Link,
     # Title,
@@ -504,6 +505,7 @@ FUNCTION_LIST = [
     author,                         # Author
     None,                           # Contributors
     binding,                        # Binding
+    get_condition,                  # Condition
     None,                           # Number of Items
     None,                           # Number of Pages
     get_publication_date,           # Publication Date
