@@ -245,4 +245,54 @@ def last_price_change(deal_object, logger_param=None, product_data=None): # Rena
         return {'last price change': '-'}
 # Last price change ends
 
+# Condition starts
+def get_condition(deal_object, logger_param=None, product_data=None):
+    current_logger = logger_param if logger_param else logger
+    asin = deal_object.get('asin', 'Unknown ASIN')
+
+    # The 'value' in the deal object from the /deal endpoint is the price of the deal in cents.
+    deal_price = deal_object.get('value')
+    if deal_price is None:
+        current_logger.warning(f"ASIN: {asin} - 'value' (deal price) is missing from deal_object. Cannot determine condition.")
+        return {'Condition': '-'}
+
+    # The product_data from the /product call is needed to get the list of offers
+    if not product_data or 'offers' not in product_data:
+        current_logger.warning(f"ASIN: {asin} - Product data or offers list is missing. Cannot determine condition.")
+        return {'Condition': '-'}
+
+    offers = product_data.get('offers', [])
+
+    # Mapping from Keepa condition codes to human-readable strings
+    condition_mapping = {
+        1: "New",
+        2: "Used, like new",
+        3: "Used, very good",
+        4: "Used, good",
+        5: "Used, acceptable",
+        6: "Refurbished",
+        7: "Collectible, like new",
+        8: "Collectible, very good",
+        9: "Collectible, good",
+        10: "Collectible, acceptable",
+    }
+
+    # Find the offer that matches the price of the deal
+    for offer in offers:
+        # The price in the offer object is also in cents.
+        if offer.get('price') == deal_price:
+            condition_code = offer.get('condition')
+            if condition_code in condition_mapping:
+                condition_str = condition_mapping[condition_code]
+                current_logger.info(f"ASIN: {asin} - Matched deal price {deal_price} to offer with condition: {condition_str} ({condition_code})")
+                return {'Condition': condition_str}
+            else:
+                current_logger.warning(f"ASIN: {asin} - Found matching offer for price {deal_price} but condition code '{condition_code}' is unknown.")
+                # Return the unknown code as a string, so it can be seen in the dashboard
+                return {'Condition': str(condition_code)}
+
+    current_logger.warning(f"ASIN: {asin} - No offer found matching the deal price of {deal_price} cents. Could not determine condition.")
+    return {'Condition': '-'}
+# Condition ends
+
 #### END of stable_deals.py ####
