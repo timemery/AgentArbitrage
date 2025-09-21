@@ -348,7 +348,7 @@ def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limi
                     if func:
                         try:
                             # Pass api_key to functions that need it
-                            if func.__name__ in ['last_update', 'last_price_change', 'get_condition']:
+                            if func.__name__ in ['last_update', 'last_price_change']:
                                 result = func(original_deal_obj, logger, product)
                             elif func.__name__ == 'deal_found':
                                 result = func(original_deal_obj, logger)
