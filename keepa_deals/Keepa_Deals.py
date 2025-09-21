@@ -348,11 +348,15 @@ def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limi
                     if func:
                         try:
                             # Pass api_key to functions that need it
-                            if func.__name__ in ['last_update', 'last_price_change', 'get_condition']:
+                            # Update below
+                            if func.__name__ in ['last_update', 'last_price_change']:
                                 result = func(original_deal_obj, logger, product)
                             elif func.__name__ == 'deal_found':
+                            # Update above
                                 result = func(original_deal_obj, logger)
+                            #Update below Jules: "Please ensure the elif block in this file (around line 353) looks like this (with 'get_condition' removed from the list):"  
                             elif func.__name__ in ['get_best_price', 'get_seller_rank', 'get_seller_quality_score', 'get_seller_id']:
+                            # Update above    
                                 result = func(product, api_key=api_key)
                             else:
                                 result = func(product)

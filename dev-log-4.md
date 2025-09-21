@@ -202,3 +202,19 @@ This will be the final step to creating a truly fast and compliant script.
   - **Conclusion:** By providing an invalid value of `10`, the Keepa API was likely ignoring the parameter and defaulting to its maximum value (e.g., 100 offers), causing the massive, unexpected token cost.
 - **The Fix:** The solution was a one-line change in `keepa_deals/keepa_api.py`, modifying the default value of the `offers` parameter in the `fetch_product_batch` function from `10` to `20`.
 - **Outcome:** The user confirmed the fix was successful, with the script's runtime for the same 3 books dropping from 74 minutes to just 9 minutes. The system is now both fast and robust.
+
+
+Fix: Correctly determine and display the offer condition
+
+This commit resolves a persistent bug where the "Condition" column in the Deal Dashboard was appearing empty.
+
+The root cause of the issue was twofold:
+1. The `get_condition` function was attempting to link a "deal" from the Keepa `/deal` endpoint to a live offer by matching a price. This was unreliable because the deal object often lacked the necessary price field (`value`) or a valid `priceType`, leading to errors and crashes.
+2. The calling convention in `Keepa_Deals.py` was not correctly aligned with the function's parameters, causing `TypeError` exceptions.
+
+The fix involves a complete refactor of the `get_condition` function in `stable_deals.py`:
+- The function no longer relies on the unreliable `deal_object`.
+- It now directly finds the lowest-priced live offer from the `product_data['offers']` list and returns the condition of that offer. This provides a more robust and contextually relevant piece of information.
+
+The call to `get_condition` in `Keepa_Deals.py` has been updated to match the new, simpler function signature, resolving the `TypeError`.
+

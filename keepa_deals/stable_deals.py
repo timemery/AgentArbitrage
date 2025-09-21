@@ -245,54 +245,61 @@ def last_price_change(deal_object, logger_param=None, product_data=None): # Rena
         return {'last price change': '-'}
 # Last price change ends
 
+# Jules: "Please ensure the get_condition function in this file matches the block I sent in my last message. For clarity, here it is again. This is the correct and final version:"
 # Condition starts
-def get_condition(deal_object, logger_param=None, product_data=None):
+def get_condition(product_data, logger_param=None):
     current_logger = logger_param if logger_param else logger
-    asin = deal_object.get('asin', 'Unknown ASIN')
+    asin = product_data.get('asin', 'Unknown ASIN')
 
-    # The 'value' in the deal object from the /deal endpoint is the price of the deal in cents.
-    deal_price = deal_object.get('value')
-    if deal_price is None:
-        current_logger.warning(f"ASIN: {asin} - 'value' (deal price) is missing from deal_object. Cannot determine condition.")
+    if not product_data or not isinstance(product_data.get('offers'), list) or not product_data['offers']:
+        current_logger.warning(f"ASIN: {asin} - Product data has no 'offers' list. Cannot determine condition.")
         return {'Condition': '-'}
 
-    # The product_data from the /product call is needed to get the list of offers
-    if not product_data or 'offers' not in product_data:
-        current_logger.warning(f"ASIN: {asin} - Product data or offers list is missing. Cannot determine condition.")
-        return {'Condition': '-'}
+    offers = product_data['offers']
 
-    offers = product_data.get('offers', [])
-
-    # Mapping from Keepa condition codes to human-readable strings
     condition_mapping = {
-        1: "New",
-        2: "Used, like new",
-        3: "Used, very good",
-        4: "Used, good",
-        5: "Used, acceptable",
-        6: "Refurbished",
-        7: "Collectible, like new",
-        8: "Collectible, very good",
-        9: "Collectible, good",
-        10: "Collectible, acceptable",
+        1: "New", 2: "Used, like new", 3: "Used, very good", 4: "Used, good", 5: "Used, acceptable",
+        6: "Refurbished", 7: "Collectible, like new", 8: "Collectible, very good", 9: "Collectible, good", 10: "Collectible, acceptable",
     }
 
-    # Find the offer that matches the price of the deal
-    for offer in offers:
-        # The price in the offer object is also in cents.
-        if offer.get('price') == deal_price:
-            condition_code = offer.get('condition')
-            if condition_code in condition_mapping:
-                condition_str = condition_mapping[condition_code]
-                current_logger.info(f"ASIN: {asin} - Matched deal price {deal_price} to offer with condition: {condition_str} ({condition_code})")
-                return {'Condition': condition_str}
-            else:
-                current_logger.warning(f"ASIN: {asin} - Found matching offer for price {deal_price} but condition code '{condition_code}' is unknown.")
-                # Return the unknown code as a string, so it can be seen in the dashboard
-                return {'Condition': str(condition_code)}
+    lowest_price = float('inf')
+    best_condition_code = None
 
-    current_logger.warning(f"ASIN: {asin} - No offer found matching the deal price of {deal_price} cents. Could not determine condition.")
-    return {'Condition': '-'}
+    for offer in offers:
+        offer_history = offer.get('offerCSV', [])
+        if len(offer_history) < 2:
+            continue
+
+        try:
+            price = int(offer_history[-2])
+            shipping = int(offer_history[-1])
+            if shipping == -1: shipping = 0
+            total_price = price + shipping
+
+            if total_price < lowest_price:
+                lowest_price = total_price
+                best_condition_code = offer.get('condition')
+
+        except (ValueError, IndexError) as e:
+            current_logger.debug(f"ASIN: {asin} - Could not parse price from offerCSV for one offer. Error: {e}. OfferCSV: {offer_history}")
+            continue
+
+    if best_condition_code is not None:
+        if best_condition_code in condition_mapping:
+            condition_str = condition_mapping[best_condition_code]
+            current_logger.info(f"ASIN: {asin} - Found lowest priced offer at ${lowest_price/100:.2f} with condition: {condition_str} ({best_condition_code})")
+            
+            if "Used, " in condition_str:
+                condition_str = condition_str.replace("Used, ", "")
+            elif "Collectible, " in condition_str:
+                condition_str = condition_str.replace("Collectible, ", "C-")
+            return {'Condition': condition_str}
+        else:
+            current_logger.warning(f"ASIN: {asin} - Found lowest priced offer but condition code '{best_condition_code}' is unknown.")
+            return {'Condition': f"Unknown ({best_condition_code})"}
+    else:
+        current_logger.warning(f"ASIN: {asin} - No valid offers found to determine condition.")
+        return {'Condition': '-'}
 # Condition ends
 
 #### END of stable_deals.py ####
