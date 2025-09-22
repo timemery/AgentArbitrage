@@ -729,13 +729,12 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
         print(f"KEEPA_API_KEY loaded: {'*' * len(KEEPA_API_KEY)}")
         app.logger.info("Starting Keepa deals fetching command...")
         
-        run_keepa_script(
+        run_keepa_script.delay(
             api_key=KEEPA_API_KEY,
-            logger=app.logger,
             no_cache=no_cache,
             output_dir=output_dir,
             deal_limit=limit,
-            status_update_callback=_update_cli_status
+            status_update_callback=None
         )
         
         print("run_keepa_script finished successfully.")
