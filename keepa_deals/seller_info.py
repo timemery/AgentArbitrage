@@ -32,7 +32,7 @@ def _get_best_offer_analysis(product, api_key=None):
             
     if not valid_stat_prices:
         logger.warning(f"ASIN {asin}: No valid current prices found in stats.current. Cannot determine best price.")
-        return {'Best Price': '-', 'Seller ID': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
+        return {'Best Price': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
 
     # Now, find the best offer by iterating through the live offers and validating their price.
     best_offer_details = {
@@ -74,6 +74,7 @@ def _get_best_offer_analysis(product, api_key=None):
         return {
             'Best Price': f"${min_price_cents / 100:.2f}",
             'Seller ID': 'N/A (No matching offer)',
+            'Seller': 'N/A (No matching offer)',
             'Seller Rank': '-',
             'Seller_Quality_Score': '-'
         }
@@ -83,6 +84,7 @@ def _get_best_offer_analysis(product, api_key=None):
     final_analysis = {
         'Best Price': f"${best_offer_details['price'] / 100:.2f}",
         'Seller ID': best_seller_id,
+        'Seller': '-',
         'Seller Rank': '-',
         'Seller_Quality_Score': '-'
     }
@@ -97,6 +99,9 @@ def _get_best_offer_analysis(product, api_key=None):
     seller_data = seller_data_cache.get(best_seller_id)
     
     if seller_data:
+        # Extract seller name
+        final_analysis['Seller'] = seller_data.get('sellerName', 'N/A')
+
         # The cache should contain the raw seller data dictionary.
         # The previous logic was flawed. We directly use the 'seller_data' object.
         rating_count = seller_data.get('currentRatingCount', 0)
