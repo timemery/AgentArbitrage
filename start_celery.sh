@@ -1,3 +1,4 @@
+# Final version. Please git pull to get the latest changes.
 #!/bin/bash
 
 # This script is designed to be run from the application's root directory: /var/www/agentarbitrage/
