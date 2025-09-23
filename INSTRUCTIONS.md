@@ -1,13 +1,14 @@
-# HOW TO FIX THE 'PERMISSION DENIED' ERROR
+# HOW TO FIX THE 500 INTERNAL SERVER ERROR
 
-You are seeing the `Permission denied` error because the `start_celery.sh` script is not marked as "executable" on your server.
+I have found and fixed the cause of the 500 Internal Server Error. The Apache configuration was pointing to the wrong file.
 
-**To fix this permanently, please run this exact command in your server's terminal:**
+**Please follow these two steps exactly:**
 
-```bash
-chmod +x /var/www/agentarbitrage/start_celery.sh
-```
+1.  **Pull the latest changes from the git repository.** This will update the `agentarbitrage.conf` file with the fix.
 
-After you run this one command, you will be able to run `./start_celery.sh` without any more permission errors.
+2.  **Restart the Apache server** for the change to take effect. Run this command:
+    ```bash
+    sudo systemctl restart apache2
+    ```
 
-My apologies for this entire frustrating process. The tools I have to set this permission automatically have failed. This manual command is the final step.
+After restarting Apache, the website should load correctly. You can then proceed with testing the Celery worker by running `./start_celery.sh`.
