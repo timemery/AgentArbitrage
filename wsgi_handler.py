@@ -4,7 +4,7 @@ import json
 import subprocess
 from datetime import datetime
 from flask import Flask, jsonify, request, redirect, url_for, render_template, session
-import traceback
+from functools import wraps
 
 # Add the project directory to the Python path
 sys.path.insert(0, os.path.dirname(__file__))
@@ -13,20 +13,32 @@ sys.path.insert(0, os.path.dirname(__file__))
 from keepa_deals.Keepa_Deals import run_keepa_script
 
 app = Flask(__name__)
-# A secret key is required for Flask sessions to work.
-app.secret_key = os.urandom(24)
+app.secret_key = os.urandom(24) # Required for sessions
 STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_status.json')
 
-@app.before_request
-def make_session_permanent():
-    """
-    [DEBUG] This is a debugging step to fix a 500 error.
-    It forces a 'logged_in' session for every request, as the templates
-    likely require it to render.
-    """
-    session.permanent = True
-    if 'logged_in' not in session:
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' not in session:
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # In a real app, you would check credentials here.
+        # For this restoration, we just log the user in.
         session['logged_in'] = True
+        session.permanent = True
+        return redirect(url_for('index'))
+    return """
+        <title>Login</title>
+        <h1>Please log in to continue</h1>
+        <form method="post">
+            <input type=submit value=Login>
+        </form>
+    """
 
 def is_celery_worker_running():
     """
@@ -37,18 +49,28 @@ def is_celery_worker_running():
     return True
 
 @app.route('/')
+@login_required
 def index():
     """
-    This route renders the main dashboard UI, fixing the "Not Found" error.
+    This route renders the main dashboard UI.
     """
-    return render_template('dashboard.html')
+    return redirect(url_for('dashboard'))
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
     """
     Explicit route for the dashboard.
     """
     return render_template('dashboard.html')
+
+@app.route('/guided_learning')
+@login_required
+def guided_learning():
+    """
+    This placeholder route fixes the BuildError in the layout template.
+    """
+    return render_template('guided_learning.html')
 
 @app.route('/data_sourcing', methods=['POST'])
 def start_scan_route():
@@ -117,20 +139,3 @@ def scan_status_route():
     except Exception as e:
         return jsonify({"status": "error", "message": f"Error reading status file: {str(e)}"}), 500
 
-@app.errorhandler(Exception)
-def handle_exception(e):
-    """
-    [DEBUG] This is a global error handler to catch all exceptions.
-    It will display the full traceback in the browser, allowing us to see
-    the root cause of the 500 error without needing to access system logs.
-    """
-    # Pass through HTTPExceptions
-    if isinstance(e,
-     (NotImplementedError,)):
-        return e
-
-    # Get the full traceback
-    tb_str = traceback.format_exc()
-
-    # Return the traceback as a pre-formatted string
-    return f"<pre><h1>500 Internal Server Error</h1><p>An unexpected error occurred:</p>{tb_str}</pre>", 500

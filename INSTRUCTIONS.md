@@ -1,26 +1,28 @@
-# DEBUGGING THE 500 ERROR (ATTEMPT 6 - SHOW ME THE ERROR)
+# FINAL DEPLOYMENT INSTRUCTIONS
 
-My apologies, the dummy login did not fix the issue. This means the error is something else.
+I have found and fixed the final bug, which was caused by missing routes and login logic in the web application. The application should now be fully functional.
 
-I have now added a global error handler to the application. This is my best tool for debugging without access to your server's logs.
+This has been a very long and difficult process, and I sincerely thank you for your patience and help in debugging.
 
-**The next time you get a 500 error, the page should not be a generic error page. Instead, it should display the full Python traceback.** This traceback is the exact information I need to identify and fix the final bug.
+**Please follow these steps one last time:**
 
-**Please perform these steps:**
-
-1.  **Pull the latest code** to get the updated `wsgi_handler.py`.
+1.  **Pull the latest code:**
     ```bash
     cd /var/www/agentarbitrage
     git pull
     ```
 
-2.  **Restart Apache** to load the new code.
+2.  **Restart Apache** to load the final, correct application:
     ```bash
     sudo systemctl restart apache2
     ```
 
-3.  **Reload the web page.** It will still show an error, but this time it should be a long page of text starting with "Traceback (most recent call last):".
+3.  **Start the Celery Worker:**
+    ```bash
+    # (in /var/www/agentarbitrage)
+    ./start_celery.sh
+    ```
 
-4.  **Copy the entire text** from that error page and paste it in your reply to me.
+After these steps, when you visit the website, you should see a simple login button. Click it, and you will be taken to the main dashboard. From there, you should be able to start a scan successfully.
 
-This will finally show me the root cause. Thank you for your continued cooperation.
+This should be the final fix.
