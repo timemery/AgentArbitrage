@@ -13,7 +13,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 from keepa_deals.Keepa_Deals import run_keepa_script
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24) # Required for sessions
+# The secret key must be a static value loaded from the environment.
+# Using os.urandom() creates a new key on every app restart, which breaks sessions.
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
+if not app.secret_key:
+    raise ValueError("No FLASK_SECRET_KEY set for Flask application. Please set it in your .env file.")
 STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_status.json')
 
 def login_required(f):
