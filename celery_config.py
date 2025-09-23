@@ -1,18 +1,16 @@
-import sys
-print("Loading celery_config.py")
-sys.path.insert(0, '/app')
-
 from celery import Celery
 
 celery = Celery(
     'agentarbitrage',
     broker='redis://localhost:6379/0',
-    backend='redis://localhost:6379/0',
-    include=['keepa_deals.Keepa_Deals']
+    backend='redis://localhost:6379/0'
 )
 
+# Optional configuration
 celery.conf.update(
-    worker_log_file='celery_worker.log',
-    worker_log_level='DEBUG',
+    task_serializer='json',
+    accept_content=['json'],
+    result_serializer='json',
+    timezone='UTC',
+    enable_utc=True,
 )
-print("celery_config.py loaded successfully")
