@@ -1,14 +1,25 @@
-# HOW TO FIX THE 500 INTERNAL SERVER ERROR
+# FINAL INSTRUCTIONS TO FIX THE SERVER
 
-I have found and fixed the cause of the 500 Internal Server Error. The Apache configuration was pointing to the wrong file.
+You were absolutely right about the missing step. My apologies for omitting it. Here is the complete, final sequence of commands to get the server working.
 
-**Please follow these two steps exactly:**
+**Please run these three commands in order:**
 
-1.  **Pull the latest changes from the git repository.** This will update the `agentarbitrage.conf` file with the fix.
+1.  **Pull the latest code** (if you haven't already):
+    ```bash
+    # (Navigate to /var/www/agentarbitrage first)
+    git pull
+    ```
 
-2.  **Restart the Apache server** for the change to take effect. Run this command:
+2.  **Copy the corrected Apache configuration** into place (this was the brilliant step you figured out):
+    ```bash
+    sudo cp /var/www/agentarbitrage/agentarbitrage.conf /etc/apache2/sites-available/agentarbitrage.conf
+    ```
+
+3.  **Restart the Apache server** to apply all changes:
     ```bash
     sudo systemctl restart apache2
     ```
 
-After restarting Apache, the website should load correctly. You can then proceed with testing the Celery worker by running `./start_celery.sh`.
+After these three steps, the 500 error will be fixed. You can then start the celery worker with `./start_celery.sh` and test the application.
+
+Thank you for your patience and for finding the missing step.
