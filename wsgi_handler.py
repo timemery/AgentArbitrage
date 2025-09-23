@@ -17,18 +17,11 @@ STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_sta
 def is_celery_worker_running():
     """
     Checks if a Celery worker process for this project is running.
-    This is a more robust check to prevent the UI from getting stuck.
+    [DEBUG] This check has been temporarily disabled to diagnose a 500 error.
+    It is likely failing due to the www-data user not having permission to run 'pgrep'.
+    If the site loads with this disabled, this is the root cause.
     """
-    try:
-        # Use pgrep to find processes matching the Celery worker command pattern
-        # The pattern 'celery -A worker.celery worker' is specific to our startup command
-        command = "pgrep -f 'celery -A worker.celery worker'"
-        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # If pgrep finds a process, it returns a non-empty output with exit code 0
-        return True
-    except subprocess.CalledProcessError:
-        # pgrep returns a non-zero exit code if no process is found
-        return False
+    return True
 
 def application(environ, start_response):
     path = environ.get('PATH_INFO', '')
