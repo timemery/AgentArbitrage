@@ -1,26 +1,3 @@
-# EXPLANATION OF ARCHITECTURAL CHANGE:
-#
-# This file appears drastically shorter than its previous version, which is a
-# valid cause for concern. This change is deliberate and represents a critical
-# improvement to the application's architecture.
-#
-# PREVIOUSLY:
-# The old ~900-line file was a single, monolithic Flask application. It contained
-# all UI routes (/dashboard, /login), data processing logic, and API endpoints.
-#
-# NEW ARCHITECTURE (Separation of Concerns):
-# The system is now split into two parts for robustness and maintainability:
-#   1. A main Flask web application (for the UI, which still exists elsewhere).
-#   2. A background Celery worker for heavy-duty scanning.
-#
-# THIS FILE'S NEW ROLE:
-# This wsgi_handler.py is now just a lightweight "gatekeeper". Its only job is to
-# receive requests at `/data_sourcing` and `/scan-status` and communicate with the
-# Celery worker. It is no longer responsible for the UI.
-#
-# The UI code has NOT been deleted; it has been separated from this file. This
-# change makes the system cleaner and less prone to errors.
-
 # /var/www/agentarbitrage/wsgi_handler.py
 import os
 import sys
