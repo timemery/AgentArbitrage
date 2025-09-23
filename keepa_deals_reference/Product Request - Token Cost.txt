@@ -1,0 +1,198 @@
+Product Request - Token Cost
+Token Cost: 1 per product
+
+Retrieves the product object for the specified ASIN and domain. If our last update is older than ~1 hour, it will be automatically refreshed before being delivered to ensure near real-time pricing data.
+
+You can request products via either their ASIN (preferred) or UPC and EAN codes. You cannot use both parameters, asin and code, in the same request. If you use the code parameter and the provided code is not in our database, no product will be returned. In this case, you can use the product search instead to look up the code on Amazon. Keepa cannot track Amazon Fresh.
+
+Query
+/product?key=<yourAccessKey>&domain=<domainId>&asin=<ASIN> [or] &code=<productCode>
+Parameters
+<yourAccessKey>: Your private API key.
+
+<domainId>: Integer value for the Amazon locale you want to access. Valid values:
+
+Domain ID	Locale
+1	com
+2	co.uk
+3	de
+4	fr
+5	co.jp
+6	ca
+8	it
+9	es
+10	in
+11	com.mx
+12	com.br
+<ASIN>: The ASIN of the product you want to request. For batch requests, a comma-separated list of ASINs (up to 100).
+
+<productCode>: The product code of the product you want to request. We currently allow UPC, EAN, and ISBN-13 codes. For batch requests, a comma-separated list of codes (up to 100). Multiple ASINs can have the same product code, so requesting a product code can return multiple products. Use the code-limit parameter to limit the number of returned products per code.
+
+Optional Parameters
+stats: Include a stats field with current prices and statistics.
+update: Force a refresh if the product’s last update is older than specified hours.
+history: Exclude historical data fields to reduce response size and processing time.
+days: Limit historical data to the recent X days.
+code-limit: Limit the number of products returned per code when using the code parameter.
+offers: Retrieve up-to-date marketplace offers; incurs additional token cost.
+only-live-offers: Include only live marketplace offers; reduces response size.
+rental: Collect rental prices when available.
+videos: Include video metadata.
+aplus: Include A+ content.
+rating: Include existing rating and review count history; may consume an extra token.
+buybox: Include Buy Box related data; incurs additional token cost.
+stock: Include stock information in offers; incurs additional token cost.
+historical-variations: Include historical and out of stock variations; incurs additional token cost.
+stats
+Token Cost: No extra token cost
+
+If specified, the product object will include a stats field with quick access to current prices, min/max prices, and weighted mean values. If the offers parameter is used, it will also provide Buy Box information.
+
+You can provide the stats parameter in two forms:
+
+Last x days (positive integer value): Calculates the stats for the last x days.
+Interval: Specify a date range for the stats calculation using two timestamps (Unix epoch time in milliseconds) or two date strings (ISO8601 format, UTC).
+Note: If there is insufficient historical data for a price type, the actual interval of the weighted mean calculation may be shorter than specified. All data provided via the stats field are calculated using the product object’s csv history field; no new data is provided through this parameter.
+
+Examples:
+
+&stats=180 (last 180 days)
+&stats=2015-10-20,2015-12-24 (from Oct 20 to Dec 24, 2015)
+&stats=2011-01-01,2025-01-01 (entire history)
+&stats=1445299200000,1450915200000 (Unix epoch time in milliseconds, from Oct 20 to Dec 24, 2015)
+update
+Additional Token Cost: 0 or 1 per product
+
+Positive integer value. If the product’s last update is older than update hours, force a refresh. The default value used by the API is 1 hour. This parameter also works in conjunction with the offers parameter.
+
+Using this parameter, you can achieve the following:
+
+Speed up requests: If up-to-date data is not required, use a higher value than 1 hour. No extra token cost.
+Always retrieve live data: Use the value 0. If our last update was less than 1 hour ago, this consumes 1 extra token.
+No update at all: Use the value -1. If the product is missing in our database and the asin parameter was used, the product request will consume 0 tokens, and you will not receive any product data. Use this if you are only interested in products we have historical data for to save tokens.
+Reduced offers token usage: When combined with the offers parameter and our last offers data update is newer than update hours, the offers token usage will be reduced to 5 tokens, and no update will take place, regardless of the number of offer pages requested.
+Example:
+
+&update=48 (only trigger an update if the product’s last update is older than 48 hours)
+history
+Token Cost: No extra token cost
+
+Boolean value (0 = false, 1 = true). If specified and set to 0, the product object will not include the csv, salesRanks, monthlySoldHistory, parentAsinHistory, couponHistory, buyBoxSellerIdHistory, buyBoxUsedHistory and salesRankReferenceHistory fields. If you do not need them, use this to have them removed from the response. This will improve processing time and considerably decrease the size of the response.
+
+Example:
+
+&history=0
+days
+Token Cost: No extra token cost
+
+Any positive integer value. If specified with a positive value X, the product object will limit all historical data to the recent X days. This includes the csv, buyBoxSellerIdHistory, salesRankReferenceHistory, salesRanks, offers, and offers.offerCSV fields. If you do not need old historical data, use this to reduce the response size and improve processing time. The parameter does not use calendar days; so 1 day equals the last 24 hours.
+
+Example:
+
+&days=90
+code-limit
+Token Cost: No extra token cost
+
+Any positive integer value. Sets a constraint on the maximum number of products returned for a given code when utilizing the code parameter. Use this parameter to limit the volume of product results associated with specific product codes.
+
+Example:
+
+&code-limit=10
+offers
+Token Cost: 6 for every found offer page (contains up to 10 offers) per product
+
+Positive integer value between 20 and 100. Determines the number of up-to-date marketplace offers to retrieve. The additional token cost is calculated based on the number of found offers, not the requested amount (as a product can have fewer offers than requested). When using the offers parameter, the basic 1 token cost per ASIN of the product request does not apply.
+
+If the offers parameter is used, the product object will contain additional data:
+
+Marketplace offer objects
+Information on the New and Used Buy Box, including a history of Buy Box winners
+Price history data for FBA (Fulfillment by Amazon), FBM (Fulfillment by Merchant), Warehouse Deals, Prime exclusive, and all Used and Collectible sub-conditions, including shipping and handling costs
+Rating and review count history
+All offers-related data is updated independently, irregularly, and not as often as all other product data. Keep this in mind when evaluating the additional historical data.
+
+Notes:
+
+The returned product may have more offers than specified because we keep a history of offers. The number specified in this parameter determines how many offers we attempt to retrieve/update from Amazon. Each offer object has a lastSeen field that can be used to filter up-to-date offers.
+Batched requests are processed in parallel.
+All offers-related data is freshly updated and up-to-date.
+The request will require more time to complete, ranging from 2 to 20 seconds with an average of 5 seconds. Use batch requests or parallel requests to increase throughput when required.
+If we fail to retrieve/refresh the offers data, the request will consume 1 token. The request will return successfully and will contain, if available, all historical offers (unless only-live-offers is used) and product data. You can retry the request after a few minutes.
+Limitations:
+
+Not available for digital products, movie rentals, Amazon Fresh, and Amazon Pantry.
+Example:
+
+&offers=40 (Requested up to 40 offers, but the product only has 18 offers.)
+
+Total token cost for the request: 6 per found offer page = 12 tokens.
+only-live-offers
+Token Cost: No extra token cost
+
+Boolean value (0 = false, 1 = true). If specified and set to 1, the product object will only include live marketplace offers (when used in combination with the offers parameter). If you do not need historical offers, use this to reduce the response size and improve processing time.
+
+Example:
+
+&only-live-offers=1
+rental
+Token Cost: No extra token cost
+
+Boolean value (0 = false, 1 = true). Can only be used in conjunction with the offers parameter. If specified and set to 1, the rental price will be collected when available.
+
+Note: Rental prices are only available for Amazon US and only for books (not for eBooks).
+
+videos
+Token Cost: No extra token cost
+
+Boolean value (0 = false, 1 = true). If specified and set to 1, the videos metadata will be provided when available. Using this parameter does not trigger an update to the videos data; it only gives access to our existing data if available. If you need up-to-date data, you have to use the offers parameter.
+
+aplus
+Token Cost: No extra token cost
+
+Boolean value (0 = false, 1 = true). If specified and set to 1, the A+ content will be provided when available. Using this parameter does not trigger an update to the A+ content; it only gives access to our existing data if available. If you need up-to-date data, you have to use the offers parameter.
+
+rating
+Token Cost: Up to 1 extra token per product
+
+Boolean value (0 = false, 1 = true). If specified and set to 1, the product object will include our existing RATING and COUNT_REVIEWS history in the csv field, regardless of whether the offers parameter is used. The extra token will only be consumed if our last update to both data points is less than 14 days ago.
+
+Using this parameter does not trigger an update to those two fields; it only gives access to our existing data if available. If you need up-to-date data, you have to use the offers parameter. Use this if you need access to the rating data, which may be outdated, but do not need any other data fields provided through the offers parameter to save tokens and speed up the request. If there is no rating data returned, you can still make another request using the offers parameter.
+
+Example:
+
+&rating=1 (Include the rating and review count data in the csv history data field of the product object and respective fields of the statistics object)
+buybox
+Additional Token Cost: 2 per product
+
+Boolean value (0 = false, 1 = true). If specified and set to 1, the product and statistics object will include all available Buy Box related data:
+
+Current price, price history, and statistical values
+buyBoxSellerIdHistory
+All Buy Box fields in the statistics object
+The buybox parameter does not trigger a fresh data collection. If the offers parameter is used, the buybox parameter is ignored, as the offers parameter also provides access to all Buy Box related data. To access the statistics object, the stats parameter is required.
+
+Example:
+
+&buybox=1
+stock
+Additional Token Cost: 2 per product
+
+Boolean value (0 = false, 1 = true). If specified together with the offers parameter and set to 1, the marketplace offer objects will include the stockCSV field, and the product object will include the lastStockUpdate field.
+
+Token Cost Note: The stock parameter incurs 2 extra tokens only if lastStockUpdate is newer than 7 days.
+
+Note: The stock parameter is not guaranteed to avoid triggering a fresh stock data collection. The request will require more time to retrieve stock data, ranging from 1 to 2 seconds per offer.
+
+Example:
+
+&stock=1
+historical-variations
+Additional Token Cost: 1 per product that has a parent ASIN
+
+Boolean value (0 = false, 1 = true). If specified and set to 1, the product object will have the historicalVariations field set, which provides a list of historical and out of stock variation ASINs of the requested product.
+
+Example:
+
+&historical-variations=1
+Response
+A products field containing an array of product objects with an entry for each ASIN that was requested.
