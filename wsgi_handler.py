@@ -4,6 +4,7 @@ import json
 import subprocess
 from datetime import datetime
 from flask import Flask, jsonify, request, redirect, url_for, render_template, session
+import traceback
 
 # Add the project directory to the Python path
 sys.path.insert(0, os.path.dirname(__file__))
@@ -115,3 +116,21 @@ def scan_status_route():
 
     except Exception as e:
         return jsonify({"status": "error", "message": f"Error reading status file: {str(e)}"}), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """
+    [DEBUG] This is a global error handler to catch all exceptions.
+    It will display the full traceback in the browser, allowing us to see
+    the root cause of the 500 error without needing to access system logs.
+    """
+    # Pass through HTTPExceptions
+    if isinstance(e,
+     (NotImplementedError,)):
+        return e
+
+    # Get the full traceback
+    tb_str = traceback.format_exc()
+
+    # Return the traceback as a pre-formatted string
+    return f"<pre><h1>500 Internal Server Error</h1><p>An unexpected error occurred:</p>{tb_str}</pre>", 500
