@@ -30,8 +30,8 @@ def set_scan_status(status_data):
         # This will be logged by the Celery worker
         print(f"Error writing status file: {e}")
 
-@celery.task(bind=True)
-def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
+@celery.task
+def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
     """
     Main Celery task to run the Keepa deals fetching and processing script.
     """
@@ -54,7 +54,6 @@ def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limi
     _update_cli_status({
         "status": "Running",
         "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-        "task_id": self.request.id,
         "message": "Worker has started processing the scan."
     })
 
@@ -177,7 +176,7 @@ def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limi
         logger.info(f"Starting ASIN processing, found {len(deals_to_process)} deals (after potential temporary limit)")
 
         MAX_ASINS_PER_BATCH = 50
-        ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH = 6
+        ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH = 8
         
         valid_deals_to_process = []
         for deal_idx, deal_obj in enumerate(deals_to_process):
@@ -262,69 +261,8 @@ def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limi
                         all_fetched_products_map[deal_info['asin']] = {'asin': deal_info['asin'], 'error': True, 'status_code': status_code, 'message': error_msg_detail}
                     batch_idx += 1
 
-        # --- Pre-fetch all seller data ---
-        logger.info("Starting pre-fetch of all unique seller data...")
-        all_seller_ids = set()
-        for product in all_fetched_products_map.values():
-            if product and not product.get('error'):
-                for offer in product.get('offers', []):
-                    seller_id = offer.get('sellerId')
-                    if seller_id:
-                        all_seller_ids.add(seller_id)
+        # Seller data is now fetched on-demand inside get_all_seller_info
         
-        logger.info(f"Found {len(all_seller_ids)} unique seller IDs to fetch.")
-        
-        TOKEN_COST_PER_SELLER_ID = 1
-        seller_id_list = list(all_seller_ids)
-        MAX_SELLERS_PER_BATCH = 100
-        seller_batches = [seller_id_list[i:i + MAX_SELLERS_PER_BATCH] for i in range(0, len(seller_id_list), MAX_SELLERS_PER_BATCH)]
-        
-        from .seller_info import seller_data_cache
-        from .keepa_api import fetch_seller_data
-
-        seller_batch_idx = 0
-        max_retries_for_seller_batch = 2
-        seller_batch_retry_counts = [0] * len(seller_batches)
-
-        while seller_batch_idx < len(seller_batches):
-            seller_batch = seller_batches[seller_batch_idx]
-            logger.info(f"Fetching seller data batch {seller_batch_idx + 1}/{len(seller_batches)} (Attempt {seller_batch_retry_counts[seller_batch_idx] + 1})...")
-
-            estimated_cost = len(seller_batch) * TOKEN_COST_PER_SELLER_ID
-            token_manager.request_permission_for_call(estimated_cost)
-
-            seller_data_response, api_info, _ = fetch_seller_data(api_key, seller_batch)
-            token_manager.update_from_response(seller_data_response)
-
-            batch_had_critical_error = api_info and api_info.get('error_status_code') and api_info.get('error_status_code') != 200
-
-            if not batch_had_critical_error and seller_data_response:
-                fetched_sellers_data = seller_data_response.get('sellers')
-                if fetched_sellers_data:
-                    for seller_id, seller_data_item in fetched_sellers_data.items():
-                        if seller_data_item:
-                            seller_data_cache[seller_id] = seller_data_item
-                    logger.info(f"Cached raw data for {len(fetched_sellers_data)} sellers from batch {seller_batch_idx + 1}.")
-                else:
-                    logger.warning(f"Seller data batch {seller_batch_idx + 1} returned no data despite a successful API call.")
-                seller_batch_idx += 1
-            else:
-                status_code = api_info.get('error_status_code') if api_info else 'UNKNOWN'
-                if status_code == 429:
-                    if seller_batch_retry_counts[seller_batch_idx] < max_retries_for_seller_batch:
-                        seller_batch_retry_counts[seller_batch_idx] += 1
-                        logger.error(f"Seller batch API call received 429 error. Retrying (Attempt {seller_batch_retry_counts[seller_batch_idx] + 1}/3). TokenManager will handle wait.")
-                        continue # Retry same batch
-                    else:
-                        logger.error(f"Seller batch API call received 429 error on max retries. Skipping batch {seller_batch_idx + 1}.")
-                        seller_batch_idx += 1
-                else:
-                    logger.error(f"Seller batch API call failed with non-429 error code: {status_code}. Skipping batch.")
-                    seller_batch_idx += 1
-        
-        logger.info("Finished pre-fetching all seller data.")
-        # --- End of seller data pre-fetch ---
-
         temp_rows_data = []
 
         for deal_info in valid_deals_to_process:
@@ -394,7 +332,7 @@ def run_keepa_script(self, api_key, no_cache=False, output_dir='data', deal_limi
                     logger.debug(f"ASIN {asin}: Passing {len(offers_to_log)} offers to get_all_seller_info. Data: {json.dumps(offers_to_log)}")
                     # --- END DIAGNOSTIC LOGGING ---
 
-                    seller_info = get_all_seller_info(product, api_key=api_key)
+                    seller_info = get_all_seller_info(product, api_key=api_key, token_manager=token_manager)
                     row_data.update(seller_info)
                     
                     logger.info(f"ASIN {asin}: Successfully processed and updated seller info.")

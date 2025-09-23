@@ -20,6 +20,64 @@ def validate_asin(asin):
         logger.error(f"Invalid ASIN format: {asin}")
         return False
     return True
+
+# Do not modify fetch_deals_for_deals! It mirrors the "Show API query" (https://api.keepa.com/deal), with critical parameters.
+@retry(stop_max_attempt_number=3, wait_fixed=5000)
+def fetch_deals_for_deals(page, api_key):
+    logger.debug(f"Fetching deals page {page} for Percent Down 90...")
+    print(f"Fetching deals page {page} for Percent Down 90...")
+    deal_query = {
+        "page": page,
+        "domainId": "1",
+        "excludeCategories": [],
+        "includeCategories": [283155],
+        "priceTypes": [2],
+        "deltaRange": [1950, 9900],
+        "deltaPercentRange": [50, 2147483647],
+        "salesRankRange": [50000, 1500000],
+        "currentRange": [2000, 30100],
+        "minRating": 10,
+        "isLowest": False,
+        "isLowest90": False,
+        "isLowestOffer": False,
+        "isOutOfStock": False,
+        "titleSearch": "",
+        "isRangeEnabled": True,
+        "isFilterEnabled": True,
+        "filterErotic": False,
+        "singleVariation": True,
+        "hasReviews": False,
+        "isPrimeExclusive": False,
+        "mustHaveAmazonOffer": False,
+        "mustNotHaveAmazonOffer": False,
+        "sortType": 4,
+        "dateRange": "3"
+    }
+    query_json = json.dumps(deal_query, separators=(',', ':'), sort_keys=True)
+    logger.debug(f"Raw query JSON: {query_json}")
+    encoded_selection = urllib.parse.quote(query_json)
+    url = f"https://api.keepa.com/deal?key={api_key}&selection={encoded_selection}"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+    logger.debug(f"Deal URL: {url}")
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        logger.debug(f"Full deal response: {response.text}")
+        if response.status_code != 200:
+            logger.error(f"Deal fetch failed: {response.status_code}, {response.text}")
+            print(f"Deal fetch failed: {response.status_code}, {response.text}")
+            return []
+        data = response.json()
+        deals = data.get('deals', {}).get('dr', [])
+        logger.debug(f"Fetched {len(deals)} deals: {[d.get('asin', '-') for d in deals]}")
+        logger.debug(f"Deal response structure: {list(data.get('deals', {}).keys())}")
+        logger.debug(f"All deal keys: {[list(d.keys()) for d in deals]}")
+        logger.debug(f"Deals data: {[{'asin': d.get('asin', '-'), 'current': d.get('current', []), 'current[9]': d.get('current', [-1] * 20)[9] if len(d.get('current', [])) > 9 else -1, 'current[1]': d.get('current', [-1] * 20)[1] if len(d.get('current', [])) > 1 else -1} for d in deals]}")
+        print(f"Fetched {len(deals)} deals")
+        return deals
+    except Exception as e:
+        logger.error(f"Deal fetch exception: {str(e)}")
+        print(f"Deal fetch exception: {str(e)}")
+        return []
         
 # Deal Found starts
 def deal_found(deal_object, logger_param=None): # Renamed logger to logger_param to avoid conflict

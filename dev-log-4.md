@@ -253,3 +253,36 @@ The final, successful solution abandoned the flawed price-matching logic entirel
 - The "Condition" column is now correctly populated.
 - The worker crash and the associated performance slowdown are resolved.
 - A clear, documented procedure for restarting the Celery worker vs. the Apache web server has been established to prevent future environment-related issues.
+
+### **Dev Log Entry: September 22, 2025 - The Great Performance Hunt**
+
+**Task:** To diagnose and fix an extreme performance issue where a Keepa scan for just 3 books was taking over an hour. The initial hypothesis was an incorrect token estimation constant.
+
+**Summary:** This task turned into a deep and complex environmental debugging session that ultimately revealed the root cause was not a simple parameter tweak, but a code version mismatch between my development environment and the user's production server. The final fix involved a full synchronization of the key application files, which dramatically improved performance.
+
+**Debugging Journey & Key Challenges:**
+
+1. **Initial Environment Confusion:** My initial attempts to run test scans were blocked by an inability to find the Python virtual environment. Standard checks (`ls venv/`) failed. The breakthrough came from discovering the system uses `pyenv` for environment management, not a local `venv` directory.
+2. **Stale Celery Workers & "Stuck" UI:** After resolving the environment issue, test scans still wouldn't run correctly. Logs were not updating, and tasks seemed to disappear. We discovered that the Celery worker processes on the server were stale and not picking up new jobs. We also found that the web UI was getting "stuck" on a "Running" status due to an un-updated `scan_status.json` file. This required a manual, multi-step reset procedure that became central to our workflow:
+   - Stop all lingering workers: `pkill -f celery`
+   - Manually delete the status file: `rm scan_status.json`
+   - Start a new worker in the foreground for observation: `/var/www/agentarbitrage/venv/bin/python -m celery -A celery_config.celery worker --loglevel=INFO`
+3. **Tooling Failures & User Collaboration:** My own tools (`run_in_bash_session`, `overwrite_file_with_block`, and `message_user` with large code blocks) repeatedly failed. This prevented me from starting the background worker or reliably transferring file content myself. This forced a highly collaborative approach where I had to rely on you to execute commands directly in the server environment and provide the resulting logs for me to analyze.
+
+**Root Cause Analysis & The "Aha!" Moment:**
+
+After finally getting a successful test run with your help, the provided logs revealed the true "smoking gun". The initial hypothesis about the token estimation constant was wrong. The key log entry was: `"Found 798 unique seller IDs to fetch."`
+
+This showed that the script was wastefully trying to fetch data for every single seller associated with the 3 books. This was the cause of the massive token consumption and the 11+ minute pauses for token replenishment. Further investigation revealed that the version of `keepa_deals/Keepa_Deals.py` in my environment *did not contain this inefficient pre-fetch loop*.
+
+**Final Diagnosis:** Your server was running an older version of the application code that contained the performance bug.
+
+**The Implemented Solution:**
+
+The fix was to synchronize your environment with the latest, corrected code.
+
+1. I confirmed the list of changed files with you.
+2. I used the `submit` tool to commit the complete, corrected versions of all necessary files to a new branch named `fix/performance-and-sync`.
+3. You pulled the changes from this branch, updating your entire application at once.
+
+**Outcome:** A final test run after the update was a complete success. The scan time for 3 books dropped from **over 3 hours to just 9 minutes**. The logs confirmed that the seller pre-fetch loop was gone and the application was behaving efficiently. The core performance issue is resolved.

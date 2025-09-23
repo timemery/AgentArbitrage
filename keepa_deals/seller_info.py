@@ -12,7 +12,7 @@ AMAZON_SELLER_ID = 'ATVPDKIKX0DER'
 # Cache for seller data to avoid redundant API calls within a script run
 seller_data_cache = {}
 
-def _get_best_offer_analysis(product, api_key=None):
+def _get_best_offer_analysis(product, api_key=None, token_manager=None):
     """
     Finds the best live offer by cross-referencing the 'stats.current' array
     with the 'offers' array to ensure price accuracy and retrieve seller info.
@@ -95,9 +95,20 @@ def _get_best_offer_analysis(product, api_key=None):
         logger.warning(f"ASIN {asin}: Cannot fetch seller score. No API key or seller ID.")
         return final_analysis
 
-    # Fetch seller data from the pre-fetched cache and calculate score
+    # Fetch seller data from the cache or API
     seller_data = seller_data_cache.get(best_seller_id)
     
+    if not seller_data and token_manager:
+        logger.info(f"ASIN {asin}: Seller data for ID {best_seller_id} not in cache. Fetching from API.")
+        token_manager.request_permission_for_call(estimated_cost=1) # Cost for one seller
+        seller_data_response, _, _ = fetch_seller_data(api_key, [best_seller_id])
+        token_manager.update_from_response(seller_data_response)
+
+        if seller_data_response and seller_data_response.get('sellers'):
+            seller_data = seller_data_response['sellers'].get(best_seller_id)
+            if seller_data:
+                seller_data_cache[best_seller_id] = seller_data
+
     if seller_data:
         # Extract seller name
         final_analysis['Seller'] = seller_data.get('sellerName', 'N/A')
@@ -122,8 +133,8 @@ def _get_best_offer_analysis(product, api_key=None):
 
     return final_analysis
 
-def get_all_seller_info(product, api_key=None):
+def get_all_seller_info(product, api_key=None, token_manager=None):
     """
     Public function to get all seller-related information in a single dictionary.
     """
-    return _get_best_offer_analysis(product, api_key=api_key)
+    return _get_best_offer_analysis(product, api_key=api_key, token_manager=token_manager)
