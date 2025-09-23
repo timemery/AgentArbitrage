@@ -1,5 +1,6 @@
 # keepa_deals/Keepa_Deals.py
 # Refactored for integration with AgentArbitrage
+# This version is optimized to prevent memory leaks by fetching seller data on-demand.
 
 import json
 import csv
