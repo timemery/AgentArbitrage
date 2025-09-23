@@ -1,31 +1,24 @@
-# FINAL-FINAL-FINAL INSTRUCTIONS: RESTORING THE FULL APPLICATION
+# DEBUGGING THE 500 ERROR (ATTEMPT 5 - DUMMY LOGIN)
 
-My apologies for the "Not Found" error. It was my mistake. In debugging the 500 error, I replaced the entire web application with a simple script.
+The new 500 error suggests the application is crashing when it tries to render the web page. My hypothesis is that the page templates require a user session to be active, and my restored application was not creating one.
 
-I have now **restored the full Flask web application**, integrated with all of our Celery fixes. This should solve the "Not Found" error and give you back the UI.
+**To test this, I have added code that creates a "dummy" logged-in session for every request.**
 
-**Please follow these final steps:**
+Please perform these steps to apply the patch:
 
-1.  **Pull the latest code** to get the restored application files:
+1.  **Pull the latest code:**
     ```bash
     cd /var/www/agentarbitrage
     git pull
     ```
 
-2.  **Copy the corrected Apache configuration** into place:
-    ```bash
-    sudo cp /var/www/agentarbitrage/agentarbitrage.conf /etc/apache2/sites-available/agentarbitrage.conf
-    ```
-
-3.  **Restart the Apache server** to load the full application:
+2.  **Restart Apache:**
     ```bash
     sudo systemctl restart apache2
     ```
 
-4.  **Start the Celery Worker:**
-    ```bash
-    # (in /var/www/agentarbitrage)
-    ./start_celery.sh
-    ```
+After this, please reload the web page.
+- If the 500 error is **gone** and you see the UI, we have found the final bug.
+- If the 500 error **persists**, something is still fundamentally broken.
 
-After these four steps, the web UI should be back online and fully functional. Thank you for your immense patience. This should be the last fix.
+This is a critical test. Thank you for your continued help.

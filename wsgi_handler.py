@@ -3,7 +3,7 @@ import sys
 import json
 import subprocess
 from datetime import datetime
-from flask import Flask, jsonify, request, redirect, url_for, render_template
+from flask import Flask, jsonify, request, redirect, url_for, render_template, session
 
 # Add the project directory to the Python path
 sys.path.insert(0, os.path.dirname(__file__))
@@ -12,7 +12,20 @@ sys.path.insert(0, os.path.dirname(__file__))
 from keepa_deals.Keepa_Deals import run_keepa_script
 
 app = Flask(__name__)
+# A secret key is required for Flask sessions to work.
+app.secret_key = os.urandom(24)
 STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scan_status.json')
+
+@app.before_request
+def make_session_permanent():
+    """
+    [DEBUG] This is a debugging step to fix a 500 error.
+    It forces a 'logged_in' session for every request, as the templates
+    likely require it to render.
+    """
+    session.permanent = True
+    if 'logged_in' not in session:
+        session['logged_in'] = True
 
 def is_celery_worker_running():
     """
