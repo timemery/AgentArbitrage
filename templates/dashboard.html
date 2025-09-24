@@ -3,23 +3,29 @@
 {% block content %}
 <h1>Deals Dashboard</h1>
 <div class="filters-container">
-            <form id="filter-form">
-                <div class="filter-group">
-                    <label for="max_sales_rank">Max Sales Rank:</label>
-                    <input type="number" id="max_sales_rank" name="sales_rank_current_lte">
-                </div>
-                <div class="filter-group">
-                    <label for="min_profit_margin">Min Profit Margin (%):</label>
-                    <input type="number" id="min_profit_margin" name="profit_margin_gte">
-                </div>
-                <div class="filter-group">
-                    <label for="title_contains">Title Contains:</label>
-                    <input type="text" id="title_contains" name="title_like">
-                </div>
-                <button type="submit">Apply Filters</button>
-                <button type="reset" id="reset-filters">Reset</button>
-            </form>
+    <form id="filter-form">
+        <div class="filter-item">
+            <label for="title_contains">Title Contains:</label>
+            <input type="text" id="title_contains" name="title_like" class="styled-text-field">
         </div>
+        <div class="filter-item">
+            <label for="max_sales_rank">Max Sales Rank: <span id="sales-rank-value">100k</span></label>
+            <div class="slider-container">
+                <input type="range" min="1" max="1000000" value="100000" class="slider" id="max_sales_rank" name="sales_rank_current_lte">
+            </div>
+        </div>
+        <div class="filter-item">
+            <label for="min_profit_margin">Min Profit Margin (%): <span id="profit-margin-value">10%</span></label>
+            <div class="slider-container">
+                <input type="range" min="0" max="100" value="10" class="slider" id="min_profit_margin" name="profit_margin_gte">
+            </div>
+        </div>
+        <div class="filter-buttons">
+            <button type="submit">Apply Filters</button>
+            <button type="reset" id="reset-filters">Reset</button>
+        </div>
+    </form>
+</div>
         <div class="table-container">
             <div id="deals-table"></div>
             <div class="pagination-controls">
@@ -44,6 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterForm = document.getElementById('filter-form');
     const resetBtn = document.getElementById('reset-filters');
     const tooltip = document.getElementById('custom-tooltip');
+    const salesRankSlider = document.getElementById('max_sales_rank');
+    const salesRankValue = document.getElementById('sales-rank-value');
+    const profitMarginSlider = document.getElementById('min_profit_margin');
+    const profitMarginValue = document.getElementById('profit-margin-value');
 
     let currentPage = 1;
     let totalPages = 1;
@@ -256,6 +266,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) fetchDeals(currentPage + 1, currentSort.by, currentSort.order);
+    });
+
+    salesRankSlider.addEventListener('input', () => {
+        const value = parseInt(salesRankSlider.value);
+        if (value >= 1000) {
+            salesRankValue.textContent = `${Math.round(value / 1000)}k`;
+        } else {
+            salesRankValue.textContent = value;
+        }
+    });
+
+    profitMarginSlider.addEventListener('input', () => {
+        profitMarginValue.textContent = `${profitMarginSlider.value}%`;
     });
 
     fetchDeals();

@@ -497,6 +497,93 @@ button:disabled {
     text-overflow: ellipsis;
 }
 
+/* New Filter Styles */
+.filters-container {
+    width: 100%;
+    margin-bottom: 40px; /* Padding between filters and table */
+}
+
+#filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end; /* Align items to the bottom */
+    gap: 20px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.styled-text-field {
+    width: 150px;
+    height: 30px;
+    padding: 0 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+    border: 1px solid rgba(102, 153, 204, 0.5);
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.slider-container {
+    width: 150px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+  border-radius: 4px;
+  border: 1px solid rgba(102, 153, 204, 0.5);
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #336699;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid #003366;
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #336699;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid #003366;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: auto; /* Push buttons to the right */
+}
+
+.filter-buttons button {
+    padding: 6px 12px;
+    font-size: 1em;
+}
+
 /* --- Video Background Styles --- */
 #background-video {
     position: fixed;
