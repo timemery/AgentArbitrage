@@ -26,7 +26,7 @@
             </div>
             <div class="grid-item">
                 <h3>Profit Calculation</h3>
-                <p><span>All-in Cost:</span> <strong>${{ "{:,.2f}".format(deal['All_in_Cost']) if deal['All_in_Cost'] is not none else '-' }}</strong></p>
+                <p><span>All-in Cost:</span> <strong>${{ "{:,.2f}".format(float(deal['All_in_Cost'])) if deal['All_in_Cost'] is not none else '-' }}</strong></p>
                 <p><span>Profit:</span> <strong>${{ "{:,.2f}".format(deal['Profit']) if deal['Profit'] is not none else '-' }}</strong></p>
                 <p><span>Margin:</span> <strong>{{ "%.2f"|format(deal['Margin']) if deal['Margin'] is not none else '-' }}%</strong></p>
                 <p><span>Min. Listing Price:</span> <strong>${{ "{:,.2f}".format(deal['Min_Listing_Price']) if deal['Min_Listing_Price'] is not none else '-' }}</strong></p>
