@@ -17,6 +17,6 @@ touch $LOG_FILE
 # Step 3: Start the Celery worker as a detached background process.
 VENV_PYTHON="/var/www/agentarbitrage/venv/bin/python"
 echo "Starting Celery worker in detached mode..."
-$VENV_PYTHON -m celery -A celery_config.celery worker --detach --loglevel=INFO --logfile=$LOG_FILE
+$VENV_PYTHON -m celery -A worker.celery worker --detach --loglevel=INFO --logfile=$LOG_FILE
 
 echo "Celery worker startup command issued."
