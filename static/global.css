@@ -506,13 +506,27 @@ button:disabled {
 #filter-form {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end; /* Align items to the bottom */
+    align-items: flex-end; /* Aligns the full items (label + input) to the bottom */
     gap: 20px;
 }
 
 .filter-item {
     display: flex;
     flex-direction: column;
+}
+
+.filter-item label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    height: 1.2em; /* Give label a fixed height */
+    display: flex;
+    align-items: flex-end; /* Align text to the bottom of the label box */
+}
+
+.filter-item .slider-container, .filter-item .styled-text-field {
+    height: 30px; /* Ensure all input containers have same height */
+    display: flex;
+    align-items: center; /* Vertically center the slider/input within the container */
 }
 
 .filter-item label {
