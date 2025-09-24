@@ -547,7 +547,12 @@ button:disabled {
 }
 
 .slider-container {
-    width: 150px;
+    width: 200px;
+}
+
+#sales-rank-value, #profit-margin-value {
+    padding-left: 20px;
+    color: rgba(102, 153, 204, 0.9);
 }
 
 .slider {
