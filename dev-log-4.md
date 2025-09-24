@@ -319,7 +319,24 @@ Outcome:
 
 The scan time for 3 books was successfully reduced from over 1 hour to approximately 9 minutes. The system is now stable, and the core performance bottleneck has been resolved.
 
+### **Dev Log Entry: September 24, 2025 - Resolving Persistent 500 Error on Deal Detail Page**
 
+**Objective:** To fix a `ValueError` on the `/deal/<asin>` page, which was crashing due to an attempt to format a string value for `All_in_Cost` as a float in the `deal_detail.html` template.
+
+**Summary of a Multi-Layered Debugging Process:** This task, which initially appeared to be a simple one-line fix, evolved into a complex debugging session that uncovered both a misunderstanding of the templating engine's context and a stubborn server-side file synchronization issue. The final resolution required a combination of correcting the code's logic and adopting a more robust deployment workflow to ensure changes were applied.
+
+**Debugging Journey & Resolutions:**
+
+1. **Initial Diagnosis & Flawed First Fix:** The initial analysis was correct: a `ValueError` was being raised because a string value (e.g., `'37.6535'`) was being passed to a float formatter in the Jinja2 template. My first attempt was to fix this directly in `templates/deal_detail.html` by casting the value with Python's built-in `float()` function.
+2. **The `UndefinedError` (The Real Root Cause):** This first fix immediately resulted in a new 500 error. The logs provided by the user showed a `jinja2.exceptions.UndefinedError: 'float' is undefined`. This was a critical learning moment, revealing that the Jinja2 templating environment, for security and separation of concerns, does not have direct access to most of Python's built-in functions like `float()`. The fix was fundamentally incorrect for this framework.
+3. **Corrected Backend Approach:** The proper solution was to move the data type conversion to the backend. The logic was corrected in the `deal_detail` route within `wsgi_handler.py`. Before the `deal` dictionary is passed to the `render_template` function, a new code block now iterates through all keys that represent monetary or percentage values (`All_in_Cost`, `Profit`, `Margin`, etc.), converting them to floats. This ensures the template always receives data in the correct, ready-to-format data type.
+4. **The Caching/Synchronization Challenge:** Despite the backend code being corrected, the server continued to serve the old, broken version of the template file, resulting in the same `UndefinedError` loop. Standard methods to reload the application (`touch wsgi.py` and even `sudo systemctl restart apache2`) were insufficient to clear the cached or old version of the template.
+5. **Final Resolution Workflow:** The problem was definitively traced to a file synchronization issue between my environment and the user's server. The `restore_file` and `replace_with_git_merge_diff` commands I was using were not being reliably reflected on the server. The final, successful workflow was:
+   - I committed the two corrected files (`wsgi_handler.py` and the reverted `templates/deal_detail.html`) to a new, clean branch in the git repository.
+   - The user pulled the changes from this branch, guaranteeing that the server had the exact, correct versions of the files.
+   - The user performed a more forceful server restart (`systemctl stop`, `pkill`, `systemctl start`) to ensure no stale processes were running.
+
+**Outcome:** This multi-step process successfully resolved the 500 error. The deal detail page now loads correctly. This task highlighted the critical importance of handling data type conversions in the backend *before* rendering, and established a more reliable git-based workflow for deploying changes to the server environment.
 
 
 

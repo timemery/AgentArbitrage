@@ -263,6 +263,15 @@ def deal_detail(asin):
         
         if row:
             deal = dict(row)
+            # Convert fields that need to be numbers from string to float
+            for key in ['All_in_Cost', 'Profit', 'Margin', 'Min_Listing_Price', 'Expected_Trough_Price', 'Expected_Peak_Price']:
+                if deal.get(key) is not None:
+                    try:
+                        deal[key] = float(deal[key])
+                    except (ValueError, TypeError):
+                        app.logger.warning(f"Could not convert {key} with value '{deal[key]}' to float for ASIN {asin}. Setting to None.")
+                        deal[key] = None # Or set to 0.0, depending on desired behavior for invalid data
+
             app.logger.info(f"Deal data for ASIN {asin}: {deal}")
             app.logger.info(f"Keys available in deal dictionary: {list(deal.keys())}")
         
