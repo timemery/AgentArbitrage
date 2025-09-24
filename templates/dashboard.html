@@ -242,6 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
+                } else if (col === 'Seller') {
+                    table += `<td class="seller-cell">${value}</td>`;
                 } else if (col === 'ASIN') {
                     table += `<td>${cleanAsin}</td>`;
                 } else if (col === 'Best_Price' && cleanAsin) {

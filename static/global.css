@@ -490,8 +490,8 @@ button:disabled {
     padding: 8px 16px;
     margin: 0 5px;
 }
-.title-cell {
-    max-width: 300px;
+.title-cell, .seller-cell {
+    max-width: 120px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -535,7 +535,7 @@ button:disabled {
 }
 
 .styled-text-field {
-    width: 150px;
+    width: 200px;
     height: 30px;
     padding: 0 10px;
     background-color: rgba(0, 0, 0, 0.2);
