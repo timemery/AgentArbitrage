@@ -286,3 +286,50 @@ The fix was to synchronize your environment with the latest, corrected code.
 3. You pulled the changes from this branch, updating your entire application at once.
 
 **Outcome:** A final test run after the update was a complete success. The scan time for 3 books dropped from **over 3 hours to just 9 minutes**. The logs confirmed that the seller pre-fetch loop was gone and the application was behaving efficiently. The core performance issue is resolved.
+
+Dev Log: Task - Improve Keepa Scan Speed and Efficiency
+Date: 2025-09-24
+
+Author: Jules
+
+Goal: Diagnose and fix a severe performance issue where a Keepa scan for 3 books was taking over an hour. The initial hypothesis from the user was that an API token estimation constant was set too low.
+
+Summary of Investigation and Resolution:
+
+The investigation revealed that the root cause was not the token estimation constant, but a major inefficiency in the seller data fetching logic, compounded by a series of Celery configuration issues that prevented the background worker from running correctly.
+
+Key Challenges & Steps to Resolution:
+
+Initial Hypothesis Incorrect: We initially focused on the ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH constant. However, analysis of the code and logs showed this was not the primary bottleneck.
+
+Root Cause Identified - Inefficient Pre-Fetch Loop: The critical performance issue was an old "pre-fetch" loop in keepa_deals/Keepa_Deals.py. For every small batch of deals, this loop would gather hundreds of unique seller IDs and attempt to fetch all their data at once. This exhausted the Keepa API tokens almost immediately, forcing the TokenManager to pause for very long periods (e.g., 60 seconds) to regenerate a single token, leading to extreme scan times.
+
+Code Synchronization: The solution was to replace the user's outdated and inefficient Keepa_Deals.py and related files (seller_info.py, celery_config.py, etc.) with newer versions that removed the pre-fetch loop and implemented on-demand seller data fetching.
+
+"Unregistered Task" Error: After updating the code and switching to a Celery-based background task model (run_keepa_script.delay()), we encountered a persistent Received unregistered task error. This meant the Celery worker was starting but had no knowledge of the run_keepa_script task it was being asked to execute.
+
+Correcting the Celery Worker Startup: This error was traced to an incorrect startup command. The command was pointing the worker at celery_config.py (-A celery_config.celery), which defines the Celery app but does not import the tasks. The fix was to point the worker to worker.py (-A worker.celery), as worker.py correctly imports both the Celery app and the tasks from Keepa_Deals.py, ensuring the tasks are registered.
+
+Final Solution:
+
+The inefficient seller data pre-fetch loop was eliminated from the codebase.
+The Celery worker is now started with the following robust and correct command, which ensures tasks are properly registered:
+/var/www/agentarbitrage/venv/bin/python -m celery -A worker.celery worker --detach --loglevel=INFO --logfile=/var/www/agentarbitrage/celery.log
+Outcome:
+
+The scan time for 3 books was successfully reduced from over 1 hour to approximately 9 minutes. The system is now stable, and the core performance bottleneck has been resolved.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
