@@ -234,12 +234,6 @@ from .stable_products import (
     get_shipping_included,
     profit_margin_percent
 )
-from .new_analytics import (
-    get_changed,
-    get_1yr_avg_sale_price,
-    get_percent_discount,
-    get_trend,
-)
 from .stable_calculations import (
     percent_down_365,               # Percent Down 365
     recent_inferred_sale_price,
@@ -491,10 +485,10 @@ FUNCTION_LIST = [
     get_title,                      # Title
     last_update,                    # last update
     last_price_change,              # last price change
-    get_changed,                    # Changed
-    get_1yr_avg_sale_price,         # 1yr. Avg.
-    get_percent_discount,           # % ⇩
-    get_trend,                      # Trend
+    None,                           # Changed
+    None,                           # 1yr. Avg.
+    None,                           # % ⇩
+    None,                           # Trend
     None,                           # Sales Rank - Reference
     None,                           # Reviews - Rating
     None,                           # Reviews - Review Count

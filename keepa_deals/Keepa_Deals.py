@@ -138,6 +138,12 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
 
             all_deals.extend(deals_page)
             logger.info(f"Fetched {len(deals_page)} deals from page {page}. Total deals so far: {len(all_deals)}")
+
+            # Exit loop if the deal_limit has been reached or exceeded
+            if deal_limit and len(all_deals) >= deal_limit:
+                logger.info(f"Deal limit of {deal_limit} reached. Stopping deal fetching.")
+                break
+
             page += 1
 
         deals = all_deals
@@ -288,19 +294,10 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                     if func:
                         try:
                             # Pass api_key to functions that need it
-                            # Update below
                             if func.__name__ in ['last_update', 'last_price_change']:
                                 result = func(original_deal_obj, logger, product)
                             elif func.__name__ == 'deal_found':
-                            # Update above
                                 result = func(original_deal_obj, logger)
-                            #Update below Jules: "Please ensure the elif block in this file (around line 353) looks like this (with 'get_condition' removed from the list):"
-                            elif func.__name__ == 'get_percent_discount':
-                                best_price_str = row.get('Best Price', '-')
-                                result = func(product, best_price_str, logger=logger)
-                            elif func.__name__ in ['get_best_price', 'get_seller_rank', 'get_seller_quality_score', 'get_seller_id', 'get_changed', 'get_1yr_avg_sale_price', 'get_trend']:
-                            # Update above
-                                result = func(product, logger=logger)
                             else:
                                 result = func(product)
                             
@@ -331,11 +328,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             product = all_fetched_products_map.get(asin)
             if product and not product.get('error'):
                 try:
-                    # --- JULES: DIAGNOSTIC LOGGING ---
-                    # Log the offers array being passed to the analysis function to debug incorrect price selection.
                     offers_to_log = product.get('offers', [])
                     logger.debug(f"ASIN {asin}: Passing {len(offers_to_log)} offers to get_all_seller_info. Data: {json.dumps(offers_to_log)}")
-                    # --- END DIAGNOSTIC LOGGING ---
 
                     seller_info = get_all_seller_info(product, api_key=api_key, token_manager=token_manager)
                     row_data.update(seller_info)
@@ -395,9 +389,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 referral_percent = parse_percent(row_data.get('Referral Fee %', '0'))
                 best_price = parse_price(row_data.get('Best Price', '0'))
 
-                # Perform calculations only if we have a valid peak price and best price
                 if peak_price > 0 and best_price > 0:
-                    # Check the shipping included flag
                     shipping_included_str = row_data.get('Shipping Included', 'no')
                     shipping_included_flag = shipping_included_str.lower() == 'yes'
 
@@ -406,14 +398,12 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                     profit_margin_dict = calculate_profit_and_margin(peak_price, all_in_cost)
                     min_listing_price = calculate_min_listing_price(all_in_cost, business_settings)
 
-                    # Update the row data with new calculated fields as raw floats
                     row_data['Total AMZ fees'] = total_amz_fees
                     row_data['All-in Cost'] = all_in_cost
                     row_data['Profit'] = profit_margin_dict['profit']
                     row_data['Margin'] = profit_margin_dict['margin']
                     row_data['Min. Listing Price'] = min_listing_price
                 else:
-                    # If inputs are invalid, fill with default float values
                     row_data['Total AMZ fees'] = 0.0
                     row_data['All-in Cost'] = 0.0
                     row_data['Profit'] = 0.0
@@ -422,7 +412,6 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
 
             except (ValueError, TypeError) as e:
                 logger.error(f"ASIN {asin}: Could not perform business calculations due to a parsing error: {e}")
-                # Ensure fields exist even if calculation fails
                 row_data['Total AMZ fees'] = '-'
                 row_data['All-in Cost'] = '-'
                 row_data['Profit'] = '-'
@@ -430,6 +419,37 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 row_data['Min. Listing Price'] = '-'
         
         logger.info("Finished business logic calculations.")
+
+        # --- New Analytics Calculations Loop ---
+        from .new_analytics import get_changed, get_1yr_avg_sale_price, get_percent_discount, get_trend
+        logger.info("Starting new analytics calculations...")
+        for item in temp_rows_data:
+            row_data = item['data']
+            asin = row_data.get('ASIN')
+            if not asin:
+                continue
+
+            product = all_fetched_products_map.get(asin)
+            if product and not product.get('error'):
+                try:
+                    best_price_str = row_data.get('Best Price', '-')
+
+                    changed_info = get_changed(product, logger=logger)
+                    yr_avg_price_info = get_1yr_avg_sale_price(product, logger=logger)
+                    trend_info = get_trend(product, logger=logger)
+                    # Now call get_percent_discount with the calculated best_price
+                    percent_discount_info = get_percent_discount(product, best_price_str, logger=logger)
+
+                    row_data.update(changed_info)
+                    row_data.update(yr_avg_price_info)
+                    row_data.update(trend_info)
+                    row_data.update(percent_discount_info)
+
+                    logger.info(f"ASIN {asin}: Successfully processed new analytics.")
+                except Exception as e:
+                    logger.error(f"ASIN {asin}: Failed to get new analytics in dedicated loop: {e}", exc_info=True)
+        logger.info("Finished new analytics calculations.")
+        # --- End of New Analytics Loop ---
         # --- End of Business Logic Loop ---
 
         final_processed_rows = [None] * len(deals_to_process)

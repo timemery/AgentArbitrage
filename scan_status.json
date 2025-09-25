@@ -1,15 +1,16 @@
 {
     "status": "Completed",
-    "start_time": "2025-09-25T17:20:40.074Z",
+    "start_time": "2025-09-25T19:11:57.094Z",
     "message": "Scan completed successfully.",
-    "total_deals": 10,
-    "processed_deals": 10,
+    "task_id": "ed36c329-40f5-4232-8368-be798930376a",
+    "total_deals": 3,
+    "processed_deals": 3,
     "etr_seconds": 0.0,
     "debug_etr": {
-        "elapsed": 389.66940236091614,
-        "processed": 10,
-        "time_per_deal": 38.96694023609162
+        "elapsed": 72.85379338264465,
+        "processed": 3,
+        "time_per_deal": 24.284597794214886
     },
-    "end_time": "2025-09-25T17:31:11.830Z",
+    "end_time": "2025-09-25T19:16:12.777Z",
     "output_file": "data/Keepa_Deals_Export.csv"
 }
