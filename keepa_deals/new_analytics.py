@@ -12,6 +12,8 @@ KEEPA_EPOCH = datetime(2011, 1, 1)
 
 def format_time_ago(minutes_ago):
     """Converts minutes into a human-readable 'time ago' string."""
+    if minutes_ago is None or minutes_ago < 0:
+        return "-"
     if minutes_ago < 1:
         return "just now"
     if minutes_ago < 60:
@@ -37,11 +39,13 @@ def get_changed(product, logger=None):
     """
     if not logger:
         logger = logging.getLogger(__name__)
+    asin = product.get('asin', 'N/A')
+    logger.debug(f"ASIN {asin}: Running get_changed.")
 
     last_price_change_minutes = product.get('lastPriceChange')
 
     if last_price_change_minutes is None:
-        logger.debug(f"ASIN {product.get('asin', 'N/A')}: 'lastPriceChange' not found in product data.")
+        logger.debug(f"ASIN {asin}: 'lastPriceChange' not found in product data.")
         return {"Changed": "-"}
 
     try:
@@ -57,11 +61,11 @@ def get_changed(product, logger=None):
         # Format it into a human-readable string
         time_ago_str = format_time_ago(minutes_ago)
 
-        logger.debug(f"ASIN {product.get('asin', 'N/A')}: Last price change was {minutes_ago:.2f} minutes ago ({time_ago_str}).")
+        logger.debug(f"ASIN {asin}: Last price change was {minutes_ago:.2f} minutes ago ({time_ago_str}).")
         return {"Changed": time_ago_str}
 
     except (ValueError, TypeError) as e:
-        logger.error(f"ASIN {product.get('asin', 'N/A')}: Could not process 'lastPriceChange' value '{last_price_change_minutes}': {e}")
+        logger.error(f"ASIN {asin}: Could not process 'lastPriceChange' value '{last_price_change_minutes}': {e}")
         return {"Changed": "-"}
 
 def get_1yr_avg_sale_price(product, logger=None):
@@ -70,8 +74,9 @@ def get_1yr_avg_sale_price(product, logger=None):
     """
     if not logger:
         logger = logging.getLogger(__name__)
-
     asin = product.get('asin', 'N/A')
+    logger.debug(f"ASIN {asin}: Running get_1yr_avg_sale_price.")
+
     sale_events, _ = infer_sale_events(product)
 
     if not sale_events:
@@ -81,10 +86,12 @@ def get_1yr_avg_sale_price(product, logger=None):
     try:
         df = pd.DataFrame(sale_events)
         df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
+        logger.debug(f"ASIN {asin}: Created DataFrame with {len(df)} sale events.")
 
         # Filter for sales in the last 365 days
         one_year_ago = datetime.now() - timedelta(days=365)
         df_last_year = df[df['event_timestamp'] >= one_year_ago]
+        logger.debug(f"ASIN {asin}: Found {len(df_last_year)} sale events in the last year.")
 
         if len(df_last_year) < 3:
             logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful median.")
@@ -92,13 +99,16 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         # Calculate the median price
         median_price_cents = df_last_year['inferred_sale_price_cents'].median()
+        logger.debug(f"ASIN {asin}: Median price (cents) calculated: {median_price_cents}")
+
 
         if pd.isna(median_price_cents) or median_price_cents <= 0:
             logger.warning(f"ASIN {asin}: Median price calculation resulted in an invalid value: {median_price_cents}")
             return {"1yr. Avg.": "-"}
 
-        logger.debug(f"ASIN {asin}: Calculated 1yr. avg. (median) sale price: {median_price_cents / 100:.2f}")
-        return {"1yr. Avg.": f"${median_price_cents / 100:.2f}"}
+        result_value = f"${median_price_cents / 100:.2f}"
+        logger.debug(f"ASIN {asin}: Calculated 1yr. avg. (median) sale price: {result_value}")
+        return {"1yr. Avg.": result_value}
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Error calculating 1yr. avg. sale price: {e}", exc_info=True)
@@ -110,11 +120,14 @@ def get_percent_discount(product, best_price_str, logger=None):
     """
     if not logger:
         logger = logging.getLogger(__name__)
-
     asin = product.get('asin', 'N/A')
+    logger.debug(f"ASIN {asin}: Running get_percent_discount with best_price_str: '{best_price_str}'.")
 
     # Get the 1yr average price
-    avg_price_str = get_1yr_avg_sale_price(product, logger).get("1yr. Avg.", "-")
+    avg_price_dict = get_1yr_avg_sale_price(product, logger)
+    avg_price_str = avg_price_dict.get("1yr. Avg.", "-")
+    logger.debug(f"ASIN {asin}: get_1yr_avg_sale_price returned: {avg_price_str}")
+
     if avg_price_str == "-":
         logger.debug(f"ASIN {asin}: 1yr. Avg. price is unavailable, cannot calculate discount.")
         return {"% ⇩": "-"}
@@ -127,6 +140,8 @@ def get_percent_discount(product, best_price_str, logger=None):
         # Convert string prices to floats
         avg_price = float(avg_price_str.replace("$", ""))
         best_price = float(best_price_str.replace("$", ""))
+        logger.debug(f"ASIN {asin}: Parsed avg_price: {avg_price}, best_price: {best_price}")
+
 
         if avg_price <= 0:
             logger.warning(f"ASIN {asin}: 1yr. Avg. price is zero or less, cannot calculate discount.")
@@ -134,9 +149,10 @@ def get_percent_discount(product, best_price_str, logger=None):
 
         # Calculate discount
         discount = ((avg_price - best_price) / avg_price) * 100
+        result_value = f"{discount:.0f}%"
 
-        logger.debug(f"ASIN {asin}: Discount calculated: {discount:.2f}% (Avg: {avg_price}, Best: {best_price})")
-        return {"% ⇩": f"{discount:.0f}%"}
+        logger.debug(f"ASIN {asin}: Discount calculated: {discount:.2f}% (Avg: {avg_price}, Best: {best_price}). Returning: {result_value}")
+        return {"% ⇩": result_value}
 
     except (ValueError, TypeError) as e:
         logger.error(f"ASIN {asin}: Error calculating discount: {e}", exc_info=True)
@@ -148,23 +164,26 @@ def get_trend(product, logger=None):
     """
     if not logger:
         logger = logging.getLogger(__name__)
-
     asin = product.get('asin', 'N/A')
+    logger.debug(f"ASIN {asin}: Running get_trend.")
+
     csv_data = product.get('csv', [])
 
     # Using USED price history (index 2) for trend analysis
     if not csv_data or len(csv_data) < 3 or not csv_data[2] or len(csv_data[2]) < 4:
-        logger.debug(f"ASIN {asin}: Insufficient CSV data for trend analysis.")
+        logger.debug(f"ASIN {asin}: Insufficient CSV data for trend analysis. csv_data length: {len(csv_data) if csv_data else 0}")
         return {"Trend": "-"}
 
     try:
-        price_history = csv_data[2]
+        price_history = csv_data[2] # USED price
         df = pd.DataFrame(np.array(price_history).reshape(-1, 2), columns=['timestamp', 'price'])
         df['datetime'] = pd.to_datetime(df['timestamp'], unit='m', origin=KEEPA_EPOCH)
+        logger.debug(f"ASIN {asin}: Created DataFrame for trend analysis with {len(df)} data points.")
 
         # Filter for the last 30 days
         thirty_days_ago = datetime.now() - timedelta(days=30)
         df_last_30_days = df[df['datetime'] >= thirty_days_ago].copy()
+        logger.debug(f"ASIN {asin}: Found {len(df_last_30_days)} data points in the last 30 days.")
 
         if len(df_last_30_days) < 2:
             logger.info(f"ASIN {asin}: Not enough data points in the last 30 days to determine a trend.")
@@ -176,6 +195,7 @@ def get_trend(product, logger=None):
 
         # Drop rows where price is -1 (no data)
         df_last_30_days = df_last_30_days[df_last_30_days['price'] > 0]
+        logger.debug(f"ASIN {asin}: Found {len(df_last_30_days)} valid data points (>0) in the last 30 days.")
 
         if len(df_last_30_days) < 2:
             logger.info(f"ASIN {asin}: Not enough valid data points (>0) in the last 30 days to determine a trend.")
