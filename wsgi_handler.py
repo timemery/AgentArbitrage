@@ -618,6 +618,15 @@ def start_keepa_scan():
     limit_str = request.form.get('limit')
     limit = int(limit_str) if limit_str and limit_str.isdigit() else None
 
+    # Immediately set status to "Running" to provide feedback and prevent race conditions.
+    # The Celery task will overwrite this with more details, but this is a crucial first step.
+    set_scan_status({
+        "status": "Running",
+        "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+        "message": "Scan has been queued. Waiting for worker to start processing...",
+        "task_id": None # Task ID will be set by the worker
+    })
+
     # Trigger the task
     task = run_keepa_script.delay(
         api_key=KEEPA_API_KEY,
