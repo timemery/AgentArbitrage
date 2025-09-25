@@ -627,14 +627,9 @@ def start_keepa_scan():
         status_update_callback=None # Cannot pass this from here
     )
 
-    # Store initial status
-    new_status = {
-        "status": "Running",
-        "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-        "task_id": task.id,
-        "message": "Scan initiated..."
-    }
-    set_scan_status(new_status)
+    # The Celery task is now responsible for setting the initial status.
+    # We can store the task_id in the session for potential future use.
+    session['latest_task_id'] = task.id
 
     flash('Keepa scan has been initiated in the background.', 'success')
     return redirect(url_for('data_sourcing'))
