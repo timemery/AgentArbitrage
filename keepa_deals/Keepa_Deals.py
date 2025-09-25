@@ -292,10 +292,13 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                             elif func.__name__ == 'deal_found':
                             # Update above
                                 result = func(original_deal_obj, logger)
-                            #Update below Jules: "Please ensure the elif block in this file (around line 353) looks like this (with 'get_condition' removed from the list):"  
-                            elif func.__name__ in ['get_best_price', 'get_seller_rank', 'get_seller_quality_score', 'get_seller_id']:
-                            # Update above    
-                                result = func(product, api_key=api_key)
+                            #Update below Jules: "Please ensure the elif block in this file (around line 353) looks like this (with 'get_condition' removed from the list):"
+                            elif func.__name__ == 'get_percent_discount':
+                                best_price_str = row.get('Best Price', '-')
+                                result = func(product, best_price_str, logger=logger)
+                            elif func.__name__ in ['get_best_price', 'get_seller_rank', 'get_seller_quality_score', 'get_seller_id', 'get_changed', 'get_1yr_avg_sale_price', 'get_trend']:
+                            # Update above
+                                result = func(product, logger=logger)
                             else:
                                 result = func(product)
                             

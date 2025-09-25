@@ -1,15 +1,15 @@
 {
     "status": "Completed",
-    "start_time": "2025-09-24T23:32:05.644Z",
-    "message": "Scan completed successfully.",
-    "total_deals": 100,
-    "processed_deals": 100,
-    "etr_seconds": 0.0,
+    "start_time": "2025-09-25T03:05:10.174Z",
+    "message": "Scan finished. No deals were found matching the criteria.",
+    "total_deals": 0,
+    "processed_deals": 0,
+    "etr_seconds": 0,
     "debug_etr": {
         "elapsed": 6776.971989631653,
         "processed": 100,
         "time_per_deal": 67.76971989631653
     },
-    "end_time": "2025-09-25T02:33:22.123Z",
+    "end_time": "2025-09-25T03:06:10.961Z",
     "output_file": "data/Keepa_Deals_Export.csv"
 }
