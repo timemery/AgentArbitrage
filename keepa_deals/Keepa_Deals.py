@@ -50,12 +50,14 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         current_status.update(status_dict)
         set_scan_status(current_status)
 
-    # Initial status update from within the task
-    _update_cli_status({
+    # Overwrite the status file with a clean initial state
+    initial_status = {
         "status": "Running",
         "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-        "message": "Worker has started processing the scan."
-    })
+        "message": "Worker has started processing the scan.",
+        "task_id": run_keepa_script.request.id
+    }
+    set_scan_status(initial_status)
 
     scan_start_time = time.time() # Start timer at the very beginning
     os.makedirs(output_dir, exist_ok=True)

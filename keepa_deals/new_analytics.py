@@ -193,7 +193,7 @@ def get_trend(product, logger=None):
         elif slope < -0.01:
             trend_symbol = "⇩"
         else:
-            trend_symbol = "→"
+            trend_symbol = "-"
 
         logger.debug(f"ASIN {asin}: Trend analysis slope: {slope}. Symbol: {trend_symbol}")
         return {"Trend": trend_symbol}
