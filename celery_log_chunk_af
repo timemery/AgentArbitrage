@@ -1,0 +1,1010 @@
+[2025-09-24 18:30:28,481: INFO/ForkPoolWorker-1] Initializing TokenManager: Fetching initial token status...
+[2025-09-24 18:30:28,481: INFO/ForkPoolWorker-1] Requesting current token status from Keepa...
+[2025-09-24 18:30:28,804: INFO/ForkPoolWorker-1] Successfully retrieved token status: {'processingTimeInMs': 1, 'refillIn': 17151, 'refillRate': 5, 'timestamp': 1758738628752, 'tokenFlowReduction': 0.0, 'tokensConsumed': 0, 'tokensLeft': 300}
+[2025-09-24 18:30:28,805: INFO/ForkPoolWorker-1] TokenManager initialized. Starting tokens: 300
+[2025-09-24 18:30:28,805: INFO/ForkPoolWorker-1] Starting Keepa_Deals script...
+[2025-09-24 18:30:28,805: INFO/ForkPoolWorker-1] Fetching deals page 0...
+[2025-09-24 18:30:28,805: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:30:29,707: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0
+[2025-09-24 18:30:29,708: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:30:29,708: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0. Total deals so far: 150
+[2025-09-24 18:30:29,708: INFO/ForkPoolWorker-1] Fetching deals page 1...
+[2025-09-24 18:30:29,708: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:31:29,762: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:31:30,602: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1
+[2025-09-24 18:31:30,602: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:31:30,602: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1. Total deals so far: 300
+[2025-09-24 18:31:30,602: INFO/ForkPoolWorker-1] Fetching deals page 2...
+[2025-09-24 18:31:30,602: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:32:30,661: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:32:31,789: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2
+[2025-09-24 18:32:31,790: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:32:31,790: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2. Total deals so far: 450
+[2025-09-24 18:32:31,790: INFO/ForkPoolWorker-1] Fetching deals page 3...
+[2025-09-24 18:32:31,790: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:33:31,832: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:33:32,748: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3
+[2025-09-24 18:33:32,749: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:33:32,749: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3. Total deals so far: 600
+[2025-09-24 18:33:32,749: INFO/ForkPoolWorker-1] Fetching deals page 4...
+[2025-09-24 18:33:32,749: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:34:32,807: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:34:33,619: INFO/ForkPoolWorker-1] Fetched 49 deals from page 4
+[2025-09-24 18:34:33,619: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:34:33,620: INFO/ForkPoolWorker-1] Fetched 49 deals from page 4. Total deals so far: 649
+[2025-09-24 18:34:33,620: INFO/ForkPoolWorker-1] Fetching deals page 5...
+[2025-09-24 18:34:33,620: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:35:33,654: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:35:34,073: INFO/ForkPoolWorker-1] Fetched 0 deals from page 5
+[2025-09-24 18:35:34,073: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:35:34,073: INFO/ForkPoolWorker-1] No more deals found on page 5.
+[2025-09-24 18:35:34,073: INFO/ForkPoolWorker-1] Total deals fetched: 649
+[2025-09-24 18:35:34,073: WARNING/ForkPoolWorker-1] PROCESSING LIMIT ACTIVE: Processing only the first 2 of 649 deals.
+[2025-09-24 18:35:34,073: INFO/ForkPoolWorker-1] Deals to process: 2
+[2025-09-24 18:35:34,074: INFO/ForkPoolWorker-1] Starting ASIN processing, found 2 deals (after potential temporary limit)
+[2025-09-24 18:35:34,074: INFO/ForkPoolWorker-1] Collected 2 valid ASINs for batch processing.
+[2025-09-24 18:35:34,074: INFO/ForkPoolWorker-1] Created 1 batches for API calls.
+[2025-09-24 18:35:34,074: INFO/ForkPoolWorker-1] Processing Batch 1/1 (Attempt 1) with 2 ASINs: ['0871239574', '0521052076']...
+[2025-09-24 18:35:34,074: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:36:34,132: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 16. Current tokens: 300.00
+[2025-09-24 18:36:34,132: INFO/ForkPoolWorker-1] Fetching batch of 2 ASINs: 0871239574,0521052076...
+[2025-09-24 18:36:46,592: INFO/ForkPoolWorker-1] Batch API call successful. Tokens consumed: 12
+[2025-09-24 18:36:46,592: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 288
+[2025-09-24 18:36:46,593: INFO/ForkPoolWorker-1] ASIN 0871239574: Percent Down 365 calculated. Current: 21.65, Avg365: 76.81, Diff: 71.81%, Result: 72%
+[2025-09-24 18:36:46,593: INFO/ForkPoolWorker-1] ASIN 0871239574: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 18:36:46,593: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last_update: Selected latest_ts=7748292 from candidates [7748292, 7748280]. Sources considered: ['deal_object.lastUpdate (7748292)', 'product_data.stats.lastOffersUpdate (7748280)']
+[2025-09-24 18:36:46,593: INFO/ForkPoolWorker-1] ASIN: 0871239574 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 18:36:46,593: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Using deal_object.currentSince for last used price change. Max timestamp: 7748292. All considered: [7748292, 7462736, 7748280, 7748280]
+[2025-09-24 18:36:46,593: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last price change (focused on used) result: 2025-09-24 14:12:00 (from ts 7748292 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 18:36:46,594: INFO/ForkPoolWorker-1] ASIN 0871239574: FBA Pick&Pack Fee found: $3.24 (from raw 324)
+[2025-09-24 18:36:46,594: INFO/ForkPoolWorker-1] ASIN 0871239574: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 18:36:46,594: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Found lowest priced offer at $5.43 with condition: Used, acceptable (5)
+[2025-09-24 18:36:46,594: INFO/ForkPoolWorker-1] ASIN 0871239574: Parsed date '2001' to standard format '2000-01-02'.
+[2025-09-24 18:36:46,594: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2191280) for ASIN 0871239574
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0871239574
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0871239574: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 0871239574
+[2025-09-24 18:36:46,594: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0871239574: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 18:36:46,594: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 7681, 2109329, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8399, 11926, 3593, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0871239574: Found price $24.25 from stats.min[10][1]
+[2025-09-24 18:36:46,595: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 7681, 2109329, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8399, 11926, 3593, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0871239574: Price found via primary logic. FBA item price: 3517. Formatted: $35.17
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0871239574: Using stats.avg365[32], value: $144.81
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0871239574: Using stats.avg365[19], value: $69.99
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0871239574: Using stats.avg365[20], value: $95.60
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0871239574: Using stats.avg365[21], value: $83.99
+[2025-09-24 18:36:46,595: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0871239574
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0871239574: Using stats.avg365[22], value: $119.26
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - 365 days avg. from stats.avg365[11]: -
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - Current calculated as 19 (Total: 19, New FBA: 0, New FBM: 0).
+[2025-09-24 18:36:46,595: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - 365 days avg. from stats.avg365[12]: 11
+[2025-09-24 18:36:46,797: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 18:36:46,797: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN 0521052076: Percent Down 365 calculated. Current: 20.17, Avg365: 123.33, Diff: 83.65%, Result: 84%
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN 0521052076: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last_update: Selected latest_ts=7748316 from candidates [7748188, 7748316]. Sources considered: ['deal_object.lastUpdate (7748188)', 'product_data.stats.lastOffersUpdate (7748316)']
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN: 0521052076 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Using deal_object.currentSince for last used price change. Max timestamp: 7742986. All considered: [7742986, 5191056, 7742986, 7742986]
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last price change (focused on used) result: 2025-09-20 21:46:00 (from ts 7742986 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN 0521052076: FBA Pick&Pack Fee found: $3.43 (from raw 343)
+[2025-09-24 18:36:47,013: INFO/ForkPoolWorker-1] ASIN 0521052076: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 18:36:47,014: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Found lowest priced offer at $9.31 with condition: Used, good (4)
+[2025-09-24 18:36:47,017: INFO/ForkPoolWorker-1] ASIN 0521052076: Parsed date '19670901' to standard format '1967-09-01'.
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2228764) for ASIN 0521052076
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0521052076
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0521052076: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0521052076: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 47226, 12333, 2496234, 2295, 9999, -1, 53021, -1, -1, -1, 0, 4, -1, 0, -1, 43, 706, 29087, -1, 2270, 12354, 13281, -1, 10397, -1, -1, -1, -1, -1, -1, -1, 13157, -1]
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0521052076: stats.min[10] is not a valid pair: None
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Using stats.current[7], value: $548.84
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Final result: $548.84, Source: stats.current[7]
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBM - 365 days avg. found: $530.21 from stats.avg365[7]
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0521052076: Price found via primary logic. FBM item price: 2017 + shipping: 0 = 2017. Formatted: $20.17
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0521052076: Using stats.avg365[32], value: $131.57
+[2025-09-24 18:36:47,018: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0521052076: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0521052076: Using stats.avg365[20], value: $22.70
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0521052076: Using stats.avg365[21], value: $123.54
+[2025-09-24 18:36:47,018: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0521052076: Using stats.avg365[22], value: $132.81
+[2025-09-24 18:36:47,019: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 18:36:47,019: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 18:36:47,019: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - Current calculated as 6 (Total: 7, New FBA: 0, New FBM: 1).
+[2025-09-24 18:36:47,019: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 18:36:47,134: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 18:36:47,134: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 18:36:47,261: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 18:36:47,261: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 18:36:47,261: INFO/ForkPoolWorker-1] Starting decoupled seller information processing...
+[2025-09-24 18:36:47,284: INFO/ForkPoolWorker-1] ASIN 0871239574: Found best price $21.66 from validated live offers, matched to Seller ID: A1I1V7QUWSMYGA
+[2025-09-24 18:36:47,285: INFO/ForkPoolWorker-1] ASIN 0871239574: Successfully processed and updated seller info.
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] ASIN 0521052076: Found best price $20.17 from validated live offers, matched to Seller ID: AN9NQZD6552ND
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] ASIN 0521052076: Successfully processed and updated seller info.
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] Finished decoupled seller information processing.
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] Starting business logic calculations...
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] Successfully loaded settings from /var/www/agentarbitrage/keepa_deals/../settings.json
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] Finished business logic calculations.
+[2025-09-24 18:36:47,286: INFO/ForkPoolWorker-1] Entering write_csv. Number of deals to process: 2. Number of rows generated: 2.
+[2025-09-24 18:36:47,287: INFO/ForkPoolWorker-1] CSV written: data/Keepa_Deals_Export.csv with 2 data rows.
+[2025-09-24 18:36:47,287: INFO/ForkPoolWorker-1] Connecting to database at /var/www/agentarbitrage/keepa_deals/../deals.db...
+[2025-09-24 18:36:47,287: INFO/ForkPoolWorker-1] Dropping existing 'deals' table if it exists.
+[2025-09-24 18:36:47,291: INFO/ForkPoolWorker-1] Creating new 'deals' table.
+[2025-09-24 18:36:47,295: INFO/ForkPoolWorker-1] Inserting 2 rows into 'deals' table.
+[2025-09-24 18:36:47,299: INFO/ForkPoolWorker-1] Successfully inserted 2 rows into the database.
+[2025-09-24 18:36:47,299: INFO/ForkPoolWorker-1] Database connection closed.
+[2025-09-24 18:36:47,300: INFO/ForkPoolWorker-1] Script completed!
+[2025-09-24 18:36:47,306: INFO/ForkPoolWorker-1] Task keepa_deals.Keepa_Deals.run_keepa_script[8d47a036-801d-4b83-9967-c53d7c53a81c] succeeded in 378.82571455836296s: None
+[2025-09-24 18:40:27,594: INFO/MainProcess] Task keepa_deals.Keepa_Deals.run_keepa_script[d256cdae-0a00-4a94-90a3-fc4e35f3afb5] received
+[2025-09-24 18:40:27,595: INFO/ForkPoolWorker-1] Initializing TokenManager: Fetching initial token status...
+[2025-09-24 18:40:27,595: INFO/ForkPoolWorker-1] Requesting current token status from Keepa...
+[2025-09-24 18:40:27,910: INFO/ForkPoolWorker-1] Successfully retrieved token status: {'processingTimeInMs': 0, 'refillIn': 20049, 'refillRate': 5, 'timestamp': 1758739227858, 'tokenFlowReduction': 0.0, 'tokensConsumed': 0, 'tokensLeft': 300}
+[2025-09-24 18:40:27,911: INFO/ForkPoolWorker-1] TokenManager initialized. Starting tokens: 300
+[2025-09-24 18:40:27,911: INFO/ForkPoolWorker-1] Starting Keepa_Deals script...
+[2025-09-24 18:40:27,911: INFO/ForkPoolWorker-1] Fetching deals page 0...
+[2025-09-24 18:40:27,911: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:40:28,999: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0
+[2025-09-24 18:40:29,002: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:40:29,002: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0. Total deals so far: 150
+[2025-09-24 18:40:29,002: INFO/ForkPoolWorker-1] Fetching deals page 1...
+[2025-09-24 18:40:29,002: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:41:29,046: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:41:30,117: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1
+[2025-09-24 18:41:30,118: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:41:30,118: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1. Total deals so far: 300
+[2025-09-24 18:41:30,118: INFO/ForkPoolWorker-1] Fetching deals page 2...
+[2025-09-24 18:41:30,118: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:42:30,150: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:42:32,445: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2
+[2025-09-24 18:42:32,445: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:42:32,445: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2. Total deals so far: 450
+[2025-09-24 18:42:32,445: INFO/ForkPoolWorker-1] Fetching deals page 3...
+[2025-09-24 18:42:32,445: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:43:32,505: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:43:33,168: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3
+[2025-09-24 18:43:33,169: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:43:33,169: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3. Total deals so far: 600
+[2025-09-24 18:43:33,169: INFO/ForkPoolWorker-1] Fetching deals page 4...
+[2025-09-24 18:43:33,169: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:44:33,226: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:44:33,945: INFO/ForkPoolWorker-1] Fetched 48 deals from page 4
+[2025-09-24 18:44:33,946: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:44:33,946: INFO/ForkPoolWorker-1] Fetched 48 deals from page 4. Total deals so far: 648
+[2025-09-24 18:44:33,946: INFO/ForkPoolWorker-1] Fetching deals page 5...
+[2025-09-24 18:44:33,946: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:45:34,005: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 18:45:34,557: INFO/ForkPoolWorker-1] Fetched 0 deals from page 5
+[2025-09-24 18:45:34,557: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 18:45:34,557: INFO/ForkPoolWorker-1] No more deals found on page 5.
+[2025-09-24 18:45:34,557: INFO/ForkPoolWorker-1] Total deals fetched: 648
+[2025-09-24 18:45:34,557: WARNING/ForkPoolWorker-1] PROCESSING LIMIT ACTIVE: Processing only the first 4 of 648 deals.
+[2025-09-24 18:45:34,557: INFO/ForkPoolWorker-1] Deals to process: 4
+[2025-09-24 18:45:34,558: INFO/ForkPoolWorker-1] Starting ASIN processing, found 4 deals (after potential temporary limit)
+[2025-09-24 18:45:34,558: INFO/ForkPoolWorker-1] Collected 4 valid ASINs for batch processing.
+[2025-09-24 18:45:34,558: INFO/ForkPoolWorker-1] Created 1 batches for API calls.
+[2025-09-24 18:45:34,558: INFO/ForkPoolWorker-1] Processing Batch 1/1 (Attempt 1) with 4 ASINs: ['0871239574', '0521052076', '1869890922']...
+[2025-09-24 18:45:34,558: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 18:46:34,601: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 32. Current tokens: 300.00
+[2025-09-24 18:46:34,601: INFO/ForkPoolWorker-1] Fetching batch of 4 ASINs: 0871239574,0521052076,1869890922...
+[2025-09-24 18:46:54,194: INFO/ForkPoolWorker-1] Batch API call successful. Tokens consumed: 30
+[2025-09-24 18:46:54,195: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 270
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN 0871239574: Percent Down 365 calculated. Current: 21.65, Avg365: 76.59, Diff: 71.73%, Result: 72%
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN 0871239574: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last_update: Selected latest_ts=7748292 from candidates [7748292, 7748280]. Sources considered: ['deal_object.lastUpdate (7748292)', 'product_data.stats.lastOffersUpdate (7748280)']
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN: 0871239574 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Using deal_object.currentSince for last used price change. Max timestamp: 7748292. All considered: [7748292, 7462736, 7748280, 7748280]
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last price change (focused on used) result: 2025-09-24 14:12:00 (from ts 7748292 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN 0871239574: FBA Pick&Pack Fee found: $3.24 (from raw 324)
+[2025-09-24 18:46:54,196: INFO/ForkPoolWorker-1] ASIN 0871239574: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 18:46:54,197: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Found lowest priced offer at $5.43 with condition: Used, acceptable (5)
+[2025-09-24 18:46:54,197: INFO/ForkPoolWorker-1] ASIN 0871239574: Parsed date '2001' to standard format '2000-01-02'.
+[2025-09-24 18:46:54,197: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2191280) for ASIN 0871239574
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0871239574
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0871239574: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 0871239574
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0871239574: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 18:46:54,197: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 7659, 2109294, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8399, 11926, 3593, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 18:46:54,197: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0871239574: Found price $24.25 from stats.min[10][1]
+[2025-09-24 18:46:54,197: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 7659, 2109294, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8399, 11926, 3593, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0871239574: Price found via primary logic. FBA item price: 3517. Formatted: $35.17
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0871239574: Using stats.avg365[32], value: $144.81
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0871239574: Using stats.avg365[19], value: $69.99
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0871239574: Using stats.avg365[20], value: $95.60
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0871239574: Using stats.avg365[21], value: $83.99
+[2025-09-24 18:46:54,198: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0871239574
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0871239574: Using stats.avg365[22], value: $119.26
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - 365 days avg. from stats.avg365[11]: -
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - Current calculated as 19 (Total: 19, New FBA: 0, New FBM: 0).
+[2025-09-24 18:46:54,198: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - 365 days avg. from stats.avg365[12]: 11
+[2025-09-24 18:46:54,415: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 18:46:54,416: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 18:46:54,633: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 18:46:54,633: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 18:46:54,633: INFO/ForkPoolWorker-1] ASIN 0521052076: Percent Down 365 calculated. Current: 20.17, Avg365: 123.32, Diff: 83.64%, Result: 84%
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN 0521052076: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last_update: Selected latest_ts=7748316 from candidates [7748316, 7748316]. Sources considered: ['deal_object.lastUpdate (7748316)', 'product_data.stats.lastOffersUpdate (7748316)']
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN: 0521052076 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Using deal_object.currentSince for last used price change. Max timestamp: 7742986. All considered: [7742986, 5191056, 7742986, 7742986]
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last price change (focused on used) result: 2025-09-20 21:46:00 (from ts 7742986 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN 0521052076: FBA Pick&Pack Fee found: $3.43 (from raw 343)
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN 0521052076: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Found lowest priced offer at $9.31 with condition: Used, good (4)
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] ASIN 0521052076: Parsed date '19670901' to standard format '1967-09-01'.
+[2025-09-24 18:46:54,634: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2228764) for ASIN 0521052076
+[2025-09-24 18:46:54,634: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 18:46:54,634: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 18:46:54,634: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 18:46:54,635: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0521052076
+[2025-09-24 18:46:54,635: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0521052076: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 18:46:54,635: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0521052076: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 47230, 12332, 2496189, 2295, 9999, -1, 53023, -1, -1, -1, 0, 4, -1, 0, -1, 43, 706, 29087, -1, 2270, 12353, 13280, -1, 10397, -1, -1, -1, -1, -1, -1, -1, 13156, -1]
+[2025-09-24 18:46:54,635: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0521052076: stats.min[10] is not a valid pair: None
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Using stats.current[7], value: $548.84
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Final result: $548.84, Source: stats.current[7]
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBM - 365 days avg. found: $530.23 from stats.avg365[7]
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0521052076: Price found via primary logic. FBM item price: 2017 + shipping: 0 = 2017. Formatted: $20.17
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0521052076: Using stats.avg365[32], value: $131.56
+[2025-09-24 18:46:54,635: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0521052076: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0521052076: Using stats.avg365[20], value: $22.70
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0521052076: Using stats.avg365[21], value: $123.53
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0521052076: Using stats.avg365[22], value: $132.80
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - Current calculated as 6 (Total: 7, New FBA: 0, New FBM: 1).
+[2025-09-24 18:46:54,635: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 18:46:54,756: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 18:46:54,756: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 18:46:54,867: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN 1869890922: Percent Down 365 calculated. Current: 21.81, Avg365: 66.79, Diff: 67.35%, Result: 67%
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN 1869890922: No indication of free shipping found for Used - Current offer.
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN: 1869890922 - last_update: Selected latest_ts=7748320 from candidates [7748190, 7748320]. Sources considered: ['deal_object.lastUpdate (7748190)', 'product_data.stats.lastOffersUpdate (7748320)']
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN: 1869890922 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN: 1869890922 - Using deal_object.currentSince for last used price change. Max timestamp: 7748188. All considered: [7748188, 7392984, 7593926, 7748080, 7748080]
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN: 1869890922 - last price change (focused on used) result: 2025-09-24 12:28:00 (from ts 7748188 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN 1869890922: FBA Pick&Pack Fee found: $3.90 (from raw 390)
+[2025-09-24 18:46:54,868: INFO/ForkPoolWorker-1] ASIN 1869890922: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] ASIN: 1869890922 - Found lowest priced offer at $13.63 with condition: Used, good (4)
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] ASIN 1869890922: Parsed date '2000' to standard format '2000-01-02'.
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2166020) for ASIN 1869890922
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 1869890922
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 1869890922: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 1869890922
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 1869890922: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] ASIN 1869890922: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 93563, 6679, 2199202, 6500, 41733, -1, 113875, -1, -1, -1, 0, 4, -1, 1, -1, 40, 6, -1, 13486, 8641, 7173, 9880, 42295, -1, -1, -1, -1, -1, 1551, -1, -1, 6912, -1]
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 1869890922: Found price $274.00 from stats.min[10][1]
+[2025-09-24 18:46:54,869: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1869890922: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1869890922: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] ASIN 1869890922: New, 3rd Party FBM - 365 days avg. found: $1138.75 from stats.avg365[7]
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 1869890922: Price found via primary logic. FBM item price: 2181 + shipping: 499 = 2680. Formatted: $26.80
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 1869890922: Using stats.avg365[32], value: $69.12
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 1869890922: Using stats.avg365[19], value: $134.86
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 1869890922: Using stats.avg365[20], value: $86.41
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 1869890922: Using stats.avg365[21], value: $71.73
+[2025-09-24 18:46:54,869: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 1869890922: Using stats.avg365[22], value: $98.80
+[2025-09-24 18:46:54,870: INFO/ForkPoolWorker-1] ASIN 1869890922: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 18:46:54,870: INFO/ForkPoolWorker-1] ASIN 1869890922: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 18:46:54,870: INFO/ForkPoolWorker-1] ASIN 1869890922: Used Offer Count - Current calculated as 7 (Total: 7, New FBA: 0, New FBM: 0).
+[2025-09-24 18:46:54,870: INFO/ForkPoolWorker-1] ASIN 1869890922: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 18:46:55,006: INFO/ForkPoolWorker-1] ASIN 1869890922: Found 35 sane sale events after outlier rejection.
+[2025-09-24 18:46:55,155: INFO/ForkPoolWorker-1] ASIN 1869890922: Found 35 sane sale events after outlier rejection.
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN 0895558238: Percent Down 365 calculated. Current: 24.86, Avg365: 84.98, Diff: 70.75%, Result: 71%
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN 0895558238: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN: 0895558238 - last_update: Selected latest_ts=7748326 from candidates [7748190, 7748326]. Sources considered: ['deal_object.lastUpdate (7748190)', 'product_data.stats.lastOffersUpdate (7748326)']
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN: 0895558238 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN: 0895558238 - Using deal_object.currentSince for last used price change. Max timestamp: 7748188. All considered: [7748188, 7748188, 7748188, 7748188]
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN: 0895558238 - last price change (focused on used) result: 2025-09-24 12:28:00 (from ts 7748188 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN 0895558238: FBA Pick&Pack Fee found: $3.43 (from raw 343)
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN 0895558238: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN: 0895558238 - Found lowest priced offer at $8.81 with condition: Used, like new (2)
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] ASIN 0895558238: Parsed date '20051201' to standard format '2005-12-01'.
+[2025-09-24 18:46:55,156: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2155696) for ASIN 0895558238
+[2025-09-24 18:46:55,156: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0895558238 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 18:46:55,156: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0895558238 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 18:46:55,156: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0895558238 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 18:46:55,156: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0895558238
+[2025-09-24 18:46:55,156: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0895558238: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 18:46:55,156: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0895558238: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] ASIN 0895558238: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 112292, 8498, 2236422, 1395, 6998, -1, 112481, -1, -1, -1, 0, 4, -1, 0, -1, 44, 36, -1, 10246, 9421, 10016, 4212, -1, 6998, -1, -1, -1, -1, -1, -1, -1, 11977, -1]
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0895558238: Found price $13.94 from stats.min[10][1]
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0895558238: Using stats.current[7], value: $1289.44
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0895558238: Final result: $1289.44, Source: stats.current[7]
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] ASIN 0895558238: New, 3rd Party FBM - 365 days avg. found: $1124.81 from stats.avg365[7]
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0895558238: Price found via primary logic. FBA item price: 2999. Formatted: $29.99
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0895558238: Using stats.avg365[32], value: $119.77
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0895558238: Using stats.avg365[19], value: $102.46
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0895558238: Using stats.avg365[20], value: $94.21
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0895558238: Using stats.avg365[21], value: $100.16
+[2025-09-24 18:46:55,157: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0895558238
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0895558238: Using stats.avg365[22], value: $42.12
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] ASIN 0895558238: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] ASIN 0895558238: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] ASIN 0895558238: Used Offer Count - Current calculated as 11 (Total: 12, New FBA: 0, New FBM: 1).
+[2025-09-24 18:46:55,157: INFO/ForkPoolWorker-1] ASIN 0895558238: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 18:46:55,247: INFO/ForkPoolWorker-1] ASIN 0895558238: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 109.60).
+[2025-09-24 18:46:55,247: INFO/ForkPoolWorker-1] ASIN 0895558238: Found 28 sane sale events after outlier rejection.
+[2025-09-24 18:46:55,335: INFO/ForkPoolWorker-1] ASIN 0895558238: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 109.60).
+[2025-09-24 18:46:55,335: INFO/ForkPoolWorker-1] ASIN 0895558238: Found 28 sane sale events after outlier rejection.
+[2025-09-24 18:46:55,335: INFO/ForkPoolWorker-1] Starting decoupled seller information processing...
+[2025-09-24 18:46:55,338: INFO/ForkPoolWorker-1] ASIN 0871239574: Found best price $21.66 from validated live offers, matched to Seller ID: A1I1V7QUWSMYGA
+[2025-09-24 18:46:55,339: INFO/ForkPoolWorker-1] ASIN 0871239574: Successfully processed and updated seller info.
+[2025-09-24 18:46:55,340: INFO/ForkPoolWorker-1] ASIN 0521052076: Found best price $20.17 from validated live offers, matched to Seller ID: AN9NQZD6552ND
+[2025-09-24 18:46:55,340: INFO/ForkPoolWorker-1] ASIN 0521052076: Successfully processed and updated seller info.
+[2025-09-24 18:46:55,342: INFO/ForkPoolWorker-1] ASIN 1869890922: Found best price $26.80 from validated live offers, matched to Seller ID: A2GBCRGIWRDXK8
+[2025-09-24 18:46:55,342: INFO/ForkPoolWorker-1] ASIN 1869890922: Successfully processed and updated seller info.
+[2025-09-24 18:46:55,344: INFO/ForkPoolWorker-1] ASIN 0895558238: Found best price $29.85 from validated live offers, matched to Seller ID: A8T3G32D9L5NK
+[2025-09-24 18:46:55,344: INFO/ForkPoolWorker-1] ASIN 0895558238: Seller data for ID A8T3G32D9L5NK not in cache. Fetching from API.
+[2025-09-24 18:46:55,344: INFO/ForkPoolWorker-1] Rate limit: Pausing for 58.85 seconds.
+[2025-09-24 18:47:54,254: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 1. Current tokens: 276.64
+[2025-09-24 18:47:54,254: INFO/ForkPoolWorker-1] Fetching data for batch of 1 sellers
+[2025-09-24 18:47:54,663: INFO/ForkPoolWorker-1] Seller API call successful. Tokens consumed: 1
+[2025-09-24 18:47:54,663: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 276.64, After: 274
+[2025-09-24 18:47:54,664: INFO/ForkPoolWorker-1] ASIN 0895558238: Successfully processed and updated seller info.
+[2025-09-24 18:47:54,664: INFO/ForkPoolWorker-1] Finished decoupled seller information processing.
+[2025-09-24 18:47:54,664: INFO/ForkPoolWorker-1] Starting business logic calculations...
+[2025-09-24 18:47:54,664: INFO/ForkPoolWorker-1] Successfully loaded settings from /var/www/agentarbitrage/keepa_deals/../settings.json
+[2025-09-24 18:47:54,664: INFO/ForkPoolWorker-1] Finished business logic calculations.
+[2025-09-24 18:47:54,664: INFO/ForkPoolWorker-1] Entering write_csv. Number of deals to process: 4. Number of rows generated: 4.
+[2025-09-24 18:47:54,665: INFO/ForkPoolWorker-1] CSV written: data/Keepa_Deals_Export.csv with 4 data rows.
+[2025-09-24 18:47:54,665: INFO/ForkPoolWorker-1] Connecting to database at /var/www/agentarbitrage/keepa_deals/../deals.db...
+[2025-09-24 18:47:54,665: INFO/ForkPoolWorker-1] Dropping existing 'deals' table if it exists.
+[2025-09-24 18:47:54,670: INFO/ForkPoolWorker-1] Creating new 'deals' table.
+[2025-09-24 18:47:54,673: INFO/ForkPoolWorker-1] Inserting 4 rows into 'deals' table.
+[2025-09-24 18:47:54,679: INFO/ForkPoolWorker-1] Successfully inserted 4 rows into the database.
+[2025-09-24 18:47:54,679: INFO/ForkPoolWorker-1] Database connection closed.
+[2025-09-24 18:47:54,679: INFO/ForkPoolWorker-1] Script completed!
+[2025-09-24 18:47:54,686: INFO/ForkPoolWorker-1] Task keepa_deals.Keepa_Deals.run_keepa_script[d256cdae-0a00-4a94-90a3-fc4e35f3afb5] succeeded in 447.09190212003887s: None
+[2025-09-24 19:09:40,115: INFO/MainProcess] Task keepa_deals.Keepa_Deals.run_keepa_script[54b8dd16-0a23-4367-9a35-446ec0c4ccf8] received
+[2025-09-24 19:09:40,117: INFO/ForkPoolWorker-1] Initializing TokenManager: Fetching initial token status...
+[2025-09-24 19:09:40,117: INFO/ForkPoolWorker-1] Requesting current token status from Keepa...
+[2025-09-24 19:09:40,539: INFO/ForkPoolWorker-1] Successfully retrieved token status: {'processingTimeInMs': 4, 'refillIn': 13330, 'refillRate': 5, 'timestamp': 1758740980485, 'tokenFlowReduction': 0.0, 'tokensConsumed': 0, 'tokensLeft': 300}
+[2025-09-24 19:09:40,539: INFO/ForkPoolWorker-1] TokenManager initialized. Starting tokens: 300
+[2025-09-24 19:09:40,539: INFO/ForkPoolWorker-1] Starting Keepa_Deals script...
+[2025-09-24 19:09:40,539: INFO/ForkPoolWorker-1] Fetching deals page 0...
+[2025-09-24 19:09:40,540: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 19:09:41,433: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0
+[2025-09-24 19:09:41,433: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 19:09:41,433: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0. Total deals so far: 150
+[2025-09-24 19:09:41,433: INFO/ForkPoolWorker-1] Fetching deals page 1...
+[2025-09-24 19:09:41,433: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 19:10:41,481: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 19:10:42,786: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1
+[2025-09-24 19:10:42,787: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 19:10:42,787: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1. Total deals so far: 300
+[2025-09-24 19:10:42,787: INFO/ForkPoolWorker-1] Fetching deals page 2...
+[2025-09-24 19:10:42,787: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 19:11:42,845: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 19:11:43,740: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2
+[2025-09-24 19:11:43,740: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 19:11:43,740: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2. Total deals so far: 450
+[2025-09-24 19:11:43,740: INFO/ForkPoolWorker-1] Fetching deals page 3...
+[2025-09-24 19:11:43,740: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 19:12:43,774: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 19:12:45,496: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3
+[2025-09-24 19:12:45,497: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 19:12:45,497: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3. Total deals so far: 600
+[2025-09-24 19:12:45,497: INFO/ForkPoolWorker-1] Fetching deals page 4...
+[2025-09-24 19:12:45,497: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 19:13:45,557: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 19:13:46,612: INFO/ForkPoolWorker-1] Fetched 53 deals from page 4
+[2025-09-24 19:13:46,612: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 19:13:46,612: INFO/ForkPoolWorker-1] Fetched 53 deals from page 4. Total deals so far: 653
+[2025-09-24 19:13:46,612: INFO/ForkPoolWorker-1] Fetching deals page 5...
+[2025-09-24 19:13:46,612: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 19:14:46,669: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 19:14:47,006: INFO/ForkPoolWorker-1] Fetched 0 deals from page 5
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] No more deals found on page 5.
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Total deals fetched: 653
+[2025-09-24 19:14:47,007: WARNING/ForkPoolWorker-1] PROCESSING LIMIT ACTIVE: Processing only the first 3 of 653 deals.
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Deals to process: 3
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Starting ASIN processing, found 3 deals (after potential temporary limit)
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Collected 3 valid ASINs for batch processing.
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Created 1 batches for API calls.
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Processing Batch 1/1 (Attempt 1) with 3 ASINs: ['0871239574', '0521052076', '1869890922']...
+[2025-09-24 19:14:47,007: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 19:15:47,050: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 24. Current tokens: 300.00
+[2025-09-24 19:15:47,050: INFO/ForkPoolWorker-1] Fetching batch of 3 ASINs: 0871239574,0521052076,1869890922...
+[2025-09-24 19:15:56,967: INFO/ForkPoolWorker-1] Batch API call successful. Tokens consumed: 24
+[2025-09-24 19:15:56,967: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 276
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN 0871239574: Percent Down 365 calculated. Current: 21.64, Avg365: 76.59, Diff: 71.75%, Result: 72%
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN 0871239574: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last_update: Selected latest_ts=7748356 from candidates [7748292, 7748356]. Sources considered: ['deal_object.lastUpdate (7748292)', 'product_data.stats.lastOffersUpdate (7748356)']
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN: 0871239574 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Using deal_object.currentSince for last used price change. Max timestamp: 7748292. All considered: [7748292, 7462736, 7748280, 7748280]
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last price change (focused on used) result: 2025-09-24 14:12:00 (from ts 7748292 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN 0871239574: FBA Pick&Pack Fee found: $3.24 (from raw 324)
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN 0871239574: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Found lowest priced offer at $5.43 with condition: Used, acceptable (5)
+[2025-09-24 19:15:56,968: INFO/ForkPoolWorker-1] ASIN 0871239574: Parsed date '2001' to standard format '2000-01-02'.
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2191280) for ASIN 0871239574
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0871239574
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0871239574: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 0871239574
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0871239574: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 7659, 2109191, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8399, 11926, 3593, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0871239574: Found price $24.25 from stats.min[10][1]
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 7659, 2109191, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8399, 11926, 3593, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0871239574: Price found via primary logic. FBA item price: 3509. Formatted: $35.09
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0871239574: Using stats.avg365[32], value: $144.81
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0871239574: Using stats.avg365[19], value: $69.99
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0871239574: Using stats.avg365[20], value: $95.60
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0871239574: Using stats.avg365[21], value: $83.99
+[2025-09-24 19:15:56,969: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0871239574
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0871239574: Using stats.avg365[22], value: $119.26
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - 365 days avg. from stats.avg365[11]: -
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - Current calculated as 19 (Total: 19, New FBA: 0, New FBM: 0).
+[2025-09-24 19:15:56,969: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - 365 days avg. from stats.avg365[12]: 11
+[2025-09-24 19:15:57,162: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 19:15:57,162: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 19:15:57,349: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 19:15:57,349: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN 0521052076: Percent Down 365 calculated. Current: 20.17, Avg365: 123.31, Diff: 83.64%, Result: 84%
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN 0521052076: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last_update: Selected latest_ts=7748326 from candidates [7748326, 7748316]. Sources considered: ['deal_object.lastUpdate (7748326)', 'product_data.stats.lastOffersUpdate (7748316)']
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN: 0521052076 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Using deal_object.currentSince for last used price change. Max timestamp: 7742986. All considered: [7742986, 5191056, 7742986, 7742986]
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last price change (focused on used) result: 2025-09-20 21:46:00 (from ts 7742986 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN 0521052076: FBA Pick&Pack Fee found: $3.43 (from raw 343)
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN 0521052076: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Found lowest priced offer at $9.31 with condition: Used, good (4)
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN 0521052076: Parsed date '19670901' to standard format '1967-09-01'.
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2228764) for ASIN 0521052076
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0521052076
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0521052076: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0521052076: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 47240, 12331, 2496054, 2295, 9999, -1, 53026, -1, -1, -1, 0, 4, -1, 0, -1, 43, 706, 29087, -1, 2270, 12352, 13276, -1, 10397, -1, -1, -1, -1, -1, -1, -1, 13152, -1]
+[2025-09-24 19:15:57,350: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0521052076: stats.min[10] is not a valid pair: None
+[2025-09-24 19:15:57,350: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Using stats.current[7], value: $548.84
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Final result: $548.84, Source: stats.current[7]
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBM - 365 days avg. found: $530.26 from stats.avg365[7]
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0521052076: Price found via primary logic. FBM item price: 2017 + shipping: 0 = 2017. Formatted: $20.17
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0521052076: Using stats.avg365[32], value: $131.52
+[2025-09-24 19:15:57,351: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0521052076: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0521052076: Using stats.avg365[20], value: $22.70
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0521052076: Using stats.avg365[21], value: $123.52
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0521052076: Using stats.avg365[22], value: $132.76
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - Current calculated as 6 (Total: 7, New FBA: 0, New FBM: 1).
+[2025-09-24 19:15:57,351: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 19:15:57,448: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 19:15:57,448: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN 1869890922: Percent Down 365 calculated. Current: 21.81, Avg365: 66.79, Diff: 67.35%, Result: 67%
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN 1869890922: No indication of free shipping found for Used - Current offer.
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN: 1869890922 - last_update: Selected latest_ts=7748326 from candidates [7748326, 7748320]. Sources considered: ['deal_object.lastUpdate (7748326)', 'product_data.stats.lastOffersUpdate (7748320)']
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN: 1869890922 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN: 1869890922 - Using deal_object.currentSince for last used price change. Max timestamp: 7748188. All considered: [7748188, 7392984, 7593926, 7748080, 7748080]
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN: 1869890922 - last price change (focused on used) result: 2025-09-24 12:28:00 (from ts 7748188 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN 1869890922: FBA Pick&Pack Fee found: $3.90 (from raw 390)
+[2025-09-24 19:15:57,560: INFO/ForkPoolWorker-1] ASIN 1869890922: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN: 1869890922 - Found lowest priced offer at $13.63 with condition: Used, good (4)
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN 1869890922: Parsed date '2000' to standard format '2000-01-02'.
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2166020) for ASIN 1869890922
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 1869890922
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 1869890922: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 1869890922
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 1869890922: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN 1869890922: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 93563, 6679, 2199123, 6500, 41733, -1, 113875, -1, -1, -1, 0, 4, -1, 1, -1, 40, 6, -1, 13487, 8643, 7173, 9881, 42295, -1, -1, -1, -1, -1, 1551, -1, -1, 6912, -1]
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 1869890922: Found price $274.00 from stats.min[10][1]
+[2025-09-24 19:15:57,561: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1869890922: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1869890922: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN 1869890922: New, 3rd Party FBM - 365 days avg. found: $1138.75 from stats.avg365[7]
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 1869890922: Price found via primary logic. FBM item price: 2181 + shipping: 499 = 2680. Formatted: $26.80
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 1869890922: Using stats.avg365[32], value: $69.12
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 1869890922: Using stats.avg365[19], value: $134.87
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 1869890922: Using stats.avg365[20], value: $86.43
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 1869890922: Using stats.avg365[21], value: $71.73
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 1869890922: Using stats.avg365[22], value: $98.81
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN 1869890922: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN 1869890922: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 19:15:57,561: INFO/ForkPoolWorker-1] ASIN 1869890922: Used Offer Count - Current calculated as 7 (Total: 7, New FBA: 0, New FBM: 0).
+[2025-09-24 19:15:57,562: INFO/ForkPoolWorker-1] ASIN 1869890922: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 19:15:57,701: INFO/ForkPoolWorker-1] ASIN 1869890922: Found 35 sane sale events after outlier rejection.
+[2025-09-24 19:15:57,819: INFO/ForkPoolWorker-1] ASIN 1869890922: Found 35 sane sale events after outlier rejection.
+[2025-09-24 19:15:57,819: INFO/ForkPoolWorker-1] Starting decoupled seller information processing...
+[2025-09-24 19:15:57,822: INFO/ForkPoolWorker-1] ASIN 0871239574: Found best price $21.64 from validated live offers, matched to Seller ID: A1I1V7QUWSMYGA
+[2025-09-24 19:15:57,822: INFO/ForkPoolWorker-1] ASIN 0871239574: Successfully processed and updated seller info.
+[2025-09-24 19:15:57,823: INFO/ForkPoolWorker-1] ASIN 0521052076: Found best price $20.17 from validated live offers, matched to Seller ID: AN9NQZD6552ND
+[2025-09-24 19:15:57,823: INFO/ForkPoolWorker-1] ASIN 0521052076: Successfully processed and updated seller info.
+[2025-09-24 19:15:57,825: INFO/ForkPoolWorker-1] ASIN 1869890922: Found best price $26.80 from validated live offers, matched to Seller ID: A2GBCRGIWRDXK8
+[2025-09-24 19:15:57,825: INFO/ForkPoolWorker-1] ASIN 1869890922: Successfully processed and updated seller info.
+[2025-09-24 19:15:57,825: INFO/ForkPoolWorker-1] Finished decoupled seller information processing.
+[2025-09-24 19:15:57,825: INFO/ForkPoolWorker-1] Starting business logic calculations...
+[2025-09-24 19:15:57,826: INFO/ForkPoolWorker-1] Successfully loaded settings from /var/www/agentarbitrage/keepa_deals/../settings.json
+[2025-09-24 19:15:57,826: INFO/ForkPoolWorker-1] Finished business logic calculations.
+[2025-09-24 19:15:57,826: INFO/ForkPoolWorker-1] Entering write_csv. Number of deals to process: 3. Number of rows generated: 3.
+[2025-09-24 19:15:57,826: INFO/ForkPoolWorker-1] CSV written: data/Keepa_Deals_Export.csv with 3 data rows.
+[2025-09-24 19:15:57,826: INFO/ForkPoolWorker-1] Connecting to database at /var/www/agentarbitrage/keepa_deals/../deals.db...
+[2025-09-24 19:15:57,827: INFO/ForkPoolWorker-1] Dropping existing 'deals' table if it exists.
+[2025-09-24 19:15:57,830: INFO/ForkPoolWorker-1] Creating new 'deals' table.
+[2025-09-24 19:15:57,833: INFO/ForkPoolWorker-1] Inserting 3 rows into 'deals' table.
+[2025-09-24 19:15:57,837: INFO/ForkPoolWorker-1] Successfully inserted 3 rows into the database.
+[2025-09-24 19:15:57,837: INFO/ForkPoolWorker-1] Database connection closed.
+[2025-09-24 19:15:57,837: INFO/ForkPoolWorker-1] Script completed!
+[2025-09-24 19:15:57,843: INFO/ForkPoolWorker-1] Task keepa_deals.Keepa_Deals.run_keepa_script[54b8dd16-0a23-4367-9a35-446ec0c4ccf8] succeeded in 377.7272600978613s: None
+[2025-09-24 21:17:23,702: INFO/MainProcess] Task keepa_deals.Keepa_Deals.run_keepa_script[2be6ad46-032f-46d2-b808-3cce561cfa45] received
+[2025-09-24 21:17:23,870: INFO/ForkPoolWorker-1] Initializing TokenManager: Fetching initial token status...
+[2025-09-24 21:17:23,887: INFO/ForkPoolWorker-1] Requesting current token status from Keepa...
+[2025-09-24 21:17:24,457: INFO/ForkPoolWorker-1] Successfully retrieved token status: {'processingTimeInMs': 1, 'refillIn': 55870, 'refillRate': 5, 'timestamp': 1758748644370, 'tokenFlowReduction': 0.0, 'tokensConsumed': 0, 'tokensLeft': 300}
+[2025-09-24 21:17:24,460: INFO/ForkPoolWorker-1] TokenManager initialized. Starting tokens: 300
+[2025-09-24 21:17:24,465: INFO/ForkPoolWorker-1] Starting Keepa_Deals script...
+[2025-09-24 21:17:24,465: INFO/ForkPoolWorker-1] Fetching deals page 0...
+[2025-09-24 21:17:24,465: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 21:17:25,458: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0
+[2025-09-24 21:17:25,460: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 21:17:25,460: INFO/ForkPoolWorker-1] Fetched 150 deals from page 0. Total deals so far: 150
+[2025-09-24 21:17:25,460: INFO/ForkPoolWorker-1] Fetching deals page 1...
+[2025-09-24 21:17:25,461: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 21:18:25,514: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 21:18:26,516: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1
+[2025-09-24 21:18:26,516: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 21:18:26,517: INFO/ForkPoolWorker-1] Fetched 150 deals from page 1. Total deals so far: 300
+[2025-09-24 21:18:26,517: INFO/ForkPoolWorker-1] Fetching deals page 2...
+[2025-09-24 21:18:26,517: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 21:19:26,543: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 21:19:28,358: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2
+[2025-09-24 21:19:28,358: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 21:19:28,359: INFO/ForkPoolWorker-1] Fetched 150 deals from page 2. Total deals so far: 450
+[2025-09-24 21:19:28,359: INFO/ForkPoolWorker-1] Fetching deals page 3...
+[2025-09-24 21:19:28,359: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 21:20:28,413: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 21:20:29,657: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3
+[2025-09-24 21:20:29,657: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 21:20:29,657: INFO/ForkPoolWorker-1] Fetched 150 deals from page 3. Total deals so far: 600
+[2025-09-24 21:20:29,657: INFO/ForkPoolWorker-1] Fetching deals page 4...
+[2025-09-24 21:20:29,657: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 21:21:29,702: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 21:21:30,412: INFO/ForkPoolWorker-1] Fetched 61 deals from page 4
+[2025-09-24 21:21:30,412: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 21:21:30,412: INFO/ForkPoolWorker-1] Fetched 61 deals from page 4. Total deals so far: 661
+[2025-09-24 21:21:30,412: INFO/ForkPoolWorker-1] Fetching deals page 5...
+[2025-09-24 21:21:30,412: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 21:22:30,472: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 5. Current tokens: 300.00
+[2025-09-24 21:22:30,834: INFO/ForkPoolWorker-1] Fetched 0 deals from page 5
+[2025-09-24 21:22:30,834: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 295
+[2025-09-24 21:22:30,834: INFO/ForkPoolWorker-1] No more deals found on page 5.
+[2025-09-24 21:22:30,834: INFO/ForkPoolWorker-1] Total deals fetched: 661
+[2025-09-24 21:22:30,835: WARNING/ForkPoolWorker-1] PROCESSING LIMIT ACTIVE: Processing only the first 10 of 661 deals.
+[2025-09-24 21:22:30,835: INFO/ForkPoolWorker-1] Deals to process: 10
+[2025-09-24 21:22:30,835: INFO/ForkPoolWorker-1] Starting ASIN processing, found 10 deals (after potential temporary limit)
+[2025-09-24 21:22:30,836: INFO/ForkPoolWorker-1] Collected 10 valid ASINs for batch processing.
+[2025-09-24 21:22:30,836: INFO/ForkPoolWorker-1] Created 1 batches for API calls.
+[2025-09-24 21:22:30,836: INFO/ForkPoolWorker-1] Processing Batch 1/1 (Attempt 1) with 10 ASINs: ['0871239574', '0521052076', '1869890922']...
+[2025-09-24 21:22:30,836: INFO/ForkPoolWorker-1] Rate limit: Pausing for 60.00 seconds.
+[2025-09-24 21:23:30,893: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 80. Current tokens: 300.00
+[2025-09-24 21:23:30,894: INFO/ForkPoolWorker-1] Fetching batch of 10 ASINs: 0871239574,0521052076,1869890922...
+[2025-09-24 21:23:44,891: INFO/ForkPoolWorker-1] Batch API call successful. Tokens consumed: 74
+[2025-09-24 21:23:44,892: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 300.00, After: 226
+[2025-09-24 21:23:44,895: INFO/ForkPoolWorker-1] ASIN 0871239574: Percent Down 365 calculated. Current: 17.62, Avg365: 76.81, Diff: 77.06%, Result: 77%
+[2025-09-24 21:23:44,896: INFO/ForkPoolWorker-1] ASIN 0871239574: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 21:23:44,902: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last_update: Selected latest_ts=7748440 from candidates [7748440, 7748440]. Sources considered: ['deal_object.lastUpdate (7748440)', 'product_data.stats.lastOffersUpdate (7748440)']
+[2025-09-24 21:23:44,902: INFO/ForkPoolWorker-1] ASIN: 0871239574 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:44,903: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Using deal_object.currentSince for last used price change. Max timestamp: 7748440. All considered: [7748440, 7462736, 7748440, 7748440]
+[2025-09-24 21:23:44,903: INFO/ForkPoolWorker-1] ASIN: 0871239574 - last price change (focused on used) result: 2025-09-24 16:40:00 (from ts 7748440 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:44,903: INFO/ForkPoolWorker-1] ASIN 0871239574: FBA Pick&Pack Fee found: $3.24 (from raw 324)
+[2025-09-24 21:23:44,903: INFO/ForkPoolWorker-1] ASIN 0871239574: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:44,905: INFO/ForkPoolWorker-1] ASIN: 0871239574 - Found lowest priced offer at $5.43 with condition: Used, acceptable (5)
+[2025-09-24 21:23:44,905: INFO/ForkPoolWorker-1] ASIN 0871239574: Parsed date '2001' to standard format '2000-01-02'.
+[2025-09-24 21:23:44,905: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2191280) for ASIN 0871239574
+[2025-09-24 21:23:44,906: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:44,906: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:44,906: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0871239574 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:44,906: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0871239574
+[2025-09-24 21:23:44,906: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0871239574: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:44,906: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 0871239574
+[2025-09-24 21:23:44,907: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0871239574: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:44,907: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 7681, 2108749, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8398, 11929, 3592, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 21:23:44,907: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0871239574: Found price $24.25 from stats.min[10][1]
+[2025-09-24 21:23:44,907: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 21:23:44,907: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0871239574: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 21:23:44,907: INFO/ForkPoolWorker-1] ASIN 0871239574: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 7681, 2108749, 1099, 3297, -1, -1, -1, 609, -1, -1, 11, -1, 3, -1, 44, 11, -1, 6999, 9560, 8398, 11929, 3592, 3473, 2877, -1, -1, -1, -1, -1, -1, 14481, -1]
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0871239574: Price found via primary logic. FBA item price: 3506. Formatted: $35.06
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0871239574: Using stats.avg365[32], value: $144.81
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0871239574: Using stats.avg365[19], value: $69.99
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0871239574: Using stats.avg365[20], value: $95.60
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0871239574: Using stats.avg365[21], value: $83.98
+[2025-09-24 21:23:44,908: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0871239574
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0871239574: Using stats.avg365[22], value: $119.29
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 21:23:44,908: INFO/ForkPoolWorker-1] ASIN 0871239574: New Offer Count - 365 days avg. from stats.avg365[11]: -
+[2025-09-24 21:23:44,909: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - Current calculated as 19 (Total: 19, New FBA: 0, New FBM: 0).
+[2025-09-24 21:23:44,909: INFO/ForkPoolWorker-1] ASIN 0871239574: Used Offer Count - 365 days avg. from stats.avg365[12]: 11
+[2025-09-24 21:23:45,381: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 21:23:45,381: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 21:23:45,579: INFO/ForkPoolWorker-1] ASIN 0871239574: Rejected 7 outlier(s) from inferred sales list (e.g., prices > 217.90).
+[2025-09-24 21:23:45,579: INFO/ForkPoolWorker-1] ASIN 0871239574: Found 55 sane sale events after outlier rejection.
+[2025-09-24 21:23:45,579: INFO/ForkPoolWorker-1] ASIN 0521052076: Percent Down 365 calculated. Current: 20.17, Avg365: 123.23, Diff: 83.63%, Result: 84%
+[2025-09-24 21:23:45,579: INFO/ForkPoolWorker-1] ASIN 0521052076: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last_update: Selected latest_ts=7748484 from candidates [7748430, 7748484]. Sources considered: ['deal_object.lastUpdate (7748430)', 'product_data.stats.lastOffersUpdate (7748484)']
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN: 0521052076 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Using deal_object.currentSince for last used price change. Max timestamp: 7742986. All considered: [7742986, 5191056, 7742986, 7742986]
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN: 0521052076 - last price change (focused on used) result: 2025-09-20 21:46:00 (from ts 7742986 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN 0521052076: FBA Pick&Pack Fee found: $3.43 (from raw 343)
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN 0521052076: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:45,580: INFO/ForkPoolWorker-1] ASIN: 0521052076 - Found lowest priced offer at $9.31 with condition: Used, good (4)
+[2025-09-24 21:23:45,585: INFO/ForkPoolWorker-1] ASIN 0521052076: Parsed date '19670901' to standard format '1967-09-01'.
+[2025-09-24 21:23:45,585: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2228764) for ASIN 0521052076
+[2025-09-24 21:23:45,585: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:45,585: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:45,585: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0521052076 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:45,585: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0521052076
+[2025-09-24 21:23:45,585: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0521052076: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:45,585: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0521052076: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 47285, 12323, 2495479, 2295, 9999, -1, 53041, -1, -1, -1, 0, 4, -1, 0, -1, 43, 706, 29087, -1, 2270, 12344, 13261, -1, 10397, -1, -1, -1, -1, -1, -1, -1, 13137, -1]
+[2025-09-24 21:23:45,586: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0521052076: stats.min[10] is not a valid pair: None
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Using stats.current[7], value: $548.84
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0521052076: Final result: $548.84, Source: stats.current[7]
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] ASIN 0521052076: New, 3rd Party FBM - 365 days avg. found: $530.41 from stats.avg365[7]
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0521052076: Price found via primary logic. FBM item price: 2017 + shipping: 0 = 2017. Formatted: $20.17
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0521052076: Using stats.avg365[32], value: $131.37
+[2025-09-24 21:23:45,586: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0521052076: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0521052076: Using stats.avg365[20], value: $22.70
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0521052076: Using stats.avg365[21], value: $123.44
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0521052076: Using stats.avg365[22], value: $132.61
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] ASIN 0521052076: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - Current calculated as 6 (Total: 7, New FBA: 0, New FBM: 1).
+[2025-09-24 21:23:45,586: INFO/ForkPoolWorker-1] ASIN 0521052076: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 21:23:45,709: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 21:23:45,709: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN 0521052076: Rejected 6 outlier(s) from inferred sales list (e.g., prices > 113.17).
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN 0521052076: Found 30 sane sale events after outlier rejection.
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN 1869890922: Percent Down 365 calculated. Current: 21.81, Avg365: 66.79, Diff: 67.35%, Result: 67%
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN 1869890922: No indication of free shipping found for Used - Current offer.
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN: 1869890922 - last_update: Selected latest_ts=7748440 from candidates [7748440, 7748440]. Sources considered: ['deal_object.lastUpdate (7748440)', 'product_data.stats.lastOffersUpdate (7748440)']
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN: 1869890922 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN: 1869890922 - Using deal_object.currentSince for last used price change. Max timestamp: 7748188. All considered: [7748188, 7392984, 7593926, 7748080, 7748080]
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN: 1869890922 - last price change (focused on used) result: 2025-09-24 12:28:00 (from ts 7748188 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN 1869890922: FBA Pick&Pack Fee found: $3.90 (from raw 390)
+[2025-09-24 21:23:45,821: INFO/ForkPoolWorker-1] ASIN 1869890922: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN: 1869890922 - Found lowest priced offer at $13.63 with condition: Used, good (4)
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: Parsed date '2000' to standard format '2000-01-02'.
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2166020) for ASIN 1869890922
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1869890922 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 1869890922
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 1869890922: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 1869890922
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 1869890922: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 93563, 6679, 2198785, 6500, 41733, -1, 113875, -1, -1, -1, 0, 4, -1, 1, -1, 40, 6, -1, 13487, 8652, 7174, 9887, 42295, -1, -1, -1, -1, -1, 1551, -1, -1, 6913, -1]
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 1869890922: Found price $274.00 from stats.min[10][1]
+[2025-09-24 21:23:45,822: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1869890922: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1869890922: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: New, 3rd Party FBM - 365 days avg. found: $1138.75 from stats.avg365[7]
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 1869890922: Price found via primary logic. FBM item price: 2181 + shipping: 499 = 2680. Formatted: $26.80
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 1869890922: Using stats.avg365[32], value: $69.13
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 1869890922: Using stats.avg365[19], value: $134.87
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 1869890922: Using stats.avg365[20], value: $86.52
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 1869890922: Using stats.avg365[21], value: $71.74
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 1869890922: Using stats.avg365[22], value: $98.87
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: Used Offer Count - Current calculated as 7 (Total: 7, New FBA: 0, New FBM: 0).
+[2025-09-24 21:23:45,822: INFO/ForkPoolWorker-1] ASIN 1869890922: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 21:23:45,967: INFO/ForkPoolWorker-1] ASIN 1869890922: Found 35 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN 1869890922: Found 35 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN 0895558238: Percent Down 365 calculated. Current: 25.84, Avg365: 84.98, Diff: 69.59%, Result: 70%
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN 0895558238: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN: 0895558238 - last_update: Selected latest_ts=7748484 from candidates [7748330, 7748484]. Sources considered: ['deal_object.lastUpdate (7748330)', 'product_data.stats.lastOffersUpdate (7748484)']
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN: 0895558238 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN: 0895558238 - Using deal_object.currentSince for last used price change. Max timestamp: 7748330. All considered: [7748330, 7748326, 7748326, 7748326]
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN: 0895558238 - last price change (focused on used) result: 2025-09-24 14:50:00 (from ts 7748330 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN 0895558238: FBA Pick&Pack Fee found: $3.43 (from raw 343)
+[2025-09-24 21:23:46,108: INFO/ForkPoolWorker-1] ASIN 0895558238: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] ASIN: 0895558238 - Found lowest priced offer at $8.81 with condition: Used, like new (2)
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] ASIN 0895558238: Parsed date '20051201' to standard format '2005-12-01'.
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2155696) for ASIN 0895558238
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0895558238 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0895558238 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0895558238 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0895558238
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0895558238: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0895558238: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] ASIN 0895558238: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 112393, 8498, 2236302, 1395, 6998, -1, 112582, -1, -1, -1, 0, 4, -1, 0, -1, 44, 36, -1, 10222, 9421, 10012, 4212, -1, 6998, -1, -1, -1, -1, -1, -1, -1, 11972, -1]
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0895558238: Found price $13.94 from stats.min[10][1]
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0895558238: Using stats.current[7], value: $1289.44
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0895558238: Final result: $1289.44, Source: stats.current[7]
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] ASIN 0895558238: New, 3rd Party FBM - 365 days avg. found: $1125.82 from stats.avg365[7]
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0895558238: Price found via primary logic. FBA item price: 2999. Formatted: $29.99
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0895558238: Using stats.avg365[32], value: $119.72
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0895558238: Using stats.avg365[19], value: $102.22
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0895558238: Using stats.avg365[20], value: $94.21
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0895558238: Using stats.avg365[21], value: $100.12
+[2025-09-24 21:23:46,109: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0895558238
+[2025-09-24 21:23:46,109: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0895558238: Using stats.avg365[22], value: $42.12
+[2025-09-24 21:23:46,110: INFO/ForkPoolWorker-1] ASIN 0895558238: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 21:23:46,110: INFO/ForkPoolWorker-1] ASIN 0895558238: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:46,110: INFO/ForkPoolWorker-1] ASIN 0895558238: Used Offer Count - Current calculated as 11 (Total: 12, New FBA: 0, New FBM: 1).
+[2025-09-24 21:23:46,110: INFO/ForkPoolWorker-1] ASIN 0895558238: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+[2025-09-24 21:23:46,208: INFO/ForkPoolWorker-1] ASIN 0895558238: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 109.60).
+[2025-09-24 21:23:46,208: INFO/ForkPoolWorker-1] ASIN 0895558238: Found 28 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN 0895558238: Rejected 2 outlier(s) from inferred sales list (e.g., prices > 109.60).
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN 0895558238: Found 28 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN 0851315976: Percent Down 365 calculated. Current: 20.09, Avg365: 77.77, Diff: 74.17%, Result: 74%
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN 0851315976: No indication of free shipping found for Used - Current offer.
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN: 0851315976 - last_update: Selected latest_ts=7748442 from candidates [7748438, 7748442]. Sources considered: ['deal_object.lastUpdate (7748438)', 'product_data.stats.lastOffersUpdate (7748442)']
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN: 0851315976 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN: 0851315976 - Using deal_object.currentSince for last used price change. Max timestamp: 7747722. All considered: [7747626, 6362248, 7747628, 7747722]
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN: 0851315976 - last price change (focused on used) result: 2025-09-24 04:42:00 (from ts 7747722 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN 0851315976: FBA Pick&Pack Fee found: $5.37 (from raw 537)
+[2025-09-24 21:23:46,306: INFO/ForkPoolWorker-1] ASIN 0851315976: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] ASIN: 0851315976 - Found lowest priced offer at $7.96 with condition: Used, good (4)
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] ASIN 0851315976: Parsed date '19940501' to standard format '1994-05-01'.
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2743200) for ASIN 0851315976
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0851315976 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0851315976 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0851315976 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0851315976
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0851315976: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 0851315976
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0851315976: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] ASIN 0851315976: New, 3rd Party FBA - 365 days avg. found: $34.99
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0851315976: Found price $35.00 from stats.min[10][1]
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0851315976: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0851315976: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] ASIN 0851315976: New, 3rd Party FBM - 365 days avg. found: $751.62 from stats.avg365[7]
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0851315976: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0851315976: Fallback stats.current[32] is missing, None or invalid (-1).
+[2025-09-24 21:23:46,307: WARNING/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0851315976: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+[2025-09-24 21:23:46,307: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0851315976: Using stats.avg365[32], value: $112.57
+[2025-09-24 21:23:46,308: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0851315976: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0851315976: Using stats.avg365[20], value: $85.32
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0851315976: Using stats.avg365[21], value: $85.72
+[2025-09-24 21:23:46,308: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 0851315976
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0851315976: Using stats.avg365[22], value: $210.59
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] ASIN 0851315976: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] ASIN 0851315976: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] ASIN 0851315976: Used Offer Count - Current calculated as 3 (Total: 3, New FBA: 0, New FBM: 0).
+[2025-09-24 21:23:46,308: INFO/ForkPoolWorker-1] ASIN 0851315976: Used Offer Count - 365 days avg. from stats.avg365[12]: 3
+[2025-09-24 21:23:46,447: INFO/ForkPoolWorker-1] ASIN 0851315976: Found 43 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,582: INFO/ForkPoolWorker-1] ASIN 0851315976: Found 43 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,768: INFO/ForkPoolWorker-1] ASIN 0851315976: Found 43 sane sale events after outlier rejection.
+[2025-09-24 21:23:46,768: INFO/ForkPoolWorker-1] ASIN 1598162152: Percent Down 365 calculated. Current: 20.51, Avg365: 52.30, Diff: 60.78%, Result: 61%
+[2025-09-24 21:23:46,768: INFO/ForkPoolWorker-1] ASIN 1598162152: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 21:23:46,768: INFO/ForkPoolWorker-1] ASIN: 1598162152 - last_update: Selected latest_ts=7748484 from candidates [7748392, 7748484]. Sources considered: ['deal_object.lastUpdate (7748392)', 'product_data.stats.lastOffersUpdate (7748484)']
+[2025-09-24 21:23:46,768: INFO/ForkPoolWorker-1] ASIN: 1598162152 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] ASIN: 1598162152 - Using deal_object.currentSince for last used price change. Max timestamp: 7746552. All considered: [7746552, 7745668, 7743896, 7745960]
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] ASIN: 1598162152 - last price change (focused on used) result: 2025-09-23 09:12:00 (from ts 7746552 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] ASIN 1598162152: FBA Pick&Pack Fee found: $3.33 (from raw 333)
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] ASIN 1598162152: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] ASIN: 1598162152 - Found lowest priced offer at $5.55 with condition: Used, like new (2)
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] ASIN 1598162152: Parsed date '20060307' to standard format '2006-03-07'.
+[2025-09-24 21:23:46,769: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2740320) for ASIN 1598162152
+[2025-09-24 21:23:46,770: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1598162152 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:46,770: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1598162152 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:46,770: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1598162152 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:46,770: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 1598162152
+[2025-09-24 21:23:46,770: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 1598162152: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:46,770: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 1598162152: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] ASIN 1598162152: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 127123, 5230, 860018, 999, 6460, -1, 127530, -1, -1, -1, 1, 6, -1, 2, -1, 47, 67, -1, 39338, 5049, 6078, 7682, -1, 8314, 6012, -1, -1, -1, -1, -1, -1, 10460, -1]
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 1598162152: Found price $29.95 from stats.min[10][1]
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1598162152: Using stats.current[7], value: $1407.53
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1598162152: Final result: $1407.53, Source: stats.current[7]
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] ASIN 1598162152: New, 3rd Party FBM - 365 days avg. found: $1275.30 from stats.avg365[7]
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 1598162152: Price found via primary logic. FBA item price: 5499. Formatted: $54.99
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 1598162152: Using stats.avg365[32], value: $104.60
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 1598162152: Using stats.avg365[19], value: $393.38
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 1598162152: Using stats.avg365[20], value: $50.49
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 1598162152: Using stats.avg365[21], value: $60.78
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 1598162152: Using stats.avg365[22], value: $76.82
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] ASIN 1598162152: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] ASIN 1598162152: New Offer Count - 365 days avg. from stats.avg365[11]: 1
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] ASIN 1598162152: Used Offer Count - Current calculated as 12 (Total: 13, New FBA: 0, New FBM: 1).
+[2025-09-24 21:23:46,770: INFO/ForkPoolWorker-1] ASIN 1598162152: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+[2025-09-24 21:23:47,316: INFO/ForkPoolWorker-1] ASIN 1598162152: Rejected 24 outlier(s) from inferred sales list (e.g., prices > 55.06).
+[2025-09-24 21:23:47,317: INFO/ForkPoolWorker-1] ASIN 1598162152: Found 184 sane sale events after outlier rejection.
+[2025-09-24 21:23:47,939: INFO/ForkPoolWorker-1] ASIN 1598162152: Rejected 24 outlier(s) from inferred sales list (e.g., prices > 55.06).
+[2025-09-24 21:23:47,939: INFO/ForkPoolWorker-1] ASIN 1598162152: Found 184 sane sale events after outlier rejection.
+[2025-09-24 21:23:48,544: INFO/ForkPoolWorker-1] ASIN 1598162152: Rejected 24 outlier(s) from inferred sales list (e.g., prices > 55.06).
+[2025-09-24 21:23:48,544: INFO/ForkPoolWorker-1] ASIN 1598162152: Found 184 sane sale events after outlier rejection.
+[2025-09-24 21:23:48,544: INFO/ForkPoolWorker-1] ASIN 0761542566: Percent Down 365 calculated. Current: 24.20, Avg365: 52.13, Diff: 53.58%, Result: 54%
+[2025-09-24 21:23:48,544: INFO/ForkPoolWorker-1] ASIN 0761542566: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 21:23:48,545: INFO/ForkPoolWorker-1] ASIN: 0761542566 - last_update: Selected latest_ts=7748484 from candidates [7748436, 7748484]. Sources considered: ['deal_object.lastUpdate (7748436)', 'product_data.stats.lastOffersUpdate (7748484)']
+[2025-09-24 21:23:48,545: INFO/ForkPoolWorker-1] ASIN: 0761542566 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:48,545: INFO/ForkPoolWorker-1] ASIN: 0761542566 - Using deal_object.currentSince for last used price change. Max timestamp: 7747416. All considered: [7746166, 7140132, 7746166, 7747416]
+[2025-09-24 21:23:48,545: INFO/ForkPoolWorker-1] ASIN: 0761542566 - last price change (focused on used) result: 2025-09-23 23:36:00 (from ts 7747416 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:48,545: INFO/ForkPoolWorker-1] ASIN 0761542566: FBA Pick&Pack Fee found: $4.55 (from raw 455)
+[2025-09-24 21:23:48,545: INFO/ForkPoolWorker-1] ASIN 0761542566: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:48,546: INFO/ForkPoolWorker-1] ASIN: 0761542566 - Found lowest priced offer at $5.95 with condition: Used, good (4)
+[2025-09-24 21:23:48,546: INFO/ForkPoolWorker-1] ASIN 0761542566: Parsed date '20030325' to standard format '2003-03-25'.
+[2025-09-24 21:23:48,546: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2826720) for ASIN 0761542566
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0761542566 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0761542566 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0761542566 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0761542566
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0761542566: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 0761542566
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0761542566: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:48,546: INFO/ForkPoolWorker-1] ASIN 0761542566: New, 3rd Party FBA - 365 days avg. found: $48.23
+[2025-09-24 21:23:48,546: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0761542566: Found price $33.60 from stats.min[10][1]
+[2025-09-24 21:23:48,546: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0761542566: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 21:23:48,546: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0761542566: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] ASIN 0761542566: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, 4879, 5213, 824890, 1499, 12509, -1, -1, -1, -1, 4823, 0, 6, -1, 1, -1, 47, 150, 6199, -1, 25602, 6183, 5262, -1, 4497, 13499, 6994, -1, 5755, 2246, -1, -1, 10110, -1]
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0761542566: Price found via primary logic. FBA item price: 6071. Formatted: $60.71
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0761542566: Using stats.avg365[32], value: $101.10
+[2025-09-24 21:23:48,547: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0761542566: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0761542566: Using stats.avg365[20], value: $256.02
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0761542566: Using stats.avg365[21], value: $61.83
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0761542566: Using stats.avg365[22], value: $52.62
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] ASIN 0761542566: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] ASIN 0761542566: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] ASIN 0761542566: Used Offer Count - Current calculated as 10 (Total: 10, New FBA: 0, New FBM: 0).
+[2025-09-24 21:23:48,547: INFO/ForkPoolWorker-1] ASIN 0761542566: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+[2025-09-24 21:23:49,130: INFO/ForkPoolWorker-1] ASIN 0761542566: Rejected 9 outlier(s) from inferred sales list (e.g., prices > 59.69).
+[2025-09-24 21:23:49,130: INFO/ForkPoolWorker-1] ASIN 0761542566: Found 192 sane sale events after outlier rejection.
+[2025-09-24 21:23:49,692: INFO/ForkPoolWorker-1] ASIN 0761542566: Rejected 9 outlier(s) from inferred sales list (e.g., prices > 59.69).
+[2025-09-24 21:23:49,693: INFO/ForkPoolWorker-1] ASIN 0761542566: Found 192 sane sale events after outlier rejection.
+[2025-09-24 21:23:50,244: INFO/ForkPoolWorker-1] ASIN 0761542566: Rejected 9 outlier(s) from inferred sales list (e.g., prices > 59.69).
+[2025-09-24 21:23:50,244: INFO/ForkPoolWorker-1] ASIN 0761542566: Found 192 sane sale events after outlier rejection.
+[2025-09-24 21:23:50,244: INFO/ForkPoolWorker-1] ASIN 1589813669: Percent Down 365 calculated. Current: 26.91, Avg365: 31.97, Diff: 15.83%, Result: 16%
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN 1589813669: Found buyBoxUsedShipping to be 0, shipping is included.
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN: 1589813669 - last_update: Selected latest_ts=7748440 from candidates [7748440, 7748440]. Sources considered: ['deal_object.lastUpdate (7748440)', 'product_data.stats.lastOffersUpdate (7748440)']
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN: 1589813669 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN: 1589813669 - Using deal_object.currentSince for last used price change. Max timestamp: 7748440. All considered: [7748440, 7409634, 7747720, 7748440]
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN: 1589813669 - last price change (focused on used) result: 2025-09-24 16:40:00 (from ts 7748440 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN 1589813669: FBA Pick&Pack Fee found: $3.60 (from raw 360)
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN 1589813669: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN: 1589813669 - Found lowest priced offer at $5.21 with condition: Used, acceptable (5)
+[2025-09-24 21:23:50,245: INFO/ForkPoolWorker-1] ASIN 1589813669: Parsed date '2001' to standard format '2000-01-02'.
+[2025-09-24 21:23:50,245: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1589813669 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1589813669 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1589813669 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 1589813669
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 1589813669: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 1589813669
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 1589813669: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] ASIN 1589813669: New, 3rd Party FBA - 365 days avg. found: $21.90
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 1589813669: Found price $12.99 from stats.min[10][1]
+[2025-09-24 21:23:50,246: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1589813669: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1589813669: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] ASIN 1589813669: New, 3rd Party FBM - 365 days avg. found: $538.17 from stats.avg365[7]
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 1589813669: Price found via primary logic. FBA item price: 54999. Formatted: $549.99
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 1589813669: Using stats.avg365[32], value: $13.92
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 1589813669: Using stats.avg365[19], value: $19.96
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 1589813669: Using stats.avg365[20], value: $16.87
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 1589813669: Using stats.avg365[21], value: $16.11
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 1589813669: Using stats.avg365[22], value: $18.08
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] ASIN 1589813669: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] ASIN 1589813669: New Offer Count - 365 days avg. from stats.avg365[11]: 1
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] ASIN 1589813669: Used Offer Count - Current calculated as 6 (Total: 6, New FBA: 0, New FBM: 0).
+[2025-09-24 21:23:50,246: INFO/ForkPoolWorker-1] ASIN 1589813669: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
+[2025-09-24 21:23:50,375: INFO/ForkPoolWorker-1] ASIN 1589813669: Rejected 4 outlier(s) from inferred sales list (e.g., prices > 19.50).
+[2025-09-24 21:23:50,375: INFO/ForkPoolWorker-1] ASIN 1589813669: Found 26 sane sale events after outlier rejection.
+[2025-09-24 21:23:50,496: INFO/ForkPoolWorker-1] ASIN 1589813669: Rejected 4 outlier(s) from inferred sales list (e.g., prices > 19.50).
+[2025-09-24 21:23:50,496: INFO/ForkPoolWorker-1] ASIN 1589813669: Found 26 sane sale events after outlier rejection.
+[2025-09-24 21:23:50,618: INFO/ForkPoolWorker-1] ASIN 1589813669: Rejected 4 outlier(s) from inferred sales list (e.g., prices > 19.50).
+[2025-09-24 21:23:50,618: INFO/ForkPoolWorker-1] ASIN 1589813669: Found 26 sane sale events after outlier rejection.
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN 1897376693: Percent Down 365 calculated. Current: 29.99, Avg365: 53.58, Diff: 44.03%, Result: 44%
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN 1897376693: No indication of free shipping found for Used - Current offer.
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN: 1897376693 - last_update: Selected latest_ts=7748484 from candidates [7748432, 7748484]. Sources considered: ['deal_object.lastUpdate (7748432)', 'product_data.stats.lastOffersUpdate (7748484)']
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN: 1897376693 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN: 1897376693 - Using deal_object.currentSince for last used price change. Max timestamp: 7740120. All considered: [7735796, 7735304, 7740120, 7735304]
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN: 1897376693 - last price change (focused on used) result: 2025-09-18 22:00:00 (from ts 7740120 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN 1897376693: FBA Pick&Pack Fee found: $4.15 (from raw 415)
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN 1897376693: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN: 1897376693 - Found lowest priced offer at $5.22 with condition: Used, good (4)
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] ASIN 1897376693: Parsed date '20100930' to standard format '2010-09-30'.
+[2025-09-24 21:23:50,619: INFO/ForkPoolWorker-1] No valid listedSince (ts=-630848) for ASIN 1897376693
+[2025-09-24 21:23:50,619: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1897376693 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:50,619: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1897376693 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:50,619: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 1897376693 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:50,620: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 1897376693
+[2025-09-24 21:23:50,620: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 1897376693: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:50,620: WARNING/ForkPoolWorker-1] No valid New - Current (value=-1, current_length=34) for ASIN 1897376693
+[2025-09-24 21:23:50,620: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 1897376693: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] ASIN 1897376693: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 56655, 5358, 1729175, 1295, 6815, -1, 57524, -1, -1, -1, 0, 6, -1, 1, -1, 47, 89, -1, 4630, 9121, 5973, 9289, -1, 7471, 5999, -1, -1, -1, 6338, -1, -1, 6035, -1]
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 1897376693: Found price $8.80 from stats.min[10][1]
+[2025-09-24 21:23:50,620: WARNING/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1897376693: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 1897376693: Final result: -, Source: stats.current[7] (invalid value)
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] ASIN 1897376693: New, 3rd Party FBM - 365 days avg. found: $575.24 from stats.avg365[7]
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 1897376693: Price found via primary logic. FBM item price: 2999 + shipping: 632 = 3631. Formatted: $36.31
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 1897376693: Using stats.avg365[32], value: $60.35
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 1897376693: Using stats.avg365[19], value: $46.30
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 1897376693: Using stats.avg365[20], value: $91.21
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 1897376693: Using stats.avg365[21], value: $59.73
+[2025-09-24 21:23:50,620: WARNING/ForkPoolWorker-1] No valid Used - Acceptable price for ASIN 1897376693
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 1897376693: Using stats.avg365[22], value: $92.89
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] ASIN 1897376693: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] ASIN 1897376693: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] ASIN 1897376693: Used Offer Count - Current calculated as 3 (Total: 3, New FBA: 0, New FBM: 0).
+[2025-09-24 21:23:50,620: INFO/ForkPoolWorker-1] ASIN 1897376693: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+[2025-09-24 21:23:50,751: INFO/ForkPoolWorker-1] ASIN 1897376693: Rejected 3 outlier(s) from inferred sales list (e.g., prices > 82.87).
+[2025-09-24 21:23:50,751: INFO/ForkPoolWorker-1] ASIN 1897376693: Found 42 sane sale events after outlier rejection.
+[2025-09-24 21:23:50,905: INFO/ForkPoolWorker-1] ASIN 1897376693: Rejected 3 outlier(s) from inferred sales list (e.g., prices > 82.87).
+[2025-09-24 21:23:50,905: INFO/ForkPoolWorker-1] ASIN 1897376693: Found 42 sane sale events after outlier rejection.
+[2025-09-24 21:23:51,037: INFO/ForkPoolWorker-1] ASIN 1897376693: Rejected 3 outlier(s) from inferred sales list (e.g., prices > 82.87).
+[2025-09-24 21:23:51,037: INFO/ForkPoolWorker-1] ASIN 1897376693: Found 42 sane sale events after outlier rejection.
+[2025-09-24 21:23:51,037: INFO/ForkPoolWorker-1] ASIN 0345376471: Percent Down 365 calculated. Current: 23.80, Avg365: 46.84, Diff: 49.19%, Result: 49%
+[2025-09-24 21:23:51,037: INFO/ForkPoolWorker-1] ASIN 0345376471: No indication of free shipping found for Used - Current offer.
+[2025-09-24 21:23:51,037: INFO/ForkPoolWorker-1] ASIN: 0345376471 - last_update: Selected latest_ts=7748484 from candidates [7748438, 7748484]. Sources considered: ['deal_object.lastUpdate (7748438)', 'product_data.stats.lastOffersUpdate (7748484)']
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN: 0345376471 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN: 0345376471 - Using deal_object.currentSince for last used price change. Max timestamp: 7747894. All considered: [7747894, 7159396, 7745134, 7741112]
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN: 0345376471 - last price change (focused on used) result: 2025-09-24 07:34:00 (from ts 7747894 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN 0345376471: FBA Pick&Pack Fee found: $3.68 (from raw 368)
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN 0345376471: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN: 0345376471 - Found lowest priced offer at $5.99 with condition: Used, acceptable (5)
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] ASIN 0345376471: Parsed date '19950301' to standard format '1995-03-01'.
+[2025-09-24 21:23:51,038: INFO/ForkPoolWorker-1] No valid listedSince (ts=-2181722) for ASIN 0345376471
+[2025-09-24 21:23:51,038: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0345376471 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0345376471 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] Buy Box - Current - ASIN 0345376471 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] No valid Amazon - Current price for ASIN 0345376471
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] Amazon - 365 days avg. for ASIN 0345376471: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Current for ASIN 0345376471: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] ASIN 0345376471: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 21255, 4684, 2041792, 699, 5999, -1, 21449, -1, -1, -1, 0, 5, -1, 1, -1, 50, 18, -1, -1, 2353, 6197, 5042, -1, -1, 5999, -1, -1, -1, -1, -1, -1, 8816, -1]
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] New, 3rd Party FBA - Lowest for ASIN 0345376471: stats.min[10] is not a valid pair: None
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0345376471: Using stats.current[7], value: $480.95
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] New, 3rd Party FBM - Current for ASIN 0345376471: Final result: $480.95, Source: stats.current[7]
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] ASIN 0345376471: New, 3rd Party FBM - 365 days avg. found: $214.49 from stats.avg365[7]
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] Buy Box Used - Current for ASIN 0345376471: Price found via primary logic. FBM item price: 2380 + shipping: 398 = 2778. Formatted: $27.78
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] Buy Box Used - 365 days avg. for ASIN 0345376471: Using stats.avg365[32], value: $88.16
+[2025-09-24 21:23:51,039: WARNING/ForkPoolWorker-1] Used, like new - 365 days avg. for ASIN 0345376471: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] Used, very good - 365 days avg. for ASIN 0345376471: Using stats.avg365[20], value: $23.53
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] Used, good - 365 days avg. for ASIN 0345376471: Using stats.avg365[21], value: $61.97
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] Used, acceptable - 365 days avg. for ASIN 0345376471: Using stats.avg365[22], value: $50.42
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] ASIN 0345376471: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] ASIN 0345376471: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] ASIN 0345376471: Used Offer Count - Current calculated as 7 (Total: 8, New FBA: 0, New FBM: 1).
+[2025-09-24 21:23:51,039: INFO/ForkPoolWorker-1] ASIN 0345376471: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
+[2025-09-24 21:23:51,124: INFO/ForkPoolWorker-1] ASIN 0345376471: Rejected 1 outlier(s) from inferred sales list (e.g., prices > 78.47).
+[2025-09-24 21:23:51,125: INFO/ForkPoolWorker-1] ASIN 0345376471: Found 23 sane sale events after outlier rejection.
+[2025-09-24 21:23:51,218: INFO/ForkPoolWorker-1] ASIN 0345376471: Rejected 1 outlier(s) from inferred sales list (e.g., prices > 78.47).
+[2025-09-24 21:23:51,218: INFO/ForkPoolWorker-1] ASIN 0345376471: Found 23 sane sale events after outlier rejection.
+[2025-09-24 21:23:51,311: INFO/ForkPoolWorker-1] ASIN 0345376471: Rejected 1 outlier(s) from inferred sales list (e.g., prices > 78.47).
+[2025-09-24 21:23:51,311: INFO/ForkPoolWorker-1] ASIN 0345376471: Found 23 sane sale events after outlier rejection.
+[2025-09-24 21:23:51,311: INFO/ForkPoolWorker-1] Starting decoupled seller information processing...
+[2025-09-24 21:23:51,315: INFO/ForkPoolWorker-1] ASIN 0871239574: Found best price $21.61 from validated live offers, matched to Seller ID: A22BP3AVP6XYFE
+[2025-09-24 21:23:51,315: INFO/ForkPoolWorker-1] ASIN 0871239574: Seller data for ID A22BP3AVP6XYFE not in cache. Fetching from API.
+[2025-09-24 21:23:51,315: INFO/ForkPoolWorker-1] Rate limit: Pausing for 53.58 seconds.
+[2025-09-24 21:24:44,924: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 1. Current tokens: 232.17
+[2025-09-24 21:24:44,924: INFO/ForkPoolWorker-1] Fetching data for batch of 1 sellers
+[2025-09-24 21:24:45,335: INFO/ForkPoolWorker-1] Seller API call successful. Tokens consumed: 1
+[2025-09-24 21:24:45,336: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 232.17, After: 230
+[2025-09-24 21:24:45,337: INFO/ForkPoolWorker-1] ASIN 0871239574: Successfully processed and updated seller info.
+[2025-09-24 21:24:45,338: INFO/ForkPoolWorker-1] ASIN 0521052076: Found best price $20.17 from validated live offers, matched to Seller ID: AN9NQZD6552ND
+[2025-09-24 21:24:45,338: INFO/ForkPoolWorker-1] ASIN 0521052076: Successfully processed and updated seller info.
+[2025-09-24 21:24:45,341: INFO/ForkPoolWorker-1] ASIN 1869890922: Found best price $26.80 from validated live offers, matched to Seller ID: A2GBCRGIWRDXK8
+[2025-09-24 21:24:45,341: INFO/ForkPoolWorker-1] ASIN 1869890922: Successfully processed and updated seller info.
+[2025-09-24 21:24:45,343: INFO/ForkPoolWorker-1] ASIN 0895558238: Found best price $29.83 from validated live offers, matched to Seller ID: A66REUIM3OMP6
+[2025-09-24 21:24:45,343: INFO/ForkPoolWorker-1] ASIN 0895558238: Successfully processed and updated seller info.
+[2025-09-24 21:24:45,344: INFO/ForkPoolWorker-1] ASIN 0851315976: Found best price $26.08 from validated live offers, matched to Seller ID: A2W0XT7SMZ33XS
+[2025-09-24 21:24:45,344: INFO/ForkPoolWorker-1] ASIN 0851315976: Seller data for ID A2W0XT7SMZ33XS not in cache. Fetching from API.
+[2025-09-24 21:24:45,344: INFO/ForkPoolWorker-1] Rate limit: Pausing for 59.99 seconds.
+[2025-09-24 21:25:45,396: INFO/ForkPoolWorker-1] Permission granted for API call. Estimated cost: 1. Current tokens: 235.04
+[2025-09-24 21:25:45,396: INFO/ForkPoolWorker-1] Fetching data for batch of 1 sellers
+[2025-09-24 21:25:46,255: INFO/ForkPoolWorker-1] Seller API call successful. Tokens consumed: 1
+[2025-09-24 21:25:46,256: INFO/ForkPoolWorker-1] Updated token count from API response. Before: 235.04, After: 234
+[2025-09-24 21:25:46,256: INFO/ForkPoolWorker-1] ASIN 0851315976: Successfully processed and updated seller info.

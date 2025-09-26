@@ -396,6 +396,31 @@ This task was completed in several iterative phases, involving significant chang
 
 **Recommendation for Next Agent:** Do not repeat the diagnostic steps from this session. The work is done. Start immediately by using the `view_text_website` tool on the log file URL: `https://raw.githubusercontent.com/timemery/AgentArbitrage/refs/heads/main/celery_log.md`. Analyze this log to trace the inputs and outputs of the functions in `new_analytics.py` to find and fix the final bug.
 
+### Dev Log Entry: Task "KeyError in Analytics"
+
+**1. Problem Summary:** The Celery task `run_keepa_script` was completing, but the final CSV report contained empty columns for the new analytics functions (`Changed`, `1-Yr Avg Sale Price`, `Trend`, `% Discount`). Log analysis revealed that this was caused by a `KeyError` when the analytics functions tried to access the `csv` and `lastPriceChange` keys from the `product` object they received.
+
+**2. Investigation and Root Cause Analysis:**
+
+- Initial analysis of `celery_log.md` confirmed the `KeyError`.
+- I traced the data flow for a specific ASIN (`0871239574`) and discovered that the `product` object passed to the analytics functions was incomplete.
+- A code review of `keepa_deals/Keepa_Deals.py` revealed that the application fetches "deal" information (which includes `lastPriceChange`) and "product" information (which includes the `csv` history) in separate API calls.
+- The root cause was identified as a missing data-merging step. A previous refactoring had removed the logic that merged the `deal` object into the corresponding `product` object. The analytics functions were therefore receiving only the product data, leading to the `KeyError` when they tried to access keys from the deal data.
+
+**3. Implemented Solution:**
+
+- I modified `keepa_deals/Keepa_Deals.py`.
+- I added a "Data Merging Step" after all API data has been fetched but before any calculation or processing loops begin.
+- This new step iterates through the list of valid deals and uses `all_fetched_products_map[asin].update(original_deal_obj)` to merge the deal-specific data into the main product object for each ASIN.
+- This ensures that any subsequent function receives the complete, unified data structure it expects.
+
+**4. Verification Attempts and Blockers:**
+
+- Verification was blocked by persistent environment issues.
+- Initial attempts to run a scan failed due to an inability to locate the API key.
+- After the user provided the key, attempts to trigger the Celery task failed due to a `redis.exceptions.ConnectionError`, indicating the Redis service was not running.
+- I was unable to start the Redis service using standard commands, preventing me from starting the Celery worker and verifying the fix.
+- The user confirmed that the web UI was also unable to start a scan, pointing to a broader environment issue that is outside the scope of my code change. The fix remains unverified pending the resolution of these environmental problems.
 
 
 
