@@ -271,6 +271,22 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
 
         # Seller data is now fetched on-demand inside get_all_seller_info
         
+        # --- Data Merging Step ---
+        logger.info("Merging deal data into fetched product data...")
+        for deal_info in valid_deals_to_process:
+            asin = deal_info['asin']
+            original_deal_obj = deal_info['deal_obj']
+
+            if asin in all_fetched_products_map and not all_fetched_products_map[asin].get('error'):
+                # The product data from the API is the base.
+                # The deal data (which includes 'lastPriceChange' etc.) is merged into it.
+                all_fetched_products_map[asin].update(original_deal_obj)
+                logger.debug(f"ASIN {asin}: Merged deal data into product data.")
+            else:
+                logger.warning(f"ASIN {asin}: Skipping merge because product data was not found or had an error.")
+        logger.info("Finished merging deal data.")
+        # --- End of Data Merging Step ---
+
         temp_rows_data = []
 
         for deal_info in valid_deals_to_process:
