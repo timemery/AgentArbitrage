@@ -11,7 +11,11 @@ celery = Celery(
 )
 
 celery.conf.update(
+    imports=('keepa_deals.Keepa_Deals',),
     worker_log_file='celery_worker.log',
     worker_log_level='DEBUG',
+    task_serializer='json',
+    result_serializer='json',
+    accept_content=['json']
 )
 print("celery_config.py loaded successfully")

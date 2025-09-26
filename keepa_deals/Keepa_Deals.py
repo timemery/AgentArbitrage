@@ -314,13 +314,15 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                                 result = func(original_deal_obj, logger, product)
                             elif func.__name__ == 'deal_found':
                                 result = func(original_deal_obj, logger)
+                            elif func.__name__ == 'get_condition':
+                                result = func(product, logger)
                             else:
                                 result = func(product)
                             
                             logger.debug(f"ASIN {asin}, Header: {header}, Func: {func.__name__}, Result: {result}")
                             row.update(result)
                         except Exception as e:
-                            logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}")
+                            logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
                             row[header] = '-'
                 
                 if 'ASIN' not in row or row.get('ASIN') != asin:
