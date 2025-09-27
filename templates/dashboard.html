@@ -105,9 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     const headerTitleMap = {
-        "Min_Listing_Price": "Min. List $",
+        "Seller": "Seller Name",
+        "Min_Listing_Price": "Min. List",
         "1yr. Avg.": "1yr Avg",
-        "% ⇩": "% Discount",
+        "% ⇩": "% ⇩",
         "Seller_Quality_Score": "Seller Trust",
         "Sales_Rank___Current": "Sales Rank",
         "Binding": "Binding",
@@ -124,24 +125,58 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(dateString);
         const now = new Date();
         const seconds = Math.round((now - date) / 1000);
-        
-        if (seconds <= 60) return "Just Now";
-        
         const minutes = Math.round(seconds / 60);
+
         if (minutes < 60) {
-            const unit = minutes === 1 ? "minute ago" : "minutes ago";
-            return `${minutes} <span class="time-suffix">${unit}</span>`;
+            if (minutes <= 1) return `1 <span class="time-suffix">min. ago</span>`;
+            return `${minutes} <span class="time-suffix">mins. ago</span>`;
         }
-        
+
         const hours = Math.round(minutes / 60);
         if (hours < 24) {
-            const unit = hours === 1 ? "hour ago" : "hours ago";
-            return `${hours} <span class="time-suffix">${unit}</span>`;
+            if (hours === 1) return `1 <span class="time-suffix">hr. ago</span>`;
+            return `${hours} <span class="time-suffix">hrs. ago</span>`;
         }
-        
+
         const days = Math.round(hours / 24);
-        const unit = days === 1 ? "day ago" : "days ago";
-        return `${days} <span class="time-suffix">${unit}</span>`;
+        if (days < 30) {
+            if (days === 1) return `1 <span class="time-suffix">day ago</span>`;
+            return `${days} <span class="time-suffix">days ago</span>`;
+        }
+
+        const months = Math.round(days / 30);
+        if (months < 12) {
+            if (months === 1) return `1 <span class="time-suffix">mo. ago</span>`;
+            return `${months} <span class="time-suffix">mos. ago</span>`;
+        }
+
+        const years = Math.round(days / 365);
+        if (years === 1) return `1<span class="time-suffix">yr. ago</span>`;
+        return `${years}<span class="time-suffix">yrs. ago</span>`;
+    }
+
+    function formatCondition(value) {
+        if (!value || typeof value !== 'string' || value.trim() === '-') return '-';
+
+        const cleanedValue = value.toLowerCase().replace(/[\s_-]/g, '');
+
+        const mapping = {
+            'spiralbound': 'SB',
+            'boardbook': 'BB',
+            'hardcover': 'HC',
+            'paperback': 'PB',
+            'massmarketpaperback': 'MMPB',
+            'audiobook': 'Audio',
+            'audiocd': 'Audio',
+            'looseleaf': 'LL',
+            'leatherbound': 'LB',
+            'likenew': 'LN',
+            'verygood': 'VG',
+            'good': 'G',
+            'acceptable': 'A'
+        };
+
+        return mapping[cleanedValue] || value;
     }
 
     function getFilters() {
@@ -221,11 +256,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!isNaN(numValue)) {
                         const score = Math.round(numValue * 10);
                         value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
+                    } else if (typeof value === 'string' && value.trim().toLowerCase() === 'new seller') {
+                        value = `<span>Unrated</span>`;
                     } else if (typeof value === 'string' && value) {
-                        // Handle string values like "New Seller"
+                        // Handle other string values
                         value = `<span>${value}</span>`;
                     }
-                } else if (col === 'Deal_found') {
+                } else if (col === 'Deal_found' || col === 'Changed') {
                     value = formatTimeAgo(value);
                 } else if (!isNaN(numValue)) { // Check if the parsed value is a number
                     if (col === 'Profit_Confidence') {
@@ -237,6 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost')) {
                         value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     }
+                } else if (col === 'Binding' || col === 'Condition') {
+                    value = formatCondition(value);
                 }
 
                 if (col === 'Buy_Now') {
@@ -249,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (col === 'ASIN') {
                     table += `<td>${cleanAsin}</td>`;
                 } else if (col === 'Best_Price' && cleanAsin) {
-                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank">${value}</a></td>`;
+                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
                 }
                 else {
                     table += `<td>${value}</td>`;
