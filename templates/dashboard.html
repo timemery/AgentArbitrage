@@ -100,12 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const columnsToShow = [
         "Title", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
-        "Sales_Rank___Current", "last price change", "1yr. Avg.", "% ⇩", "Trend", "Binding", "Condition", "Seasonality_Type",
+        "Sales_Rank___Current", "last_price_change", "1yr. Avg.", "% ⇩", "Trend", "Binding", "Condition", "Seasonality_Type",
         "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Buy_Now"
     ];
 
     const headerTitleMap = {
-        "last price change": "Changed",
+        "last_price_change": "Changed",
         "Seller": "Seller Name",
         "Min_Listing_Price": "Min. List",
         "1yr. Avg.": "1yr Avg",
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Handle other string values
                         value = `<span>${value}</span>`;
                     }
-                } else if (col === 'Deal_found' || col === 'last price change') {
+                } else if (col === 'Deal_found' || col === 'last_price_change') {
                     value = formatTimeAgo(value);
                 } else if (!isNaN(numValue)) { // Check if the parsed value is a number
                     if (col === 'Profit_Confidence') {
