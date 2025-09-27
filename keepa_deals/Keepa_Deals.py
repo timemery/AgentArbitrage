@@ -239,7 +239,6 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                     etr_seconds = deals_remaining * time_per_deal if time_per_deal > 0 else 0
                     
                     status_update_callback({
-                        "message": f"Processing... {processed_deals_count} of {len(deals_to_process)} deals complete.",
                         "processed_deals": processed_deals_count,
                         "etr_seconds": etr_seconds,
                         "debug_etr": {

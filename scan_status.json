@@ -1,6 +1,16 @@
 {
-    "status": "Running",
-    "start_time": "2025-09-27T16:44:00.345Z",
-    "message": "Scan has been queued. Waiting for worker to start processing...",
-    "task_id": null
+    "status": "Completed",
+    "start_time": "2025-09-27T19:51:20.774Z",
+    "message": "Scan completed successfully.",
+    "task_id": "d4bdba8c-6bd6-4199-93a2-180cbf79021c",
+    "total_deals": 13,
+    "processed_deals": 13,
+    "etr_seconds": 0.0,
+    "debug_etr": {
+        "elapsed": 73.01392340660095,
+        "processed": 13,
+        "time_per_deal": 5.616455646661612
+    },
+    "end_time": "2025-09-27T20:04:46.635Z",
+    "output_file": "data/Keepa_Deals_Export.csv"
 }
