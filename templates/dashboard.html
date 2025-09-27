@@ -100,11 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const columnsToShow = [
         "Title", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
-        "Sales_Rank___Current", "Changed", "1yr. Avg.", "% ⇩", "Trend", "Binding", "Condition", "Seasonality_Type",
+        "Sales_Rank___Current", "last price change", "1yr. Avg.", "% ⇩", "Trend", "Binding", "Condition", "Seasonality_Type",
         "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Buy_Now"
     ];
 
     const headerTitleMap = {
+        "last price change": "Changed",
         "Seller": "Seller Name",
         "Min_Listing_Price": "Min. List",
         "1yr. Avg.": "1yr Avg",
@@ -122,7 +123,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function formatTimeAgo(dateString) {
         if (!dateString || dateString === '-') return '-';
-        const date = new Date(dateString);
+
+        let date;
+        // Handle "MM/DD/YY HH:MM" format specifically
+        if (dateString.includes('/') && dateString.includes(':')) {
+            const parts = dateString.split(' ');
+            const dateParts = parts[0].split('/');
+            const timeParts = parts[1].split(':');
+            // new Date(year, monthIndex, day, hours, minutes)
+            date = new Date(
+                2000 + parseInt(dateParts[2], 10),
+                parseInt(dateParts[0], 10) - 1, // Month is 0-indexed
+                parseInt(dateParts[1], 10),
+                parseInt(timeParts[0], 10),
+                parseInt(timeParts[1], 10)
+            );
+        } else {
+            // Fallback for ISO format and other standard formats
+            date = new Date(dateString);
+        }
+
+        if (isNaN(date.getTime())) {
+            return '-'; // Safeguard against invalid dates
+        }
+
         const now = new Date();
         const seconds = Math.round((now - date) / 1000);
         const minutes = Math.round(seconds / 60);
@@ -262,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Handle other string values
                         value = `<span>${value}</span>`;
                     }
-                } else if (col === 'Deal_found' || col === 'Changed') {
+                } else if (col === 'Deal_found' || col === 'last price change') {
                     value = formatTimeAgo(value);
                 } else if (!isNaN(numValue)) { // Check if the parsed value is a number
                     if (col === 'Profit_Confidence') {
