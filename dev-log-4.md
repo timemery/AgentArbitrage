@@ -434,6 +434,42 @@ This task was completed in several iterative phases, involving significant chang
   4. **The `start_celery.sh` Bug:** After we collaboratively restored the web server and confirmed the application code was correct (by running a scan manually), a final blocker was identified. The `start_celery.sh` script fails to start the worker process silently. The worker *only* runs when started manually in the foreground. My attempts to fix the script by modifying the `sudo` and backgrounding logic were unsuccessful.
 - **Final Status:** The task is being aborted. The application code itself is correct and the `KeyError` is fixed. However, the system is not usable because a scan cannot be initiated from the web UI due to the broken startup script. The root cause of the script's failure remains unknown because my tools are too unstable to diagnose it further.
 
+### **Dev Log Entry: September 27, 2025**
+
+**Task:** Fix Celery Worker Automatic Startup and Subsequent Bugs
+
+**Objective:** The initial and primary goal was to fix the `start_celery.sh` script, which was failing to launch the Celery worker process automatically, rendering the background scanning feature unusable.
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task evolved from a single script fix into a complex environmental and logical debugging session that uncovered and resolved two subsequent, hidden bugs.
+
+**1. The `start_celery.sh` Saga:**
+
+- **Problem:** The worker process would only start when run with a specific manual command, but would fail silently when launched from the startup script.
+- **Initial Attempts (Failed):** My first two attempts involved refactoring the script to use Celery's built-in daemonization flag (`--detach`). These attempts failed silently. The root cause was a subtle, environment-specific conflict between `sudo`, the `www-data` user's non-interactive shell, and Celery's daemonization logic on this particular server.
+- **The `nohup` Solution (Successful):** The successful fix was to abandon the failing Celery-specific feature and fall back to a more robust, time-tested Unix utility. The final version of the script uses the exact, known-working manual command but executes it via `nohup`. This correctly daemonizes the process, ensuring it persists after the script exits, and redirects all its output to the `celery.log` file.
+
+**2. The "Phantom Scan" Bug:**
+
+- **Problem:** Once the worker was starting correctly, a new bug was immediately exposed: a data scan would begin automatically the moment the worker came online, without any user interaction from the web UI.
+- **Investigation:** My initial theory that some code was running on web server startup was proven false after reviewing `wsgi_handler.py` and `keepa_deals/Keepa_Deals.py`.
+- **Root Cause & Fix:** The true root cause was a **stale task stuck in the Redis message queue**. A previous, failed attempt to start a scan had placed a task in the queue, where it sat waiting. As soon as a live worker connected, it picked up and executed this old task. The fix was to add a `celery -A worker.celery purge -f` command to the `start_celery.sh` script. This command forcefully clears all pending tasks from the queue *before* the new worker starts, ensuring it only processes new tasks.
+
+**3. The Scan Limit Mismatch Bug:**
+
+- **Problem:** The user observed that when a scan was initiated with a specific limit (e.g., 10), the UI status message would flicker with different numbers or confusing progress updates.
+- **Investigation:** I traced the `deal_limit` parameter from the frontend form to the backend Celery task and confirmed it was being passed correctly. The issue was not in the logic, but in the status reporting.
+- **Root Cause & Fix:** The `_update_cli_status` function in `keepa_deals/Keepa_Deals.py` was being called from inside the main processing loop and was overwriting the entire status `message` with a generic progress update. This erased the initial, more informative message that stated the user's chosen limit. The fix was to modify the call inside the loop to *only* update the progress counters (`processed_deals`, `etr_seconds`) and to no longer touch the `message` key, thus preserving the initial status message throughout the scan.
+
+**Final Outcome:** All three issues were successfully resolved. The `start_celery.sh` script now reliably starts the worker, which no longer triggers a phantom scan. The UI now correctly and consistently reports the scan parameters and progress. The system is fully operational.
+
+
+
+
+
+
+
 
 
 
