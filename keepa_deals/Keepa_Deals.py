@@ -174,10 +174,12 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             write_csv([], [], diagnostic=True)
             save_to_database([], HEADERS, logger)
             logger.info("Script completed with no deals processed.")
+            scan_duration_seconds = time.time() - scan_start_time
             _update_cli_status({
                 'status': 'Completed',
                 'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-                'message': 'Scan finished. No deals were found matching the criteria.'
+                'message': 'Scan finished. No deals were found matching the criteria.',
+                'scan_duration_seconds': scan_duration_seconds
             })
             return
         
@@ -242,7 +244,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                         "processed_deals": processed_deals_count,
                         "etr_seconds": etr_seconds,
                         "debug_etr": {
-                            "elapsed": elapsed_seconds,
+                            "elapsed_minutes": elapsed_seconds / 60,
                             "processed": processed_deals_count,
                             "time_per_deal": time_per_deal
                         }
@@ -492,18 +494,22 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         save_to_database(final_processed_rows, HEADERS, logger)
 
         logger.info("Script completed!")
+        scan_duration_seconds = time.time() - scan_start_time
         _update_cli_status({
             'status': 'Completed',
             'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
             'message': 'Scan completed successfully.',
-            'output_file': f"{output_dir}/Keepa_Deals_Export.csv"
+            'output_file': f"{output_dir}/Keepa_Deals_Export.csv",
+            'scan_duration_seconds': scan_duration_seconds
         })
     except Exception as e:
         logger.error(f"Main failed: {str(e)}", exc_info=True)
+        scan_duration_seconds = time.time() - scan_start_time
         _update_cli_status({
             'status': 'Failed',
             'end_time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-            'message': f"An error occurred: {str(e)}"
+            'message': f"An error occurred: {str(e)}",
+            'scan_duration_seconds': scan_duration_seconds
         })
 
 def save_to_database(rows, headers, logger):
