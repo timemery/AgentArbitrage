@@ -146,7 +146,37 @@ This task required an iterative investigation that uncovered a chain of two dist
 
 By correcting both the data storage logic in the backend and the presentation logic in the frontend, the issue was fully resolved. The "%⇩" column now calculates correctly, persists cleanly in the database, and displays as intended in the UI.
 
+### **Dev Log Entry: September 28, 2025**
 
+**Task:** Fix "Trend" Column Calculation
+
+**Objective:** The "Trend" column was not functioning as intended. It was supposed to show the direction of the last five listing price changes (up '⇧' or down '⇩'). Instead, it was using a 30-day linear regression on the "USED" price history, which was both the wrong data source and the wrong calculation method.
+
+**Investigation & Diagnosis:**
+
+1. **Initial Analysis:** A review of the `get_trend` function in `keepa_deals/new_analytics.py` immediately confirmed the incorrect logic was being used (time-based linear regression).
+2. **Identifying the Correct Data Source:** The core challenge was to identify the correct data array for the "new listing price" within the Keepa product object's `csv` field. The current implementation was using `csv[2]`, which was commented as "USED price".
+3. **Documentation Review:**
+   - A thorough review of `RAW_PRODUCT_DATA.md` provided an example of the `csv` structure.
+   - `keepa_deals_reference/Keepa_Documentation-official.md` and `keepa_deals_reference/Keepa_Documentation-official-2.md` were consulted. While they didn't provide a direct mapping of `csv` indices, the `keepa.py` wrapper library documentation within `keepa_deals_reference/Keepa_Documentation-official.md` listed the available data keys.
+   - By cross-referencing the available data keys (like "NEW", "USED", "AMAZON") with the structure in `RAW_PRODUCT_DATA.md` and the existing code, it was confirmed that `csv[1]` corresponds to the **Marketplace New price history**, which is the correct data source for this task.
+
+**Solution:**
+
+The fix involved a complete rewrite of the `get_trend` function in `keepa_deals/new_analytics.py`.
+
+1. **Data Source Correction:** The function was modified to read from `product['csv'][1]` to use the "NEW" price history.
+2. **Logic Replacement:** The linear regression logic was removed entirely.
+3. **New Trend Calculation:** The new implementation now performs the following steps:
+   - It parses the `price_history` array, extracting only the price points and filtering out invalid data (prices <= 0).
+   - It creates a list of `unique_prices` by iterating through the price history and only adding a price if it differs from the previous one. This ensures we are looking at actual *price changes*, not just time-based data points.
+   - It takes the last 5 unique price points from this list (or fewer if the product has less history).
+   - It determines the trend by comparing the first and last price in this window (`last_n_prices[0]` vs `last_n_prices[-1]`).
+   - If the last price is higher, it returns '⇧'. If lower, it returns '⇩'. If they are the same or if there isn't enough data for a comparison, it returns '-'.
+
+**Final Outcome:**
+
+The "Trend" column now accurately reflects the user's requirement, showing the short-term directional trend based on the last five actual changes in the new listing price. This provides a much more meaningful and actionable data point in the UI.
 
 
 
