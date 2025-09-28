@@ -490,7 +490,7 @@ button:disabled {
     padding: 8px 16px;
     margin: 0 5px;
 }
-.title-cell, .seller-cell {
+.title-cell, .seller-cell, .genre-cell {
     max-width: 120px;
     white-space: nowrap;
     overflow: hidden;
