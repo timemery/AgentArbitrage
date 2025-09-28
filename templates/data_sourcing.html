@@ -4,94 +4,101 @@
 
 {% block content %}
 <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                <div class="flash-message-container">
+                    <div class="flash-message flash-success">{{ message }}</div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h1 class="my-4">Keepa Data Sourcing</h1>
     <p>Use this page to start a new data scan from the Keepa API. The process can take several hours to complete.</p>
 
-    <div class="card my-4">
-        <div class="card-header">
-            Scan Control
+    <form id="scan-form" action="{{ url_for('start_keepa_scan') }}" method="POST">
+        <div class="scan-limit-card">
+            <h3>Limit Scan <em class="optional-text">(Optional)</em></h3>
+            <input type="number" id="limit" name="limit" class="styled-text-field" placeholder="Enter number of deals">
+            <p class="form-text-custom">If left blank, the script will process all deals found.</p>
         </div>
-        <div class="card-body">
-            <form id="scan-form" action="{{ url_for('start_keepa_scan') }}" method="POST">
-                <div class="form-group mb-3">
-                    <label for="limit" class="form-label">Process Limit (Optional)</label>
-                    <input type="number" class="form-control" id="limit" name="limit" placeholder="Enter number of deals to process (e.g., 10)" style="max-width: 300px; background-color: rgba(0,0,0,0.2); color: white; border-color: rgba(102, 153, 204, 0.5);">
-                    <small class="form-text text-light">If left blank, the script will process all deals found.</small>
-                </div>
-                <button type="submit" class="btn btn-primary" {% if status.status == 'Running' %}disabled{% endif %}>
-                    {% if status.status == 'Running' %}
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Scan in Progress...
-                    {% else %}
-                        Start New Keepa Scan
-                    {% endif %}
-                </button>
-            </form>
-        </div>
-    </div>
 
-    <div class="card my-4">
-        <div class="card-header">
-            Current Status
+        <div class="start-scan-container">
+            <button type="submit" class="btn-start-scan" {% if status.status == 'Running' %}disabled{% endif %}>
+                {% if status.status == 'Running' %}
+                    Scan in Progress...
+                {% else %}
+                    Start New Scan
+                {% endif %}
+            </button>
         </div>
-        <div class="card-body" id="status-container">
-            <p><strong>Status:</strong> 
-                <span class="
-                    {% if status.status == 'Running' %}text-primary{% endif %}
-                    {% if status.status == 'Completed' %}text-success{% endif %}
-                    {% if status.status == 'Failed' or status.status == 'Error' %}text-danger{% endif %}
-                " style="font-weight: bold;">
-                    {{ status.status | default('Idle') }}
-                </span>
-            </p>
-            {% if status.status == 'Running' and status.total_deals %}
-                <p><strong>Progress:</strong> {{ status.processed_deals }} / {{ status.total_deals }} deals processed</p>
-            {% endif %}
+    </form>
+
+    <div class="status-section">
+        <h4>Status: <span id="status-text">{{ status.status | default('Idle') }}</span></h4>
+        <div class="status-bar-container">
+            <div id="status-bar" class="status-bar"></div>
+        </div>
+
+        {% if status.output_file and status.status == 'Completed' %}
+            <div class="download-results-container">
+                <a href="{{ url_for('download_file', filename=status.output_file.split('/')[-1]) }}" class="download-link">Download Results</a>
+            </div>
+        {% endif %}
+
+        <div class="status-details">
             {% if status.start_time %}
                 <p><strong>Started:</strong> <span id="start-time" data-timestamp="{{ status.start_time }}">{{ status.start_time }} UTC</span></p>
-            {% endif %}
-            {% if status.status == 'Running' %}
-                 <p><strong>Elapsed Time:</strong> <span id="elapsed-time">Calculating...</span></p>
-                 <p><strong>Est. Time Remaining:</strong> <span id="etr" data-etr-seconds="{{ status.etr_seconds }}">Calculating...</span></p>
             {% endif %}
             {% if status.end_time %}
                 <p><strong>Finished:</strong> <span id="end-time" data-timestamp="{{ status.end_time }}">{{ status.end_time }} UTC</span></p>
             {% endif %}
-            {% if status.message %}
-                <p><strong>Message:</strong></p>
-                <pre class="status-message">{{ status.message }}</pre>
-            {% endif %}
-            {% if status.output_file and status.status == 'Completed' %}
-                <p><strong>Output File:</strong> <a href="{{ url_for('download_file', filename=status.output_file.split('/')[-1]) }}">Download Results (Keepa_Deals_Export.csv)</a></p>
-            {% endif %}
-             {% if status.log_file %}
-                <p><a href="{{ url_for('static', filename=status.log_file) }}" target="_blank">View Scan Log</a></p>
-            {% endif %}
-            {% if status.error_log_file %}
-                <p><a href="{{ url_for('static', filename=status.error_log_file) }}" target="_blank">View Error Log</a></p>
-            {% endif %}
-
-            {% if status.debug_etr %}
-            <hr>
-            <p><small><strong>Debug Info:</strong></small></p>
-            <p><small>ETR Elapsed Seconds: {{ status.debug_etr.elapsed | round(2) }}s</small></p>
-            <p><small>ETR Processed Count: {{ status.debug_etr.processed }}</small></p>
-            <p><small>ETR Time Per Deal: {{ status.debug_etr.time_per_deal | round(2) }}s</small></p>
+            {% if status.scan_duration_seconds is defined %}
+                 <p><strong>Scan Duration:</strong> <span id="scan-duration" data-duration-seconds="{{ status.scan_duration_seconds }}"></span></p>
             {% endif %}
         </div>
+
+        {% if status.message %}
+            <p class="message-label"><strong>Message:</strong></p>
+            <pre class="status-message">{{ status.message }}</pre>
+        {% endif %}
+
+        {% if status.debug_etr %}
+        <hr class="debug-hr">
+        <div class="debug-info">
+            <p><strong>Debug Info:</strong></p>
+            <p>ETR Elapsed Minutes: <span id="etr-minutes">{{ status.debug_etr.elapsed_minutes | round(2) }}</span>m</p>
+            <p>ETR Processed Count: <span>{{ status.debug_etr.processed }}</span></p>
+            <p>ETR Time Per Deal: <span>{{ status.debug_etr.time_per_deal | round(2) }}s</span></p>
+        </div>
+        {% endif %}
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Function to format a timestamp element
+        const statusText = "{{ status.status | default('Idle') }}";
+        const statusBar = document.getElementById('status-bar');
+
+        // --- Status Bar Color and Animation ---
+        if (statusText === 'Running') {
+            statusBar.classList.add('running');
+        } else if (statusText === 'Completed') {
+            statusBar.classList.add('completed');
+        } else if (statusText === 'Failed' || statusText === 'Error') {
+            statusBar.classList.add('failed');
+        }
+
+        // --- Timestamp Formatting ---
         const formatTimestamp = (elementId) => {
             const el = document.getElementById(elementId);
             if (el) {
                 const utcTimestamp = el.getAttribute('data-timestamp');
                 if (utcTimestamp) {
                     const date = new Date(utcTimestamp);
-                    // Options for a more readable format
                     const options = {
                         year: 'numeric', month: 'long', day: 'numeric',
                         hour: 'numeric', minute: '2-digit', second: '2-digit',
@@ -102,61 +109,277 @@
             }
         };
 
-        // Function to format seconds into a human-readable string (Hh Mm Ss)
-        const formatSeconds = (seconds) => {
-            if (isNaN(seconds) || seconds < 0) return "N/A";
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = Math.floor(seconds % 60);
-            return `${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'm ' : ''}${s}s`;
-        };
-
-        // Format the start and end times
         formatTimestamp('start-time');
         formatTimestamp('end-time');
 
-        // Calculate and display elapsed time and ETR if a scan is running
-        const startTimeEl = document.getElementById('start-time');
-        if (startTimeEl && "{{ status.status }}" === "Running") {
-            const startTime = new Date(startTimeEl.getAttribute('data-timestamp'));
-            const elapsedTimeEl = document.getElementById('elapsed-time');
-            const etrEl = document.getElementById('etr');
+        // --- Scan Duration Formatting ---
+        const formatDuration = (elementId) => {
+            const el = document.getElementById(elementId);
+            if (el) {
+                const totalSeconds = parseInt(el.getAttribute('data-duration-seconds'), 10);
+                if (!isNaN(totalSeconds)) {
+                    const hours = Math.floor(totalSeconds / 3600);
+                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                    const seconds = totalSeconds % 60;
 
-            // Calculate and display elapsed time
-            const updateElapsedTime = () => {
-                const now = new Date();
-                const elapsedSeconds = Math.floor((now - startTime) / 1000);
-                elapsedTimeEl.textContent = formatSeconds(elapsedSeconds);
-            };
-            
-            if (elapsedTimeEl) {
-                updateElapsedTime(); // Initial call
-                setInterval(updateElapsedTime, 1000); // Update every second
-            }
-            
-            // Format ETR
-            if (etrEl) {
-                const etrSeconds = etrEl.getAttribute('data-etr-seconds');
-                if (etrSeconds && etrSeconds !== "None") {
-                    etrEl.textContent = formatSeconds(parseFloat(etrSeconds));
-                } else {
-                    etrEl.textContent = "Calculating...";
+                    // Pad with leading zeros
+                    const pad = (num) => num.toString().padStart(2, '0');
+
+                    el.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
                 }
             }
-        }
+        };
 
-        // Auto-refresh the page every 30 seconds if a scan is running
+        formatDuration('scan-duration');
+
+        // --- Auto-refresh on 'Running' status ---
         {% if status.status == 'Running' %}
-            setTimeout(function(){
+            setTimeout(function() {
                window.location.reload(1);
-            }, 30000);
+            }, 30000); // Refresh every 30 seconds
         {% endif %}
+
+        // --- Flash Message Auto-hide ---
+        const flashMessage = document.querySelector('.flash-message');
+        if (flashMessage) {
+            // The animation handles the hiding, but we can remove the element from the DOM afterwards
+            setTimeout(() => {
+                flashMessage.parentElement.remove();
+            }, 5000);
+        }
     });
 </script>
 
 <style>
-    .text-primary { color: #007bff; }
-    .text-success { color: #28a745; }
-    .text-danger { color: #dc3545; }
+    .flash-message-container {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050;
+        width: 80%;
+        max-width: 600px;
+        text-align: center;
+    }
+
+    .flash-message {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: slide-in-fade 0.5s forwards, fade-out 0.5s 4.5s forwards;
+    }
+
+    .flash-success {
+        background-color: #28a745; /* Green */
+    }
+
+    @keyframes slide-in-fade {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fade-out {
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+
+    .scan-limit-card {
+        background-color: #2c3e50;
+        border: 1px solid #4a627a;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .scan-limit-card h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #ecf0f1;
+    }
+
+    .optional-text {
+        font-size: 0.9rem;
+        font-weight: 300;
+        color: #bdc3c7;
+        font-style: italic;
+    }
+
+    .styled-text-field {
+        background-color: rgba(0,0,0,0.2);
+        color: white;
+        border: 1px solid rgba(102, 153, 204, 0.5);
+        padding: 10px 15px;
+        border-radius: 5px;
+        width: 100%;
+        max-width: 350px;
+        font-size: 1rem;
+    }
+
+    .styled-text-field:focus {
+        outline: none;
+        border-color: #6699cc;
+        box-shadow: 0 0 5px rgba(102, 153, 204, 0.5);
+    }
+
+    .form-text-custom {
+        font-size: 0.85rem;
+        color: #bdc3c7;
+        margin-top: 8px;
+    }
+
+    .start-scan-container {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .btn-start-scan {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-start-scan:hover:not(:disabled) {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+    }
+
+    .btn-start-scan:disabled {
+        background-color: #566573;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .status-section {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #4a627a;
+    }
+
+    .status-section h4 {
+        margin-bottom: 10px;
+    }
+
+    .status-bar-container {
+        width: 100%;
+        background-color: #2c3e50;
+        border-radius: 5px;
+        height: 25px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        border: 1px solid #4a627a;
+    }
+
+    .status-bar {
+        height: 100%;
+        width: 100%; /* Default to full for non-running states */
+        background-color: #7f8c8d; /* Idle color */
+        transition: background-color 0.5s ease;
+    }
+
+    .status-bar.running {
+        background-color: #3498db; /* Blue for running */
+        background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+        background-size: 40px 40px;
+        animation: status-bar-stripes 2s linear infinite;
+    }
+
+    .status-bar.completed {
+        background-color: #2ecc71; /* Green for completed */
+    }
+
+    .status-bar.failed {
+        background-color: #e74c3c; /* Red for failed */
+    }
+
+    @keyframes status-bar-stripes {
+        from {
+            background-position: 40px 0;
+        }
+        to {
+            background-position: 0 0;
+        }
+    }
+
+    .download-results-container {
+        margin-top: 15px;
+    }
+
+    .download-link {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #27ae60;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    .download-link:hover {
+        background-color: #229954;
+    }
+
+    .status-details {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #2c3e50;
+        border-radius: 8px;
+        border: 1px solid #4a627a;
+    }
+
+    .status-details p {
+        margin: 8px 0;
+        color: #ecf0f1;
+    }
+
+    .status-details p strong {
+        color: #bdc3c7;
+    }
+
+    .message-label {
+        margin-top: 20px;
+        margin-bottom: 5px;
+    }
+
+    .status-message {
+        background-color: #1c2833;
+        padding: 15px;
+        border-radius: 5px;
+        color: #ecf0f1;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        border: 1px solid #4a627a;
+    }
+
+    .debug-hr {
+        border-color: #4a627a;
+        margin-top: 25px;
+    }
+
+    .debug-info {
+        font-size: 0.9rem;
+        color: #95a5a6;
+        background-color: #2c3e50;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #4a627a;
+        margin-top: 15px;
+    }
+    .debug-info p {
+        margin: 5px 0;
+    }
 </style>
 {% endblock %}
