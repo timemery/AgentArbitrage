@@ -130,7 +130,7 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
 
 def get_trend(product, logger=None):
     """
-    Indicates the price trend over the last 30 days using linear regression.
+    Indicates the price trend based on the last 5 price changes for the NEW price.
     """
     if not logger:
         logger = logging.getLogger(__name__)
@@ -139,53 +139,50 @@ def get_trend(product, logger=None):
 
     csv_data = product.get('csv', [])
 
-    # Using USED price history (index 2) for trend analysis
-    if not csv_data or len(csv_data) < 3 or not csv_data[2] or len(csv_data[2]) < 4:
-        logger.debug(f"ASIN {asin}: Insufficient CSV data for trend analysis. csv_data length: {len(csv_data) if csv_data else 0}")
+    # Use NEW price history (index 1) for trend analysis.
+    # The format is [timestamp, price, timestamp, price, ...].
+    if not csv_data or len(csv_data) < 2 or not csv_data[1] or len(csv_data[1]) < 2:
+        logger.debug(f"ASIN {asin}: Insufficient NEW price data for trend analysis.")
         return {"Trend": "-"}
 
     try:
-        price_history = csv_data[2] # USED price
-        df = pd.DataFrame(np.array(price_history).reshape(-1, 2), columns=['timestamp', 'price'])
-        df['datetime'] = pd.to_datetime(df['timestamp'], unit='m', origin=KEEPA_EPOCH)
-        logger.debug(f"ASIN {asin}: Created DataFrame for trend analysis with {len(df)} data points.")
+        price_history = csv_data[1]
 
-        # Filter for the last 30 days
-        thirty_days_ago = datetime.now() - timedelta(days=30)
-        df_last_30_days = df[df['datetime'] >= thirty_days_ago].copy()
-        logger.debug(f"ASIN {asin}: Found {len(df_last_30_days)} data points in the last 30 days.")
+        # Extract prices, ignoring timestamps and invalid values (-1).
+        prices = [price_history[i] for i in range(1, len(price_history), 2) if price_history[i] > 0]
 
-        if len(df_last_30_days) < 2:
-            logger.info(f"ASIN {asin}: Not enough data points in the last 30 days to determine a trend.")
+        # Get unique consecutive prices to identify actual changes.
+        unique_prices = []
+        if prices:
+            unique_prices.append(prices[0])
+            for i in range(1, len(prices)):
+                if prices[i] != prices[i-1]:
+                    unique_prices.append(prices[i])
+
+        logger.debug(f"ASIN {asin}: Found {len(unique_prices)} unique consecutive prices.")
+
+        # We need at least two different prices to determine a trend.
+        if len(unique_prices) < 2:
+            logger.info(f"ASIN {asin}: Not enough unique price points ({len(unique_prices)}) to determine a trend.")
             return {"Trend": "-"}
 
-        # Perform linear regression
-        # Convert datetime to a numerical format (e.g., seconds since the first timestamp in the window)
-        df_last_30_days['time_elapsed'] = (df_last_30_days['datetime'] - df_last_30_days['datetime'].iloc[0]).dt.total_seconds()
+        # Get the last 5 price points, or all if fewer than 5 exist.
+        last_n_prices = unique_prices[-5:]
+        logger.debug(f"ASIN {asin}: Analyzing last {len(last_n_prices)} prices: {last_n_prices}")
 
-        # Drop rows where price is -1 (no data)
-        df_last_30_days = df_last_30_days[df_last_30_days['price'] > 0]
-        logger.debug(f"ASIN {asin}: Found {len(df_last_30_days)} valid data points (>0) in the last 30 days.")
+        # Compare the first and last price in the window.
+        first_price = last_n_prices[0]
+        last_price = last_n_prices[-1]
 
-        if len(df_last_30_days) < 2:
-            logger.info(f"ASIN {asin}: Not enough valid data points (>0) in the last 30 days to determine a trend.")
-            return {"Trend": "-"}
-
-        x = df_last_30_days['time_elapsed']
-        y = df_last_30_days['price']
-
-        # Using numpy's polyfit for linear regression (degree=1)
-        slope, _ = np.polyfit(x, y, 1)
-
-        # Determine trend based on the slope
-        if slope > 0.01:  # Threshold to avoid noise being classified as a trend
+        if last_price > first_price:
             trend_symbol = "⇧"
-        elif slope < -0.01:
+        elif last_price < first_price:
             trend_symbol = "⇩"
         else:
+            # This case can happen if the last 5 changes resulted in the same start/end price.
             trend_symbol = "-"
 
-        logger.debug(f"ASIN {asin}: Trend analysis slope: {slope}. Symbol: {trend_symbol}")
+        logger.debug(f"ASIN {asin}: Trend determined. First price: {first_price}, Last price: {last_price}. Symbol: {trend_symbol}")
         return {"Trend": trend_symbol}
 
     except Exception as e:
