@@ -33,15 +33,15 @@ def format_time_ago(minutes_ago):
     years_ago = days_ago / 365
     return f"{int(years_ago)} years ago"
 
-def get_1_yr_avg_sale_price(product, logger=None):
+def get_1yr_avg_sale_price(product, logger=None):
     """
     Displays the median inferred sale price over the last 365 days.
     """
-    COLUMN_NAME = "1-Yr Avg Sale Price"
+    COLUMN_NAME = "1yr. Avg."
     if not logger:
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
-    logger.debug(f"ASIN {asin}: Running get_1_yr_avg_sale_price.")
+    logger.debug(f"ASIN {asin}: Running get_1yr_avg_sale_price.")
 
     # Defensive check for required data
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
@@ -95,9 +95,9 @@ def get_percent_discount(product, best_price_str, logger=None):
     logger.debug(f"ASIN {asin}: Running get_percent_discount with best_price_str: '{best_price_str}'.")
 
     # Get the 1yr average price
-    avg_price_dict = get_1_yr_avg_sale_price(product, logger)
-    avg_price_str = avg_price_dict.get("1-Yr Avg Sale Price", "-")
-    logger.debug(f"ASIN {asin}: get_1_yr_avg_sale_price returned: {avg_price_str}")
+    avg_price_dict = get_1yr_avg_sale_price(product, logger)
+    avg_price_str = avg_price_dict.get("1yr. Avg.", "-")
+    logger.debug(f"ASIN {asin}: get_1yr_avg_sale_price returned: {avg_price_str}")
 
     if avg_price_str == "-":
         logger.debug(f"ASIN {asin}: 1yr. Avg. price is unavailable, cannot calculate discount.")
