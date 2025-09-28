@@ -42,6 +42,11 @@ def get_1yr_avg_sale_price(product, logger=None):
     asin = product.get('asin', 'N/A')
     logger.debug(f"ASIN {asin}: Running get_1yr_avg_sale_price.")
 
+    # Defensive check for required data
+    if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
+        logger.warning(f"ASIN {asin}: Product data is missing 'csv' field or 'csv' is incomplete. Cannot calculate 1yr. avg.")
+        return {"1yr. Avg.": "-"}
+
     sale_events, _ = infer_sale_events(product)
 
     if not sale_events:

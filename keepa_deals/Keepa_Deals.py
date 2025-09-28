@@ -281,8 +281,13 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             if asin in all_fetched_products_map and not all_fetched_products_map[asin].get('error'):
                 # The product data from the API is the base.
                 # The deal data (which includes 'lastPriceChange' etc.) is merged into it.
-                all_fetched_products_map[asin].update(original_deal_obj)
-                logger.debug(f"ASIN {asin}: Merged deal data into product data.")
+                # Swapped the merge direction. The product data (from the map) now overwrites
+                # the deal data for any overlapping keys (like 'csv'), ensuring the complete
+                # historical data is preserved.
+                product_data = all_fetched_products_map[asin]
+                original_deal_obj.update(product_data)
+                all_fetched_products_map[asin] = original_deal_obj # Store the fully merged object back
+                logger.debug(f"ASIN {asin}: Merged product data into deal data.")
             else:
                 logger.warning(f"ASIN {asin}: Skipping merge because product data was not found or had an error.")
         logger.info("Finished merging deal data.")
