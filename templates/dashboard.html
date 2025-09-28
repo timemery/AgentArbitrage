@@ -288,11 +288,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } else if (col === 'Deal_found' || col === 'last_price_change') {
                     value = formatTimeAgo(value);
-                } else if (typeof value === 'string' && value.endsWith('%')) {
-                    // Keep the value as is if it's a string ending with %
-                    value = value;
                 } else if (!isNaN(numValue)) { // Check if the parsed value is a number
                     if (col === 'Profit_Confidence') {
+                        value = `${Math.round(numValue)}%`;
+                    } else if (col === 'Percent_Down') {
                         value = `${Math.round(numValue)}%`;
                     } else if (col === 'Sales_Rank___Current') {
                         value = numValue.toLocaleString('en-US');

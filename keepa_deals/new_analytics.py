@@ -87,8 +87,8 @@ def get_1yr_avg_sale_price(product, logger=None):
 
 def get_percent_discount(avg_price_str, best_price_str, logger=None):
     """
-    Displays the percentage discount of the current 'Best Price' compared to the '1yr. Avg.' sale price.
-    This function now takes the pre-calculated string values to be more efficient.
+    Calculates the percentage discount of the current 'Best Price' compared to the '1yr. Avg.' sale price.
+    Returns the raw integer value for clean data storage.
     """
     COLUMN_NAME = "% Down"
     if not logger:
@@ -114,14 +114,14 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
             return {COLUMN_NAME: "-"}
 
         if best_price > avg_price:
-            logger.debug(f"Best price ({best_price}) is higher than the average price ({avg_price}). Discount is 0%.")
-            return {COLUMN_NAME: "0%"}
+            logger.debug(f"Best price ({best_price}) is higher than the average price ({avg_price}). Discount is 0.")
+            return {COLUMN_NAME: 0}
 
-        # Calculate discount
+        # Calculate discount and return as a raw number
         discount = ((avg_price - best_price) / avg_price) * 100
-        result_value = f"{discount:.0f}%"
+        result_value = int(round(discount, 0))
 
-        logger.debug(f"Discount calculated: {discount:.2f}% (Avg: {avg_price}, Best: {best_price}). Returning: {result_value}")
+        logger.debug(f"Discount calculated: {discount:.2f} (Avg: {avg_price}, Best: {best_price}). Returning raw number: {result_value}")
         return {COLUMN_NAME: result_value}
 
     except (ValueError, TypeError) as e:
