@@ -85,49 +85,48 @@ def get_1yr_avg_sale_price(product, logger=None):
         logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME}: {e}", exc_info=True)
         return {COLUMN_NAME: "-"}
 
-def get_percent_discount(product, best_price_str, logger=None):
+def get_percent_discount(avg_price_str, best_price_str, logger=None):
     """
     Displays the percentage discount of the current 'Best Price' compared to the '1yr. Avg.' sale price.
+    This function now takes the pre-calculated string values to be more efficient.
     """
+    COLUMN_NAME = "% Down"
     if not logger:
         logger = logging.getLogger(__name__)
-    asin = product.get('asin', 'N/A')
-    logger.debug(f"ASIN {asin}: Running get_percent_discount with best_price_str: '{best_price_str}'.")
+    logger.debug(f"Running get_percent_discount with avg_price_str: '{avg_price_str}', best_price_str: '{best_price_str}'.")
 
-    # Get the 1yr average price
-    avg_price_dict = get_1yr_avg_sale_price(product, logger)
-    avg_price_str = avg_price_dict.get("1yr. Avg.", "-")
-    logger.debug(f"ASIN {asin}: get_1yr_avg_sale_price returned: {avg_price_str}")
-
-    if avg_price_str == "-":
-        logger.debug(f"ASIN {asin}: 1yr. Avg. price is unavailable, cannot calculate discount.")
-        return {"% ⇩": "-"}
+    if not avg_price_str or avg_price_str == "-":
+        logger.debug("1yr. Avg. price is unavailable, cannot calculate discount.")
+        return {COLUMN_NAME: "-"}
 
     if not best_price_str or best_price_str == "-":
-        logger.debug(f"ASIN {asin}: Best Price is unavailable, cannot calculate discount.")
-        return {"% ⇩": "-"}
+        logger.debug("Best Price is unavailable, cannot calculate discount.")
+        return {COLUMN_NAME: "-"}
 
     try:
         # Convert string prices to floats
-        avg_price = float(avg_price_str.replace("$", ""))
-        best_price = float(best_price_str.replace("$", ""))
-        logger.debug(f"ASIN {asin}: Parsed avg_price: {avg_price}, best_price: {best_price}")
-
+        avg_price = float(avg_price_str.replace("$", "").replace(",", ""))
+        best_price = float(best_price_str.replace("$", "").replace(",", ""))
+        logger.debug(f"Parsed avg_price: {avg_price}, best_price: {best_price}")
 
         if avg_price <= 0:
-            logger.warning(f"ASIN {asin}: 1yr. Avg. price is zero or less, cannot calculate discount.")
-            return {"% ⇩": "-"}
+            logger.warning(f"1yr. Avg. price is zero or less ({avg_price}), cannot calculate discount.")
+            return {COLUMN_NAME: "-"}
+
+        if best_price > avg_price:
+            logger.debug(f"Best price ({best_price}) is higher than the average price ({avg_price}). Discount is 0%.")
+            return {COLUMN_NAME: "0%"}
 
         # Calculate discount
         discount = ((avg_price - best_price) / avg_price) * 100
         result_value = f"{discount:.0f}%"
 
-        logger.debug(f"ASIN {asin}: Discount calculated: {discount:.2f}% (Avg: {avg_price}, Best: {best_price}). Returning: {result_value}")
-        return {"% ⇩": result_value}
+        logger.debug(f"Discount calculated: {discount:.2f}% (Avg: {avg_price}, Best: {best_price}). Returning: {result_value}")
+        return {COLUMN_NAME: result_value}
 
     except (ValueError, TypeError) as e:
-        logger.error(f"ASIN {asin}: Error calculating discount: {e}", exc_info=True)
-        return {"% ⇩": "-"}
+        logger.error(f"Error calculating discount with inputs '{avg_price_str}' and '{best_price_str}': {e}", exc_info=True)
+        return {COLUMN_NAME: "-"}
 
 def get_trend(product, logger=None):
     """

@@ -113,7 +113,38 @@ This task required a deep, iterative investigation that uncovered a chain of thr
 
 By aligning every step of the pipeline with this data flow, the issue was fully resolved. The "1yr. Avg." column now correctly calculates the median of inferred sale prices and displays the result in both the CSV export and the web UI.
 
+### **Dev Log Entry: September 28, 2025**
 
+**Task:** Diagnose and Fix "%⇩" Column
+
+**Objective:** The "%⇩" column in the Deals Dashboard was not functioning correctly. The initial goal was to fix the underlying calculation, but the task evolved to address deeper issues related to data sanitization and the separation of backend data and frontend presentation.
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task required an iterative investigation that uncovered a chain of two distinct bugs. The final solution involved correcting the backend data type, standardizing the column header, and updating the frontend to handle its display formatting responsibilities correctly.
+
+**1. First Bug: Header Sanitization and Encoding**
+
+- **Symptom:** The web UI column was completely empty (displaying "-"), and the corresponding header in the CSV export was garbled.
+- **Investigation:** The initial calculation logic was refactored for efficiency, but this did not solve the display issue. The symptoms pointed towards a problem with how the column header itself was being handled.
+- **Root Cause:** The special character "⇩" in the original `"% ⇩"` header was causing errors during the data pipeline's sanitization process. When saving to the database, this name was converted to an unpredictable key that the frontend API consumer did not recognize, causing the data to be missed. The character also caused encoding errors in the CSV export.
+- Fix:
+  - The canonical header in `keepa_deals/headers.json` was changed to the simpler `"% Down"`.
+  - The backend function `get_percent_discount` was updated to return its result in a dictionary with the `"% Down"` key.
+  - The frontend `templates/dashboard.html` was updated to request the new sanitized key (`Percent_Down`) and use its `headerTitleMap` to render the display name back to the user's preferred `"% ⇩"`.
+
+**2. Second Bug: Data vs. Presentation Mismatch**
+
+- **Symptom:** After fixing the header issue, the correct number appeared in the UI, but it was missing the "%" symbol (e.g., "18" instead of "18%").
+- **Initial Incorrect Diagnosis:** My first attempts assumed the frontend JavaScript was incorrectly stripping the "%" symbol from a string it received from the backend. This was incorrect.
+- **Correct Root Cause:** A deeper look at the data pipeline revealed that the `save_to_database` function in `keepa_deals/Keepa_Deals.py` correctly identified any string ending in "%" as a numeric value. It was parsing the string (e.g., "18%"), converting it to a raw number (`18`), and saving that integer to the database. The frontend was, therefore, receiving a number, not a string, which is why my string-based fixes were failing.
+- Final, Correct Fix (Separation of Concerns):
+  - **Backend (`new_analytics.py`):** The `get_percent_discount` function was modified to embrace this behavior. It now intentionally calculates and returns the raw integer value of the discount. This aligns with the best practice of storing clean, raw data.
+  - **Frontend (`templates/dashboard.html`):** The `renderTable` JavaScript function was updated to handle the `Percent_Down` column specifically. It now expects a raw number and is explicitly responsible for formatting it for presentation by appending the "%" symbol.
+
+**Final Outcome:**
+
+By correcting both the data storage logic in the backend and the presentation logic in the frontend, the issue was fully resolved. The "%⇩" column now calculates correctly, persists cleanly in the database, and displays as intended in the UI.
 
 
 

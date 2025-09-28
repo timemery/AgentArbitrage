@@ -458,13 +458,21 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 try:
                     best_price_str = row_data.get('Best Price', '-')
 
+                    # First, calculate the 1yr Avg and Trend
                     yr_avg_price_info = get_1yr_avg_sale_price(product, logger=logger)
                     trend_info = get_trend(product, logger=logger)
-                    # Now call get_percent_discount with the calculated best_price
-                    percent_discount_info = get_percent_discount(product, best_price_str, logger=logger)
 
+                    # Update the row with these values so they can be accessed.
                     row_data.update(yr_avg_price_info)
                     row_data.update(trend_info)
+
+                    # Now, retrieve the necessary pre-calculated strings.
+                    avg_price_str = row_data.get('1yr. Avg.', '-')
+
+                    # Call get_percent_discount with the pre-calculated strings
+                    percent_discount_info = get_percent_discount(avg_price_str, best_price_str, logger=logger)
+
+                    # Update the row with the final analytics calculation.
                     row_data.update(percent_discount_info)
 
                     logger.info(f"ASIN {asin}: Successfully processed new analytics.")
