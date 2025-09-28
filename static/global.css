@@ -472,7 +472,7 @@ button:disabled {
     text-shadow: 0 0 2px rgba(102, 153, 204, 0.5);
 }
 
-.buy-now-link:hover {
+.buy-now-link:hover, .best-price-link:hover {
     text-decoration: none;
 }
 

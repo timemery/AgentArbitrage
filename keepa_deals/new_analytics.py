@@ -33,41 +33,6 @@ def format_time_ago(minutes_ago):
     years_ago = days_ago / 365
     return f"{int(years_ago)} years ago"
 
-def get_changed(product, logger=None):
-    """
-    Displays the time since the product's last price change.
-    """
-    if not logger:
-        logger = logging.getLogger(__name__)
-    asin = product.get('asin', 'N/A')
-    logger.debug(f"ASIN {asin}: Running get_changed.")
-
-    last_price_change_minutes = product.get('lastPriceChange')
-
-    if last_price_change_minutes is None:
-        logger.debug(f"ASIN {asin}: 'lastPriceChange' not found in product data.")
-        return {"Changed": "-"}
-
-    try:
-        # Convert Keepa timestamp (minutes since epoch) to a datetime object
-        last_change_datetime = KEEPA_EPOCH + timedelta(minutes=last_price_change_minutes)
-
-        # Calculate the difference between now and the last change time
-        time_diff = datetime.now() - last_change_datetime
-
-        # Convert the time difference to minutes
-        minutes_ago = time_diff.total_seconds() / 60
-
-        # Format it into a human-readable string
-        time_ago_str = format_time_ago(minutes_ago)
-
-        logger.debug(f"ASIN {asin}: Last price change was {minutes_ago:.2f} minutes ago ({time_ago_str}).")
-        return {"Changed": time_ago_str}
-
-    except (ValueError, TypeError) as e:
-        logger.error(f"ASIN {asin}: Could not process 'lastPriceChange' value '{last_price_change_minutes}': {e}")
-        return {"Changed": "-"}
-
 def get_1yr_avg_sale_price(product, logger=None):
     """
     Displays the median inferred sale price over the last 365 days.

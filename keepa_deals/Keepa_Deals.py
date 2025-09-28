@@ -438,7 +438,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         logger.info("Finished business logic calculations.")
 
         # --- New Analytics Calculations Loop ---
-        from .new_analytics import get_changed, get_1yr_avg_sale_price, get_percent_discount, get_trend
+        from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
         logger.info("Starting new analytics calculations...")
         for item in temp_rows_data:
             row_data = item['data']
@@ -451,13 +451,11 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 try:
                     best_price_str = row_data.get('Best Price', '-')
 
-                    changed_info = get_changed(product, logger=logger)
                     yr_avg_price_info = get_1yr_avg_sale_price(product, logger=logger)
                     trend_info = get_trend(product, logger=logger)
                     # Now call get_percent_discount with the calculated best_price
                     percent_discount_info = get_percent_discount(product, best_price_str, logger=logger)
 
-                    row_data.update(changed_info)
                     row_data.update(yr_avg_price_info)
                     row_data.update(trend_info)
                     row_data.update(percent_discount_info)
