@@ -166,6 +166,11 @@ def infer_sale_events(product):
 
             if has_rank_drop: # A rank drop is the minimum requirement for a confirmed sale
                 price_at_sale_time = pd.merge_asof(pd.DataFrame([drop]), df_price, on='timestamp', direction='nearest')['price_cents'].iloc[0]
+
+                # A price of -1 indicates no data was available. We must ignore these events.
+                if price_at_sale_time <= 0:
+                    logger.debug(f"ASIN {asin}: Ignoring inferred sale at {start_time} because its associated price was invalid ({price_at_sale_time}).")
+                    continue # Move to the next potential sale event
                 
                 first_rank_drop_in_window = rank_changes_in_window[rank_changes_in_window['rank_diff'] < 0].iloc[0]
                 rank_after = first_rank_drop_in_window['rank']

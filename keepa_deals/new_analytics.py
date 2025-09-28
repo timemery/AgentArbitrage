@@ -37,16 +37,22 @@ def get_1yr_avg_sale_price(product, logger=None):
     """
     Displays the median inferred sale price over the last 365 days.
     """
+    COLUMN_NAME = "1yr. Avg."
     if not logger:
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
     logger.debug(f"ASIN {asin}: Running get_1yr_avg_sale_price.")
 
+    # Defensive check for required data
+    if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
+        logger.warning(f"ASIN {asin}: Product data is missing 'csv' field or 'csv' is incomplete. Cannot calculate {COLUMN_NAME}.")
+        return {COLUMN_NAME: "-"}
+
     sale_events, _ = infer_sale_events(product)
 
     if not sale_events:
-        logger.debug(f"ASIN {asin}: No sale events found for 1yr. avg. calculation.")
-        return {"1yr. Avg.": "-"}
+        logger.debug(f"ASIN {asin}: No sale events found for {COLUMN_NAME} calculation.")
+        return {COLUMN_NAME: "-"}
 
     try:
         df = pd.DataFrame(sale_events)
@@ -60,7 +66,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         if len(df_last_year) < 3:
             logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful median.")
-            return {"1yr. Avg.": "-"}
+            return {COLUMN_NAME: "-"}
 
         # Calculate the median price
         median_price_cents = df_last_year['inferred_sale_price_cents'].median()
@@ -69,15 +75,15 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         if pd.isna(median_price_cents) or median_price_cents <= 0:
             logger.warning(f"ASIN {asin}: Median price calculation resulted in an invalid value: {median_price_cents}")
-            return {"1yr. Avg.": "-"}
+            return {COLUMN_NAME: "-"}
 
         result_value = f"${median_price_cents / 100:.2f}"
-        logger.debug(f"ASIN {asin}: Calculated 1yr. avg. (median) sale price: {result_value}")
-        return {"1yr. Avg.": result_value}
+        logger.debug(f"ASIN {asin}: Calculated {COLUMN_NAME} (median) sale price: {result_value}")
+        return {COLUMN_NAME: result_value}
 
     except Exception as e:
-        logger.error(f"ASIN {asin}: Error calculating 1yr. avg. sale price: {e}", exc_info=True)
-        return {"1yr. Avg.": "-"}
+        logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME}: {e}", exc_info=True)
+        return {COLUMN_NAME: "-"}
 
 def get_percent_discount(product, best_price_str, logger=None):
     """

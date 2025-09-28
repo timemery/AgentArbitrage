@@ -65,4 +65,83 @@ The task was addressed with a two-pronged approach, modifying both the backend t
 **Final Outcome:** The styling and functionality improvements were successfully implemented. The post-deployment issue was diagnosed as a UI feedback problem, not a regression in the core scanning functionality. The user was informed of the cause and the need for a manual refresh to see the final status. The scan itself was confirmed to be working correctly and efficiently.
 I've made sure to include the details of the "stuck scan" bug and how we diagnosed it by analyzing the Celery log to see the task was succeeding on the backend. This should provide good context for any future work. Thank you for making sure I completed this important step. We can now consider the task truly complete.
 
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Diagnose and Fix Empty "1yr. Avg." Column
+
+**Objective:** The "1yr. Avg." column in the Deals Dashboard was consistently empty. The goal was to identify the root cause of the failure, fix the underlying data pipeline, and ensure the value was correctly calculated and displayed.
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task required a deep, iterative investigation that uncovered a chain of three distinct bugs. The final solution involved fixing the data pipeline, making the calculation logic more robust, and correcting a critical inconsistency between the backend data keys and the frontend display logic.
+
+**1. Initial Bug: Data Pipeline Failure**
+
+- **Symptom:** The `get_1yr_avg_sale_price` function was failing silently.
+- **Investigation:** Analysis of the code and past dev logs pointed to a data merging issue in `keepa_deals/Keepa_Deals.py`. The `product` object being passed to the analytics functions was missing the required historical `csv` data needed for the calculation.
+- **Root Cause:** The `original_deal_obj.update(product_data)` logic was incorrect. It was merging the smaller `deal` object into the larger `product` object, causing the `csv` key from the `product` data to be overwritten if the `deal` object also had a (less complete) `csv` key.
+- **Fix:** The merge direction was reversed to `product_data.update(original_deal_obj)`. This ensured that the complete `csv` array from the `product` object was always preserved. *(Note: This was later reverted when the true nature of the data flow was understood, but was a necessary step in the diagnosis).*
+
+**2. Second Bug: Invalid Price Corruption**
+
+- **Symptom:** After fixing the data pipeline, the logs revealed that the median price calculation was returning an invalid value (`-1.0`).
+- **Investigation:** The `infer_sale_events` function in `keepa_deals/stable_calculations.py` was correctly identifying sale events. However, for some events, the closest available price in the Keepa history was `-1` (which signifies "no data").
+- **Root Cause:** The function was including these invalid `-1` cent prices in its list of sales. When the `median()` function processed this list, it produced a meaningless result.
+- **Fix:** A defensive check was added to `infer_sale_events`. The function now ignores any inferred sale if its associated price is less than or equal to zero, ensuring only valid sales are used for the median calculation.
+
+**3. Final Bug: Backend vs. Frontend Key Mismatch**
+
+- **Symptom:** With the backend calculations confirmed to be working, the CSV output was correctly populated, but the web UI column remained empty. This pointed to a frontend rendering issue.
+
+- Investigation:
+
+   
+
+  This required a full, end-to-end analysis of the data flow:
+
+  1. **Configuration:** `keepa_deals/headers.json` was identified as the **source of truth**, defining the canonical column name as `"1yr. Avg."`.
+  2. **Backend:** The calculation function in `keepa_deals/new_analytics.py` must return a dictionary with the key `"1yr. Avg."` to match `headers.json`.
+  3. **Database:** The `save_to_database` function in `keepa_deals/Keepa_Deals.py` was found to **sanitize** column names before saving, converting `"1yr. Avg."` to `"1yr_Avg"`. This is the actual column name stored in `deals.db`.
+  4. **API Layer:** The `/api/deals` endpoint in `wsgi_handler.py` reads directly from the database and sends the JSON to the frontend with the sanitized key: `1yr_Avg`.
+  5. **Frontend:** Therefore, the JavaScript in `templates/dashboard.html` must look for the key `1yr_Avg` to display the data.
+
+- **Root Cause:** My previous attempts had created an inconsistency between these steps. I had incorrectly configured the frontend to look for `"1yr. Avg."`, which did not exist in the JSON it received from the API.
+
+- **Final Fix:** The `columnsToShow` array and `headerTitleMap` in `templates/dashboard.html` were corrected to use the sanitized key `1yr_Avg`.
+
+**Final Outcome:**
+
+By aligning every step of the pipeline with this data flow, the issue was fully resolved. The "1yr. Avg." column now correctly calculates the median of inferred sale prices and displays the result in both the CSV export and the web UI.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
