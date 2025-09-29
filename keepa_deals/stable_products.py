@@ -179,7 +179,8 @@ def categories_root(product):
 # Categories - Sub starts
 def categories_sub(product):
     category_tree = product.get('categoryTree', [])
-    result = {'Categories - Sub': ', '.join(cat['name'] for cat in category_tree[2:]) if len(category_tree) > 2 else '-'}
+    # Corrected logic: Take all categories after the root (index 0)
+    result = {'Categories - Sub': ', '.join(cat['name'] for cat in category_tree[1:]) if len(category_tree) > 1 else '-'}
     logger.debug(f"categories_sub result for ASIN {product.get('asin', 'unknown')}: {result}")
     return result
 # Categories - Sub ends
