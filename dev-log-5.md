@@ -222,7 +222,32 @@ This task, which appeared to be a simple frontend change, became a complex debug
 2. **Verify, Don't Guess:** When debugging display issues where data is missing, do not guess the sanitized column name. A subtle difference (like the number of underscores) can be the root cause.
 3. **Use `check_db.py`:** The `check_db.py` script is an invaluable tool for debugging. Running `python3 check_db.py` provides the exact column names as they exist in the database, eliminating guesswork. This should be a primary step for any similar issue in the future.
 
+### **Dev Log Entry: September 29, 2025**
 
+**Task:** Add "Gated" Column to Deals Dashboard
+
+**Objective:** To add a new column titled "Gated" to the Deals Dashboard, positioned just before the "Buy Now" column. The column's cell should contain a link that directs the user to the Amazon Seller Central product search page, pre-filled with the product's ASIN, allowing them to check their selling eligibility.
+
+**Implementation Summary:**
+
+This task was successfully executed as a frontend-only modification, with all changes confined to the `templates/dashboard.html` file. The implementation adhered to the application's established architectural patterns, which separate backend data provision from frontend presentation.
+
+1. **Column Definition (`templates/dashboard.html`):**
+   - The `"Gated"` key was added to the `columnsToShow` JavaScript array, ensuring it appears in the correct sequence on the dashboard.
+   - A corresponding entry, `"Gated": "Gated"`, was added to the `headerTitleMap` to define the column's display name.
+2. **Cell Rendering Logic (`templates/dashboard.html`):**
+   - Inside the `renderTable` function, a new `else if (col === 'Gated')` block was added to the main rendering loop.
+   - This logic constructs the full hyperlink using the base URL and the `cleanAsin` variable already available in the loop: `https://sellercentral.amazon.com/product-search/keywords/search?q=${cleanAsin}`.
+   - The link was styled inline as requested (`style="color: #84b36f; ..."`), displays the '►' symbol, and is set to open in a new browser tab (`target="_blank"`).
+   - Crucially, `onclick="event.stopPropagation()"` was included to prevent the row's navigation-to-details-page event from firing when a user clicks the "Gated" link.
+3. **Sorting Behavior (`templates/dashboard.html`):**
+   - The conditional logic that adds sorting arrows to the table headers was updated from `if (header !== 'Buy_Now')` to `if (header !== 'Buy_Now' && header !== 'Gated')`. This correctly designates the "Gated" column as a non-sortable, action-based column.
+
+**Challenges & Key Takeaways:**
+
+- **No Major Challenges Encountered:** This task was completed efficiently and without any significant debugging cycles. The success of this implementation is a direct result of the knowledge captured in previous dev logs (specifically `dev-log-5.md`), which clearly documented the data pipeline, the frontend rendering process, and the critical separation between backend data and frontend presentation.
+- **Reinforcement of Architectural Principles:** This task serves as a clear example of the project's core design philosophy. By using data already present on the frontend (the ASIN), a new feature was added with zero impact on the backend API, the database schema, or the data processing scripts. This is the ideal way to handle UI-centric feature requests.
+- **Pattern for Action Links:** The implementation reinforces a key UI pattern for this application: action links within the table (like "Buy Now" and "Gated") should use `event.stopPropagation()` to avoid triggering the parent row's click handler. This is a critical detail for maintaining a predictable user experience.
 
 
 
