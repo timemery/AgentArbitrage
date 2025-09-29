@@ -179,7 +179,48 @@ The fix involved a complete rewrite of the `get_trend` function in `keepa_deals/
 The "Trend" column now accurately reflects the user's requirement, showing the short-term directional trend based on the last five actual changes in the new listing price. This provides a much more meaningful and actionable data point in the UI.
 
 
+### **Dev Log Entry: September 28, 2025**
 
+**Task:** Add "Avg. Rank" Column to Deals Dashboard
+
+**Objective:** The goal was to add a new column to the Deals Dashboard UI that displays the "Sales Rank - 365 days avg." data, which was already being collected in the backend CSV. The existing "Sales Rank" column also needed to be renamed to "Current".
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task, which appeared to be a simple frontend change, became a complex debugging exercise. The root cause was a subtle but critical mismatch between the column name as it was stored in the database and the key being used by the frontend JavaScript to access it. The final solution required a deep, iterative investigation of the entire data pipeline to find the exact, sanitized column name.
+
+**1. Initial Implementation & Header Name Collision:**
+
+- **Action:** My first modification was to `templates/dashboard.html`, where I added the new column to the `columnsToShow` array and updated the `headerTitleMap` to rename the headers.
+- **Problem:** This initial change incorrectly assigned the display name "1 yr. Avg." to the new sales rank column, which conflicted with a pre-existing column that displayed the average *price*.
+- **Resolution:** The user provided clarification, instructing me to use "Avg. Rank" as the display name for the new column to resolve the conflict.
+
+**2. The "Empty Column" Bug & The Hunt for the Sanitized Key:**
+
+- **Symptom:** After correcting the header name, the new "Avg. Rank" column appeared in the UI, but the data cells were empty. The user confirmed that the data was present in the generated CSV file, which meant the backend was calculating the value correctly, but it wasn't reaching the UI.
+
+- Investigation:
+
+   
+
+  This triggered a multi-step investigation to trace the data flow and identify the point of failure.
+
+  1. **API Endpoint (`wsgi_handler.py`):** I first checked the `/api/deals` endpoint and found it uses a `SELECT *` query. This proved the API was not the source of the problem, as it should have been fetching all available columns.
+  2. **Data Generation (`keepa_deals/stable_products.py` & `field_mappings.py`):** I then verified that the `sales_rank_365_days_avg` function existed and was correctly mapped in the `FUNCTION_LIST`, confirming the data was being generated during the initial processing.
+  3. **Database Insertion (`keepa_deals/Keepa_Deals.py`):** The key insight came from analyzing the `save_to_database` function. I identified the `sanitize_col_name` function, which transforms the CSV header (e.g., `"Sales Rank - 365 days avg."`) into a database-safe column name. This was the source of the discrepancy.
+
+- **Root Cause:** My repeated attempts to fix the frontend failed because I was using an *incorrectly guessed* sanitized key. I tried `Sales_Rank___365_days_avg_` (ending underscore) and `Sales_Rank____365_days_avg` (four underscores), neither of which matched what the backend was actually creating.
+
+**3. The Final, Correct Solution:**
+
+- **Diagnosis:** To get the ground truth, I used the `check_db.py` script to inspect the live database. The script's output showed the first row as a dictionary, revealing the definitive, correct sanitized column name: `Sales_Rank___365_days_avg` (with **three** underscores and no trailing underscore).
+- **Fix:** With the correct key finally identified, I made one last modification to `templates/dashboard.html`, updating the `columnsToShow` array, the `headerTitleMap`, and the number formatting logic to use `Sales_Rank___365_days_avg`. This resolved the issue and allowed the data to appear correctly in the UI.
+
+**Key Takeaways for Future Agents:**
+
+1. **Sanitization is Key:** The `save_to_database` function in `keepa_deals/Keepa_Deals.py` sanitizes column names from `headers.json` before creating the database table. Spaces, hyphens, and other characters are converted to underscores. This is a critical transformation to be aware of.
+2. **Verify, Don't Guess:** When debugging display issues where data is missing, do not guess the sanitized column name. A subtle difference (like the number of underscores) can be the root cause.
+3. **Use `check_db.py`:** The `check_db.py` script is an invaluable tool for debugging. Running `python3 check_db.py` provides the exact column names as they exist in the database, eliminating guesswork. This should be a primary step for any similar issue in the future.
 
 
 
