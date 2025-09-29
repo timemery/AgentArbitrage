@@ -99,29 +99,39 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSort = { by: 'id', order: 'asc' };
 
     const columnsToShow = [
-        "Title", "Categories___Sub", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
-        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "last_price_change", "1yr_Avg", "Percent_Down", "Trend", "Binding", "Condition", "Seasonality_Type",
-        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Gated", "Buy_Now"
+        // Book Details
+        "ASIN", "Title", "Categories___Sub", "Binding", "Condition",
+        // Sales Rank
+        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "Seasonality_Type",
+        // Seller
+        "Seller", "Seller_Quality_Score",
+        // Deal Details & Current Best Price
+        "Deal_found", "last_price_change", "1yr_Avg", "Best_Price", "Percent_Down", "Trend",
+        // Profit Estimates & Recommended Listing Price
+        "Expected_Peak_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Profit_Confidence",
+        // Actions
+        "Gated", "Buy_Now"
     ];
 
     const headerTitleMap = {
         "Categories___Sub": "Genre",
         "Gated": "Gated",
         "last_price_change": "Changed",
-        "Seller": "Seller Name",
+        "Seller": "Name",
         "Min_Listing_Price": "Min. List",
         "1yr_Avg": "1yr. Avg.",
         "Percent_Down": "% ⇩",
-        "Seller_Quality_Score": "Seller Trust",
+        "Seller_Quality_Score": "Trust",
         "Sales_Rank___Current": "Current",
-        "Sales_Rank___365_days_avg": "Avg. Rank",
+        "Sales_Rank___365_days_avg": "365 day Avg.",
         "Binding": "Binding",
         "Condition": "Condition",
-        "Seasonality_Type": "Seasonality",
-        "Expected_Peak_Price": "Peak $",
-        "Expected_Trough_Price": "Trough $",
-        "Profit_Confidence": "Profit Reliability",
-        "Deal_found": "Found"
+        "Seasonality_Type": "Sells",
+        "Expected_Peak_Price": "List at",
+        "Profit_Confidence": "Profit Trust",
+        "Deal_found": "Found",
+        "Buy_Now": "Buy",
+        "Best_Price": "Now"
     };
 
     function formatTimeAgo(dateString) {
@@ -246,7 +256,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        let table = '<table><thead><tr>';
+        let table = '<table><thead>';
+
+        // Add the new group header row
+        table += '<tr class="group-header">';
+        table += '<th colspan="5">Book Details</th>';
+        table += '<th colspan="3">Sales Rank</th>';
+        table += '<th colspan="2">Seller</th>';
+        table += '<th colspan="6">Deal Details & Current Best Price</th>';
+        table += '<th colspan="6">Profit Estimates & Recommended Listing Price</th>';
+        table += '<th colspan="2">Actions</th>';
+        table += '</tr>';
+
+        table += '<tr>';
         columnsToShow.forEach(header => {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
 

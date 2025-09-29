@@ -422,6 +422,17 @@ button:disabled {
     font-weight: 500;
 }
 
+#deals-table .group-header th {
+    background-color: #26567e;
+    color: #00243a;
+    font-size: 110%;
+    border-top: 1px solid #6194c3;
+    border-left: 1px solid #6194c3;
+    border-right: 1px solid #6194c3;
+    border-bottom: 1px solid #6194c3;
+    height: 2.5em; /* Adjust height to fit new font size */
+}
+
 #deals-table td {
     font-size: 14px;
     font-weight: 300;
