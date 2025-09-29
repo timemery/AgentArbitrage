@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const columnsToShow = [
         "Title", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
-        "Sales_Rank___Current", "Sales_Rank___365_days_avg_", "last_price_change", "1yr_Avg", "Percent_Down", "Trend", "Binding", "Condition", "Seasonality_Type",
+        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "last_price_change", "1yr_Avg", "Percent_Down", "Trend", "Binding", "Condition", "Seasonality_Type",
         "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Buy_Now"
     ];
 
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "Percent_Down": "% ⇩",
         "Seller_Quality_Score": "Seller Trust",
         "Sales_Rank___Current": "Current",
-        "Sales_Rank___365_days_avg_": "Avg. Rank",
+        "Sales_Rank___365_days_avg": "Avg. Rank",
         "Binding": "Binding",
         "Condition": "Condition",
         "Seasonality_Type": "Seasonality",
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         value = `${Math.round(numValue)}%`;
                     } else if (col === 'Percent_Down') {
                         value = `${Math.round(numValue)}%`;
-                    } else if (col === 'Sales_Rank___Current') {
+                    } else if (col === 'Sales_Rank___Current' || col === 'Sales_Rank___365_days_avg') {
                         value = numValue.toLocaleString('en-US');
                     } else if (col === 'Margin') {
                         value = `${numValue.toFixed(2)}%`;
