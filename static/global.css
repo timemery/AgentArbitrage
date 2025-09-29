@@ -64,8 +64,12 @@ body.home-background::before {
 }
 
 .container-full-width {
-    width: calc(100% - 20px);
-    margin: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center children horizontally */
+    width: 100%;
+    max-width: 1800px; /* Allow it to be quite wide */
+    margin: 20px auto; /* Center the container itself */
     padding: 40px;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 15px;
@@ -516,9 +520,17 @@ button:disabled {
 
 #filter-form {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end; /* Aligns the full items (label + input) to the bottom */
+    justify-content: space-between; /* This is key */
+    align-items: flex-end;
+    width: 100%; /* Make form take full width of its container */
     gap: 20px;
+}
+
+.filter-group-left {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
 }
 
 .filter-item {
@@ -606,7 +618,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-left: auto; /* Push buttons to the right */
+    /* margin-left: auto; is no longer needed */
 }
 
 .filter-buttons button {

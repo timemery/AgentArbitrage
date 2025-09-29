@@ -4,22 +4,24 @@
 <h1>Deals Dashboard</h1>
 <div class="filters-container">
     <form id="filter-form">
-        <div class="filter-item">
-            <label for="title_contains">Title Contains:</label>
-            <input type="text" id="title_contains" name="title_like" class="styled-text-field">
-        </div>
-        <div class="filter-item">
-            <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">1.5m</span></label>
-            <div class="slider-container">
-                <input type="range" min="0" max="20" value="12" class="slider" id="max_sales_rank_slider">
-                <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="1500000">
+        <div class="filter-group-left">
+            <div class="filter-item">
+                <label for="title_contains">Title Contains:</label>
+                <input type="text" id="title_contains" name="title_like" class="styled-text-field">
             </div>
-        </div>
-        <div class="filter-item">
-            <label for="min_profit_margin_slider">Min % Profit: <span id="profit-margin-value">100%</span></label>
-            <div class="slider-container">
-                <input type="range" min="0" max="18" value="9" class="slider" id="min_profit_margin_slider">
-                <input type="hidden" id="min_profit_margin" name="profit_margin_gte" value="100">
+            <div class="filter-item">
+                <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">1.5m</span></label>
+                <div class="slider-container">
+                    <input type="range" min="0" max="20" value="12" class="slider" id="max_sales_rank_slider">
+                    <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="1500000">
+                </div>
+            </div>
+            <div class="filter-item">
+                <label for="min_profit_margin_slider">Min % Profit: <span id="profit-margin-value">100%</span></label>
+                <div class="slider-container">
+                    <input type="range" min="0" max="18" value="9" class="slider" id="min_profit_margin_slider">
+                    <input type="hidden" id="min_profit_margin" name="profit_margin_gte" value="100">
+                </div>
             </div>
         </div>
         <div class="filter-buttons">
