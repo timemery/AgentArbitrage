@@ -64,12 +64,8 @@ body.home-background::before {
 }
 
 .container-full-width {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center children horizontally */
-    width: 100%;
-    max-width: 1800px; /* Allow it to be quite wide */
-    margin: 20px auto; /* Center the container itself */
+    width: calc(100% - 20px);
+    margin: 20px 10px;
     padding: 40px;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 15px;
@@ -512,17 +508,34 @@ button:disabled {
     text-overflow: ellipsis;
 }
 
+/* New Dashboard Layout Styles */
+.dashboard-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+    width: 100%;
+}
+
+.table-container {
+    width: auto; /* Allow table to define its own width */
+    max-width: 100%; /* Prevent overflow on small screens */
+    overflow-x: auto; /* Add horizontal scroll if needed */
+}
+
 /* New Filter Styles */
 .filters-container {
     width: 100%;
     margin-bottom: 40px; /* Padding between filters and table */
+    display: flex;
+    justify-content: center; /* Center the filter form */
 }
 
 #filter-form {
     display: flex;
-    justify-content: space-between; /* This is key */
+    justify-content: space-between;
     align-items: flex-end;
-    width: 100%; /* Make form take full width of its container */
+    width: 100%;
+    max-width: 1800px; /* Match a reasonable max table width */
     gap: 20px;
 }
 
@@ -530,7 +543,7 @@ button:disabled {
     display: flex;
     align-items: flex-end;
     gap: 20px;
-    flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+    flex-wrap: wrap;
 }
 
 .filter-item {

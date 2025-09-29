@@ -2,42 +2,44 @@
 {% block title %}Deals Dashboard - Agent Arbitrage{% endblock %}
 {% block content %}
 <h1>Deals Dashboard</h1>
-<div class="filters-container">
-    <form id="filter-form">
-        <div class="filter-group-left">
-            <div class="filter-item">
-                <label for="title_contains">Title Contains:</label>
-                <input type="text" id="title_contains" name="title_like" class="styled-text-field">
-            </div>
-            <div class="filter-item">
-                <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">1.5m</span></label>
-                <div class="slider-container">
-                    <input type="range" min="0" max="20" value="12" class="slider" id="max_sales_rank_slider">
-                    <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="1500000">
+<div class="dashboard-content-wrapper">
+    <div class="filters-container">
+        <form id="filter-form">
+            <div class="filter-group-left">
+                <div class="filter-item">
+                    <label for="title_contains">Title Contains:</label>
+                    <input type="text" id="title_contains" name="title_like" class="styled-text-field">
+                </div>
+                <div class="filter-item">
+                    <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">1.5m</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="20" value="12" class="slider" id="max_sales_rank_slider">
+                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="1500000">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="min_profit_margin_slider">Min % Profit: <span id="profit-margin-value">100%</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="18" value="9" class="slider" id="min_profit_margin_slider">
+                        <input type="hidden" id="min_profit_margin" name="profit_margin_gte" value="100">
+                    </div>
                 </div>
             </div>
-            <div class="filter-item">
-                <label for="min_profit_margin_slider">Min % Profit: <span id="profit-margin-value">100%</span></label>
-                <div class="slider-container">
-                    <input type="range" min="0" max="18" value="9" class="slider" id="min_profit_margin_slider">
-                    <input type="hidden" id="min_profit_margin" name="profit_margin_gte" value="100">
-                </div>
+            <div class="filter-buttons">
+                <button type="submit">Apply Filters</button>
+                <button type="reset" id="reset-filters">Reset</button>
             </div>
+        </form>
+    </div>
+    <div class="table-container">
+        <div id="deals-table"></div>
+        <div class="pagination-controls">
+            <button id="prev-page">Previous</button>
+            <span id="page-info"></span>
+            <button id="next-page">Next</button>
         </div>
-        <div class="filter-buttons">
-            <button type="submit">Apply Filters</button>
-            <button type="reset" id="reset-filters">Reset</button>
-        </div>
-    </form>
+    </div>
 </div>
-        <div class="table-container">
-            <div id="deals-table"></div>
-            <div class="pagination-controls">
-                <button id="prev-page">Previous</button>
-                <span id="page-info"></span>
-                <button id="next-page">Next</button>
-            </div>
-        </div>
 <div id="custom-tooltip" class="custom-tooltip"></div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
