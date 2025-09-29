@@ -179,6 +179,39 @@ The fix involved a complete rewrite of the `get_trend` function in `keepa_deals/
 The "Trend" column now accurately reflects the user's requirement, showing the short-term directional trend based on the last five actual changes in the new listing price. This provides a much more meaningful and actionable data point in the UI.
 
 
+
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Add "Genre" Column to Deals Dashboard
+
+**Objective:** To add a new "Genre" column to the main deals dashboard UI. The column should display the data from the existing "Categories - Sub" field, appear after the "Title" column, and share the same width and text-truncation styling as the "Title" and "Seller Name" columns.
+
+**Investigation & Diagnosis:**
+
+1. **Understanding the Data Pipeline:** My first step was a thorough review of the existing codebase and development logs. The logs were critical in highlighting that the backend sanitizes database column names, replacing spaces and special characters with underscores. This immediately indicated that the frontend would need to request the data using a sanitized key, not the original "Categories - Sub" name.
+2. File Analysis:
+   - `keepa_deals/Keepa_Deals.py`: Confirmed that the `save_to_database` function performs the sanitization. The key for "Categories - Sub" would become `Categories___Sub` in the database and, therefore, in the API response.
+   - `templates/dashboard.html`: Identified the core client-side rendering logic. The `columnsToShow` array controls which columns are rendered, and the `headerTitleMap` object maps the sanitized data keys to user-friendly display names.
+   - `static/global.css`: Found the shared CSS rule (`.title-cell, .seller-cell`) that controls the `max-width` and `text-overflow` properties, which was exactly what the user requested for the new column.
+3. **Conclusion:** The investigation confirmed that the required data was already being collected and stored by the backend. The task was purely a frontend modification.
+
+**Solution:**
+
+The implementation was a targeted, two-file change:
+
+1. **CSS (`static/global.css`):**
+   - The `.genre-cell` selector was added to the existing rule for `.title-cell` and `.seller-cell`. This efficiently applied the required `max-width: 120px` and text-truncation styles without duplicating code.
+2. **JavaScript (`templates/dashboard.html`):**
+   - **Column Order:** The sanitized key `Categories___Sub` was added to the `columnsToShow` array, placed directly after `"Title"`.
+   - **Header Naming:** An entry was added to the `headerTitleMap` to map the `Categories___Sub` key to the display string `"Genre"`.
+   - **Cell Styling:** A new `else if` condition was added to the `renderTable` function to check for the `Categories___Sub` column and apply the `genre-cell` class to its `<td>` elements.
+
+**Final Outcome:**
+
+The "Genre" column was successfully added to the UI, meeting all user requirements for placement, naming, and styling. This task serves as a strong example of the project's architecture: the backend provides raw, sanitized data, and the frontend is responsible for formatting and presentation. Understanding the data sanitization step was the key to a smooth and error-free implementation.
+
+
 ### **Dev Log Entry: September 28, 2025**
 
 **Task:** Add "Avg. Rank" Column to Deals Dashboard
