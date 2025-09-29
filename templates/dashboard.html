@@ -99,12 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSort = { by: 'id', order: 'asc' };
 
     const columnsToShow = [
-        "Title", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
+        "Title", "Categories___Sub", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
         "Sales_Rank___Current", "Sales_Rank___365_days_avg", "last_price_change", "1yr_Avg", "Percent_Down", "Trend", "Binding", "Condition", "Seasonality_Type",
         "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Gated", "Buy_Now"
     ];
 
     const headerTitleMap = {
+        "Categories___Sub": "Genre",
         "Gated": "Gated",
         "last_price_change": "Changed",
         "Seller": "Seller Name",
@@ -313,6 +314,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (col === 'Title') {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
+                } else if (col === 'Categories___Sub') {
+                    table += `<td class="genre-cell">${value}</td>`;
                 } else if (col === 'Seller') {
                     table += `<td class="seller-cell">${value}</td>`;
                 } else if (col === 'ASIN') {
