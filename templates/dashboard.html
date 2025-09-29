@@ -315,7 +315,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     const fullTitle = deal[col] || '';
                     table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
                 } else if (col === 'Categories___Sub') {
-                    table += `<td class="genre-cell">${value}</td>`;
+                    let displayValue = value;
+                    if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
+                        // Remove "Subjects" or "Subjects," from the start of the string
+                        displayValue = displayValue.replace(/^Subjects,?\s*/, '');
+                    }
+                    // If the result is empty or just a hyphen, show the custom message
+                    if (displayValue.trim() === '' || displayValue.trim() === '-') {
+                        displayValue = 'No Subject Listed';
+                    }
+                    table += `<td class="genre-cell">${displayValue}</td>`;
                 } else if (col === 'Seller') {
                     table += `<td class="seller-cell">${value}</td>`;
                 } else if (col === 'ASIN') {
