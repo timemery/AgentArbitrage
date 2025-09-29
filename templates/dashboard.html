@@ -101,10 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const columnsToShow = [
         "Title", "ASIN", "Best_Price", "Min_Listing_Price", "All_in_Cost", "Profit", "Margin", "Seller", "Seller_Quality_Score",
         "Sales_Rank___Current", "Sales_Rank___365_days_avg", "last_price_change", "1yr_Avg", "Percent_Down", "Trend", "Binding", "Condition", "Seasonality_Type",
-        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Buy_Now"
+        "Expected_Peak_Price", "Expected_Trough_Price", "Profit_Confidence", "Deal_found", "Gated", "Buy_Now"
     ];
 
     const headerTitleMap = {
+        "Gated": "Gated",
         "last_price_change": "Changed",
         "Seller": "Seller Name",
         "Min_Listing_Price": "Min. List",
@@ -251,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let arrowsHtml = '';
             let thTag = '<th>';
 
-            if (header !== 'Buy_Now') {
+            if (header !== 'Buy_Now' && header !== 'Gated') {
                 const upArrowClass = (currentSort.by === header && currentSort.order === 'asc') ? 'on' : 'off';
                 const downArrowClass = (currentSort.by === header && currentSort.order === 'desc') ? 'on' : 'off';
                 arrowsHtml = `
@@ -305,7 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     value = formatCondition(value);
                 }
 
-                if (col === 'Buy_Now') {
+                if (col === 'Gated') {
+                    table += `<td><a href="https://sellercentral.amazon.com/product-search/keywords/search?q=${cleanAsin}" target="_blank" onclick="event.stopPropagation()" style="color: #84b36f; text-decoration: none;" class="buy-now-link">►</a></td>`;
+                } else if (col === 'Buy_Now') {
                     table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
                 } else if (col === 'Title') {
                     const fullTitle = deal[col] || '';
