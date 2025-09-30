@@ -11,17 +11,17 @@
                     <input type="text" id="title_contains" name="title_like" class="styled-text-field">
                 </div>
                 <div class="filter-item">
-                    <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">1.5m</span></label>
+                    <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">∞</span></label>
                     <div class="slider-container">
-                        <input type="range" min="0" max="20" value="12" class="slider" id="max_sales_rank_slider">
-                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="1500000">
+                        <input type="range" min="0" max="20" value="20" class="slider" id="max_sales_rank_slider">
+                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
                     </div>
                 </div>
                 <div class="filter-item">
-                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">100%</span></label>
+                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">10%</span></label>
                     <div class="slider-container">
-                        <input type="range" min="0" max="18" value="9" class="slider" id="min_profit_margin_slider">
-                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="100">
+                        <input type="range" min="0" max="19" value="0" class="slider" id="min_profit_margin_slider">
+                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="10">
                     </div>
                 </div>
             </div>
@@ -76,21 +76,22 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     const profitMarginSteps = [
-        { value: 20, label: '20%' }, { value: 30, label: '30%' }, { value: 40, label: '40%' },
-        { value: 50, label: '50%' }, { value: 60, label: '60%' }, { value: 70, label: '70%' },
-        { value: 80, label: '80%' }, { value: 90, label: '90%' }, { value: 100, label: '100%' },
-        { value: 150, label: '150%' }, { value: 200, label: '200%' }, { value: 250, label: '250%' },
-        { value: 300, label: '300%' }, { value: 350, label: '350%' }, { value: 400, label: '400%' },
-        { value: 450, label: '450%' }, { value: 500, label: '500%' }, { value: Infinity, label: '∞' }
+        { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
+        { value: 40, label: '40%' }, { value: 50, label: '50%' }, { value: 60, label: '60%' },
+        { value: 70, label: '70%' }, { value: 80, label: '80%' }, { value: 90, label: '90%' },
+        { value: 100, label: '100%' }, { value: 150, label: '150%' }, { value: 200, label: '200%' },
+        { value: 250, label: '250%' }, { value: 300, label: '300%' }, { value: 350, label: '350%' },
+        { value: 400, label: '400%' }, { value: 450, label: '450%' }, { value: 500, label: '500%' },
+        { value: Infinity, label: '∞' }
     ];
 
     // Set initial slider values based on defaults
-    const initialSalesRankIndex = 12; // Default to 1.5m
+    const initialSalesRankIndex = salesRankSteps.findIndex(s => s.value === Infinity);
     salesRankSlider.value = initialSalesRankIndex;
     salesRankValueSpan.textContent = salesRankSteps[initialSalesRankIndex].label;
-    hiddenSalesRankInput.value = salesRankSteps[initialSalesRankIndex].value;
+    hiddenSalesRankInput.value = (salesRankSteps[initialSalesRankIndex].value === Infinity) ? '99999999' : salesRankSteps[initialSalesRankIndex].value;
 
-    const initialProfitMarginIndex = profitMarginSteps.findIndex(p => p.value === 100);
+    const initialProfitMarginIndex = profitMarginSteps.findIndex(p => p.value === 10);
     if (initialProfitMarginIndex !== -1) {
         profitMarginSlider.value = initialProfitMarginIndex;
         profitMarginValueSpan.textContent = profitMarginSteps[initialProfitMarginIndex].label;
