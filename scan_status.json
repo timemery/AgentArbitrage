@@ -1,0 +1,17 @@
+{
+    "status": "Completed",
+    "start_time": "2025-09-30T17:53:13.469Z",
+    "message": "Scan completed successfully.",
+    "task_id": "b9f84560-a90f-4303-a308-a34cec16e0bc",
+    "total_deals": 13,
+    "processed_deals": 13,
+    "etr_seconds": 0.0,
+    "debug_etr": {
+        "elapsed_minutes": 1.2291878700256347,
+        "processed": 13,
+        "time_per_deal": 5.673174784733699
+    },
+    "end_time": "2025-09-30T18:06:34.577Z",
+    "output_file": "data/Keepa_Deals_Export.csv",
+    "scan_duration_seconds": 801.1070125102997
+}
