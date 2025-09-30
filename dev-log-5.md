@@ -407,7 +407,54 @@ These changes significantly improve the organization and visual appeal of the de
 - **Learning:** The primary takeaway is the critical importance of verifying the initial state of the codebase before writing tests or new logic. Furthermore, for complex, data-dependent functions, a simple verification script that provides transparent output can sometimes be more effective and efficient than a complex unit test suite, especially during initial investigation.
 
 
+# Dev Log - 2025-09-30
 
+## Task: Fix Min % Margin Filter and Update Defaults
+
+### 1. Initial Problem
+
+The "Min % Profit" filter on the deals dashboard was non-functional. Setting a high value (e.g., 500%) did not filter out any results, even when no deals met that criterion. Additionally, the filter's label was inconsistent with the "Margin" column in the data table.
+
+### 2. Investigation & Solution
+
+#### Phase 1: Fixing the Filter Logic
+
+1. **UI Label Correction:** The first step was to align the UI with the data.
+   - **Action:** In `templates/dashboard.html`, the label was changed from "Min % Profit" to "Min % Margin". The `name` attribute of the hidden input was also updated from `profit_margin_gte` to `margin_gte`.
+2. **Backend Filtering Logic:** The root cause of the malfunction was in the backend.
+   - **Investigation:** The `/api/deals` endpoint in `wsgi_handler.py` was examined. It was found to be querying a non-existent database column named `"Profit_Margin_Percent"`.
+   - **Verification:** The `check_db.py` script was run to inspect the `deals.db` schema, which confirmed the correct column name was `"Margin"`.
+   - **Action:** The query logic in `wsgi_handler.py` was updated to use `request.args.get('margin_gte')` and, most importantly, to apply the filter to the correct `"Margin"` column.
+
+#### Phase 2: Addressing User Feedback on Defaults
+
+After the initial fix, you reported that the default filter values (`Max Sales Rank: 1.5m`, `Min % Margin: 100%`) were too restrictive and yielded no results on a small dataset.
+
+1. **Adding New Margin Option:**
+
+   - **Action:** A `{ value: 10, label: '10%' }` entry was added to the `profitMarginSteps` array in the JavaScript of `templates/dashboard.html`. The `max` attribute of the slider was adjusted to accommodate the new step.
+
+2. **Updating Default Values:**
+
+   - Action:
+
+      
+
+     The JavaScript initialization logic was modified to set the default slider positions.
+
+     - `initialSalesRankIndex` was set to find the index of the `{ value: Infinity, label: '∞' }` step.
+     - `initialProfitMarginIndex` was set to find the index of the new `10%` step.
+
+   - The corresponding HTML `value` and hidden input `value` attributes were also updated to reflect these new defaults on initial page load.
+
+### 3. Challenges Encountered
+
+- **Environment Setup:** The initial attempt to run the frontend verification failed because Python dependencies were not installed. This was resolved by running `pip install -r requirements.txt`.
+- **Playwright Scripting:** The verification script initially failed because the login form on the index page is hidden until a button is clicked. The script was updated to first click the "Log In" button to reveal the form before filling in credentials.
+
+### 4. Final Outcome
+
+The "Min % Margin" filter is now fully functional and correctly labeled. The default filter settings are significantly less restrictive, providing a better initial user experience. The system is stable and the changes have been verified.
 
 
 

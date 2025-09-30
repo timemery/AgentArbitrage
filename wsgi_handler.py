@@ -815,7 +815,7 @@ def api_deals():
     # --- Filtering ---
     filters = {
         "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
-        "profit_margin_gte": request.args.get('profit_margin_gte', type=int),
+        "margin_gte": request.args.get('margin_gte', type=int),
         "title_like": request.args.get('title_like', type=str)
     }
 
@@ -827,10 +827,10 @@ def api_deals():
         where_clauses.append("\"Sales_Rank___Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
     
-    if filters.get("profit_margin_gte") is not None:
-        # The sanitized column name for "Profit Margin %"
-        where_clauses.append("\"Profit_Margin_Percent\" >= ?")
-        filter_params.append(filters["profit_margin_gte"])
+    if filters.get("margin_gte") is not None:
+        # The column for Margin is "Margin"
+        where_clauses.append("\"Margin\" >= ?")
+        filter_params.append(filters["margin_gte"])
 
     if filters.get("title_like"):
         where_clauses.append("\"Title\" LIKE ?")
