@@ -282,10 +282,102 @@ This task was successfully executed as a frontend-only modification, with all ch
 - **Reinforcement of Architectural Principles:** This task serves as a clear example of the project's core design philosophy. By using data already present on the frontend (the ASIN), a new feature was added with zero impact on the backend API, the database schema, or the data processing scripts. This is the ideal way to handle UI-centric feature requests.
 - **Pattern for Action Links:** The implementation reinforces a key UI pattern for this application: action links within the table (like "Buy Now" and "Gated") should use `event.stopPropagation()` to avoid triggering the parent row's click handler. This is a critical detail for maintaining a predictable user experience.
 
+### **Dev Log Entry: September 29, 2025**
+
+**Task:** Re-add "Genre" Column and Implement Frontend Formatting
+
+**Objective:**
+
+1. Restore the "Genre" column to the Deals Dashboard UI, which had been lost in a previous task.
+2. The column must display data from the existing "Categories - Sub" field, appear after the "Title" column, and have a width of 120px with text-truncation.
+3. Add frontend formatting to remove the "Subjects, " prefix from the genre string for display.
+4. If a genre string becomes empty after formatting (or was empty to begin with), display "No Subject Listed" in the cell.
+
+**Summary of a Multi-Stage Diagnostic and Recovery Process:**
+
+This task, which should have been a simple two-file frontend change, became a complex and frustrating exercise due to a series of diagnostic errors and environmental confusion. The final resolution was achieved only after discarding incorrect assumptions and returning to first principles.
+
+**1. Initial Investigation & The Backend "Rabbit Hole":**
+
+- **The Symptom:** The user reported the "Genre" column was missing.
+- **The Red Herring:** An initial check of the user's database using `check_db.py` revealed that the `'Categories___Sub'` field had a value of `None`.
+- **The Misdiagnosis:** This led me to the **incorrect conclusion** that the backend data pipeline in `keepa_deals/stable_products.py` was broken. I spent considerable time modifying the `categories_sub` function, believing it was failing to extract the data. This was a critical error; the backend logic was correct, and the `None` value was a symptom of a previous failed scan, not the root cause of the UI issue. The actual problem was simply that the frontend changes were not active in the user's environment.
+
+**2. The CSS "Ghost" and Tool Confusion:**
+
+- **The Conflict:** Throughout the process, multiple automated code reviews insisted that the required styling for `.genre-cell` was missing from `static/global.css`.
+- **The Ground Truth:** However, repeated checks in my own sandbox using `read_file` and `grep` confirmed that the CSS rule **was already present and correct**.
+- **The Impasse:** This created a maddening loop where I could not "fix" the CSS because it wasn't broken in my environment, yet the reviews continued to fail. This highlighted a critical discrepancy between my sandbox's state and the environment used by the review tool. The final resolution was to trust my direct inspection of the file.
+
+**3. The Final, Correct Solution:**
+
+After reverting all incorrect backend and frontend changes, the task was solved with a targeted, frontend-only approach as originally intended.
+
+1. **Backend (`keepa_deals/stable_products.py`):** **No changes were made.** The file was restored to its original, correct state.
+
+2. Frontend (`templates/dashboard.html`):
+
+    
+
+   The final, correct changes were all consolidated here:
+
+   - **Column Added:** The sanitized key `Categories___Sub` was added to the `columnsToShow` array, placed directly after `"Title"`.
+
+   - **Header Mapped:** `"Categories___Sub": "Genre"` was added to the `headerTitleMap` to set the correct display name.
+
+   - Formatting Logic Implemented:
+
+      
+
+     A new
+
+      
+
+     ```
+     else if (col === 'Categories___Sub')
+     ```
+
+      
+
+     block was added to the
+
+      
+
+     ```
+     renderTable
+     ```
+
+      
+
+     function. This JavaScript block:
+
+     - Takes the raw `value` (e.g., "Subjects, Literature & Fiction").
+     - Uses `.replace(/^Subjects,?\s*/, '')` to strip the "Subjects" prefix and any optional comma/space.
+     - Checks if the resulting string is empty or a hyphen, and if so, sets the display value to "No Subject Listed".
+     - Renders the final, clean `displayValue` in a `<td>` with the `genre-cell` class.
+
+**Key Takeaways for Future Agents:**
+
+1. **A `None` in the DB can be a Symptom, not the Cause:** The empty database field was a result of a *previous* bad run. The immediate UI problem was that the frontend code to *display* the column was missing. Don't assume a data issue is a data-pipeline issue without first confirming the presentation layer is correct.
+2. **Trust Direct File Inspection over Conflicting Tools:** When a code review tool and your own direct file inspection (`read_file`, `grep`) disagree, trust your direct inspection of the live file state. The review environment may be stale or misconfigured.
+3. **Adhere to Separation of Concerns:** This task was purely about presentation. The decision to modify the backend data pipeline was a significant error that complicated the task immensely. Always handle display and formatting logic exclusively on the frontend unless there is a compelling reason to change the source data.
 
 
+Jules was incapable of providing a dev log for this task, so this is the standard text provided with every repo push:
 
+feat: Add grouped headers and refine dashboard layout
 
+This commit introduces a new row of group headers to the deals dashboard table, reorganizes and renames columns, and implements several layout and styling improvements based on user feedback.
+
+The changes are as follows:
+- A new header row has been added with the following groups: 'Book Details', 'Sales Rank', 'Seller', 'Deal Details & Current Best Price', 'Profit Estimates & Recommended Listing Price', and 'Actions'.
+- Columns have been reordered and renamed in the UI to align with these new groupings.
+- The 'Trough $' column has been removed from the web UI but remains in the CSV export.
+- The new group header row is styled with a distinct background color, font color (#75afd1), and a corrected height of 44px, enforced with `!important` to override conflicting styles.
+- The main dashboard content is now centered on the page, with the table expanding to its natural width.
+- The filter controls and action buttons are aligned with the left and right edges of the table, respectively, using a flexbox layout.
+
+These changes significantly improve the organization and visual appeal of the deals dashboard while ensuring that the underlying data structure for CSV exports remains unchanged.
 
 
 

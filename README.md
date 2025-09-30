@@ -6,7 +6,7 @@ Flask app on Hostinger VPS (Ubuntu 22.04) for AI-driven Amazon FBA arbitrage.
 - **Repo**: https://github.com/timemery/AgentArbitrage
 - **Project Plan**: See `Agent Arbitrage Project Plan Draft 1.md` for dev log and project updates.
 - **Keepa Documentation:** `keepa_deals_reference/Keepa_Documentation-official.md` `keepa_deals_reference/Keepa_Documentation-official-2.md`
-- **Dev Log**: See `dev-log-1.md``dev-log-2.md``dev-log-3.md``dev-log-4.md` for detailed session summaries.
+- **Dev Log**: See `dev-log-1.md``dev-log-2.md``dev-log-3.md``dev-log-4.md` etc. for detailed session summaries.
 - **Offer endpoints:** RAW_PRODUCT_DATA.md
 
 ## Setup for Development
@@ -102,4 +102,30 @@ Our process was as follows:
 
 The current strategy is to use enhanced logging within the application to inspect the raw product data object returned by the API. This will allow us to definitively identify the correct field or combination of fields (such as `buyBoxSellerIdHistory`) needed to extract the current Buy Box seller's ID.
 
-**Last Updated**: August 22, 2025
+## Aditional important information!
+
+**Critical Agent Directive: Environment Separation**
+
+**To all future agents working on this project, you must internalize the following core principle for all tasks:**
+
+The user's server environment and your agent sandboxed environment are **completely separate and isolated**. There is no shared file system, user account, or process space between them. Your internal environment (e.g., at path `/app`) is a temporary workspace for you only.
+
+**You must strictly adhere to the following rules at all times:**
+
+1. **The User's Server is Ground Truth:** The user's application code resides on their server (e.g., at `/var/www/agentarbitrage`). This is the only environment that matters for the task. Do not refer to your own internal file paths or usernames.
+2. **One-Way Interaction:** You can issue commands to be run on the user's server. The user **cannot** run commands or access files in your environment. Never ask the user to interact with your agent's file system.
+3. **Verify, Don't Assume:** After every action, use verification commands (`ls`, `cat`, `ps`) to confirm the state of the *user's server*. Do not trust your internal assumptions about the state of the files.
+
+**This directive is a direct result of repeated, catastrophic task failures caused by this misunderstanding. You must treat this as a fundamental, persistent rule for all interactions within this project.**
+
+### If adding a new column:
+
+Often adding a new column breaks the scan: This is a very common issue in data processing pipelines. It usually happens for one of these reasons:
+
+1. **Hardcoded Column Lists:** The part of the code that writes the data to the CSV file or the database table might have a hardcoded list of column names. When you add a new piece of data but don't update that list, it causes a mismatch and the program fails.
+2. **Database Schema Mismatch:** The database table (`deals.db`) has a fixed structure (a "schema"). If the script tries to insert a new column of data that the table wasn't built to handle, the database will reject the insert, causing an error. The code that creates the table would need to be updated first.
+3. **Mismatched Data Rows:** The code might be generating rows of data where some rows have the new column and some don't. This can cause errors if the writing process expects every row to have the exact same number of items.
+
+The most likely culprit is the database table creation logic. Before adding a new data column, we would need to find the `CREATE TABLE` statement in the code and add the new column definition there as well.
+
+**Last Updated**: September 30, 2025

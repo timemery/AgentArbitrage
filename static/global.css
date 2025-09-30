@@ -422,6 +422,19 @@ button:disabled {
     font-weight: 500;
 }
 
+#deals-table .group-header th {
+    background-color: #26567e;
+    color: #75afd1;
+    font-size: 110%;
+    border-top: 1px solid #6194c3;
+    border-left: 1px solid #6194c3;
+    border-right: 1px solid #6194c3;
+    border-bottom: 1px solid #6194c3;
+    height: 44px !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
+}
+
 #deals-table td {
     font-size: 14px;
     font-weight: 300;
@@ -497,17 +510,42 @@ button:disabled {
     text-overflow: ellipsis;
 }
 
+/* New Dashboard Layout Styles */
+.dashboard-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+    width: 100%;
+}
+
+.table-container {
+    width: auto; /* Allow table to define its own width */
+    max-width: 100%; /* Prevent overflow on small screens */
+    overflow-x: auto; /* Add horizontal scroll if needed */
+}
+
 /* New Filter Styles */
 .filters-container {
     width: 100%;
     margin-bottom: 40px; /* Padding between filters and table */
+    display: flex;
+    justify-content: center; /* Center the filter form */
 }
 
 #filter-form {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end; /* Aligns the full items (label + input) to the bottom */
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    max-width: 1800px; /* Match a reasonable max table width */
     gap: 20px;
+}
+
+.filter-group-left {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .filter-item {
@@ -595,7 +633,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-left: auto; /* Push buttons to the right */
+    /* margin-left: auto; is no longer needed */
 }
 
 .filter-buttons button {
