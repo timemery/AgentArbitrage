@@ -379,6 +379,34 @@ The changes are as follows:
 
 These changes significantly improve the organization and visual appeal of the deals dashboard while ensuring that the underlying data structure for CSV exports remains unchanged.
 
+### **Dev Log: Inferred Price Calculation Investigation**
+
+**Objective:** The primary goal was to investigate the inferred price calculation logic for Peak, Trough, and 1-Year Average prices. The request was to verify two specific features were implemented correctly:
+
+1. **Symmetrical Outlier Rejection:** The system should reject both unusually high and unusually low sale prices.
+2. **Use of Mean:** The final calculations should use the `mean` (average) instead of the `median`.
+
+**Execution Summary:** The task began with the assumption that the changes had been implemented by a previous agent but not verified. The core of the work involved a deep and challenging verification process, which ultimately confirmed that the required features were already present and functioning correctly in the existing codebase. No new code was committed.
+
+**Challenges & Resolutions:**
+
+1. **Initial State Confusion:** The most significant challenge was determining the true state of the code. The `git status` command showed a clean working tree, which led me to believe the changes were missing entirely. However, reading the files (`stable_calculations.py`, `new_analytics.py`) showed code that *appeared* to match the requirements. This contradiction caused significant delays as I oscillated between trying to "implement" the changes and trying to "verify" them.
+   - **Resolution:** The final conclusion was that the changes were already part of the base commit I was working on. The task was therefore not one of implementation, but of rigorous verification.
+2. **Test Suite Failure:** My initial strategy was to build a `unittest` suite to validate the logic. This approach failed repeatedly due to the complexity of accurately mocking Keepa's historical data format (`[timestamp, value, timestamp, value, ...]`).
+   - Specific Data Mocking Issues:
+     - **Incorrect Sorting:** My initial test data generation incorrectly sorted the flat history lists, which destroyed the timestamp-value pairs and made the data invalid.
+     - **Pandas `diff()` Behavior:** The `infer_sale_events` function uses `pandas.DataFrame.diff()`, which ignores the first element in a series. My tests failed until I added a "priming" event to the start of the mock offer history to account for this.
+     - **Time Series Logic:** I made an error where my generated events went backward in time, causing the offer counts to *increase* chronologically, which prevented any "offer drops" from being detected.
+3. **Verification Strategy Pivot:** After the `unittest` framework proved too brittle for this data structure, I pivoted to a more direct verification method.
+   - **Resolution:** I created a standalone script (`verify_logic.py`). This script did not use an assertion framework but instead ran the functions with controlled mock data and printed the outputs and internal logs from the application at each step. This provided a clear, human-readable trace that was instrumental in debugging the mock data itself and ultimately in confirming the application logic was sound.
+
+**Outcome & Key Learnings:**
+
+- **Confirmation:** The verification script definitively proved that the existing code correctly performs symmetrical outlier rejection and uses the `mean` for all relevant price calculations.
+- **Documentation:** A comprehensive technical document, `INFERRED_PRICE_LOGIC.md`, was created to detail the system's functionality for future developers.
+- **Learning:** The primary takeaway is the critical importance of verifying the initial state of the codebase before writing tests or new logic. Furthermore, for complex, data-dependent functions, a simple verification script that provides transparent output can sometimes be more effective and efficient than a complex unit test suite, especially during initial investigation.
+
+
 
 
 
