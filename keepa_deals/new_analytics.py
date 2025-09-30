@@ -65,19 +65,23 @@ def get_1yr_avg_sale_price(product, logger=None):
         logger.debug(f"ASIN {asin}: Found {len(df_last_year)} sale events in the last year.")
 
         if len(df_last_year) < 3:
-            logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful median.")
+            logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful average.")
             return {COLUMN_NAME: "-"}
 
-        # Calculate the median price
+        # Calculate and log both the median and mean price
         median_price_cents = df_last_year['inferred_sale_price_cents'].median()
-        logger.debug(f"ASIN {asin}: Median price (cents) calculated: {median_price_cents}")
+        mean_price_cents = df_last_year['inferred_sale_price_cents'].mean()
 
+        logger.info(f"ASIN {asin}: 1yr Avg Price (Median): {median_price_cents/100:.2f}, (Mean): {mean_price_cents/100:.2f}")
 
-        if pd.isna(median_price_cents) or median_price_cents <= 0:
-            logger.warning(f"ASIN {asin}: Median price calculation resulted in an invalid value: {median_price_cents}")
+        # Use the mean for the official value as requested.
+        final_price_cents = mean_price_cents
+
+        if pd.isna(final_price_cents) or final_price_cents <= 0:
+            logger.warning(f"ASIN {asin}: Final price calculation resulted in an invalid value: {final_price_cents}")
             return {COLUMN_NAME: "-"}
 
-        result_value = f"${median_price_cents / 100:.2f}"
+        result_value = f"${final_price_cents / 100:.2f}"
         logger.debug(f"ASIN {asin}: Calculated {COLUMN_NAME} (median) sale price: {result_value}")
         return {COLUMN_NAME: result_value}
 

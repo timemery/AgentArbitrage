@@ -9,7 +9,12 @@ Flask app on Hostinger VPS (Ubuntu 22.04) for AI-driven Amazon FBA arbitrage.
 - **Dev Log**: See `dev-log-1.md``dev-log-2.md``dev-log-3.md``dev-log-4.md` etc. for detailed session summaries.
 - **Offer endpoints:** RAW_PRODUCT_DATA.md
 
+# WARNING!
+
+### Do not generate or read the celery_test.log, or any celery related log you might want to generate. It's almost 10mb in size and in absolutely every instance that you do generate and read that log your environment breaks and becomes completely unusable/unstable, and communication ends, forcing me to start a new task to finish the dead one. This is an absolutely CRUCIAL warning that MUST be headed.   
+
 ## Setup for Development
+
 ### Local Development
 1. Clone: `git clone https://github.com/timemery/AgentArbitrage.git`
 2. Navigate: `cd AgentArbitrage`
