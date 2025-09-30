@@ -18,10 +18,10 @@
                     </div>
                 </div>
                 <div class="filter-item">
-                    <label for="min_profit_margin_slider">Min % Profit: <span id="profit-margin-value">100%</span></label>
+                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">100%</span></label>
                     <div class="slider-container">
                         <input type="range" min="0" max="18" value="9" class="slider" id="min_profit_margin_slider">
-                        <input type="hidden" id="min_profit_margin" name="profit_margin_gte" value="100">
+                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="100">
                     </div>
                 </div>
             </div>
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (title) filters['title_like'] = title;
         if (salesRank) filters['sales_rank_current_lte'] = salesRank;
-        if (profitMargin) filters['profit_margin_gte'] = profitMargin;
+        if (profitMargin) filters['margin_gte'] = profitMargin;
 
         return filters;
     }
