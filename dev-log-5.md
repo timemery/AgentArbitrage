@@ -492,7 +492,15 @@ Through these iterative changes, all confined to `keepa_deals/seasonality_classi
 
 I will now proceed with the final steps of the plan.
 
+**feat/ui-sorting-arrows-refactor**
 
+Refactor: Update table sorting UI with new arrow design
+
+- Moves sorting controls from table headers to a dedicated row beneath them to save space and improve the visual design.
+- Replaces text-based arrows (▲/▼) with new graphical assets (`UpArrow_on.png`, `DownArrow_on.png`, etc.) for a more polished look.
+- Updates the table rendering logic in `dashboard.html` to generate the new arrow row and handles sorting via clicks on the new arrow images.
+- Adjusts styles in `global.css` to correctly position and display the new sorting row. This includes setting a specific row height (18px), background color, applying vertical borders only to the outside of the row, and setting the spacing between arrows to 2px.
+- Renames the "Sales Rank" group header to "Sales Rank & Seasonality" and "Seller" to "Seller Details" as requested.
 
 
 

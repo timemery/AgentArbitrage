@@ -267,33 +267,37 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add the new group header row
         table += '<tr class="group-header">';
         table += '<th colspan="5">Book Details</th>';
-        table += '<th colspan="4">Sales Rank</th>';
-        table += '<th colspan="2">Seller</th>';
+        table += '<th colspan="4">Sales Rank & Seasonality</th>';
+        table += '<th colspan="2">Seller Details</th>';
         table += '<th colspan="6">Deal Details & Current Best Price</th>';
         table += '<th colspan="6">Profit Estimates & Recommended Listing Price</th>';
         table += '<th colspan="2">Actions</th>';
         table += '</tr>';
 
+        // Main header row
         table += '<tr>';
         columnsToShow.forEach(header => {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
+            table += `<th data-sort="${header}">${headerText}</th>`;
+        });
+        table += '</tr>';
 
-            let arrowsHtml = '';
-            let thTag = '<th>';
-
-            if (header !== 'Buy_Now' && header !== 'Gated') {
-                const upArrowClass = (currentSort.by === header && currentSort.order === 'asc') ? 'on' : 'off';
-                const downArrowClass = (currentSort.by === header && currentSort.order === 'desc') ? 'on' : 'off';
-                arrowsHtml = `
-                    <div class="sort-arrows-container">
-                        <span class="sort-arrow sort-arrow-up ${upArrowClass}" data-order="asc">▲</span>
-                        <span class="sort-arrow sort-arrow-down ${downArrowClass}" data-order="desc">▼</span>
-                    </div>
-                `;
-                thTag = `<th data-sort="${header}">`;
+        // New sorting arrows row
+        table += '<tr class="sort-arrows-row">';
+        columnsToShow.forEach(header => {
+            if (header === 'Gated' || header === 'Buy_Now') {
+                table += '<td></td>'; // No arrows for these columns
+            } else {
+                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/UpArrow_on.png' : 'static/UpArrow_off.png';
+                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DownArrow_on.png' : 'static/DownArrow_off.png';
+                table += `
+                    <td>
+                        <div class="sort-arrows-container">
+                            <img src="${upArrowSrc}" class="sort-arrow" data-order="asc" data-column="${header}">
+                            <img src="${downArrowSrc}" class="sort-arrow" data-order="desc" data-column="${header}">
+                        </div>
+                    </td>`;
             }
-            
-            table += `${thTag}<div class="th-content"><span>${headerText}</span>${arrowsHtml}</div></th>`;
         });
         table += '</tr></thead><tbody>';
 
@@ -388,11 +392,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.querySelectorAll('.sort-arrow').forEach(arrow => {
             arrow.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const th = arrow.closest('th');
-                if (th) {
-                    const sortBy = th.dataset.sort;
-                    const order = arrow.dataset.order;
+                e.stopPropagation(); // Prevent row click navigation
+                const sortBy = arrow.dataset.column;
+                const order = arrow.dataset.order;
+                if (sortBy && order) {
                     currentSort = { by: sortBy, order: order };
                     fetchDeals(currentPage, currentSort.by, currentSort.order);
                 }
