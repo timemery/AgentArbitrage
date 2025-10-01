@@ -7,8 +7,8 @@
         <form id="filter-form">
             <div class="filter-group-left">
                 <div class="filter-item">
-                    <label for="title_contains">Title Contains:</label>
-                    <input type="text" id="title_contains" name="title_like" class="styled-text-field">
+                    <label for="keyword_search">Keyword Search:</label>
+                    <input type="text" id="keyword_search" name="keyword" class="styled-text-field">
                 </div>
                 <div class="filter-item">
                     <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">∞</span></label>
@@ -225,11 +225,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function getFilters() {
         const filters = {};
         // Manually get values from the form elements, including hidden inputs
-        const title = document.getElementById('title_contains').value;
+        const keyword = document.getElementById('keyword_search').value;
         const salesRank = hiddenSalesRankInput.value;
         const profitMargin = hiddenProfitMarginInput.value;
 
-        if (title) filters['title_like'] = title;
+        if (keyword) filters['keyword'] = keyword;
         if (salesRank) filters['sales_rank_current_lte'] = salesRank;
         if (profitMargin) filters['margin_gte'] = profitMargin;
 
