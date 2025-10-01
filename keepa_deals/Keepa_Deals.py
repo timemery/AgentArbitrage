@@ -8,6 +8,7 @@ import sys
 import time
 import math
 import os
+from dotenv import load_dotenv
 from celery_config import celery
 from datetime import datetime
 
@@ -36,6 +37,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
     Main Celery task to run the Keepa deals fetching and processing script.
     """
     logger = logging.getLogger(__name__) # Use standard logging
+    load_dotenv()
+    XAI_API_KEY = os.getenv("XAI_TOKEN")
 
     def _update_cli_status(status_dict):
         # Read current status, update, and write back
@@ -480,6 +483,34 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                     logger.error(f"ASIN {asin}: Failed to get new analytics in dedicated loop: {e}", exc_info=True)
         logger.info("Finished new analytics calculations.")
         # --- End of New Analytics Loop ---
+
+        # --- New Seasonality Classification Loop ---
+        from .seasonality_classifier import classify_seasonality
+        logger.info("Starting seasonality classification...")
+        for item in temp_rows_data:
+            row_data = item['data']
+            asin = row_data.get('ASIN')
+            if not asin:
+                continue
+
+            try:
+                # Retrieve the necessary fields from the already-populated row_data
+                title = row_data.get('Title', '')
+                categories_sub = row_data.get('Categories - Sub', '')
+                manufacturer = row_data.get('Manufacturer', '')
+
+                # Call the classifier, passing the API key for the LLM fallback
+                detailed_season = classify_seasonality(title, categories_sub, manufacturer, xai_api_key=XAI_API_KEY)
+
+                # Update the row data
+                row_data['Detailed_Seasonality'] = detailed_season
+                logger.debug(f"ASIN {asin}: Classified seasonality as '{detailed_season}'.")
+
+            except Exception as e:
+                logger.error(f"ASIN {asin}: Failed to classify seasonality: {e}", exc_info=True)
+                row_data['Detailed_Seasonality'] = 'Error'
+        logger.info("Finished seasonality classification.")
+        # --- End of Seasonality Classification Loop ---
         # --- End of Business Logic Loop ---
 
         final_processed_rows = [None] * len(deals_to_process)

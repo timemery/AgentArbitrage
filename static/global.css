@@ -510,6 +510,13 @@ button:disabled {
     text-overflow: ellipsis;
 }
 
+.season-detail-cell {
+    max-width: 175px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* New Dashboard Layout Styles */
 .dashboard-content-wrapper {
     display: flex;

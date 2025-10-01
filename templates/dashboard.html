@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Book Details
         "ASIN", "Title", "Categories___Sub", "Binding", "Condition",
         // Sales Rank
-        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "Seasonality_Type",
+        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "Seasonality_Type", "Detailed_Seasonality",
         // Seller
         "Seller", "Seller_Quality_Score",
         // Deal Details & Current Best Price
@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "Binding": "Binding",
         "Condition": "Condition",
         "Seasonality_Type": "Sells",
+        "Detailed_Seasonality": "Season Detail",
         "Expected_Peak_Price": "List at",
         "Profit_Confidence": "Profit Trust",
         "Deal_found": "Found",
@@ -266,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add the new group header row
         table += '<tr class="group-header">';
         table += '<th colspan="5">Book Details</th>';
-        table += '<th colspan="3">Sales Rank</th>';
+        table += '<th colspan="4">Sales Rank</th>';
         table += '<th colspan="2">Seller</th>';
         table += '<th colspan="6">Deal Details & Current Best Price</th>';
         table += '<th colspan="6">Profit Estimates & Recommended Listing Price</th>';
@@ -352,6 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         displayValue = 'No Subject Listed';
                     }
                     table += `<td class="genre-cell">${displayValue}</td>`;
+                } else if (col === 'Detailed_Seasonality') {
+                    table += `<td class="season-detail-cell">${value}</td>`;
                 } else if (col === 'Seller') {
                     table += `<td class="seller-cell">${value}</td>`;
                 } else if (col === 'ASIN') {
