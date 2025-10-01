@@ -444,36 +444,45 @@ button:disabled {
     background-color: rgba(102, 153, 204, 0.15);
 }
 
-.th-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+#deals-table th {
+    cursor: default; /* Remove pointer cursor from headers */
+}
+
+#deals-table .sort-arrows-row {
+    height: 18px;
+    max-height: 18px;
+}
+
+.sort-arrows-row td {
+    background-color: #011b2a;
+    height: 18px;
+    max-height: 18px;
+    padding: 0 8px;
+    line-height: 18px;
+    border-right: none !important; /* Remove all internal right borders */
+    border-left: none !important; /* Remove all internal left borders */
+    /* The bottom border is inherited from the default td style, which is correct */
+}
+
+/* Add ONLY the outer borders back to the row */
+#deals-table .sort-arrows-row > td:first-child {
+    border-left: 1px solid rgba(102, 153, 204, 0.4) !important;
+}
+#deals-table .sort-arrows-row > td:last-child {
+    border-right: 1px solid rgba(102, 153, 204, 0.4) !important;
 }
 
 .sort-arrows-container {
     display: flex;
-    flex-direction: column;
-    margin-left: 12px;
+    align-items: center;
+    height: 18px;
 }
 
 .sort-arrow {
+    width: 24px;
+    height: 13px;
     cursor: pointer;
-    font-size: 8px; /* Final reduction to 85% of previous size */
-    line-height: 1;
-    transform: scaleX(1.5);
-    text-shadow: 0 0 1.5px currentColor;
-}
-
-.sort-arrow-up {
-    margin-bottom: 4px;
-}
-
-.sort-arrow.on {
-    color: white;
-}
-
-.sort-arrow.off {
-    color: rgba(102, 153, 204, 0.8); 
+    margin-right: 2px;
 }
 
 .buy-now-link {
