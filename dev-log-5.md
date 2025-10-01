@@ -456,7 +456,41 @@ After the initial fix, you reported that the default filter values (`Max Sales R
 
 The "Min % Margin" filter is now fully functional and correctly labeled. The default filter settings are significantly less restrictive, providing a better initial user experience. The system is stable and the changes have been verified.
 
+### **Dev Log Entry: October 01, 2025**
 
+**Task:** Refine Seasonality Data and Formatting
+
+**Objective:** To improve the clarity and readability of the seasonality data on the Deals Dashboard through a series of iterative refinements.
+
+**Summary of an Iterative Refinement Process:**
+
+This task began as a simple label change but evolved through several stages of user feedback to deliver a more polished and intuitive user experience. The core of the work was centered on the `keepa_deals/seasonality_classifier.py` file.
+
+**1. Initial Change: "General" to "Year-Round"**
+
+- **Goal:** Replace the generic "General" classification with the more descriptive "Year-Round".
+- Implementation:
+  - The `SEASON_CLASSIFICATIONS` list in `seasonality_classifier.py` was updated.
+  - All default and fallback return values in the `classify_seasonality` and `_query_xai_for_seasonality` functions were changed from "General" to "Year-Round".
+  - The `get_sells_period` function was updated to map "Year-Round" to its corresponding selling period.
+- **Challenge & Resolution:** My initial implementation was fragmented. I made several small, sequential edits to the file, which led to a state where a `replace_with_git_merge_diff` call failed because the file's content had changed between my edits. The key learning was to consolidate changes into a single, comprehensive patch or to always re-read the file before applying a new patch to ensure the search block is valid.
+
+**2. Second Refinement: Simplified Date Formatting**
+
+- **Goal:** Improve readability by simplifying the date ranges in the "Sells" column (e.g., changing "Mid-Jul to Mid-Sep" to "Jul - Sep").
+- **Implementation:** The `period_map` dictionary within the `get_sells_period` function was modified. All multi-month date ranges were updated to the new, simplified format with spaces around the hyphen.
+
+**3. Final Refinement: "Non-Seasonal" to "N/A"**
+
+- **Goal:** Replace "Non-Seasonal" with "N/A" for "Year-Round" books to reduce redundancy, as the "Season" column already indicates the book is year-round.
+- **Implementation:** The `period_map` in `get_sells_period` was updated one last time to map the "Year-round" key to the value "N/A". The function's default return value was also updated to "N/A" for consistency.
+- **Challenge & Resolution:** During the verification step for the initial changes, I accidentally introduced a duplicated `get_sells_period` function into the file. This was a critical copy-paste error that I caught by re-reading the file. It was resolved by applying a targeted patch to remove the duplicate block, reinforcing the importance of a final verification read-through before completing any step.
+
+**Final Outcome:**
+
+Through these iterative changes, all confined to `keepa_deals/seasonality_classifier.py`, the seasonality feature is now more user-friendly. The labels are clearer, and the date formatting is cleaner and more readable. This task highlights the importance of iterative feedback and rigorous verification at each step of the development process.
+
+I will now proceed with the final steps of the plan.
 
 
 
