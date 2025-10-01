@@ -8,6 +8,7 @@ import sys
 import time
 import math
 import os
+from dotenv import load_dotenv
 from celery_config import celery
 from datetime import datetime
 
@@ -36,6 +37,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
     Main Celery task to run the Keepa deals fetching and processing script.
     """
     logger = logging.getLogger(__name__) # Use standard logging
+    load_dotenv()
+    XAI_API_KEY = os.getenv("XAI_TOKEN")
 
     def _update_cli_status(status_dict):
         # Read current status, update, and write back
@@ -496,8 +499,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 categories_sub = row_data.get('Categories - Sub', '')
                 manufacturer = row_data.get('Manufacturer', '')
 
-                # Call the classifier
-                detailed_season = classify_seasonality(title, categories_sub, manufacturer)
+                # Call the classifier, passing the API key for the LLM fallback
+                detailed_season = classify_seasonality(title, categories_sub, manufacturer, xai_api_key=XAI_API_KEY)
 
                 # Update the row data
                 row_data['Detailed_Seasonality'] = detailed_season

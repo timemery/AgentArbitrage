@@ -1,13 +1,90 @@
 import re
+import httpx
+import json
+import logging
 
-def classify_seasonality(title, categories_sub, manufacturer):
+# Configure logging
+logger = logging.getLogger(__name__)
+
+SEASON_CLASSIFICATIONS = [
+    "Textbook (Summer)", "Textbook (Winter)", "High School AP Textbooks",
+    "Law School", "Nursing School", "Medical School", "Community College",
+    "Gardening", "Grilling/BBQ", "Christmas", "New Year/Fitness",
+    "Tax Prep", "Travel", "Halloween", "Thanksgiving", "Romance/Valentine's Day",
+    "General"
+]
+
+def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
+    """
+    Queries the XAI API to classify seasonality as a fallback.
+    """
+    if not api_key:
+        logger.warning("XAI API key is not provided. Skipping LLM classification.")
+        return "General"
+
+    prompt = f"""
+    Based on the following book details, choose the single most likely sales season from the provided list.
+    Respond with ONLY the name of the season from the list.
+
+    **Book Details:**
+    - **Title:** "{title}"
+    - **Category:** "{categories_sub}"
+    - **Publisher:** "{manufacturer}"
+
+    **Season List:**
+    {', '.join(SEASON_CLASSIFICATIONS)}
+    """
+
+    payload = {
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a book classification expert. Your task is to select the most appropriate seasonal category for a book from a given list."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "model": "grok-4-latest",
+        "temperature": 0.1,
+        "max_tokens": 50
+    }
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            llm_choice = data['choices'][0]['message']['content'].strip()
+
+            # Validate the response is one of the allowed classifications
+            if llm_choice in SEASON_CLASSIFICATIONS:
+                logger.info(f"LLM classified '{title}' as: {llm_choice}")
+                return llm_choice
+            else:
+                logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to General.")
+                return "General"
+    except (httpx.RequestError, httpx.HTTPStatusError, json.JSONDecodeError, KeyError, IndexError) as e:
+        logger.error(f"XAI API request failed for title '{title}': {e}")
+        return "General"
+
+
+def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
     """
     Classifies a book's seasonality based on title, categories, and manufacturer.
+    Uses an LLM as a fallback if heuristics result in "General".
 
     Args:
         title (str): The title of the book.
         categories_sub (str): The sub-category string.
         manufacturer (str): The manufacturer/publisher of the book.
+        xai_api_key (str, optional): The API key for the XAI service.
 
     Returns:
         str: The classified season, or "General" if no specific season is found.
@@ -28,11 +105,11 @@ def classify_seasonality(title, categories_sub, manufacturer):
         return "High School AP Textbooks"
     if "college" in title_lower or "university" in title_lower or is_textbook_publisher:
         if "summer" in title_lower:
-            return "Summer Textbook Season"
+            return "Textbook (Summer)"
         if "winter" in title_lower:
-            return "Winter Textbook Season"
+            return "Textbook (Winter)"
         # General textbook seasons if not specified
-        return "Summer Textbook Season" # Defaulting to most common
+        return "Textbook (Summer)" # Defaulting to most common
 
     # --- Niche Semesters ---
     if "law school" in cat_lower or "bar exam" in title_lower:
@@ -64,4 +141,6 @@ def classify_seasonality(title, categories_sub, manufacturer):
     if "valentine" in title_lower or "romance" in cat_lower:
         return "Romance/Valentine's Day"
 
-    return "General"
+    # --- Fallback to LLM ---
+    logger.info(f"Heuristics resulted in 'General' for '{title}'. Falling back to LLM.")
+    return _query_xai_for_seasonality(title, categories_sub, manufacturer, xai_api_key)
