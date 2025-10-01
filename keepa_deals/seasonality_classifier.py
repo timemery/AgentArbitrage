@@ -11,7 +11,7 @@ SEASON_CLASSIFICATIONS = [
     "Law School", "Nursing School", "Medical School", "Community College",
     "Gardening", "Grilling/BBQ", "Christmas", "New Year/Fitness",
     "Tax Prep", "Travel", "Halloween", "Thanksgiving", "Romance/Valentine's Day",
-    "General"
+    "Year-round"
 ]
 
 def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
@@ -20,7 +20,7 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
     """
     if not api_key:
         logger.warning("XAI API key is not provided. Skipping LLM classification.")
-        return "General"
+        return "Year-round"
 
     prompt = f"""
     Based on the following book details, choose the single most likely sales season from the provided list.
@@ -68,17 +68,17 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
                 logger.info(f"LLM classified '{title}' as: {llm_choice}")
                 return llm_choice
             else:
-                logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to General.")
-                return "General"
+                logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
+                return "Year-round"
     except (httpx.RequestError, httpx.HTTPStatusError, json.JSONDecodeError, KeyError, IndexError) as e:
         logger.error(f"XAI API request failed for title '{title}': {e}")
-        return "General"
+        return "Year-round"
 
 
 def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
     """
     Classifies a book's seasonality based on title, categories, and manufacturer.
-    Uses an LLM as a fallback if heuristics result in "General".
+    Uses an LLM as a fallback if heuristics do not return a specific season.
 
     Args:
         title (str): The title of the book.
@@ -87,7 +87,7 @@ def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
         xai_api_key (str, optional): The API key for the XAI service.
 
     Returns:
-        str: The classified season, or "General" if no specific season is found.
+        str: The classified season, or "Year-round" if no specific season is found.
     """
     if not title: title = ""
     if not categories_sub: categories_sub = ""
@@ -142,5 +142,5 @@ def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
         return "Romance/Valentine's Day"
 
     # --- Fallback to LLM ---
-    logger.info(f"Heuristics resulted in 'General' for '{title}'. Falling back to LLM.")
+    logger.info(f"Heuristics did not find a specific season for '{title}'. Falling back to LLM.")
     return _query_xai_for_seasonality(title, categories_sub, manufacturer, xai_api_key)

@@ -70,8 +70,9 @@ class TokenManager:
         time_since_last_call = now - self.last_api_call_timestamp
         if time_since_last_call < self.MIN_TIME_BETWEEN_CALLS_SECONDS:
             wait_duration = self.MIN_TIME_BETWEEN_CALLS_SECONDS - time_since_last_call
-            logger.info(f"Rate limit: Pausing for {wait_duration:.2f} seconds.")
+            logger.info(f"Rate limit pause: Waiting for {wait_duration:.2f} seconds to enforce minimum time between calls.")
             time.sleep(wait_duration)
+            logger.info("Rate limit pause finished.")
 
         # 2. Update token count with any refills that occurred
         self._refill_tokens()
@@ -84,15 +85,17 @@ class TokenManager:
                 wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
                 logger.warning(
                     f"Insufficient tokens. Have: {self.tokens:.2f}, Need an estimated: {estimated_cost}. "
-                    f"Waiting for {wait_time_seconds} seconds to refill."
+                    f"Starting token-refill pause for {wait_time_seconds} seconds."
                 )
                 time.sleep(wait_time_seconds)
+                logger.info(f"Token-refill pause finished after {wait_time_seconds} seconds.")
                 # Refill tokens again after waiting
                 self._refill_tokens()
             else:
                 # This case should not happen with a positive refill rate, but as a fallback.
-                logger.error("Zero refill rate, cannot wait for tokens. Pausing for 15 minutes as a fallback.")
+                logger.error("Zero refill rate, cannot wait for tokens. Starting emergency 15-minute pause.")
                 time.sleep(900)
+                logger.info("Emergency 15-minute pause finished.")
                 self._refill_tokens()
         
         logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
