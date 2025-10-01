@@ -453,14 +453,14 @@ button:disabled {
     max-height: 18px;
 }
 
-.sort-arrows-row td {
+#deals-table .sort-arrows-row td {
     background-color: #011b2a;
-    height: 18px;
-    max-height: 18px;
-    padding: 0 8px;
+    height: 18px !important;
+    max-height: 18px !important;
+    padding: 0 8px !important;
     line-height: 18px;
-    border-right: none !important; /* Remove all internal right borders */
-    border-left: none !important; /* Remove all internal left borders */
+    border-right: none !important;
+    border-left: none !important;
     /* The bottom border is inherited from the default td style, which is correct */
 }
 
