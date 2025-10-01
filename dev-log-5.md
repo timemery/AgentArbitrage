@@ -502,7 +502,90 @@ Refactor: Update table sorting UI with new arrow design
 - Adjusts styles in `global.css` to correctly position and display the new sorting row. This includes setting a specific row height (18px), background color, applying vertical borders only to the outside of the row, and setting the spacing between arrows to 2px.
 - Renames the "Sales Rank" group header to "Sales Rank & Seasonality" and "Seller" to "Seller Details" as requested.
 
+### Dev Log: Keyword Search Expansion
 
+**Date:** 2025-10-01
+
+**Objective:** The primary goal was to enhance the search functionality on the Deals Dashboard. This involved two main changes:
+
+1. Renaming the "Title contains" search filter to "Keyword Search".
+2. Expanding the search to query not just the `Title` but also `Categories - Sub` (Genre), `Seasonality`, `Manufacturer` (Publisher), `Author`, and `Seller Name`.
+
+**Implementation Details:**
+
+1. **Frontend (`templates/dashboard.html`):**
+
+   - The HTML label was changed from `<label for="title_contains">Title Contains:</label>` to `<label for="keyword_search">Keyword Search:</label>`.
+   - The corresponding text input field's `id` and `name` attributes were updated from `title_contains` and `title_like` to `keyword_search` and `keyword`, respectively.
+   - The `getFilters()` JavaScript function within the page was adjusted to get the search term from the new `keyword_search` ID and use the `keyword` parameter for the API request.
+
+2. **Backend (`wsgi_handler.py`):**
+
+   - In the `api_deals` function, the logic for handling request arguments was updated to look for `keyword` instead of `title_like`.
+
+   - The database query logic was significantly modified. When a keyword is provided, the function now constructs a dynamic SQL
+
+      
+
+     ```
+     WHERE
+     ```
+
+      
+
+     clause that groups multiple
+
+      
+
+     ```
+     LIKE
+     ```
+
+      
+
+     conditions with
+
+      
+
+     ```
+     OR
+     ```
+
+     . This allows the search to span across the required columns:
+
+     ```
+     if filters.get("keyword"):
+         keyword_like = f"%{filters['keyword']}%"
+         keyword_clauses = [
+             "\"Title\" LIKE ?",
+             "\"Categories___Sub\" LIKE ?",
+             "\"Detailed_Seasonality\" LIKE ?",
+             "\"Manufacturer\" LIKE ?",
+             "\"Author\" LIKE ?",
+             "\"Seller\" LIKE ?"
+         ]
+         where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
+         filter_params.extend([keyword_like] * len(keyword_clauses))
+     ```
+
+**Challenges and Solutions:**
+
+A notable challenge occurred during the verification phase. When attempting to start the application server to run the Playwright verification script, the process exited immediately.
+
+- **Diagnosis:** I inspected the `server.log` file and discovered a `ModuleNotFoundError: No module named 'flask'`. This indicated that the application's dependencies were not installed in the environment.
+- **Solution:** The problem was resolved by running `pip install -r requirements.txt` to install all necessary packages. After installation, the server started successfully, and the verification could proceed. This was a crucial reminder to always ensure the environment is fully set up before attempting to run the application.
+
+**Verification Process:**
+
+- A temporary Playwright script was created to perform end-to-end verification.
+- The script successfully:
+  1. Launched the browser and navigated to the application.
+  2. Handled the login flow.
+  3. Navigated to the Deals Dashboard.
+  4. Verified that the search input label was correctly updated to "Keyword Search".
+  5. Performed a search using the new input.
+  6. Captured a screenshot of the dashboard with the filtered results.
+- The resulting screenshot was visually inspected and confirmed that both the UI change and the expanded search functionality were implemented correctly. The temporary script and directory were removed before submission.
 
 
 

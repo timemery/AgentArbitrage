@@ -816,7 +816,7 @@ def api_deals():
     filters = {
         "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
         "margin_gte": request.args.get('margin_gte', type=int),
-        "title_like": request.args.get('title_like', type=str)
+        "keyword": request.args.get('keyword', type=str)
     }
 
     where_clauses = []
@@ -826,15 +826,24 @@ def api_deals():
         # The sanitized column name for "Sales Rank: Current" is "Sales_Rank___Current"
         where_clauses.append("\"Sales_Rank___Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
-    
+
     if filters.get("margin_gte") is not None:
         # The column for Margin is "Margin"
         where_clauses.append("\"Margin\" >= ?")
         filter_params.append(filters["margin_gte"])
 
-    if filters.get("title_like"):
-        where_clauses.append("\"Title\" LIKE ?")
-        filter_params.append(f"%{filters['title_like']}%")
+    if filters.get("keyword"):
+        keyword_like = f"%{filters['keyword']}%"
+        keyword_clauses = [
+            "\"Title\" LIKE ?",
+            "\"Categories___Sub\" LIKE ?",
+            "\"Detailed_Seasonality\" LIKE ?",
+            "\"Manufacturer\" LIKE ?",
+            "\"Author\" LIKE ?",
+            "\"Seller\" LIKE ?"
+        ]
+        where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
+        filter_params.extend([keyword_like] * len(keyword_clauses))
 
     # --- Build and Execute Query ---
     try:
