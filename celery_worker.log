@@ -1,0 +1,20 @@
+Loading celery_config.py
+celery_config.py loaded successfully
+
+ -------------- celery@devbox v5.3.6 (emerald-rush)
+--- ***** -----
+-- ******* ---- Linux-6.8.0-x86_64-with-glibc2.39 2025-10-01 12:23:33
+- *** --- * ---
+- ** ---------- [config]
+- ** ---------- .> app:         agentarbitrage:0x7fc987ed07a0
+- ** ---------- .> transport:   redis://127.0.0.1:6379/0
+- ** ---------- .> results:     redis://127.0.0.1:6379/0
+- *** --- * --- .> concurrency: 4 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** -----
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+
+
+[tasks]
+  . keepa_deals.Keepa_Deals.run_keepa_script

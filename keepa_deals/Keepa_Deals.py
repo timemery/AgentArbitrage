@@ -485,7 +485,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         # --- End of New Analytics Loop ---
 
         # --- New Seasonality Classification Loop ---
-        from .seasonality_classifier import classify_seasonality
+        from .seasonality_classifier import classify_seasonality, get_sells_period
         logger.info("Starting seasonality classification...")
         for item in temp_rows_data:
             row_data = item['data']
@@ -501,14 +501,17 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
 
                 # Call the classifier, passing the API key for the LLM fallback
                 detailed_season = classify_seasonality(title, categories_sub, manufacturer, xai_api_key=XAI_API_KEY)
+                sells_period = get_sells_period(detailed_season)
 
                 # Update the row data
                 row_data['Detailed_Seasonality'] = detailed_season
-                logger.debug(f"ASIN {asin}: Classified seasonality as '{detailed_season}'.")
+                row_data['Sells'] = sells_period
+                logger.debug(f"ASIN {asin}: Classified seasonality as '{detailed_season}' with selling period '{sells_period}'.")
 
             except Exception as e:
                 logger.error(f"ASIN {asin}: Failed to classify seasonality: {e}", exc_info=True)
                 row_data['Detailed_Seasonality'] = 'Error'
+                row_data['Sells'] = 'Error'
         logger.info("Finished seasonality classification.")
         # --- End of Seasonality Classification Loop ---
         # --- End of Business Logic Loop ---

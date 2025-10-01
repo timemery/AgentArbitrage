@@ -1,0 +1,7 @@
+Loading celery_config.py
+celery_config.py loaded successfully
+ * Serving Flask app 'wsgi_handler' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on

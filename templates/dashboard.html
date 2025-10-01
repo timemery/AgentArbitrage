@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Book Details
         "ASIN", "Title", "Categories___Sub", "Binding", "Condition",
         // Sales Rank
-        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "Seasonality_Type", "Detailed_Seasonality",
+        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "Detailed_Seasonality", "Sells",
         // Seller
         "Seller", "Seller_Quality_Score",
         // Deal Details & Current Best Price
@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
         "Sales_Rank___365_days_avg": "365 day Avg.",
         "Binding": "Binding",
         "Condition": "Condition",
-        "Seasonality_Type": "Sells",
-        "Detailed_Seasonality": "Season Detail",
+        "Sells": "Sells Period",
+        "Detailed_Seasonality": "Season",
         "Expected_Peak_Price": "List at",
         "Profit_Confidence": "Profit Trust",
         "Deal_found": "Found",
@@ -355,6 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     table += `<td class="genre-cell">${displayValue}</td>`;
                 } else if (col === 'Detailed_Seasonality') {
                     table += `<td class="season-detail-cell">${value}</td>`;
+                } else if (col === 'Sells') {
+                    table += `<td class="sells-cell">${value}</td>`;
                 } else if (col === 'Seller') {
                     table += `<td class="seller-cell">${value}</td>`;
                 } else if (col === 'ASIN') {

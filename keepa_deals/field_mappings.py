@@ -701,6 +701,7 @@ FUNCTION_LIST = [
     recent_inferred_sale_price,     # Recent Inferred Sale Price
     get_seasonality_type,           # Seasonality Type
     None,                           # Detailed_Seasonality
+    None,                           # Sells
     get_peak_season,                # Peak Season
     get_expected_peak_price,        # Expected Peak Price
     get_trough_season,              # Trough Season
