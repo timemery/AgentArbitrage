@@ -7,69 +7,79 @@
     <h1 class="my-4">Settings</h1>
     <p>Manage your API keys and business costs here.</p>
 
+<style>
+    .settings-form-grid {
+        display: grid;
+        grid-template-columns: auto; /* Single column for rows */
+        gap: 15px; /* Space between setting rows */
+        max-width: 500px; /* Or adjust as needed */
+    }
+    .setting-row {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between elements in a row */
+    }
+    .setting-symbol {
+        font-size: 1.2em;
+        width: 20px; /* Fixed width for alignment */
+        text-align: center;
+    }
+    .setting-input {
+        width: 120px; /* Smaller width for the input boxes */
+    }
+    .setting-label {
+        font-size: 1em;
+        margin-bottom: 0; /* Override default label margins if any */
+    }
+    .tax-exempt-row {
+        justify-content: flex-start; /* Align checkbox to the left */
+        padding-left: 30px; /* Indent to align with input boxes */
+    }
+</style>
+
     <div class="card my-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Business Costs</h5>
-            <button id="editButton" class="btn btn-primary">Edit</button>
-        </div>
-        <div class="card-body">
-            <form id="settingsForm" method="POST" action="{{ url_for('settings') }}">
-                <fieldset id="settingsFieldset" disabled>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="prep_fee_per_book" class="form-label">Prep Fee Per Book</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="prep_fee_per_book" name="prep_fee_per_book" step="0.01" placeholder="e.g., 2.50" value="{{ settings.prep_fee_per_book }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="estimated_shipping_per_book" class="form-label">Estimated Shipping Per Book</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="estimated_shipping_per_book" name="estimated_shipping_per_book" step="0.01" placeholder="e.g., 2.00" value="{{ settings.estimated_shipping_per_book }}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="estimated_tax_per_book" class="form-label">Estimated Tax Per Book</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="estimated_tax_per_book" name="estimated_tax_per_book" step="1" placeholder="e.g., 15" value="{{ settings.estimated_tax_per_book }}">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check mt-4">
-                                <input class="form-check-input" type="checkbox" id="tax_exempt" name="tax_exempt" {% if settings.tax_exempt %}checked{% endif %}>
-                                <label class="form-check-label" for="tax_exempt">
-                                    Tax Exempt
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="default_markup" class="form-label">Default Markup</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="default_markup" name="default_markup" step="1" placeholder="e.g., 10" value="{{ settings.default_markup }}">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Business Costs</h5>
+        <button id="editButton" class="btn btn-primary">Edit</button>
     </div>
+    <div class="card-body">
+        <form id="settingsForm" method="POST" action="{{ url_for('settings') }}">
+            <fieldset id="settingsFieldset" disabled>
+                <div class="settings-form-grid">
+                    <!-- Prep Fee -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">$</span>
+                        <input type="number" class="styled-text-field setting-input" id="prep_fee_per_book" name="prep_fee_per_book" step="0.01" value="{{ settings.prep_fee_per_book }}">
+                        <label for="prep_fee_per_book" class="setting-label">Prep Fee Per Book</label>
+                    </div>
+                    <!-- Estimated Shipping -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">$</span>
+                        <input type="number" class="styled-text-field setting-input" id="estimated_shipping_per_book" name="estimated_shipping_per_book" step="0.01" value="{{ settings.estimated_shipping_per_book }}">
+                        <label for="estimated_shipping_per_book" class="setting-label">Estimated Shipping Per Book</label>
+                    </div>
+                    <!-- Default Markup -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">%</span>
+                        <input type="number" class="styled-text-field setting-input" id="default_markup" name="default_markup" step="1" value="{{ settings.default_markup }}">
+                        <label for="default_markup" class="setting-label">Default Markup</label>
+                    </div>
+                    <!-- Estimated Tax -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">%</span>
+                        <input type="number" class="styled-text-field setting-input" id="estimated_tax_per_book" name="estimated_tax_per_book" step="1" value="{{ settings.estimated_tax_per_book }}">
+                        <label for="estimated_tax_per_book" class="setting-label">Estimated Tax Per Book</label>
+                    </div>
+                    <!-- Tax Exempt -->
+                    <div class="setting-row tax-exempt-row">
+                        <input class="form-check-input" type="checkbox" id="tax_exempt" name="tax_exempt" {% if settings.tax_exempt %}checked{% endif %}>
+                        <label class="form-check-label setting-label" for="tax_exempt">Tax Exempt</label>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
 </div>
 
 <script>
