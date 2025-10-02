@@ -58,7 +58,7 @@ def calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_include
     """
     logger = logging.getLogger(__name__)
     if not _is_valid_numeric(best_price, total_amz_fees):
-        logger.debug(f"Skipping All-in Cost calculation due to invalid inputs: best_price={best_price}, total_amz_fees={total_amz_fees}")
+        logger.info(f"Skipping All-in Cost calculation due to invalid inputs: best_price={best_price}, total_amz_fees={total_amz_fees}")
         return '-'
 
     prep_fee = settings.get('prep_fee_per_book', 0.0)
@@ -66,22 +66,22 @@ def calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_include
     is_tax_exempt = settings.get('tax_exempt', False)
     estimated_shipping = settings.get('estimated_shipping_per_book', 0.0)
 
-    logger.debug(f"Cost settings applied: Prep Fee=${prep_fee}, Tax Rate={tax_percent}%, Tax Exempt={is_tax_exempt}, Est. Shipping=${estimated_shipping}")
+    logger.info(f"Cost settings applied: Prep Fee=${prep_fee}, Tax Rate={tax_percent}%, Tax Exempt={is_tax_exempt}, Est. Shipping=${estimated_shipping}")
 
     tax_amount = 0.0
     if not is_tax_exempt and best_price > 0:
         tax_amount = best_price * (tax_percent / 100.0)
-        logger.debug(f"Tax amount calculated: {tax_amount:.2f}")
+        logger.info(f"Tax amount calculated: {tax_amount:.2f}")
     elif is_tax_exempt:
-        logger.debug("Tax amount is 0.00 (Tax Exempt).")
+        logger.info("Tax amount is 0.00 (Tax Exempt).")
     
     shipping_cost_to_add = 0.0
     if not shipping_included_flag:
         shipping_cost_to_add = estimated_shipping
-        logger.debug(f"Shipping not included in Best Price, adding estimated shipping of {shipping_cost_to_add:.2f}")
+        logger.info(f"Shipping not included in Best Price, adding estimated shipping of {shipping_cost_to_add:.2f}")
     
     all_in_cost = best_price + tax_amount + prep_fee + total_amz_fees + shipping_cost_to_add
-    logger.debug(f"All-in Cost: Best Price {best_price:.2f} + Tax {tax_amount:.2f} + Prep {prep_fee:.2f} + AMZ Fees {total_amz_fees:.2f} + Added Shipping {shipping_cost_to_add:.2f} = {all_in_cost:.2f}")
+    logger.info(f"All-in Cost: Best Price {best_price:.2f} + Tax {tax_amount:.2f} + Prep {prep_fee:.2f} + AMZ Fees {total_amz_fees:.2f} + Added Shipping {shipping_cost_to_add:.2f} = {all_in_cost:.2f}")
     return all_in_cost
 
 def calculate_profit_and_margin(peak_price, all_in_cost):
