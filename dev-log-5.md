@@ -673,7 +673,42 @@ This task evolved from a simple bug investigation into a complex, iterative debu
 
 Although we were unable to complete the final UI changes due to a persistent environment issue, this investigation successfully resolved the core functionality and data-flow problems.
 
+### Dev Log - 2025-10-02
 
+**Task:** Implement Dynamic Recalculation, UI Updates, and Verify Shipping Cost Logic
+
+**Author:** Jules
+
+**Summary:** This task involved a multi-part update to the application. The primary goal was to introduce a dynamic recalculation feature that updates the deals dashboard when business settings are changed, without requiring a full data re-scan. Additionally, several UI improvements were made to the settings and dashboard pages, and the existing shipping cost calculation was verified.
+
+**1. Implementation Details:**
+
+- **Dynamic Recalculation Feature:**
+  - **Backend (Celery Task):** A new Celery task, `recalculate_deals`, was created in `keepa_deals/Keepa_Deals.py`. This task fetches all records from the `deals.db`, loads the latest parameters from `settings.json`, re-runs the calculation functions from `business_calculations.py`, and updates each row in the database with the new values (`All_in_Cost`, `Profit`, `Margin`, `Min_Listing_Price`).
+  - **Trigger:** The `recalculate_deals.delay()` task is now called from the `/settings` route in `wsgi_handler.py` immediately after the `settings.json` file is successfully saved.
+  - **Status Reporting:** A new API endpoint, `/api/recalc-status`, was added to `wsgi_handler.py`. It reads from a `recalc_status.json` file to provide the status of the background job. The Celery task is responsible for updating this status file (`Running`, `Completed`, `Failed`).
+  - **Frontend (Polling):** The dashboard (`templates/dashboard.html`) was updated with JavaScript to poll the `/api/recalc-status` endpoint every 3 seconds. It displays a "Recalculating..." indicator while the task is running and automatically refreshes the deals table by calling `fetchDeals()` upon completion.
+- **UI/UX Updates:**
+  - **Settings Page:** The layout in `templates/settings.html` was redesigned using a CSS grid to match the user's requested format (`SYMBOL [input] LABEL`). The input fields now use the `.styled-text-field` class from `global.css` for a consistent look.
+  - **Dashboard Columns:** The column order in the `columnsToShow` array within `templates/dashboard.html` was updated to `All in Cost | Min. List | List at` for a more logical presentation.
+- **Logic Verification:**
+  - Confirmed that the `calculate_all_in_cost` function in `keepa_deals/business_calculations.py` correctly uses the `shipping_included_flag` (derived from the `get_shipping_included` function in `keepa_deals/stable_products.py`) to conditionally add the `estimated_shipping_per_book` cost.
+
+**2. Challenges & Solutions:**
+
+- **Challenge:** The initial frontend verification using Playwright failed repeatedly.
+
+- Solution:
+
+   
+
+  The debugging process involved several steps:
+
+  1. **Incorrect Selector:** The initial script failed to find the login button. This was resolved by using a more specific CSS selector (`form.login-form button[type="submit"]`) to disambiguate it from other buttons.
+  2. **Race Condition:** The script failed because it was navigating away from the settings page before the flash message could be rendered. This was fixed by adding a step to wait for the flash message to appear *on the settings page* before proceeding to the dashboard.
+  3. **Environment Dependencies:** The most significant challenge was that the Celery worker and its Redis message broker were not running in the sandbox environment. This caused the background recalculation task to never execute, leading to timeouts in the verification script. Attempts to install Redis via `apt-get` failed due to permissions.
+
+  - **Workaround:** Due to the inability to install Redis, a full end-to-end test of the recalculation feature could not be completed via Playwright. The implementation was validated through static code analysis and a successful code review, which confirmed the logic was sound. This is a key environmental constraint to be aware of for future tasks involving background workers.
 
 
 

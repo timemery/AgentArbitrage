@@ -1,7 +1,7 @@
 {
-    "prep_fee_per_book": 2.5,
+    "prep_fee_per_book": 2.75,
     "estimated_shipping_per_book": 3.99,
     "estimated_tax_per_book": 5,
     "tax_exempt": false,
-    "default_markup": 50
+    "default_markup": 10
 }

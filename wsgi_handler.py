@@ -16,7 +16,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_config import celery
-from keepa_deals.Keepa_Deals import run_keepa_script
+from keepa_deals.Keepa_Deals import run_keepa_script, recalculate_deals
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -677,7 +677,11 @@ def settings():
             }
             with open(SETTINGS_FILE, 'w') as f:
                 json.dump(settings_data, f, indent=4)
-            flash('Settings saved successfully!', 'success')
+
+            # Trigger the background recalculation task
+            recalculate_deals.delay()
+
+            flash('Settings saved successfully! Recalculating deals in the background...', 'success')
         except Exception as e:
             flash(f'Error saving settings: {e}', 'error')
         return redirect(url_for('settings'))
@@ -910,6 +914,24 @@ def api_deals():
     }
     
     return jsonify(response)
+
+@app.route('/api/recalc-status')
+def recalc_status():
+    if not session.get('logged_in'):
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    RECALC_STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recalc_status.json')
+
+    if not os.path.exists(RECALC_STATUS_FILE):
+        return jsonify({"status": "Idle"}) # Or "Not Found", depending on desired frontend logic
+
+    try:
+        with open(RECALC_STATUS_FILE, 'r') as f:
+            status_data = json.load(f)
+        return jsonify(status_data)
+    except (IOError, json.JSONDecodeError) as e:
+        app.logger.error(f"Could not read or parse recalc_status.json: {e}")
+        return jsonify({"status": "Error", "message": "Could not read status file."}), 500
 
 
 if __name__ == '__main__':
