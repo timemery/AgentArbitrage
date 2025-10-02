@@ -673,7 +673,7 @@ def settings():
                 'estimated_shipping_per_book': request.form.get('estimated_shipping_per_book', 0.0, type=float),
                 'estimated_tax_per_book': 0 if tax_exempt else estimated_tax,
                 'tax_exempt': tax_exempt,
-                'default_markup': request.form.get('default_markup', type=int)
+                'default_markup': request.form.get('default_markup', 0, type=int)
             }
             with open(SETTINGS_FILE, 'w') as f:
                 json.dump(settings_data, f, indent=4)
