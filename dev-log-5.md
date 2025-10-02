@@ -635,8 +635,43 @@ The final look and feel was achieved through several rounds of feedback:
 The task was successfully completed, resulting in a more polished and space-efficient UI for the dashboard table that matches the user's precise specifications. The iterative process and detailed verification were crucial to achieving the final result.
 
 
+### **Dev Log Entry: October 02, 2025**
 
+**Task:** Settings Page Investigation and Calculation Verification
 
+**Objective:** The initial request was to investigate why the "Default Markup" value set on the Settings page was not being applied to the "Min. List Price" calculation on the dashboard. The task also included verifying that all other business cost settings ("Prep Fee Per Book", "Estimated Shipping Per Book", "Estimated Tax Per Book", and "Tax Exempt") were functioning as designed.
+
+**Summary of a Multi-Stage Debugging and Verification Process:**
+
+This task evolved from a simple bug investigation into a complex, iterative debugging process that highlighted a critical interaction between logging levels, application configuration, and user data. The final solution did not involve fixing a flaw in the calculation logic itself, but rather making that logic transparent enough to diagnose a data issue on the user's end.
+
+**1. Initial Code Review & Hypothesis:**
+
+- A review of `keepa_deals/business_calculations.py` showed that the formulas for `calculate_all_in_cost` and `calculate_min_listing_price` were logically correct. They were designed to use all the values from `settings.json`.
+- This suggested the problem was not a simple code bug but either an issue with data not being passed correctly or the calculations being skipped due to invalid input.
+
+**2. The Invisible Log Debugging Cycle:**
+
+- **Action:** To create transparency, I added detailed logging to `business_calculations.py` to trace exactly how the settings were being used for each book. I also hardened the `/settings` route in `wsgi_handler.py` to prevent errors from empty form fields.
+- **Problem:** The user ran a new scan, but the new, detailed log messages were completely absent from the `celery.log` file.
+- **Initial (Incorrect) Assumption:** I first assumed the Celery worker was running stale code and instructed the user to restart it. When the logs still didn't appear, this assumption was proven wrong.
+- **Root Cause Analysis:** After a second failed attempt, I correctly diagnosed the core issue: I had written the new log statements using `logger.debug()`. However, the Celery worker in this environment is configured to only record messages at the `INFO` level or higher. My `DEBUG` messages were being generated but immediately suppressed, making them invisible.
+- **Solution:** The fix required a corrective commit to change the relevant log statements from `logger.debug()` to `logger.info()` in `keepa_deals/business_calculations.py`.
+
+**3. Final Verification and Confirmation:**
+
+- After the user pulled the logging fix and ran another scan, the new `INFO` logs appeared correctly.
+- The logs immediately revealed that the calculation was using `Default Markup (0%)`. This proved the code was working, but the `settings.json` file on the server contained the wrong value.
+- **Resolution:** The user was instructed to go to the Settings page, enter the desired markup, and click "Save Changes".
+- A final scan and log analysis confirmed success. The logs clearly showed the correct markup (e.g., `50%`) being used. We also used the detailed `All-in Cost:` log messages to verify that the Prep Fee, Tax (with Tax Exempt correctly applied), and the conditional Shipping Cost were all being calculated perfectly.
+
+**Key Takeaways for Future Agents:**
+
+1. **Log Level is Critical:** When adding diagnostic logging, you **must** ensure the log level (`INFO`, `DEBUG`, `ERROR`) is compatible with the application's runtime configuration. In this project, the Celery worker logs at `INFO`, so any diagnostic logs intended to be seen must also be at the `INFO` level.
+2. **Verify Data, Not Just Code:** The root cause of the user's issue was not a bug in the calculation logic, but incorrect data in the `settings.json` file. Making the code's behavior transparent through logging was the key to differentiating between a code error and a data error.
+3. **Source of Truth for Costs:** The function `calculate_all_in_cost` in `keepa_deals/business_calculations.py` is the definitive source for all business cost calculations. It has been verified to correctly use `prep_fee_per_book`, `estimated_tax_per_book` (respecting the `tax_exempt` flag), and conditionally adds `estimated_shipping_per_book` based on whether shipping is already included in the deal price.
+
+Although we were unable to complete the final UI changes due to a persistent environment issue, this investigation successfully resolved the core functionality and data-flow problems.
 
 
 
