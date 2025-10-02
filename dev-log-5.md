@@ -587,6 +587,53 @@ A notable challenge occurred during the verification phase. When attempting to s
   6. Captured a screenshot of the dashboard with the filtered results.
 - The resulting screenshot was visually inspected and confirmed that both the UI change and the expanded search functionality were implemented correctly. The temporary script and directory were removed before submission.
 
+# Dev Log: Dashboard Table UI Refactor - Sorting Arrows
+
+**Date:** 2025-10-01
+**JIRA:** TICKET-789
+**Author:** Jules
+
+## 1. Objective
+
+The primary goal was to refactor the UI of the deals dashboard table to improve usability and aesthetics. This involved:
+1.  Moving the ascending/descending sort controls from the table headers (`<th>`) into a new, dedicated row directly beneath the headers.
+2.  Replacing the text-based arrows (▲/▼) with new graphical assets (`UpArrow_on.png`, etc.).
+3.  Renaming the "Sales Rank" group header to "Sales Rank & Seasonality" and "Seller" to "Seller Details".
+
+## 2. Implementation Details
+
+-   **`templates/dashboard.html`**: The `renderTable` JavaScript function was modified to dynamically generate two separate header rows. The first contains the column titles, and the second, with the class `.sort-arrows-row`, contains the `<img>` tags for the sorting controls. The event listeners were updated to target these new image elements and use their `data-column` and `data-order` attributes for sorting logic.
+-   **`static/global.css`**: New CSS rules were created to style the `.sort-arrows-row` and the `.sort-arrow` images. This involved multiple iterations to achieve the final, desired look.
+-   **Verification**: A Playwright script (`jules-scratch/verification/verify_sorting_arrows.py`) was created to automate frontend testing. This script logs into the application, navigates to the dashboard, and takes screenshots to verify both the initial state and the "on" state of the sorting arrows after a click event.
+
+## 3. Challenges & Resolutions
+
+This task involved significant iterative debugging and refinement based on user feedback.
+
+### 3.1. Playwright Verification Script Debugging
+
+The verification script initially failed for several reasons, requiring a step-by-step debugging process:
+-   **Challenge**: Ambiguous locator for the login button.
+    -   **Resolution**: The initial locator `button:has-text("Log In")` matched two elements. It was corrected to the more specific `.login-button` class selector.
+-   **Challenge**: Incorrect assertion for waiting on table content (`to_have_count.above(0)`).
+    -   **Resolution**: This was replaced with a more robust assertion: `expect(page.locator(".deal-row").first).to_be_visible()`, which waits for the first element to render.
+-   **Challenge**: Incorrect assumption about page navigation. The script initially tried to assert a URL change after sorting (`expect(page).to_have_url(...)`).
+    -   **Resolution**: After observing that the table updates dynamically via `fetch` without a page reload, the assertion was changed to verify the actual UI change: that the `src` attribute of the clicked arrow `<img>` was updated to the `_on.png` version. This proved to be the correct verification strategy.
+
+### 3.2. Iterative CSS Styling Refinements
+
+The final look and feel was achieved through several rounds of feedback:
+-   **Challenge**: The initial borderless "floating" row design was not visually appealing.
+    -   **Resolution**: The user requested a darker background (`#011b2a`), a fixed row height (`18px`), specific arrow dimensions (`24x13px`), and borders only on the outside of the row. This was implemented by adding a background color and using `:first-child` and `:last-child` selectors to apply borders only to the outer edges of the row.
+-   **Challenge**: The row height was not being correctly applied due to CSS specificity issues (default `td` padding was overriding the height).
+    -   **Resolution**: The CSS selector was made more specific (from `.sort-arrows-row td` to `#deals-table .sort-arrows-row td`) and `!important` was added to the `height`, `max-height`, and `padding` properties to ensure they were enforced.
+-   **Challenge**: The spacing between the up and down arrows was too wide.
+    -   **Resolution**: The `margin-right` on the `.sort-arrow` class was reduced from `4px` to `2px`.
+
+## 4. Final Outcome
+
+The task was successfully completed, resulting in a more polished and space-efficient UI for the dashboard table that matches the user's precise specifications. The iterative process and detailed verification were crucial to achieving the final result.
+
 
 
 
