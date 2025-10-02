@@ -66,9 +66,14 @@ def calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_include
     is_tax_exempt = settings.get('tax_exempt', False)
     estimated_shipping = settings.get('estimated_shipping_per_book', 0.0)
 
+    logger.debug(f"Cost settings applied: Prep Fee=${prep_fee}, Tax Rate={tax_percent}%, Tax Exempt={is_tax_exempt}, Est. Shipping=${estimated_shipping}")
+
     tax_amount = 0.0
     if not is_tax_exempt and best_price > 0:
         tax_amount = best_price * (tax_percent / 100.0)
+        logger.debug(f"Tax amount calculated: {tax_amount:.2f}")
+    elif is_tax_exempt:
+        logger.debug("Tax amount is 0.00 (Tax Exempt).")
     
     shipping_cost_to_add = 0.0
     if not shipping_included_flag:
@@ -107,5 +112,5 @@ def calculate_min_listing_price(all_in_cost, settings):
     markup_percent = settings.get('default_markup', 0)
     markup_decimal = 1 + (markup_percent / 100.0)
     min_price = all_in_cost * markup_decimal
-    logger.debug(f"Min Listing Price: Cost {all_in_cost:.2f} * Markup ({markup_decimal:.2f}) = {min_price:.2f}")
+    logger.info(f"Min Listing Price Calculation: All-in Cost ({all_in_cost:.2f}) * Default Markup ({markup_percent}%) = Min Price ({min_price:.2f})")
     return min_price

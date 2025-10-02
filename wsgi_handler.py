@@ -664,11 +664,15 @@ def settings():
 
     if request.method == 'POST':
         try:
+            tax_exempt = 'tax_exempt' in request.form
+            # Get the value from the form, providing a default of 0 to avoid TypeErrors on empty strings
+            estimated_tax = request.form.get('estimated_tax_per_book', 0, type=int)
+
             settings_data = {
-                'prep_fee_per_book': request.form.get('prep_fee_per_book', type=float),
-                'estimated_shipping_per_book': request.form.get('estimated_shipping_per_book', type=float),
-                'estimated_tax_per_book': request.form.get('estimated_tax_per_book', type=int),
-                'tax_exempt': 'tax_exempt' in request.form,
+                'prep_fee_per_book': request.form.get('prep_fee_per_book', 0.0, type=float),
+                'estimated_shipping_per_book': request.form.get('estimated_shipping_per_book', 0.0, type=float),
+                'estimated_tax_per_book': 0 if tax_exempt else estimated_tax,
+                'tax_exempt': tax_exempt,
                 'default_markup': request.form.get('default_markup', type=int)
             }
             with open(SETTINGS_FILE, 'w') as f:
@@ -683,6 +687,7 @@ def settings():
         with open(SETTINGS_FILE, 'r') as f:
             settings_data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
+        # Default settings if file doesn't exist
         settings_data = {
             "prep_fee_per_book": 2.50,
             "estimated_shipping_per_book": 2.00,
