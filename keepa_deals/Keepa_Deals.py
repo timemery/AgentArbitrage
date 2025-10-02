@@ -20,6 +20,15 @@ from .keepa_api import (
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
+import sqlite3
+from .business_calculations import (
+    load_settings as business_load_settings,
+    calculate_total_amz_fees,
+    calculate_all_in_cost,
+    calculate_profit_and_margin,
+    calculate_min_listing_price,
+)
+
 
 def set_scan_status(status_data):
     """Helper to write to the status file."""
@@ -657,3 +666,97 @@ def save_to_database(rows, headers, logger):
         if conn:
             conn.close()
             logger.info("Database connection closed.")
+
+def set_recalc_status(status_data):
+    """Helper to write to the recalculation status file."""
+    RECALC_STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'recalc_status.json')
+    try:
+        with open(RECALC_STATUS_FILE, 'w') as f:
+            json.dump(status_data, f, indent=4)
+    except IOError as e:
+        print(f"Error writing recalc status file: {e}")
+
+@celery.task
+def recalculate_deals():
+    """
+    Celery task to recalculate business metrics for all deals in the database.
+    """
+    logger = logging.getLogger(__name__)
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+
+    set_recalc_status({"status": "Running", "message": "Starting recalculation..."})
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM deals")
+        deals = cursor.fetchall()
+
+        if not deals:
+            logger.info("Recalculation: No deals found in the database. Nothing to do.")
+            set_recalc_status({"status": "Completed", "message": "No deals to recalculate."})
+            return
+
+        logger.info(f"Recalculation: Found {len(deals)} deals to process.")
+        settings = business_load_settings()
+
+        for deal in deals:
+            deal_dict = dict(deal)
+            asin = deal_dict.get('ASIN')
+
+            try:
+                # Safely parse values from the database record
+                peak_price = float(deal_dict.get('Expected_Peak_Price', 0) or 0)
+                fba_fee = float(deal_dict.get('FBA_PickPack_Fee', 0) or 0)
+                referral_percent = float(deal_dict.get('Referral_Fee_Percent', 0) or 0)
+                best_price = float(deal_dict.get('Best_Price', 0) or 0)
+                shipping_included_flag = str(deal_dict.get('Shipping_Included', 'no')).lower() == 'yes'
+
+                # Perform calculations
+                total_amz_fees = calculate_total_amz_fees(peak_price, fba_fee, referral_percent)
+                all_in_cost = calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_included_flag)
+                profit_margin_dict = calculate_profit_and_margin(peak_price, all_in_cost)
+                min_listing_price = calculate_min_listing_price(all_in_cost, settings)
+
+                # Prepare for DB update
+                update_values = {
+                    'Total_AMZ_fees': total_amz_fees,
+                    'All_in_Cost': all_in_cost,
+                    'Profit': profit_margin_dict['profit'],
+                    'Margin': profit_margin_dict['margin'],
+                    'Min_Listing_Price': min_listing_price,
+                    'id': deal_dict['id']
+                }
+
+                # Update the database
+                update_sql = """
+                    UPDATE deals
+                    SET
+                        Total_AMZ_fees = :Total_AMZ_fees,
+                        All_in_Cost = :All_in_Cost,
+                        Profit = :Profit,
+                        Margin = :Margin,
+                        Min_Listing_Price = :Min_Listing_Price
+                    WHERE id = :id
+                """
+                cursor.execute(update_sql, update_values)
+
+            except (ValueError, TypeError) as e:
+                logger.error(f"Recalculation error for ASIN {asin}: Could not parse values. Error: {e}")
+                continue # Skip to the next deal
+
+        conn.commit()
+        logger.info("Recalculation finished and database updated.")
+        set_recalc_status({"status": "Completed", "message": "Recalculation complete."})
+
+    except sqlite3.Error as e:
+        logger.error(f"Recalculation database error: {e}")
+        set_recalc_status({"status": "Failed", "message": f"Database error: {e}"})
+    except Exception as e:
+        logger.error(f"Recalculation unexpected error: {e}", exc_info=True)
+        set_recalc_status({"status": "Failed", "message": f"An unexpected error occurred: {e}"})
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
