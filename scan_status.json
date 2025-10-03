@@ -1,9 +1,17 @@
 {
-    "status": "Running",
+    "status": "Completed",
     "start_time": "2025-10-03T22:35:13.428Z",
-    "message": "Found 150 total deals. Applying limit of 20.",
+    "message": "Scan completed successfully.",
     "task_id": "08f93e87-119e-497b-979d-8afa84b49eca",
     "total_deals": 20,
-    "processed_deals": 0,
-    "etr_seconds": 40
+    "processed_deals": 20,
+    "etr_seconds": 0.0,
+    "debug_etr": {
+        "elapsed_minutes": 1.391014317671458,
+        "processed": 20,
+        "time_per_deal": 4.173042953014374
+    },
+    "end_time": "2025-10-03T23:04:09.156Z",
+    "output_file": "data/Keepa_Deals_Export.csv",
+    "scan_duration_seconds": 1735.7267580032349
 }
