@@ -36,6 +36,7 @@ def format_time_ago(minutes_ago):
 def get_1yr_avg_sale_price(product, logger=None):
     """
     Displays the median inferred sale price over the last 365 days.
+    Returns 'Too New' if there are not enough sale events.
     """
     COLUMN_NAME = "1yr. Avg."
     if not logger:
@@ -46,13 +47,13 @@ def get_1yr_avg_sale_price(product, logger=None):
     # Defensive check for required data
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
         logger.warning(f"ASIN {asin}: Product data is missing 'csv' field or 'csv' is incomplete. Cannot calculate {COLUMN_NAME}.")
-        return {COLUMN_NAME: "-"}
+        return {COLUMN_NAME: "Too New"}
 
     sale_events, _ = infer_sale_events(product)
 
     if not sale_events:
         logger.debug(f"ASIN {asin}: No sale events found for {COLUMN_NAME} calculation.")
-        return {COLUMN_NAME: "-"}
+        return {COLUMN_NAME: "Too New"}
 
     try:
         df = pd.DataFrame(sale_events)
@@ -66,7 +67,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         if len(df_last_year) < 3:
             logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful average.")
-            return {COLUMN_NAME: "-"}
+            return {COLUMN_NAME: "Too New"}
 
         # Calculate and log both the median and mean price
         median_price_cents = df_last_year['inferred_sale_price_cents'].median()
@@ -79,7 +80,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         if pd.isna(final_price_cents) or final_price_cents <= 0:
             logger.warning(f"ASIN {asin}: Final price calculation resulted in an invalid value: {final_price_cents}")
-            return {COLUMN_NAME: "-"}
+            return {COLUMN_NAME: "Too New"}
 
         result_value = f"${final_price_cents / 100:.2f}"
         logger.debug(f"ASIN {asin}: Calculated {COLUMN_NAME} (median) sale price: {result_value}")
@@ -87,7 +88,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME}: {e}", exc_info=True)
-        return {COLUMN_NAME: "-"}
+        return {COLUMN_NAME: "Error"}
 
 def get_percent_discount(avg_price_str, best_price_str, logger=None):
     """
@@ -99,8 +100,8 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
         logger = logging.getLogger(__name__)
     logger.debug(f"Running get_percent_discount with avg_price_str: '{avg_price_str}', best_price_str: '{best_price_str}'.")
 
-    if not avg_price_str or avg_price_str == "-":
-        logger.debug("1yr. Avg. price is unavailable, cannot calculate discount.")
+    if not avg_price_str or avg_price_str in ["-", "Too New", "Error"]:
+        logger.debug(f"1yr. Avg. price is '{avg_price_str}', cannot calculate discount.")
         return {COLUMN_NAME: "-"}
 
     if not best_price_str or best_price_str == "-":

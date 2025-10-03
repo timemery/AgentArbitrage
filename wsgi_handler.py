@@ -884,16 +884,34 @@ def api_deals():
             "Plastic Comb": "PC", "Printed Access Code": "AC",
             "School & Library Binding": "SLB", "spiral_bound": "SB", "Spiral-bound": "SB"
         }
-        condition_map = {
-            "New": "N", "Used, like new": "U - LN", "Used, very good": "U - VG",
-            "Used, good": "U - G", "Used, acceptable": "U - A"
+        condition_string_map = {
+            "New": "N", "Used - Like New": "U - LN", "Used - Very Good": "U - VG",
+            "Used - Good": "U - G", "Used - Acceptable": "U - A",
+            "Collectible - Like New": "C - LN", "Collectible - Very Good": "C - VG",
+            "Collectible - Good": "C - G", "Collectible - Acceptable": "C - A"
+        }
+        condition_code_map = {
+            "1": "New",
+            "2": "Used - Like New",
+            "3": "Used - Very Good",
+            "4": "Used - Good",
+            "5": "Used - Acceptable",
+            "10": "Collectible - Like New",
+            "11": "Collectible - Very Good", # Based on Keepa API documentation
+            "24": "Used - Good"
         }
 
         for deal in deals_list:
+            # Translate condition code to string if it's a digit
+            if 'Condition' in deal and deal['Condition'] and str(deal['Condition']).isdigit():
+                code = str(deal['Condition'])
+                deal['Condition'] = condition_code_map.get(code, f"Unknown ({code})")
+
+            # Shorten string representations for both Binding and Condition
             if 'Binding' in deal and deal['Binding'] in binding_map:
                 deal['Binding'] = binding_map[deal['Binding']]
-            if 'Condition' in deal and deal['Condition'] in condition_map:
-                deal['Condition'] = condition_map[deal['Condition']]
+            if 'Condition' in deal and deal['Condition'] in condition_string_map:
+                deal['Condition'] = condition_string_map[deal['Condition']]
 
     except sqlite3.Error as e:
         app.logger.error(f"Database query error: {e}")
