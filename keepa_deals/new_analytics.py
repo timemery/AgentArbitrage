@@ -134,7 +134,9 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
 
 def get_trend(product, logger=None):
     """
-    Indicates the price trend based on the last 5 price changes for the NEW price.
+    Indicates the price trend based on the last 5 unique price changes for the NEW price.
+    The trend is determined by the majority of movements (up or down).
+    In case of a tie, the direction of the most recent price change is used.
     """
     if not logger:
         logger = logging.getLogger(__name__)
@@ -144,18 +146,14 @@ def get_trend(product, logger=None):
     csv_data = product.get('csv', [])
 
     # Use NEW price history (index 1) for trend analysis.
-    # The format is [timestamp, price, timestamp, price, ...].
     if not csv_data or len(csv_data) < 2 or not csv_data[1] or len(csv_data[1]) < 2:
         logger.debug(f"ASIN {asin}: Insufficient NEW price data for trend analysis.")
         return {"Trend": "-"}
 
     try:
         price_history = csv_data[1]
-
-        # Extract prices, ignoring timestamps and invalid values (-1).
         prices = [price_history[i] for i in range(1, len(price_history), 2) if price_history[i] > 0]
 
-        # Get unique consecutive prices to identify actual changes.
         unique_prices = []
         if prices:
             unique_prices.append(prices[0])
@@ -165,28 +163,43 @@ def get_trend(product, logger=None):
 
         logger.debug(f"ASIN {asin}: Found {len(unique_prices)} unique consecutive prices.")
 
-        # We need at least two different prices to determine a trend.
         if len(unique_prices) < 2:
             logger.info(f"ASIN {asin}: Not enough unique price points ({len(unique_prices)}) to determine a trend.")
             return {"Trend": "-"}
 
-        # Get the last 5 price points, or all if fewer than 5 exist.
-        last_n_prices = unique_prices[-5:]
+        # Consider the last 5 unique price *changes*, which means we need up to 6 price points.
+        last_n_prices = unique_prices[-6:]
         logger.debug(f"ASIN {asin}: Analyzing last {len(last_n_prices)} prices: {last_n_prices}")
 
-        # Compare the first and last price in the window.
-        first_price = last_n_prices[0]
-        last_price = last_n_prices[-1]
+        if len(last_n_prices) < 2:
+            return {"Trend": "-"}
 
-        if last_price > first_price:
+        up_count = 0
+        down_count = 0
+        for i in range(1, len(last_n_prices)):
+            if last_n_prices[i] > last_n_prices[i-1]:
+                up_count += 1
+            elif last_n_prices[i] < last_n_prices[i-1]:
+                down_count += 1
+
+        logger.debug(f"ASIN {asin}: Trend counts - Up: {up_count}, Down: {down_count}")
+
+        trend_symbol = "-"
+        if up_count > down_count:
             trend_symbol = "⇧"
-        elif last_price < first_price:
+        elif down_count > up_count:
             trend_symbol = "⇩"
-        else:
-            # This case can happen if the last 5 changes resulted in the same start/end price.
-            trend_symbol = "-"
+        else: # Tie-breaker: use the most recent change
+            last_price = last_n_prices[-1]
+            second_to_last_price = last_n_prices[-2]
+            if last_price > second_to_last_price:
+                trend_symbol = "⇧"
+                logger.debug(f"ASIN {asin}: Tie-breaker determined trend UP.")
+            elif last_price < second_to_last_price:
+                trend_symbol = "⇩"
+                logger.debug(f"ASIN {asin}: Tie-breaker determined trend DOWN.")
 
-        logger.debug(f"ASIN {asin}: Trend determined. First price: {first_price}, Last price: {last_price}. Symbol: {trend_symbol}")
+        logger.debug(f"ASIN {asin}: Trend determined. Symbol: {trend_symbol}")
         return {"Trend": trend_symbol}
 
     except Exception as e:
