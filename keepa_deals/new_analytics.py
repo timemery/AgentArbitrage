@@ -36,6 +36,7 @@ def format_time_ago(minutes_ago):
 def get_1yr_avg_sale_price(product, logger=None):
     """
     Displays the median inferred sale price over the last 365 days.
+    Returns 'Too New' if there are not enough sale events.
     """
     COLUMN_NAME = "1yr. Avg."
     if not logger:
@@ -46,13 +47,13 @@ def get_1yr_avg_sale_price(product, logger=None):
     # Defensive check for required data
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
         logger.warning(f"ASIN {asin}: Product data is missing 'csv' field or 'csv' is incomplete. Cannot calculate {COLUMN_NAME}.")
-        return {COLUMN_NAME: "-"}
+        return {COLUMN_NAME: "Too New"}
 
     sale_events, _ = infer_sale_events(product)
 
     if not sale_events:
         logger.debug(f"ASIN {asin}: No sale events found for {COLUMN_NAME} calculation.")
-        return {COLUMN_NAME: "-"}
+        return {COLUMN_NAME: "Too New"}
 
     try:
         df = pd.DataFrame(sale_events)
@@ -66,7 +67,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         if len(df_last_year) < 3:
             logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful average.")
-            return {COLUMN_NAME: "-"}
+            return {COLUMN_NAME: "Too New"}
 
         # Calculate and log both the median and mean price
         median_price_cents = df_last_year['inferred_sale_price_cents'].median()
@@ -79,7 +80,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
         if pd.isna(final_price_cents) or final_price_cents <= 0:
             logger.warning(f"ASIN {asin}: Final price calculation resulted in an invalid value: {final_price_cents}")
-            return {COLUMN_NAME: "-"}
+            return {COLUMN_NAME: "Too New"}
 
         result_value = f"${final_price_cents / 100:.2f}"
         logger.debug(f"ASIN {asin}: Calculated {COLUMN_NAME} (median) sale price: {result_value}")
@@ -87,7 +88,7 @@ def get_1yr_avg_sale_price(product, logger=None):
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME}: {e}", exc_info=True)
-        return {COLUMN_NAME: "-"}
+        return {COLUMN_NAME: "Error"}
 
 def get_percent_discount(avg_price_str, best_price_str, logger=None):
     """
@@ -99,8 +100,8 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
         logger = logging.getLogger(__name__)
     logger.debug(f"Running get_percent_discount with avg_price_str: '{avg_price_str}', best_price_str: '{best_price_str}'.")
 
-    if not avg_price_str or avg_price_str == "-":
-        logger.debug("1yr. Avg. price is unavailable, cannot calculate discount.")
+    if not avg_price_str or avg_price_str in ["-", "Too New", "Error"]:
+        logger.debug(f"1yr. Avg. price is '{avg_price_str}', cannot calculate discount.")
         return {COLUMN_NAME: "-"}
 
     if not best_price_str or best_price_str == "-":
@@ -134,7 +135,9 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
 
 def get_trend(product, logger=None):
     """
-    Indicates the price trend based on the last 5 price changes for the NEW price.
+    Indicates the price trend based on the last 5 unique price changes for the NEW price.
+    The trend is determined by the majority of movements (up or down).
+    In case of a tie, the direction of the most recent price change is used.
     """
     if not logger:
         logger = logging.getLogger(__name__)
@@ -144,18 +147,14 @@ def get_trend(product, logger=None):
     csv_data = product.get('csv', [])
 
     # Use NEW price history (index 1) for trend analysis.
-    # The format is [timestamp, price, timestamp, price, ...].
     if not csv_data or len(csv_data) < 2 or not csv_data[1] or len(csv_data[1]) < 2:
         logger.debug(f"ASIN {asin}: Insufficient NEW price data for trend analysis.")
         return {"Trend": "-"}
 
     try:
         price_history = csv_data[1]
-
-        # Extract prices, ignoring timestamps and invalid values (-1).
         prices = [price_history[i] for i in range(1, len(price_history), 2) if price_history[i] > 0]
 
-        # Get unique consecutive prices to identify actual changes.
         unique_prices = []
         if prices:
             unique_prices.append(prices[0])
@@ -165,28 +164,43 @@ def get_trend(product, logger=None):
 
         logger.debug(f"ASIN {asin}: Found {len(unique_prices)} unique consecutive prices.")
 
-        # We need at least two different prices to determine a trend.
         if len(unique_prices) < 2:
             logger.info(f"ASIN {asin}: Not enough unique price points ({len(unique_prices)}) to determine a trend.")
             return {"Trend": "-"}
 
-        # Get the last 5 price points, or all if fewer than 5 exist.
-        last_n_prices = unique_prices[-5:]
+        # Consider the last 5 unique price *changes*, which means we need up to 6 price points.
+        last_n_prices = unique_prices[-6:]
         logger.debug(f"ASIN {asin}: Analyzing last {len(last_n_prices)} prices: {last_n_prices}")
 
-        # Compare the first and last price in the window.
-        first_price = last_n_prices[0]
-        last_price = last_n_prices[-1]
+        if len(last_n_prices) < 2:
+            return {"Trend": "-"}
 
-        if last_price > first_price:
+        up_count = 0
+        down_count = 0
+        for i in range(1, len(last_n_prices)):
+            if last_n_prices[i] > last_n_prices[i-1]:
+                up_count += 1
+            elif last_n_prices[i] < last_n_prices[i-1]:
+                down_count += 1
+
+        logger.debug(f"ASIN {asin}: Trend counts - Up: {up_count}, Down: {down_count}")
+
+        trend_symbol = "-"
+        if up_count > down_count:
             trend_symbol = "⇧"
-        elif last_price < first_price:
+        elif down_count > up_count:
             trend_symbol = "⇩"
-        else:
-            # This case can happen if the last 5 changes resulted in the same start/end price.
-            trend_symbol = "-"
+        else: # Tie-breaker: use the most recent change
+            last_price = last_n_prices[-1]
+            second_to_last_price = last_n_prices[-2]
+            if last_price > second_to_last_price:
+                trend_symbol = "⇧"
+                logger.debug(f"ASIN {asin}: Tie-breaker determined trend UP.")
+            elif last_price < second_to_last_price:
+                trend_symbol = "⇩"
+                logger.debug(f"ASIN {asin}: Tie-breaker determined trend DOWN.")
 
-        logger.debug(f"ASIN {asin}: Trend determined. First price: {first_price}, Last price: {last_price}. Symbol: {trend_symbol}")
+        logger.debug(f"ASIN {asin}: Trend determined. Symbol: {trend_symbol}")
         return {"Trend": trend_symbol}
 
     except Exception as e:
