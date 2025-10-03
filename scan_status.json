@@ -1,0 +1,9 @@
+{
+    "status": "Running",
+    "start_time": "2025-10-03T22:35:13.428Z",
+    "message": "Found 150 total deals. Applying limit of 20.",
+    "task_id": "08f93e87-119e-497b-979d-8afa84b49eca",
+    "total_deals": 20,
+    "processed_deals": 0,
+    "etr_seconds": 40
+}
