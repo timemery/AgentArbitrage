@@ -155,7 +155,7 @@ def get_sells_period(detailed_season):
 
     Returns:
         str: A string representing the peak selling period (e.g., "Nov-Dec").
-             Returns "Non-Seasonal" for "Year-round" classification.
+             Returns "Year-round" if no specific period is applicable.
     """
     period_map = {
         "Textbook (Summer)": "Jul - Sep",
@@ -174,6 +174,6 @@ def get_sells_period(detailed_season):
         "Halloween": "Sep - Oct",
         "Thanksgiving": "Nov",
         "Romance/Valentine's Day": "Feb",
-        "Year-round": "N/A"
+        "Year-round": "Year-round"
     }
-    return period_map.get(detailed_season, "N/A")
+    return period_map.get(detailed_season, "Year-round")

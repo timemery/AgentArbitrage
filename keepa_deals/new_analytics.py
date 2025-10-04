@@ -133,11 +133,55 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
         logger.error(f"Error calculating discount with inputs '{avg_price_str}' and '{best_price_str}': {e}", exc_info=True)
         return {COLUMN_NAME: "-"}
 
+from itertools import groupby
+
+def _calculate_trend_from_history(price_history, logger, asin, condition_type):
+    """Helper function to calculate trend from a given price history list."""
+    prices = [price_history[i] for i in range(1, len(price_history), 2) if price_history[i] > 0]
+    unique_prices = [k for k, g in groupby(prices)]
+    logger.debug(f"ASIN {asin} ({condition_type}): Found {len(unique_prices)} unique consecutive prices.")
+
+    if len(unique_prices) < 2:
+        logger.info(f"ASIN {asin} ({condition_type}): Not enough unique price points ({len(unique_prices)}) to determine a trend.")
+        return "-"
+
+    last_n_prices = unique_prices[-6:]
+    logger.debug(f"ASIN {asin} ({condition_type}): Analyzing last {len(last_n_prices)} prices: {last_n_prices}")
+
+    if len(last_n_prices) < 2:
+        return "-"
+
+    up_count = 0
+    down_count = 0
+    for i in range(1, len(last_n_prices)):
+        if last_n_prices[i] > last_n_prices[i-1]:
+            up_count += 1
+        elif last_n_prices[i] < last_n_prices[i-1]:
+            down_count += 1
+
+    logger.debug(f"ASIN {asin} ({condition_type}): Trend counts - Up: {up_count}, Down: {down_count}")
+
+    trend_symbol = "-"
+    if up_count > down_count:
+        trend_symbol = "⇧"
+    elif down_count > up_count:
+        trend_symbol = "⇩"
+    elif up_count == down_count and up_count > 0:
+        last_price = last_n_prices[-1]
+        second_to_last_price = last_n_prices[-2]
+        if last_price > second_to_last_price:
+            trend_symbol = "⇧"
+            logger.debug(f"ASIN {asin} ({condition_type}): Tie-breaker determined trend UP.")
+        elif last_price < second_to_last_price:
+            trend_symbol = "⇩"
+            logger.debug(f"ASIN {asin} ({condition_type}): Tie-breaker determined trend DOWN.")
+
+    return trend_symbol
+
 def get_trend(product, logger=None):
     """
-    Indicates the price trend based on the last 5 unique price changes for the NEW price.
-    The trend is determined by the majority of movements (up or down).
-    In case of a tie, the direction of the most recent price change is used.
+    Indicates the price trend based on the last 5 unique price changes.
+    It first checks NEW price history, and if no trend is found, it falls back to USED price history.
     """
     if not logger:
         logger = logging.getLogger(__name__)
@@ -145,64 +189,22 @@ def get_trend(product, logger=None):
     logger.debug(f"ASIN {asin}: Running get_trend.")
 
     csv_data = product.get('csv', [])
+    trend_symbol = "-"
 
-    # Use NEW price history (index 1) for trend analysis.
-    if not csv_data or len(csv_data) < 2 or not csv_data[1] or len(csv_data[1]) < 2:
-        logger.debug(f"ASIN {asin}: Insufficient NEW price data for trend analysis.")
-        return {"Trend": "-"}
+    # 1. Try with NEW price history (index 1)
+    if csv_data and len(csv_data) > 1 and csv_data[1] and len(csv_data[1]) >= 2:
+        logger.debug(f"ASIN {asin}: Attempting trend analysis on NEW prices.")
+        trend_symbol = _calculate_trend_from_history(csv_data[1], logger, asin, "NEW")
+    else:
+        logger.debug(f"ASIN {asin}: No NEW price data available for trend analysis.")
 
-    try:
-        price_history = csv_data[1]
-        prices = [price_history[i] for i in range(1, len(price_history), 2) if price_history[i] > 0]
+    # 2. If no trend from NEW, try with USED price history (index 2)
+    if trend_symbol == "-":
+        if csv_data and len(csv_data) > 2 and csv_data[2] and len(csv_data[2]) >= 2:
+            logger.debug(f"ASIN {asin}: No trend from NEW prices, falling back to USED prices.")
+            trend_symbol = _calculate_trend_from_history(csv_data[2], logger, asin, "USED")
+        else:
+            logger.debug(f"ASIN {asin}: No USED price data available for trend analysis.")
 
-        unique_prices = []
-        if prices:
-            unique_prices.append(prices[0])
-            for i in range(1, len(prices)):
-                if prices[i] != prices[i-1]:
-                    unique_prices.append(prices[i])
-
-        logger.debug(f"ASIN {asin}: Found {len(unique_prices)} unique consecutive prices.")
-
-        if len(unique_prices) < 2:
-            logger.info(f"ASIN {asin}: Not enough unique price points ({len(unique_prices)}) to determine a trend.")
-            return {"Trend": "-"}
-
-        # Consider the last 5 unique price *changes*, which means we need up to 6 price points.
-        last_n_prices = unique_prices[-6:]
-        logger.debug(f"ASIN {asin}: Analyzing last {len(last_n_prices)} prices: {last_n_prices}")
-
-        if len(last_n_prices) < 2:
-            return {"Trend": "-"}
-
-        up_count = 0
-        down_count = 0
-        for i in range(1, len(last_n_prices)):
-            if last_n_prices[i] > last_n_prices[i-1]:
-                up_count += 1
-            elif last_n_prices[i] < last_n_prices[i-1]:
-                down_count += 1
-
-        logger.debug(f"ASIN {asin}: Trend counts - Up: {up_count}, Down: {down_count}")
-
-        trend_symbol = "-"
-        if up_count > down_count:
-            trend_symbol = "⇧"
-        elif down_count > up_count:
-            trend_symbol = "⇩"
-        else: # Tie-breaker: use the most recent change
-            last_price = last_n_prices[-1]
-            second_to_last_price = last_n_prices[-2]
-            if last_price > second_to_last_price:
-                trend_symbol = "⇧"
-                logger.debug(f"ASIN {asin}: Tie-breaker determined trend UP.")
-            elif last_price < second_to_last_price:
-                trend_symbol = "⇩"
-                logger.debug(f"ASIN {asin}: Tie-breaker determined trend DOWN.")
-
-        logger.debug(f"ASIN {asin}: Trend determined. Symbol: {trend_symbol}")
-        return {"Trend": trend_symbol}
-
-    except Exception as e:
-        logger.error(f"ASIN {asin}: Error calculating trend: {e}", exc_info=True)
-        return {"Trend": "-"}
+    logger.debug(f"ASIN {asin}: Final trend determined. Symbol: {trend_symbol}")
+    return {"Trend": trend_symbol}
