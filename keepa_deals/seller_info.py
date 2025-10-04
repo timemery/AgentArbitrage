@@ -126,10 +126,12 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
         else:
             final_analysis['Seller_Quality_Score'] = "New Seller"
     else:
-        # If the seller data is not in the cache, it means the pre-fetch failed or missed this ID.
-        # We do not make a new API call here to avoid rate-limiting issues.
-        logger.warning(f"ASIN {asin}: Seller data for ID {best_seller_id} not found in pre-fetched cache. Score cannot be calculated.")
-        final_analysis['Seller_Quality_Score'] = "Data Unavailable"
+        # This case handles when the API call was successful but returned no data for the seller ID,
+        # or if the seller ID was not found in the cache.
+        logger.warning(f"ASIN {asin}: No seller data found for ID {best_seller_id}. API might not have data for this seller.")
+        final_analysis['Seller'] = "No Seller Info"
+        final_analysis['Seller Rank'] = "N/A"
+        final_analysis['Seller_Quality_Score'] = "N/A"
 
     return final_analysis
 
