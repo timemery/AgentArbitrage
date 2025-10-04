@@ -603,8 +603,10 @@ def save_to_database(rows, headers, logger):
         create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, "
         cols_sql = []
         for header in sanitized_headers:
-            # Simple type inference
-            if 'Price' in header or 'Fee' in header or 'Margin' in header or 'Percent' in header or 'Profit' in header:
+            # Simple type inference with an exception for Percent_Down
+            if header == 'Percent_Down':
+                cols_sql.append(f'"{header}" TEXT')
+            elif 'Price' in header or 'Fee' in header or 'Margin' in header or 'Percent' in header or 'Profit' in header:
                 cols_sql.append(f'"{header}" REAL')
             elif 'Rank' in header or 'Count' in header or 'Drops' in header:
                  cols_sql.append(f'"{header}" INTEGER')
