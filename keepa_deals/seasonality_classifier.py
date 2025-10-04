@@ -174,6 +174,6 @@ def get_sells_period(detailed_season):
         "Halloween": "Sep - Oct",
         "Thanksgiving": "Nov",
         "Romance/Valentine's Day": "Feb",
-        "Year-round": "Year-round"
+        "Year-round": "All Year"
     }
-    return period_map.get(detailed_season, "Year-round")
+    return period_map.get(detailed_season, "All Year")

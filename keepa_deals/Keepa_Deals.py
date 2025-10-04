@@ -510,12 +510,16 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
 
                 # Call the classifier, passing the API key for the LLM fallback
                 detailed_season = classify_seasonality(title, categories_sub, manufacturer, xai_api_key=XAI_API_KEY)
-                sells_period = get_sells_period(detailed_season)
 
-                # Update the row data
-                row_data['Detailed_Seasonality'] = detailed_season
-                row_data['Sells'] = sells_period
-                logger.debug(f"ASIN {asin}: Classified seasonality as '{detailed_season}' with selling period '{sells_period}'.")
+                if detailed_season == "Year-round":
+                    row_data['Detailed_Seasonality'] = "None"
+                    row_data['Sells'] = "All Year"
+                else:
+                    sells_period = get_sells_period(detailed_season)
+                    row_data['Detailed_Seasonality'] = detailed_season
+                    row_data['Sells'] = sells_period
+
+                logger.debug(f"ASIN {asin}: Classified seasonality as '{detailed_season}'. Displaying as: '{row_data['Detailed_Seasonality']}' with sells period '{row_data['Sells']}'.")
 
             except Exception as e:
                 logger.error(f"ASIN {asin}: Failed to classify seasonality: {e}", exc_info=True)
