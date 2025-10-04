@@ -100,9 +100,13 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
         logger = logging.getLogger(__name__)
     logger.debug(f"Running get_percent_discount with avg_price_str: '{avg_price_str}', best_price_str: '{best_price_str}'.")
 
-    if not avg_price_str or avg_price_str in ["-", "Too New", "Error"]:
-        logger.debug(f"1yr. Avg. price is '{avg_price_str}', cannot calculate discount.")
+    if not avg_price_str or avg_price_str == "-":
+        logger.debug("1yr. Avg. price is unavailable, cannot calculate discount.")
         return {COLUMN_NAME: "-"}
+
+    if avg_price_str in ["Too New", "Error"]:
+        logger.debug(f"Propagating '{avg_price_str}' status for % Down column.")
+        return {COLUMN_NAME: avg_price_str}
 
     if not best_price_str or best_price_str == "-":
         logger.debug("Best Price is unavailable, cannot calculate discount.")
