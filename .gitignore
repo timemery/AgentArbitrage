@@ -1,8 +1,21 @@
-venv/
-*.pem
-*.key
-/etc/letsencrypt/
+# Database files
+deals.db
+*.db
+
+# Log files
+*.log
+celery.pid
+
+# Python cache
 __pycache__/
+*.pyc
+
+# Status files
+recalc_status.json
+scan_status.json
+
+# Environment variables
 .env
-app.log
-*.bak.env.save
+
+# Temporary test scripts
+trigger_task.py
