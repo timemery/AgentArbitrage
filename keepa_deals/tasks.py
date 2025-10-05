@@ -2,6 +2,7 @@ import logging
 import os
 import json
 import sqlite3
+import time
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 
@@ -141,8 +142,13 @@ def update_recent_deals():
     token_manager = TokenManager(api_key)
     business_settings = business_load_settings()
 
+    # --- Rate-Limiting ---
+    logger.info("Waiting for 60 seconds to respect Keepa API rate limits...")
+    time.sleep(60)
+
     logger.info("Step 1: Fetching recent deals...")
-    deal_response = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+    # Temporarily changed to 30 days to ensure we get data for testing
+    deal_response = fetch_deals_for_deals(30, api_key, use_deal_settings=True)
     if not deal_response or 'deals' not in deal_response:
         logger.error("Step 1 Failed: No response from deal fetch.")
         return
