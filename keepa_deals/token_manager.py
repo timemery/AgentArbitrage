@@ -28,22 +28,13 @@ class TokenManager:
 
     def _initialize_tokens(self):
         """
-        Makes an initial call to the Keepa API to get the current token count.
+        Initializes token manager without an API call to avoid hanging issues.
+        The token count will be synced on the first API response.
         """
-        logger.info("Initializing TokenManager: Fetching initial token status...")
-        status = get_token_status(self.api_key)
-        if status and 'tokensLeft' in status:
-            self.tokens = status['tokensLeft']
-            # Some subscriptions might have different max tokens, but API doesn't expose it directly.
-            # We can infer it if the current tokens are high.
-            if self.tokens > self.max_tokens:
-                self.max_tokens = self.tokens
-            logger.info(f"TokenManager initialized. Starting tokens: {self.tokens}")
-        else:
-            logger.error("Could not fetch initial token status. Assuming 0 tokens.")
-            self.tokens = 0
-        
-        self.last_api_call_timestamp = time.time() - self.MIN_TIME_BETWEEN_CALLS_SECONDS # Allow first call immediately
+        logger.info("Initializing TokenManager with default values. Token count will be synced after the first API call.")
+        self.tokens = 100  # Start with a reasonable guess, will be corrected on first response
+        self.last_api_call_timestamp = time.time() - self.MIN_TIME_BETWEEN_CALLS_SECONDS
+        logger.info("TokenManager initialized without a blocking API call.")
 
     def _refill_tokens(self):
         """

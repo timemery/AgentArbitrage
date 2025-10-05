@@ -4,11 +4,14 @@
 import logging
 import requests
 import json
+import os
 import urllib.parse
 from retrying import retry
 import time
 
 logger = logging.getLogger(__name__)
+SETTINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'settings.json')
+
 
 def validate_asin(asin):
     if not isinstance(asin, str) or len(asin) != 10 or not asin.isalnum():
@@ -36,37 +39,79 @@ def get_token_status(api_key):
         logger.error(f"An unexpected error occurred while getting token status: {e}")
         return None
 
+def _load_deal_settings():
+    """Loads deal filter settings from settings.json."""
+    try:
+        with open(SETTINGS_PATH, 'r') as f:
+            settings = json.load(f)
+            # Keepa API expects integer values for these fields, so we ensure conversion.
+            # It also expects price values in cents.
+            return {
+                "deltaPercentRange_min": settings.get("min_percent_drop", 0),
+                "deltaPercentRange_max": 2147483647, # Max integer
+                "currentRange_min": int(settings.get("min_price", 0) * 100),
+                "currentRange_max": int(settings.get("max_price", 500) * 100),
+                "salesRankRange_min": -1, # -1 means no minimum
+                "salesRankRange_max": settings.get("max_sales_rank", 1500000)
+            }
+    except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+        logger.error(f"Could not load or parse deal settings from {SETTINGS_PATH}. Using defaults. Error: {e}")
+        # Return a safe default if settings are unavailable
+        return {
+            "deltaPercentRange_min": 50, "deltaPercentRange_max": 2147483647,
+            "currentRange_min": 2000, "currentRange_max": 30100,
+            "salesRankRange_min": 50000, "salesRankRange_max": 1500000
+        }
+
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_deals_for_deals(page, api_key):
-    # This function is for a specific 'deals' query and does not use the main batch logic.
-    # Its token cost is handled separately in the main script.
-    logger.debug(f"Fetching deals page {page}...")
-    deal_query = {
-        "page": page, "domainId": "1", "excludeCategories": [], "includeCategories": [283155],
-        "priceTypes": [2], "deltaRange": [1950, 9900], "deltaPercentRange": [50, 2147483647],
-        "salesRankRange": [50000, 1500000], "currentRange": [2000, 30100], "minRating": 10,
-        "isLowest": False, "isLowest90": False, "isLowestOffer": False, "isOutOfStock": False,
-        "titleSearch": "", "isRangeEnabled": True, "isFilterEnabled": True, "filterErotic": False,
-        "singleVariation": True, "hasReviews": False, "isPrimeExclusive": False,
-        "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4, "dateRange": "3"
-    }
+def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
+    """
+    Fetches deals from the Keepa API.
+    If use_deal_settings is True, it loads dynamic filters from settings.json.
+    """
+    logger.debug(f"Fetching deals with dateRange={date_range}...")
+
+    if use_deal_settings:
+        deal_settings = _load_deal_settings()
+        deal_query = {
+            "page": 0, "domainId": "1", "excludeCategories": [], "includeCategories": [283155],
+            "priceTypes": [2], # Used price
+            "deltaRange": [1, 2147483647], # Any price drop
+            "deltaPercentRange": [deal_settings["deltaPercentRange_min"], deal_settings["deltaPercentRange_max"]],
+            "salesRankRange": [deal_settings["salesRankRange_min"], deal_settings["salesRankRange_max"]],
+            "currentRange": [deal_settings["currentRange_min"], deal_settings["currentRange_max"]],
+            "minRating": -1,
+            "isLowest": False, "isLowest90": False, "isLowestOffer": False, "isOutOfStock": False,
+            "titleSearch": "", "isRangeEnabled": True, "isFilterEnabled": True, "filterErotic": False,
+            "singleVariation": True, "hasReviews": False, "isPrimeExclusive": False,
+            "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4, # Sort by percent drop
+            "dateRange": str(date_range) # API requires this to be a string
+        }
+    else:
+        # Fallback to a generic query if not using settings
+        deal_query = {
+            "page": 0, "domainId": "1", "priceTypes": [2], "dateRange": str(date_range), "sortType": 4
+        }
+
     query_json = json.dumps(deal_query, separators=(',', ':'), sort_keys=True)
     encoded_selection = urllib.parse.quote(query_json)
     url = f"https://api.keepa.com/deal?key={api_key}&selection={encoded_selection}"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
     
     try:
-        response = requests.get(url, headers=headers, timeout=30)
-        if response.status_code != 200:
-            logger.error(f"Deal fetch failed: {response.status_code}, {response.text}")
-            return None
+        response = requests.get(url, headers=headers, timeout=60)
+        response.raise_for_status()
         data = response.json()
         deals = data.get('deals', {}).get('dr', [])
-        logger.info(f"Fetched {len(deals)} deals from page {page}")
+        logger.info(f"Fetched {len(deals)} deals.")
         return data
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Deal fetch failed: {e.response.status_code if e.response else 'N/A'}, {e.response.text if e.response else e}")
+        return None
     except Exception as e:
         logger.error(f"Deal fetch exception: {str(e)}")
         return None
+
 
 def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=1):
     """

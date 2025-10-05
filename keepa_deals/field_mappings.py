@@ -711,7 +711,9 @@ FUNCTION_LIST = [
     None,                           # All-in Cost
     None,                           # Profit
     None,                           # Margin
-    None                            # Total AMZ fees
+    None,                           # Total AMZ fees
+    None,                           # last_seen_utc
+    None                            # source
 ]
 # Chunk 2 ends
 

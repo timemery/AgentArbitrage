@@ -238,5 +238,7 @@
   "All-in Cost",
   "Profit",
   "Margin",
-  "Total AMZ fees"
+  "Total AMZ fees",
+  "last_seen_utc",
+  "source"
 ]
