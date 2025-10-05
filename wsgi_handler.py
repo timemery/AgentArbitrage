@@ -664,17 +664,32 @@ def settings():
 
     if request.method == 'POST':
         try:
-            tax_exempt = 'tax_exempt' in request.form
-            # Get the value from the form, providing a default of 0 to avoid TypeErrors on empty strings
-            estimated_tax = request.form.get('estimated_tax_per_book', 0, type=int)
+            # Load existing settings to preserve any other values not on this form
+            try:
+                with open(SETTINGS_FILE, 'r') as f:
+                    settings_data = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                settings_data = {}
 
-            settings_data = {
+            # Update with business cost values
+            tax_exempt = 'tax_exempt' in request.form
+            estimated_tax = request.form.get('estimated_tax_per_book', 0, type=int)
+            settings_data.update({
                 'prep_fee_per_book': request.form.get('prep_fee_per_book', 0.0, type=float),
                 'estimated_shipping_per_book': request.form.get('estimated_shipping_per_book', 0.0, type=float),
                 'estimated_tax_per_book': 0 if tax_exempt else estimated_tax,
                 'tax_exempt': tax_exempt,
                 'default_markup': request.form.get('default_markup', 0, type=int)
-            }
+            })
+
+            # Update with deal finding criteria
+            settings_data.update({
+                'max_sales_rank': request.form.get('max_sales_rank', 0, type=int),
+                'min_price': request.form.get('min_price', 0.0, type=float),
+                'max_price': request.form.get('max_price', 0.0, type=float),
+                'min_percent_drop': request.form.get('min_percent_drop', 0, type=int)
+            })
+
             with open(SETTINGS_FILE, 'w') as f:
                 json.dump(settings_data, f, indent=4)
 
@@ -691,13 +706,17 @@ def settings():
         with open(SETTINGS_FILE, 'r') as f:
             settings_data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        # Default settings if file doesn't exist
+        # Default settings if file doesn't exist or is empty
         settings_data = {
             "prep_fee_per_book": 2.50,
             "estimated_shipping_per_book": 2.00,
             "estimated_tax_per_book": 15,
             "tax_exempt": False,
-            "default_markup": 10
+            "default_markup": 10,
+            "max_sales_rank": 1500000,
+            "min_price": 20.0,
+            "max_price": 300.0,
+            "min_percent_drop": 50
         }
     return render_template('settings.html', settings=settings_data)
 

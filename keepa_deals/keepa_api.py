@@ -40,28 +40,27 @@ def get_token_status(api_key):
         return None
 
 def _load_deal_settings():
-    """Loads deal filter settings from settings.json."""
+    """
+    Loads deal filter settings from settings.json.
+    Provides sensible defaults if the file or keys are missing.
+    """
     try:
         with open(SETTINGS_PATH, 'r') as f:
             settings = json.load(f)
-            # Keepa API expects integer values for these fields, so we ensure conversion.
-            # It also expects price values in cents.
-            return {
-                "deltaPercentRange_min": settings.get("min_percent_drop", 0),
-                "deltaPercentRange_max": 2147483647, # Max integer
-                "currentRange_min": int(settings.get("min_price", 0) * 100),
-                "currentRange_max": int(settings.get("max_price", 500) * 100),
-                "salesRankRange_min": -1, # -1 means no minimum
-                "salesRankRange_max": settings.get("max_sales_rank", 1500000)
-            }
-    except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
-        logger.error(f"Could not load or parse deal settings from {SETTINGS_PATH}. Using defaults. Error: {e}")
-        # Return a safe default if settings are unavailable
-        return {
-            "deltaPercentRange_min": 50, "deltaPercentRange_max": 2147483647,
-            "currentRange_min": 2000, "currentRange_max": 30100,
-            "salesRankRange_min": 50000, "salesRankRange_max": 1500000
-        }
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.warning(f"Could not load or parse {SETTINGS_PATH}. Using default deal settings.")
+        settings = {}
+
+    # These defaults match the ones provided in the wsgi_handler GET request for consistency.
+    # Keepa API expects integer values for these fields and price values in cents.
+    return {
+        "deltaPercentRange_min": settings.get("min_percent_drop", 50),
+        "deltaPercentRange_max": 2147483647,  # Max integer
+        "currentRange_min": int(settings.get("min_price", 20.0) * 100),
+        "currentRange_max": int(settings.get("max_price", 300.0) * 100),
+        "salesRankRange_min": -1,  # -1 means no minimum
+        "salesRankRange_max": settings.get("max_sales_rank", 1500000)
+    }
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
 def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
