@@ -68,14 +68,21 @@ def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
     Fetches deals from the Keepa API.
     If use_deal_settings is True, it loads dynamic filters from settings.json.
     """
-    logger.debug(f"Fetching deals with dateRange={date_range}...")
+    # Defensive coding: Ensure date_range is an integer.
+    try:
+        date_range = int(date_range)
+    except (ValueError, TypeError):
+        logger.error(f"Invalid date_range: {date_range}. Defaulting to 0.")
+        date_range = 0
+
+    logger.info(f"Fetching deals with dateRange={date_range} (type: {type(date_range)})")
 
     if use_deal_settings:
         deal_settings = _load_deal_settings()
         deal_query = {
-            "page": 0, "domainId": "1", "excludeCategories": [], "includeCategories": [283155],
-            "priceTypes": [2], # Used price
-            "deltaRange": [1, 2147483647], # Any price drop
+            "page": 0, "domainId": 1, "excludeCategories": [], "includeCategories": [283155],
+            "priceTypes": [2],
+            "deltaRange": [1, 2147483647],
             "deltaPercentRange": [deal_settings["deltaPercentRange_min"], deal_settings["deltaPercentRange_max"]],
             "salesRankRange": [deal_settings["salesRankRange_min"], deal_settings["salesRankRange_max"]],
             "currentRange": [deal_settings["currentRange_min"], deal_settings["currentRange_max"]],
@@ -83,13 +90,15 @@ def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
             "isLowest": False, "isLowest90": False, "isLowestOffer": False, "isOutOfStock": False,
             "titleSearch": "", "isRangeEnabled": True, "isFilterEnabled": True, "filterErotic": False,
             "singleVariation": True, "hasReviews": False, "isPrimeExclusive": False,
-            "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4, # Sort by percent drop
-            "dateRange": str(date_range) # API requires this to be a string
+            "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4,
+            "dateRange": date_range
         }
     else:
         # Fallback to a generic query if not using settings
         deal_query = {
-            "page": 0, "domainId": "1", "priceTypes": [2], "dateRange": str(date_range), "sortType": 4
+            "page": 0, "domainId": 1, "priceTypes": [2],
+            "dateRange": date_range,
+            "sortType": 4
         }
 
     query_json = json.dumps(deal_query, separators=(',', ':'), sort_keys=True)
