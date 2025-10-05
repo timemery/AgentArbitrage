@@ -195,16 +195,15 @@ def update_recent_deals():
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
 
-            # Create a list of sanitized column names from the headers file.
-            # This list defines the exact order for the SQL statement.
-            sanitized_headers = [sanitize_col_name(h) for h in headers]
+            # The list of original headers from the JSON file defines the canonical order.
+            original_headers = headers
+            sanitized_headers = [sanitize_col_name(h) for h in original_headers]
 
             data_for_upsert = []
-            for original_row in rows_to_upsert:
-                # Create a dictionary with sanitized keys to match the DB columns
-                sanitized_row = {sanitize_col_name(k): v for k, v in original_row.items()}
-                # Build the tuple of values in the correct order using the sanitized_headers list
-                row_tuple = tuple(sanitized_row.get(h) for h in sanitized_headers)
+            for row_dict in rows_to_upsert:
+                # Build the tuple of values in the exact order of the original headers list.
+                # This ensures the data aligns perfectly with the sanitized headers in the SQL query.
+                row_tuple = tuple(row_dict.get(h) for h in original_headers)
                 data_for_upsert.append(row_tuple)
 
             upsert_sql = f"""
