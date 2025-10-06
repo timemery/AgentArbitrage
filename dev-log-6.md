@@ -117,3 +117,58 @@ To overcome this, the strategy was pivoted away from relying on the server. Inst
    - **Resolution:** The final and most critical fix is to rewrite `fetch_deals_for_deals` to be fully dynamic. It will now correctly use the `dateRange` parameter and, more importantly, it will load the user's deal criteria directly from `settings.json`, ensuring the deals it fetches are the ones the user actually wants.
 
 **Conclusion:** This task was a lesson in peeling back layers of an onion. Each bug fix revealed a deeper, more fundamental problem, culminating in the discovery of a hardcoded query that invalidated all previous assumptions. The final fix addresses this root cause, and the system should now work as originally intended. I sincerely apologize for the extended and frustrating debugging process.
+
+
+
+### **Dev Log Entry: October 06, 2025**
+
+**Task:** Diagnose and Fix Persistently Failing "Upserter" Data Collection Task
+
+**Objective:** The primary goal was to fix the `update_recent_deals` Celery task, which was consistently failing to collect any new deals from the Keepa API and populate the `deals.db` database.
+
+**Summary of a Multi-Stage, Multi-Failure Debugging Process:**
+
+This task was a complex and challenging debugging marathon that uncovered a chain of multiple, cascading failures. The root cause was not a single bug, but a combination of missing application logic, API parameter errors, and server environment issues that masked one another. The final solution required a systematic, iterative process of elimination.
+
+**1. Initial Diagnosis & Fix (UI & Settings Logic):**
+
+- **Symptom:** The `update_recent_deals` task was running but finding no deals.
+- **Investigation:** Analysis of `keepa_api.py` showed it was correctly attempting to load deal criteria from `settings.json`. However, inspection of `wsgi_handler.py` and `templates/settings.html` revealed that there were no UI fields or backend logic to actually *save* these criteria.
+- **Root Cause:** The system was using hardcoded, ineffective defaults for its API calls because the user had no way to set their own criteria.
+- Fix:
+  - Added input fields for `max_sales_rank`, `min_price`, `max_price`, and `min_percent_drop` to `templates/settings.html`.
+  - Modified the `/settings` route in `wsgi_handler.py` to correctly read these values from the form and save them to `settings.json`.
+
+**2. The `429 - Too Many Requests` Error (The First Red Herring):**
+
+- **Symptom:** After fixing the settings logic, tests still failed. The `celery.log` showed the task was now failing with a `429` error.
+- **Investigation:** The logs revealed that the automated Celery Beat scheduler and our manual test runs were triggering the task at nearly the same time, creating a race condition and exhausting the API token quota.
+- **Fix:** A Redis lock was implemented in `keepa_deals/tasks.py`. This ensures that only one instance of the `update_recent_deals` task can run at a time, preventing the race condition.
+
+**3. The `400 - Bad Request` Error (The True Breakthrough):**
+
+- **Symptom:** With the race condition fixed, the task still failed. The logs now showed a `400 Bad Request` error, which proved the API call itself was malformed.
+- **Investigation:** A standalone diagnostic script (`diag.py`) was created to isolate the API call from the Celery environment. This script confirmed the `400` error was persistent. A meticulous review of the project's Keepa API documentation (`keepa_deals_reference/`) was performed.
+- **Root Cause:** The documentation for the `/deal` endpoint revealed that the `dateRange` parameter is an **integer enum (0-3)**, not an arbitrary number of days. Our test code was passing `30`, which is an invalid value, causing the API to reject the request.
+- **Fix:** The `fetch_deals_for_deals` function in `keepa_api.py` was refactored to correctly map a "number of days" input to the required valid Keepa enum value (`0`, `1`, `2`, or `3`).
+
+**4. The Final Blocker: API Token Debt & Caching**
+
+- **Symptom:** Even with the correct code, tests continued to fail.
+- **Investigation:** The diagnostic script revealed the final root cause: `"tokensLeft": -183`. The numerous failed test runs had put the API account into a significant token deficit. Furthermore, we identified a server-side file permission issue (`root` vs. `www-data`) and a potential Python cache (`.pyc`) issue that were preventing the latest code from being executed by the Celery worker.
+- Final Fix (Multi-part):
+  - **Permissions:** The user ran `sudo chown -R www-data:www-data` to fix file ownership.
+  - **Cache:** A "deep restart" script was created that included `find . -type d -name "__pycache__" -delete` to ensure the latest Python code was loaded.
+  - **Token Recovery:** All Celery processes were stopped (`sudo pkill -f celery`), and we waited for the token balance to naturally replenish to a healthy, positive state.
+  - **Token Optimization:** The `fetch_product_batch` call was optimized to remove unnecessary, token-heavy parameters (`history=0`, no `stock`, no `buybox`). The `TokenManager` was updated to use the authoritative `tokensConsumed` value from the API response for accurate accounting.
+
+**Final Outcome:**
+
+After correcting the file permissions, clearing the cache, and waiting for the API token quota to recover, a final test of the fully optimized code was successful. The `update_recent_deals` task now runs reliably, efficiently, and correctly populates the database.
+
+**Key Takeaways for Future Agents:**
+
+1. **Isolate to Diagnose:** When a complex system fails, do not guess. Use targeted diagnostic scripts (`diag.py`) to isolate components (API vs. Database vs. Worker) and find the true point of failure.
+2. **Permissions & Caching are Real:** In a web server environment, always check file permissions (`ls -la`) and be prepared to clear stale Python cache files (`__pycache__`) when code changes don't seem to apply.
+3. **The API Documentation is the Ultimate Source of Truth:** The `400 Bad Request` was a simple case of sending a parameter in the wrong format. This could have been found much sooner with a more rigorous initial review of the documentation.
+4. **Monitor the Token Economy:** API token limits are a critical resource. Be aware of the cost of each call and the account's current balance. When debugging, be mindful that repeated tests can exhaust the quota and lead to misleading `429` errors.

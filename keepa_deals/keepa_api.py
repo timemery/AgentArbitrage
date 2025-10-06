@@ -40,43 +40,59 @@ def get_token_status(api_key):
         return None
 
 def _load_deal_settings():
-    """Loads deal filter settings from settings.json."""
+    """
+    Loads deal filter settings from settings.json.
+    Provides sensible defaults if the file or keys are missing.
+    """
     try:
         with open(SETTINGS_PATH, 'r') as f:
             settings = json.load(f)
-            # Keepa API expects integer values for these fields, so we ensure conversion.
-            # It also expects price values in cents.
-            return {
-                "deltaPercentRange_min": settings.get("min_percent_drop", 0),
-                "deltaPercentRange_max": 2147483647, # Max integer
-                "currentRange_min": int(settings.get("min_price", 0) * 100),
-                "currentRange_max": int(settings.get("max_price", 500) * 100),
-                "salesRankRange_min": -1, # -1 means no minimum
-                "salesRankRange_max": settings.get("max_sales_rank", 1500000)
-            }
-    except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
-        logger.error(f"Could not load or parse deal settings from {SETTINGS_PATH}. Using defaults. Error: {e}")
-        # Return a safe default if settings are unavailable
-        return {
-            "deltaPercentRange_min": 50, "deltaPercentRange_max": 2147483647,
-            "currentRange_min": 2000, "currentRange_max": 30100,
-            "salesRankRange_min": 50000, "salesRankRange_max": 1500000
-        }
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.warning(f"Could not load or parse {SETTINGS_PATH}. Using default deal settings.")
+        settings = {}
+
+    # These defaults match the ones provided in the wsgi_handler GET request for consistency.
+    # Keepa API expects integer values for these fields and price values in cents.
+    return {
+        "deltaPercentRange_min": settings.get("min_percent_drop", 50),
+        "deltaPercentRange_max": 2147483647,  # Max integer
+        "currentRange_min": int(settings.get("min_price", 20.0) * 100),
+        "currentRange_max": int(settings.get("max_price", 300.0) * 100),
+        "salesRankRange_min": -1,  # -1 means no minimum
+        "salesRankRange_max": settings.get("max_sales_rank", 1500000)
+    }
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
+def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     """
     Fetches deals from the Keepa API.
     If use_deal_settings is True, it loads dynamic filters from settings.json.
+    `date_range_days` is the number of days to look back, which is mapped to the required Keepa enum.
     """
-    logger.debug(f"Fetching deals with dateRange={date_range}...")
+    # Map the number of days to the Keepa dateRange enum.
+    # 0 = Day (last 24 hours), 1 = Week (last 7 days), 2 = Month (last 31 days), 3 = 3 Months (last 90 days)
+    try:
+        days = int(date_range_days)
+        if days <= 1:
+            date_range_enum = 0
+        elif days <= 7:
+            date_range_enum = 1
+        elif days <= 31:
+            date_range_enum = 2
+        else:
+            date_range_enum = 3
+    except (ValueError, TypeError):
+        logger.error(f"Invalid date_range_days: {date_range_days}. Defaulting to enum 0.")
+        date_range_enum = 0
+
+    logger.info(f"Fetching deals for date_range_days={date_range_days}, mapped to enum={date_range_enum}")
 
     if use_deal_settings:
         deal_settings = _load_deal_settings()
         deal_query = {
-            "page": 0, "domainId": "1", "excludeCategories": [], "includeCategories": [283155],
-            "priceTypes": [2], # Used price
-            "deltaRange": [1, 2147483647], # Any price drop
+            "page": 0, "domainId": 1, "excludeCategories": [], "includeCategories": [283155],
+            "priceTypes": [2],
+            "deltaRange": [1, 2147483647],
             "deltaPercentRange": [deal_settings["deltaPercentRange_min"], deal_settings["deltaPercentRange_max"]],
             "salesRankRange": [deal_settings["salesRankRange_min"], deal_settings["salesRankRange_max"]],
             "currentRange": [deal_settings["currentRange_min"], deal_settings["currentRange_max"]],
@@ -84,13 +100,15 @@ def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
             "isLowest": False, "isLowest90": False, "isLowestOffer": False, "isOutOfStock": False,
             "titleSearch": "", "isRangeEnabled": True, "isFilterEnabled": True, "filterErotic": False,
             "singleVariation": True, "hasReviews": False, "isPrimeExclusive": False,
-            "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4, # Sort by percent drop
-            "dateRange": str(date_range) # API requires this to be a string
+            "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4,
+            "dateRange": date_range_enum
         }
     else:
         # Fallback to a generic query if not using settings
         deal_query = {
-            "page": 0, "domainId": "1", "priceTypes": [2], "dateRange": str(date_range), "sortType": 4
+            "page": 0, "domainId": 1, "priceTypes": [2],
+            "dateRange": date_range_enum,
+            "sortType": 4
         }
 
     query_json = json.dumps(deal_query, separators=(',', ':'), sort_keys=True)
@@ -113,10 +131,11 @@ def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
         return None
 
 
-def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=1):
+def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=0):
     """
     Fetches a batch of products from the Keepa API.
     Returns the response data, API info (including errors), and the authoritative token cost.
+    Optimized for the upserter task by default.
     """
     if not asins_list:
         logger.warning("fetch_product_batch called with an empty list of ASINs.")
@@ -125,8 +144,8 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
     logger.info(f"Fetching batch of {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
     comma_separated_asins = ','.join(asins_list)
-    # Note: `offers` parameter is now set to 20, the minimum valid value.
-    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&stock=1&buybox=1&only_live_offers=1"
+    # Optimized URL for the upserter: no history, no stock, no buybox info.
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&only_live_offers=1"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
 
     try:
