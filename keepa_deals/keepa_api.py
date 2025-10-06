@@ -63,19 +63,29 @@ def _load_deal_settings():
     }
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
+def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     """
     Fetches deals from the Keepa API.
     If use_deal_settings is True, it loads dynamic filters from settings.json.
+    `date_range_days` is the number of days to look back, which is mapped to the required Keepa enum.
     """
-    # Defensive coding: Ensure date_range is an integer.
+    # Map the number of days to the Keepa dateRange enum.
+    # 0 = Day (last 24 hours), 1 = Week (last 7 days), 2 = Month (last 31 days), 3 = 3 Months (last 90 days)
     try:
-        date_range = int(date_range)
+        days = int(date_range_days)
+        if days <= 1:
+            date_range_enum = 0
+        elif days <= 7:
+            date_range_enum = 1
+        elif days <= 31:
+            date_range_enum = 2
+        else:
+            date_range_enum = 3
     except (ValueError, TypeError):
-        logger.error(f"Invalid date_range: {date_range}. Defaulting to 0.")
-        date_range = 0
+        logger.error(f"Invalid date_range_days: {date_range_days}. Defaulting to enum 0.")
+        date_range_enum = 0
 
-    logger.info(f"Fetching deals with dateRange={date_range} (type: {type(date_range)})")
+    logger.info(f"Fetching deals for date_range_days={date_range_days}, mapped to enum={date_range_enum}")
 
     if use_deal_settings:
         deal_settings = _load_deal_settings()
@@ -91,13 +101,13 @@ def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
             "titleSearch": "", "isRangeEnabled": True, "isFilterEnabled": True, "filterErotic": False,
             "singleVariation": True, "hasReviews": False, "isPrimeExclusive": False,
             "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4,
-            "dateRange": date_range
+            "dateRange": date_range_enum
         }
     else:
         # Fallback to a generic query if not using settings
         deal_query = {
             "page": 0, "domainId": 1, "priceTypes": [2],
-            "dateRange": date_range,
+            "dateRange": date_range_enum,
             "sortType": 4
         }
 
