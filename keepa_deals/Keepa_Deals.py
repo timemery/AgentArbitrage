@@ -136,8 +136,11 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             logger.info(f"Fetching deals page {page}...")
             token_manager.request_permission_for_call(estimated_cost=TOKEN_COST_PER_DEAL_PAGE)
             
-            deal_response = fetch_deals_for_deals(page, api_key)
-            token_manager.update_from_response(deal_response)
+            deal_response, tokens_left = fetch_deals_for_deals(page, api_key)
+            if tokens_left is not None:
+                token_manager.update_after_call(tokens_left)
+            else:
+                logger.warning("Could not determine tokens left after deal fetch. Token count may be inaccurate.")
 
             if not deal_response:
                 logger.error(f"Failed to fetch deals for page {page}. Stopping deal fetch.")
@@ -228,8 +231,11 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             estimated_cost = len(batch_asins) * ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH
             token_manager.request_permission_for_call(estimated_cost)
 
-            product_data_response, api_info, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-            token_manager.update_from_response(product_data_response)
+            product_data_response, api_info, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+            if tokens_left is not None:
+                token_manager.update_after_call(tokens_left)
+            else:
+                logger.warning(f"Could not determine tokens left after product batch. Token count may be inaccurate.")
 
             batch_had_critical_error = api_info and api_info.get('error_status_code') and api_info.get('error_status_code') != 200
 

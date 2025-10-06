@@ -21,10 +21,10 @@
                     </div>
                 </div>
                 <div class="filter-item">
-                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">10%</span></label>
+                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">0%</span></label>
                     <div class="slider-container">
-                        <input type="range" min="0" max="19" value="0" class="slider" id="min_profit_margin_slider">
-                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="10">
+                        <input type="range" min="0" max="20" value="0" class="slider" id="min_profit_margin_slider">
+                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     const profitMarginSteps = [
-        { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
+        { value: 0, label: '0%' }, { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
         { value: 40, label: '40%' }, { value: 50, label: '50%' }, { value: 60, label: '60%' },
         { value: 70, label: '70%' }, { value: 80, label: '80%' }, { value: 90, label: '90%' },
         { value: 100, label: '100%' }, { value: 150, label: '150%' }, { value: 200, label: '200%' },
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     salesRankValueSpan.textContent = salesRankSteps[initialSalesRankIndex].label;
     hiddenSalesRankInput.value = (salesRankSteps[initialSalesRankIndex].value === Infinity) ? '99999999' : salesRankSteps[initialSalesRankIndex].value;
 
-    const initialProfitMarginIndex = profitMarginSteps.findIndex(p => p.value === 10);
+    const initialProfitMarginIndex = profitMarginSteps.findIndex(p => p.value === 0);
     if (initialProfitMarginIndex !== -1) {
         profitMarginSlider.value = initialProfitMarginIndex;
         profitMarginValueSpan.textContent = profitMarginSteps[initialProfitMarginIndex].label;
