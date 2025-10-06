@@ -983,8 +983,7 @@ def debug_deal(asin):
         return jsonify({'error': 'KEEPA_API_KEY not configured on server.'}), 500
 
     # The fetch_product_batch function expects a list of ASINs
-    # We now receive tokens_left as well, so we unpack it and ignore it with _.
-    product_data, api_info, tokens_consumed, _ = fetch_product_batch(KEEPA_API_KEY, [asin])
+    product_data, api_info, tokens_consumed = fetch_product_batch(KEEPA_API_KEY, [asin])
 
     if api_info and api_info.get('error_status_code'):
         return jsonify({

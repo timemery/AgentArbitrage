@@ -156,15 +156,11 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
-        # Enforce rate limiting and token checks before the call
-        token_manager.request_permission_for_call(estimated_cost=10) # Estimate for a deals call
-        deal_response, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+        deal_response = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
 
-        # Authoritatively update token manager with actual tokens left from the response
-        if tokens_left is not None:
-            token_manager.update_after_call(tokens_left)
-        else:
-            logger.warning("Could not determine tokens left after deal fetch. Token count may be inaccurate.")
+        # Authoritatively update token manager with actual cost from the response
+        tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
+        token_manager.update_after_call(tokens_consumed)
 
         if not deal_response or 'deals' not in deal_response:
             logger.error("Step 1 Failed: No response from deal fetch.")
@@ -182,22 +178,11 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-
-            # Enforce rate limiting and token checks before the call
-            # A product call with offers=20 costs ~1 token per ASIN.
-            estimated_cost = len(batch_asins) * 1.2 # Add a small buffer
-            token_manager.request_permission_for_call(estimated_cost)
-
-            product_response, _, _, tokens_left = fetch_product_batch(
+            # Make a more token-efficient call and capture the actual cost.
+            product_response, _, tokens_consumed = fetch_product_batch(
                 api_key, batch_asins, history=0, offers=20
             )
-
-            # Authoritatively update token manager with actual tokens left from the response
-            if tokens_left is not None:
-                token_manager.update_after_call(tokens_left)
-            else:
-                logger.warning(f"Could not determine tokens left after product batch. Token count may be inaccurate.")
-
+            token_manager.update_after_call(tokens_consumed)
 
             if product_response and 'products' in product_response:
                 for p in product_response['products']:

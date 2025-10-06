@@ -2,6 +2,7 @@
 import time
 import math
 import logging
+from .keepa_api import get_token_status
 
 logger = logging.getLogger(__name__)
 
@@ -88,23 +89,10 @@ class TokenManager:
         logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
         # The actual deduction will happen after the call, using update_from_response
 
-    def sync_tokens(self, tokens_left_from_api):
+    def update_after_call(self, tokens_consumed):
         """
-        Authoritatively sets the token count from the API response.
-        This is the primary way to correct token drift.
-        """
-        old_token_count = self.tokens
-        self.tokens = float(tokens_left_from_api)
-        # Reset refill timer after a sync to anchor our local estimation logic
-        self.last_refill_timestamp = time.time()
-        logger.info(
-            f"Token count authoritatively synced from API response. "
-            f"Previous estimate: {old_token_count:.2f}, New value: {self.tokens:.2f}"
-        )
-
-    def update_after_call(self, tokens_left_from_api):
-        """
-        Updates the token count and timestamp after an API call using the authoritative response.
+        Updates the token count after an API call using the authoritative cost.
         """
         self.last_api_call_timestamp = time.time()
-        self.sync_tokens(tokens_left_from_api)
+        self.tokens -= tokens_consumed
+        logger.info(f"Updated token count after API call. Consumed: {tokens_consumed}. Tokens remaining: {self.tokens:.2f}")

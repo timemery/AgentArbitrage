@@ -59,13 +59,30 @@ def create_deals_table_if_not_exists():
                     headers = json.load(f)
 
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
-                # Ensure ASIN is unique from the start
-                cols_sql = [f'"{h}" TEXT' for h in sanitized_headers if h != 'ASIN']
+
+                cols_sql = []
+                for header in sanitized_headers:
+                    if header == 'ASIN':
+                        continue # Handled separately
+
+                    # Simple type inference to match logic in other parts of the application
+                    if header == 'Percent_Down':
+                        col_type = 'TEXT'
+                    elif 'Price' in header or 'Fee' in header or 'Margin' in header or 'Percent' in header or 'Profit' in header or 'Cost' in header:
+                        col_type = 'REAL'
+                    elif 'Rank' in header or 'Count' in header or 'Drops' in header:
+                        col_type = 'INTEGER'
+                    else:
+                        col_type = 'TEXT'
+
+                    cols_sql.append(f'"{header}" {col_type}')
+
+                # Add the ASIN column with its constraints at the beginning
                 cols_sql.insert(0, '"ASIN" TEXT NOT NULL UNIQUE')
 
                 create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, {', '.join(cols_sql)})"
                 cursor.execute(create_table_sql)
-                logger.info(f"Table '{TABLE_NAME}' created with a UNIQUE constraint on ASIN.")
+                logger.info(f"Table '{TABLE_NAME}' created with inferred data types and a UNIQUE constraint on ASIN.")
 
             else:
                 logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")

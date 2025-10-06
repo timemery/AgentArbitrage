@@ -68,7 +68,6 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     Fetches deals from the Keepa API.
     If use_deal_settings is True, it loads dynamic filters from settings.json.
     `date_range_days` is the number of days to look back, which is mapped to the required Keepa enum.
-    Returns the response data and the number of tokens left.
     """
     # Map the number of days to the Keepa dateRange enum.
     # 0 = Day (last 24 hours), 1 = Week (last 7 days), 2 = Month (last 31 days), 3 = 3 Months (last 90 days)
@@ -122,33 +121,25 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
         response.raise_for_status()
         data = response.json()
         deals = data.get('deals', {}).get('dr', [])
-        tokens_left = data.get('tokensLeft')
-        logger.info(f"Fetched {len(deals)} deals. Tokens left: {tokens_left}")
-        return data, tokens_left
+        logger.info(f"Fetched {len(deals)} deals.")
+        return data
     except requests.exceptions.RequestException as e:
         logger.error(f"Deal fetch failed: {e.response.status_code if e.response else 'N/A'}, {e.response.text if e.response else e}")
-        tokens_left = None
-        if e.response is not None:
-            try:
-                error_data = e.response.json()
-                tokens_left = error_data.get('tokensLeft')
-            except json.JSONDecodeError:
-                pass # tokens_left remains None
-        return None, tokens_left
+        return None
     except Exception as e:
         logger.error(f"Deal fetch exception: {str(e)}")
-        return None, None
+        return None
 
 
 def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=0):
     """
     Fetches a batch of products from the Keepa API.
-    Returns the response data, API info, tokens consumed, and tokens left.
+    Returns the response data, API info (including errors), and the authoritative token cost.
     Optimized for the upserter task by default.
     """
     if not asins_list:
         logger.warning("fetch_product_batch called with an empty list of ASINs.")
-        return None, {'error_status_code': 'EMPTY_ASIN_LIST'}, 0, None
+        return None, {'error_status_code': 'EMPTY_ASIN_LIST'}, 0
 
     logger.info(f"Fetching batch of {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
@@ -162,49 +153,47 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
         response.raise_for_status()
         data = response.json()
         
+        # Authoritative token cost from the response
         tokens_consumed = data.get('tokensConsumed', 0)
-        tokens_left = data.get('tokensLeft')
-        logger.info(f"Batch API call successful. Tokens consumed: {tokens_consumed}. Tokens left: {tokens_left}")
+        logger.info(f"Batch API call successful. Tokens consumed: {tokens_consumed}")
 
         api_info = {'error_status_code': None}
-        return data, api_info, tokens_consumed, tokens_left
+        return data, api_info, tokens_consumed
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response is not None else 'N/A'
         logger.error(f"HTTP Fetch failed for batch ASINs {','.join(asins_list[:3])}... with status {status_code}: {str(e)}")
         
         tokens_consumed_on_error = 0
-        tokens_left_on_error = None
         if e.response is not None:
             try:
                 error_data = e.response.json()
                 tokens_consumed_on_error = error_data.get('tokensConsumed', 0)
-                tokens_left_on_error = error_data.get('tokensLeft')
                 if status_code == 429:
-                    logger.error(f"429 ERROR. Keepa reported {tokens_consumed_on_error} tokens consumed for this failed call. Tokens left: {tokens_left_on_error}")
+                    logger.error(f"429 ERROR. Keepa reported {tokens_consumed_on_error} tokens consumed for this failed call.")
             except json.JSONDecodeError:
                 logger.warning(f"HTTP error response (status {status_code}) was not valid JSON.")
 
         api_info_on_error = {'error_status_code': status_code}
-        return None, api_info_on_error, tokens_consumed_on_error, tokens_left_on_error
+        return None, api_info_on_error, tokens_consumed_on_error
 
     except Exception as e:
         logger.error(f"Generic Fetch failed for batch ASINs {','.join(asins_list[:3])}...: {str(e)}")
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
-        return None, api_info_on_error, 0, None
+        return None, api_info_on_error, 0
 
 def fetch_seller_data(api_key, seller_ids):
     """
     Fetches data for a list of sellers from the Keepa API.
-    Returns the response data, API info, tokens consumed, and tokens left.
+    Returns the response data, API info (including errors), and the authoritative token cost.
     """
     if not seller_ids:
         logger.warning("fetch_seller_data called with no seller_ids.")
-        return None, {'error_status_code': 'EMPTY_SELLER_ID_LIST'}, 0, None
+        return None, {'error_status_code': 'EMPTY_SELLER_ID_LIST'}, 0
 
     if len(seller_ids) > 100:
         logger.error(f"fetch_seller_data called with a batch of {len(seller_ids)} which is over the 100 limit.")
-        return None, {'error_status_code': 'BATCH_SIZE_EXCEEDED'}, 0, None
+        return None, {'error_status_code': 'BATCH_SIZE_EXCEEDED'}, 0
 
     seller_ids_str = ','.join(seller_ids)
     logger.info(f"Fetching data for batch of {len(seller_ids)} sellers")
@@ -217,32 +206,29 @@ def fetch_seller_data(api_key, seller_ids):
         data = response.json()
         
         tokens_consumed = data.get('tokensConsumed', 0)
-        tokens_left = data.get('tokensLeft')
-        logger.info(f"Seller API call successful. Tokens consumed: {tokens_consumed}. Tokens left: {tokens_left}")
+        logger.info(f"Seller API call successful. Tokens consumed: {tokens_consumed}")
         
         api_info = {'error_status_code': None}
-        return data, api_info, tokens_consumed, tokens_left
+        return data, api_info, tokens_consumed
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response is not None else 'N/A'
         logger.error(f"HTTP fetch failed for seller batch with status {status_code}: {e}")
         
         tokens_consumed_on_error = 0
-        tokens_left_on_error = None
         if e.response is not None:
             try:
                 error_data = e.response.json()
                 tokens_consumed_on_error = error_data.get('tokensConsumed', 0)
-                tokens_left_on_error = error_data.get('tokensLeft')
                 if status_code == 429:
-                    logger.error(f"429 ERROR on seller batch. Keepa reported {tokens_consumed_on_error} tokens consumed. Tokens left: {tokens_left_on_error}")
+                    logger.error(f"429 ERROR on seller batch. Keepa reported {tokens_consumed_on_error} tokens consumed.")
             except json.JSONDecodeError:
                 logger.warning(f"HTTP error response (status {status_code}) was not valid JSON.")
 
         api_info_on_error = {'error_status_code': status_code}
-        return None, api_info_on_error, tokens_consumed_on_error, tokens_left_on_error
+        return None, api_info_on_error, tokens_consumed_on_error
         
     except Exception as e:
         logger.error(f"An unexpected error occurred while fetching seller data: {e}", exc_info=True)
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
-        return None, api_info_on_error, 0, None
+        return None, api_info_on_error, 0
