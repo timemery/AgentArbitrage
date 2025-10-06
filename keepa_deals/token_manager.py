@@ -89,16 +89,10 @@ class TokenManager:
         logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
         # The actual deduction will happen after the call, using update_from_response
 
-    def update_from_response(self, api_response):
+    def update_after_call(self, tokens_consumed):
         """
-        Updates the token count based on the actual 'tokensLeft' from the API response.
-        This is the most reliable way to stay in sync.
+        Updates the token count after an API call using the authoritative cost.
         """
-        self.last_api_call_timestamp = time.time() # Mark the time of the successful call
-        
-        if api_response and 'tokensLeft' in api_response:
-            tokens_before = self.tokens
-            self.tokens = api_response['tokensLeft']
-            logger.info(f"Updated token count from API response. Before: {tokens_before:.2f}, After: {self.tokens}")
-        else:
-            logger.warning("Could not update token count from API response, 'tokensLeft' key not found.")
+        self.last_api_call_timestamp = time.time()
+        self.tokens -= tokens_consumed
+        logger.info(f"Updated token count after API call. Consumed: {tokens_consumed}. Tokens remaining: {self.tokens:.2f}")

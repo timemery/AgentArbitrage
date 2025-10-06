@@ -121,10 +121,11 @@ def fetch_deals_for_deals(date_range, api_key, use_deal_settings=False):
         return None
 
 
-def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=1):
+def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=0):
     """
     Fetches a batch of products from the Keepa API.
     Returns the response data, API info (including errors), and the authoritative token cost.
+    Optimized for the upserter task by default.
     """
     if not asins_list:
         logger.warning("fetch_product_batch called with an empty list of ASINs.")
@@ -133,8 +134,8 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
     logger.info(f"Fetching batch of {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
     comma_separated_asins = ','.join(asins_list)
-    # Note: `offers` parameter is now set to 20, the minimum valid value.
-    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&stock=1&buybox=1&only_live_offers=1"
+    # Optimized URL for the upserter: no history, no stock, no buybox info.
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&only_live_offers=1"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
 
     try:

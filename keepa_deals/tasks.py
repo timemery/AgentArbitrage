@@ -157,6 +157,11 @@ def update_recent_deals():
 
         logger.info("Step 1: Fetching recent deals...")
         deal_response = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+
+        # Authoritatively update token manager with actual cost from the response
+        tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
+        token_manager.update_after_call(tokens_consumed)
+
         if not deal_response or 'deals' not in deal_response:
             logger.error("Step 1 Failed: No response from deal fetch.")
             return
@@ -173,7 +178,12 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            product_response, _, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+            # Make a more token-efficient call and capture the actual cost.
+            product_response, _, tokens_consumed = fetch_product_batch(
+                api_key, batch_asins, history=0, offers=20
+            )
+            token_manager.update_after_call(tokens_consumed)
+
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
