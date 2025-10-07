@@ -1,6 +1,5 @@
 import logging
 import sqlite3
-
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 from .business_calculations import (
@@ -8,6 +7,7 @@ from .business_calculations import (
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
+    load_settings as business_load_settings,
 )
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
@@ -27,7 +27,7 @@ def _parse_percent(value_str):
     try: return float(value_str.strip().replace('%', ''))
     except ValueError: return 0.0
 
-def _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers):
+def _process_single_deal(product_data, api_key, xai_api_key, business_settings, headers):
     asin = product_data.get('asin')
     if not asin:
         return None
@@ -52,7 +52,7 @@ def _process_single_deal(product_data, api_key, token_manager, xai_api_key, busi
 
     # 2. Seller Info - This will now use the pre-populated cache
     try:
-        seller_info = get_all_seller_info(product_data, api_key=api_key)
+        seller_info = get_all_seller_info(product_data)
         row_data.update(seller_info)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)

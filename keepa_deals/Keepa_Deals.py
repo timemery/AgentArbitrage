@@ -58,7 +58,7 @@ def recalculate_deals():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT ASIN FROM deals")
-        all_asins = [row[0] for row in cursor.fetchall()]
+        all_asins = [row[0] for row in cursor.fetchall() if row[0]]
 
         if not all_asins:
             logger.info("Recalculation: No deals found. Nothing to do.")
@@ -68,7 +68,6 @@ def recalculate_deals():
         total_asins = len(all_asins)
         logger.info(f"Recalculation: Found {total_asins} total ASINs to refresh.")
 
-        # Get schema info once for cleaning
         cursor.execute(f"PRAGMA table_info(deals)")
         schema_info = {row[1]: row[2] for row in cursor.fetchall()}
 
@@ -89,15 +88,9 @@ def recalculate_deals():
                     all_products_to_process[p['asin']] = p
         logger.info(f"--- Step 1 Complete: Fetched data for {len(all_products_to_process)} products ---")
 
-
-        # --- Step 2: Pre-fetch all seller data to prevent runaway calls ---
+        # --- Step 2: Pre-fetch all seller data ---
         logger.info("--- Step 2: Pre-fetching all required seller data ---")
-        unique_seller_ids = set()
-        for product in all_products_to_process.values():
-            for offer in product.get('offers', []):
-                if offer.get('sellerId'):
-                    unique_seller_ids.add(offer['sellerId'])
-
+        unique_seller_ids = {offer['sellerId'] for p in all_products_to_process.values() for offer in p.get('offers', []) if offer.get('sellerId')}
         seller_ids_to_fetch = list(unique_seller_ids - set(seller_data_cache.keys()))
 
         if seller_ids_to_fetch:
@@ -115,12 +108,11 @@ def recalculate_deals():
             logger.info("All required seller data is already in cache.")
         logger.info("--- Step 2 Complete: Seller data pre-fetched and cached. ---")
 
-
         # --- Step 3: Process and update deals in database ---
         logger.info("--- Step 3: Processing and updating deals ---")
         for asin, product_data in all_products_to_process.items():
             processed_row = _process_single_deal(
-                product_data, api_key, None, xai_api_key, business_settings, headers
+                product_data, api_key, xai_api_key, business_settings, headers
             )
             if not processed_row:
                 logger.warning(f"Failed to re-process ASIN {asin}. Skipping update.")
@@ -132,11 +124,13 @@ def recalculate_deals():
             cleaned_tuple = clean_and_prepare_row_for_db(processed_row, headers, schema_info)
 
             update_dict = dict(zip(sanitized_headers, cleaned_tuple))
-            asin_val = update_dict.pop('ASIN', None)
+            update_asin = update_dict.pop('ASIN', None)
+
+            if not update_asin: continue
 
             set_clause = ", ".join([f'"{key}" = ?' for key in update_dict.keys()])
             params = list(update_dict.values())
-            params.append(asin_val)
+            params.append(update_asin)
 
             update_sql = f"UPDATE deals SET {set_clause} WHERE ASIN = ?"
 
