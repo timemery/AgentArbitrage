@@ -1,30 +1,137 @@
 import logging
 import os
 import json
+import logging
+import os
+import json
 import sqlite3
+import time
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 import redis
 
 from celery_config import celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name
-from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
+from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
-from .business_calculations import load_settings as business_load_settings
-from .processing import _process_single_deal, clean_and_prepare_row_for_db
-from .seller_info import seller_data_cache
+from .field_mappings import FUNCTION_LIST
+from .seller_info import get_all_seller_info
+from .business_calculations import (
+    load_settings as business_load_settings,
+    calculate_total_amz_fees,
+    calculate_all_in_cost,
+    calculate_profit_and_margin,
+    calculate_min_listing_price,
+)
+from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
+from .seasonality_classifier import classify_seasonality, get_sells_period
 
+# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Load environment variables
 load_dotenv()
 
+# --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
 TABLE_NAME = 'deals'
-HEADERS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'keepa_deals', 'headers.json')
+HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 MAX_ASINS_PER_BATCH = 50
 LOCK_KEY = "update_recent_deals_lock"
-LOCK_TIMEOUT = 60 * 60  # 1 hour lock timeout
+LOCK_TIMEOUT = 60 * 30  # 30 minutes
+
+
+def _parse_price(value_str):
+    if isinstance(value_str, (int, float)): return float(value_str)
+    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']: return 0.0
+    try: return float(value_str.strip().replace('$', '').replace(',', ''))
+    except ValueError: return 0.0
+
+def _parse_percent(value_str):
+    if isinstance(value_str, (int, float)): return float(value_str)
+    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']: return 0.0
+    try: return float(value_str.strip().replace('%', ''))
+    except ValueError: return 0.0
+
+
+def _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers):
+    asin = product_data.get('asin')
+    if not asin:
+        return None
+
+    row_data = {'ASIN': asin}
+
+    # 1. Initial data extraction from field_mappings
+    for header, func in zip(headers, FUNCTION_LIST):
+        if func:
+            try:
+                if func.__name__ in ['last_update', 'last_price_change']:
+                    result = func(product_data, logger, product_data)
+                elif func.__name__ == 'deal_found':
+                    result = func(product_data, logger)
+                elif func.__name__ == 'get_condition':
+                    result = func(product_data, logger)
+                else:
+                    result = func(product_data)
+                row_data.update(result)
+            except Exception as e:
+                logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
+
+    # 2. Seller Info
+    try:
+        seller_info = get_all_seller_info(product_data, api_key=api_key, token_manager=token_manager)
+        row_data.update(seller_info)
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
+
+    # 3. Business Calculations
+    try:
+        peak_price = _parse_price(row_data.get('Expected Peak Price', '0'))
+        fba_fee = _parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
+        referral_percent = _parse_percent(row_data.get('Referral Fee %', '0'))
+        best_price = _parse_price(row_data.get('Best Price', '0'))
+        shipping_included_flag = str(row_data.get('Shipping Included', 'no')).lower() == 'yes'
+
+        total_amz_fees = calculate_total_amz_fees(peak_price, fba_fee, referral_percent)
+        all_in_cost = calculate_all_in_cost(best_price, total_amz_fees, business_settings, shipping_included_flag)
+        profit_margin = calculate_profit_and_margin(peak_price, all_in_cost)
+        min_listing = calculate_min_listing_price(all_in_cost, business_settings)
+
+        row_data.update({
+            'Total AMZ fees': total_amz_fees, 'All-in Cost': all_in_cost,
+            'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
+            'Min. Listing Price': min_listing
+        })
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed business calculations: {e}", exc_info=True)
+
+    # 4. Analytics
+    try:
+        yr_avg_info = get_1yr_avg_sale_price(product_data, logger=logger)
+        trend_info = get_trend(product_data, logger=logger)
+        row_data.update(yr_avg_info)
+        row_data.update(trend_info)
+
+        discount_info = get_percent_discount(row_data.get('1yr. Avg.'), row_data.get('Best Price'), logger=logger)
+        row_data.update(discount_info)
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)
+
+    # 5. Seasonality
+    try:
+        title = row_data.get('Title', '')
+        categories = row_data.get('Categories - Sub', '')
+        manufacturer = row_data.get('Manufacturer', '')
+        detailed_season = classify_seasonality(title, categories, manufacturer, xai_api_key=xai_api_key)
+
+        row_data['Detailed_Seasonality'] = "None" if detailed_season == "Year-round" else detailed_season
+        row_data['Sells'] = get_sells_period(detailed_season)
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
+
+    return row_data
+
 
 @celery.task(name='keepa_deals.tasks.update_recent_deals')
 def update_recent_deals():
@@ -48,78 +155,57 @@ def update_recent_deals():
         token_manager = TokenManager(api_key)
         business_settings = business_load_settings()
 
-        # Step 1: Fetch all pages of recent deals
-        logger.info("Step 1: Fetching all pages of recent deals...")
-        all_deals = []
-        page = 0
-        while True:
-            token_manager.request_permission_for_call(estimated_cost=5)
-            deal_response, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True)
-            if tokens_left is not None: token_manager.update_after_call(tokens_left)
+        logger.info("Step 1: Fetching recent deals...")
+        deal_response_raw = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
 
-            if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
-                logger.info(f"No more deals found on page {page}. Ending deal fetch.")
-                break
+        # CRITICAL FIX: Handle API functions that may return a tuple (data, info) instead of just data.
+        deal_response = deal_response_raw[0] if isinstance(deal_response_raw, tuple) else deal_response_raw
 
-            deals_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
-            all_deals.extend(deals_page)
-            logger.info(f"Fetched {len(deals_page)} valid deals from page {page}. Total deals so far: {len(all_deals)}")
-            page += 1
+        # Authoritatively update token manager with actual cost from the response
+        tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
+        token_manager.update_after_call(tokens_consumed)
 
-        if not all_deals:
-            logger.info("Step 1 Complete: No new valid deals found across all pages.")
+        if not deal_response or 'deals' not in deal_response:
+            logger.error("Step 1 Failed: No response from deal fetch.")
             return
-        logger.info(f"Step 1 Complete: Fetched a total of {len(all_deals)} deals.")
 
-        # Step 2: Fetch product data for all deals
-        logger.info("Step 2: Fetching product data for all deals...")
+        recent_deals = [d for d in deal_response.get('deals', {}).get('dr', []) if validate_asin(d.get('asin'))]
+        if not recent_deals:
+            logger.info("Step 1 Complete: No new valid deals found.")
+            return
+        logger.info(f"Step 1 Complete: Fetched {len(recent_deals)} deals.")
+
+        logger.info("Step 2: Fetching product data for deals...")
         all_fetched_products = {}
-        asin_list = [d['asin'] for d in all_deals]
+        asin_list = [d['asin'] for d in recent_deals]
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            estimated_cost = len(batch_asins) * 2
-            token_manager.request_permission_for_call(estimated_cost)
-
-            product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-            if tokens_left is not None: token_manager.update_after_call(tokens_left)
+            # Request historical data to enable all calculations.
+            product_response, _, tokens_consumed = fetch_product_batch(
+                api_key, batch_asins, history=1, offers=20
+            )
+            token_manager.update_after_call(tokens_consumed)
 
             if product_response and 'products' in product_response:
-                for p in product_response['products']: all_fetched_products[p['asin']] = p
+                for p in product_response['products']:
+                    all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
-        # Step 2.5: Pre-fetch all seller data
-        logger.info("Step 2.5: Pre-fetching all required seller data...")
-        unique_seller_ids = {offer['sellerId'] for p in all_fetched_products.values() for offer in p.get('offers', []) if offer.get('sellerId')}
-        seller_ids_to_fetch = list(unique_seller_ids - set(seller_data_cache.keys()))
-
-        if seller_ids_to_fetch:
-            logger.info(f"Found {len(seller_ids_to_fetch)} new sellers to fetch.")
-            estimated_cost = len(seller_ids_to_fetch)
-            token_manager.request_permission_for_call(estimated_cost)
-
-            seller_data_response, _, _, tokens_left = fetch_seller_data(api_key, seller_ids_to_fetch)
-            if tokens_left is not None: token_manager.update_after_call(tokens_left)
-
-            if seller_data_response and seller_data_response.get('sellers'):
-                for seller_id, data in seller_data_response['sellers'].items(): seller_data_cache[seller_id] = data
-        else:
-            logger.info("All required seller data is already in cache.")
-        logger.info("Step 2.5 Complete: Seller data pre-fetched and cached.")
-
-        # Step 3: Process deals
         logger.info("Step 3: Processing deals...")
-        with open(HEADERS_PATH) as f: headers = json.load(f)
+        with open(HEADERS_PATH) as f:
+            headers = json.load(f)
 
         rows_to_upsert = []
-        for deal in all_deals:
+        for deal in recent_deals:
             asin = deal['asin']
-            if asin not in all_fetched_products: continue
+            if asin not in all_fetched_products:
+                continue
 
             product_data = all_fetched_products[asin]
             product_data.update(deal)
 
-            processed_row = _process_single_deal(product_data, api_key, xai_api_key, business_settings, headers)
+            processed_row = _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers)
 
             if processed_row:
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
@@ -131,18 +217,21 @@ def update_recent_deals():
             logger.info("No rows to upsert. Task finished.")
             return
 
-        # Step 4: Upsert to database
         logger.info(f"Step 4: Upserting {len(rows_to_upsert)} rows into database...")
         try:
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
+
+                # The list of original headers from the JSON file defines the canonical order.
                 original_headers = headers
                 sanitized_headers = [sanitize_col_name(h) for h in original_headers]
 
-                cursor.execute(f"PRAGMA table_info({TABLE_NAME})")
-                schema_info = {row[1]: row[2] for row in cursor.fetchall()}
-
-                data_for_upsert = [clean_and_prepare_row_for_db(row, original_headers, schema_info) for row in rows_to_upsert]
+                data_for_upsert = []
+                for row_dict in rows_to_upsert:
+                    # Build the tuple of values in the exact order of the original headers list.
+                    # This ensures the data aligns perfectly with the sanitized headers in the SQL query.
+                    row_tuple = tuple(row_dict.get(h) for h in original_headers)
+                    data_for_upsert.append(row_tuple)
 
                 upsert_sql = f"""
                 INSERT INTO {TABLE_NAME} ({', '.join(f'"{h}"' for h in sanitized_headers)})
@@ -154,11 +243,13 @@ def update_recent_deals():
                 cursor.executemany(upsert_sql, data_for_upsert)
                 conn.commit()
                 logger.info(f"Step 4 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
+
         except sqlite3.Error as e:
             logger.error(f"Step 4 Failed: Database error during upsert: {e}", exc_info=True)
         except Exception as e:
             logger.error(f"Step 4 Failed: Unexpected error during upsert: {e}", exc_info=True)
 
+        logger.info("--- Task: update_recent_deals finished ---")
     finally:
         lock.release()
         logger.info("--- Task: update_recent_deals finished and lock released. ---")
