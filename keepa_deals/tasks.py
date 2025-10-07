@@ -182,7 +182,7 @@ def update_recent_deals():
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
             # Request historical data to enable all calculations.
-            product_response, _, tokens_consumed = fetch_product_batch(
+            product_response, _, tokens_consumed, _ = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
             )
             token_manager.update_after_call(tokens_consumed)

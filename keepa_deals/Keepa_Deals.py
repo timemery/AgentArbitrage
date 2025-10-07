@@ -688,87 +688,108 @@ def set_recalc_status(status_data):
     except IOError as e:
         print(f"Error writing recalc status file: {e}")
 
+from .tasks import _process_single_deal
+from .db_utils import sanitize_col_name
+from datetime import timezone
+
 @celery.task
 def recalculate_deals():
     """
-    Celery task to recalculate business metrics for all deals in the database.
+    Celery task to perform a full data refresh for all deals in the database.
+    It fetches fresh data from Keepa and re-runs the entire enrichment pipeline.
     """
     logger = logging.getLogger(__name__)
     DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+    HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'keepa_deals', 'headers.json')
+    MAX_ASINS_PER_BATCH = 50
 
-    set_recalc_status({"status": "Running", "message": "Starting recalculation..."})
-
+    set_recalc_status({"status": "Running", "message": "Starting full data refresh..."})
+    conn = None
     try:
+        # --- Setup ---
+        api_key = os.getenv("KEEPA_API_KEY")
+        xai_api_key = os.getenv("XAI_API_KEY")
+        if not api_key:
+            raise ValueError("KEEPA_API_KEY not set.")
+
+        token_manager = TokenManager(api_key)
+        business_settings = business_load_settings()
+        with open('keepa_deals/headers.json') as f:
+            headers = json.load(f)
+        sanitized_headers = [sanitize_col_name(h) for h in headers]
+
+        # --- Database Connection and ASIN Fetch ---
         conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
+        cursor.execute("SELECT ASIN FROM deals")
+        all_asins = [row[0] for row in cursor.fetchall()]
 
-        cursor.execute("SELECT * FROM deals")
-        deals = cursor.fetchall()
-
-        if not deals:
-            logger.info("Recalculation: No deals found in the database. Nothing to do.")
+        if not all_asins:
+            logger.info("Recalculation: No deals found. Nothing to do.")
             set_recalc_status({"status": "Completed", "message": "No deals to recalculate."})
             return
 
-        logger.info(f"Recalculation: Found {len(deals)} deals to process.")
-        settings = business_load_settings()
+        logger.info(f"Recalculation: Found {len(all_asins)} total ASINs to refresh.")
 
-        for deal in deals:
-            deal_dict = dict(deal)
-            asin = deal_dict.get('ASIN')
+        # --- Batch Processing ---
+        for i in range(0, len(all_asins), MAX_ASINS_PER_BATCH):
+            batch_asins = all_asins[i:i + MAX_ASINS_PER_BATCH]
+            logger.info(f"Processing batch {i//MAX_ASINS_PER_BATCH + 1}/{math.ceil(len(all_asins)/MAX_ASINS_PER_BATCH)}: {len(batch_asins)} ASINs")
 
-            try:
-                # Safely parse values from the database record
-                peak_price = float(deal_dict.get('Expected_Peak_Price', 0) or 0)
-                fba_fee = float(deal_dict.get('FBA_PickPack_Fee', 0) or 0)
-                referral_percent = float(deal_dict.get('Referral_Fee_Percent', 0) or 0)
-                best_price = float(deal_dict.get('Best_Price', 0) or 0)
-                shipping_included_flag = str(deal_dict.get('Shipping_Included', 'no')).lower() == 'yes'
+            # Fetch fresh product data with history
+            product_response, _, tokens_consumed, _ = fetch_product_batch(
+                api_key, batch_asins, history=1, offers=20
+            )
+            token_manager.update_after_call(tokens_consumed)
 
-                # Perform calculations
-                total_amz_fees = calculate_total_amz_fees(peak_price, fba_fee, referral_percent)
-                all_in_cost = calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_included_flag)
-                profit_margin_dict = calculate_profit_and_margin(peak_price, all_in_cost)
-                min_listing_price = calculate_min_listing_price(all_in_cost, settings)
+            if not product_response or 'products' not in product_response:
+                logger.warning(f"No product data returned for batch starting with ASIN {batch_asins[0]}.")
+                continue
 
-                # Prepare for DB update
-                update_values = {
-                    'Total_AMZ_fees': total_amz_fees,
-                    'All_in_Cost': all_in_cost,
-                    'Profit': profit_margin_dict['profit'],
-                    'Margin': profit_margin_dict['margin'],
-                    'Min_Listing_Price': min_listing_price,
-                    'id': deal_dict['id']
-                }
+            # Process each product in the batch
+            for product_data in product_response['products']:
+                asin = product_data.get('asin')
+                if not asin:
+                    continue
 
-                # Update the database
-                update_sql = """
-                    UPDATE deals
-                    SET
-                        Total_AMZ_fees = :Total_AMZ_fees,
-                        All_in_Cost = :All_in_Cost,
-                        Profit = :Profit,
-                        Margin = :Margin,
-                        Min_Listing_Price = :Min_Listing_Price
-                    WHERE id = :id
-                """
-                cursor.execute(update_sql, update_values)
+                logger.info(f"Re-processing ASIN: {asin}")
+                # Use the centralized processing function
+                processed_row = _process_single_deal(
+                    product_data, api_key, token_manager, xai_api_key, business_settings, headers
+                )
 
-            except (ValueError, TypeError) as e:
-                logger.error(f"Recalculation error for ASIN {asin}: Could not parse values. Error: {e}")
-                continue # Skip to the next deal
+                if not processed_row:
+                    logger.warning(f"Failed to re-process ASIN {asin}. Skipping update.")
+                    continue
+
+                processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                processed_row['source'] = 'recalc'
+
+                # --- Database Update ---
+                # Prepare data for parameterized query to prevent SQL injection
+                update_dict = {s_header: processed_row.get(header) for header, s_header in zip(headers, sanitized_headers) if s_header != 'ASIN'}
+                update_dict['ASIN'] = asin
+
+                # Construct the SET part of the query dynamically
+                set_clause = ", ".join([f'"{key}" = :{key}' for key in update_dict.keys() if key != 'ASIN'])
+
+                update_sql = f"UPDATE deals SET {set_clause} WHERE ASIN = :ASIN"
+
+                try:
+                    cursor.execute(update_sql, update_dict)
+                except sqlite3.Error as e:
+                    logger.error(f"Failed to update ASIN {asin} in database. Error: {e}. SQL: {update_sql}. Data: {update_dict}")
+
 
         conn.commit()
         logger.info("Recalculation finished and database updated.")
-        set_recalc_status({"status": "Completed", "message": "Recalculation complete."})
+        set_recalc_status({"status": "Completed", "message": "Full data refresh complete."})
 
-    except sqlite3.Error as e:
-        logger.error(f"Recalculation database error: {e}")
-        set_recalc_status({"status": "Failed", "message": f"Database error: {e}"})
     except Exception as e:
-        logger.error(f"Recalculation unexpected error: {e}", exc_info=True)
+        logger.error(f"Recalculation failed with an unexpected error: {e}", exc_info=True)
         set_recalc_status({"status": "Failed", "message": f"An unexpected error occurred: {e}"})
+        if conn:
+            conn.rollback()
     finally:
-        if 'conn' in locals() and conn:
+        if conn:
             conn.close()
