@@ -1,5 +1,6 @@
-# This file will contain shared data processing logic to avoid circular imports.
 import logging
+import sqlite3
+
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 from .business_calculations import (
@@ -26,7 +27,6 @@ def _parse_percent(value_str):
     try: return float(value_str.strip().replace('%', ''))
     except ValueError: return 0.0
 
-
 def _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers):
     asin = product_data.get('asin')
     if not asin:
@@ -50,9 +50,9 @@ def _process_single_deal(product_data, api_key, token_manager, xai_api_key, busi
             except Exception as e:
                 logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
 
-    # 2. Seller Info
+    # 2. Seller Info - This will now use the pre-populated cache
     try:
-        seller_info = get_all_seller_info(product_data, api_key=api_key, token_manager=token_manager)
+        seller_info = get_all_seller_info(product_data, api_key=api_key)
         row_data.update(seller_info)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
@@ -104,10 +104,10 @@ def _process_single_deal(product_data, api_key, token_manager, xai_api_key, busi
 
     return row_data
 
-def clean_and_prepare_row_for_db(row_dict, original_headers, schema_info, as_tuple=False):
+def clean_and_prepare_row_for_db(row_dict, original_headers, schema_info):
     """
     Cleans and type-casts a single row of data based on the database schema.
-    Returns a tuple of values by default.
+    Returns a tuple of values ready for insertion.
     """
     cleaned_values = []
     for header in original_headers:
@@ -129,9 +129,4 @@ def clean_and_prepare_row_for_db(row_dict, original_headers, schema_info, as_tup
         else:
             cleaned_values.append(str(value) if value is not None and value != '-' else None)
 
-    if as_tuple:
-        return tuple(cleaned_values)
-
-    # This part is not used by the current implementation but is kept for potential future flexibility
-    sanitized_headers = [sanitize_col_name(h) for h in original_headers]
-    return dict(zip(sanitized_headers, cleaned_values))
+    return tuple(cleaned_values)

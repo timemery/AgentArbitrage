@@ -197,6 +197,8 @@ def fetch_seller_data(api_key, seller_ids):
     """
     Fetches data for a list of sellers from the Keepa API.
     Returns the response data, API info, tokens consumed, and tokens left.
+    NOTE: This function does NOT perform its own token management. The calling
+    function is responsible for rate-limiting and token counting.
     """
     if not seller_ids:
         logger.warning("fetch_seller_data called with no seller_ids.")
