@@ -178,14 +178,18 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            # Make a more token-efficient call and capture the actual cost.
+            # Request historical data to enable all calculations
             product_response, _, tokens_consumed = fetch_product_batch(
-                api_key, batch_asins, history=0, offers=20
+                api_key, batch_asins, history=1, offers=20
             )
             token_manager.update_after_call(tokens_consumed)
 
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
+                    # Combine the initial deal data with the full product data
+                    # This ensures fields like 'lastPriceChange' from the deal query are preserved
+                    initial_deal_data = next((item for item in recent_deals if item["asin"] == p['asin']), {})
+                    p.update(initial_deal_data)
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
@@ -194,13 +198,10 @@ def update_recent_deals():
             headers = json.load(f)
 
         rows_to_upsert = []
-        for deal in recent_deals:
-            asin = deal['asin']
-            if asin not in all_fetched_products:
+        for asin, product_data in all_fetched_products.items():
+            if not product_data or product_data.get('error'):
+                logger.warning(f"Skipping processing for ASIN {asin} due to fetch error or no data.")
                 continue
-
-            product_data = all_fetched_products[asin]
-            product_data.update(deal)
 
             processed_row = _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers)
 
