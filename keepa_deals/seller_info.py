@@ -101,8 +101,12 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
     if not seller_data and token_manager:
         logger.info(f"ASIN {asin}: Seller data for ID {best_seller_id} not in cache. Fetching from API.")
         token_manager.request_permission_for_call(estimated_cost=1) # Cost for one seller
-        seller_data_response, _, _ = fetch_seller_data(api_key, [best_seller_id])
-        token_manager.update_from_response(seller_data_response)
+        seller_data_response, _, _, tokens_left = fetch_seller_data(api_key, [best_seller_id])
+
+        if tokens_left is not None:
+            token_manager.update_after_call(tokens_left)
+        else:
+            logger.warning(f"Could not determine tokens left after seller fetch for {best_seller_id}. Token count may be inaccurate.")
 
         if seller_data_response and seller_data_response.get('sellers'):
             seller_data = seller_data_response['sellers'].get(best_seller_id)

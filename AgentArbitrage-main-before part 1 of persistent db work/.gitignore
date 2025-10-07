@@ -1,0 +1,8 @@
+venv/
+*.pem
+*.key
+/etc/letsencrypt/
+__pycache__/
+.env
+app.log
+*.bak.env.save

@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block title %}Deal Detail - {{ deal['ASIN'] }}{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="deal-header">
+        <h1>{{ deal['Title'] }}</h1>
+        <p>ASIN: {{ deal['ASIN'] }}</p>
+    </div>
+
+    <div class="tab-nav">
+        <button class="tab-link active" data-tab="profit">Profit Analysis</button>
+        <button class="tab-link" data-tab="prep">Prep & Listing</button>
+        <button class="tab-link" data-tab="sales">Sales Tracking</button>
+    </div>
+
+    <div id="profit" class="tab-content active">
+        <h2>Profit Analysis</h2>
+        <div class="grid-container">
+            <div class="grid-item">
+                <h3>Pricing & Seasonality</h3>
+                <p><span>Seasonality Type:</span> <strong>{{ deal['Seasonality_Type'] if deal['Seasonality_Type'] is not none else 'N/A' }}</strong></p>
+                <p><span>Expected Trough Price:</span> <strong>${{ "{:,.2f}".format(deal['Expected_Trough_Price']) if deal['Expected_Trough_Price'] is not none else '-' }}</strong></p>
+                <p><span>Expected Peak Price:</span> <strong>${{ "{:,.2f}".format(deal['Expected_Peak_Price']) if deal['Expected_Peak_Price'] is not none else '-' }}</strong></p>
+                <p><span>Profit Confidence:</span> <strong>{{ "%.0f"|format(deal['Profit_Confidence']) if deal['Profit_Confidence'] is not none else '-' }}%</strong></p>
+            </div>
+            <div class="grid-item">
+                <h3>Profit Calculation</h3>
+                <p><span>All-in Cost:</span> <strong>${{ "{:,.2f}".format(deal['All_in_Cost']) if deal['All_in_Cost'] is not none else '-' }}</strong></p>
+                <p><span>Profit:</span> <strong>${{ "{:,.2f}".format(deal['Profit']) if deal['Profit'] is not none else '-' }}</strong></p>
+                <p><span>Margin:</span> <strong>{{ "%.2f"|format(deal['Margin']) if deal['Margin'] is not none else '-' }}%</strong></p>
+                <p><span>Min. Listing Price:</span> <strong>${{ "{:,.2f}".format(deal['Min_Listing_Price']) if deal['Min_Listing_Price'] is not none else '-' }}</strong></p>
+            </div>
+            <div class="grid-item">
+                <h3>Sales Rank</h3>
+                <p><span>Current:</span> <strong>{{ "{:,}".format(deal['Sales_Rank___Current']) if deal['Sales_Rank___Current'] is not none else '-' }}</strong></p>
+                <p><span>Drops (365d):</span> <strong>{{ deal['Sales_Rank___Drops_last_365_days'] if deal['Sales_Rank___Drops_last_365_days'] is not none else '-' }}</strong></p>
+            </div>
+            <div class="grid-item">
+                <h3>External Links</h3>
+                <p><a href="{{ deal['AMZ_link'] }}" target="_blank">View on Amazon</a></p>
+                <p><a href="{{ deal['Keepa_Link'] }}" target="_blank">View on Keepa</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="prep" class="tab-content">
+        <h2>Prep & Listing</h2>
+        <p>(Prep and listing tracking form will go here.)</p>
+    </div>
+
+    <div id="sales" class="tab-content">
+        <h2>Sales Tracking</h2>
+        <p>(Sales tracking form will go here.)</p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab-link');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(item => item.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Agent Arbitrage{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Saira:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+</head>
+<body class="gradient-background">
+    <header class="main-header">
+        <div class="header-brand">
+            <a href="{{ url_for('guided_learning') }}" class="header-logo">
+                <img src="{{ url_for('static', filename='AgentArbitrage.png') }}" alt="Agent Arbitrage Logo">
+            </a>
+            <div class="header-wordmark">AGENT ARBITRAGE</div>
+        </div>
+        <nav class="main-nav">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('data_sourcing') }}">Data Sourcing</a>
+            <a href="{{ url_for('guided_learning') }}">Guided Learning</a>
+            <a href="{{ url_for('strategies') }}">Strategies</a>
+            <a href="{{ url_for('agent_brain') }}">Agent Brain</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+        </nav>
+        <div class="header-logout">
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

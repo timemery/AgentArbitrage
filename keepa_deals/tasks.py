@@ -156,7 +156,10 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
-        deal_response = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+        deal_response_raw = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+
+        # CRITICAL FIX: Handle API functions that may return a tuple (data, info) instead of just data.
+        deal_response = deal_response_raw[0] if isinstance(deal_response_raw, tuple) else deal_response_raw
 
         # Authoritatively update token manager with actual cost from the response
         tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
@@ -178,9 +181,9 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            # Make a more token-efficient call and capture the actual cost.
+            # Request historical data to enable all calculations.
             product_response, _, tokens_consumed = fetch_product_batch(
-                api_key, batch_asins, history=0, offers=20
+                api_key, batch_asins, history=1, offers=20
             )
             token_manager.update_after_call(tokens_consumed)
 

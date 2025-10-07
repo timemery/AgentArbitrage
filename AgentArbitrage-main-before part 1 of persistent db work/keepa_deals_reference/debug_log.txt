@@ -1,0 +1,390 @@
+2025-07-24 10:08:14,586 - Starting Keepa_Deals...
+2025-07-24 10:08:16,591 - Fetching deals page 0...
+2025-07-24 10:08:16,591 - Pre-emptive pause for deal page fetch: Last API call was 2.01s ago. Waiting 57.99s.
+2025-07-24 10:09:15,642 - Token consumed for deal page 0. Cost: 1. Tokens remaining: 299.00
+2025-07-24 10:09:15,642 - Fetched 150 deals from page 0. Total deals so far: 150
+2025-07-24 10:09:15,643 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:08:14). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:09:14
+2025-07-24 10:09:15,643 - Fetching deals page 1...
+2025-07-24 10:09:15,643 - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:10:16,917 - Token consumed for deal page 1. Cost: 1. Tokens remaining: 299.00
+2025-07-24 10:10:16,917 - Fetched 150 deals from page 1. Total deals so far: 300
+2025-07-24 10:10:16,918 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:09:14). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:10:14
+2025-07-24 10:10:16,918 - Fetching deals page 2...
+2025-07-24 10:10:16,918 - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:11:18,197 - Token consumed for deal page 2. Cost: 1. Tokens remaining: 299.00
+2025-07-24 10:11:18,197 - Fetched 150 deals from page 2. Total deals so far: 450
+2025-07-24 10:11:18,197 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:10:14). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:11:14
+2025-07-24 10:11:18,197 - Fetching deals page 3...
+2025-07-24 10:11:18,197 - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:12:19,223 - Token consumed for deal page 3. Cost: 1. Tokens remaining: 299.00
+2025-07-24 10:12:19,223 - Fetched 150 deals from page 3. Total deals so far: 600
+2025-07-24 10:12:19,223 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:11:14). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:12:14
+2025-07-24 10:12:19,224 - Fetching deals page 4...
+2025-07-24 10:12:19,224 - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:13:20,263 - Token consumed for deal page 4. Cost: 1. Tokens remaining: 299.00
+2025-07-24 10:13:20,263 - Fetched 150 deals from page 4. Total deals so far: 750
+2025-07-24 10:13:20,263 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:12:14). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:13:14
+2025-07-24 10:13:20,263 - Fetching deals page 5...
+2025-07-24 10:13:20,263 - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:14:20,934 - Token consumed for deal page 5. Cost: 1. Tokens remaining: 299.00
+2025-07-24 10:14:20,934 - Fetched 35 deals from page 5. Total deals so far: 785
+2025-07-24 10:14:20,934 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:13:14). Tokens before: 299.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:14:14
+2025-07-24 10:14:20,934 - Fetching deals page 6...
+2025-07-24 10:14:20,934 - Pre-emptive pause for deal page fetch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:15:21,353 - No more deals found on page 6.
+2025-07-24 10:15:21,353 - TESTING LIMIT ACTIVE: Processing only the first 10 of 785 deals.
+2025-07-24 10:15:21,353 - Starting ASIN processing, found 10 deals (after potential temporary limit)
+2025-07-24 10:15:21,353 - Collected 10 valid ASINs for batch processing.
+2025-07-24 10:15:21,353 - Created 1 batches for API calls.
+2025-07-24 10:15:21,354 - Processing Batch 1/1 (Attempt 1) with 10 ASINs: ['0194340457', '0739053809', '2070310272']...
+2025-07-24 10:15:21,354 - Quota Refill: Processed 1 interval(s) of 60s (from 2025-07-24 10:14:14). Tokens before: 300.00. Added 5.00. Tokens after: 300.00. New last refill calc time: 2025-07-24 10:15:14
+2025-07-24 10:15:21,354 - Pre-emptive pause for product batch: Last API call was 0.00s ago. Waiting 60.00s.
+2025-07-24 10:16:21,353 - fetch_product_batch: Attempting to fetch batch of 10 ASINs: 0194340457,0739053809,2070310272...
+2025-07-24 10:16:32,756 - Batch API call cost 60 tokens according to 'tokensConsumed' field in response.
+2025-07-24 10:16:32,757 - Successfully fetched data for 10 products in batch for 10 requested ASINs.
+2025-07-24 10:16:32,757 - Tokens consumed for BATCH. Cost: 60. Tokens remaining: 240.00.
+2025-07-24 10:16:34,758 - ASIN 0194340457: Percent Down 365 calculated. Current: 20.50, Avg365: 122.39, Diff: 83.25%, Result: 83%
+2025-07-24 10:16:34,758 - ASIN 0194340457: No indication of free shipping found for Used - Current offer.
+2025-07-24 10:16:34,758 - ASIN: 0194340457 - last_update: Selected latest_ts=7658742 from candidates [7658740, 7658742]. Sources considered: ['deal_object.lastUpdate (7658740)', 'product_data.stats.lastOffersUpdate (7658742)']
+2025-07-24 10:16:34,758 - ASIN: 0194340457 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,758 - ASIN: 0194340457 - Using deal_object.currentSince for last used price change. Max timestamp: 7657628. All considered: [7656600, 6885636, 7657628, 7657628]
+2025-07-24 10:16:34,758 - ASIN: 0194340457 - last price change (focused on used) result: 2025-07-23 15:08:00 (from ts 7657628 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,759 - ASIN 0194340457: FBA Pick&Pack Fee found: $3.53 (from raw 353)
+2025-07-24 10:16:34,759 - ASIN 0194340457: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-07-24 10:16:34,759 - ASIN 0194340457: Parsed integer 2016 as YYYY -> 2016.
+2025-07-24 10:16:34,759 - Buy Box - Current - ASIN 0194340457 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,759 - Buy Box - Current - ASIN 0194340457 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,759 - Buy Box - Current - ASIN 0194340457 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,759 - No valid Amazon - Current price for ASIN 0194340457
+2025-07-24 10:16:34,759 - Amazon - 365 days avg. for ASIN 0194340457: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,759 - No valid New - Current (value=-1, current_length=34) for ASIN 0194340457
+2025-07-24 10:16:34,760 - New, 3rd Party FBA - Current for ASIN 0194340457: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,760 - ASIN 0194340457: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 16370, 12239, 4007531, -1, -1, -1, 16274, -1, -1, -1, 1, 2, -1, -1, -1, 46, 21, 12956, -1, 13887, 10112, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 12017, -1]
+2025-07-24 10:16:34,760 - New, 3rd Party FBA - Lowest for ASIN 0194340457: stats.min[10] is not a valid pair: None
+2025-07-24 10:16:34,760 - New, 3rd Party FBM - Current for ASIN 0194340457: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,760 - New, 3rd Party FBM - Current for ASIN 0194340457: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,760 - ASIN 0194340457: New, 3rd Party FBM - 365 days avg. found: $162.74 from stats.avg365[7]
+2025-07-24 10:16:34,760 - Buy Box Used - Current for ASIN 0194340457: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-07-24 10:16:34,760 - Buy Box Used - Current for ASIN 0194340457: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-07-24 10:16:34,760 - Buy Box Used - Current for ASIN 0194340457: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-07-24 10:16:34,760 - Buy Box Used - 365 days avg. for ASIN 0194340457: Using stats.avg365[32], value: $120.17
+2025-07-24 10:16:34,760 - Used, like new - 365 days avg. for ASIN 0194340457: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-07-24 10:16:34,760 - Used, very good - 365 days avg. for ASIN 0194340457: Using stats.avg365[20], value: $138.87
+2025-07-24 10:16:34,761 - Used, good - 365 days avg. for ASIN 0194340457: Using stats.avg365[21], value: $101.12
+2025-07-24 10:16:34,761 - No valid Used - Acceptable price for ASIN 0194340457
+2025-07-24 10:16:34,761 - Used, acceptable - 365 days avg. for ASIN 0194340457: Invalid or non-positive price at stats.avg365[22] (-1). Setting to '-'
+2025-07-24 10:16:34,761 - No valid List Price - Current (value=-1, current_length=34) for ASIN 0194340457
+2025-07-24 10:16:34,761 - ASIN 0194340457: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,761 - ASIN 0194340457: New Offer Count - 365 days avg. from stats.avg365[11]: 1
+2025-07-24 10:16:34,761 - ASIN 0194340457: Used Offer Count - Current calculated as 1 (Total: 1, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,761 - ASIN 0194340457: Used Offer Count - 365 days avg. from stats.avg365[12]: 2
+2025-07-24 10:16:34,761 - ASIN 0194340457: The 'ASIN' field in the processed row ('="0194340457"') differs from or is not the primary source ASIN ('0194340457'). Correcting.
+2025-07-24 10:16:34,761 - ASIN 0739053809: Percent Down 365 calculated. Current: 22.97, Avg365: 1326.61, Diff: 98.27%, Result: 98%
+2025-07-24 10:16:34,761 - ASIN 0739053809: No indication of free shipping found for Used - Current offer.
+2025-07-24 10:16:34,761 - ASIN: 0739053809 - last_update: Selected latest_ts=7658776 from candidates [7657910, 7658776]. Sources considered: ['deal_object.lastUpdate (7657910)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,761 - ASIN: 0739053809 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,762 - ASIN: 0739053809 - Using deal_object.currentSince for last used price change. Max timestamp: 7626302. All considered: [7626302, 6798036, 7435644, 7529908]
+2025-07-24 10:16:34,762 - ASIN: 0739053809 - last price change (focused on used) result: 2025-07-01 21:02:00 (from ts 7626302 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,762 - ASIN 0739053809: FBA Pick&Pack Fee found: $3.33 (from raw 333)
+2025-07-24 10:16:34,762 - ASIN 0739053809: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
+2025-07-24 10:16:34,762 - ASIN 0739053809: Parsed integer 20080801 as YYYYMMDD -> 2008-08-01.
+2025-07-24 10:16:34,762 - No valid listedSince (ts=0) for ASIN 0739053809
+2025-07-24 10:16:34,762 - Buy Box - Current for ASIN 0739053809: Using 'buyBoxPrice', value: $16.99
+2025-07-24 10:16:34,762 - No valid Amazon - Current price for ASIN 0739053809
+2025-07-24 10:16:34,762 - Amazon - 365 days avg. for ASIN 0739053809: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,762 - New, 3rd Party FBA - Current for ASIN 0739053809: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,762 - ASIN 0739053809: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 1698, 132661, 3786107, 1698, -1, -1, 2297, -1, -1, -1, 0, 1, -1, -1, -1, 46, 21, 2297, -1, 53743, 244275, 2660, -1, -1, -1, -1, -1, -1, -1, -1, -1, 173249, -1]
+2025-07-24 10:16:34,762 - New, 3rd Party FBA - Lowest for ASIN 0739053809: stats.min[10] is not a valid pair: None
+2025-07-24 10:16:34,762 - New, 3rd Party FBM - Current for ASIN 0739053809: Using stats.current[7], value: $22.98
+2025-07-24 10:16:34,762 - New, 3rd Party FBM - Current for ASIN 0739053809: Final result: $22.98, Source: stats.current[7]
+2025-07-24 10:16:34,763 - ASIN 0739053809: New, 3rd Party FBM - 365 days avg. found: $22.97 from stats.avg365[7]
+2025-07-24 10:16:34,763 - Buy Box Used - Current for ASIN 0739053809: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-07-24 10:16:34,763 - Buy Box Used - Current for ASIN 0739053809: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-07-24 10:16:34,763 - Buy Box Used - Current for ASIN 0739053809: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-07-24 10:16:34,763 - Buy Box Used - 365 days avg. for ASIN 0739053809: Using stats.avg365[32], value: $1732.49
+2025-07-24 10:16:34,763 - Used, like new - 365 days avg. for ASIN 0739053809: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-07-24 10:16:34,763 - Used, very good - 365 days avg. for ASIN 0739053809: Using stats.avg365[20], value: $537.43
+2025-07-24 10:16:34,763 - Used, good - 365 days avg. for ASIN 0739053809: Using stats.avg365[21], value: $2442.75
+2025-07-24 10:16:34,763 - Used, acceptable - 365 days avg. for ASIN 0739053809: Using stats.avg365[22], value: $26.60
+2025-07-24 10:16:34,763 - No valid List Price - Current (value=-1, current_length=34) for ASIN 0739053809
+2025-07-24 10:16:34,763 - ASIN 0739053809: New Offer Count - Current calculated as 1 (FBA: 0, FBM: 1).
+2025-07-24 10:16:34,763 - ASIN 0739053809: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+2025-07-24 10:16:34,763 - ASIN 0739053809: Used Offer Count - Current calculated as 1 (Total: 2, New FBA: 0, New FBM: 1).
+2025-07-24 10:16:34,763 - ASIN 0739053809: Used Offer Count - 365 days avg. from stats.avg365[12]: 1
+2025-07-24 10:16:34,763 - ASIN 0739053809: The 'ASIN' field in the processed row ('="0739053809"') differs from or is not the primary source ASIN ('0739053809'). Correcting.
+2025-07-24 10:16:34,764 - ASIN 2070310272: Percent Down 365 calculated. Current: 20.43, Avg365: 51.93, Diff: 60.66%, Result: 61%
+2025-07-24 10:16:34,764 - ASIN 2070310272: No indication of free shipping found for Used - Current offer.
+2025-07-24 10:16:34,764 - ASIN: 2070310272 - last_update: Selected latest_ts=7658776 from candidates [7658684, 7658776]. Sources considered: ['deal_object.lastUpdate (7658684)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,764 - ASIN: 2070310272 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,764 - ASIN: 2070310272 - Using deal_object.currentSince for last used price change. Max timestamp: 7658448. All considered: [7658448, 5689916, 7658448, 7371576]
+2025-07-24 10:16:34,764 - ASIN: 2070310272 - last price change (focused on used) result: 2025-07-24 04:48:00 (from ts 7658448 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,764 - ASIN 2070310272: FBA Pick&Pack Fee found: $3.40 (from raw 340)
+2025-07-24 10:16:34,764 - ASIN 2070310272: Referral Fee Percentage not found with any known keys. Returning '-'.
+2025-07-24 10:16:34,764 - ASIN 2070310272: Parsed integer 20011115 as YYYYMMDD -> 2001-11-15.
+2025-07-24 10:16:34,764 - Buy Box - Current - ASIN 2070310272 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,764 - Buy Box - Current - ASIN 2070310272 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,764 - Buy Box - Current - ASIN 2070310272 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,764 - No valid Amazon - Current price for ASIN 2070310272
+2025-07-24 10:16:34,765 - Amazon - 365 days avg. for ASIN 2070310272: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,765 - No valid New - Current (value=-1, current_length=34) for ASIN 2070310272
+2025-07-24 10:16:34,765 - New, 3rd Party FBA - Current for ASIN 2070310272: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,765 - ASIN 2070310272: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 5193, 5760519, -1, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 47, 1130, -1, -1, 9228, 1830, 2317, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1519, -1]
+2025-07-24 10:16:34,765 - New, 3rd Party FBA - Lowest for ASIN 2070310272: stats.min[10] is not a valid pair: None
+2025-07-24 10:16:34,765 - New, 3rd Party FBM - Current for ASIN 2070310272: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,765 - New, 3rd Party FBM - Current for ASIN 2070310272: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,765 - ASIN 2070310272: New, 3rd Party FBM - 365 days avg. not available or invalid at stats.avg365[7]. Value: -1. avg365 array: [-1, -1, 5193, 5760519, -1, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 47, 1130, -1, -1, 9228, 1830, 2317, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1519, -1]
+2025-07-24 10:16:34,765 - Buy Box Used - Current for ASIN 2070310272: Price found via primary logic. FBM item price: 3035 + shipping: 799 = 3834. Formatted: $38.34
+2025-07-24 10:16:34,765 - Buy Box Used - 365 days avg. for ASIN 2070310272: Using stats.avg365[32], value: $15.19
+2025-07-24 10:16:34,765 - Used, like new - 365 days avg. for ASIN 2070310272: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-07-24 10:16:34,765 - Used, very good - 365 days avg. for ASIN 2070310272: Using stats.avg365[20], value: $92.28
+2025-07-24 10:16:34,765 - Used, good - 365 days avg. for ASIN 2070310272: Using stats.avg365[21], value: $18.30
+2025-07-24 10:16:34,765 - Used, acceptable - 365 days avg. for ASIN 2070310272: Using stats.avg365[22], value: $23.17
+2025-07-24 10:16:34,765 - No valid List Price - Current (value=-1, current_length=34) for ASIN 2070310272
+2025-07-24 10:16:34,766 - ASIN 2070310272: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,766 - ASIN 2070310272: New Offer Count - 365 days avg. from stats.avg365[11]: -
+2025-07-24 10:16:34,766 - ASIN 2070310272: Used Offer Count - Current calculated as 2 (Total: 2, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,766 - ASIN 2070310272: Used Offer Count - 365 days avg. from stats.avg365[12]: 2
+2025-07-24 10:16:34,766 - ASIN 2070310272: The 'ASIN' field in the processed row ('="2070310272"') differs from or is not the primary source ASIN ('2070310272'). Correcting.
+2025-07-24 10:16:34,766 - ASIN 0874208203: Percent Down 365 calculated. Current: 23.00, Avg365: 88.64, Diff: 74.05%, Result: 74%
+2025-07-24 10:16:34,766 - ASIN 0874208203: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-07-24 10:16:34,766 - ASIN: 0874208203 - last_update: Selected latest_ts=7658776 from candidates [7658690, 7658776]. Sources considered: ['deal_object.lastUpdate (7658690)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,766 - ASIN: 0874208203 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,766 - ASIN: 0874208203 - Using deal_object.currentSince for last used price change. Max timestamp: 7657832. All considered: [7657750, 7558428, 7654460, 7657832]
+2025-07-24 10:16:34,766 - ASIN: 0874208203 - last price change (focused on used) result: 2025-07-23 18:32:00 (from ts 7657832 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,766 - ASIN 0874208203: FBA Pick&Pack Fee found: $7.24 (from raw 724)
+2025-07-24 10:16:34,766 - ASIN 0874208203: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-07-24 10:16:34,767 - ASIN 0874208203: Parsed integer 19980131 as YYYYMMDD -> 1998-01-31.
+2025-07-24 10:16:34,767 - No valid listedSince (ts=0) for ASIN 0874208203
+2025-07-24 10:16:34,767 - Buy Box - Current - ASIN 0874208203 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,767 - Buy Box - Current - ASIN 0874208203 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,767 - Buy Box - Current - ASIN 0874208203 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,767 - No valid Amazon - Current price for ASIN 0874208203
+2025-07-24 10:16:34,767 - Amazon - 365 days avg. for ASIN 0874208203: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,767 - New, 3rd Party FBA - Current for ASIN 0874208203: Using stats.current[10], value: $225.95
+2025-07-24 10:16:34,767 - ASIN 0874208203: New, 3rd Party FBA - 365 days avg. found: $225.94
+2025-07-24 10:16:34,767 - New, 3rd Party FBA - Lowest for ASIN 0874208203: Found price $79.99 from stats.min[10][1]
+2025-07-24 10:16:34,767 - New, 3rd Party FBM - Current for ASIN 0874208203: Using stats.current[7], value: $225.54
+2025-07-24 10:16:34,767 - New, 3rd Party FBM - Current for ASIN 0874208203: Final result: $225.54, Source: stats.current[7]
+2025-07-24 10:16:34,767 - ASIN 0874208203: New, 3rd Party FBM - 365 days avg. found: $101.59 from stats.avg365[7]
+2025-07-24 10:16:34,767 - Buy Box Used - Current for ASIN 0874208203: Price found via primary logic. FBM item price: 2300 + shipping: 0 = 2300. Formatted: $23.00
+2025-07-24 10:16:34,767 - Buy Box Used - 365 days avg. for ASIN 0874208203: Using stats.avg365[32], value: $62.75
+2025-07-24 10:16:34,768 - Used, like new - 365 days avg. for ASIN 0874208203: Using stats.avg365[19], value: $152.19
+2025-07-24 10:16:34,768 - Used, very good - 365 days avg. for ASIN 0874208203: Using stats.avg365[20], value: $93.41
+2025-07-24 10:16:34,768 - Used, good - 365 days avg. for ASIN 0874208203: Using stats.avg365[21], value: $97.75
+2025-07-24 10:16:34,768 - No valid Used - Acceptable price for ASIN 0874208203
+2025-07-24 10:16:34,768 - Used, acceptable - 365 days avg. for ASIN 0874208203: Using stats.avg365[22], value: $32.73
+2025-07-24 10:16:34,768 - No valid List Price - Current (value=-1, current_length=34) for ASIN 0874208203
+2025-07-24 10:16:34,768 - ASIN 0874208203: New Offer Count - Current calculated as 2 (FBA: 1, FBM: 1).
+2025-07-24 10:16:34,768 - ASIN 0874208203: New Offer Count - 365 days avg. from stats.avg365[11]: 1
+2025-07-24 10:16:34,768 - ASIN 0874208203: Used Offer Count - Current calculated as 6 (Total: 8, New FBA: 1, New FBM: 1).
+2025-07-24 10:16:34,768 - ASIN 0874208203: Used Offer Count - 365 days avg. from stats.avg365[12]: 8
+2025-07-24 10:16:34,768 - ASIN 0874208203: The 'ASIN' field in the processed row ('="0874208203"') differs from or is not the primary source ASIN ('0874208203'). Correcting.
+2025-07-24 10:16:34,768 - ASIN 1529414733: Percent Down 365 calculated. Current: 24.18, Avg365: 72.83, Diff: 66.80%, Result: 67%
+2025-07-24 10:16:34,768 - ASIN 1529414733: No indication of free shipping found for Used - Current offer.
+2025-07-24 10:16:34,769 - ASIN: 1529414733 - last_update: Selected latest_ts=7658776 from candidates [7658712, 7658776]. Sources considered: ['deal_object.lastUpdate (7658712)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,769 - ASIN: 1529414733 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,769 - ASIN: 1529414733 - Using deal_object.currentSince for last used price change. Max timestamp: 7657516. All considered: [7657516, 7624520, 7657516, 7657516]
+2025-07-24 10:16:34,769 - ASIN: 1529414733 - last price change (focused on used) result: 2025-07-23 13:16:00 (from ts 7657516 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,769 - ASIN 1529414733: FBA Pick&Pack Fee found: $5.37 (from raw 537)
+2025-07-24 10:16:34,769 - ASIN 1529414733: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-07-24 10:16:34,769 - ASIN 1529414733: Non-positive/unhandled integer date_value -1. Outputting '-'.
+2025-07-24 10:16:34,769 - ASIN 1529414733: Date value '-1' (type: <class 'int'>) from field 'publicationDate' could not be parsed by any rule. Outputting '-'.
+2025-07-24 10:16:34,769 - Buy Box - Current - ASIN 1529414733 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,769 - Buy Box - Current - ASIN 1529414733 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,769 - Buy Box - Current - ASIN 1529414733 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,769 - No valid Amazon - Current price for ASIN 1529414733
+2025-07-24 10:16:34,769 - Amazon - 365 days avg. for ASIN 1529414733: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,769 - No valid New - Current (value=-1, current_length=34) for ASIN 1529414733
+2025-07-24 10:16:34,770 - New, 3rd Party FBA - Current for ASIN 1529414733: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,770 - ASIN 1529414733: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 5315, 7283, 2481219, -1, -1, -1, 5810, -1, -1, -1, 3, 3, -1, -1, -1, 46, 128, 5055, 6850, 8024, 7658, 5923, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7436, -1]
+2025-07-24 10:16:34,770 - New, 3rd Party FBA - Lowest for ASIN 1529414733: Found price $30.23 from stats.min[10][1]
+2025-07-24 10:16:34,770 - New, 3rd Party FBM - Current for ASIN 1529414733: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,770 - New, 3rd Party FBM - Current for ASIN 1529414733: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,770 - ASIN 1529414733: New, 3rd Party FBM - 365 days avg. found: $58.10 from stats.avg365[7]
+2025-07-24 10:16:34,770 - Buy Box Used - Current for ASIN 1529414733: Price found via primary logic. FBM item price: 31614 + shipping: 1099 = 32713. Formatted: $327.13
+2025-07-24 10:16:34,770 - Buy Box Used - 365 days avg. for ASIN 1529414733: Using stats.avg365[32], value: $74.36
+2025-07-24 10:16:34,770 - Used, like new - 365 days avg. for ASIN 1529414733: Using stats.avg365[19], value: $68.50
+2025-07-24 10:16:34,770 - Used, very good - 365 days avg. for ASIN 1529414733: Using stats.avg365[20], value: $80.24
+2025-07-24 10:16:34,770 - Used, good - 365 days avg. for ASIN 1529414733: Using stats.avg365[21], value: $76.58
+2025-07-24 10:16:34,770 - No valid Used - Acceptable price for ASIN 1529414733
+2025-07-24 10:16:34,770 - Used, acceptable - 365 days avg. for ASIN 1529414733: Using stats.avg365[22], value: $59.23
+2025-07-24 10:16:34,770 - No valid List Price - Current (value=-1, current_length=34) for ASIN 1529414733
+2025-07-24 10:16:34,770 - ASIN 1529414733: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,771 - ASIN 1529414733: New Offer Count - 365 days avg. from stats.avg365[11]: 3
+2025-07-24 10:16:34,771 - ASIN 1529414733: Used Offer Count - Current calculated as 3 (Total: 3, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,771 - ASIN 1529414733: Used Offer Count - 365 days avg. from stats.avg365[12]: 3
+2025-07-24 10:16:34,771 - ASIN 1529414733: The 'ASIN' field in the processed row ('="1529414733"') differs from or is not the primary source ASIN ('1529414733'). Correcting.
+2025-07-24 10:16:34,771 - ASIN 1452165343: Percent Down 365 calculated. Current: 22.98, Avg365: 57.44, Diff: 59.99%, Result: 60%
+2025-07-24 10:16:34,771 - ASIN 1452165343: No indication of free shipping found for Used - Current offer.
+2025-07-24 10:16:34,771 - ASIN: 1452165343 - last_update: Selected latest_ts=7658776 from candidates [7657832, 7658776]. Sources considered: ['deal_object.lastUpdate (7657832)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,771 - ASIN: 1452165343 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,771 - ASIN: 1452165343 - Using deal_object.currentSince for last used price change. Max timestamp: 7625740. All considered: [7617150, 7280596, 7625740, 6853638]
+2025-07-24 10:16:34,771 - ASIN: 1452165343 - last price change (focused on used) result: 2025-07-01 11:40:00 (from ts 7625740 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,771 - ASIN 1452165343: FBA Pick&Pack Fee found: $3.68 (from raw 368)
+2025-07-24 10:16:34,771 - ASIN 1452165343: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
+2025-07-24 10:16:34,771 - ASIN 1452165343: Parsed integer 20180306 as YYYYMMDD -> 2018-03-06.
+2025-07-24 10:16:34,772 - Buy Box - Current for ASIN 1452165343: Using 'buyBoxPrice', value: $22.99
+2025-07-24 10:16:34,773 - No valid Amazon - Current price for ASIN 1452165343
+2025-07-24 10:16:34,773 - Amazon - 365 days avg. for ASIN 1452165343: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,773 - New, 3rd Party FBA - Current for ASIN 1452165343: Using stats.current[10], value: $22.99
+2025-07-24 10:16:34,773 - ASIN 1452165343: New, 3rd Party FBA - 365 days avg. found: $19.00
+2025-07-24 10:16:34,773 - New, 3rd Party FBA - Lowest for ASIN 1452165343: Found price $12.93 from stats.min[10][1]
+2025-07-24 10:16:34,773 - New, 3rd Party FBM - Current for ASIN 1452165343: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,773 - New, 3rd Party FBM - Current for ASIN 1452165343: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,773 - ASIN 1452165343: New, 3rd Party FBM - 365 days avg. found: $20.49 from stats.avg365[7]
+2025-07-24 10:16:34,773 - Buy Box Used - Current for ASIN 1452165343: Primary FBA/FBM logic did not yield a valid price (No valid price found). Attempting fallback to stats.current[32].
+2025-07-24 10:16:34,773 - Buy Box Used - Current for ASIN 1452165343: Fallback stats.current[32] is missing, None or invalid (-1).
+2025-07-24 10:16:34,773 - Buy Box Used - Current for ASIN 1452165343: No valid price found. Initial FBA/FBM price calc: -1. Fallback stats.current[32] also failed or not applicable. Returning '-'.
+2025-07-24 10:16:34,773 - Buy Box Used - 365 days avg. for ASIN 1452165343: Using stats.avg365[32], value: $22.21
+2025-07-24 10:16:34,773 - Used, like new - 365 days avg. for ASIN 1452165343: Using stats.avg365[19], value: $19.78
+2025-07-24 10:16:34,774 - Used, very good - 365 days avg. for ASIN 1452165343: Using stats.avg365[20], value: $46.76
+2025-07-24 10:16:34,774 - Used, good - 365 days avg. for ASIN 1452165343: Invalid or non-positive price at stats.avg365[21] (-1). Setting to '-'
+2025-07-24 10:16:34,774 - No valid Used - Acceptable price for ASIN 1452165343
+2025-07-24 10:16:34,774 - Used, acceptable - 365 days avg. for ASIN 1452165343: Invalid or non-positive price at stats.avg365[22] (-1). Setting to '-'
+2025-07-24 10:16:34,774 - No valid List Price - Current (value=-1, current_length=34) for ASIN 1452165343
+2025-07-24 10:16:34,774 - ASIN 1452165343: New Offer Count - Current calculated as 1 (FBA: 1, FBM: 0).
+2025-07-24 10:16:34,774 - ASIN 1452165343: New Offer Count - 365 days avg. from stats.avg365[11]: 2
+2025-07-24 10:16:34,774 - ASIN 1452165343: Used Offer Count - Current calculated as 1 (Total: 2, New FBA: 1, New FBM: 0).
+2025-07-24 10:16:34,774 - ASIN 1452165343: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+2025-07-24 10:16:34,774 - ASIN 1452165343: The 'ASIN' field in the processed row ('="1452165343"') differs from or is not the primary source ASIN ('1452165343'). Correcting.
+2025-07-24 10:16:34,774 - ASIN 8425350166: Percent Down 365 calculated. Current: 25.74, Avg365: 109.74, Diff: 76.54%, Result: 77%
+2025-07-24 10:16:34,774 - ASIN 8425350166: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-07-24 10:16:34,774 - ASIN: 8425350166 - last_update: Selected latest_ts=7658776 from candidates [7658524, 7658776]. Sources considered: ['deal_object.lastUpdate (7658524)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,775 - ASIN: 8425350166 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,775 - ASIN: 8425350166 - Using deal_object.currentSince for last used price change. Max timestamp: 7657524. All considered: [7623156, 7012892, 7623156, 7657524, 7623156]
+2025-07-24 10:16:34,775 - ASIN: 8425350166 - last price change (focused on used) result: 2025-07-23 13:24:00 (from ts 7657524 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,775 - ASIN 8425350166: FBA Pick&Pack Fee found: $6.62 (from raw 662)
+2025-07-24 10:16:34,775 - ASIN 8425350166: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-07-24 10:16:34,775 - ASIN 8425350166: Parsed integer 20160927 as YYYYMMDD -> 2016-09-27.
+2025-07-24 10:16:34,775 - Buy Box - Current - ASIN 8425350166 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,775 - Buy Box - Current - ASIN 8425350166 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,775 - Buy Box - Current - ASIN 8425350166 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,775 - No valid Amazon - Current price for ASIN 8425350166
+2025-07-24 10:16:34,775 - Amazon - 365 days avg. for ASIN 8425350166: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,775 - No valid New - Current (value=-1, current_length=34) for ASIN 8425350166
+2025-07-24 10:16:34,775 - New, 3rd Party FBA - Current for ASIN 8425350166: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,776 - ASIN 8425350166: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 37304, 10974, 3266020, 3494, 54329, -1, 37378, -1, -1, -1, 0, 5, -1, 0, -1, 45, 118, 38673, -1, 12679, 15614, 25461, -1, -1, 54925, -1, -1, 4932, 6324, -1, -1, 13353, -1]
+2025-07-24 10:16:34,776 - New, 3rd Party FBA - Lowest for ASIN 8425350166: Found price $34.25 from stats.min[10][1]
+2025-07-24 10:16:34,776 - New, 3rd Party FBM - Current for ASIN 8425350166: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,776 - New, 3rd Party FBM - Current for ASIN 8425350166: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,776 - ASIN 8425350166: New, 3rd Party FBM - 365 days avg. found: $373.78 from stats.avg365[7]
+2025-07-24 10:16:34,776 - Buy Box Used - Current for ASIN 8425350166: Price found via primary logic. FBM item price: 2574 + shipping: 0 = 2574. Formatted: $25.74
+2025-07-24 10:16:34,776 - Buy Box Used - 365 days avg. for ASIN 8425350166: Using stats.avg365[32], value: $133.53
+2025-07-24 10:16:34,776 - Used, like new - 365 days avg. for ASIN 8425350166: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-07-24 10:16:34,776 - Used, very good - 365 days avg. for ASIN 8425350166: Using stats.avg365[20], value: $126.79
+2025-07-24 10:16:34,776 - Used, good - 365 days avg. for ASIN 8425350166: Using stats.avg365[21], value: $156.14
+2025-07-24 10:16:34,776 - No valid Used - Acceptable price for ASIN 8425350166
+2025-07-24 10:16:34,776 - Used, acceptable - 365 days avg. for ASIN 8425350166: Using stats.avg365[22], value: $254.61
+2025-07-24 10:16:34,776 - ASIN 8425350166: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,776 - ASIN 8425350166: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+2025-07-24 10:16:34,777 - ASIN 8425350166: Used Offer Count - Current calculated as 6 (Total: 6, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,777 - ASIN 8425350166: Used Offer Count - 365 days avg. from stats.avg365[12]: 5
+2025-07-24 10:16:34,777 - ASIN 8425350166: The 'ASIN' field in the processed row ('="8425350166"') differs from or is not the primary source ASIN ('8425350166'). Correcting.
+2025-07-24 10:16:34,777 - ASIN 0871352567: Percent Down 365 calculated. Current: 20.00, Avg365: 75.12, Diff: 73.38%, Result: 73%
+2025-07-24 10:16:34,777 - ASIN 0871352567: No indication of free shipping found for Used - Current offer.
+2025-07-24 10:16:34,777 - ASIN: 0871352567 - last_update: Selected latest_ts=7658776 from candidates [7658590, 7658776]. Sources considered: ['deal_object.lastUpdate (7658590)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,777 - ASIN: 0871352567 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,777 - ASIN: 0871352567 - Using deal_object.currentSince for last used price change. Max timestamp: 7646028. All considered: [7646028, 7154940, 7646028, 7646028]
+2025-07-24 10:16:34,777 - ASIN: 0871352567 - last price change (focused on used) result: 2025-07-15 13:48:00 (from ts 7646028 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,777 - ASIN 0871352567: FBA Pick&Pack Fee found: $3.33 (from raw 333)
+2025-07-24 10:16:34,777 - ASIN 0871352567: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
+2025-07-24 10:16:34,777 - ASIN 0871352567: Parsed integer 1987 as YYYY -> 1987.
+2025-07-24 10:16:34,777 - No valid listedSince (ts=0) for ASIN 0871352567
+2025-07-24 10:16:34,778 - Buy Box - Current - ASIN 0871352567 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,778 - Buy Box - Current - ASIN 0871352567 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,778 - Buy Box - Current - ASIN 0871352567 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,778 - No valid Amazon - Current price for ASIN 0871352567
+2025-07-24 10:16:34,778 - Amazon - 365 days avg. for ASIN 0871352567: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,778 - No valid New - Current (value=-1, current_length=34) for ASIN 0871352567
+2025-07-24 10:16:34,778 - New, 3rd Party FBA - Current for ASIN 0871352567: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,778 - ASIN 0871352567: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 7512, 1542475, 994, 3212, -1, -1, -1, -1, -1, -1, 1, -1, 3, -1, 46, 41, -1, 2998, 3319, 9969, -1, 3836, 3543, 3569, -1, -1, -1, -1, -1, -1, 20914, -1]
+2025-07-24 10:16:34,778 - New, 3rd Party FBA - Lowest for ASIN 0871352567: Found price $28.98 from stats.min[10][1]
+2025-07-24 10:16:34,778 - New, 3rd Party FBM - Current for ASIN 0871352567: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,778 - New, 3rd Party FBM - Current for ASIN 0871352567: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,778 - ASIN 0871352567: New, 3rd Party FBM - 365 days avg. not available or invalid at stats.avg365[7]. Value: -1. avg365 array: [-1, -1, 7512, 1542475, 994, 3212, -1, -1, -1, -1, -1, -1, 1, -1, 3, -1, 46, 41, -1, 2998, 3319, 9969, -1, 3836, 3543, 3569, -1, -1, -1, -1, -1, -1, 20914, -1]
+2025-07-24 10:16:34,778 - Buy Box Used - Current for ASIN 0871352567: Price found via primary logic. FBM item price: 2000 + shipping: 499 = 2499. Formatted: $24.99
+2025-07-24 10:16:34,778 - Buy Box Used - 365 days avg. for ASIN 0871352567: Using stats.avg365[32], value: $209.14
+2025-07-24 10:16:34,778 - Used, like new - 365 days avg. for ASIN 0871352567: Using stats.avg365[19], value: $29.98
+2025-07-24 10:16:34,778 - Used, very good - 365 days avg. for ASIN 0871352567: Using stats.avg365[20], value: $33.19
+2025-07-24 10:16:34,779 - Used, good - 365 days avg. for ASIN 0871352567: Using stats.avg365[21], value: $99.69
+2025-07-24 10:16:34,779 - No valid Used - Acceptable price for ASIN 0871352567
+2025-07-24 10:16:34,779 - Used, acceptable - 365 days avg. for ASIN 0871352567: Invalid or non-positive price at stats.avg365[22] (-1). Setting to '-'
+2025-07-24 10:16:34,779 - No valid List Price - Current (value=-1, current_length=34) for ASIN 0871352567
+2025-07-24 10:16:34,779 - ASIN 0871352567: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,779 - ASIN 0871352567: New Offer Count - 365 days avg. from stats.avg365[11]: -
+2025-07-24 10:16:34,779 - ASIN 0871352567: Used Offer Count - Current calculated as 4 (Total: 4, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,779 - ASIN 0871352567: Used Offer Count - 365 days avg. from stats.avg365[12]: 1
+2025-07-24 10:16:34,779 - ASIN 0871352567: The 'ASIN' field in the processed row ('="0871352567"') differs from or is not the primary source ASIN ('0871352567'). Correcting.
+2025-07-24 10:16:34,779 - ASIN 0789447398: Percent Down 365 calculated. Current: 22.42, Avg365: 42.15, Diff: 46.81%, Result: 47%
+2025-07-24 10:16:34,779 - ASIN 0789447398: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-07-24 10:16:34,779 - ASIN: 0789447398 - last_update: Selected latest_ts=7658776 from candidates [7658704, 7658776]. Sources considered: ['deal_object.lastUpdate (7658704)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,779 - ASIN: 0789447398 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,780 - ASIN: 0789447398 - Using deal_object.currentSince for last used price change. Max timestamp: 7657834. All considered: [7641484, 6489224, 7641672, 7657834]
+2025-07-24 10:16:34,780 - ASIN: 0789447398 - last price change (focused on used) result: 2025-07-23 18:34:00 (from ts 7657834 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,780 - ASIN 0789447398: FBA Pick&Pack Fee found: $5.37 (from raw 537)
+2025-07-24 10:16:34,780 - ASIN 0789447398: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-07-24 10:16:34,780 - ASIN 0789447398: Parsed integer 1999 as YYYY -> 1999.
+2025-07-24 10:16:34,780 - No valid listedSince (ts=0) for ASIN 0789447398
+2025-07-24 10:16:34,780 - Buy Box - Current - ASIN 0789447398 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,780 - Buy Box - Current - ASIN 0789447398 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,780 - Buy Box - Current - ASIN 0789447398 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,780 - No valid Amazon - Current price for ASIN 0789447398
+2025-07-24 10:16:34,780 - Amazon - 365 days avg. for ASIN 0789447398: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,780 - No valid New - Current (value=-1, current_length=34) for ASIN 0789447398
+2025-07-24 10:16:34,780 - New, 3rd Party FBA - Current for ASIN 0789447398: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,780 - ASIN 0789447398: New, 3rd Party FBA - 365 days avg. found: $70.35
+2025-07-24 10:16:34,780 - New, 3rd Party FBA - Lowest for ASIN 0789447398: Found price $68.85 from stats.min[10][1]
+2025-07-24 10:16:34,781 - New, 3rd Party FBM - Current for ASIN 0789447398: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,781 - New, 3rd Party FBM - Current for ASIN 0789447398: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,781 - ASIN 0789447398: New, 3rd Party FBM - 365 days avg. found: $104.17 from stats.avg365[7]
+2025-07-24 10:16:34,781 - Buy Box Used - Current for ASIN 0789447398: Price found via primary logic. FBA item price: 7392. Formatted: $73.92
+2025-07-24 10:16:34,781 - Buy Box Used - 365 days avg. for ASIN 0789447398: Using stats.avg365[32], value: $37.52
+2025-07-24 10:16:34,781 - Used, like new - 365 days avg. for ASIN 0789447398: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-07-24 10:16:34,781 - Used, very good - 365 days avg. for ASIN 0789447398: Using stats.avg365[20], value: $72.17
+2025-07-24 10:16:34,781 - Used, good - 365 days avg. for ASIN 0789447398: Using stats.avg365[21], value: $44.69
+2025-07-24 10:16:34,781 - Used, acceptable - 365 days avg. for ASIN 0789447398: Using stats.avg365[22], value: $48.60
+2025-07-24 10:16:34,781 - No valid List Price - Current (value=-1, current_length=34) for ASIN 0789447398
+2025-07-24 10:16:34,781 - ASIN 0789447398: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,781 - ASIN 0789447398: New Offer Count - 365 days avg. from stats.avg365[11]: 1
+2025-07-24 10:16:34,781 - ASIN 0789447398: Used Offer Count - Current calculated as 4 (Total: 4, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,781 - ASIN 0789447398: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+2025-07-24 10:16:34,782 - ASIN 0789447398: The 'ASIN' field in the processed row ('="0789447398"') differs from or is not the primary source ASIN ('0789447398'). Correcting.
+2025-07-24 10:16:34,782 - ASIN 0785105808: Percent Down 365 calculated. Current: 25.62, Avg365: 195.90, Diff: 86.92%, Result: 87%
+2025-07-24 10:16:34,782 - ASIN 0785105808: Found buyBoxUsedShipping to be 0, shipping is included.
+2025-07-24 10:16:34,782 - ASIN: 0785105808 - last_update: Selected latest_ts=7658776 from candidates [7658736, 7658776]. Sources considered: ['deal_object.lastUpdate (7658736)', 'product_data.stats.lastOffersUpdate (7658776)']
+2025-07-24 10:16:34,782 - ASIN: 0785105808 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+2025-07-24 10:16:34,782 - ASIN: 0785105808 - Using deal_object.currentSince for last used price change. Max timestamp: 7658440. All considered: [7658440, 5278904, 7657628, 7658320]
+2025-07-24 10:16:34,782 - ASIN: 0785105808 - last price change (focused on used) result: 2025-07-24 04:40:00 (from ts 7658440 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+2025-07-24 10:16:34,782 - ASIN 0785105808: FBA Pick&Pack Fee found: $3.33 (from raw 333)
+2025-07-24 10:16:34,782 - ASIN 0785105808: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+2025-07-24 10:16:34,782 - ASIN 0785105808: Non-positive/unhandled integer date_value -1. Outputting '-'.
+2025-07-24 10:16:34,782 - ASIN 0785105808: Date value '-1' (type: <class 'int'>) from field 'publicationDate' could not be parsed by any rule. Outputting '-'.
+2025-07-24 10:16:34,782 - No valid listedSince (ts=0) for ASIN 0785105808
+2025-07-24 10:16:34,782 - Buy Box - Current - ASIN 0785105808 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+2025-07-24 10:16:34,783 - Buy Box - Current - ASIN 0785105808 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+2025-07-24 10:16:34,783 - Buy Box - Current - ASIN 0785105808 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+2025-07-24 10:16:34,783 - No valid Amazon - Current price for ASIN 0785105808
+2025-07-24 10:16:34,783 - Amazon - 365 days avg. for ASIN 0785105808: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+2025-07-24 10:16:34,783 - No valid New - Current (value=-1, current_length=34) for ASIN 0785105808
+2025-07-24 10:16:34,783 - New, 3rd Party FBA - Current for ASIN 0785105808: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+2025-07-24 10:16:34,783 - ASIN 0785105808: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 19590, 5186808, 1294, 28135, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, -1, 20016, 29009, 22078, 22175, -1, 30398, -1, -1, -1, -1, -1, -1, 19640, -1]
+2025-07-24 10:16:34,783 - New, 3rd Party FBA - Lowest for ASIN 0785105808: stats.min[10] is not a valid pair: None
+2025-07-24 10:16:34,783 - New, 3rd Party FBM - Current for ASIN 0785105808: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+2025-07-24 10:16:34,783 - New, 3rd Party FBM - Current for ASIN 0785105808: Final result: -, Source: stats.current[7] (invalid value)
+2025-07-24 10:16:34,783 - ASIN 0785105808: New, 3rd Party FBM - 365 days avg. not available or invalid at stats.avg365[7]. Value: -1. avg365 array: [-1, -1, 19590, 5186808, 1294, 28135, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, -1, 20016, 29009, 22078, 22175, -1, 30398, -1, -1, -1, -1, -1, -1, 19640, -1]
+2025-07-24 10:16:34,783 - Buy Box Used - Current for ASIN 0785105808: Price found via primary logic. FBA item price: 2995. Formatted: $29.95
+2025-07-24 10:16:34,783 - Buy Box Used - 365 days avg. for ASIN 0785105808: Using stats.avg365[32], value: $196.40
+2025-07-24 10:16:34,783 - Used, like new - 365 days avg. for ASIN 0785105808: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+2025-07-24 10:16:34,783 - Used, very good - 365 days avg. for ASIN 0785105808: Using stats.avg365[20], value: $200.16
+2025-07-24 10:16:34,783 - Used, good - 365 days avg. for ASIN 0785105808: Using stats.avg365[21], value: $290.09
+2025-07-24 10:16:34,783 - Used, acceptable - 365 days avg. for ASIN 0785105808: Using stats.avg365[22], value: $220.78
+2025-07-24 10:16:34,784 - No valid List Price - Current (value=-1, current_length=34) for ASIN 0785105808
+2025-07-24 10:16:34,784 - ASIN 0785105808: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+2025-07-24 10:16:34,784 - ASIN 0785105808: New Offer Count - 365 days avg. from stats.avg365[11]: -
+2025-07-24 10:16:34,784 - ASIN 0785105808: Used Offer Count - Current calculated as 9 (Total: 9, New FBA: 0, New FBM: 0).
+2025-07-24 10:16:34,784 - ASIN 0785105808: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+2025-07-24 10:16:34,784 - ASIN 0785105808: The 'ASIN' field in the processed row ('="0785105808"') differs from or is not the primary source ASIN ('0785105808'). Correcting.
+2025-07-24 10:16:34,784 - Entering write_csv. Number of deals to process: 10. Number of rows generated: 10.
+2025-07-24 10:16:34,787 - CSV written: Keepa_Deals_Export.csv with 10 data rows.
+2025-07-24 10:16:34,787 - Writing CSV...
+2025-07-24 10:16:34,787 - Script completed!

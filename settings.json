@@ -3,5 +3,9 @@
     "estimated_shipping_per_book": 3.99,
     "estimated_tax_per_book": 5,
     "tax_exempt": false,
-    "default_markup": 10
+    "default_markup": 10,
+    "max_sales_rank": 9000000,
+    "min_price": 10.0,
+    "max_price": 9000000.0,
+    "min_percent_drop": 5
 }
