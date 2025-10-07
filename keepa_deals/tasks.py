@@ -156,7 +156,10 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
-        deal_response = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+        deal_response_raw = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+
+        # CRITICAL FIX: Handle API functions that may return a tuple (data, info) instead of just data.
+        deal_response = deal_response_raw[0] if isinstance(deal_response_raw, tuple) else deal_response_raw
 
         # Authoritatively update token manager with actual cost from the response
         tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
@@ -178,7 +181,7 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            # Request historical data to enable all calculations
+            # Request historical data to enable all calculations.
             product_response, _, tokens_consumed = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
             )
@@ -186,10 +189,6 @@ def update_recent_deals():
 
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
-                    # Combine the initial deal data with the full product data
-                    # This ensures fields like 'lastPriceChange' from the deal query are preserved
-                    initial_deal_data = next((item for item in recent_deals if item["asin"] == p['asin']), {})
-                    p.update(initial_deal_data)
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
@@ -198,10 +197,13 @@ def update_recent_deals():
             headers = json.load(f)
 
         rows_to_upsert = []
-        for asin, product_data in all_fetched_products.items():
-            if not product_data or product_data.get('error'):
-                logger.warning(f"Skipping processing for ASIN {asin} due to fetch error or no data.")
+        for deal in recent_deals:
+            asin = deal['asin']
+            if asin not in all_fetched_products:
                 continue
+
+            product_data = all_fetched_products[asin]
+            product_data.update(deal)
 
             processed_row = _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers)
 

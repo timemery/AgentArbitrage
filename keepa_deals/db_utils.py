@@ -59,10 +59,20 @@ def create_deals_table_if_not_exists():
                     headers = json.load(f)
 
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
-                # Ensure ASIN is unique from the start
-                cols_sql = [f'"{h}" TEXT' for h in sanitized_headers if h != 'ASIN']
-                cols_sql.insert(0, '"ASIN" TEXT NOT NULL UNIQUE')
+                # Infer types from header names for a more robust schema
+                cols_sql = []
+                for header in sanitized_headers:
+                    if header == 'ASIN':
+                        # ASIN is the primary key for deals
+                        cols_sql.append(f'"{header}" TEXT NOT NULL UNIQUE')
+                    elif 'Price' in header or 'Cost' in header or 'Fee' in header or 'Profit' in header or 'Margin' in header:
+                        cols_sql.append(f'"{header}" REAL')
+                    elif 'Rank' in header or 'Count' in header or 'Drops' in header:
+                        cols_sql.append(f'"{header}" INTEGER')
+                    else:
+                        cols_sql.append(f'"{header}" TEXT')
 
+                # Ensure 'id' is the primary key for SQLite's ROWID aliasing
                 create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, {', '.join(cols_sql)})"
                 cursor.execute(create_table_sql)
                 logger.info(f"Table '{TABLE_NAME}' created with a UNIQUE constraint on ASIN.")
