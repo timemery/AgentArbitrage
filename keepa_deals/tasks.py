@@ -12,7 +12,7 @@ from .db_utils import create_deals_table_if_not_exists, sanitize_col_name
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
-from .seller_info import get_all_seller_info # This function is now cache-based
+from .seller_info import get_all_seller_info
 from .business_calculations import (
     load_settings as business_load_settings,
     calculate_total_amz_fees,
@@ -23,22 +23,18 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Load environment variables
 load_dotenv()
 
-# --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 MAX_ASINS_PER_BATCH = 50
 MAX_SELLERS_PER_BATCH = 100
 LOCK_KEY = "update_recent_deals_lock"
-LOCK_TIMEOUT = 60 * 30  # 30 minutes
-
+LOCK_TIMEOUT = 60 * 30
 
 def _parse_price(value_str):
     if isinstance(value_str, (int, float)): return float(value_str)
@@ -52,23 +48,15 @@ def _parse_percent(value_str):
     try: return float(value_str.strip().replace('%', ''))
     except ValueError: return 0.0
 
-
 def _process_single_deal(product_data, seller_cache, xai_api_key, business_settings, headers):
-    """
-    Processes a single product data object to a fully enriched row.
-    Relies on a pre-populated seller_cache.
-    """
     asin = product_data.get('asin')
-    if not asin:
-        return None
+    if not asin: return None
 
     row_data = {'ASIN': asin}
 
-    # 1. Initial data extraction from field_mappings (excluding seller info)
     for header, func in zip(headers, FUNCTION_LIST):
         if func and func.__name__ != 'get_all_seller_info':
             try:
-                # Address TypeError by passing logger_param to functions that require it.
                 if func.__name__ in ['get_condition', 'last_update', 'last_price_change', 'deal_found']:
                     result = func(product_data, logger_param=logger)
                 else:
@@ -77,14 +65,12 @@ def _process_single_deal(product_data, seller_cache, xai_api_key, business_setti
             except Exception as e:
                 logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
 
-    # 2. Seller Info (now uses the pre-populated cache)
     try:
         seller_info = get_all_seller_info(product_data, seller_data_cache=seller_cache)
         row_data.update(seller_info)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info from cache: {e}", exc_info=True)
 
-    # 3. Business Calculations
     try:
         peak_price = _parse_price(row_data.get('Expected Peak Price', '0'))
         fba_fee = _parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
@@ -105,7 +91,6 @@ def _process_single_deal(product_data, seller_cache, xai_api_key, business_setti
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed business calculations: {e}", exc_info=True)
 
-    # 4. Analytics
     try:
         yr_avg_info = get_1yr_avg_sale_price(product_data, logger=logger)
         trend_info = get_trend(product_data, logger=logger)
@@ -117,7 +102,6 @@ def _process_single_deal(product_data, seller_cache, xai_api_key, business_setti
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)
 
-    # 5. Seasonality
     try:
         title = row_data.get('Title', '')
         categories = row_data.get('Categories - Sub', '')
@@ -184,7 +168,6 @@ def update_recent_deals():
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
-        # --- NEW STEP 2.5: BATCH FETCH SELLER DATA ---
         logger.info("Step 2.5: Collecting unique seller IDs for batch processing...")
         unique_seller_ids = set()
         for product in all_fetched_products.values():
@@ -207,7 +190,6 @@ def update_recent_deals():
             logger.info(f"Step 2.5 Complete: Fetched data for {len(seller_data_cache)} sellers.")
         else:
             logger.info("Step 2.5 Complete: No seller IDs found to fetch.")
-        # --- END OF NEW STEP ---
 
         logger.info("Step 3: Processing deals with cached seller data...")
         with open(HEADERS_PATH) as f:
@@ -222,7 +204,6 @@ def update_recent_deals():
             product_data = all_fetched_products[asin]
             product_data.update(deal)
 
-            # CORRECTED CALL: Pass the populated seller_data_cache to the processing function.
             processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:

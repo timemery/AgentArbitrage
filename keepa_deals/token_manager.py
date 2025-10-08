@@ -2,6 +2,7 @@
 import time
 import math
 import logging
+from .keepa_api import get_token_status # Import the function to get token status
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +15,8 @@ class TokenManager:
         
         # Constants
         self.REFILL_RATE_PER_MINUTE = 5
-        self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
+        # Setting this to a lower value for safety during initialization
+        self.MIN_TIME_BETWEEN_CALLS_SECONDS = 1
         
         # State variables
         self.tokens = 0
@@ -27,13 +29,26 @@ class TokenManager:
 
     def _initialize_tokens(self):
         """
-        Initializes token manager without an API call to avoid hanging issues.
-        The token count will be synced on the first API response.
+        Initializes the token manager by making a cheap API call to get the
+        current token count. This prevents the system from making expensive
+        calls when the token balance is negative.
         """
-        logger.info("Initializing TokenManager with default values. Token count will be synced after the first API call.")
-        self.tokens = 100  # Start with a reasonable guess, will be corrected on first response
-        self.last_api_call_timestamp = time.time() - self.MIN_TIME_BETWEEN_CALLS_SECONDS
-        logger.info("TokenManager initialized without a blocking API call.")
+        logger.info("Initializing TokenManager by fetching current token status from Keepa...")
+        token_data = get_token_status(self.api_key)
+
+        if token_data and 'tokensLeft' in token_data:
+            self.tokens = float(token_data['tokensLeft'])
+            self.last_api_call_timestamp = time.time()
+            self.last_refill_timestamp = time.time()
+            logger.info(f"TokenManager initialized successfully. Current tokens: {self.tokens}")
+        else:
+            # Fallback in case the API call fails during initialization
+            logger.error("Failed to fetch initial token status from Keepa. Defaulting to 0 tokens.")
+            self.tokens = 0
+            self.last_api_call_timestamp = time.time()
+
+        # After initialization, restore the normal rate limit
+        self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
 
     def _refill_tokens(self):
         """
@@ -55,7 +70,6 @@ class TokenManager:
         Checks if an API call can be made, waits if necessary.
         This is the main public method for controlling API access.
         """
-        # 1. Enforce time-based rate limit
         now = time.time()
         time_since_last_call = now - self.last_api_call_timestamp
         if time_since_last_call < self.MIN_TIME_BETWEEN_CALLS_SECONDS:
@@ -63,39 +77,31 @@ class TokenManager:
             logger.info(f"Rate limit: Pausing for {wait_duration:.2f} seconds.")
             time.sleep(wait_duration)
 
-        # 2. Update token count with any refills that occurred
         self._refill_tokens()
 
-        # 3. Check if we have enough tokens and wait if we don't
         if self.tokens < estimated_cost:
             tokens_needed = estimated_cost - self.tokens
             if self.REFILL_RATE_PER_MINUTE > 0:
-                # Calculate the minimum time required to get enough tokens
                 wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
                 logger.warning(
                     f"Insufficient tokens. Have: {self.tokens:.2f}, Need an estimated: {estimated_cost}. "
                     f"Waiting for {wait_time_seconds} seconds to refill."
                 )
                 time.sleep(wait_time_seconds)
-                # Refill tokens again after waiting
                 self._refill_tokens()
             else:
-                # This case should not happen with a positive refill rate, but as a fallback.
                 logger.error("Zero refill rate, cannot wait for tokens. Pausing for 15 minutes as a fallback.")
                 time.sleep(900)
                 self._refill_tokens()
         
         logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
-        # The actual deduction will happen after the call, using update_from_response
 
     def sync_tokens(self, tokens_left_from_api):
         """
         Authoritatively sets the token count from the API response.
-        This is the primary way to correct token drift.
         """
         old_token_count = self.tokens
         self.tokens = float(tokens_left_from_api)
-        # Reset refill timer after a sync to anchor our local estimation logic
         self.last_refill_timestamp = time.time()
         logger.info(
             f"Token count authoritatively synced from API response. "
@@ -104,7 +110,7 @@ class TokenManager:
 
     def update_after_call(self, tokens_left_from_api):
         """
-        Updates the token count and timestamp after an API call using the authoritative response.
+        Updates the token count and timestamp after an API call.
         """
         self.last_api_call_timestamp = time.time()
         self.sync_tokens(tokens_left_from_api)
