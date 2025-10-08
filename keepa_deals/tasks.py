@@ -160,7 +160,7 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            token_manager.request_permission_for_call(estimated_cost=len(batch_asins) * 2)
+            token_manager.request_permission_for_call(estimated_cost=len(batch_asins) * 8)
             product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
             if tokens_left is not None:
                 token_manager.update_after_call(tokens_left)
