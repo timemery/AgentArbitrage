@@ -54,8 +54,8 @@ def _process_single_deal_for_recalc(product_data, seller_cache, xai_api_key, bus
     for header, func in zip(headers, FUNCTION_LIST):
         if func and func.__name__ != 'get_all_seller_info':
             try:
-                if func.__name__ in ['get_condition', 'last_update', 'last_price_change']:
-                    result = func(product_data, logger=logger)
+                if func.__name__ in ['get_condition', 'last_update', 'last_price_change', 'deal_found']:
+                    result = func(product_data, logger_param=logger)
                 else:
                     result = func(product_data)
                 row_data.update(result)
