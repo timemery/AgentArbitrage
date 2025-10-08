@@ -1,5 +1,6 @@
+# keepa_deals/seller_info.py
+
 import logging
-from .keepa_api import fetch_seller_data
 from .stable_calculations import calculate_seller_quality_score
 import json
 
@@ -7,24 +8,19 @@ logger = logging.getLogger(__name__)
 
 # Constants
 WAREHOUSE_SELLER_ID = 'A2L77EE7U53NWQ'
-AMAZON_SELLER_ID = 'ATVPDKIKX0DER'
 
-# Cache for seller data to avoid redundant API calls within a script run
-seller_data_cache = {}
-
-def _get_best_offer_analysis(product, api_key=None, token_manager=None):
+def _get_best_offer_analysis(product, seller_data_cache):
     """
     Finds the best live offer by cross-referencing the 'stats.current' array
-    with the 'offers' array to ensure price accuracy and retrieve seller info.
+    with the 'offers' array to ensure price accuracy and retrieve seller info
+    from a pre-populated cache.
     """
     asin = product.get('asin', 'N/A')
     stats = product.get('stats', {})
     current_prices_from_stats = stats.get('current', [])
     
-    # Indices for various "Current" prices in the stats.current array.
     price_indices = [0, 1, 2, 7, 10, 19, 20, 21, 22, 32]
     
-    # Create a set of valid current prices from the reliable stats array.
     valid_stat_prices = set()
     for index in price_indices:
         if len(current_prices_from_stats) > index and current_prices_from_stats[index] is not None and current_prices_from_stats[index] > 0:
@@ -34,7 +30,6 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
         logger.warning(f"ASIN {asin}: No valid current prices found in stats.current. Cannot determine best price.")
         return {'Best Price': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
 
-    # Now, find the best offer by iterating through the live offers and validating their price.
     best_offer_details = {
         'price': float('inf'),
         'seller_id': None,
@@ -49,7 +44,6 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
             if not isinstance(offer, dict) or offer.get('sellerId') == WAREHOUSE_SELLER_ID:
                 continue
 
-            # Get the most recent price from the offer's history
             offer_history = offer.get('offerCSV', [])
             if len(offer_history) >= 2:
                 try:
@@ -57,7 +51,6 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
                     shipping = int(offer_history[-1])
                     if shipping == -1: shipping = 0
                     
-                    # This is the crucial step: validate the offer's price against our set of true current prices.
                     if price in valid_stat_prices:
                         total_price = price + shipping
                         if total_price < best_offer_details['price']:
@@ -69,7 +62,6 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
 
     if best_offer_details['price'] == float('inf'):
         logger.warning(f"ASIN {asin}: Could not find any live offer whose price matched a valid price in stats.current. Stats prices: {valid_stat_prices}")
-        # Fallback: just use the minimum price from stats if no offer matches
         min_price_cents = min(valid_stat_prices)
         return {
             'Best Price': f"${min_price_cents / 100:.2f}",
@@ -79,7 +71,6 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
             'Seller_Quality_Score': '-'
         }
         
-    # We have the best offer. Proceed to build the final analysis.
     best_seller_id = best_offer_details['seller_id']
     final_analysis = {
         'Best Price': f"${best_offer_details['price'] / 100:.2f}",
@@ -91,34 +82,15 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
     
     logger.info(f"ASIN {asin}: Found best price {final_analysis['Best Price']} from validated live offers, matched to Seller ID: {best_seller_id}")
 
-    if not api_key or not best_seller_id:
-        logger.warning(f"ASIN {asin}: Cannot fetch seller score. No API key or seller ID.")
+    if not best_seller_id:
+        logger.warning(f"ASIN {asin}: Cannot get seller score because no seller ID was found.")
         return final_analysis
 
-    # Fetch seller data from the cache or API
+    # THIS IS THE REFACTORED PART: We now ONLY look in the cache.
     seller_data = seller_data_cache.get(best_seller_id)
-    
-    if not seller_data and token_manager:
-        logger.info(f"ASIN {asin}: Seller data for ID {best_seller_id} not in cache. Fetching from API.")
-        token_manager.request_permission_for_call(estimated_cost=1) # Cost for one seller
-        seller_data_response, _, _, tokens_left = fetch_seller_data(api_key, [best_seller_id])
-
-        if tokens_left is not None:
-            token_manager.update_after_call(tokens_left)
-        else:
-            logger.warning(f"Could not determine tokens left after seller fetch for {best_seller_id}. Token count may be inaccurate.")
-
-        if seller_data_response and seller_data_response.get('sellers'):
-            seller_data = seller_data_response['sellers'].get(best_seller_id)
-            if seller_data:
-                seller_data_cache[best_seller_id] = seller_data
 
     if seller_data:
-        # Extract seller name
         final_analysis['Seller'] = seller_data.get('sellerName', 'N/A')
-
-        # The cache should contain the raw seller data dictionary.
-        # The previous logic was flawed. We directly use the 'seller_data' object.
         rating_count = seller_data.get('currentRatingCount', 0)
         
         if rating_count > 0:
@@ -130,17 +102,20 @@ def _get_best_offer_analysis(product, api_key=None, token_manager=None):
         else:
             final_analysis['Seller_Quality_Score'] = "New Seller"
     else:
-        # This case handles when the API call was successful but returned no data for the seller ID,
-        # or if the seller ID was not found in the cache.
-        logger.warning(f"ASIN {asin}: No seller data found for ID {best_seller_id}. API might not have data for this seller.")
+        logger.warning(f"ASIN {asin}: No seller data found in cache for ID {best_seller_id}.")
         final_analysis['Seller'] = "No Seller Info"
         final_analysis['Seller Rank'] = "N/A"
         final_analysis['Seller_Quality_Score'] = "N/A"
 
     return final_analysis
 
-def get_all_seller_info(product, api_key=None, token_manager=None):
+def get_all_seller_info(product, seller_data_cache=None):
     """
     Public function to get all seller-related information in a single dictionary.
+    This function now relies on a pre-populated cache of seller data and does not make API calls.
     """
-    return _get_best_offer_analysis(product, api_key=api_key, token_manager=token_manager)
+    if seller_data_cache is None:
+        # This provides a safeguard if the cache isn't passed, preventing crashes.
+        # The caller (in tasks.py) is responsible for populating the cache.
+        seller_data_cache = {}
+    return _get_best_offer_analysis(product, seller_data_cache)

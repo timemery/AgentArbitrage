@@ -1,9 +1,6 @@
 import logging
 import os
 import json
-import logging
-import os
-import json
 import sqlite3
 import time
 from datetime import datetime, timezone
@@ -12,10 +9,10 @@ import redis
 
 from celery_config import celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name
-from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
+from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
-from .seller_info import get_all_seller_info
+from .seller_info import get_all_seller_info # This function is now cache-based
 from .business_calculations import (
     load_settings as business_load_settings,
     calculate_total_amz_fees,
@@ -38,6 +35,7 @@ DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 MAX_ASINS_PER_BATCH = 50
+MAX_SELLERS_PER_BATCH = 100
 LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 
@@ -55,35 +53,36 @@ def _parse_percent(value_str):
     except ValueError: return 0.0
 
 
-def _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers):
+def _process_single_deal(product_data, seller_cache, xai_api_key, business_settings, headers):
+    """
+    Processes a single product data object to a fully enriched row.
+    Relies on a pre-populated seller_cache.
+    """
     asin = product_data.get('asin')
     if not asin:
         return None
 
     row_data = {'ASIN': asin}
 
-    # 1. Initial data extraction from field_mappings
+    # 1. Initial data extraction from field_mappings (excluding seller info)
     for header, func in zip(headers, FUNCTION_LIST):
-        if func:
+        if func and func.__name__ != 'get_all_seller_info':
             try:
-                if func.__name__ in ['last_update', 'last_price_change']:
-                    result = func(product_data, logger, product_data)
-                elif func.__name__ == 'deal_found':
-                    result = func(product_data, logger)
-                elif func.__name__ == 'get_condition':
-                    result = func(product_data, logger)
+                # Address TypeError by passing logger to functions that require it.
+                if func.__name__ in ['deal_found', 'get_condition', 'last_update', 'last_price_change']:
+                    result = func(product_data, logger=logger)
                 else:
                     result = func(product_data)
                 row_data.update(result)
             except Exception as e:
                 logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
 
-    # 2. Seller Info
+    # 2. Seller Info (now uses the pre-populated cache)
     try:
-        seller_info = get_all_seller_info(product_data, api_key=api_key, token_manager=token_manager)
+        seller_info = get_all_seller_info(product_data, seller_data_cache=seller_cache)
         row_data.update(seller_info)
     except Exception as e:
-        logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
+        logger.error(f"ASIN {asin}: Failed to get seller info from cache: {e}", exc_info=True)
 
     # 3. Business Calculations
     try:
@@ -156,14 +155,9 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
-        deal_response_raw = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
-
-        # CRITICAL FIX: Handle API functions that may return a tuple (data, info) instead of just data.
-        deal_response = deal_response_raw[0] if isinstance(deal_response_raw, tuple) else deal_response_raw
-
-        # Authoritatively update token manager with actual cost from the response
-        tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
-        token_manager.update_after_call(tokens_consumed)
+        deal_response, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+        if tokens_left is not None:
+            token_manager.update_after_call(tokens_left=tokens_left)
 
         if not deal_response or 'deals' not in deal_response:
             logger.error("Step 1 Failed: No response from deal fetch.")
@@ -181,18 +175,41 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            # Request historical data to enable all calculations.
-            product_response, _, tokens_consumed = fetch_product_batch(
-                api_key, batch_asins, history=1, offers=20
-            )
-            token_manager.update_after_call(tokens_consumed)
+            product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+            if tokens_left is not None:
+                token_manager.update_after_call(tokens_left=tokens_left)
 
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
-        logger.info("Step 3: Processing deals...")
+        # --- NEW STEP 2.5: BATCH FETCH SELLER DATA ---
+        logger.info("Step 2.5: Collecting unique seller IDs for batch processing...")
+        unique_seller_ids = set()
+        for product in all_fetched_products.values():
+            for offer in product.get('offers', []):
+                if isinstance(offer, dict) and 'sellerId' in offer and offer['sellerId']:
+                    unique_seller_ids.add(offer['sellerId'])
+
+        seller_data_cache = {}
+        if unique_seller_ids:
+            logger.info(f"Found {len(unique_seller_ids)} unique seller IDs. Fetching data in batches...")
+            seller_id_list = list(unique_seller_ids)
+            for i in range(0, len(seller_id_list), MAX_SELLERS_PER_BATCH):
+                batch_seller_ids = seller_id_list[i:i + MAX_SELLERS_PER_BATCH]
+                seller_response, _, _, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
+                if tokens_left is not None:
+                    token_manager.update_after_call(tokens_left=tokens_left)
+
+                if seller_response and 'sellers' in seller_response:
+                    seller_data_cache.update(seller_response['sellers'])
+            logger.info(f"Step 2.5 Complete: Fetched data for {len(seller_data_cache)} sellers.")
+        else:
+            logger.info("Step 2.5 Complete: No seller IDs found to fetch.")
+        # --- END OF NEW STEP ---
+
+        logger.info("Step 3: Processing deals with cached seller data...")
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
 
@@ -205,7 +222,8 @@ def update_recent_deals():
             product_data = all_fetched_products[asin]
             product_data.update(deal)
 
-            processed_row = _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers)
+            # CORRECTED CALL: Pass the populated seller_data_cache to the processing function.
+            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
@@ -221,17 +239,9 @@ def update_recent_deals():
         try:
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
-
-                # The list of original headers from the JSON file defines the canonical order.
                 original_headers = headers
                 sanitized_headers = [sanitize_col_name(h) for h in original_headers]
-
-                data_for_upsert = []
-                for row_dict in rows_to_upsert:
-                    # Build the tuple of values in the exact order of the original headers list.
-                    # This ensures the data aligns perfectly with the sanitized headers in the SQL query.
-                    row_tuple = tuple(row_dict.get(h) for h in original_headers)
-                    data_for_upsert.append(row_tuple)
+                data_for_upsert = [tuple(row.get(h) for h in original_headers) for row in rows_to_upsert]
 
                 upsert_sql = f"""
                 INSERT INTO {TABLE_NAME} ({', '.join(f'"{h}"' for h in sanitized_headers)})
@@ -239,15 +249,11 @@ def update_recent_deals():
                 ON CONFLICT(ASIN) DO UPDATE SET
                   {', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')}
                 """
-
                 cursor.executemany(upsert_sql, data_for_upsert)
                 conn.commit()
                 logger.info(f"Step 4 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
-
         except sqlite3.Error as e:
             logger.error(f"Step 4 Failed: Database error during upsert: {e}", exc_info=True)
-        except Exception as e:
-            logger.error(f"Step 4 Failed: Unexpected error during upsert: {e}", exc_info=True)
 
         logger.info("--- Task: update_recent_deals finished ---")
     finally:

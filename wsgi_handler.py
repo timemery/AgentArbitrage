@@ -16,8 +16,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_config import celery
-from keepa_deals.Keepa_Deals import recalculate_deals
-# from keepa_deals.Keepa_Deals import run_keepa_script
+from keepa_deals.Keepa_Deals import run_keepa_script, recalculate_deals
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -629,18 +628,17 @@ def start_keepa_scan():
     })
 
     # Trigger the task
-    # task = run_keepa_script.delay(
-    #     api_key=KEEPA_API_KEY,
-    #     no_cache=True, # Or get this from the form
-    #     output_dir='data',
-    #     deal_limit=limit,
-    #     status_update_callback=None # Cannot pass this from here
-    # )
+    task = run_keepa_script.delay(
+        api_key=KEEPA_API_KEY,
+        no_cache=True, # Or get this from the form
+        output_dir='data',
+        deal_limit=limit,
+        status_update_callback=None # Cannot pass this from here
+    )
 
-    # # The Celery task is now responsible for setting the initial status.
-    # # We can store the task_id in the session for potential future use.
-    # session['latest_task_id'] = task.id
-    pass
+    # The Celery task is now responsible for setting the initial status.
+    # We can store the task_id in the session for potential future use.
+    session['latest_task_id'] = task.id
 
     flash('Keepa scan has been initiated in the background.', 'success')
     return redirect(url_for('data_sourcing'))
@@ -772,14 +770,13 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
         print(f"KEEPA_API_KEY loaded: {'*' * len(KEEPA_API_KEY)}")
         app.logger.info("Starting Keepa deals fetching command...")
         
-        # run_keepa_script.delay(
-        #     api_key=KEEPA_API_KEY,
-        #     no_cache=no_cache,
-        #     output_dir=output_dir,
-        #     deal_limit=limit,
-        #     status_update_callback=None
-        # )
-        pass
+        run_keepa_script.delay(
+            api_key=KEEPA_API_KEY,
+            no_cache=no_cache,
+            output_dir=output_dir,
+            deal_limit=limit,
+            status_update_callback=None
+        )
         
         print("run_keepa_script finished successfully.")
         app.logger.info("Keepa deals fetching command finished successfully.")
