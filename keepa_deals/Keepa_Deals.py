@@ -151,7 +151,7 @@ def recalculate_deals():
 
             token_manager.request_permission_for_call(estimated_cost=len(asins_to_process) * 2)
             product_data, _, _, tokens_left = fetch_product_batch(api_key, asins_to_process, history=1, offers=20)
-            if tokens_left is not None: token_manager.update_after_call(tokens_left=tokens_left)
+            if tokens_left is not None: token_manager.update_after_call(tokens_left)
             if not product_data or 'products' not in product_data: continue
 
             products_map = {p['asin']: p for p in product_data['products']}
@@ -162,7 +162,7 @@ def recalculate_deals():
                 seller_id_list = list(unique_seller_ids)
                 token_manager.request_permission_for_call(estimated_cost=len(seller_id_list))
                 seller_response, _, _, tokens_left = fetch_seller_data(api_key, seller_id_list)
-                if tokens_left is not None: token_manager.update_after_call(tokens_left=tokens_left)
+                if tokens_left is not None: token_manager.update_after_call(tokens_left)
                 if seller_response and 'sellers' in seller_response:
                     seller_data_cache.update(seller_response['sellers'])
 

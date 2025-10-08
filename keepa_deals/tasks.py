@@ -157,7 +157,7 @@ def update_recent_deals():
         logger.info("Step 1: Fetching recent deals...")
         deal_response, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
         if tokens_left is not None:
-            token_manager.update_after_call(tokens_left=tokens_left)
+            token_manager.update_after_call(tokens_left)
 
         if not deal_response or 'deals' not in deal_response:
             logger.error("Step 1 Failed: No response from deal fetch.")
@@ -177,7 +177,7 @@ def update_recent_deals():
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
             product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
             if tokens_left is not None:
-                token_manager.update_after_call(tokens_left=tokens_left)
+                token_manager.update_after_call(tokens_left)
 
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
@@ -200,7 +200,7 @@ def update_recent_deals():
                 batch_seller_ids = seller_id_list[i:i + MAX_SELLERS_PER_BATCH]
                 seller_response, _, _, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
                 if tokens_left is not None:
-                    token_manager.update_after_call(tokens_left=tokens_left)
+                    token_manager.update_after_call(tokens_left)
 
                 if seller_response and 'sellers' in seller_response:
                     seller_data_cache.update(seller_response['sellers'])
