@@ -139,6 +139,7 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
+        token_manager.request_permission_for_call(estimated_cost=5)
         deal_response, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
         if tokens_left is not None:
             token_manager.update_after_call(tokens_left)
@@ -159,6 +160,7 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
+            token_manager.request_permission_for_call(estimated_cost=len(batch_asins) * 2)
             product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
             if tokens_left is not None:
                 token_manager.update_after_call(tokens_left)
@@ -181,6 +183,7 @@ def update_recent_deals():
             seller_id_list = list(unique_seller_ids)
             for i in range(0, len(seller_id_list), MAX_SELLERS_PER_BATCH):
                 batch_seller_ids = seller_id_list[i:i + MAX_SELLERS_PER_BATCH]
+                token_manager.request_permission_for_call(estimated_cost=len(batch_seller_ids))
                 seller_response, _, _, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
                 if tokens_left is not None:
                     token_manager.update_after_call(tokens_left)
