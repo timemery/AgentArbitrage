@@ -156,14 +156,11 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
-        deal_response_raw = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
-
-        # CRITICAL FIX: Handle API functions that may return a tuple (data, info) instead of just data.
-        deal_response = deal_response_raw[0] if isinstance(deal_response_raw, tuple) else deal_response_raw
-
-        # Authoritatively update token manager with actual cost from the response
-        tokens_consumed = deal_response.get('tokensConsumed', 0) if deal_response else 0
-        token_manager.update_after_call(tokens_consumed)
+        deal_response, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
+        if tokens_left is not None:
+            # The token manager in the current codebase expects tokens_left, not consumed.
+            # This is a bit of a misnomer but is how the current TokenManager is designed.
+            token_manager.update_after_call(tokens_left)
 
         if not deal_response or 'deals' not in deal_response:
             logger.error("Step 1 Failed: No response from deal fetch.")
@@ -182,10 +179,11 @@ def update_recent_deals():
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
             # Request historical data to enable all calculations.
-            product_response, _, tokens_consumed = fetch_product_batch(
+            product_response, _, _, tokens_left = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
             )
-            token_manager.update_after_call(tokens_consumed)
+            if tokens_left is not None:
+                token_manager.update_after_call(tokens_left)
 
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
