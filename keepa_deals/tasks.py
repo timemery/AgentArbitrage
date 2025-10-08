@@ -69,7 +69,7 @@ def _process_single_deal(product_data, seller_cache, xai_api_key, business_setti
         if func and func.__name__ != 'get_all_seller_info':
             try:
                 # Address TypeError by passing logger to functions that require it.
-                if func.__name__ in ['deal_found', 'get_condition', 'last_update', 'last_price_change']:
+                if func.__name__ in ['get_condition', 'last_update', 'last_price_change']:
                     result = func(product_data, logger=logger)
                 else:
                     result = func(product_data)
