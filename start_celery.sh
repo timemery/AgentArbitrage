@@ -4,6 +4,7 @@
 
 # Step 1: Define constants for paths.
 APP_DIR="."
+LOG_FILE="$APP_DIR/celery.log"
 VENV_PYTHON="python" # Use the python in the current environment
 WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery worker --loglevel=INFO"
 PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery purge -f"
@@ -17,9 +18,14 @@ sleep 2
 echo "Purging any pending tasks from the Celery queue..."
 $PURGE_COMMAND
 
-# Step 4: Start the Celery worker using nohup, redirecting output to /dev/null.
-echo "Starting Celery worker in the background..."
-nohup $WORKER_COMMAND > /dev/null 2>&1 &
+# Step 4: Ensure the log file exists and is empty for a clean run.
+echo "Ensuring log file exists at $LOG_FILE..."
+rm -f $LOG_FILE
+touch $LOG_FILE
+
+# Step 5: Start the Celery worker using nohup.
+echo "Starting Celery worker in the background, logging to $LOG_FILE..."
+nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &
 
 sleep 2
 echo "Celery worker startup command has been issued. Check status with 'ps aux | grep celery'."
