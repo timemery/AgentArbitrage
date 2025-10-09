@@ -534,6 +534,21 @@ button:disabled {
     width: 100%;
 }
 
+.deal-counter-container {
+    width: 100%;
+    max-width: 1800px; /* Match table width */
+    text-align: left;
+    margin-top: 10px; /* Reduced top margin to match bottom margin */
+    margin-bottom: 10px;
+    padding-left: 10px; /* Align with table padding */
+}
+
+#deal-counter {
+    font-size: 16px; /* Match header font size */
+    font-weight: bold; /* Match header font weight */
+    color: #c5c5c5; /* Match header font color */
+}
+
 .table-container {
     width: auto; /* Allow table to define its own width */
     max-width: 100%; /* Prevent overflow on small screens */

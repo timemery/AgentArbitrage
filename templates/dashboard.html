@@ -31,8 +31,12 @@
             <div class="filter-buttons">
                 <button type="submit">Apply Filters</button>
                 <button type="reset" id="reset-filters">Reset</button>
+                <button type="button" id="refresh-all-data">Refresh All Data</button>
             </div>
         </form>
+    </div>
+    <div class="deal-counter-container">
+        <span id="deal-counter"></span>
     </div>
     <div class="table-container">
         <div id="deals-table"></div>
@@ -66,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const profitMarginSlider = document.getElementById('min_profit_margin_slider');
     const profitMarginValueSpan = document.getElementById('profit-margin-value');
     const hiddenProfitMarginInput = document.getElementById('min_profit_margin');
+    const dealCounterSpan = document.getElementById('deal-counter');
 
     // --- New Slider Logic ---
     const salesRankSteps = [
@@ -412,6 +417,10 @@ document.addEventListener('DOMContentLoaded', function() {
         pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
         prevButton.disabled = currentPage <= 1;
         nextButton.disabled = currentPage >= totalPages;
+
+        // Update the new deal counter
+        const dealCount = pagination.total_records || 0;
+        dealCounterSpan.textContent = `${dealCount.toLocaleString()} Deals Found`;
     }
 
     filterForm.addEventListener('submit', e => {
@@ -478,6 +487,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start polling immediately on page load to catch ongoing jobs, then set interval
     checkRecalcStatus();
     pollInterval = setInterval(checkRecalcStatus, 3000); // Poll every 3 seconds
+
+    // --- Event Listener for the new Refresh Button ---
+    const refreshButton = document.getElementById('refresh-all-data');
+    refreshButton.addEventListener('click', async () => {
+        try {
+            // Disable the button to prevent multiple clicks
+            refreshButton.disabled = true;
+            refreshButton.textContent = 'Refreshing...';
+
+            const response = await fetch('/api/refresh-all-deals', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                // Immediately check status to show the indicator and restart polling
+                checkRecalcStatus();
+                if (pollInterval) clearInterval(pollInterval);
+                pollInterval = setInterval(checkRecalcStatus, 3000);
+            } else {
+                alert(`Error: ${data.message || 'Could not start refresh.'}`);
+            }
+        } catch (error) {
+            console.error('Error triggering refresh:', error);
+            alert('An error occurred while trying to start the refresh.');
+        } finally {
+            // Re-enable the button after a short delay
+            setTimeout(() => {
+                refreshButton.disabled = false;
+                refreshButton.textContent = 'Refresh All Data';
+            }, 3000);
+        }
+    });
 
     fetchDeals();
 });

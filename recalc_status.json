@@ -1,4 +1,6 @@
 {
-    "status": "Completed",
-    "message": "Recalculation complete."
+    "status": "Running",
+    "message": "Found 435 deals. Fetching fresh data...",
+    "total_deals": 435,
+    "processed_deals": 0
 }
