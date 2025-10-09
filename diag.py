@@ -29,7 +29,8 @@ def run_diagnostic():
     print("\n[Step 2] Calling Keepa API (fetch_deals_for_deals)...")
     try:
         # Using a 30-day range to maximize chances of finding deals
-        deal_response = fetch_deals_for_deals(30, api_key, use_deal_settings=True)
+        deal_response_tuple = fetch_deals_for_deals(30, api_key, use_deal_settings=True)
+        deal_response = deal_response_tuple[0] if deal_response_tuple else None
         
         if deal_response is None:
             print("  [FAIL] API call returned None. This is the point of failure.")

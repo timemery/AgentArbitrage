@@ -211,3 +211,92 @@ The final, successful solution involved two minimal, targeted patches to fix the
 1. **Trust the `celery.log`:** This log file is the only source of ground truth. The traceback for the critical crash was present in the logs for a long time but was repeatedly overlooked. Any future debugging must start with a thorough analysis of this file.
 2. **The Pipeline is Now Correct, but Stale Data Exists:** The `update_recent_deals` task is now believed to be fixed and should process *new* deals correctly. However, the database still contains stale, incorrectly processed data from before the fix.
 3. **Next Step is the `recalculate_deals` Task:** The user has approved a plan to enhance the `recalculate_deals` function in `keepa_deals/Keepa_Deals.py`. This task should be modified to perform a *full* data refresh on all existing database records, running them through the entire data enrichment pipeline. This will clean the stale data and provide a valuable tool for future maintenance.
+
+
+
+### **Dev Log Entry: Task `fix/pipeline-and-refresh`**
+
+**Objective:** Stabilize the crashing `update_recent_deals` Celery task and implement a token-efficient `recalculate_deals` task for full data refresh.
+
+**Summary:** This task was a protracted and difficult debugging effort that uncovered multiple, layered bugs in the application's data pipeline and token management logic. (NOTE: The bugs did not exist until Part 1 of the 4 Part Server Side DB task, which is detailed in this document: "Server Side DB - updates only when deals change on Keepa.md" The logic and token management was working perfectly previous to starting this task) The primary challenge was a catastrophic token drain that repeatedly drove the API token balance into a deep negative, causing all subsequent API calls to fail with `429 Too Many Requests` errors.
+
+**Key Challenges & Resolutions:**
+
+1. **`ImportError` & Initial Instability:** The first attempts to run the tasks were met with `ImportError` and `ValueError` crashes. This was a red herring caused by stale code on the server and incorrect assumptions about API return values.
+
+2. **Catastrophic Token Drain (Root Cause Analysis):** The core problem was a massive, uncontrolled token drain. After extensive debugging with user-provided logs, the root cause was traced to a cascade of critical flaws:
+
+   - Inefficient API Calls:
+
+     The original
+
+     ```
+     get_all_seller_info
+     ```
+
+     function made a separate, unmanaged API call for every single deal.
+
+     - **Fix:** Refactored `seller_info.py` to be a passive, cache-dependent module. The main tasks (`update_recent_deals` and `recalculate_deals`) were modified to pre-fetch all seller data in a single, efficient batch call.
+
+   - Flawed `TokenManager` Initialization:
+
+     The
+
+     ```
+     TokenManager
+     ```
+
+     was initialized with a hardcoded "guess" of 100 tokens. If the actual token balance was negative, any task would immediately make an API call, get a
+
+     ```
+     429
+     ```
+
+     error, and enter a perpetual crash-and-retry loop.
+
+     - **Fix:** Modified `token_manager.py` to call the Keepa `/token` endpoint upon initialization, ensuring it always starts with the **real** token count.
+
+   - Incorrect Token Cost Estimation:
+
+     The estimated cost for fetching product data was a wild guess (
+
+     ```
+     2
+     ```
+
+     tokens per ASIN) and drastically lower than the actual cost (
+
+     ```
+     ~6-12
+     ```
+
+     tokens). This caused the
+
+     ```
+     TokenManager
+     ```
+
+     to grant permission for calls that it could not afford, bankrupting the token supply.
+
+     - **Fix:** Created a `get_offers_cost` helper function in `keepa_api.py` based on the official Keepa documentation. All tasks were updated to use this function for precise, documentation-driven cost estimation.
+
+   - Flawed Refill Logic:
+
+     A final bug was discovered where the
+
+     ```
+     TokenManager
+     ```
+
+     's refill logic had an artificial cap, preventing it from accumulating enough tokens to proceed after a long wait.
+
+     - **Fix:** Removed the artificial cap from the `_refill_tokens` method in `token_manager.py`.
+
+   - **`TypeError` Bugs:** Multiple `TypeError` bugs related to incorrect keyword arguments (`logger` vs. `logger_param`) and positional arguments (`update_after_call`) were introduced and subsequently fixed during the refactoring process.
+
+**Final Status:**
+
+- **`update_recent_deals` (Automated Pipeline):** **SUCCESS.** This task is now stable and functional. It correctly manages tokens, waits appropriately when the balance is low, and successfully adds new, fully-enriched deals to the database. This was confirmed when the user observed the number of pages in the UI growing from 4 to 7 overnight.
+- **`recalculate_deals` (Manual Refresh):** **PARTIAL FAILURE.** While the underlying code in `keepa_deals/Keepa_Deals.py` has been refactored with the correct, stable, and token-efficient logic, the task does not appear to run to completion when triggered. Saving the `/settings` page causes the UI banner to appear and then disappear, but the database is not updated. This indicates the task is likely being triggered and then crashing silently for a new, unknown reason.
+
+**Next Steps:** The immediate next task must be to diagnose and fix the `recalculate_deals` execution flow.
