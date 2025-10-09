@@ -62,6 +62,19 @@ def _load_deal_settings():
         "salesRankRange_max": settings.get("max_sales_rank", 1500000)
     }
 
+def get_offers_cost(offers_to_request):
+    """
+    Calculates the token cost for a product request with the 'offers' parameter.
+    Based on official documentation: 6 tokens for every found offer page (contains up to 10 offers).
+    """
+    if not isinstance(offers_to_request, int) or offers_to_request <= 0:
+        return 1 # Default cost if offers are not requested
+    # Calculate how many pages are needed. 1-10 offers -> 1 page, 11-20 -> 2 pages, etc.
+    pages = math.ceil(offers_to_request / 10.0)
+    cost = pages * 6
+    logger.info(f"Calculated token cost for {offers_to_request} offers: {pages} pages * 6 tokens/page = {cost} tokens per ASIN.")
+    return cost
+
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
 def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     """

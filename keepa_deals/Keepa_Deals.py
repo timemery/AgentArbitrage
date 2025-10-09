@@ -9,7 +9,8 @@ from celery_config import celery
 
 from .keepa_api import (
     fetch_product_batch,
-    fetch_seller_data
+    fetch_seller_data,
+    get_offers_cost
 )
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
@@ -136,8 +137,10 @@ def recalculate_deals():
             asins_to_process = [row['ASIN'] for row in cursor.fetchall()]
             if not asins_to_process: break
 
-            token_manager.request_permission_for_call(estimated_cost=len(asins_to_process) * 8)
-            product_data, _, _, tokens_left = fetch_product_batch(api_key, asins_to_process, history=1, offers=20)
+            offers_to_request = 20
+            estimated_cost = len(asins_to_process) * get_offers_cost(offers_to_request)
+            token_manager.request_permission_for_call(estimated_cost=estimated_cost)
+            product_data, _, _, tokens_left = fetch_product_batch(api_key, asins_to_process, history=1, offers=offers_to_request)
             if tokens_left is not None:
                 token_manager.update_after_call(tokens_left)
             if not product_data or 'products' not in product_data:

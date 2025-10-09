@@ -9,7 +9,7 @@ import redis
 
 from celery_config import celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name
-from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
+from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data, get_offers_cost
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
@@ -160,8 +160,10 @@ def update_recent_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            token_manager.request_permission_for_call(estimated_cost=len(batch_asins) * 8)
-            product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+            offers_to_request = 20
+            estimated_cost = len(batch_asins) * get_offers_cost(offers_to_request)
+            token_manager.request_permission_for_call(estimated_cost=estimated_cost)
+            product_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=offers_to_request)
             if tokens_left is not None:
                 token_manager.update_after_call(tokens_left)
 
