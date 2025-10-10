@@ -973,6 +973,19 @@ def recalc_status():
         app.logger.error(f"Could not read or parse recalc_status.json: {e}")
         return jsonify({"status": "Error", "message": "Could not read status file."}), 500
 
+@app.route('/api/refresh-all-deals', methods=['POST'])
+def refresh_all_deals():
+    if not session.get('logged_in'):
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    # Optional: Check if a task is already running
+    # status = get_scan_status()
+    # if status.get('status') == 'Running':
+    #     return jsonify({'status': 'error', 'message': 'A scan is already in progress.'}), 409
+
+    recalculate_deals.delay()
+    return jsonify({'status': 'success', 'message': 'Full data refresh has been initiated.'})
+
 @app.route('/api/debug/deal/<string:asin>')
 def debug_deal(asin):
     if not session.get('logged_in'):
