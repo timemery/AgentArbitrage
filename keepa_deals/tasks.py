@@ -55,7 +55,7 @@ def _parse_percent(value_str):
     except ValueError: return 0.0
 
 
-def _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers):
+def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers):
     asin = product_data.get('asin')
     if not asin:
         return None
@@ -80,7 +80,7 @@ def _process_single_deal(product_data, api_key, token_manager, xai_api_key, busi
 
     # 2. Seller Info
     try:
-        seller_info = get_all_seller_info(product_data, api_key=api_key, token_manager=token_manager)
+        seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
         row_data.update(seller_info)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
@@ -194,6 +194,29 @@ def update_recent_deals():
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
+        # --- Seller Data Pre-fetching Stage ---
+        logger.info("Step 2.5: Pre-fetching all seller data...")
+        unique_seller_ids = set()
+        for product in all_fetched_products.values():
+            for offer in product.get('offers', []):
+                if offer.get('sellerId'):
+                    unique_seller_ids.add(offer['sellerId'])
+
+        from .keepa_api import fetch_seller_data
+        seller_data_cache = {}
+        if unique_seller_ids:
+            # Keepa's seller endpoint has a limit of 100 per call
+            seller_id_list = list(unique_seller_ids)
+            for i in range(0, len(seller_id_list), 100):
+                batch_seller_ids = seller_id_list[i:i+100]
+                seller_data_response, _, _, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
+                if tokens_left is not None:
+                    token_manager.update_after_call(tokens_left)
+                if seller_data_response and 'sellers' in seller_data_response:
+                    seller_data_cache.update(seller_data_response['sellers'])
+        logger.info(f"Step 2.5 Complete: Fetched data for {len(seller_data_cache)} unique sellers.")
+        # --- End Seller Data Pre-fetching ---
+
         logger.info("Step 3: Processing deals...")
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
@@ -207,7 +230,7 @@ def update_recent_deals():
             product_data = all_fetched_products[asin]
             product_data.update(deal)
 
-            processed_row = _process_single_deal(product_data, api_key, token_manager, xai_api_key, business_settings, headers)
+            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()

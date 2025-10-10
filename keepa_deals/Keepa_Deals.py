@@ -797,8 +797,31 @@ def recalculate_deals():
             except Exception as e:
                 logger.error(f"Recalc (Stage 1): Error processing base info for ASIN {asin}. Error: {e}", exc_info=True)
 
-        # STAGE 2: Seller Info, Business Calcs, Analytics, Seasonality
-        set_recalc_status({"status": "Running", "message": "Step 2/3: Processing analytics and costs..."})
+        # STAGE 2: Pre-fetch all seller data for efficiency
+        set_recalc_status({"status": "Running", "message": "Step 2/4: Pre-fetching seller data..."})
+        logger.info("Recalculation: Pre-fetching all seller data...")
+        unique_seller_ids = set()
+        for product in all_fetched_products_map.values():
+            for offer in product.get('offers', []):
+                if offer.get('sellerId'):
+                    unique_seller_ids.add(offer['sellerId'])
+
+        from .keepa_api import fetch_seller_data
+        seller_data_cache = {}
+        if unique_seller_ids:
+            seller_id_list = list(unique_seller_ids)
+            for i in range(0, len(seller_id_list), 100):
+                batch_seller_ids = seller_id_list[i:i+100]
+                seller_data_response, _, _, tokens_left = fetch_seller_data(KEEPA_API_KEY, batch_seller_ids)
+                if tokens_left is not None:
+                    token_manager.update_after_call(tokens_left)
+                if seller_data_response and 'sellers' in seller_data_response:
+                    seller_data_cache.update(seller_data_response['sellers'])
+        logger.info(f"Recalculation: Fetched data for {len(seller_data_cache)} unique sellers.")
+
+
+        # STAGE 3: Process Analytics, Business Calcs, and Seasonality
+        set_recalc_status({"status": "Running", "message": "Step 3/4: Processing analytics and costs..."})
         from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
         from .seasonality_classifier import classify_seasonality, get_sells_period
 
@@ -807,9 +830,9 @@ def recalculate_deals():
             product_data = all_fetched_products_map.get(asin)
             if not product_data: continue
 
-            # Seller Info
+            # Seller Info (using the pre-fetched cache)
             try:
-                row.update(get_all_seller_info(product_data, api_key=KEEPA_API_KEY, token_manager=token_manager))
+                row.update(get_all_seller_info(product_data, seller_data_cache=seller_data_cache))
             except Exception as e:
                 logger.error(f"Recalc (Seller): Error for ASIN {asin}. Error: {e}", exc_info=True)
 
@@ -843,14 +866,14 @@ def recalculate_deals():
             if (i + 1) % 10 == 0: # Update status every 10 deals
                  set_recalc_status({
                     "status": "Running",
-                    "message": f"Step 2/3: Processing analytics for {i+1}/{total_deals} deals.",
+                    "message": f"Step 3/4: Processing analytics for {i+1}/{total_deals} deals.",
                     "total_deals": total_deals, "processed_deals": processed_count + i + 1
                 })
 
 
         # 5. Update the database
         logger.info("Recalculation: Starting database update...")
-        set_recalc_status({"status": "Running", "message": "Step 3/3: Saving updated data to database..."})
+        set_recalc_status({"status": "Running", "message": "Step 4/4: Saving updated data to database..."})
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
