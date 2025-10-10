@@ -88,9 +88,22 @@ class TokenManager:
         logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
         # The actual deduction will happen after the call, using update_from_response
 
-    def sync_tokens(self, tokens_left_from_api):
+    def sync_tokens(self):
         """
-        Authoritatively sets the token count from the API response.
+        Authoritatively fetches the current token status from the Keepa API
+        and updates the internal state.
+        """
+        from .keepa_api import get_token_status
+        logger.info("Performing authoritative token sync with Keepa API...")
+        status_data = get_token_status(self.api_key)
+        if status_data and 'tokensLeft' in status_data:
+            self._sync_tokens_from_response(status_data['tokensLeft'])
+        else:
+            logger.error("Failed to sync tokens. API did not return valid token data.")
+
+    def _sync_tokens_from_response(self, tokens_left_from_api):
+        """
+        Authoritatively sets the token count from a provided API response value.
         This is the primary way to correct token drift.
         """
         old_token_count = self.tokens
@@ -107,4 +120,4 @@ class TokenManager:
         Updates the token count and timestamp after an API call using the authoritative response.
         """
         self.last_api_call_timestamp = time.time()
-        self.sync_tokens(tokens_left_from_api)
+        self._sync_tokens_from_response(tokens_left_from_api)

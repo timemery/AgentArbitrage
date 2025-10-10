@@ -731,6 +731,7 @@ def recalculate_deals():
 
         # 2. Initialize Managers and Settings
         token_manager = TokenManager(KEEPA_API_KEY)
+        token_manager.sync_tokens() # Explicitly sync tokens at the start
         business_settings = business_load_settings()
 
         # 3. Fetch fresh product data in batches
@@ -861,10 +862,10 @@ def recalculate_deals():
                 if not update_dict:
                     continue
 
-                set_clauses = ', '.join([f'"{col}" = ?' for col in update_dict.keys()])
-                params = list(update_dict.values()) + [row['ASIN']]
+                set_clauses = ', '.join([f'"{col}" = :{col}' for col in update_dict.keys()])
+                update_dict['ASIN'] = row['ASIN']
 
-                cursor.execute(f"UPDATE deals SET {set_clauses} WHERE ASIN = ?", params)
+                cursor.execute(f"UPDATE deals SET {set_clauses} WHERE ASIN = :ASIN", update_dict)
                 update_count += 1
             except Exception as e:
                 logger.error(f"Recalculation: Failed to update database for ASIN {row.get('ASIN', 'UNKNOWN')}. Error: {e}", exc_info=True)

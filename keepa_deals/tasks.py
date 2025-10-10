@@ -182,12 +182,14 @@ def update_recent_deals():
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
             # Request historical data to enable all calculations.
-            product_response, _, tokens_consumed = fetch_product_batch(
+            product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
             )
-            token_manager.update_after_call(tokens_consumed)
+            # Use the more accurate tokens_left for syncing
+            if tokens_left is not None:
+                token_manager.update_after_call(tokens_left)
 
-            if product_response and 'products' in product_response:
+            if product_response and 'products' in product_response and not (api_info and api_info.get('error_status_code')):
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
