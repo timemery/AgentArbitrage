@@ -300,3 +300,38 @@ The final, successful solution involved two minimal, targeted patches to fix the
 - **`recalculate_deals` (Manual Refresh):** **PARTIAL FAILURE.** While the underlying code in `keepa_deals/Keepa_Deals.py` has been refactored with the correct, stable, and token-efficient logic, the task does not appear to run to completion when triggered. Saving the `/settings` page causes the UI banner to appear and then disappear, but the database is not updated. This indicates the task is likely being triggered and then crashing silently for a new, unknown reason.
 
 **Next Steps:** The immediate next task must be to diagnose and fix the `recalculate_deals` execution flow.
+
+### **Dev Log Entry for Current Task**
+
+**Title:** Task `fix-and-finalize-full-data-refresh` - Diagnostic and Failure Analysis
+
+**Objective:** The initial goal was to diagnose and fix the `recalculate_deals` Celery task, which was failing silently, and to add a "Refresh" button and deal counter to the UI.
+
+**Summary of a Multi-Failure Process:** This task evolved into a protracted and difficult debugging session that revealed deep, systemic issues with the application's data pipeline and token management. My initial attempts to fix the problem were based on an incorrect understanding of the root cause, leading to a series of flawed patches that introduced new bugs and, at one point, deleted a critical function (`run_keepa_script`) and added a dangerous file (`dump.rdb`) to the repository.
+
+**Chronology of Failures and Learnings:**
+
+1. **Initial Bug & Flawed Fixes:**
+   - **Symptom:** The `recalculate_deals` task, triggered from the settings page, consumed API tokens but never updated the database.
+   - **Initial (Incorrect) Diagnosis:** I initially believed the task was simply structured inefficiently. My first attempts involved large-scale refactoring of both the `recalculate_deals` and `update_recent_deals` tasks.
+   - **Failure Point 1:** These refactors introduced new `TypeError` and `ValueError` bugs because I changed function signatures in one part of the code (e.g., `_process_single_deal` in `tasks.py`) but failed to update the corresponding calls in other parts (e.g., `recalculate_deals` in `Keepa_Deals.py`).
+   - **Failure Point 2:** The refactored `recalculate_deals` task also contained a flawed SQL `UPDATE` statement that used the wrong parameter style (`?` instead of `:key`), which would have prevented the database from updating even if the `TypeError` was fixed.
+2. **Token Depletion & Misdiagnosis:**
+   - **Symptom:** User testing showed that triggering the tasks caused the API token balance to drop from 300 to -277 almost instantly.
+   - **Initial (Incorrect) Diagnosis:** I assumed the `TokenManager`'s refill logic was broken.
+   - **True Root Cause:** The real issue was that the cost estimation for API calls was a hardcoded, inaccurate guess. The `TokenManager` was permitting calls that were far more expensive than it estimated, leading to a massive overdraft. My attempts to fix this by making the `TokenManager` more "defensive" were ineffective because they didn't address the flawed cost estimation.
+3. **The "Aha!" Moment (External Research):**
+   - **Blocker:** After multiple failed attempts, it became clear I was stuck in a loop of fixing symptoms without understanding the core architectural problem.
+   - **Breakthrough:** At your suggestion, I performed external research and reviewed the Keepa API documentation. This immediately revealed the correct architectural pattern: using the `/deal` endpoint to fetch a small list of *recently changed* products, rather than fetching the entire database. My previous approach of fetching and processing everything was fundamentally wrong and was the primary source of the token depletion.
+4. **Final Blocker (Environment/Tool Failure):**
+   - **Symptom:** In my final attempt to start fresh by resetting the repository, I encountered a persistent toolchain failure. I was unable to recover the environment to a clean state, making it impossible to proceed with the correct, research-driven plan. This is a hard blocker that requires a new task with a fresh environment.
+
+**Key Learnings for Future Agent:**
+
+- **Do not refactor without full understanding:** My large-scale refactoring attempts failed because I didn't understand the full data flow, leading to mismatched function signatures and new bugs.
+- **Isolate and verify:** The most successful diagnostic step was creating a standalone script to test the `TokenManager` in isolation. This pattern should be used to verify critical components before integrating them.
+- **The `/deal` endpoint is the key:** The entire incremental update strategy **must** be built around the `/deal` endpoint to efficiently find recently changed products. Fetching all products and comparing them is incorrect and will always lead to token exhaustion.
+- **The `run_keepa_script` function is the ground truth for a full, destructive refresh.** It should be preserved and used as a reference for the correct data processing pipeline logic. Do not delete it.
+- **Never commit binary/state files:** The inclusion of `dump.rdb` was a critical error that blocked recovery. Ensure files like this are added to `.gitignore`.
+
+This task must be considered a failure, but the diagnostic process has yielded a clear understanding of the correct path forward. The next agent should start with a clean repository and follow the final, 5-step evidence-based plan.
