@@ -153,10 +153,10 @@ def update_recent_deals():
         business_settings = business_load_settings()
 
         logger.info("Step 1: Fetching recent deals...")
-        deal_response_raw, tokens_consumed, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=False)
+        deal_response_raw, tokens_consumed, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
         token_manager.update_after_call(tokens_consumed)
         
-        deal_response = deal_response_raw[0] if isinstance(deal_response_raw, tuple) else deal_response_raw
+        deal_response = deal_response_raw
 
         if not deal_response or 'deals' not in deal_response:
             logger.error("Step 1 Failed: No response from deal fetch.")
