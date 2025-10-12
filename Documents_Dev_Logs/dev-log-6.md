@@ -382,3 +382,28 @@ The task failed after the code was written, during the verification phase.
    - Build out functionality from there, one small, verifiable piece at a time.
 
 This task failed due to process and toolchain issues, not a failure of the core logic. The next agent can succeed by leveraging the correct, refactored code and adopting a more incremental and cautious verification strategy.
+
+
+
+### **Dev Log Entry: October 11, 2025 - Task `create-simple-pipeline-foundation`**
+
+**Objective:** To resolve persistent pipeline failures by creating a minimal, stable, and verifiable Celery task that proves the core functionality of fetching and storing new deals.
+
+**Summary of Task:** This task was a complete success. We abandoned the previous complex approach and focused on a simple, two-step plan as proposed by the user. We created a new, isolated Celery task (`get_recent_deals_asins` located in `keepa_deals/simple_task.py`). This task's sole responsibility is to call the Keepa `/deal` endpoint to find new product ASINs and insert only those ASINs into the `deals.db` database.
+
+**Verification and Success:** The task was successfully tested and verified in the user's environment. The established testing protocol was:
+
+1. Ensure the Redis server is running.
+2. Start the Celery worker using `start_celery.sh`.
+3. Trigger the task using a dedicated script (`trigger_simple_task.py`).
+4. Verify the result by checking the row count in the database with `check_db.py`.
+
+This process confirmed that the new task runs without errors and successfully writes to the database, establishing a stable foundation for the next phase of development.
+
+**Key Learnings & Challenges:**
+
+- **Simplify to Succeed:** Breaking down a complex, failing system into its smallest verifiable components is a highly effective strategy for debugging and building stability.
+- **Verification Protocol:** The verification method of using `check_db.py` instead of reading the large `celery.log` is the correct and stable path forward.
+- **Toolchain Instability:** We encountered a persistent failure with the `submit` tool, which repeatedly failed to provide the commit to the user. The successful workaround was to manually provide the full contents of the new files for the user to create themselves. This should be noted in case it occurs again.
+
+**Conclusion:** This task successfully created the stable baseline we needed. The project is now in a strong position to build the full, incremental data pipeline on top of this proven foundation.
