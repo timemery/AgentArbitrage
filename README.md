@@ -4,10 +4,8 @@ Flask app on Hostinger VPS (Ubuntu 22.04) for AI-driven Amazon FBA arbitrage.
 - **Root**: https://agentarbitrage.co (renders `templates/index.html` with gradient background)
 - **App**: https://agentarbitrage.co/guided_learning (username: `tester`, password: `OnceUponaBurgerTree-12monkeys`)
 - **Repo**: https://github.com/timemery/AgentArbitrage
-- **Project Plan**: See `Agent Arbitrage Project Plan Draft 1.md` for dev log and project updates.
-- **Keepa Documentation:** `keepa_deals_reference/Keepa_Documentation-official.md` `keepa_deals_reference/Keepa_Documentation-official-2.md`
-- **Dev Log**: See numbered Dev Logs `dev-log-1.md``dev-log-2.md``dev-log-3.md`etc. for detailed session summaries.
-- **Offer endpoints:** RAW_PRODUCT_DATA.md
+- **Key Documentation and Dev Logs:** Can be found in the repo in `Documents_Dev_Logs` folder
+- **Older codebase examples for reference:** Can be found in `keepa_deals_reference` and the more recent `AgentArbitrage-before_persistent_db` 
 
 # WARNING!
 
