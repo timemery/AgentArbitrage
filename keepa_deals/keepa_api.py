@@ -68,7 +68,7 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     Fetches deals from the Keepa API.
     If use_deal_settings is True, it loads dynamic filters from settings.json.
     `date_range_days` is the number of days to look back, which is mapped to the required Keepa enum.
-    Returns the response data and the number of tokens left.
+    Returns the response data, tokens consumed, and the number of tokens left.
     """
     # Map the number of days to the Keepa dateRange enum.
     # 0 = Day (last 24 hours), 1 = Week (last 7 days), 2 = Month (last 31 days), 3 = 3 Months (last 90 days)
@@ -91,8 +91,7 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     if use_deal_settings:
         deal_settings = _load_deal_settings()
         deal_query = {
-            "page": 0, "domainId": 1, "excludeCategories": [], "includeCategories": [283155],
-            "priceTypes": [2],
+            "page": 0, "domainId": 1, "excludeCategories": [],
             "deltaRange": [1, 2147483647],
             "deltaPercentRange": [deal_settings["deltaPercentRange_min"], deal_settings["deltaPercentRange_max"]],
             "salesRankRange": [deal_settings["salesRankRange_min"], deal_settings["salesRankRange_max"]],
@@ -107,7 +106,7 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     else:
         # Fallback to a generic query if not using settings
         deal_query = {
-            "page": 0, "domainId": 1, "priceTypes": [2],
+            "page": 0, "domainId": 1,
             "dateRange": date_range_enum,
             "sortType": 4
         }
@@ -122,22 +121,25 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
         response.raise_for_status()
         data = response.json()
         deals = data.get('deals', {}).get('dr', [])
+        tokens_consumed = data.get('tokensConsumed', 0)
         tokens_left = data.get('tokensLeft')
-        logger.info(f"Fetched {len(deals)} deals. Tokens left: {tokens_left}")
-        return data, tokens_left
+        logger.info(f"Fetched {len(deals)} deals. Tokens consumed: {tokens_consumed}. Tokens left: {tokens_left}")
+        return data, tokens_consumed, tokens_left
     except requests.exceptions.RequestException as e:
         logger.error(f"Deal fetch failed: {e.response.status_code if e.response else 'N/A'}, {e.response.text if e.response else e}")
+        tokens_consumed = 0
         tokens_left = None
         if e.response is not None:
             try:
                 error_data = e.response.json()
+                tokens_consumed = error_data.get('tokensConsumed', 0)
                 tokens_left = error_data.get('tokensLeft')
             except json.JSONDecodeError:
                 pass # tokens_left remains None
-        return None, tokens_left
+        return None, tokens_consumed, tokens_left
     except Exception as e:
         logger.error(f"Deal fetch exception: {str(e)}")
-        return None, None
+        return None, 0, None
 
 
 def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, history=0):
