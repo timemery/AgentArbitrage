@@ -39,77 +39,65 @@ def get_token_status(api_key):
         logger.error(f"An unexpected error occurred while getting token status: {e}")
         return None
 
-def _load_deal_settings():
-    """
-    Loads deal filter settings from settings.json.
-    Provides sensible defaults if the file or keys are missing.
-    """
-    try:
-        with open(SETTINGS_PATH, 'r') as f:
-            settings = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        logger.warning(f"Could not load or parse {SETTINGS_PATH}. Using default deal settings.")
-        settings = {}
-
-    # These defaults match the ones provided in the wsgi_handler GET request for consistency.
-    # Keepa API expects integer values for these fields and price values in cents.
-    return {
-        "deltaPercentRange_min": settings.get("min_percent_drop", 50),
-        "deltaPercentRange_max": 2147483647,  # Max integer
-        "currentRange_min": int(settings.get("min_price", 20.0) * 100),
-        "currentRange_max": int(settings.get("max_price", 300.0) * 100),
-        "salesRankRange_min": -1,  # -1 means no minimum
-        "salesRankRange_max": settings.get("max_sales_rank", 1500000)
-    }
-
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
 def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
     """
-    Fetches deals from the Keepa API.
-    If use_deal_settings is True, it loads dynamic filters from settings.json.
-    `date_range_days` is the number of days to look back, which is mapped to the required Keepa enum.
+    Fetches deals from the Keepa API using a fixed, user-provided query.
+    The `date_range_days` and `use_deal_settings` parameters are ignored to ensure stability.
     Returns the response data, tokens consumed, and the number of tokens left.
     """
-    # Map the number of days to the Keepa dateRange enum.
-    # 0 = Day (last 24 hours), 1 = Week (last 7 days), 2 = Month (last 31 days), 3 = 3 Months (last 90 days)
-    try:
-        days = int(date_range_days)
-        if days <= 1:
-            date_range_enum = 0
-        elif days <= 7:
-            date_range_enum = 1
-        elif days <= 31:
-            date_range_enum = 2
-        else:
-            date_range_enum = 3
-    except (ValueError, TypeError):
-        logger.error(f"Invalid date_range_days: {date_range_days}. Defaulting to enum 0.")
-        date_range_enum = 0
+    logger.info("Fetching deals using a hardcoded, stable query.")
 
-    logger.info(f"Fetching deals for date_range_days={date_range_days}, mapped to enum={date_range_enum}")
-
-    if use_deal_settings:
-        deal_settings = _load_deal_settings()
-        deal_query = {
-            "page": 0, "domainId": 1, "excludeCategories": [],
-            "deltaRange": [1, 2147483647],
-            "deltaPercentRange": [deal_settings["deltaPercentRange_min"], deal_settings["deltaPercentRange_max"]],
-            "salesRankRange": [deal_settings["salesRankRange_min"], deal_settings["salesRankRange_max"]],
-            "currentRange": [deal_settings["currentRange_min"], deal_settings["currentRange_max"]],
-            "minRating": -1,
-            "isLowest": False, "isLowest90": False, "isLowestOffer": False, "isOutOfStock": False,
-            "titleSearch": "", "isRangeEnabled": True, "isFilterEnabled": True, "filterErotic": False,
-            "singleVariation": True, "hasReviews": False, "isPrimeExclusive": False,
-            "mustHaveAmazonOffer": False, "mustNotHaveAmazonOffer": False, "sortType": 4,
-            "dateRange": date_range_enum
-        }
-    else:
-        # Fallback to a generic query if not using settings
-        deal_query = {
-            "page": 0, "domainId": 1,
-            "dateRange": date_range_enum,
-            "sortType": 4
-        }
+    # This query is provided by the user and is known to return 700-1000+ deals daily.
+    deal_query = {
+        "page": 0,
+        "domainId": "1",
+        "excludeCategories": [],
+        "includeCategories": [
+            283155
+        ],
+        "priceTypes": [
+            2
+        ],
+        "deltaRange": [
+            1950,
+            9900
+        ],
+        "deltaPercentRange": [
+            50,
+            2147483647
+        ],
+        "salesRankRange": [
+            50000,
+            1500000
+        ],
+        "currentRange": [
+            2000,
+            30100
+        ],
+        "minRating": 10,
+        "isLowest": False,
+        "isLowest90": False,
+        "isLowestOffer": False,
+        "isOutOfStock": False,
+        "titleSearch": "",
+        "isRangeEnabled": True,
+        "isFilterEnabled": True,
+        "filterErotic": False,
+        "singleVariation": True,
+        "hasReviews": False,
+        "isPrimeExclusive": False,
+        "mustHaveAmazonOffer": False,
+        "mustNotHaveAmazonOffer": False,
+        "sortType": 4,
+        "dateRange": "3",
+        "warehouseConditions": [
+            2,
+            3,
+            4,
+            5
+        ]
+    }
 
     query_json = json.dumps(deal_query, separators=(',', ':'), sort_keys=True)
     encoded_selection = urllib.parse.quote(query_json)

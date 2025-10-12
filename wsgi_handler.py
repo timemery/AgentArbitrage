@@ -684,13 +684,6 @@ def settings():
                 'default_markup': request.form.get('default_markup', 0, type=int)
             })
 
-            # Update with deal finding criteria
-            settings_data.update({
-                'max_sales_rank': request.form.get('max_sales_rank', 0, type=int),
-                'min_price': request.form.get('min_price', 0.0, type=float),
-                'max_price': request.form.get('max_price', 0.0, type=float),
-                'min_percent_drop': request.form.get('min_percent_drop', 0, type=int)
-            })
 
             with open(SETTINGS_FILE, 'w') as f:
                 json.dump(settings_data, f, indent=4)
@@ -714,11 +707,7 @@ def settings():
             "estimated_shipping_per_book": 2.00,
             "estimated_tax_per_book": 15,
             "tax_exempt": False,
-            "default_markup": 10,
-            "max_sales_rank": 1500000,
-            "min_price": 20.0,
-            "max_price": 300.0,
-            "min_percent_drop": 50
+            "default_markup": 10
         }
     return render_template('settings.html', settings=settings_data)
 

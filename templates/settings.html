@@ -77,35 +77,6 @@
                     </div>
                 </div>
 
-                <hr class="my-4">
-
-                <div class="settings-form-grid">
-                    <h6 class="text-muted">Deal Finding Criteria</h6>
-                    <!-- Max Sales Rank -->
-                    <div class="setting-row">
-                        <span class="setting-symbol" style="color: transparent;">#</span>
-                        <input type="number" class="styled-text-field setting-input" id="max_sales_rank" name="max_sales_rank" step="1000" value="{{ settings.max_sales_rank or '' }}">
-                        <label for="max_sales_rank" class="setting-label">Max Sales Rank</label>
-                    </div>
-                    <!-- Min Price -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">$</span>
-                        <input type="number" class="styled-text-field setting-input" id="min_price" name="min_price" step="1" value="{{ settings.min_price or '' }}">
-                        <label for="min_price" class="setting-label">Min Price</label>
-                    </div>
-                    <!-- Max Price -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">$</span>
-                        <input type="number" class="styled-text-field setting-input" id="max_price" name="max_price" step="1" value="{{ settings.max_price or '' }}">
-                        <label for="max_price" class="setting-label">Max Price</label>
-                    </div>
-                    <!-- Min % Drop -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">%</span>
-                        <input type="number" class="styled-text-field setting-input" id="min_percent_drop" name="min_percent_drop" step="1" value="{{ settings.min_percent_drop or '' }}">
-                        <label for="min_percent_drop" class="setting-label">Min % Drop</label>
-                    </div>
-                </div>
             </fieldset>
         </form>
     </div>
