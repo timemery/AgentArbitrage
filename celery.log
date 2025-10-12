@@ -1,23 +1,15 @@
-/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/platforms.py:829: SecurityWarning: You're running the worker with superuser privileges: this is
-absolutely not recommended!
-
-Please specify a different user using the --uid option.
-
-User information: uid=0 euid=0 gid=0 egid=0
-
-  warnings.warn(SecurityWarning(ROOT_DISCOURAGED.format(
 Loading celery_config.py
 celery_config.py loaded successfully
  
- -------------- celery@srv934846 v5.3.6 (emerald-rush)
+ -------------- celery@devbox v5.3.6 (emerald-rush)
 --- ***** ----- 
--- ******* ---- Linux-5.15.0-151-generic-x86_64-with-glibc2.35 2025-10-11 18:02:27
+-- ******* ---- Linux-6.8.0-x86_64-with-glibc2.39 2025-10-12 00:09:40
 - *** --- * --- 
 - ** ---------- [config]
-- ** ---------- .> app:         agentarbitrage:0x7f19769b5600
+- ** ---------- .> app:         agentarbitrage:0x7fe98cc549b0
 - ** ---------- .> transport:   redis://127.0.0.1:6379/0
 - ** ---------- .> results:     redis://127.0.0.1:6379/0
-- *** --- * --- .> concurrency: 1 (prefork)
+- *** --- * --- .> concurrency: 4 (prefork)
 -- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
 --- ***** ----- 
  -------------- [queues]
@@ -27,43 +19,20 @@ celery_config.py loaded successfully
 [tasks]
   . keepa_deals.Keepa_Deals.recalculate_deals
   . keepa_deals.Keepa_Deals.run_keepa_script
-  . keepa_deals.tasks.update_recent_deals
 
-[2025-10-11 18:02:27,514: WARNING/MainProcess] /var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+[2025-10-12 00:09:40,578: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.11/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
 whether broker connection retries are made during startup in Celery 6.0 and above.
 If you wish to retain the existing behavior for retrying connections on startup,
 you should set broker_connection_retry_on_startup to True.
   warnings.warn(
 
-[2025-10-11 18:02:27,628: INFO/MainProcess] Connected to redis://127.0.0.1:6379/0
-[2025-10-11 18:02:27,631: WARNING/MainProcess] /var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+[2025-10-12 00:09:40,587: INFO/MainProcess] Connected to redis://127.0.0.1:6379/0
+[2025-10-12 00:09:40,588: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.11/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
 whether broker connection retries are made during startup in Celery 6.0 and above.
 If you wish to retain the existing behavior for retrying connections on startup,
 you should set broker_connection_retry_on_startup to True.
   warnings.warn(
 
-[2025-10-11 18:02:27,639: INFO/MainProcess] mingle: searching for neighbors
-[2025-10-11 18:02:28,680: INFO/MainProcess] mingle: all alone
-[2025-10-11 18:02:28,719: INFO/MainProcess] celery@srv934846 ready.
-[2025-10-11 18:02:52,832: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.simple_task.get_recent_deals_asins'.
-The message has been ignored and discarded.
-
-Did you remember to import the module containing this task?
-Or maybe you're using relative imports?
-
-Please see
-https://docs.celeryq.dev/en/latest/internals/protocol.html
-for more information.
-
-The full contents of the message body was:
-b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
-
-The full contents of the message headers:
-{'lang': 'py', 'task': 'keepa_deals.simple_task.get_recent_deals_asins', 'id': 'b3181a46-c392-450a-ad87-2d31b2e93b62', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'b3181a46-c392-450a-ad87-2d31b2e93b62', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen392928@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
-
-The delivery info for this task is:
-{'exchange': '', 'routing_key': 'celery'}
-Traceback (most recent call last):
-  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
-    strategy = strategies[type_]
-KeyError: 'keepa_deals.simple_task.get_recent_deals_asins'
+[2025-10-12 00:09:40,593: INFO/MainProcess] mingle: searching for neighbors
+[2025-10-12 00:09:41,604: INFO/MainProcess] mingle: all alone
+[2025-10-12 00:09:41,617: INFO/MainProcess] celery@devbox ready.
