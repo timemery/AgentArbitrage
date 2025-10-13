@@ -1,5 +1,4 @@
-import logging
-import sqlite3
+from logging import getLogger
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 from .business_calculations import (
@@ -7,13 +6,11 @@ from .business_calculations import (
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
-    load_settings as business_load_settings,
 )
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
-from .db_utils import sanitize_col_name
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 def _parse_price(value_str):
     if isinstance(value_str, (int, float)): return float(value_str)
@@ -27,7 +24,7 @@ def _parse_percent(value_str):
     try: return float(value_str.strip().replace('%', ''))
     except ValueError: return 0.0
 
-def _process_single_deal(product_data, api_key, xai_api_key, business_settings, headers):
+def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers):
     asin = product_data.get('asin')
     if not asin:
         return None
@@ -50,9 +47,9 @@ def _process_single_deal(product_data, api_key, xai_api_key, business_settings, 
             except Exception as e:
                 logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
 
-    # 2. Seller Info - This will now use the pre-populated cache
+    # 2. Seller Info
     try:
-        seller_info = get_all_seller_info(product_data)
+        seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
         row_data.update(seller_info)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
@@ -103,30 +100,3 @@ def _process_single_deal(product_data, api_key, xai_api_key, business_settings, 
         logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
 
     return row_data
-
-def clean_and_prepare_row_for_db(row_dict, original_headers, schema_info):
-    """
-    Cleans and type-casts a single row of data based on the database schema.
-    Returns a tuple of values ready for insertion.
-    """
-    cleaned_values = []
-    for header in original_headers:
-        sanitized_header = sanitize_col_name(header)
-        col_type = schema_info.get(sanitized_header, 'TEXT')
-        is_numeric_column = 'REAL' in col_type or 'INT' in col_type
-        value = row_dict.get(header)
-
-        if is_numeric_column:
-            if value is None or (isinstance(value, str) and value.strip() in ['-', 'N/A', '']):
-                cleaned_values.append(None)
-            else:
-                try:
-                    cleaned_str = str(value).replace('$', '').replace(',', '').replace('%', '').strip()
-                    cleaned_values.append(float(cleaned_str) if cleaned_str else None)
-                except (ValueError, TypeError):
-                    logger.warning(f"Could not convert '{value}' to float for '{header}'. Storing as NULL.")
-                    cleaned_values.append(None)
-        else:
-            cleaned_values.append(str(value) if value is not None and value != '-' else None)
-
-    return tuple(cleaned_values)

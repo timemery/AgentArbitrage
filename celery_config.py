@@ -13,7 +13,7 @@ celery = Celery(
 from celery.schedules import crontab
 
 celery.conf.update(
-    imports=('keepa_deals.Keepa_Deals', 'keepa_deals.tasks', 'keepa_deals.simple_task'),
+    imports=('keepa_deals.Keepa_Deals', 'keepa_deals.tasks', 'keepa_deals.simple_task', 'keepa_deals.backfiller'),
     worker_log_file='celery_worker.log',
     worker_log_level='INFO',
     task_serializer='json',

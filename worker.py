@@ -12,3 +12,4 @@ from celery_config import celery
 
 # Import tasks so the worker can find them.
 from keepa_deals import simple_task
+from keepa_deals import backfiller
