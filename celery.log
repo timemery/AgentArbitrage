@@ -1,0 +1,38 @@
+Loading celery_config.py
+celery_config.py loaded successfully
+
+ -------------- celery@devbox v5.3.6 (emerald-rush)
+--- ***** -----
+-- ******* ---- Linux-6.8.0-x86_64-with-glibc2.39 2025-10-13 21:41:52
+- *** --- * ---
+- ** ---------- [config]
+- ** ---------- .> app:         agentarbitrage:0x7f2338f6c920
+- ** ---------- .> transport:   redis://127.0.0.1:6379/0
+- ** ---------- .> results:     redis://127.0.0.1:6379/0
+- *** --- * --- .> concurrency: 4 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** -----
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+
+
+[tasks]
+  . keepa_deals.Keepa_Deals.recalculate_deals
+  . keepa_deals.Keepa_Deals.run_keepa_script
+  . keepa_deals.backfiller.backfill_deals
+  . keepa_deals.tasks.update_recent_deals
+
+[2025-10-13 21:41:53,022: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.11/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-10-13 21:41:53,047: INFO/MainProcess] Connected to redis://127.0.0.1:6379/0
+[2025-10-13 21:41:53,054: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.11/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-10-13 21:41:53,067: INFO/MainProcess] mingle: searching for neighbors
