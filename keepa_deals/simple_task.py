@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger
 import os
 import json
 import sqlite3
@@ -24,8 +24,7 @@ from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_tre
 from .seasonality_classifier import classify_seasonality, get_sells_period
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 # Load environment variables
 load_dotenv()

@@ -8,3 +8,14 @@ app.log
 *.bak.env.save
 *.log
 deals.db
+dump.rdb
+
+# Status files
+recalc_status.json
+scan_status.json
+
+# Environment variables
+.env
+
+# Temporary test scripts
+trigger_task.py

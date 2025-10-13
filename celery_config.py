@@ -13,7 +13,7 @@ celery = Celery(
 from celery.schedules import crontab
 
 celery.conf.update(
-    imports=('keepa_deals.Keepa_Deals', 'keepa_deals.tasks'),
+    imports=('keepa_deals.Keepa_Deals', 'keepa_deals.tasks', 'keepa_deals.simple_task'),
     worker_log_file='celery_worker.log',
     worker_log_level='INFO',
     task_serializer='json',
@@ -21,7 +21,7 @@ celery.conf.update(
     accept_content=['json'],
     beat_schedule={
         'update-recent-deals-every-15-minutes': {
-            'task': 'keepa_deals.tasks.update_recent_deals',
+            'task': 'keepa_deals.simple_task.update_recent_deals',
             'schedule': crontab(minute='*/15'),
         },
     }
