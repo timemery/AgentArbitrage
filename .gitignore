@@ -8,3 +8,4 @@ app.log
 *.bak.env.save
 *.log
 deals.db
+dump.rdb
