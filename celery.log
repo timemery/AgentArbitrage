@@ -351,3 +351,1041 @@ Traceback (most recent call last):
   File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
     strategy = strategies[type_]
 KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 15:00:00,093: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 15:00:00,095: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '5ec554d0-d88d-41ac-9a52-bd8935be4fa3', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '5ec554d0-d88d-41ac-9a52-bd8935be4fa3', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 15:15:00,083: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 15:15:00,087: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '100ea3ed-763a-4548-81fe-506762e5e843', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '100ea3ed-763a-4548-81fe-506762e5e843', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 15:30:00,083: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 15:30:00,087: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '73363e32-b6ec-42a7-aa57-8fa836ea2bdd', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '73363e32-b6ec-42a7-aa57-8fa836ea2bdd', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 15:45:00,064: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 15:45:00,066: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '766c0fc5-cadc-478b-ae65-44fa4413f99d', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '766c0fc5-cadc-478b-ae65-44fa4413f99d', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 16:00:00,070: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 16:00:00,072: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '7e707eeb-f182-4681-b869-c2e0fcf43d5a', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '7e707eeb-f182-4681-b869-c2e0fcf43d5a', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 16:15:00,069: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 16:15:00,071: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '485bc4da-80bb-48f7-9980-6c1026a165fd', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '485bc4da-80bb-48f7-9980-6c1026a165fd', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 16:30:00,089: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 16:30:00,092: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'fc2cfff5-2be2-4bcd-9277-1117e94de849', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'fc2cfff5-2be2-4bcd-9277-1117e94de849', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 16:45:00,079: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 16:45:00,083: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'd723777a-a8ee-4907-a73d-8d97abdd823d', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'd723777a-a8ee-4907-a73d-8d97abdd823d', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 17:00:00,079: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 17:00:00,082: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '74f3e9d6-5096-424e-8a95-6bfcdad7f77e', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '74f3e9d6-5096-424e-8a95-6bfcdad7f77e', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 17:15:00,081: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 17:15:00,084: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '81cbc53e-0265-4194-b3a1-8bdbfd5f57b4', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '81cbc53e-0265-4194-b3a1-8bdbfd5f57b4', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 17:30:00,072: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 17:30:00,074: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'c2d81be8-5b11-41d6-85af-3321f09309b9', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'c2d81be8-5b11-41d6-85af-3321f09309b9', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 17:45:00,041: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 17:45:00,044: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'c8a5556b-e08e-43d2-9a22-ed04db236a60', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'c8a5556b-e08e-43d2-9a22-ed04db236a60', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 18:00:00,081: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 18:00:00,084: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '5442a271-bbbc-4db4-936e-8f98417a80cb', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '5442a271-bbbc-4db4-936e-8f98417a80cb', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 18:15:00,092: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 18:15:00,096: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'fbcc728d-b1eb-49c2-95d5-921f528cb75b', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'fbcc728d-b1eb-49c2-95d5-921f528cb75b', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 18:30:00,071: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 18:30:00,074: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '9e32cfb0-c38a-40c2-8afb-3f11cf2c5006', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '9e32cfb0-c38a-40c2-8afb-3f11cf2c5006', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 18:45:00,091: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 18:45:00,096: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '0247fec7-e15f-4096-bf9f-eee2873326f8', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '0247fec7-e15f-4096-bf9f-eee2873326f8', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 19:00:00,087: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 19:00:00,089: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'bbb69cbe-42fa-4a7a-ad2d-0e763f4d471b', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'bbb69cbe-42fa-4a7a-ad2d-0e763f4d471b', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 19:15:00,079: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 19:15:00,081: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '1826efbf-726f-44bb-84dc-fa62b7701fcb', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '1826efbf-726f-44bb-84dc-fa62b7701fcb', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 19:30:00,052: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 19:30:00,055: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '359a715e-69be-4e35-ad1e-412033465a74', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '359a715e-69be-4e35-ad1e-412033465a74', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 19:45:00,073: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 19:45:00,076: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'f2705068-f7c1-47ba-8d92-f7926a3f4f06', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'f2705068-f7c1-47ba-8d92-f7926a3f4f06', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 20:00:00,090: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 20:00:00,092: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '22008249-358f-4b8b-bef5-d5f1db6930da', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '22008249-358f-4b8b-bef5-d5f1db6930da', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 20:15:00,076: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 20:15:00,079: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '95e08da2-e397-4b77-8d3d-bcd41394f4ad', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '95e08da2-e397-4b77-8d3d-bcd41394f4ad', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 20:30:00,089: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 20:30:00,094: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '4bb1fed1-60d3-4f33-aef2-4b2199e0dd12', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '4bb1fed1-60d3-4f33-aef2-4b2199e0dd12', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 20:45:00,072: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 20:45:00,075: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'a30840b9-184a-4087-a0d8-7435d818c937', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'a30840b9-184a-4087-a0d8-7435d818c937', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 21:00:00,081: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 21:00:00,084: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '224ce46c-85f3-4862-abfd-142c61d9dfea', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '224ce46c-85f3-4862-abfd-142c61d9dfea', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen396993@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+
+worker: Warm shutdown (MainProcess)
+[2025-10-12 21:00:52,980: WARNING/MainProcess] consumer: Connection to broker lost. Trying to re-establish the connection...
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 340, in start
+    blueprint.start(self)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 742, in start
+    c.loop(*c.loop_args())
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/kombu/asynchronous/hub.py", line 373, in create_loop
+    cb(*cbargs)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/kombu/transport/redis.py", line 1359, in on_readable
+    self.cycle.on_readable(fileno)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/kombu/transport/redis.py", line 576, in on_readable
+    chan.handlers[type]()
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/kombu/transport/redis.py", line 925, in _receive
+    ret.append(self._receive_one(c))
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/kombu/transport/redis.py", line 935, in _receive_one
+    response = c.parse_response()
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/client.py", line 1500, in parse_response
+    response = self._execute(conn, conn.read_response)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/client.py", line 1482, in _execute
+    return conn.retry.call_with_retry(
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/retry.py", line 49, in call_with_retry
+    fail(error)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/client.py", line 1484, in <lambda>
+    lambda error: self._disconnect_raise_connect(conn, error),
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/client.py", line 1471, in _disconnect_raise_connect
+    raise error
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/client.py", line 1483, in <lambda>
+    lambda: command(*args, **kwargs),
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/connection.py", line 824, in read_response
+    response = self._parser.read_response(disable_decoding=disable_decoding)
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/connection.py", line 318, in read_response
+    raw = self._buffer.readline()
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/connection.py", line 249, in readline
+    self._read_from_socket()
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/redis/connection.py", line 195, in _read_from_socket
+    raise ConnectionError(SERVER_CLOSED_CONNECTION_ERROR)
+redis.exceptions.ConnectionError: Connection closed by server.
+[2025-10-12 21:00:53,080: WARNING/MainProcess] /var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:391: CPendingDeprecationWarning: 
+In Celery 5.1 we introduced an optional breaking change which
+on connection loss cancels all currently executed tasks with late acknowledgement enabled.
+These tasks cannot be acknowledged as the connection is gone, and the tasks are automatically redelivered
+back to the queue. You can enable this behavior using the worker_cancel_long_running_tasks_on_connection_loss
+setting. In Celery 5.1 it is set to False by default. The setting will be set to True by default in Celery 6.0.
+
+  warnings.warn(CANCEL_TASKS_BY_DEFAULT, CPendingDeprecationWarning)
+
+[2025-10-12 21:00:54,128: INFO/MainProcess] beat: Shutting down...
+Loading celery_config.py
+celery_config.py loaded successfully
+ 
+ -------------- celery@srv934846 v5.3.6 (emerald-rush)
+--- ***** ----- 
+-- ******* ---- Linux-5.15.0-151-generic-x86_64-with-glibc2.35 2025-10-12 21:01:16
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         agentarbitrage:0x7efc49c23250
+- ** ---------- .> transport:   redis://127.0.0.1:6379/0
+- ** ---------- .> results:     redis://127.0.0.1:6379/0
+- *** --- * --- .> concurrency: 1 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+                
+
+[tasks]
+  . keepa_deals.Keepa_Deals.recalculate_deals
+  . keepa_deals.Keepa_Deals.run_keepa_script
+
+[2025-10-12 21:01:16,647: WARNING/MainProcess] /var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-10-12 21:01:16,658: INFO/Beat] beat: Starting...
+[2025-10-12 21:01:16,680: INFO/MainProcess] Connected to redis://127.0.0.1:6379/0
+[2025-10-12 21:01:16,682: WARNING/MainProcess] /var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-10-12 21:01:16,693: INFO/MainProcess] mingle: searching for neighbors
+[2025-10-12 21:01:17,706: INFO/MainProcess] mingle: all alone
+[2025-10-12 21:01:17,738: INFO/MainProcess] celery@srv934846 ready.
+[2025-10-12 21:01:26,056: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '9a93168d-e846-4db7-9a8f-489215a9eea5', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '9a93168d-e846-4db7-9a8f-489215a9eea5', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398488@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 21:15:00,062: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 21:15:00,090: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '1bcc3a40-ae70-44ed-81a9-d82ead45f698', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '1bcc3a40-ae70-44ed-81a9-d82ead45f698', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 21:30:00,074: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 21:30:00,077: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '024def9d-c5a2-4a09-9853-442f5abdb249', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '024def9d-c5a2-4a09-9853-442f5abdb249', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 21:45:00,088: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 21:45:00,091: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '33270531-b91a-4baf-9a49-2e7df31e3c3a', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '33270531-b91a-4baf-9a49-2e7df31e3c3a', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 22:00:00,066: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 22:00:00,069: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '6cb57716-ec6a-41b8-93f2-2d15f7960e06', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '6cb57716-ec6a-41b8-93f2-2d15f7960e06', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 22:15:00,088: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 22:15:00,091: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '28f94234-9eee-4056-b659-579695144614', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '28f94234-9eee-4056-b659-579695144614', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 22:30:00,056: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 22:30:00,059: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'b3ae296d-eb2f-4d07-a648-c382b530329c', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'b3ae296d-eb2f-4d07-a648-c382b530329c', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 22:39:33,051: INFO/MainProcess] Task keepa_deals.Keepa_Deals.recalculate_deals[75698f85-ac1f-4119-a138-fbc7b7a6051d] received
+[2025-10-12 22:39:33,249: INFO/ForkPoolWorker-2] Recalculation: Found 596 deals to refresh.
+[2025-10-12 22:39:33,266: INFO/ForkPoolWorker-2] Initializing TokenManager with default values. Token count will be synced after the first API call.
+[2025-10-12 22:39:33,266: INFO/ForkPoolWorker-2] TokenManager initialized without a blocking API call.
+[2025-10-12 22:39:33,267: INFO/ForkPoolWorker-2] Performing authoritative token sync with Keepa API...
+[2025-10-12 22:39:33,267: INFO/ForkPoolWorker-2] Requesting current token status from Keepa...
+[2025-10-12 22:39:33,804: INFO/ForkPoolWorker-2] Successfully retrieved token status: {'processingTimeInMs': 0, 'refillIn': 17815, 'refillRate': 5, 'timestamp': 1760308773731, 'tokenFlowReduction': 0.0, 'tokensConsumed': 0, 'tokensLeft': 300}
+[2025-10-12 22:39:33,806: INFO/ForkPoolWorker-2] Token count authoritatively synced from API response. Previous estimate: 100.00, New value: 300.00
+[2025-10-12 22:39:33,808: INFO/ForkPoolWorker-2] Successfully loaded settings from /var/www/agentarbitrage/keepa_deals/../settings.json
+[2025-10-12 22:39:33,808: INFO/ForkPoolWorker-2] Recalculation: Fetching product data for Batch 1/12
+[2025-10-12 22:39:33,809: WARNING/ForkPoolWorker-2] Insufficient tokens. Have: 300.00, Need an estimated: 500. Waiting for 2400 seconds to refill.
+[2025-10-12 22:45:00,090: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 22:45:00,094: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '787c1c59-9782-45b5-a896-896da30fe5fa', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '787c1c59-9782-45b5-a896-896da30fe5fa', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 23:00:00,082: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 23:00:00,086: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': 'aa012c57-9f3c-453f-816d-16a8466f05ec', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'aa012c57-9f3c-453f-816d-16a8466f05ec', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 23:15:00,084: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 23:15:00,086: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '6fed4f5a-0579-4002-bce8-dd84d13c4ace', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '6fed4f5a-0579-4002-bce8-dd84d13c4ace', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 23:19:33,908: INFO/ForkPoolWorker-2] Permission granted for API call. Estimated cost: 500. Current tokens: 300.00
+[2025-10-12 23:19:33,908: INFO/ForkPoolWorker-2] Fetching batch of 50 ASINs: ="0006120725",="0006143393",="0006365264"...
+[2025-10-12 23:19:34,238: INFO/ForkPoolWorker-2] Batch API call successful. Tokens consumed: 0. Tokens left: 300
+[2025-10-12 23:19:34,239: INFO/ForkPoolWorker-2] Token count authoritatively synced from API response. Previous estimate: 300.00, New value: 300.00
+[2025-10-12 23:19:34,239: INFO/ForkPoolWorker-2] Recalculation: Fetching product data for Batch 2/12
+[2025-10-12 23:19:34,239: INFO/ForkPoolWorker-2] Rate limit: Pausing for 60.00 seconds.
+[2025-10-12 23:20:34,296: WARNING/ForkPoolWorker-2] Insufficient tokens. Have: 300.00, Need an estimated: 500. Waiting for 2400 seconds to refill.
+[2025-10-12 23:30:00,090: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 23:30:00,094: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '2a2d81a5-7ad4-4025-8818-89744db0da00', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '2a2d81a5-7ad4-4025-8818-89744db0da00', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-12 23:45:00,072: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-12 23:45:00,075: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '486b239c-57fd-4d5a-b08e-581bb02c3e81', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '486b239c-57fd-4d5a-b08e-581bb02c3e81', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-13 00:00:00,087: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-13 00:00:00,094: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '49b71f6f-e084-4ad3-bc56-d8ef1e8db1c1', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '49b71f6f-e084-4ad3-bc56-d8ef1e8db1c1', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-13 00:00:34,391: INFO/ForkPoolWorker-2] Permission granted for API call. Estimated cost: 500. Current tokens: 300.00
+[2025-10-13 00:00:34,393: INFO/ForkPoolWorker-2] Fetching batch of 50 ASINs: ="0312301553",="0323049621",="0328870463"...
+[2025-10-13 00:00:34,855: INFO/ForkPoolWorker-2] Batch API call successful. Tokens consumed: 0. Tokens left: 300
+[2025-10-13 00:00:34,859: INFO/ForkPoolWorker-2] Token count authoritatively synced from API response. Previous estimate: 300.00, New value: 300.00
+[2025-10-13 00:00:34,864: INFO/ForkPoolWorker-2] Recalculation: Fetching product data for Batch 3/12
+[2025-10-13 00:00:34,864: INFO/ForkPoolWorker-2] Rate limit: Pausing for 59.99 seconds.
+[2025-10-13 00:01:34,912: WARNING/ForkPoolWorker-2] Insufficient tokens. Have: 300.00, Need an estimated: 500. Waiting for 2400 seconds to refill.
+[2025-10-13 00:15:00,091: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-13 00:15:00,094: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '716195ae-80ba-4384-b8d4-7b1ead2d5c0d', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '716195ae-80ba-4384-b8d4-7b1ead2d5c0d', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'
+[2025-10-13 00:30:00,084: INFO/Beat] Scheduler: Sending due task update-recent-deals-every-15-minutes (keepa_deals.tasks.update_recent_deals)
+[2025-10-13 00:30:00,087: ERROR/MainProcess] Received unregistered task of type 'keepa_deals.tasks.update_recent_deals'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'keepa_deals.tasks.update_recent_deals', 'id': '90172e86-7c4f-47f4-8e2f-22ec411a81f4', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '90172e86-7c4f-47f4-8e2f-22ec411a81f4', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen398487@srv934846', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'celery'}
+Traceback (most recent call last):
+  File "/var/www/agentarbitrage/venv/lib/python3.10/site-packages/celery/worker/consumer/consumer.py", line 658, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'keepa_deals.tasks.update_recent_deals'

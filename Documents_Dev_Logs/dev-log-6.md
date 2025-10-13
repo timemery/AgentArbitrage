@@ -443,3 +443,38 @@ This process confirmed that the new task runs without errors and successfully wr
    - Addressed code review feedback by making the filter removal more comprehensive (fixing both `if/else` blocks), removing temporary files (`celery.log`, `dump.rdb`) from the commit, and updating `.gitignore`.
 
 **Conclusion & Final State:** The code is now considered **correct and complete**. All identified bugs and hardcoded filters have been fixed. However, the final verification tests still failed to populate the database with new deals. The application runs without error, but the Keepa API appears to be returning an empty set of deals. A user-provided `curl` test to the `/token` endpoint was successful, confirming the API key is valid and has sufficient tokens. The problem is therefore not with authentication, but is highly specific to the `/deal` endpoint query being sent by the application.
+
+
+
+# Intense frustration!
+
+**Development Log Entry**
+
+**Objective:** Diagnose and resolve an issue where the Keepa /deal API endpoint was consistently returning zero deals, despite the "Upserter" task (`update_recent_deals`) running to completion without errors.
+
+**Summary of Investigation:**
+
+The investigation was a multi-stage debugging process that began by instrumenting the core API call (`fetch_deals_for_deals`) with detailed logging to inspect the outgoing request and the incoming response. However, a series of cascading environment and configuration failures had to be resolved before the task could be successfully executed to generate these logs.
+
+**Key Issues Encountered & Resolved:**
+
+1.  **Environment & Dependency Failures:** The initial testing protocol was incompatible with the sandbox environment. The process required installing missing Python dependencies (`python-dotenv`), installing and manually starting a Redis server, and adapting the Celery worker startup script.
+2.  **Celery Misconfiguration:** A critical `KeyError` revealed that the Celery worker was not configured to discover tasks from the correct file (`keepa_deals/simple_task.py`). Furthermore, the task's decorator was hardcoded with an old name. This was resolved by updating `celery_config.py` to include the correct import path and correcting the `@celery.task` decorator in `simple_task.py`.
+3.  **Missing Environment Variables:** The Celery worker was not loading the `.env` file, causing the task to abort with a `KEEPA_API_KEY not set` error. The root cause was a missing `.env` file, which was created to allow the task to proceed.
+
+**Root Cause Diagnosis:**
+
+After resolving the environmental roadblocks, the task was successfully run. The diagnostic logs revealed that the application was sending a query with extremely restrictive parameters, originating from unwanted and improperly configured fields on the `/settings` page (e.g., "Min % Drop" was set to `3`, not `50`). User feedback confirmed these settings were not requested and were the source of the problem.
+
+**Final Blocker - Unrecoverable Environment Corruption:**
+
+In the final stages, the sandbox environment entered an unrecoverable corrupted state. A `git apply` error, stemming from an untracked `dump.rdb` file, blocked all file system tools (`read_file`, `delete_file`, `replace_with_git_merge_diff`, and even `run_in_bash_session`). Multiple attempts to fix the environment, including a full `reset_all`, were unsuccessful, making it impossible to implement the final code changes.
+
+### Dev Log: Hardcoded Keepa Query
+
+- **Objective:** Resolve the "zero deals found" issue by replacing the dynamic, UI-driven Keepa API query with a fixed, user-provided query.
+- Summary of Changes:
+  - **UI (`templates/settings.html`):** Removed form fields for "Max Sales Rank," "Min Price," "Max Price," and "Min % Drop." This prevents users from configuring the faulty query parameters.
+  - **Backend (`wsgi_handler.py`):** Removed the corresponding logic from the `/settings` route to stop the application from processing and saving these unwanted settings.
+  - **API (`keepa_deals/keepa_api.py`):** The `fetch_deals_for_deals` function was refactored to use a hardcoded JSON query provided by the user. The function no longer depends on `settings.json`, ensuring a consistent and reliable deal search.
+- **Outcome & Discrepancy:** The changes successfully allow the `update_recent_deals` task to fetch data from the Keepa API. However, a critical discrepancy was found: the file timestamp for `deals.db` does not update after the task runs. This proves that while the API call is successful, the database write operation is failing silently. The reported deal count from `check_db.py` is likely reading a stale or cached version of the database.

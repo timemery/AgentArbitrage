@@ -1,6 +1,6 @@
 {
     "status": "Running",
-    "message": "Found 596 deals. Fetching fresh data...",
+    "message": "Step 1/3: Fetched data for 100/596 deals.",
     "total_deals": 596,
-    "processed_deals": 0
+    "processed_deals": 100
 }
