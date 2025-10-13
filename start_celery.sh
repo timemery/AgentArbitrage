@@ -23,6 +23,11 @@ echo "Ensuring log file exists at $LOG_FILE..."
 rm -f $LOG_FILE
 touch $LOG_FILE
 
+# Step 4.5: Ensure deals.db exists and is writable by the Celery worker.
+echo "Ensuring deals.db exists and is writable..."
+touch deals.db
+chmod 666 deals.db
+
 # Step 5: Start the Celery worker using nohup.
 echo "Starting Celery worker in the background, logging to $LOG_FILE..."
 nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &

@@ -230,7 +230,9 @@ def update_recent_deals():
 
         logger.info(f"Step 4: Upserting {len(rows_to_upsert)} rows into database...")
         try:
+            logger.info(f"Attempting to connect to database at: {DB_PATH}")
             with sqlite3.connect(DB_PATH) as conn:
+                logger.info("Database connection successful.")
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
                 
@@ -251,7 +253,9 @@ def update_recent_deals():
                 upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
                 
                 cursor.executemany(upsert_sql, data_for_upsert)
+                logger.info(f"Executing upsert for {cursor.rowcount} rows. Attempting to commit.")
                 conn.commit()
+                logger.info("Commit successful.")
                 logger.info(f"Step 4 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
 
         except sqlite3.Error as e:

@@ -9,3 +9,6 @@ from celery_config import celery
 # to the Celery worker command.
 # The command `celery -A worker.celery worker` will look for the
 # `celery` object in this `worker.py` module.
+
+# Import tasks so the worker can find them.
+from keepa_deals import simple_task

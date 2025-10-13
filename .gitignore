@@ -6,3 +6,5 @@ __pycache__/
 .env
 app.log
 *.bak.env.save
+*.log
+deals.db
