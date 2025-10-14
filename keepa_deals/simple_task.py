@@ -39,7 +39,7 @@ LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 
 
-@celery.task(name='keepa_deals.tasks.update_recent_deals')
+@celery.task(name='keepa_deals.simple_task.update_recent_deals')
 def update_recent_deals():
     redis_client = redis.Redis.from_url(celery.conf.broker_url)
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
