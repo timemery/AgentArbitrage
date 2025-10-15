@@ -545,3 +545,79 @@ The fix was verified by running the `update_recent_deals` task and checking the 
    - **Outcome:** **Workaround.** The task was successfully submitted despite the tool failures.
 
 **Final Summary:** The core objective was achieved. The Celery task discovery mechanism is now cleaner and follows best practices. The primary obstacle was a misleading and non-functional sandbox environment for Celery/Redis tasks. The key lesson learned is to recognize when the testing environment is the source of failure and to collaborate with the user for verification in a reliable environment. The change is confirmed to be working correctly.
+
+
+
+### Dev Log Entry: October 15, 2025
+
+**Task:** `fix/dashboard-and-recalculator`
+
+**Objective:** Diagnose and fix multiple critical issues: 1) Incorrectly formatted data (e.g., truncated sales ranks, missing symbols) appearing on the deals dashboard. 2) The "Refresh All Deals" button triggering a task that would hang indefinitely.
+
+**Summary of Challenges and Resolutions:**
+
+This task involved a multi-stage diagnosis that uncovered two distinct root causes for the observed problems.
+
+**1. The Broken Dashboard Display:**
+
+- **Symptom:** Numerous columns on the dashboard displayed incorrect data. Sales Ranks were truncated, and other numeric fields were missing '$' or '%' symbols, indicating they were being treated as plain numbers or strings by the frontend.
+- **Investigation:** The initial hypothesis was a frontend JavaScript formatting issue. However, a deeper analysis of the data pipeline revealed the true cause was at the database level. The `backfill_deals` task was fetching data that contained characters like commas and currency symbols (e.g., "1,234,567") and inserting these strings directly into database columns that had been created with `INTEGER` or `REAL` types. SQLite was silently failing to cast these values, leading to data type mismatches that the frontend couldn't handle.
+- **Resolution:** A centralized data cleaning function, `clean_numeric_values`, was created in `keepa_deals/processing.py`. This function is responsible for stripping characters like `,`, `$`, and `%` from string values and explicitly converting them to the correct `int` or `float` types before they are sent to the database. Both the `backfill_deals` and `update_recent_deals` tasks were modified to call this function, ensuring all data entering the database is clean and correctly typed.
+
+**2. The Hanging "Refresh All Deals" Task:**
+
+- **Symptom:** Clicking the "Refresh All Deals" button would display a "Recalculating..." banner that would never disappear, and the underlying task would never execute.
+
+- Investigation:
+
+   
+
+  The investigation traced the button's action to a
+
+   
+
+  ```
+  recalculate_deals.delay()
+  ```
+
+   
+
+  call in
+
+   
+
+  ```
+  wsgi_handler.py
+  ```
+
+  . However, an inspection of the codebase revealed several critical errors:
+
+  1. The `recalculate_deals` function in `keepa_deals/Keepa_Deals.py` was just a standard Python function, not a registered Celery task.
+  2. The import statement in `wsgi_handler.py` was pointing to a function that didn't exist as a Celery task.
+
+- Resolution:
+
+   
+
+  The entire
+
+   
+
+  ```
+  recalculate_deals
+  ```
+
+   
+
+  logic was refactored:
+
+  1. A new, dedicated file was created at `keepa_deals/recalculator.py`.
+  2. The `recalculate_deals` function was moved into this new file and properly decorated with `@celery.task` to register it correctly.
+  3. All relevant configuration files (`celery_config.py`, `worker.py`) and the calling code in `wsgi_handler.py` were updated to import and reference the task from its new, correct location.
+
+**3. UI/UX Improvement:**
+
+- **Objective:** The "Refresh All Deals" button was a powerful, long-running task that was too prominent on the main dashboard.
+- **Resolution:** As requested, the button and its associated JavaScript logic were successfully relocated from `templates/dashboard.html` to the less-frequented `templates/settings.html` page.
+
+**Final Outcome:** **Success.** The data display on the dashboard is now correct because the underlying data in the database is being saved with the proper numeric types. The "Refresh All Deals" button now successfully triggers the `recalculate_deals` task, which runs in the background and updates the UI upon completion.

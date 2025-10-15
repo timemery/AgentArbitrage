@@ -16,7 +16,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_config import celery
-from keepa_deals.Keepa_Deals import recalculate_deals
+from keepa_deals.recalculator import recalculate_deals
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')

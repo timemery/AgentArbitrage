@@ -4,8 +4,6 @@ import os
 import re
 import logging
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
@@ -111,3 +109,33 @@ def create_deals_table_if_not_exists():
     except Exception as e:
         logger.error(f"An unexpected error occurred during schema setup: {e}", exc_info=True)
         raise
+
+WATERMARK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'watermark.json')
+
+def save_watermark(timestamp: str):
+    """Saves the given ISO 8601 timestamp to the watermark file."""
+    logger.info(f"Saving new watermark timestamp: {timestamp}")
+    try:
+        with open(WATERMARK_PATH, 'w') as f:
+            json.dump({'lastUpdate': timestamp}, f)
+        logger.info("Watermark saved successfully.")
+    except IOError as e:
+        logger.error(f"Error saving watermark to {WATERMARK_PATH}: {e}", exc_info=True)
+
+def load_watermark() -> str | None:
+    """
+    Loads the watermark timestamp from the file.
+    Returns the ISO 8601 timestamp string or None if the file doesn't exist.
+    """
+    if not os.path.exists(WATERMARK_PATH):
+        logger.warning("Watermark file not found. Assuming this is the first run.")
+        return None
+    try:
+        with open(WATERMARK_PATH, 'r') as f:
+            data = json.load(f)
+            timestamp = data.get('lastUpdate')
+            logger.info(f"Loaded watermark: {timestamp}")
+            return timestamp
+    except (IOError, json.JSONDecodeError) as e:
+        logger.error(f"Error loading watermark from {WATERMARK_PATH}: {e}", exc_info=True)
+        return None
