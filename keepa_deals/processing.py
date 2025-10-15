@@ -100,3 +100,32 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
         logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
 
     return row_data
+
+def clean_numeric_values(row_data):
+    """
+    Cleans and converts numeric string values in the row data to actual numbers.
+    This handles values with $, %, and commas.
+    """
+    for key, value in row_data.items():
+        if value is None or not isinstance(value, str):
+            continue
+
+        cleaned_value = value.strip().replace('$', '').replace(',', '')
+
+        if "Rank" in key or "Count" in key:
+            try:
+                row_data[key] = int(cleaned_value)
+            except (ValueError, TypeError):
+                row_data[key] = None # Set to None if conversion fails
+        elif "%" in value:
+            try:
+                row_data[key] = float(cleaned_value.replace('%', ''))
+            except (ValueError, TypeError):
+                row_data[key] = None
+        elif "Price" in key or "Cost" in key or "Fee" in key or "Profit" in key or "Margin" in key:
+            try:
+                row_data[key] = float(cleaned_value)
+            except (ValueError, TypeError):
+                row_data[key] = None
+
+    return row_data

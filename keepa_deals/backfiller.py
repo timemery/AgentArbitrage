@@ -22,7 +22,7 @@ from .business_calculations import (
 )
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
-from .processing import _process_single_deal
+from .processing import _process_single_deal, clean_numeric_values
 
 # Configure logging
 logger = getLogger(__name__)
@@ -147,6 +147,8 @@ def backfill_deals():
             processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:
+                # Clean the numeric values before upserting
+                processed_row = clean_numeric_values(processed_row)
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                 processed_row['source'] = 'backfiller'
                 rows_to_upsert.append(processed_row)
