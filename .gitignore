@@ -18,4 +18,5 @@ scan_status.json
 .env
 
 # Temporary test scripts
-trigger_task.py
+trigger_task.py*.log
+watermark.json
