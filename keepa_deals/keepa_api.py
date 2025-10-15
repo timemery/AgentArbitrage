@@ -40,17 +40,18 @@ def get_token_status(api_key):
         return None
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
+def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
     """
     Fetches deals from the Keepa API using a fixed, user-provided query.
-    The `date_range_days` and `use_deal_settings` parameters are ignored to ensure stability.
+    The `use_deal_settings` parameter is ignored to ensure stability.
+    Accepts a page number and a sort_type.
     Returns the response data, tokens consumed, and the number of tokens left.
     """
-    logger.info("Fetching deals using a hardcoded, stable query.")
+    logger.info(f"Fetching deals using a hardcoded, stable query. Page: {page}, Sort: {sort_type}")
 
     # This query is provided by the user and is known to return 700-1000+ deals daily.
     deal_query = {
-        "page": 0,
+        "page": page,
         "domainId": "1",
         "excludeCategories": [],
         "includeCategories": [
@@ -89,7 +90,7 @@ def fetch_deals_for_deals(date_range_days, api_key, use_deal_settings=False):
         "isPrimeExclusive": False,
         "mustHaveAmazonOffer": False,
         "mustNotHaveAmazonOffer": False,
-        "sortType": 4,
+        "sortType": sort_type,
         "dateRange": "3",
         "warehouseConditions": [
             2,
