@@ -3,12 +3,12 @@ import os
 import json
 import sqlite3
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 import redis
 
 from celery_config import celery
-from .db_utils import create_deals_table_if_not_exists, sanitize_col_name
+from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
@@ -39,6 +39,22 @@ LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 
 
+def _convert_keepa_time_to_iso(keepa_minutes):
+    """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
+    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
+    return dt_object.isoformat()
+
+def _convert_iso_to_keepa_time(iso_str):
+    """Converts an ISO 8601 UTC string to Keepa time (minutes since 2000-01-01)."""
+    if not iso_str:
+        return 0
+    dt_object = datetime.fromisoformat(iso_str).astimezone(timezone.utc)
+    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    delta = dt_object - keepa_epoch
+    return int(delta.total_seconds() / 60)
+
+
 @celery.task(name='keepa_deals.simple_task.update_recent_deals')
 def update_recent_deals():
     redis_client = redis.Redis.from_url(celery.conf.broker_url)
@@ -61,25 +77,59 @@ def update_recent_deals():
         token_manager = TokenManager(api_key)
         business_settings = business_load_settings()
 
-        logger.info("Step 1: Fetching recent deals...")
-        deal_response_raw, tokens_consumed, tokens_left = fetch_deals_for_deals(0, api_key, use_deal_settings=True)
-        token_manager.update_after_call(tokens_consumed)
+        # --- New Delta Sync Logic ---
+        logger.info("Step 1: Initializing Delta Sync...")
+        watermark_iso = load_watermark()
+        if watermark_iso is None:
+            logger.error("CRITICAL: Watermark not found. The backfiller must be run at least once before the upserter. Aborting.")
+            return
+
+        watermark_keepa_time = _convert_iso_to_keepa_time(watermark_iso)
+        logger.info(f"Loaded watermark: {watermark_iso} (Keepa time: {watermark_keepa_time})")
+
+        newest_deal_timestamp = 0
+        all_new_deals = []
+        page = 0
         
-        deal_response = deal_response_raw
+        logger.info("Step 2: Paginating through deals to find new ones...")
+        while True:
+            # Sort by newest first (sortType=0)
+            deal_response, tokens_consumed, _ = fetch_deals_for_deals(page, api_key, sort_type=0)
+            token_manager.update_after_call(tokens_consumed)
 
-        if not deal_response or 'deals' not in deal_response:
-            logger.error("Step 1 Failed: No response from deal fetch.")
+            if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
+                logger.info("No more deals found on subsequent pages. Stopping pagination.")
+                break
+
+            deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
+
+            if page == 0 and deals_on_page:
+                # The very first deal on the first page is the newest overall
+                newest_deal_timestamp = deals_on_page[0].get('lastUpdate', 0)
+
+            # Core Delta Logic
+            found_older_deal = False
+            for deal in deals_on_page:
+                if deal['lastUpdate'] <= watermark_keepa_time:
+                    found_older_deal = True
+                    break # Stop processing deals on this page
+                all_new_deals.append(deal)
+
+            if found_older_deal:
+                logger.info(f"Found a deal older than the watermark on page {page}. Stopping pagination.")
+                break
+
+            page += 1
+            time.sleep(1) # Be courteous to the API
+
+        if not all_new_deals:
+            logger.info("Step 2 Complete: No new deals found since the last run.")
             return
+        logger.info(f"Step 2 Complete: Found {len(all_new_deals)} new deals.")
 
-        recent_deals = [d for d in deal_response.get('deals', {}).get('dr', []) if validate_asin(d.get('asin'))]
-        if not recent_deals:
-            logger.info("Step 1 Complete: No new valid deals found.")
-            return
-        logger.info(f"Step 1 Complete: Fetched {len(recent_deals)} deals.")
-
-        logger.info("Step 2: Fetching product data for deals...")
+        logger.info("Step 3: Fetching product data for new deals...")
         all_fetched_products = {}
-        asin_list = [d['asin'] for d in recent_deals]
+        asin_list = [d['asin'] for d in all_new_deals]
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
@@ -91,9 +141,9 @@ def update_recent_deals():
             if product_response and 'products' in product_response and not (api_info and api_info.get('error_status_code')):
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
-        logger.info(f"Step 2 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
+        logger.info(f"Step 3 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
-        logger.info("Step 2.5: Pre-fetching all seller data...")
+        logger.info("Step 4: Pre-fetching all seller data...")
         unique_seller_ids = set()
         for product in all_fetched_products.values():
             for offer in product.get('offers', []):
@@ -110,14 +160,14 @@ def update_recent_deals():
                 token_manager.update_after_call(tokens_consumed)
                 if seller_data_response and 'sellers' in seller_data_response:
                     seller_data_cache.update(seller_data_response['sellers'])
-        logger.info(f"Step 2.5 Complete: Fetched data for {len(seller_data_cache)} unique sellers.")
+        logger.info(f"Step 4 Complete: Fetched data for {len(seller_data_cache)} unique sellers.")
 
-        logger.info("Step 3: Processing deals...")
+        logger.info("Step 5: Processing deals...")
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
 
         rows_to_upsert = []
-        for deal in recent_deals:
+        for deal in all_new_deals:
             asin = deal['asin']
             if asin not in all_fetched_products:
                 continue
@@ -128,51 +178,47 @@ def update_recent_deals():
             processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:
-                # Clean the numeric values before upserting
                 processed_row = clean_numeric_values(processed_row)
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                 processed_row['source'] = 'upserter'
                 rows_to_upsert.append(processed_row)
-        logger.info(f"Step 3 Complete: Processed {len(rows_to_upsert)} deals.")
+        logger.info(f"Step 5 Complete: Processed {len(rows_to_upsert)} deals.")
 
         if not rows_to_upsert:
             logger.info("No rows to upsert. Task finished.")
             return
 
-        logger.info(f"Step 4: Upserting {len(rows_to_upsert)} rows into database...")
+        logger.info(f"Step 6: Upserting {len(rows_to_upsert)} rows into database...")
         try:
-            logger.info(f"Attempting to connect to database at: {DB_PATH}")
             with sqlite3.connect(DB_PATH) as conn:
-                logger.info("Database connection successful.")
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
-                
-                # Add the two new fields to the headers list for the upsert
                 sanitized_headers.extend(['last_seen_utc', 'source'])
 
-                # Prepare the data for upsert, ensuring the new fields are included
                 data_for_upsert = []
                 for row_dict in rows_to_upsert:
                     row_tuple = tuple(row_dict.get(h) for h in headers) + (row_dict.get('last_seen_utc'), row_dict.get('source'))
                     data_for_upsert.append(row_tuple)
 
-                # Dynamically build the upsert SQL
                 cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
                 vals_str = ', '.join(['?'] * len(sanitized_headers))
                 update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
-
                 upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
                 
                 cursor.executemany(upsert_sql, data_for_upsert)
-                logger.info(f"Executing upsert for {cursor.rowcount} rows. Attempting to commit.")
                 conn.commit()
-                logger.info("Commit successful.")
-                logger.info(f"Step 4 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
+                logger.info(f"Step 6 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
 
         except sqlite3.Error as e:
-            logger.error(f"Step 4 Failed: Database error during upsert: {e}", exc_info=True)
+            logger.error(f"Step 6 Failed: Database error during upsert: {e}", exc_info=True)
         except Exception as e:
-            logger.error(f"Step 4 Failed: Unexpected error during upsert: {e}", exc_info=True)
+            logger.error(f"Step 6 Failed: Unexpected error during upsert: {e}", exc_info=True)
+
+        # --- Final Step: Update Watermark ---
+        if newest_deal_timestamp > watermark_keepa_time:
+            new_watermark_iso = _convert_keepa_time_to_iso(newest_deal_timestamp)
+            save_watermark(new_watermark_iso)
+            logger.info(f"Successfully updated watermark to {new_watermark_iso}")
 
         logger.info("--- Task: update_recent_deals finished ---")
     finally:

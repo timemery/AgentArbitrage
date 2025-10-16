@@ -621,3 +621,34 @@ This task involved a multi-stage diagnosis that uncovered two distinct root caus
 - **Resolution:** As requested, the button and its associated JavaScript logic were successfully relocated from `templates/dashboard.html` to the less-frequented `templates/settings.html` page.
 
 **Final Outcome:** **Success.** The data display on the dashboard is now correct because the underlying data in the database is being saved with the proper numeric types. The "Refresh All Deals" button now successfully triggers the `recalculate_deals` task, which runs in the background and updates the UI upon completion.
+
+Dev Log Entry for Task feat/incremental-upserter-task
+Please copy the text below and save it as dev-log-6.md.
+
+### Dev Log Entry: October 16, 2025
+
+**Task:** `feat/incremental-upserter-task`
+
+**Objective:** Implement Part 2 of the Keepa Sync Strategy by refactoring the `update_recent_deals` task to perform an efficient, incremental "delta" sync using the `watermark.json` file.
+
+**Summary of Challenges and Resolutions:**
+
+This task was successful, but its validation surfaced critical issues related to the system's initial state and operational assumptions.
+
+**1. The "Catch-Up" Token Exhaustion:**
+
+*   **Symptom:** The initial test run, started with a full 300 Keepa API tokens, failed almost instantly with a `429 Too Many Requests` error. The token count immediately went into the negative, suggesting a massive API call was attempted.
+*   **Investigation:** Analysis of the `celery.log` revealed that the task was loading a `watermark.json` file with a timestamp from 2014. This was likely because the initial `backfill_deals` task from Part 1 had never fully completed successfully, leaving behind a default or stale watermark file. The new `update_recent_deals` task was therefore correctly attempting to "catch up" on 10 years of deal history, a process far too large for the 300-token limit.
+*   **Resolution:** The issue was not a bug in the code, but an environmental problem. The resolution was to ensure the task was run with the maximum possible number of tokens to give it the best chance of completing the one-time catch-up.
+
+**2. The Celery Beat Race Condition:**
+
+*   **Symptom:** Even after waiting for tokens to replenish, subsequent test runs continued to fail instantly. The token count was being drained by an unseen process.
+*   **Investigation:** Deeper log analysis showed that two instances of the `update_recent_deals` task were being triggered: one by the manual `trigger_simple_task.py` script, and another by the automated Celery Beat scheduler (`--beat` flag in the service startup command). The automated task would start first, consume all the available tokens, and fail. The manual task would then start moments later, find an empty token pool, and also fail.
+*   **Resolution:** A controlled testing procedure was devised to isolate the manual task from the scheduler.
+    1.  All Celery processes were stopped (`pkill -f 'celery'`).
+    2.  Tokens were allowed to fully replenish.
+    3.  The Celery worker was restarted using a modified command that **omitted the `--beat` flag**. This created a worker that would only execute manually triggered tasks.
+    4.  The task was triggered manually one last time.
+
+**Final Outcome:** **Success.** With the scheduler temporarily disabled, the manual task had exclusive access to the full token pool. It successfully completed the "catch-up" run, processed the first batch of deals, and critically, **updated the `watermark.json` file to a current timestamp.** The incremental sync engine is now proven to be functional and the system is in a stable state for future automated runs.
