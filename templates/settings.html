@@ -144,6 +144,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     refreshButton.addEventListener('click', async () => {
+        const userConfirmed = confirm("Are you sure? This is a very long and expensive operation that will consume a large number of API tokens. This should only be used for system maintenance.");
+        if (!userConfirmed) {
+            return; // Stop if the user clicks "Cancel"
+        }
+
         try {
             refreshButton.disabled = true;
             refreshButton.textContent = 'Refreshing...';
