@@ -6,7 +6,7 @@
 APP_DIR="."
 LOG_FILE="$APP_DIR/celery.log"
 VENV_PYTHON="python" # Use the python in the current environment
-WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery worker --loglevel=INFO"
+WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery worker --beat --loglevel=INFO"
 PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery purge -f"
 
 # Step 2: Kill any lingering Celery worker processes.

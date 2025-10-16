@@ -652,3 +652,27 @@ This task was successful, but its validation surfaced critical issues related to
     4.  The task was triggered manually one last time.
 
 **Final Outcome:** **Success.** With the scheduler temporarily disabled, the manual task had exclusive access to the full token pool. It successfully completed the "catch-up" run, processed the first batch of deals, and critically, **updated the `watermark.json` file to a current timestamp.** The incremental sync engine is now proven to be functional and the system is in a stable state for future automated runs.
+
+### **Dev Log Entry: October 16, 2025**
+
+**Task:** `feat/automate-and-stabilize` - Implement Part 3 of Keepa Sync Strategy.
+
+**Objective:** The primary goal was to make the data synchronization system fully autonomous by re-enabling the Celery Beat scheduler for the `update_recent_deals` task. A secondary objective was to add a JavaScript safety confirmation to the expensive "Refresh All Data" button.
+
+**Summary of Challenges and Resolutions:**
+
+This task was ultimately **successful**, but it involved a deep and challenging debugging process to resolve a silent failure in the Celery worker within the sandboxed test environment.
+
+1. **Initial Code Changes (Straightforward):**
+   - **Scheduler:** The Celery Beat scheduler was successfully re-enabled by adding the `--beat` flag to the `WORKER_COMMAND` in the `start_celery.sh` script.
+   - **UI Safety:** The JavaScript `confirm()` dialog was successfully added to the "Refresh All Data" button's click listener in `templates/settings.html`.
+2. **Verification Challenge: The Silent Task Failure:**
+   - **Symptom:** After the changes were applied, the standard testing protocol (`pkill`, `redis-server &`, `start_celery.sh`) was followed. However, the scheduled `update_recent_deals` task never appeared to run. The log file was not updating, the database remained empty, and `watermark.json` was not being created or updated. This indicated a silent crash was occurring.
+   - Investigation & Resolution (Multi-step):
+     1. **Environment Check:** The first step was to rule out environmental issues. Missing dependencies (`redis-server`, `celery`) were installed, and a stable testing protocol was established. The failure persisted, proving the issue was in the application code.
+     2. **"Hello World" Test:** To isolate the fault, a minimal, dependency-free test task (`hello_world` in `test_task.py`) was created and configured. This task **ran successfully**, which was a critical breakthrough. It proved the Celery/Redis infrastructure was working correctly and that the problem was specific to the application's more complex tasks.
+     3. **Worker Import Anti-Pattern:** The success of the simple task strongly suggested that a fatal error was occurring when the worker first tried to import one of the main task modules. An inspection of `worker.py` revealed it was directly importing `simple_task`, `backfiller`, and `recalculator`. This is a known Celery anti-pattern, as any top-level error in those files (e.g., a missing dependency, a syntax error) will crash the entire worker process before it can start logging.
+     4. **The Fix:** The direct imports were **removed** from `worker.py`. The Celery configuration was corrected to rely exclusively on the `imports` tuple within `celery_config.py` for task discovery. This is a more robust pattern that allows the worker to start even if a specific task module has an issue, enabling proper error logging.
+   - **Final User Verification:** After these fixes were implemented, you successfully tested the changes in your environment. You confirmed that the automated task ran, the "catch-up" data sync occurred (as shown by the initial large token drop), and subsequent runs were fast and cheap. You also confirmed the UI confirmation dialog was working perfectly.
+
+**Final Outcome:** **Success.** The system is now fully autonomous, with the `update_recent_deals` task running automatically on its 15-minute schedule. The UI safety feature has also been successfully implemented.
