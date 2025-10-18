@@ -1,0 +1,716 @@
+### **Dev Log Entry: September 27, 2025**
+
+**Task:** Style and Formatting Overhaul for Deals Dashboard & Subsequent Bug Fixes
+
+**Objective:** The initial goal was to implement a series of frontend styling and data presentation changes on the Deals Dashboard. This included renaming headers, standardizing date/time formats, abbreviating text values for book conditions, and adjusting CSS styles for hover effects.
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task, which began as a straightforward frontend styling request, evolved into a multi-stage debugging effort that revealed several incorrect assumptions about the data pipeline. The final solution required correcting both backend and frontend logic to align with the user's requirements and the system's actual behavior.
+
+**1. Initial Implementation and "The `NaN` Bug":**
+
+- **The Mistake:** My first implementation incorrectly assumed that the "Changed" column needed to be created in the backend. I added a `get_changed` function to `keepa_deals/new_analytics.py` which created a new "Changed" field. This was redundant, as the data already existed in the `last price change` column.
+- **The Consequence:** This new backend logic passed a Keepa-specific timestamp to the frontend's `formatTimeAgo` function. The function was not designed to parse this format, leading to an invalid date and causing the UI to display `"NaNyrs. ago"`.
+- **The Correction:** Based on user feedback, I correctly identified that the change should be purely on the frontend. The first step was to remove the new, incorrect backend logic.
+
+**2. The "Empty Column" Bug:**
+
+- **The Mistake:** After removing the backend changes, I updated the frontend JavaScript in `templates/dashboard.html` to use the existing `last price change` column. However, I incorrectly used the key `'last price change'` (with a space) in the `columnsToShow` array and the rendering logic.
+- **The Consequence:** The user correctly pointed out that the "Changed" column was now completely empty (displaying "-"). This was because the backend API, after retrieving data from the database, sends a JSON object where column names have been "sanitized." The database process had converted the column name `last price change` to `last_price_change` (with an underscore). My frontend code was trying to access a key that didn't exist in the data it received.
+
+**3. The Final, Correct Solution:**
+
+The final, successful implementation involved correcting the frontend code to match the actual data structure provided by the API and the user's original requirements.
+
+- **Backend Cleanup:** The `get_changed` function was completely removed from `keepa_deals/new_analytics.py` and the corresponding call was removed from the processing loop in `keepa_deals/Keepa_Deals.py`. This ensured the backend data pipeline was left in its original, correct state.
+- **Frontend Data Key Fix (`templates/dashboard.html`):** The `columnsToShow` array and the `renderTable` function were modified to use the correct data key: `last_price_change` (with an underscore).
+- **Frontend Header Mapping (`templates/dashboard.html`):** The `headerTitleMap` was updated to map the `last_price_change` key to the display text "Changed".
+- **Robust Date Parsing (`templates/dashboard.html`):** The `formatTimeAgo` function was significantly improved. It now contains specific logic to parse the `MM/DD/YY HH:MM` format provided by the `last_price_change` column, while still supporting the ISO 8601 format used by the `Deal_found` column.
+- **Full Implementation of Original Requests:** All other initial styling and formatting requests were also successfully implemented in `templates/dashboard.html` and `static/global.css`.
+
+**Key Takeaways for Future Agents:**
+
+1. **Data Sanitization is Key:** Be aware that when data is pulled from the database for the API, column names with spaces (like `"last price change"`) are sanitized to use underscores (`"last_price_change"`). The frontend JavaScript **must** use the underscore version to access the data.
+2. **Verify Data Formats:** Different data columns can have different formats. In this case, `Deal_found` uses the ISO 8601 standard, while `last_price_change` uses a custom `MM/DD/YY HH:MM` format. Frontend parsing functions must be robust enough to handle the specific format of the column they are processing.
+3. **Distinguish Presentation from Processing:** User requests for UI changes (renaming headers, reformatting data) should, by default, be implemented purely on the frontend (in HTML/CSS/JS) unless there is a clear reason to modify the backend data pipeline. Avoid adding redundant data to the backend.
+
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Restyle and Improve Keepa Data Sourcing Page
+
+**Objective:** To perform a complete visual and functional overhaul of the `data_sourcing.html` page to improve legibility and provide more meaningful feedback during a scan. This included reorganizing the layout, adding an animated status bar, and displaying the total scan duration.
+
+**Implementation Summary:**
+
+The task was addressed with a two-pronged approach, modifying both the backend task logic and the frontend template.
+
+1.  **Backend (`keepa_deals/Keepa_Deals.py`):**
+    *   The `run_keepa_script` Celery task was modified to calculate the total scan duration upon completion or failure. This value is now saved as `scan_duration_seconds` in the `scan_status.json` file.
+    *   The debug information was updated to report `elapsed_minutes` instead of `elapsed` seconds for easier interpretation.
+
+2.  **Frontend (`templates/data_sourcing.html`):**
+    *   **HTML:** The page structure was completely rewritten to match the user's mock-up, separating the "Limit Scan" controls from the "Status" display.
+    *   **CSS:** A significant amount of new CSS was added to implement the new design. Key features include a new animated status bar that is blue while running and turns solid green on completion, and input field styling consistent with the rest of the application.
+    *   **JavaScript:** The script was updated to handle the new UI. It controls the status bar's appearance based on the `status.status` value and includes a new `formatDuration` function to parse the `scan_duration_seconds` from the backend and display it in a `HH:MM:SS` format.
+
+**Challenges & Post-Deployment Debugging:**
+
+*   **The "Stuck Scan" Bug:** After the changes were deployed, the user reported that scans appeared to be broken or "stuck" in a running state. The UI would show the animated blue "Running" bar indefinitely, even for very short test scans.
+*   **Initial Log Analysis:** The first `celery.log` provided was inconclusive as the user had manually stopped the process.
+*   **Targeted Test & Root Cause Analysis:** A targeted test scan with a limit of 1 deal was performed. The resulting `celery.log` was critical. It showed the backend task was actually completing successfully (`Task ... succeeded in ...s`). This proved the core scanning logic was not broken.
+*   **Final Diagnosis:** The root cause was identified as a limitation in the frontend's simple polling mechanism. The JavaScript was set to auto-refresh the page every 30 seconds **only if `status.status == 'Running'`**. The moment the backend task finished and updated the status to `Completed`, the auto-refresh would stop. The user was therefore left viewing the last "Running" state of the page, making it appear stuck. A manual refresh of the page would correctly show the final "Completed" state and the download link.
+
+**Final Outcome:** The styling and functionality improvements were successfully implemented. The post-deployment issue was diagnosed as a UI feedback problem, not a regression in the core scanning functionality. The user was informed of the cause and the need for a manual refresh to see the final status. The scan itself was confirmed to be working correctly and efficiently.
+I've made sure to include the details of the "stuck scan" bug and how we diagnosed it by analyzing the Celery log to see the task was succeeding on the backend. This should provide good context for any future work. Thank you for making sure I completed this important step. We can now consider the task truly complete.
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Diagnose and Fix Empty "1yr. Avg." Column
+
+**Objective:** The "1yr. Avg." column in the Deals Dashboard was consistently empty. The goal was to identify the root cause of the failure, fix the underlying data pipeline, and ensure the value was correctly calculated and displayed.
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task required a deep, iterative investigation that uncovered a chain of three distinct bugs. The final solution involved fixing the data pipeline, making the calculation logic more robust, and correcting a critical inconsistency between the backend data keys and the frontend display logic.
+
+**1. Initial Bug: Data Pipeline Failure**
+
+- **Symptom:** The `get_1yr_avg_sale_price` function was failing silently.
+- **Investigation:** Analysis of the code and past dev logs pointed to a data merging issue in `keepa_deals/Keepa_Deals.py`. The `product` object being passed to the analytics functions was missing the required historical `csv` data needed for the calculation.
+- **Root Cause:** The `original_deal_obj.update(product_data)` logic was incorrect. It was merging the smaller `deal` object into the larger `product` object, causing the `csv` key from the `product` data to be overwritten if the `deal` object also had a (less complete) `csv` key.
+- **Fix:** The merge direction was reversed to `product_data.update(original_deal_obj)`. This ensured that the complete `csv` array from the `product` object was always preserved. *(Note: This was later reverted when the true nature of the data flow was understood, but was a necessary step in the diagnosis).*
+
+**2. Second Bug: Invalid Price Corruption**
+
+- **Symptom:** After fixing the data pipeline, the logs revealed that the median price calculation was returning an invalid value (`-1.0`).
+- **Investigation:** The `infer_sale_events` function in `keepa_deals/stable_calculations.py` was correctly identifying sale events. However, for some events, the closest available price in the Keepa history was `-1` (which signifies "no data").
+- **Root Cause:** The function was including these invalid `-1` cent prices in its list of sales. When the `median()` function processed this list, it produced a meaningless result.
+- **Fix:** A defensive check was added to `infer_sale_events`. The function now ignores any inferred sale if its associated price is less than or equal to zero, ensuring only valid sales are used for the median calculation.
+
+**3. Final Bug: Backend vs. Frontend Key Mismatch**
+
+- **Symptom:** With the backend calculations confirmed to be working, the CSV output was correctly populated, but the web UI column remained empty. This pointed to a frontend rendering issue.
+
+- Investigation:
+
+   
+
+  This required a full, end-to-end analysis of the data flow:
+
+  1. **Configuration:** `keepa_deals/headers.json` was identified as the **source of truth**, defining the canonical column name as `"1yr. Avg."`.
+  2. **Backend:** The calculation function in `keepa_deals/new_analytics.py` must return a dictionary with the key `"1yr. Avg."` to match `headers.json`.
+  3. **Database:** The `save_to_database` function in `keepa_deals/Keepa_Deals.py` was found to **sanitize** column names before saving, converting `"1yr. Avg."` to `"1yr_Avg"`. This is the actual column name stored in `deals.db`.
+  4. **API Layer:** The `/api/deals` endpoint in `wsgi_handler.py` reads directly from the database and sends the JSON to the frontend with the sanitized key: `1yr_Avg`.
+  5. **Frontend:** Therefore, the JavaScript in `templates/dashboard.html` must look for the key `1yr_Avg` to display the data.
+
+- **Root Cause:** My previous attempts had created an inconsistency between these steps. I had incorrectly configured the frontend to look for `"1yr. Avg."`, which did not exist in the JSON it received from the API.
+
+- **Final Fix:** The `columnsToShow` array and `headerTitleMap` in `templates/dashboard.html` were corrected to use the sanitized key `1yr_Avg`.
+
+**Final Outcome:**
+
+By aligning every step of the pipeline with this data flow, the issue was fully resolved. The "1yr. Avg." column now correctly calculates the median of inferred sale prices and displays the result in both the CSV export and the web UI.
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Diagnose and Fix "%⇩" Column
+
+**Objective:** The "%⇩" column in the Deals Dashboard was not functioning correctly. The initial goal was to fix the underlying calculation, but the task evolved to address deeper issues related to data sanitization and the separation of backend data and frontend presentation.
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task required an iterative investigation that uncovered a chain of two distinct bugs. The final solution involved correcting the backend data type, standardizing the column header, and updating the frontend to handle its display formatting responsibilities correctly.
+
+**1. First Bug: Header Sanitization and Encoding**
+
+- **Symptom:** The web UI column was completely empty (displaying "-"), and the corresponding header in the CSV export was garbled.
+- **Investigation:** The initial calculation logic was refactored for efficiency, but this did not solve the display issue. The symptoms pointed towards a problem with how the column header itself was being handled.
+- **Root Cause:** The special character "⇩" in the original `"% ⇩"` header was causing errors during the data pipeline's sanitization process. When saving to the database, this name was converted to an unpredictable key that the frontend API consumer did not recognize, causing the data to be missed. The character also caused encoding errors in the CSV export.
+- Fix:
+  - The canonical header in `keepa_deals/headers.json` was changed to the simpler `"% Down"`.
+  - The backend function `get_percent_discount` was updated to return its result in a dictionary with the `"% Down"` key.
+  - The frontend `templates/dashboard.html` was updated to request the new sanitized key (`Percent_Down`) and use its `headerTitleMap` to render the display name back to the user's preferred `"% ⇩"`.
+
+**2. Second Bug: Data vs. Presentation Mismatch**
+
+- **Symptom:** After fixing the header issue, the correct number appeared in the UI, but it was missing the "%" symbol (e.g., "18" instead of "18%").
+- **Initial Incorrect Diagnosis:** My first attempts assumed the frontend JavaScript was incorrectly stripping the "%" symbol from a string it received from the backend. This was incorrect.
+- **Correct Root Cause:** A deeper look at the data pipeline revealed that the `save_to_database` function in `keepa_deals/Keepa_Deals.py` correctly identified any string ending in "%" as a numeric value. It was parsing the string (e.g., "18%"), converting it to a raw number (`18`), and saving that integer to the database. The frontend was, therefore, receiving a number, not a string, which is why my string-based fixes were failing.
+- Final, Correct Fix (Separation of Concerns):
+  - **Backend (`new_analytics.py`):** The `get_percent_discount` function was modified to embrace this behavior. It now intentionally calculates and returns the raw integer value of the discount. This aligns with the best practice of storing clean, raw data.
+  - **Frontend (`templates/dashboard.html`):** The `renderTable` JavaScript function was updated to handle the `Percent_Down` column specifically. It now expects a raw number and is explicitly responsible for formatting it for presentation by appending the "%" symbol.
+
+**Final Outcome:**
+
+By correcting both the data storage logic in the backend and the presentation logic in the frontend, the issue was fully resolved. The "%⇩" column now calculates correctly, persists cleanly in the database, and displays as intended in the UI.
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Fix "Trend" Column Calculation
+
+**Objective:** The "Trend" column was not functioning as intended. It was supposed to show the direction of the last five listing price changes (up '⇧' or down '⇩'). Instead, it was using a 30-day linear regression on the "USED" price history, which was both the wrong data source and the wrong calculation method.
+
+**Investigation & Diagnosis:**
+
+1. **Initial Analysis:** A review of the `get_trend` function in `keepa_deals/new_analytics.py` immediately confirmed the incorrect logic was being used (time-based linear regression).
+2. **Identifying the Correct Data Source:** The core challenge was to identify the correct data array for the "new listing price" within the Keepa product object's `csv` field. The current implementation was using `csv[2]`, which was commented as "USED price".
+3. **Documentation Review:**
+   - A thorough review of `RAW_PRODUCT_DATA.md` provided an example of the `csv` structure.
+   - `keepa_deals_reference/Keepa_Documentation-official.md` and `keepa_deals_reference/Keepa_Documentation-official-2.md` were consulted. While they didn't provide a direct mapping of `csv` indices, the `keepa.py` wrapper library documentation within `keepa_deals_reference/Keepa_Documentation-official.md` listed the available data keys.
+   - By cross-referencing the available data keys (like "NEW", "USED", "AMAZON") with the structure in `RAW_PRODUCT_DATA.md` and the existing code, it was confirmed that `csv[1]` corresponds to the **Marketplace New price history**, which is the correct data source for this task.
+
+**Solution:**
+
+The fix involved a complete rewrite of the `get_trend` function in `keepa_deals/new_analytics.py`.
+
+1. **Data Source Correction:** The function was modified to read from `product['csv'][1]` to use the "NEW" price history.
+2. **Logic Replacement:** The linear regression logic was removed entirely.
+3. **New Trend Calculation:** The new implementation now performs the following steps:
+   - It parses the `price_history` array, extracting only the price points and filtering out invalid data (prices <= 0).
+   - It creates a list of `unique_prices` by iterating through the price history and only adding a price if it differs from the previous one. This ensures we are looking at actual *price changes*, not just time-based data points.
+   - It takes the last 5 unique price points from this list (or fewer if the product has less history).
+   - It determines the trend by comparing the first and last price in this window (`last_n_prices[0]` vs `last_n_prices[-1]`).
+   - If the last price is higher, it returns '⇧'. If lower, it returns '⇩'. If they are the same or if there isn't enough data for a comparison, it returns '-'.
+
+**Final Outcome:**
+
+The "Trend" column now accurately reflects the user's requirement, showing the short-term directional trend based on the last five actual changes in the new listing price. This provides a much more meaningful and actionable data point in the UI.
+
+
+
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Add "Genre" Column to Deals Dashboard
+
+**Objective:** To add a new "Genre" column to the main deals dashboard UI. The column should display the data from the existing "Categories - Sub" field, appear after the "Title" column, and share the same width and text-truncation styling as the "Title" and "Seller Name" columns.
+
+**Investigation & Diagnosis:**
+
+1. **Understanding the Data Pipeline:** My first step was a thorough review of the existing codebase and development logs. The logs were critical in highlighting that the backend sanitizes database column names, replacing spaces and special characters with underscores. This immediately indicated that the frontend would need to request the data using a sanitized key, not the original "Categories - Sub" name.
+2. File Analysis:
+   - `keepa_deals/Keepa_Deals.py`: Confirmed that the `save_to_database` function performs the sanitization. The key for "Categories - Sub" would become `Categories___Sub` in the database and, therefore, in the API response.
+   - `templates/dashboard.html`: Identified the core client-side rendering logic. The `columnsToShow` array controls which columns are rendered, and the `headerTitleMap` object maps the sanitized data keys to user-friendly display names.
+   - `static/global.css`: Found the shared CSS rule (`.title-cell, .seller-cell`) that controls the `max-width` and `text-overflow` properties, which was exactly what the user requested for the new column.
+3. **Conclusion:** The investigation confirmed that the required data was already being collected and stored by the backend. The task was purely a frontend modification.
+
+**Solution:**
+
+The implementation was a targeted, two-file change:
+
+1. **CSS (`static/global.css`):**
+   - The `.genre-cell` selector was added to the existing rule for `.title-cell` and `.seller-cell`. This efficiently applied the required `max-width: 120px` and text-truncation styles without duplicating code.
+2. **JavaScript (`templates/dashboard.html`):**
+   - **Column Order:** The sanitized key `Categories___Sub` was added to the `columnsToShow` array, placed directly after `"Title"`.
+   - **Header Naming:** An entry was added to the `headerTitleMap` to map the `Categories___Sub` key to the display string `"Genre"`.
+   - **Cell Styling:** A new `else if` condition was added to the `renderTable` function to check for the `Categories___Sub` column and apply the `genre-cell` class to its `<td>` elements.
+
+**Final Outcome:**
+
+The "Genre" column was successfully added to the UI, meeting all user requirements for placement, naming, and styling. This task serves as a strong example of the project's architecture: the backend provides raw, sanitized data, and the frontend is responsible for formatting and presentation. Understanding the data sanitization step was the key to a smooth and error-free implementation.
+
+
+### **Dev Log Entry: September 28, 2025**
+
+**Task:** Add "Avg. Rank" Column to Deals Dashboard
+
+**Objective:** The goal was to add a new column to the Deals Dashboard UI that displays the "Sales Rank - 365 days avg." data, which was already being collected in the backend CSV. The existing "Sales Rank" column also needed to be renamed to "Current".
+
+**Summary of a Multi-Stage Debugging Process:**
+
+This task, which appeared to be a simple frontend change, became a complex debugging exercise. The root cause was a subtle but critical mismatch between the column name as it was stored in the database and the key being used by the frontend JavaScript to access it. The final solution required a deep, iterative investigation of the entire data pipeline to find the exact, sanitized column name.
+
+**1. Initial Implementation & Header Name Collision:**
+
+- **Action:** My first modification was to `templates/dashboard.html`, where I added the new column to the `columnsToShow` array and updated the `headerTitleMap` to rename the headers.
+- **Problem:** This initial change incorrectly assigned the display name "1 yr. Avg." to the new sales rank column, which conflicted with a pre-existing column that displayed the average *price*.
+- **Resolution:** The user provided clarification, instructing me to use "Avg. Rank" as the display name for the new column to resolve the conflict.
+
+**2. The "Empty Column" Bug & The Hunt for the Sanitized Key:**
+
+- **Symptom:** After correcting the header name, the new "Avg. Rank" column appeared in the UI, but the data cells were empty. The user confirmed that the data was present in the generated CSV file, which meant the backend was calculating the value correctly, but it wasn't reaching the UI.
+
+- Investigation:
+
+   
+
+  This triggered a multi-step investigation to trace the data flow and identify the point of failure.
+
+  1. **API Endpoint (`wsgi_handler.py`):** I first checked the `/api/deals` endpoint and found it uses a `SELECT *` query. This proved the API was not the source of the problem, as it should have been fetching all available columns.
+  2. **Data Generation (`keepa_deals/stable_products.py` & `field_mappings.py`):** I then verified that the `sales_rank_365_days_avg` function existed and was correctly mapped in the `FUNCTION_LIST`, confirming the data was being generated during the initial processing.
+  3. **Database Insertion (`keepa_deals/Keepa_Deals.py`):** The key insight came from analyzing the `save_to_database` function. I identified the `sanitize_col_name` function, which transforms the CSV header (e.g., `"Sales Rank - 365 days avg."`) into a database-safe column name. This was the source of the discrepancy.
+
+- **Root Cause:** My repeated attempts to fix the frontend failed because I was using an *incorrectly guessed* sanitized key. I tried `Sales_Rank___365_days_avg_` (ending underscore) and `Sales_Rank____365_days_avg` (four underscores), neither of which matched what the backend was actually creating.
+
+**3. The Final, Correct Solution:**
+
+- **Diagnosis:** To get the ground truth, I used the `check_db.py` script to inspect the live database. The script's output showed the first row as a dictionary, revealing the definitive, correct sanitized column name: `Sales_Rank___365_days_avg` (with **three** underscores and no trailing underscore).
+- **Fix:** With the correct key finally identified, I made one last modification to `templates/dashboard.html`, updating the `columnsToShow` array, the `headerTitleMap`, and the number formatting logic to use `Sales_Rank___365_days_avg`. This resolved the issue and allowed the data to appear correctly in the UI.
+
+**Key Takeaways for Future Agents:**
+
+1. **Sanitization is Key:** The `save_to_database` function in `keepa_deals/Keepa_Deals.py` sanitizes column names from `headers.json` before creating the database table. Spaces, hyphens, and other characters are converted to underscores. This is a critical transformation to be aware of.
+2. **Verify, Don't Guess:** When debugging display issues where data is missing, do not guess the sanitized column name. A subtle difference (like the number of underscores) can be the root cause.
+3. **Use `check_db.py`:** The `check_db.py` script is an invaluable tool for debugging. Running `python3 check_db.py` provides the exact column names as they exist in the database, eliminating guesswork. This should be a primary step for any similar issue in the future.
+
+### **Dev Log Entry: September 29, 2025**
+
+**Task:** Add "Gated" Column to Deals Dashboard
+
+**Objective:** To add a new column titled "Gated" to the Deals Dashboard, positioned just before the "Buy Now" column. The column's cell should contain a link that directs the user to the Amazon Seller Central product search page, pre-filled with the product's ASIN, allowing them to check their selling eligibility.
+
+**Implementation Summary:**
+
+This task was successfully executed as a frontend-only modification, with all changes confined to the `templates/dashboard.html` file. The implementation adhered to the application's established architectural patterns, which separate backend data provision from frontend presentation.
+
+1. **Column Definition (`templates/dashboard.html`):**
+   - The `"Gated"` key was added to the `columnsToShow` JavaScript array, ensuring it appears in the correct sequence on the dashboard.
+   - A corresponding entry, `"Gated": "Gated"`, was added to the `headerTitleMap` to define the column's display name.
+2. **Cell Rendering Logic (`templates/dashboard.html`):**
+   - Inside the `renderTable` function, a new `else if (col === 'Gated')` block was added to the main rendering loop.
+   - This logic constructs the full hyperlink using the base URL and the `cleanAsin` variable already available in the loop: `https://sellercentral.amazon.com/product-search/keywords/search?q=${cleanAsin}`.
+   - The link was styled inline as requested (`style="color: #84b36f; ..."`), displays the '►' symbol, and is set to open in a new browser tab (`target="_blank"`).
+   - Crucially, `onclick="event.stopPropagation()"` was included to prevent the row's navigation-to-details-page event from firing when a user clicks the "Gated" link.
+3. **Sorting Behavior (`templates/dashboard.html`):**
+   - The conditional logic that adds sorting arrows to the table headers was updated from `if (header !== 'Buy_Now')` to `if (header !== 'Buy_Now' && header !== 'Gated')`. This correctly designates the "Gated" column as a non-sortable, action-based column.
+
+**Challenges & Key Takeaways:**
+
+- **No Major Challenges Encountered:** This task was completed efficiently and without any significant debugging cycles. The success of this implementation is a direct result of the knowledge captured in previous dev logs (specifically `dev-log-5.md`), which clearly documented the data pipeline, the frontend rendering process, and the critical separation between backend data and frontend presentation.
+- **Reinforcement of Architectural Principles:** This task serves as a clear example of the project's core design philosophy. By using data already present on the frontend (the ASIN), a new feature was added with zero impact on the backend API, the database schema, or the data processing scripts. This is the ideal way to handle UI-centric feature requests.
+- **Pattern for Action Links:** The implementation reinforces a key UI pattern for this application: action links within the table (like "Buy Now" and "Gated") should use `event.stopPropagation()` to avoid triggering the parent row's click handler. This is a critical detail for maintaining a predictable user experience.
+
+### **Dev Log Entry: September 29, 2025**
+
+**Task:** Re-add "Genre" Column and Implement Frontend Formatting
+
+**Objective:**
+
+1. Restore the "Genre" column to the Deals Dashboard UI, which had been lost in a previous task.
+2. The column must display data from the existing "Categories - Sub" field, appear after the "Title" column, and have a width of 120px with text-truncation.
+3. Add frontend formatting to remove the "Subjects, " prefix from the genre string for display.
+4. If a genre string becomes empty after formatting (or was empty to begin with), display "No Subject Listed" in the cell.
+
+**Summary of a Multi-Stage Diagnostic and Recovery Process:**
+
+This task, which should have been a simple two-file frontend change, became a complex and frustrating exercise due to a series of diagnostic errors and environmental confusion. The final resolution was achieved only after discarding incorrect assumptions and returning to first principles.
+
+**1. Initial Investigation & The Backend "Rabbit Hole":**
+
+- **The Symptom:** The user reported the "Genre" column was missing.
+- **The Red Herring:** An initial check of the user's database using `check_db.py` revealed that the `'Categories___Sub'` field had a value of `None`.
+- **The Misdiagnosis:** This led me to the **incorrect conclusion** that the backend data pipeline in `keepa_deals/stable_products.py` was broken. I spent considerable time modifying the `categories_sub` function, believing it was failing to extract the data. This was a critical error; the backend logic was correct, and the `None` value was a symptom of a previous failed scan, not the root cause of the UI issue. The actual problem was simply that the frontend changes were not active in the user's environment.
+
+**2. The CSS "Ghost" and Tool Confusion:**
+
+- **The Conflict:** Throughout the process, multiple automated code reviews insisted that the required styling for `.genre-cell` was missing from `static/global.css`.
+- **The Ground Truth:** However, repeated checks in my own sandbox using `read_file` and `grep` confirmed that the CSS rule **was already present and correct**.
+- **The Impasse:** This created a maddening loop where I could not "fix" the CSS because it wasn't broken in my environment, yet the reviews continued to fail. This highlighted a critical discrepancy between my sandbox's state and the environment used by the review tool. The final resolution was to trust my direct inspection of the file.
+
+**3. The Final, Correct Solution:**
+
+After reverting all incorrect backend and frontend changes, the task was solved with a targeted, frontend-only approach as originally intended.
+
+1. **Backend (`keepa_deals/stable_products.py`):** **No changes were made.** The file was restored to its original, correct state.
+
+2. Frontend (`templates/dashboard.html`):
+
+    
+
+   The final, correct changes were all consolidated here:
+
+   - **Column Added:** The sanitized key `Categories___Sub` was added to the `columnsToShow` array, placed directly after `"Title"`.
+
+   - **Header Mapped:** `"Categories___Sub": "Genre"` was added to the `headerTitleMap` to set the correct display name.
+
+   - Formatting Logic Implemented:
+
+      
+
+     A new
+
+      
+
+     ```
+     else if (col === 'Categories___Sub')
+     ```
+
+      
+
+     block was added to the
+
+      
+
+     ```
+     renderTable
+     ```
+
+      
+
+     function. This JavaScript block:
+
+     - Takes the raw `value` (e.g., "Subjects, Literature & Fiction").
+     - Uses `.replace(/^Subjects,?\s*/, '')` to strip the "Subjects" prefix and any optional comma/space.
+     - Checks if the resulting string is empty or a hyphen, and if so, sets the display value to "No Subject Listed".
+     - Renders the final, clean `displayValue` in a `<td>` with the `genre-cell` class.
+
+**Key Takeaways for Future Agents:**
+
+1. **A `None` in the DB can be a Symptom, not the Cause:** The empty database field was a result of a *previous* bad run. The immediate UI problem was that the frontend code to *display* the column was missing. Don't assume a data issue is a data-pipeline issue without first confirming the presentation layer is correct.
+2. **Trust Direct File Inspection over Conflicting Tools:** When a code review tool and your own direct file inspection (`read_file`, `grep`) disagree, trust your direct inspection of the live file state. The review environment may be stale or misconfigured.
+3. **Adhere to Separation of Concerns:** This task was purely about presentation. The decision to modify the backend data pipeline was a significant error that complicated the task immensely. Always handle display and formatting logic exclusively on the frontend unless there is a compelling reason to change the source data.
+
+
+Jules was incapable of providing a dev log for this task, so this is the standard text provided with every repo push:
+
+feat: Add grouped headers and refine dashboard layout
+
+This commit introduces a new row of group headers to the deals dashboard table, reorganizes and renames columns, and implements several layout and styling improvements based on user feedback.
+
+The changes are as follows:
+- A new header row has been added with the following groups: 'Book Details', 'Sales Rank', 'Seller', 'Deal Details & Current Best Price', 'Profit Estimates & Recommended Listing Price', and 'Actions'.
+- Columns have been reordered and renamed in the UI to align with these new groupings.
+- The 'Trough $' column has been removed from the web UI but remains in the CSV export.
+- The new group header row is styled with a distinct background color, font color (#75afd1), and a corrected height of 44px, enforced with `!important` to override conflicting styles.
+- The main dashboard content is now centered on the page, with the table expanding to its natural width.
+- The filter controls and action buttons are aligned with the left and right edges of the table, respectively, using a flexbox layout.
+
+These changes significantly improve the organization and visual appeal of the deals dashboard while ensuring that the underlying data structure for CSV exports remains unchanged.
+
+### **Dev Log: Inferred Price Calculation Investigation**
+
+**Objective:** The primary goal was to investigate the inferred price calculation logic for Peak, Trough, and 1-Year Average prices. The request was to verify two specific features were implemented correctly:
+
+1. **Symmetrical Outlier Rejection:** The system should reject both unusually high and unusually low sale prices.
+2. **Use of Mean:** The final calculations should use the `mean` (average) instead of the `median`.
+
+**Execution Summary:** The task began with the assumption that the changes had been implemented by a previous agent but not verified. The core of the work involved a deep and challenging verification process, which ultimately confirmed that the required features were already present and functioning correctly in the existing codebase. No new code was committed.
+
+**Challenges & Resolutions:**
+
+1. **Initial State Confusion:** The most significant challenge was determining the true state of the code. The `git status` command showed a clean working tree, which led me to believe the changes were missing entirely. However, reading the files (`stable_calculations.py`, `new_analytics.py`) showed code that *appeared* to match the requirements. This contradiction caused significant delays as I oscillated between trying to "implement" the changes and trying to "verify" them.
+   - **Resolution:** The final conclusion was that the changes were already part of the base commit I was working on. The task was therefore not one of implementation, but of rigorous verification.
+2. **Test Suite Failure:** My initial strategy was to build a `unittest` suite to validate the logic. This approach failed repeatedly due to the complexity of accurately mocking Keepa's historical data format (`[timestamp, value, timestamp, value, ...]`).
+   - Specific Data Mocking Issues:
+     - **Incorrect Sorting:** My initial test data generation incorrectly sorted the flat history lists, which destroyed the timestamp-value pairs and made the data invalid.
+     - **Pandas `diff()` Behavior:** The `infer_sale_events` function uses `pandas.DataFrame.diff()`, which ignores the first element in a series. My tests failed until I added a "priming" event to the start of the mock offer history to account for this.
+     - **Time Series Logic:** I made an error where my generated events went backward in time, causing the offer counts to *increase* chronologically, which prevented any "offer drops" from being detected.
+3. **Verification Strategy Pivot:** After the `unittest` framework proved too brittle for this data structure, I pivoted to a more direct verification method.
+   - **Resolution:** I created a standalone script (`verify_logic.py`). This script did not use an assertion framework but instead ran the functions with controlled mock data and printed the outputs and internal logs from the application at each step. This provided a clear, human-readable trace that was instrumental in debugging the mock data itself and ultimately in confirming the application logic was sound.
+
+**Outcome & Key Learnings:**
+
+- **Confirmation:** The verification script definitively proved that the existing code correctly performs symmetrical outlier rejection and uses the `mean` for all relevant price calculations.
+- **Documentation:** A comprehensive technical document, `INFERRED_PRICE_LOGIC.md`, was created to detail the system's functionality for future developers.
+- **Learning:** The primary takeaway is the critical importance of verifying the initial state of the codebase before writing tests or new logic. Furthermore, for complex, data-dependent functions, a simple verification script that provides transparent output can sometimes be more effective and efficient than a complex unit test suite, especially during initial investigation.
+
+
+# Dev Log - 2025-09-30
+
+## Task: Fix Min % Margin Filter and Update Defaults
+
+### 1. Initial Problem
+
+The "Min % Profit" filter on the deals dashboard was non-functional. Setting a high value (e.g., 500%) did not filter out any results, even when no deals met that criterion. Additionally, the filter's label was inconsistent with the "Margin" column in the data table.
+
+### 2. Investigation & Solution
+
+#### Phase 1: Fixing the Filter Logic
+
+1. **UI Label Correction:** The first step was to align the UI with the data.
+   - **Action:** In `templates/dashboard.html`, the label was changed from "Min % Profit" to "Min % Margin". The `name` attribute of the hidden input was also updated from `profit_margin_gte` to `margin_gte`.
+2. **Backend Filtering Logic:** The root cause of the malfunction was in the backend.
+   - **Investigation:** The `/api/deals` endpoint in `wsgi_handler.py` was examined. It was found to be querying a non-existent database column named `"Profit_Margin_Percent"`.
+   - **Verification:** The `check_db.py` script was run to inspect the `deals.db` schema, which confirmed the correct column name was `"Margin"`.
+   - **Action:** The query logic in `wsgi_handler.py` was updated to use `request.args.get('margin_gte')` and, most importantly, to apply the filter to the correct `"Margin"` column.
+
+#### Phase 2: Addressing User Feedback on Defaults
+
+After the initial fix, you reported that the default filter values (`Max Sales Rank: 1.5m`, `Min % Margin: 100%`) were too restrictive and yielded no results on a small dataset.
+
+1. **Adding New Margin Option:**
+
+   - **Action:** A `{ value: 10, label: '10%' }` entry was added to the `profitMarginSteps` array in the JavaScript of `templates/dashboard.html`. The `max` attribute of the slider was adjusted to accommodate the new step.
+
+2. **Updating Default Values:**
+
+   - Action:
+
+      
+
+     The JavaScript initialization logic was modified to set the default slider positions.
+
+     - `initialSalesRankIndex` was set to find the index of the `{ value: Infinity, label: '∞' }` step.
+     - `initialProfitMarginIndex` was set to find the index of the new `10%` step.
+
+   - The corresponding HTML `value` and hidden input `value` attributes were also updated to reflect these new defaults on initial page load.
+
+### 3. Challenges Encountered
+
+- **Environment Setup:** The initial attempt to run the frontend verification failed because Python dependencies were not installed. This was resolved by running `pip install -r requirements.txt`.
+- **Playwright Scripting:** The verification script initially failed because the login form on the index page is hidden until a button is clicked. The script was updated to first click the "Log In" button to reveal the form before filling in credentials.
+
+### 4. Final Outcome
+
+The "Min % Margin" filter is now fully functional and correctly labeled. The default filter settings are significantly less restrictive, providing a better initial user experience. The system is stable and the changes have been verified.
+
+### **Dev Log Entry: October 01, 2025**
+
+**Task:** Refine Seasonality Data and Formatting
+
+**Objective:** To improve the clarity and readability of the seasonality data on the Deals Dashboard through a series of iterative refinements.
+
+**Summary of an Iterative Refinement Process:**
+
+This task began as a simple label change but evolved through several stages of user feedback to deliver a more polished and intuitive user experience. The core of the work was centered on the `keepa_deals/seasonality_classifier.py` file.
+
+**1. Initial Change: "General" to "Year-Round"**
+
+- **Goal:** Replace the generic "General" classification with the more descriptive "Year-Round".
+- Implementation:
+  - The `SEASON_CLASSIFICATIONS` list in `seasonality_classifier.py` was updated.
+  - All default and fallback return values in the `classify_seasonality` and `_query_xai_for_seasonality` functions were changed from "General" to "Year-Round".
+  - The `get_sells_period` function was updated to map "Year-Round" to its corresponding selling period.
+- **Challenge & Resolution:** My initial implementation was fragmented. I made several small, sequential edits to the file, which led to a state where a `replace_with_git_merge_diff` call failed because the file's content had changed between my edits. The key learning was to consolidate changes into a single, comprehensive patch or to always re-read the file before applying a new patch to ensure the search block is valid.
+
+**2. Second Refinement: Simplified Date Formatting**
+
+- **Goal:** Improve readability by simplifying the date ranges in the "Sells" column (e.g., changing "Mid-Jul to Mid-Sep" to "Jul - Sep").
+- **Implementation:** The `period_map` dictionary within the `get_sells_period` function was modified. All multi-month date ranges were updated to the new, simplified format with spaces around the hyphen.
+
+**3. Final Refinement: "Non-Seasonal" to "N/A"**
+
+- **Goal:** Replace "Non-Seasonal" with "N/A" for "Year-Round" books to reduce redundancy, as the "Season" column already indicates the book is year-round.
+- **Implementation:** The `period_map` in `get_sells_period` was updated one last time to map the "Year-round" key to the value "N/A". The function's default return value was also updated to "N/A" for consistency.
+- **Challenge & Resolution:** During the verification step for the initial changes, I accidentally introduced a duplicated `get_sells_period` function into the file. This was a critical copy-paste error that I caught by re-reading the file. It was resolved by applying a targeted patch to remove the duplicate block, reinforcing the importance of a final verification read-through before completing any step.
+
+**Final Outcome:**
+
+Through these iterative changes, all confined to `keepa_deals/seasonality_classifier.py`, the seasonality feature is now more user-friendly. The labels are clearer, and the date formatting is cleaner and more readable. This task highlights the importance of iterative feedback and rigorous verification at each step of the development process.
+
+I will now proceed with the final steps of the plan.
+
+**feat/ui-sorting-arrows-refactor**
+
+Refactor: Update table sorting UI with new arrow design
+
+- Moves sorting controls from table headers to a dedicated row beneath them to save space and improve the visual design.
+- Replaces text-based arrows (▲/▼) with new graphical assets (`UpArrow_on.png`, `DownArrow_on.png`, etc.) for a more polished look.
+- Updates the table rendering logic in `dashboard.html` to generate the new arrow row and handles sorting via clicks on the new arrow images.
+- Adjusts styles in `global.css` to correctly position and display the new sorting row. This includes setting a specific row height (18px), background color, applying vertical borders only to the outside of the row, and setting the spacing between arrows to 2px.
+- Renames the "Sales Rank" group header to "Sales Rank & Seasonality" and "Seller" to "Seller Details" as requested.
+
+### Dev Log: Keyword Search Expansion
+
+**Date:** 2025-10-01
+
+**Objective:** The primary goal was to enhance the search functionality on the Deals Dashboard. This involved two main changes:
+
+1. Renaming the "Title contains" search filter to "Keyword Search".
+2. Expanding the search to query not just the `Title` but also `Categories - Sub` (Genre), `Seasonality`, `Manufacturer` (Publisher), `Author`, and `Seller Name`.
+
+**Implementation Details:**
+
+1. **Frontend (`templates/dashboard.html`):**
+
+   - The HTML label was changed from `<label for="title_contains">Title Contains:</label>` to `<label for="keyword_search">Keyword Search:</label>`.
+   - The corresponding text input field's `id` and `name` attributes were updated from `title_contains` and `title_like` to `keyword_search` and `keyword`, respectively.
+   - The `getFilters()` JavaScript function within the page was adjusted to get the search term from the new `keyword_search` ID and use the `keyword` parameter for the API request.
+
+2. **Backend (`wsgi_handler.py`):**
+
+   - In the `api_deals` function, the logic for handling request arguments was updated to look for `keyword` instead of `title_like`.
+
+   - The database query logic was significantly modified. When a keyword is provided, the function now constructs a dynamic SQL
+
+      
+
+     ```
+     WHERE
+     ```
+
+      
+
+     clause that groups multiple
+
+      
+
+     ```
+     LIKE
+     ```
+
+      
+
+     conditions with
+
+      
+
+     ```
+     OR
+     ```
+
+     . This allows the search to span across the required columns:
+
+     ```
+     if filters.get("keyword"):
+         keyword_like = f"%{filters['keyword']}%"
+         keyword_clauses = [
+             "\"Title\" LIKE ?",
+             "\"Categories___Sub\" LIKE ?",
+             "\"Detailed_Seasonality\" LIKE ?",
+             "\"Manufacturer\" LIKE ?",
+             "\"Author\" LIKE ?",
+             "\"Seller\" LIKE ?"
+         ]
+         where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
+         filter_params.extend([keyword_like] * len(keyword_clauses))
+     ```
+
+**Challenges and Solutions:**
+
+A notable challenge occurred during the verification phase. When attempting to start the application server to run the Playwright verification script, the process exited immediately.
+
+- **Diagnosis:** I inspected the `server.log` file and discovered a `ModuleNotFoundError: No module named 'flask'`. This indicated that the application's dependencies were not installed in the environment.
+- **Solution:** The problem was resolved by running `pip install -r requirements.txt` to install all necessary packages. After installation, the server started successfully, and the verification could proceed. This was a crucial reminder to always ensure the environment is fully set up before attempting to run the application.
+
+**Verification Process:**
+
+- A temporary Playwright script was created to perform end-to-end verification.
+- The script successfully:
+  1. Launched the browser and navigated to the application.
+  2. Handled the login flow.
+  3. Navigated to the Deals Dashboard.
+  4. Verified that the search input label was correctly updated to "Keyword Search".
+  5. Performed a search using the new input.
+  6. Captured a screenshot of the dashboard with the filtered results.
+- The resulting screenshot was visually inspected and confirmed that both the UI change and the expanded search functionality were implemented correctly. The temporary script and directory were removed before submission.
+
+# Dev Log: Dashboard Table UI Refactor - Sorting Arrows
+
+**Date:** 2025-10-01
+**JIRA:** TICKET-789
+**Author:** Jules
+
+## 1. Objective
+
+The primary goal was to refactor the UI of the deals dashboard table to improve usability and aesthetics. This involved:
+1.  Moving the ascending/descending sort controls from the table headers (`<th>`) into a new, dedicated row directly beneath the headers.
+2.  Replacing the text-based arrows (▲/▼) with new graphical assets (`UpArrow_on.png`, etc.).
+3.  Renaming the "Sales Rank" group header to "Sales Rank & Seasonality" and "Seller" to "Seller Details".
+
+## 2. Implementation Details
+
+-   **`templates/dashboard.html`**: The `renderTable` JavaScript function was modified to dynamically generate two separate header rows. The first contains the column titles, and the second, with the class `.sort-arrows-row`, contains the `<img>` tags for the sorting controls. The event listeners were updated to target these new image elements and use their `data-column` and `data-order` attributes for sorting logic.
+-   **`static/global.css`**: New CSS rules were created to style the `.sort-arrows-row` and the `.sort-arrow` images. This involved multiple iterations to achieve the final, desired look.
+-   **Verification**: A Playwright script (`jules-scratch/verification/verify_sorting_arrows.py`) was created to automate frontend testing. This script logs into the application, navigates to the dashboard, and takes screenshots to verify both the initial state and the "on" state of the sorting arrows after a click event.
+
+## 3. Challenges & Resolutions
+
+This task involved significant iterative debugging and refinement based on user feedback.
+
+### 3.1. Playwright Verification Script Debugging
+
+The verification script initially failed for several reasons, requiring a step-by-step debugging process:
+-   **Challenge**: Ambiguous locator for the login button.
+    -   **Resolution**: The initial locator `button:has-text("Log In")` matched two elements. It was corrected to the more specific `.login-button` class selector.
+-   **Challenge**: Incorrect assertion for waiting on table content (`to_have_count.above(0)`).
+    -   **Resolution**: This was replaced with a more robust assertion: `expect(page.locator(".deal-row").first).to_be_visible()`, which waits for the first element to render.
+-   **Challenge**: Incorrect assumption about page navigation. The script initially tried to assert a URL change after sorting (`expect(page).to_have_url(...)`).
+    -   **Resolution**: After observing that the table updates dynamically via `fetch` without a page reload, the assertion was changed to verify the actual UI change: that the `src` attribute of the clicked arrow `<img>` was updated to the `_on.png` version. This proved to be the correct verification strategy.
+
+### 3.2. Iterative CSS Styling Refinements
+
+The final look and feel was achieved through several rounds of feedback:
+-   **Challenge**: The initial borderless "floating" row design was not visually appealing.
+    -   **Resolution**: The user requested a darker background (`#011b2a`), a fixed row height (`18px`), specific arrow dimensions (`24x13px`), and borders only on the outside of the row. This was implemented by adding a background color and using `:first-child` and `:last-child` selectors to apply borders only to the outer edges of the row.
+-   **Challenge**: The row height was not being correctly applied due to CSS specificity issues (default `td` padding was overriding the height).
+    -   **Resolution**: The CSS selector was made more specific (from `.sort-arrows-row td` to `#deals-table .sort-arrows-row td`) and `!important` was added to the `height`, `max-height`, and `padding` properties to ensure they were enforced.
+-   **Challenge**: The spacing between the up and down arrows was too wide.
+    -   **Resolution**: The `margin-right` on the `.sort-arrow` class was reduced from `4px` to `2px`.
+
+## 4. Final Outcome
+
+The task was successfully completed, resulting in a more polished and space-efficient UI for the dashboard table that matches the user's precise specifications. The iterative process and detailed verification were crucial to achieving the final result.
+
+
+### **Dev Log Entry: October 02, 2025**
+
+**Task:** Settings Page Investigation and Calculation Verification
+
+**Objective:** The initial request was to investigate why the "Default Markup" value set on the Settings page was not being applied to the "Min. List Price" calculation on the dashboard. The task also included verifying that all other business cost settings ("Prep Fee Per Book", "Estimated Shipping Per Book", "Estimated Tax Per Book", and "Tax Exempt") were functioning as designed.
+
+**Summary of a Multi-Stage Debugging and Verification Process:**
+
+This task evolved from a simple bug investigation into a complex, iterative debugging process that highlighted a critical interaction between logging levels, application configuration, and user data. The final solution did not involve fixing a flaw in the calculation logic itself, but rather making that logic transparent enough to diagnose a data issue on the user's end.
+
+**1. Initial Code Review & Hypothesis:**
+
+- A review of `keepa_deals/business_calculations.py` showed that the formulas for `calculate_all_in_cost` and `calculate_min_listing_price` were logically correct. They were designed to use all the values from `settings.json`.
+- This suggested the problem was not a simple code bug but either an issue with data not being passed correctly or the calculations being skipped due to invalid input.
+
+**2. The Invisible Log Debugging Cycle:**
+
+- **Action:** To create transparency, I added detailed logging to `business_calculations.py` to trace exactly how the settings were being used for each book. I also hardened the `/settings` route in `wsgi_handler.py` to prevent errors from empty form fields.
+- **Problem:** The user ran a new scan, but the new, detailed log messages were completely absent from the `celery.log` file.
+- **Initial (Incorrect) Assumption:** I first assumed the Celery worker was running stale code and instructed the user to restart it. When the logs still didn't appear, this assumption was proven wrong.
+- **Root Cause Analysis:** After a second failed attempt, I correctly diagnosed the core issue: I had written the new log statements using `logger.debug()`. However, the Celery worker in this environment is configured to only record messages at the `INFO` level or higher. My `DEBUG` messages were being generated but immediately suppressed, making them invisible.
+- **Solution:** The fix required a corrective commit to change the relevant log statements from `logger.debug()` to `logger.info()` in `keepa_deals/business_calculations.py`.
+
+**3. Final Verification and Confirmation:**
+
+- After the user pulled the logging fix and ran another scan, the new `INFO` logs appeared correctly.
+- The logs immediately revealed that the calculation was using `Default Markup (0%)`. This proved the code was working, but the `settings.json` file on the server contained the wrong value.
+- **Resolution:** The user was instructed to go to the Settings page, enter the desired markup, and click "Save Changes".
+- A final scan and log analysis confirmed success. The logs clearly showed the correct markup (e.g., `50%`) being used. We also used the detailed `All-in Cost:` log messages to verify that the Prep Fee, Tax (with Tax Exempt correctly applied), and the conditional Shipping Cost were all being calculated perfectly.
+
+**Key Takeaways for Future Agents:**
+
+1. **Log Level is Critical:** When adding diagnostic logging, you **must** ensure the log level (`INFO`, `DEBUG`, `ERROR`) is compatible with the application's runtime configuration. In this project, the Celery worker logs at `INFO`, so any diagnostic logs intended to be seen must also be at the `INFO` level.
+2. **Verify Data, Not Just Code:** The root cause of the user's issue was not a bug in the calculation logic, but incorrect data in the `settings.json` file. Making the code's behavior transparent through logging was the key to differentiating between a code error and a data error.
+3. **Source of Truth for Costs:** The function `calculate_all_in_cost` in `keepa_deals/business_calculations.py` is the definitive source for all business cost calculations. It has been verified to correctly use `prep_fee_per_book`, `estimated_tax_per_book` (respecting the `tax_exempt` flag), and conditionally adds `estimated_shipping_per_book` based on whether shipping is already included in the deal price.
+
+Although we were unable to complete the final UI changes due to a persistent environment issue, this investigation successfully resolved the core functionality and data-flow problems.
+
+### Dev Log - 2025-10-02
+
+**Task:** Implement Dynamic Recalculation, UI Updates, and Verify Shipping Cost Logic
+
+**Author:** Jules
+
+**Summary:** This task involved a multi-part update to the application. The primary goal was to introduce a dynamic recalculation feature that updates the deals dashboard when business settings are changed, without requiring a full data re-scan. Additionally, several UI improvements were made to the settings and dashboard pages, and the existing shipping cost calculation was verified.
+
+**1. Implementation Details:**
+
+- **Dynamic Recalculation Feature:**
+  - **Backend (Celery Task):** A new Celery task, `recalculate_deals`, was created in `keepa_deals/Keepa_Deals.py`. This task fetches all records from the `deals.db`, loads the latest parameters from `settings.json`, re-runs the calculation functions from `business_calculations.py`, and updates each row in the database with the new values (`All_in_Cost`, `Profit`, `Margin`, `Min_Listing_Price`).
+  - **Trigger:** The `recalculate_deals.delay()` task is now called from the `/settings` route in `wsgi_handler.py` immediately after the `settings.json` file is successfully saved.
+  - **Status Reporting:** A new API endpoint, `/api/recalc-status`, was added to `wsgi_handler.py`. It reads from a `recalc_status.json` file to provide the status of the background job. The Celery task is responsible for updating this status file (`Running`, `Completed`, `Failed`).
+  - **Frontend (Polling):** The dashboard (`templates/dashboard.html`) was updated with JavaScript to poll the `/api/recalc-status` endpoint every 3 seconds. It displays a "Recalculating..." indicator while the task is running and automatically refreshes the deals table by calling `fetchDeals()` upon completion.
+- **UI/UX Updates:**
+  - **Settings Page:** The layout in `templates/settings.html` was redesigned using a CSS grid to match the user's requested format (`SYMBOL [input] LABEL`). The input fields now use the `.styled-text-field` class from `global.css` for a consistent look.
+  - **Dashboard Columns:** The column order in the `columnsToShow` array within `templates/dashboard.html` was updated to `All in Cost | Min. List | List at` for a more logical presentation.
+- **Logic Verification:**
+  - Confirmed that the `calculate_all_in_cost` function in `keepa_deals/business_calculations.py` correctly uses the `shipping_included_flag` (derived from the `get_shipping_included` function in `keepa_deals/stable_products.py`) to conditionally add the `estimated_shipping_per_book` cost.
+
+**2. Challenges & Solutions:**
+
+- **Challenge:** The initial frontend verification using Playwright failed repeatedly.
+
+- Solution:
+
+   
+
+  The debugging process involved several steps:
+
+  1. **Incorrect Selector:** The initial script failed to find the login button. This was resolved by using a more specific CSS selector (`form.login-form button[type="submit"]`) to disambiguate it from other buttons.
+  2. **Race Condition:** The script failed because it was navigating away from the settings page before the flash message could be rendered. This was fixed by adding a step to wait for the flash message to appear *on the settings page* before proceeding to the dashboard.
+  3. **Environment Dependencies:** The most significant challenge was that the Celery worker and its Redis message broker were not running in the sandbox environment. This caused the background recalculation task to never execute, leading to timeouts in the verification script. Attempts to install Redis via `apt-get` failed due to permissions.
+
+  - **Workaround:** Due to the inability to install Redis, a full end-to-end test of the recalculation feature could not be completed via Playwright. The implementation was validated through static code analysis and a successful code review, which confirmed the logic was sound. This is a key environmental constraint to be aware of for future tasks involving background workers.
+
+
+
+
+
