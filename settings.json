@@ -1,9 +1,9 @@
 {
-    "prep_fee_per_book": 3.0,
-    "estimated_shipping_per_book": 3.0,
-    "estimated_tax_per_book": 3,
+    "prep_fee_per_book": 10.0,
+    "estimated_shipping_per_book": 2.0,
+    "estimated_tax_per_book": 2,
     "tax_exempt": false,
-    "default_markup": 3,
+    "default_markup": 2,
     "max_sales_rank": 33001000,
     "min_price": 3.1,
     "max_price": 3099998.0,
