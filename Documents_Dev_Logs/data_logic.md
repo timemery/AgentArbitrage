@@ -47,12 +47,13 @@ This document serves as the definitive reference for the data logic, calculation
 
 #### **Season**
 
-*   **Source**: Combination of product metadata (Title, Genre, Manufacturer) and AI reasoning.
+*   **Source**: Inferred sale dates, product metadata, and AI reasoning.
 *   **Function**: `seasonality_classifier.py -> classify_seasonality()`
 *   **Logic (Pre-DB logic to be restored)**:
-    1.  **Keyword Heuristics**: The function first checks the book's title and categories against a predefined list of keywords in `seasonal_config.py` (e.g., "Christmas", "Gardening", "Textbook").
-    2.  **AI Fallback**: If no keyword match is found, the function formats the metadata and queries an external XAI (Explainable AI) model to determine if the book has a seasonal sales pattern.
-    3.  **Default**: If neither method finds a season, it defaults to "Year-round".
+    1.  **Date-Driven Analysis**: The system first analyzes the dates of the inferred peak and trough sale prices (from the "List at" calculation) to identify which months consistently have the highest sale prices.
+    2.  **Metadata Enrichment**: This date-based finding is combined with the book's metadata (Title, Genre).
+    3.  **AI Refinement**: The combined data (e.g., "Peak sales in Jan/Feb" + "Genre: Textbooks") is passed to an XAI model to derive a final, human-readable season (e.g., "Textbook Season"). The AI is always used to ensure maximum accuracy.
+    4.  **Default**: If no clear pattern emerges, it defaults to "Year-round".
 
 #### **Sells**
 
@@ -61,7 +62,6 @@ This document serves as the definitive reference for the data logic, calculation
 *   **Logic (Pre-DB logic to be restored)**:
     1.  This function acts as a simple mapping. It takes the season name (e.g., "Tax Season") and returns a human-readable date range (e.g., "Feb - Apr").
     2.  For "Year-round" books, it returns "All Year".
-    3.  This provides a more intuitive understanding of when the book is expected to sell.
 
 ---
 
@@ -70,13 +70,13 @@ This document serves as the definitive reference for the data logic, calculation
 #### **Name (Seller Name)**
 
 *   **Source**: Keepa API (`product['offers']` -> seller data).
-*   **Logic**: This logic identifies the seller of the "Best Price" offer, which is not necessarily the Buy Box seller.
+*   **Logic**: This logic identifies the seller of the "Best Price" offer. The column header in the UI should be "Name", while the group header is "Seller Details".
 *   **Notes**: UI truncates to 120px.
 
 #### **Seller Score**
 
 *   **Source**: Keepa API (seller rating and review count).
-*   **Logic**: A quality score is calculated based on the seller's feedback rating and the total number of ratings. A higher number of ratings provides more confidence in the score. A "New Seller" is one with no rating history.
+*   **Logic**: A quality score is calculated based on the seller's feedback rating and the total number of ratings. A "New Seller" is one with no rating history.
 
 ---
 
@@ -86,10 +86,8 @@ This document serves as the definitive reference for the data logic, calculation
 
 *   **Source**: Keepa API (`product['offers']`).
 *   **Logic (Pre-DB logic to be restored)**:
-    1.  This represents the **lowest currently available USED price from a qualified seller**.
-    2.  The logic iterates through all *live* offers.
-    3.  It filters out sellers who do not meet a minimum quality score, especially for books in "Acceptable" or "Collectible" condition.
-    4.  The `"-"` indicates that no live offer from a qualified seller could be found, which should be rare but is possible if all current offers are from very new or poorly-rated sellers.
+    1.  This represents the **lowest currently available USED price**.
+    2.  There should never be a `"-"` in this column for a deal found by the Keepa API. The logic must be robust enough to always find a price. Seller filtering should not be used here; instead, the "Seller Score" column informs the user.
 
 #### **Condition**
 
@@ -104,31 +102,33 @@ This document serves as the definitive reference for the data logic, calculation
 
 *   **Source**: Keepa API (historical price and sales rank data).
 *   **Function**: `stable_calculations.py -> infer_sale_events()` and related analytics.
-*   **Logic (Pre-DB logic to be restored)**: This is one of the most complex and important calculations.
-    1.  **Infer Sale Events**: The system analyzes 2 years of historical data, looking for patterns that indicate a sale occurred (a drop in offer count followed by a drop in sales rank within 72 hours).
-    2.  **Price at Sale**: The price at the time of the inferred sale is recorded.
-    3.  **Outlier Rejection**: A symmetrical Interquartile Range (IQR) is used to discard both anomalously high and low inferred sale prices, cleaning the data.
-    4.  **Peak/Trough Analysis**: The cleaned sale prices are grouped by month to identify "peak" and "trough" selling seasons based on the `mean` sale price in those periods.
-    5.  **Final Value**: "List at" is the **mean inferred sale price during the peak season**. This gives the user an ambitious but data-backed target listing price.
+*   **Logic (Pre-DB logic to be restored)**:
+    1.  **Infer Sale Events**: Analyzes 2 years of historical data for patterns indicating a sale (offer count drop + sales rank drop).
+    2.  **Outlier Rejection**: Uses a symmetrical Interquartile Range (IQR) to discard anomalously high and low inferred sale prices.
+    3.  **Peak/Trough Analysis**: Groups cleaned sale prices by month to find peak/trough seasons.
+    4.  **Statistical Calculation**: The **mode** (most frequently occurring price) of the inferred sale prices during the peak season is calculated.
+    5.  **AI Verification**: The result is passed to an XAI model for a final reasonableness check (e.g., "For a Christmas book, is a peak price of $50 reasonable?").
+    6.  **Final Value**: This gives the user an ambitious but highly accurate target listing price.
 
 #### **1yr. Avg. (Inferred Sale Price)**
 
 *   **Source**: Same as "List at".
-*   **Logic**: This is the **mean of all inferred sale prices over the entire year**, after outlier rejection. It provides a more conservative, baseline valuation of the book compared to the peak "List at" price.
+*   **Logic**: This is the **mean of all inferred sale prices over the entire year**, after outlier rejection. It provides a more conservative, baseline valuation.
 
 #### **All-in Cost**
 
 *   **Source**: User settings and calculated fees.
 *   **Function**: `business_calculations.py -> calculate_all_in_cost()`
-*   **Logic**: `("Now" Price) + (Total AMZ Fees) + (Prep Fee) + (Est. Tax) + (Conditional Shipping)`
-    *   It correctly applies the `estimated_shipping_per_book` cost from settings **only if** the `Shipping Included` flag for the deal is false.
+*   **Logic**: `("Now" Price) + (FBA Pick&Pack Fee) + (Referral Fee) + (Prep Fee) + (Est. Tax) + (Conditional Shipping)`
+    *   **Referral Fee Calculation**: The `Referral Fee` is a percentage taken from the final sale price. For this calculation, it should be: `("List at" Price) * (Referral Fee %)`.
+    *   **Conditional Shipping**: The `estimated_shipping_per_book` cost is added **only if** the `Shipping Included` flag is false.
 
 #### **Min. List Price**
 
 *   **Source**: "All-in Cost" and user settings.
 *   **Function**: `business_calculations.py -> calculate_min_listing_price()`
-*   **Logic**: `("All-in Cost") * (1 + Default Markup %)`
-    *   This calculates the break-even listing price after accounting for the user's desired profit margin.
+*   **Logic**: `("All-in Cost") / (1 - Default Markup %)`
+    *   This calculates the listing price required to achieve the user's desired profit margin. It is not a "break-even" price. It is used in repricing software as the floor price to prevent selling for too low a profit.
 
 #### **Profit** & **Margin**
 
@@ -138,25 +138,12 @@ This document serves as the definitive reference for the data logic, calculation
 
 #### **Trend**
 
-*   **Source**: Keepa API (historical "NEW" price data).
+*   **Source**: Keepa API (historical "NEW" and "USED" price data).
 *   **Function**: `new_analytics.py -> get_trend()`
-*   **Logic**:
-    1.  The function looks at the history of the **"NEW" price**, not "USED".
-    2.  It identifies the last 5 *unique* price changes, ignoring flat periods.
-    3.  It compares the first and last price in this window to determine the short-term trend, returning '⇧' (up), '⇩' (down), or '-' (flat).
-
----
-
-## Externalizing Keepa Deal Query
-
-The hardcoded Keepa API query string in `keepa_api.py` defines the base criteria for all deals that enter the pipeline.
-
-### Proposed Feature
-
-*   **Goal**: Allow an administrator to change these deal-finding parameters without modifying the code.
-*   **Implementation Idea**:
-    1.  Create a simple form on a new, admin-only page (e.g., `/admin/settings`).
-    2.  This page would have a `<textarea>` field where an admin can paste the JSON query copied directly from the Keepa Deals "Show API query" link.
-    3.  On submit, the backend saves this JSON to a new file, e.g., `keepa_query.json`.
-    4.  The `fetch_deals_for_deals` function in `keepa_api.py` will be modified to read this file. If the file exists, it uses the query from the file; otherwise, it falls back to the current hardcoded default.
-*   **Benefit**: This provides flexibility to "cast a wider net" or target different types of deals without requiring a new code deployment. It also ensures the base query is not lost or accidentally modified during other development tasks.
+*   **Logic (to be implemented)**:
+    1.  **Combined Data**: The function should look at both "NEW" and "USED" price histories.
+    2.  **Dynamic Sample Size**: The number of unique price changes to analyze should be based on the book's 365-day average sales rank:
+        *   **High Velocity (Rank < 100k):** Use a larger sample (e.g., 10-15 changes).
+        *   **Medium Velocity (Rank 100k-500k):** Use a medium sample (e.g., 5 changes).
+        *   **Low Velocity (Rank > 500k):** Use a smaller sample (e.g., 3 changes).
+    3.  **Final Value**: Compares the first and last price in the dynamic window to return '⇧' (up), '⇩' (down), or '-' (flat). This should minimize flat results.

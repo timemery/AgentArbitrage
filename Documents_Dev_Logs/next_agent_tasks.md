@@ -38,34 +38,37 @@ This document outlines the tasks required to repair and restore the full functio
 
 ---
 
-### **Task 3: Restore AI-Powered Seasonality**
+### **Task 3: Restore and Enhance Core Analytics**
 
-**Goal:** Re-implement the AI-powered seasonality and sells period calculations.
+**Goal:** Restore the sophisticated calculation logic for "List at", "Season", and "Trend" columns as defined in `data_logic.md`.
 
-**Files to Modify:** `keepa_deals/seasonality_classifier.py`
+**Files to Modify:** `keepa_deals/stable_calculations.py`, `keepa_deals/new_analytics.py`, `keepa_deals/seasonality_classifier.py`
 
 **Steps:**
 
-1.  **Restore keyword heuristics:** Ensure the `classify_seasonality` function correctly uses the `seasonal_config.py` file to check for keyword matches in the product's title and categories.
-2.  **Restore AI fallback:** Re-implement the logic to query the external XAI model if no keyword match is found.
-3.  **Restore `get_sells_period`:** Ensure the `get_sells_period` function correctly maps the season to a human-readable date range.
+1.  **"List at" Calculation (`stable_calculations.py`):**
+    *   Implement the `mode` (most frequent price) calculation for the peak inferred sale price.
+    *   Add a call to the XAI model to act as a final verification step.
+2.  **"Season" Calculation (`seasonality_classifier.py`):**
+    *   Modify the `classify_seasonality` function to first analyze the dates of the inferred peak/trough sale prices.
+    *   Use this date analysis, along with product metadata, as the input for the final AI reasoning step.
+3.  **"Trend" Calculation (`new_analytics.py`):**
+    *   Rewrite the `get_trend` function to use both "NEW" and "USED" price data.
+    *   Implement the dynamic sample size logic based on the 365-day average sales rank tiers.
 
 ---
 
-### **Task 4: Implement External Keepa Query**
+### **Task 4: Correct Business Logic Formulas**
 
-**Goal:** Allow an administrator to change the Keepa deal-finding query without modifying the code.
+**Goal:** Ensure all financial calculations are performed correctly and in the proper order.
 
-**Files to Modify:** `keepa_deals/keepa_api.py`, `wsgi_handler.py`, and a new admin template.
+**Files to Modify:** `keepa_deals/business_calculations.py`
 
 **Steps:**
 
-1.  **Create an admin page:** Create a new, simple HTML template for the admin page with a `<textarea>` for the Keepa query JSON.
-2.  **Create a new route:** In `wsgi_handler.py`, create a new route (e.g., `/admin/settings`) that handles both `GET` and `POST` requests for the new admin page. The `POST` handler should save the submitted JSON to a new file (e.g., `keepa_query.json`).
-3.  **Modify `fetch_deals_for_deals`:** In `keepa_api.py`, modify the `fetch_deals_for_deals` function to:
-    *   Check for the existence of `keepa_query.json`.
-    *   If it exists, use the query from the file.
-    *   If not, use the current hardcoded default query.
+1.  **Update `All-in Cost`:** Modify the `calculate_all_in_cost` function to correctly calculate the `Referral Fee` based on the `"List at"` price, and then include it in the final cost calculation.
+2.  **Update `Min. List Price`:** Ensure the formula for `Min. List Price` is correct and update the comments to reflect its purpose for repricing software.
+3.  **Verify `Now` price:** In `seller_info.py`, ensure the logic for the "Now" price always returns a value and does not filter out sellers.
 
 ---
 
@@ -76,7 +79,6 @@ This document outlines the tasks required to repair and restore the full functio
 **Steps:**
 
 1.  **Run a full scan:** Trigger a new data scan to populate the database with fresh data.
-2.  **Verify all columns:** Meticulously check each column on the dashboard against the logic defined in `data_logic.md`.
+2.  **Verify all columns:** Meticulously check each column on the dashboard against the logic defined in the updated `data_logic.md`.
 3.  **Test all features:** Test the sorting, filtering, and keyword search functionality.
-4.  **Test the new admin feature:** Test the ability to update the Keepa query and see the results in a new scan.
-5.  **Remove any debugging code:** Remove any temporary logging or debugging code that was added during the restoration process.
+4.  **Remove any debugging code:** Remove any temporary logging or debugging code that was added during the restoration process.
