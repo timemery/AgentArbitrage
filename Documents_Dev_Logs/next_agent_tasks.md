@@ -51,10 +51,11 @@ This document outlines the tasks required to repair and restore the full functio
     *   Add a call to the XAI model to act as a final verification step.
 2.  **"Season" Calculation (`seasonality_classifier.py`):**
     *   Modify the `classify_seasonality` function to first analyze the dates of the inferred peak/trough sale prices.
-    *   Use this date analysis, along with product metadata, as the input for the final AI reasoning step.
+    *   Use this date analysis, along with product metadata (Title, Genre, **Publisher/Manufacturer**), as the input for the final AI reasoning step.
 3.  **"Trend" Calculation (`new_analytics.py`):**
     *   Rewrite the `get_trend` function to use both "NEW" and "USED" price data.
     *   Implement the dynamic sample size logic based on the 365-day average sales rank tiers.
+    *   Ensure the function returns '⇧' (up), '⇩' (down), or '⇨' (flat).
 
 ---
 
@@ -62,7 +63,7 @@ This document outlines the tasks required to repair and restore the full functio
 
 **Goal:** Ensure all financial calculations are performed correctly and in the proper order.
 
-**Files to Modify:** `keepa_deals/business_calculations.py`
+**Files to Modify:** `keepa_deals/business_calculations.py`, `keepa_deals/seller_info.py`
 
 **Steps:**
 

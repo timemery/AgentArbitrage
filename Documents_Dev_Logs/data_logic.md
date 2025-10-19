@@ -51,7 +51,7 @@ This document serves as the definitive reference for the data logic, calculation
 *   **Function**: `seasonality_classifier.py -> classify_seasonality()`
 *   **Logic (Pre-DB logic to be restored)**:
     1.  **Date-Driven Analysis**: The system first analyzes the dates of the inferred peak and trough sale prices (from the "List at" calculation) to identify which months consistently have the highest sale prices.
-    2.  **Metadata Enrichment**: This date-based finding is combined with the book's metadata (Title, Genre).
+    2.  **Metadata Enrichment**: This date-based finding is combined with the book's metadata (Title, Genre, Publisher/Manufacturer).
     3.  **AI Refinement**: The combined data (e.g., "Peak sales in Jan/Feb" + "Genre: Textbooks") is passed to an XAI model to derive a final, human-readable season (e.g., "Textbook Season"). The AI is always used to ensure maximum accuracy.
     4.  **Default**: If no clear pattern emerges, it defaults to "Year-round".
 
@@ -146,4 +146,4 @@ This document serves as the definitive reference for the data logic, calculation
         *   **High Velocity (Rank < 100k):** Use a larger sample (e.g., 10-15 changes).
         *   **Medium Velocity (Rank 100k-500k):** Use a medium sample (e.g., 5 changes).
         *   **Low Velocity (Rank > 500k):** Use a smaller sample (e.g., 3 changes).
-    3.  **Final Value**: Compares the first and last price in the dynamic window to return '⇧' (up), '⇩' (down), or '-' (flat). This should minimize flat results.
+    3.  **Final Value**: Compares the first and last price in the dynamic window to return '⇧' (up), '⇩' (down), or '⇨' (flat). This should minimize flat results.
