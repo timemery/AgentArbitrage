@@ -244,8 +244,8 @@ from .stable_calculations import (
     get_expected_trough_price,
     profit_confidence,              # Profit Confidence
 )
-from .best_price import (
-    get_seller_rank,
+from .seller_info import (
+    get_seller_rank_adapter as get_seller_rank,
     get_best_price,
     get_seller_quality_score,
     get_seller_id,

@@ -119,3 +119,25 @@ def get_all_seller_info(product, seller_data_cache=None):
         # The caller (in tasks.py) is responsible for populating the cache.
         seller_data_cache = {}
     return _get_best_offer_analysis(product, seller_data_cache)
+
+# --- Adapter Functions for field_mappings.py ---
+
+def get_best_price(product):
+    """Adapter to get only the Best Price."""
+    return {'Best Price': get_all_seller_info(product).get('Best Price', '-')}
+
+def get_seller_id(product):
+    """Adapter to get only the Seller ID."""
+    return {'Seller ID': get_all_seller_info(product).get('Seller ID', '-')}
+
+def get_seller_name(product):
+    """Adapter to get only the Seller Name."""
+    return {'Seller': get_all_seller_info(product).get('Seller', '-')}
+
+def get_seller_rank_adapter(product):
+    """Adapter to get only the Seller Rank."""
+    return {'Seller Rank': get_all_seller_info(product).get('Seller Rank', '-')}
+
+def get_seller_quality_score(product):
+    """Adapter to get only the Seller Quality Score."""
+    return {'Seller_Quality_Score': get_all_seller_info(product).get('Seller_Quality_Score', '-')}
