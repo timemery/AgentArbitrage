@@ -136,8 +136,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             logger.info(f"Fetching deals page {page}...")
             token_manager.request_permission_for_call(estimated_cost=TOKEN_COST_PER_DEAL_PAGE)
             
-            deal_response = fetch_deals_for_deals(page, api_key)
-            token_manager.update_from_response(deal_response)
+            deal_response, _, tokens_left = fetch_deals_for_deals(page, api_key)
+            token_manager.update_after_call(tokens_left)
 
             if not deal_response:
                 logger.error(f"Failed to fetch deals for page {page}. Stopping deal fetch.")
