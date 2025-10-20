@@ -244,12 +244,12 @@ from .stable_calculations import (
     get_expected_trough_price,
     profit_confidence,              # Profit Confidence
 )
-# from .best_price import (
-#     get_seller_rank,
-#     get_best_price,
-#     get_seller_quality_score,
-#     get_seller_id,
-# )
+from .best_price import (
+    get_seller_rank,
+    get_best_price,
+    get_seller_quality_score,
+    get_seller_id,
+)
 from .stable_deals import (
     # Percent Down 90,
     # Avg. Price 90,
@@ -538,7 +538,7 @@ FUNCTION_LIST = [
     None,                           # Sales Rank - Drops last 90 days
     None,                           # Sales Rank - Drops last 180 days
     sales_rank_drops_last_365_days, # Sales Rank - Drops last 365 days
-    None,                           # Seller ID
+    get_seller_id,                  # Seller ID
     buy_box_current,                # Buy Box - Current
     None,                           # Buy Box - 30 days avg.
     None,                           # Buy Box - 60 days avg.
@@ -695,9 +695,9 @@ FUNCTION_LIST = [
     None,                           # Used Offer Count - 90 days avg.
     None,                           # Used Offer Count - 180 days avg.
     used_offer_count_365_days_avg,  # Used Offer Count - 365 days avg.
-    None,                           # Seller Rank
-    None,                           # Seller_Quality_Score
-    None,                           # Best Price
+    get_seller_rank,                # Seller Rank
+    get_seller_quality_score,       # Seller_Quality_Score
+    get_best_price,                 # Best Price
     recent_inferred_sale_price,     # Recent Inferred Sale Price
     get_seasonality_type,           # Seasonality Type
     None,                           # Detailed_Seasonality
