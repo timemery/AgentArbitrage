@@ -228,8 +228,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             estimated_cost = len(batch_asins) * ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH
             token_manager.request_permission_for_call(estimated_cost)
 
-            product_data_response, api_info, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-            token_manager.update_from_response(product_data_response)
+            product_data_response, api_info, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+            token_manager.update_after_call(tokens_left)
 
             batch_had_critical_error = api_info and api_info.get('error_status_code') and api_info.get('error_status_code') != 200
 
