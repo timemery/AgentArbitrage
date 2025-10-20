@@ -56,19 +56,21 @@ def create_deals_table_if_not_exists():
                 with open(HEADERS_PATH) as f:
                     headers = json.load(f)
 
-                sanitized_headers = [sanitize_col_name(h) for h in headers]
                 # Infer types from header names for a more robust schema
                 cols_sql = []
-                for header in sanitized_headers:
-                    if header == 'ASIN':
+                for header in headers:
+                    sanitized_header = sanitize_col_name(header)
+                    if sanitized_header == 'ASIN':
                         # ASIN is the primary key for deals
-                        cols_sql.append(f'"{header}" TEXT NOT NULL UNIQUE')
-                    elif 'Price' in header or 'Cost' in header or 'Fee' in header or 'Profit' in header or 'Margin' in header:
-                        cols_sql.append(f'"{header}" REAL')
-                    elif 'Rank' in header or 'Count' in header or 'Drops' in header:
-                        cols_sql.append(f'"{header}" INTEGER')
+                        cols_sql.append(f'"{sanitized_header}" TEXT NOT NULL UNIQUE')
+                    elif header in ["Sales Rank - Current", "Sales Rank - 365 days avg."]:
+                        cols_sql.append(f'"{sanitized_header}" INTEGER')
+                    elif 'Price' in sanitized_header or 'Cost' in sanitized_header or 'Fee' in sanitized_header or 'Profit' in sanitized_header or 'Margin' in sanitized_header:
+                        cols_sql.append(f'"{sanitized_header}" REAL')
+                    elif 'Rank' in sanitized_header or 'Count' in sanitized_header or 'Drops' in sanitized_header:
+                        cols_sql.append(f'"{sanitized_header}" INTEGER')
                     else:
-                        cols_sql.append(f'"{header}" TEXT')
+                        cols_sql.append(f'"{sanitized_header}" TEXT')
 
                 # Ensure 'id' is the primary key for SQLite's ROWID aliasing
                 create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, {', '.join(cols_sql)})"

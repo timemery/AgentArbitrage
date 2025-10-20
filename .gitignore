@@ -10,6 +10,7 @@ celery.log
 *.log
 deals.db
 dump.rdb
+My_Notes/
 
 # Status files
 recalc_status.json
