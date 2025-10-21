@@ -41,3 +41,87 @@ This task was a difficult and protracted debugging marathon that ultimately succ
 **Final Outcome: Success.**
 
 Despite the numerous and complex failures, the task was ultimately successful. The `recalculate_deals` task is now a fast, robust, and completely Keepa API-free operation. It correctly updates business metrics based on user settings and is resilient to common data quality issues. The primary goal of the task was fully achieved.
+
+### **Dev Log: Restore Dashboard Functionality (Phase 1)**
+
+**Date:** 2025-10-21 **Agent:** Jules **Task:** Restore core data processing logic and fix database schema to resolve dashboard failures.
+
+------
+
+#### **1. Initial Goal**
+
+The primary objective was to complete "Phase 1" of a two-part plan to restore the deals dashboard. This involved two main tasks:
+
+1. **Restore Core Data Processing Logic:** Reinstate the original, multi-stage data processing pipeline in `keepa_deals/Keepa_Deals.py`.
+2. **Fix Database Schema:** Modify `keepa_deals/db_utils.py` to correctly type sales rank columns as `INTEGER` to fix numerical sorting on the dashboard.
+
+------
+
+#### **2. Challenges, Solutions, and Outcomes**
+
+This task involved a significant amount of iterative debugging due to a combination of code regressions, environmental differences, and latent bugs.
+
+**Challenge 1: Major Code Regression**
+
+- **Issue:** My initial attempt to restore the data processing logic involved a full replacement of the `keepa_deals/Keepa_Deals.py` file. This was a critical error, as it reintroduced a slow, API-intensive version of the `recalculate_deals` function, a major performance regression that the user had previously flagged.
+- **Solution:** The `recalculate_deals` function was reverted to the correct, fast, database-only version. The rest of the file was then carefully patched with the required multi-stage processing loops.
+- **Outcome:** **Success.** The final code contains the correct, high-performance `recalculate_deals` function while also restoring the necessary data processing pipeline.
+- **Learning:** Blindly replacing entire files is risky. Future changes should be surgical and targeted, even when restoring from a "known good" version.
+
+**Challenge 2: Critical `ValueError` Crashes**
+
+- **Issue:** The `run_keepa_script` task consistently failed with a `ValueError: too many values to unpack`. This was traced to two separate API calls in `keepa_deals/keepa_api.py` (`fetch_deals_for_deals` and `fetch_product_batch`) that returned more values than the calling code in `Keepa_Deals.py` was expecting.
+- **Solution:** Both call sites in `Keepa_Deals.py` were patched to correctly unpack all four return values. For example, the `fetch_product_batch` call was changed to `product_data_response, api_info, _, tokens_left = fetch_product_batch(...)`.
+- **Outcome:** **Success.** This fix was critical and resolved the primary application crashes, allowing the test script to run to completion.
+
+**Challenge 3: Missing Seller and Business Data**
+
+- **Issue:** After fixing the `ValueError` crashes, test runs completed but key data columns (`Best_Price`, `Profit`, `Margin`, `Seller`) were empty in the database.
+
+- Solution:
+
+   
+
+  The root cause was that the seller-caching mechanism had been lost in a previous version. I restored the original, efficient logic:
+
+  1. Collected all unique `sellerId`s from the fetched products.
+  2. Made a single, batch API call to `fetch_seller_data` to get all seller information at once.
+  3. Stored this data in a `seller_data_cache` dictionary.
+  4. Passed this cache to the `get_all_seller_info` function within a dedicated processing loop.
+
+- **Outcome:** **Success.** This not only fixed the missing data but also ensured the process was highly efficient, avoiding N+1 API calls.
+
+**Challenge 4: XAI Seasonality API Rate Limiting**
+
+- **Issue:** The user noted that the seasonality classification was frequently failing due to `429 Too Many Requests` errors from the XAI API, and the fallback logic was unhelpful (returning "None").
+
+- Solution:
+
+   
+
+  Implemented two user-requested improvements in
+
+   
+
+  ```
+  keepa_deals/seasonality_classifier.py
+  ```
+
+  :
+
+  1. Added a simple time-based rate limiter to wait at least 2 seconds between XAI API calls.
+  2. Modified the logic to fall back to the original heuristic result ("Year-round") if the API call failed, rather than returning an unhelpful value.
+
+- **Outcome:** **Success.** The system is now resilient to XAI API rate limits and produces more sensible default data when they occur.
+
+**Challenge 5: Environment and Permissions**
+
+- **Issue:** Testing was repeatedly hampered by a mismatch between the test environment and the user's production server. The application and Celery worker must run as the `www-data` user, and running test setup commands as `root` broke file permissions, causing the Celery worker to fail silently.
+- **Solution:** Through extensive collaboration, we established a definitive testing protocol that involves using `sudo -u www-data` to run commands in the correct user context and `sudo chown -R www-data:www-data` to fix permissions.
+- **Outcome:** **Success.** This shared knowledge is critical for any future debugging or testing.
+
+------
+
+#### **3. Final Status: COMPLETE**
+
+All objectives for this task were met. The dashboard's core functionality is fully restored, as confirmed by `check_db.py` and direct database schema inspection. The application is stable, data is processed and calculated correctly, and several critical bugs and regressions have been resolved. The learnings regarding the environment and permissions are particularly valuable for future work.

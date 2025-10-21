@@ -1,3 +1,4 @@
+# Restore Dashboard Functionality
 import sqlite3
 import json
 import os

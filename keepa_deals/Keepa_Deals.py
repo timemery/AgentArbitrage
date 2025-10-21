@@ -1,5 +1,4 @@
-# keepa_deals/Keepa_Deals.py
-# Refactored for integration with AgentArbitrage
+# Restore Dashboard Functionality
 
 import json
 import csv
@@ -16,6 +15,7 @@ from .keepa_api import (
     fetch_deals_for_deals,
     fetch_product_batch,
     validate_asin,
+    fetch_seller_data,
 )
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
@@ -228,8 +228,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             estimated_cost = len(batch_asins) * ESTIMATED_AVG_COST_PER_ASIN_IN_BATCH
             token_manager.request_permission_for_call(estimated_cost)
 
-            product_data_response, api_info, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-            token_manager.update_from_response(product_data_response)
+            product_data_response, api_info, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+            token_manager.update_after_call(tokens_left)
 
             batch_had_critical_error = api_info and api_info.get('error_status_code') and api_info.get('error_status_code') != 200
 
@@ -282,7 +282,39 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                         all_fetched_products_map[deal_info['asin']] = {'asin': deal_info['asin'], 'error': True, 'status_code': status_code, 'message': error_msg_detail}
                     batch_idx += 1
 
-        # Seller data is now fetched on-demand inside get_all_seller_info
+        # --- New Seller Caching Step ---
+        logger.info("Collecting all unique seller IDs for batch processing...")
+        unique_seller_ids = set()
+        for asin, product in all_fetched_products_map.items():
+            if not product or product.get('error'):
+                continue
+            # Extract sellerId from each offer
+            for offer in product.get('offers', []):
+                if isinstance(offer, dict) and 'sellerId' in offer:
+                    unique_seller_ids.add(offer['sellerId'])
+
+        logger.info(f"Found {len(unique_seller_ids)} unique seller IDs to fetch.")
+
+        seller_data_cache = {}
+        seller_id_list = list(unique_seller_ids)
+        MAX_SELLERS_PER_BATCH = 100
+
+        for i in range(0, len(seller_id_list), MAX_SELLERS_PER_BATCH):
+            batch_seller_ids = seller_id_list[i:i + MAX_SELLERS_PER_BATCH]
+            logger.info(f"Fetching seller data for batch {i//MAX_SELLERS_PER_BATCH + 1}...")
+
+            # Note: We need to import fetch_seller_data from keepa_api
+            seller_data_response, _, _, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
+            token_manager.update_after_call(tokens_left)
+
+            if seller_data_response and 'sellers' in seller_data_response:
+                for seller_id, seller_info in seller_data_response['sellers'].items():
+                    seller_data_cache[seller_id] = seller_info
+            else:
+                logger.error(f"Failed to fetch or process seller data for batch starting with ID {batch_seller_ids[0]}")
+
+        logger.info(f"Successfully built seller data cache with {len(seller_data_cache)} entries.")
+        # --- End of Seller Caching Step ---
         
         # --- Data Merging Step ---
         logger.info("Merging deal data into fetched product data...")
@@ -367,7 +399,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                     offers_to_log = product.get('offers', [])
                     logger.debug(f"ASIN {asin}: Passing {len(offers_to_log)} offers to get_all_seller_info. Data: {json.dumps(offers_to_log)}")
 
-                    seller_info = get_all_seller_info(product, api_key=api_key, token_manager=token_manager)
+                    # This call was incorrect, it needs the cache.
+                    seller_info = get_all_seller_info(product, seller_data_cache=seller_data_cache)
                     row_data.update(seller_info)
                     
                     logger.info(f"ASIN {asin}: Successfully processed and updated seller info.")

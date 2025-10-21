@@ -1,10 +1,18 @@
+# Restore Dashboard Functionality
 import re
 import httpx
 import json
 import logging
+import time
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+# --- XAI Rate Limiter ---
+# Basic rate limiting to prevent spamming the API.
+# This is a simple in-memory implementation suitable for a single-process worker.
+XAI_LAST_CALL_TIMESTAMP = 0
+XAI_MIN_INTERVAL_SECONDS = 2  # At least 2 seconds between calls
 
 SEASON_CLASSIFICATIONS = [
     "Textbook (Summer)", "Textbook (Winter)", "High School AP Textbooks",
@@ -17,7 +25,19 @@ SEASON_CLASSIFICATIONS = [
 def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
     """
     Queries the XAI API to classify seasonality as a fallback.
+    Includes rate limiting.
     """
+    global XAI_LAST_CALL_TIMESTAMP
+
+    # --- Rate Limiting Check ---
+    elapsed = time.time() - XAI_LAST_CALL_TIMESTAMP
+    if elapsed < XAI_MIN_INTERVAL_SECONDS:
+        wait_time = XAI_MIN_INTERVAL_SECONDS - elapsed
+        logger.info(f"XAI rate limit: waiting for {wait_time:.2f} seconds.")
+        time.sleep(wait_time)
+
+    XAI_LAST_CALL_TIMESTAMP = time.time()
+
     if not api_key:
         logger.warning("XAI API key is not provided. Skipping LLM classification.")
         return "Year-round"
@@ -141,9 +161,21 @@ def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
     if "valentine" in title_lower or "romance" in cat_lower:
         return "Romance/Valentine's Day"
 
-    # --- Fallback to LLM ---
-    logger.info(f"Heuristics resulted in 'Year-round' for '{title}'. Falling back to LLM.")
-    return _query_xai_for_seasonality(title, categories_sub, manufacturer, xai_api_key)
+    # If no specific season is found by heuristics, the default is "Year-round".
+    heuristic_season = "Year-round"
+
+    # --- Fallback to LLM for potential improvement ---
+    # Only try to use the LLM if the heuristic result is generic.
+    logger.info(f"Heuristics resulted in 'Year-round' for '{title}'. Attempting LLM fallback for refinement.")
+    llm_result = _query_xai_for_seasonality(title, categories_sub, manufacturer, xai_api_key)
+
+    # If the LLM provides a valid, more specific season, use it.
+    # Otherwise, stick with the original heuristic result.
+    if llm_result and llm_result != "Year-round":
+        return llm_result
+    else:
+        # This now correctly falls back to the original "Year-round" if the LLM fails or also says "Year-round".
+        return heuristic_season
 
 
 def get_sells_period(detailed_season):
