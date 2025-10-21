@@ -400,6 +400,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                     offers_to_log = product.get('offers', [])
                     logger.debug(f"ASIN {asin}: Passing {len(offers_to_log)} offers to get_all_seller_info. Data: {json.dumps(offers_to_log)}")
 
+                    # This call was incorrect, it needs the cache.
                     seller_info = get_all_seller_info(product, seller_data_cache=seller_data_cache)
                     row_data.update(seller_info)
                     
