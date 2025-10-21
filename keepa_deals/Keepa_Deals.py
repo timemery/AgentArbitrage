@@ -1,5 +1,4 @@
-# keepa_deals/Keepa_Deals.py
-# Refactored for integration with AgentArbitrage
+# Restore Dashboard Functionality
 
 import json
 import csv

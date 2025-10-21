@@ -1,3 +1,4 @@
+# Restore Dashboard Functionality
 # keepa_deals/seller_info.py
 
 import logging
