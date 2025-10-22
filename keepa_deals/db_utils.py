@@ -16,6 +16,71 @@ def sanitize_col_name(name):
     name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent').replace('&', 'and')
     return re.sub(r'[^a-zA-Z0-9_]', '', name)
 
+def get_table_columns(cursor, table_name):
+    """Fetches the column names for a given table."""
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    return [row[1] for row in cursor.fetchall()]
+
+def has_unique_index_on_asin(cursor, table_name):
+    """Checks if a unique index exists on the ASIN column."""
+    try:
+        cursor.execute(f"PRAGMA index_list('{table_name}')")
+        indexes = [row for row in cursor.fetchall() if row[2] == 1] # unique indexes
+        for index in indexes:
+            index_name = index[1]
+            cursor.execute(f"PRAGMA index_info('{index_name}')")
+            columns = cursor.fetchall()
+            if len(columns) == 1 and columns[0][2] == 'ASIN':
+                logger.info(f"Found existing unique index '{index_name}' on ASIN.")
+                return True
+        return False
+    except sqlite3.Error as e:
+        logger.error(f"Error checking for unique index: {e}")
+        return False
+
+def create_deals_table_if_not_exists():
+    """
+    Ensures the 'deals' table exists and has the correct schema.
+    This is a non-destructive function safe for frequent checks.
+    """
+    logger.info(f"Database check: Ensuring table '{TABLE_NAME}' at '{DB_PATH}' is correctly configured.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'")
+            if not cursor.fetchone():
+                # If the table doesn't exist at all, we can safely call the full recreation.
+                logger.warning(f"Table '{TABLE_NAME}' not found. Calling recreate_deals_table() to build it.")
+                # This part of the code is now safe because recreate_deals_table is in the same file.
+                # We need to drop out of the 'with' block to avoid database locking issues.
+                conn.close()
+                recreate_deals_table()
+                return # The table is now created, so we're done.
+
+            # If the table exists, just perform safe checks.
+            logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")
+            existing_columns = get_table_columns(cursor, TABLE_NAME)
+
+            # Add missing columns (idempotent)
+            if 'last_seen_utc' not in existing_columns:
+                logger.info("Adding 'last_seen_utc' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN last_seen_utc TIMESTAMP')
+
+            if 'source' not in existing_columns:
+                logger.info("Adding 'source' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN source TEXT')
+
+            if not has_unique_index_on_asin(cursor, TABLE_NAME):
+                logger.warning("No unique index found on ASIN column. This should have been created with the table.")
+
+            conn.commit()
+            logger.info("Database schema check complete.")
+
+    except (sqlite3.Error, Exception) as e:
+        logger.error(f"An unexpected error occurred during schema check: {e}", exc_info=True)
+        raise
+
 def recreate_deals_table():
     """
     Destroys and recreates the 'deals' table to ensure a fresh schema.
