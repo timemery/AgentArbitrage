@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import redis
 
 from celery_config import celery
-from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, save_watermark
+from .db_utils import recreate_deals_table, sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
@@ -54,7 +54,7 @@ def backfill_deals():
 
     try:
         logger.info("--- Task: backfill_deals started ---")
-        create_deals_table_if_not_exists()
+        recreate_deals_table()
 
         api_key = os.getenv("KEEPA_API_KEY")
         xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
