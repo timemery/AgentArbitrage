@@ -236,12 +236,10 @@ from .stable_products import (
 from .stable_calculations import (
     percent_down_365,               # Percent Down 365
     recent_inferred_sale_price,
-    get_seasonality_type,
     get_peak_season,
-    get_expected_peak_price,
+    get_list_at_price,
     get_trough_season,
-    get_expected_trough_price,
-    profit_confidence,              # Profit Confidence
+    profit_confidence,
 )
 # Imports for seller info are no longer needed here, as it's handled in a decoupled loop.
 from .stable_deals import (
@@ -693,13 +691,11 @@ FUNCTION_LIST = [
     None,                           # Seller_Quality_Score (handled in decoupled loop)
     None,                           # Best Price (handled in decoupled loop)
     recent_inferred_sale_price,     # Recent Inferred Sale Price
-    get_seasonality_type,           # Seasonality Type
     None,                           # Detailed_Seasonality
     None,                           # Sells
     get_peak_season,                # Peak Season
-    get_expected_peak_price,        # Expected Peak Price
+    get_list_at_price,              # List at
     get_trough_season,              # Trough Season
-    get_expected_trough_price,      # Expected Trough Price
     profit_confidence,              # Profit Confidence
     None,                           # Min. Listing Price
     None,                           # All-in Cost

@@ -35,53 +35,58 @@ def _is_valid_numeric(*args):
             return False
     return True
 
-def calculate_total_amz_fees(peak_price, fba_fee, referral_fee_percent):
+def calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_fee_percent, settings, shipping_included_flag):
     """
-    Calculates the total Amazon fees for a given peak price.
-    Returns the total fee amount in dollars or '-' if inputs are invalid.
+    Calculates the all-in cost for acquiring and selling a book.
+    The Referral Fee is now correctly calculated based on the 'List at' price.
     """
     logger = logging.getLogger(__name__)
-    if not _is_valid_numeric(peak_price, fba_fee, referral_fee_percent):
-        logger.debug(f"Skipping AMZ fee calculation due to invalid inputs: peak_price={peak_price}, fba_fee={fba_fee}, referral_fee_percent={referral_fee_percent}")
+
+    # --- Validate Inputs ---
+    if not all(_is_valid_numeric(val) for val in [now_price, fba_fee, referral_fee_percent]):
+        logger.info(f"Skipping All-in Cost: Invalid base numeric inputs. now_price={now_price}, fba_fee={fba_fee}, ref_fee_pct={referral_fee_percent}")
         return '-'
     
-    referral_fee_decimal = referral_fee_percent / 100.0
-    referral_fee_amount = peak_price * referral_fee_decimal
-    total_fees = referral_fee_amount + fba_fee
-    logger.debug(f"Calculated AMZ Fees: (Peak Price {peak_price:.2f} * {referral_fee_decimal:.2f}) + FBA Fee {fba_fee:.2f} = {total_fees:.2f}")
-    return total_fees
+    # list_at_price can be invalid (e.g., 'Too New'), which is acceptable
+    is_list_at_price_valid = _is_valid_numeric(list_at_price)
 
-def calculate_all_in_cost(best_price, total_amz_fees, settings, shipping_included_flag):
-    """
-    Calculates the all-in cost for acquiring a book.
-    Returns the all-in cost in dollars or '-' if inputs are invalid.
-    """
-    logger = logging.getLogger(__name__)
-    if not _is_valid_numeric(best_price, total_amz_fees):
-        logger.info(f"Skipping All-in Cost calculation due to invalid inputs: best_price={best_price}, total_amz_fees={total_amz_fees}")
-        return '-'
+    # --- Calculate Amazon Fees ---
+    referral_fee_amount = 0.0
+    if is_list_at_price_valid:
+        referral_fee_decimal = referral_fee_percent / 100.0
+        referral_fee_amount = list_at_price * referral_fee_decimal
+        logger.debug(f"Referral Fee: List At Price ({list_at_price:.2f}) * {referral_fee_decimal:.2f} = {referral_fee_amount:.2f}")
+    else:
+        logger.debug(f"Referral Fee: Could not be calculated as List At Price is invalid ({list_at_price}).")
 
+    total_amz_fees = referral_fee_amount + fba_fee
+    logger.debug(f"Total AMZ Fees: Referral Fee ({referral_fee_amount:.2f}) + FBA Fee ({fba_fee:.2f}) = {total_amz_fees:.2f}")
+
+    # --- Load User Settings ---
     prep_fee = settings.get('prep_fee_per_book', 0.0)
     tax_percent = settings.get('estimated_tax_per_book', 0)
     is_tax_exempt = settings.get('tax_exempt', False)
     estimated_shipping = settings.get('estimated_shipping_per_book', 0.0)
+    logger.info(f"Cost settings: Prep=${prep_fee}, Tax={tax_percent}%, Exempt={is_tax_exempt}, Est. Ship=${estimated_shipping}")
 
-    logger.info(f"Cost settings applied: Prep Fee=${prep_fee}, Tax Rate={tax_percent}%, Tax Exempt={is_tax_exempt}, Est. Shipping=${estimated_shipping}")
-
+    # --- Calculate Other Costs ---
     tax_amount = 0.0
-    if not is_tax_exempt and best_price > 0:
-        tax_amount = best_price * (tax_percent / 100.0)
-        logger.info(f"Tax amount calculated: {tax_amount:.2f}")
-    elif is_tax_exempt:
-        logger.info("Tax amount is 0.00 (Tax Exempt).")
+    if not is_tax_exempt and now_price > 0:
+        tax_amount = now_price * (tax_percent / 100.0)
     
-    shipping_cost_to_add = 0.0
-    if not shipping_included_flag:
-        shipping_cost_to_add = estimated_shipping
-        logger.info(f"Shipping not included in Best Price, adding estimated shipping of {shipping_cost_to_add:.2f}")
+    shipping_cost_to_add = estimated_shipping if not shipping_included_flag else 0.0
     
-    all_in_cost = best_price + tax_amount + prep_fee + total_amz_fees + shipping_cost_to_add
-    logger.info(f"All-in Cost: Best Price {best_price:.2f} + Tax {tax_amount:.2f} + Prep {prep_fee:.2f} + AMZ Fees {total_amz_fees:.2f} + Added Shipping {shipping_cost_to_add:.2f} = {all_in_cost:.2f}")
+    # --- Final Calculation ---
+    all_in_cost = now_price + tax_amount + prep_fee + total_amz_fees + shipping_cost_to_add
+    logger.info(
+        f"All-in Cost Breakdown: "
+        f"Now Price ({now_price:.2f}) + "
+        f"Tax ({tax_amount:.2f}) + "
+        f"Prep ({prep_fee:.2f}) + "
+        f"AMZ Fees ({total_amz_fees:.2f}) + "
+        f"Added Ship ({shipping_cost_to_add:.2f}) = "
+        f"{all_in_cost:.2f}"
+    )
     return all_in_cost
 
 def calculate_profit_and_margin(peak_price, all_in_cost):
@@ -101,16 +106,32 @@ def calculate_profit_and_margin(peak_price, all_in_cost):
 
 def calculate_min_listing_price(all_in_cost, settings):
     """
-    Calculates the minimum listing price based on the default markup.
-    Returns the minimum price in dollars or '-' if inputs are invalid.
+    Calculates the minimum listing price required to achieve the user's default markup.
+    This value is intended for use as a floor price in repricing software.
+    Formula: All-in Cost / (1 - Default Markup %)
     """
     logger = logging.getLogger(__name__)
     if not _is_valid_numeric(all_in_cost):
         logger.debug(f"Skipping Min Listing Price calculation due to invalid input: all_in_cost={all_in_cost}")
         return '-'
         
-    markup_percent = settings.get('default_markup', 0)
-    markup_decimal = 1 + (markup_percent / 100.0)
-    min_price = all_in_cost * markup_decimal
-    logger.info(f"Min Listing Price Calculation: All-in Cost ({all_in_cost:.2f}) * Default Markup ({markup_percent}%) = Min Price ({min_price:.2f})")
+    markup_percent = settings.get('default_markup', 10) # Default to 10% if not set
+    if markup_percent >= 100:
+        logger.warning(f"Default markup is {markup_percent}%, which is >= 100%. This is not allowed. Capping at 99%.")
+        markup_percent = 99
+
+    # Convert markup to the correct decimal for the formula
+    # e.g., 10% markup means the cost is 90% of the price. 1 - 0.10 = 0.90
+    denominator = 1 - (markup_percent / 100.0)
+
+    if denominator <= 0:
+        logger.error(f"Cannot calculate min list price with markup {markup_percent}%, as denominator is {denominator}")
+        return '-'
+
+    min_price = all_in_cost / denominator
+    logger.info(
+        f"Min Listing Price Calculation: "
+        f"All-in Cost ({all_in_cost:.2f}) / (1 - Markup {markup_percent}%) = "
+        f"Min Price ({min_price:.2f})"
+    )
     return min_price

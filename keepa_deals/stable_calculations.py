@@ -1,15 +1,70 @@
 # stable_calculations.py
 # (Last update: Version 5)
 
+# stable_calculations.py
+# (Last update: Version 5)
+
 import logging
 import math
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from .seasonal_config import SEASONAL_KEYWORD_MAP
+import os
+import httpx
+import time
+from scipy import stats as st
+
+# --- XAI Rate Limiter ---
+XAI_LAST_CALL_TIMESTAMP = 0
+XAI_MIN_INTERVAL_SECONDS = 2  # At least 2 seconds between calls
+
 
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
+
+
+def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
+    """
+    Queries the XAI API to act as a reasonableness check for a calculated price.
+    """
+    global XAI_LAST_CALL_TIMESTAMP
+    elapsed = time.time() - XAI_LAST_CALL_TIMESTAMP
+    if elapsed < XAI_MIN_INTERVAL_SECONDS:
+        wait_time = XAI_MIN_INTERVAL_SECONDS - elapsed
+        logging.info(f"XAI rate limit (reasonableness): waiting for {wait_time:.2f}s.")
+        time.sleep(wait_time)
+
+    XAI_LAST_CALL_TIMESTAMP = time.time()
+
+    if not api_key:
+        logging.warning("XAI_API_KEY not provided. Skipping reasonableness check.")
+        return True  # Default to reasonable if API is not configured
+
+    prompt = f"""
+    Given the following book details, is a peak selling price of ${price_usd:.2f} reasonable?
+    Respond with only "Yes" or "No".
+
+    - **Title:** "{title}"
+    - **Category:** "{category}"
+    - **Identified Peak Season:** "{season}"
+    """
+    payload = {
+        "messages": [{"role": "user", "content": prompt}],
+        "model": "grok-4-latest", "temperature": 0.1, "max_tokens": 10
+    }
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+            response.raise_for_status()
+            content = response.json()['choices'][0]['message']['content'].strip().lower()
+            logging.info(f"XAI Reasonableness Check for '{title}' at ${price_usd:.2f}: AI responded '{content}'")
+            return "yes" in content
+    except Exception as e:
+        logging.error(f"XAI API request for reasonableness check failed: {e}")
+        return True # Default to reasonable on failure to avoid blocking deals
 
 # Percent Down 365 starts
 def percent_down_365(product):
@@ -230,137 +285,117 @@ def recent_inferred_sale_price(product):
     else:
         return {'Recent Inferred Sale Price': '-'}
 
-def analyze_seasonality(product, sale_events):
+def analyze_sales_performance(product, sale_events):
     """
-    Analyzes product category and inferred sale events to identify seasonal patterns and pricing.
-    First checks for keywords in the product's category tree. If a match is found,
-    it uses the predefined seasonal data. Otherwise, it falls back to analyzing sale event density.
+    Analyzes inferred sale events to determine peak/trough seasons and calculate
+    the mode of peak season prices, with an XAI verification step. This replaces
+    the previous `analyze_seasonality` function.
     """
     logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
+    xai_api_key = os.getenv("XAI_API_KEY")
 
-    # --- Category-Aware Analysis (New) ---
-    category_tree = product.get('categoryTree', [])
-    category_string = ' > '.join(cat['name'] for cat in category_tree).lower() if category_tree else ''
-
-    if category_string:
-        for season_name, season_details in SEASONAL_KEYWORD_MAP.items():
-            for keyword in season_details['keywords']:
-                if keyword in category_string:
-                    logger.info(f"ASIN {asin}: Found keyword '{keyword}' for season '{season_name}' in category tree. Applying predefined seasonality.")
-                    # For category-based seasons, we don't calculate peak/trough prices from sales,
-                    # as the season is predefined. We can enhance this later if needed.
-                    return {
-                        'seasonality_type': season_name,
-                        'peak_season': season_details['peak_season'],
-                        'trough_season': season_details['trough_season'],
-                        'expected_peak_price_cents': -1, # Indicates price should be calculated from historical avg if needed
-                        'expected_trough_price_cents': -1
-                    }
-
-    # --- Fallback to Sales-Density Analysis ---
-    logger.debug(f"ASIN {asin}: No seasonal keyword match. Falling back to sales-density analysis.")
     MIN_SALES_FOR_ANALYSIS = 3
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
-        return {'seasonality_type': 'Year-Round', 'peak_season': '-', 'expected_peak_price_cents': -1, 'trough_season': '-', 'expected_trough_price_cents': -1}
-
+        logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for performance analysis.")
+        return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
 
     df = pd.DataFrame(sale_events)
     df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
     df['month'] = df['event_timestamp'].dt.month
-    
-    prices = df['inferred_sale_price_cents'].tolist()
-    logger.debug(f"Analyzing seasonality with {len(prices)} sale prices: {prices}")
-    
-    seasonality_type = "Year-Round" # Default
-    
-    # --- Peak/Trough Price Calculation (based on sales density) ---
-    monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'mean', 'count'])
+
+    # --- Peak/Trough Season Identification ---
+    monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
     if len(monthly_stats) < 2:
-         # Not enough data for price analysis, return with type only
-        return {'seasonality_type': seasonality_type, 'peak_season': '-', 'expected_peak_price_cents': -1, 'trough_season': '-', 'expected_trough_price_cents': -1}
+        logger.debug(f"ASIN {asin}: Not enough monthly data to determine peak/trough seasons.")
+        return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
 
-    # Determine if seasonal based on sales volume deviation
-    if monthly_stats['count'].std() / monthly_stats['count'].mean() > 0.35: # Heuristic
-        seasonality_type = "Seasonal"
+    peak_month = monthly_stats['median'].idxmax()
+    trough_month = monthly_stats['median'].idxmin()
+    peak_season_str = datetime(2000, int(peak_month), 1).strftime('%b')
+    trough_season_str = datetime(2000, int(trough_month), 1).strftime('%b')
 
-    peak_month_median = monthly_stats['median'].idxmax()
-    trough_month_median = monthly_stats['median'].idxmin()
-    peak_price_cents_median = monthly_stats.loc[peak_month_median]['median']
-    trough_price_cents_median = monthly_stats.loc[trough_month_median]['median']
-
-    peak_month_mean = monthly_stats['mean'].idxmax()
-    trough_month_mean = monthly_stats['mean'].idxmin()
-    peak_price_cents_mean = monthly_stats.loc[peak_month_mean]['mean']
-    trough_price_cents_mean = monthly_stats.loc[trough_month_mean]['mean']
+    # --- "List at" Price Calculation (Mode of Peak Season) ---
+    peak_season_prices = df[df['month'] == peak_month]['inferred_sale_price_cents'].tolist()
     
-    logger.info(f"ASIN {asin}: Peak Price (Median): {peak_price_cents_median/100:.2f}, (Mean): {peak_price_cents_mean/100:.2f}")
-    logger.info(f"ASIN {asin}: Trough Price (Median): {trough_price_cents_median/100:.2f}, (Mean): {trough_price_cents_mean/100:.2f}")
+    if not peak_season_prices:
+        logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
+        return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
 
-    # Use the mean for the official value as requested.
-    peak_price_cents = peak_price_cents_mean
-    trough_price_cents = trough_price_cents_mean
-    peak_season_str = datetime(2000, int(peak_month_mean), 1).strftime('%b')
-    trough_season_str = datetime(2000, int(trough_month_mean), 1).strftime('%b')
+    # Calculate the mode. Scipy's mode is robust.
+    mode_result = st.mode(peak_season_prices)
 
-    logger.debug(f"Peak price of {peak_price_cents} (using mean) calculated from month {peak_month_mean}. Trough price of {trough_price_cents} (using mean) from month {trough_month_mean}.")
+    # Check if the mode is valid (count > 1) and handle unimodal vs. multimodal cases
+    peak_price_mode_cents = -1
+    if mode_result.count > 1:
+        peak_price_mode_cents = float(mode_result.mode)
+        logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (occurred {mode_result.count} times).")
+    else:
+        # If no single price is more frequent, fall back to the median of the peak season
+        peak_price_mode_cents = float(np.median(peak_season_prices))
+        logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
 
+    # --- XAI Verification Step ---
+    title = product.get('title', 'N/A')
+    category_tree = product.get('categoryTree', [])
+    category = ' > '.join(cat['name'] for cat in category_tree) if category_tree else 'N/A'
+
+    is_reasonable = _query_xai_for_reasonableness(
+        title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key
+    )
+
+    if not is_reasonable:
+        # If XAI deems the price unreasonable, we invalidate it by setting it to -1.
+        # This signals downstream functions to treat it as "N/A" or "Too New".
+        logger.warning(f"ASIN {asin}: XAI check failed. Price ${peak_price_mode_cents/100:.2f} was deemed unreasonable for '{title}'. Invalidating price.")
+        peak_price_mode_cents = -1
 
     return {
-        'seasonality_type': seasonality_type,
+        'peak_price_mode_cents': peak_price_mode_cents,
         'peak_season': peak_season_str,
-        'expected_peak_price_cents': peak_price_cents,
         'trough_season': trough_season_str,
-        'expected_trough_price_cents': trough_price_cents,
     }
 
 # --- Memoization cache for analysis results ---
 _analysis_cache = {}
 
 def _get_analysis(product):
-    """Helper to get or compute analysis, caching the result."""
+    """
+    Helper to get or compute sales performance analysis, caching the result.
+    Uses the new analyze_sales_performance function.
+    """
     asin = product.get('asin')
     if asin and asin in _analysis_cache:
         return _analysis_cache[asin]
     
     sale_events, _ = infer_sale_events(product)
-    # The product object is passed to analyze_seasonality to allow for category-based analysis
-    analysis = analyze_seasonality(product, sale_events)
+    # The product object is passed to analyze_sales_performance for metadata context.
+    analysis = analyze_sales_performance(product, sale_events)
     
     if asin:
         _analysis_cache[asin] = analysis
     return analysis
 
-def get_seasonality_type(product):
-    """Wrapper to get the Seasonality Type."""
-    analysis = _get_analysis(product)
-    return {'Seasonality Type': analysis.get('seasonality_type', 'Year-Round')}
-
 def get_peak_season(product):
-    """Wrapper to get the Peak Season."""
+    """Wrapper to get the Peak Season from the new analysis."""
     analysis = _get_analysis(product)
     return {'Peak Season': analysis.get('peak_season', '-')}
 
-def get_expected_peak_price(product):
-    """Wrapper to get the Expected Peak Price."""
+def get_list_at_price(product):
+    """
+    Wrapper to get the 'List at' price, which is the mode of peak season prices.
+    Returns 'Too New' if the price is invalid.
+    """
     analysis = _get_analysis(product)
-    price_cents = analysis.get('expected_peak_price_cents', -1)
+    price_cents = analysis.get('peak_price_mode_cents', -1)
     if price_cents and price_cents > 0:
-        return {'Expected Peak Price': f"${price_cents / 100:.2f}"}
-    return {'Expected Peak Price': '-'}
+        return {'List at': f"${price_cents / 100:.2f}"}
+    return {'List at': 'Too New'}
 
 def get_trough_season(product):
-    """Wrapper to get the Trough Season."""
+    """Wrapper to get the Trough Season from the new analysis."""
     analysis = _get_analysis(product)
     return {'Trough Season': analysis.get('trough_season', '-')}
-
-def get_expected_trough_price(product):
-    """Wrapper to get the Expected Trough Price."""
-    analysis = _get_analysis(product)
-    price_cents = analysis.get('expected_trough_price_cents', -1)
-    if price_cents and price_cents > 0:
-        return {'Expected Trough Price': f"${price_cents / 100:.2f}"}
-    return {'Expected Trough Price': '-'}
 
 def profit_confidence(product):
     """Calculates a confidence score based on how many offer drops correlate with a rank drop."""

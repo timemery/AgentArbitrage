@@ -9,7 +9,6 @@ from celery_config import celery
 import sqlite3
 from .business_calculations import (
     load_settings as business_load_settings,
-    calculate_total_amz_fees,
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
@@ -96,20 +95,19 @@ def recalculate_deals():
             row_updates = {'ASIN': deal_data['ASIN']}
 
             try:
-                peak_price = float(str(deal_data.get('Expected_Peak_Price', '0')).replace('$', '').replace(',', ''))
-                best_price = float(str(deal_data.get('Best_Price', '0')).replace('$', '').replace(',', ''))
+                list_at_price = float(str(deal_data.get('List at', '0')).replace('$', '').replace(',', ''))
+                now_price = float(str(deal_data.get('Now', '0')).replace('$', '').replace(',', ''))
 
-                if peak_price > 0 and best_price > 0:
+                if list_at_price > 0 and now_price > 0:
                     fba_fee = float(str(deal_data.get('FBA_PickPack_Fee', '0')).replace(',', ''))
                     ref_fee = float(str(deal_data.get('Referral_Fee_Percent', '0')).replace('%', ''))
 
-                    total_fees = calculate_total_amz_fees(peak_price, fba_fee, ref_fee)
                     shipping_included = str(deal_data.get('Shipping_Included', 'no')).lower() == 'yes'
-                    all_cost = calculate_all_in_cost(best_price, total_fees, business_settings, shipping_included)
-                    profit_margin = calculate_profit_and_margin(peak_price, all_cost)
+                    all_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, ref_fee, business_settings, shipping_included)
+                    profit_margin = calculate_profit_and_margin(list_at_price, all_cost)
 
                     row_updates.update({
-                        'Total_AMZ_fees': total_fees, 'All_in_Cost': all_cost,
+                        'All_in_Cost': all_cost,
                         'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
                         'Min_Listing_Price': calculate_min_listing_price(all_cost, business_settings)
                     })

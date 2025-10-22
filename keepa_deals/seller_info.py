@@ -12,37 +12,37 @@ WAREHOUSE_SELLER_ID = 'A2L77EE7U53NWQ'
 
 def _get_best_offer_analysis(product, seller_data_cache):
     """
-    Finds the best live offer by cross-referencing the 'stats.current' array
-    with the 'offers' array to ensure price accuracy and retrieve seller info
-    from a pre-populated cache.
+    Finds the best live USED offer. This logic is critical for the 'Now' price.
+    It ensures a value is always found if any USED price is available in the product data,
+    without filtering out sellers.
     """
     asin = product.get('asin', 'N/A')
-    stats = product.get('stats', {})
-    current_prices_from_stats = stats.get('current', [])
-    
-    price_indices = [0, 1, 2, 7, 10, 19, 20, 21, 22, 32]
-    
-    valid_stat_prices = set()
-    for index in price_indices:
-        if len(current_prices_from_stats) > index and current_prices_from_stats[index] is not None and current_prices_from_stats[index] > 0:
-            valid_stat_prices.add(current_prices_from_stats[index])
-            
-    if not valid_stat_prices:
-        logger.warning(f"ASIN {asin}: No valid current prices found in stats.current. Cannot determine best price.")
-        return {'Best Price': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
+    logger.debug(f"ASIN {asin}: Analyzing offers to find the 'Now' price (lowest USED price).")
 
-    best_offer_details = {
-        'price': float('inf'),
-        'seller_id': None,
-        'offer_obj': None
-    }
+    stats = product.get('stats', {})
+    offers = product.get('offers', [])
     
-    raw_offers = product.get('offers', [])
-    if not raw_offers:
-        logger.warning(f"ASIN {asin}: No offers array to search for seller, but found valid prices in stats: {valid_stat_prices}")
-    else:
-        for offer in raw_offers:
-            if not isinstance(offer, dict) or offer.get('sellerId') == WAREHOUSE_SELLER_ID:
+    # --- Find the definitive lowest USED price from all available data ---
+    lowest_used_price = float('inf')
+    source = "N/A"
+
+    # 1. Check `stats.current` for USED price (index 2)
+    if stats and 'current' in stats and len(stats['current']) > 2 and stats['current'][2] is not None and stats['current'][2] > 0:
+        lowest_used_price = stats['current'][2]
+        source = "stats.current[2]"
+
+    # 2. Check `stats.buyBoxUsedPrice`
+    if stats and 'buyBoxUsedPrice' in stats and stats['buyBoxUsedPrice'] is not None and stats['buyBoxUsedPrice'] > 0:
+        if stats['buyBoxUsedPrice'] < lowest_used_price:
+            lowest_used_price = stats['buyBoxUsedPrice']
+            source = "stats.buyBoxUsedPrice"
+    
+    # 3. Iterate through `offers` for a potentially lower USED price
+    if offers:
+        for offer in offers:
+            # We only care about USED offers (condition 2-6)
+            condition = offer.get('condition', {}).get('value')
+            if not isinstance(offer, dict) or offer.get('sellerId') == WAREHOUSE_SELLER_ID or condition == 1: # 1 is 'New'
                 continue
 
             offer_history = offer.get('offerCSV', [])
@@ -51,43 +51,51 @@ def _get_best_offer_analysis(product, seller_data_cache):
                     price = int(offer_history[-2])
                     shipping = int(offer_history[-1])
                     if shipping == -1: shipping = 0
+                    total_price = price + shipping
                     
-                    if price in valid_stat_prices:
-                        total_price = price + shipping
-                        if total_price < best_offer_details['price']:
-                            best_offer_details['price'] = total_price
-                            best_offer_details['seller_id'] = offer.get('sellerId')
-                            best_offer_details['offer_obj'] = offer
+                    if total_price < lowest_used_price:
+                        lowest_used_price = total_price
+                        source = f"offer array (seller: {offer.get('sellerId')})"
                 except (ValueError, IndexError):
                     continue
 
-    if best_offer_details['price'] == float('inf'):
-        logger.warning(f"ASIN {asin}: Could not find any live offer whose price matched a valid price in stats.current. Stats prices: {valid_stat_prices}")
-        min_price_cents = min(valid_stat_prices)
-        return {
-            'Best Price': f"${min_price_cents / 100:.2f}",
-            'Seller ID': 'N/A (No matching offer)',
-            'Seller': 'N/A (No matching offer)',
-            'Seller Rank': '-',
-            'Seller_Quality_Score': '-'
-        }
-        
-    best_seller_id = best_offer_details['seller_id']
+    if lowest_used_price == float('inf'):
+        logger.warning(f"ASIN {asin}: No valid USED price found in stats or offers. 'Now' price will be empty.")
+        return {'Now': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
+
+    logger.info(f"ASIN {asin}: Determined lowest USED price ('Now') is {lowest_used_price / 100:.2f} from '{source}'.")
+
+    # --- Find Seller Info Associated with the Winning Price ---
+    best_seller_id = None
+    if offers:
+        for offer in offers:
+             if not isinstance(offer, dict): continue
+             offer_history = offer.get('offerCSV', [])
+             if len(offer_history) >= 2:
+                try:
+                    price = int(offer_history[-2])
+                    shipping = int(offer_history[-1])
+                    if shipping == -1: shipping = 0
+                    if (price + shipping) == lowest_used_price:
+                        best_seller_id = offer.get('sellerId')
+                        break # Found the first matching seller
+                except (ValueError, IndexError):
+                    continue
+
     final_analysis = {
-        'Best Price': f"${best_offer_details['price'] / 100:.2f}",
-        'Seller ID': best_seller_id,
+        'Now': f"${lowest_used_price / 100:.2f}",
+        'Seller ID': best_seller_id or 'N/A',
         'Seller': '-',
         'Seller Rank': '-',
         'Seller_Quality_Score': '-'
     }
-    
-    logger.info(f"ASIN {asin}: Found best price {final_analysis['Best Price']} from validated live offers, matched to Seller ID: {best_seller_id}")
+    logger.info(f"ASIN {asin}: Best price {final_analysis['Now']} from validated live offers, matched to Seller ID: {best_seller_id}")
 
     if not best_seller_id:
-        logger.warning(f"ASIN {asin}: Cannot get seller score because no seller ID was found.")
+        logger.warning(f"ASIN {asin}: Cannot get seller score because no seller ID was found for the winning price.")
         return final_analysis
 
-    # THIS IS THE REFACTORED PART: We now ONLY look in the cache.
+    # --- Retrieve Seller Data from Cache ---
     seller_data = seller_data_cache.get(best_seller_id)
 
     if seller_data:
@@ -99,14 +107,13 @@ def _get_best_offer_analysis(product, seller_data_cache):
             rating_percentage = seller_data.get('currentRating', 0)
             positive_ratings = round((rating_percentage / 100.0) * rating_count)
             score = calculate_seller_quality_score(positive_ratings, rating_count)
-            final_analysis['Seller_Quality_Score'] = f"{score:.2f}/10"
+            # Ensure score is formatted to one decimal place for consistency
+            final_analysis['Seller_Quality_Score'] = f"{score:.1f}/5.0"
         else:
             final_analysis['Seller_Quality_Score'] = "New Seller"
     else:
         logger.warning(f"ASIN {asin}: No seller data found in cache for ID {best_seller_id}.")
         final_analysis['Seller'] = "No Seller Info"
-        final_analysis['Seller Rank'] = "N/A"
-        final_analysis['Seller_Quality_Score'] = "N/A"
 
     return final_analysis
 
