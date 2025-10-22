@@ -63,18 +63,16 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         set_scan_status(current_status)
 
     try:
+        # Overwrite the status file with a clean initial state
+        initial_status = {
+            "status": "Running",
+            "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            "message": "Worker has started processing the scan.",
+            "task_id": run_keepa_script.request.id
+        }
+        set_scan_status(initial_status)
 
-    # Overwrite the status file with a clean initial state
-    initial_status = {
-        "status": "Running",
-        "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
-        "message": "Worker has started processing the scan.",
-        "task_id": run_keepa_script.request.id
-    }
-    set_scan_status(initial_status)
-
-    scan_start_time = time.time() # Start timer at the very beginning
-    os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
     CSV_PATH = os.path.join(output_dir, "Keepa_Deals_Export.csv")
 
     # Load headers
