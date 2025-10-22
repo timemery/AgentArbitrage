@@ -47,6 +47,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
     logger = logging.getLogger(__name__) # Use standard logging
     load_dotenv()
     XAI_API_KEY = os.getenv("XAI_TOKEN")
+    scan_start_time = time.time()
 
     def _update_cli_status(status_dict):
         # Read current status, update, and write back
@@ -60,6 +61,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 pass
         current_status.update(status_dict)
         set_scan_status(current_status)
+
+    try:
 
     # Overwrite the status file with a clean initial state
     initial_status = {
@@ -302,7 +305,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             batch_seller_ids = seller_id_list[i:i + MAX_SELLERS_PER_BATCH]
             logger.info(f"Fetching seller data for batch {i//MAX_SELLERS_PER_BATCH + 1}...")
 
-            # Note: We need to import fetch_seller_data from keepa_api
+            token_manager.request_permission_for_call(estimated_cost=len(batch_seller_ids)) # 1 token per seller
             seller_data_response, _, _, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
             token_manager.update_after_call(tokens_left)
 
