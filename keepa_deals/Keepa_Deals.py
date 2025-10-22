@@ -23,7 +23,6 @@ from .seller_info import get_all_seller_info
 import sqlite3
 from .business_calculations import (
     load_settings as business_load_settings,
-    calculate_total_amz_fees,
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
@@ -414,7 +413,6 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         # --- New Business Logic Calculations Loop ---
         from .business_calculations import (
             load_settings,
-            calculate_total_amz_fees,
             calculate_all_in_cost,
             calculate_profit_and_margin,
             calculate_min_listing_price,
@@ -453,21 +451,19 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                         logger.warning(f"Could not parse percent value '{value_str}'. Defaulting to 0.0.")
                         return 0.0
 
-                peak_price = parse_price(row_data.get('Expected Peak Price', '0'))
+                list_at_price = parse_price(row_data.get('List at', '0'))
+                now_price = parse_price(row_data.get('Now', '0'))
                 fba_fee = parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
                 referral_percent = parse_percent(row_data.get('Referral Fee %', '0'))
-                best_price = parse_price(row_data.get('Best Price', '0'))
 
-                if peak_price > 0 and best_price > 0:
+                if list_at_price > 0 and now_price > 0:
                     shipping_included_str = row_data.get('Shipping Included', 'no')
                     shipping_included_flag = shipping_included_str.lower() == 'yes'
 
-                    total_amz_fees = calculate_total_amz_fees(peak_price, fba_fee, referral_percent)
-                    all_in_cost = calculate_all_in_cost(best_price, total_amz_fees, business_settings, shipping_included_flag)
-                    profit_margin_dict = calculate_profit_and_margin(peak_price, all_in_cost)
+                    all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_percent, business_settings, shipping_included_flag)
+                    profit_margin_dict = calculate_profit_and_margin(list_at_price, all_in_cost)
                     min_listing_price = calculate_min_listing_price(all_in_cost, business_settings)
 
-                    row_data['Total AMZ fees'] = total_amz_fees
                     row_data['All-in Cost'] = all_in_cost
                     row_data['Profit'] = profit_margin_dict['profit']
                     row_data['Margin'] = profit_margin_dict['margin']
