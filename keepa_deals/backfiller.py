@@ -57,7 +57,7 @@ def backfill_deals():
         create_deals_table_if_not_exists()
 
         api_key = os.getenv("KEEPA_API_KEY")
-        xai_api_key = os.getenv("XAI_API_KEY")
+        xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
         if not api_key:
             logger.error("KEEPA_API_KEY not set. Aborting.")
             return

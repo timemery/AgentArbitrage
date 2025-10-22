@@ -52,7 +52,7 @@ def recalculate_deals():
 
         required_columns_map = {
             "ASIN": "ASIN",
-            "Expected Peak Price": "Expected_Peak_Price",
+            "List at": "List_at",
             "Best Price": "Best_Price",
             "FBA Pick&Pack Fee": "FBA_PickPack_Fee",
             "Referral Fee %": "Referral_Fee_Percent",
@@ -95,7 +95,7 @@ def recalculate_deals():
             row_updates = {'ASIN': deal_data['ASIN']}
 
             try:
-                list_at_price = float(str(deal_data.get('List at', '0')).replace('$', '').replace(',', ''))
+                list_at_price = float(str(deal_data.get('List_at', '0')).replace('$', '').replace(',', ''))
                 now_price = float(str(deal_data.get('Now', '0')).replace('$', '').replace(',', ''))
 
                 if list_at_price > 0 and now_price > 0:

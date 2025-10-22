@@ -293,7 +293,7 @@ def analyze_sales_performance(product, sale_events):
     """
     logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
-    xai_api_key = os.getenv("XAI_API_KEY")
+    xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
 
     MIN_SALES_FOR_ANALYSIS = 3
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
