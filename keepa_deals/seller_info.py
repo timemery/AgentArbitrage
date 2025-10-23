@@ -22,32 +22,32 @@ def _get_best_offer_analysis(product, seller_data_cache):
     stats = product.get('stats', {})
     offers = product.get('offers', [])
     
-    # --- Find the definitive lowest USED price from all available data ---
+    # --- Refactored Logic to find lowest price and seller simultaneously ---
     lowest_used_price = float('inf')
+    best_seller_id = None
     source = "N/A"
 
-    # 1. Check `stats.current` for USED price (index 2)
+    # 1. Check `stats` data for a baseline lowest price.
+    # The USED price is at index 2 of the 'current' array.
     if stats and 'current' in stats and len(stats['current']) > 2 and stats['current'][2] is not None and stats['current'][2] > 0:
-        lowest_used_price = stats['current'][2]
-        source = "stats.current[2]"
-
-    # 2. Check `stats.buyBoxUsedPrice`
-    if stats and 'buyBoxUsedPrice' in stats and stats['buyBoxUsedPrice'] is not None and stats['buyBoxUsedPrice'] > 0:
-        if stats['buyBoxUsedPrice'] < lowest_used_price:
-            lowest_used_price = stats['buyBoxUsedPrice']
-            source = "stats.buyBoxUsedPrice"
+        price_from_stats = stats['current'][2]
+        if price_from_stats < lowest_used_price:
+            lowest_used_price = price_from_stats
+            source = "stats.current[2]"
+            # Note: We cannot definitively get a seller ID from stats alone.
     
-    # 3. Iterate through `offers` for a potentially lower USED price
+    # 2. Iterate through `offers` to find a potentially lower price and capture the seller ID.
     if offers:
         for offer in offers:
-            # CRITICAL FIX: Ensure the offer is a dictionary before processing
             if not isinstance(offer, dict):
                 logger.warning(f"ASIN {asin}: Skipping a malformed offer that is not a dictionary: {offer}")
                 continue
 
-            # We only care about USED offers (condition 2-6)
             condition = offer.get('condition', {}).get('value')
-            if offer.get('sellerId') == WAREHOUSE_SELLER_ID or condition == 1: # 1 is 'New'
+            seller_id = offer.get('sellerId')
+
+            # Skip NEW offers (condition 1) and Amazon Warehouse deals
+            if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
                 continue
 
             offer_history = offer.get('offerCSV', [])
@@ -58,34 +58,18 @@ def _get_best_offer_analysis(product, seller_data_cache):
                     if shipping == -1: shipping = 0
                     total_price = price + shipping
                     
-                    if total_price < lowest_used_price:
+                    if total_price > 0 and total_price < lowest_used_price:
                         lowest_used_price = total_price
-                        source = f"offer array (seller: {offer.get('sellerId')})"
+                        best_seller_id = seller_id  # Capture the seller ID with the price
+                        source = f"offer array (seller: {seller_id})"
                 except (ValueError, IndexError):
                     continue
 
     if lowest_used_price == float('inf'):
-        logger.warning(f"ASIN {asin}: No valid USED price found in stats or offers. 'Now' price will be empty.")
+        logger.warning(f"ASIN {asin}: No valid USED price found. 'Now' price will be empty.")
         return {'Now': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
 
     logger.info(f"ASIN {asin}: Determined lowest USED price ('Now') is {lowest_used_price / 100:.2f} from '{source}'.")
-
-    # --- Find Seller Info Associated with the Winning Price ---
-    best_seller_id = None
-    if offers:
-        for offer in offers:
-             if not isinstance(offer, dict): continue
-             offer_history = offer.get('offerCSV', [])
-             if len(offer_history) >= 2:
-                try:
-                    price = int(offer_history[-2])
-                    shipping = int(offer_history[-1])
-                    if shipping == -1: shipping = 0
-                    if (price + shipping) == lowest_used_price:
-                        best_seller_id = offer.get('sellerId')
-                        break # Found the first matching seller
-                except (ValueError, IndexError):
-                    continue
 
     final_analysis = {
         'Now': f"${lowest_used_price / 100:.2f}",

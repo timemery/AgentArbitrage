@@ -340,6 +340,9 @@ def analyze_sales_performance(product, sale_events):
     category_tree = product.get('categoryTree', [])
     category = ' > '.join(cat['name'] for cat in category_tree) if category_tree else 'N/A'
 
+    # --- Enhanced Logging for Debugging ---
+    logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}'")
+
     is_reasonable = _query_xai_for_reasonableness(
         title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key
     )
@@ -347,8 +350,10 @@ def analyze_sales_performance(product, sale_events):
     if not is_reasonable:
         # If XAI deems the price unreasonable, we invalidate it by setting it to -1.
         # This signals downstream functions to treat it as "N/A" or "Too New".
-        logger.warning(f"ASIN {asin}: XAI check failed. Price ${peak_price_mode_cents/100:.2f} was deemed unreasonable for '{title}'. Invalidating price.")
+        logger.warning(f"ASIN {asin}: XAI check FAILED. Price ${peak_price_mode_cents/100:.2f} was deemed unreasonable for '{title}'. Invalidating price.")
         peak_price_mode_cents = -1
+    else:
+        logger.info(f"ASIN {asin}: XAI check PASSED. Price is considered reasonable.")
 
     return {
         'peak_price_mode_cents': peak_price_mode_cents,
