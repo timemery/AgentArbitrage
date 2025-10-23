@@ -80,40 +80,35 @@ def _get_best_offer_analysis(product, seller_data_cache):
 
     logger.info(f"ASIN {asin}: Final 'Now' price is {final_price / 100:.2f} from '{final_source}'.")
 
-    final_analysis = {
+    # --- Build the final result dictionary ---
+    result = {
         'Now': f"${final_price / 100:.2f}",
-        'Seller ID': final_seller_id or 'N/A',
+        'Seller ID': final_seller_id or '-',
         'Seller': '-',
         'Seller Rank': '-',
         'Seller_Quality_Score': '-'
     }
-    logger.info(f"ASIN {asin}: Best price {final_analysis['Now']} from validated live offers, matched to Seller ID: {final_seller_id}")
 
-    if not final_seller_id:
-        logger.warning(f"ASIN {asin}: Cannot get seller score because no seller ID was found for the winning price.")
-        return final_analysis
+    # If we have a definitive seller ID, retrieve their data from the cache.
+    if final_seller_id:
+        seller_data = seller_data_cache.get(final_seller_id)
+        if seller_data:
+            result['Seller'] = seller_data.get('sellerName', 'N/A')
+            rating_count = seller_data.get('currentRatingCount', 0)
 
-    # --- Retrieve Seller Data from Cache ---
-    seller_data = seller_data_cache.get(best_seller_id)
-
-    if seller_data:
-        final_analysis['Seller'] = seller_data.get('sellerName', 'N/A')
-        rating_count = seller_data.get('currentRatingCount', 0)
-        
-        if rating_count > 0:
-            final_analysis['Seller Rank'] = rating_count
-            rating_percentage = seller_data.get('currentRating', 0)
-            positive_ratings = round((rating_percentage / 100.0) * rating_count)
-            score = calculate_seller_quality_score(positive_ratings, rating_count)
-            # Ensure score is formatted to one decimal place for consistency
-            final_analysis['Seller_Quality_Score'] = f"{score:.1f}/5.0"
+            if rating_count > 0:
+                result['Seller Rank'] = rating_count
+                rating_percentage = seller_data.get('currentRating', 0)
+                positive_ratings = round((rating_percentage / 100.0) * rating_count)
+                score = calculate_seller_quality_score(positive_ratings, rating_count)
+                result['Seller_Quality_Score'] = f"{score:.1f}/5.0"
+            else:
+                result['Seller_Quality_Score'] = "New Seller"
         else:
-            final_analysis['Seller_Quality_Score'] = "New Seller"
-    else:
-        logger.warning(f"ASIN {asin}: No seller data found in cache for ID {best_seller_id}.")
-        final_analysis['Seller'] = "No Seller Info"
+            logger.warning(f"ASIN {asin}: No data in cache for seller ID {final_seller_id}.")
+            result['Seller'] = "No Seller Info"
 
-    return final_analysis
+    return result
 
 def get_all_seller_info(product, seller_data_cache=None):
     """

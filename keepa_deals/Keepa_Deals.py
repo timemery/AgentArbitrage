@@ -90,9 +90,16 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 if diagnostic:
                     writer.writerow(['No deals fetched'] + ['-'] * (len(HEADERS) - 1))
                 else:
-                    num_to_write = min(len(deals), len(rows))
-                    for i in range(num_to_write):
-                        writer.writerow([rows[i].get(header, '-') for header in HEADERS])
+                    for row in rows:
+                        row_to_write = []
+                        for header in HEADERS:
+                            value = row.get(header, '-')
+                            if header == 'ASIN' and value != '-':
+                                # Apply spreadsheet-specific formatting only for the CSV
+                                row_to_write.append(f'="{value}"')
+                            else:
+                                row_to_write.append(value)
+                        writer.writerow(row_to_write)
             logger.info(f"CSV written: {CSV_PATH}")
 
         logger.info("Starting Keepa_Deals script...")
@@ -142,6 +149,9 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         # This is a critical guard to prevent runaway token usage.
         # It calculates the total estimated cost for the entire process before starting.
 
+        # Force a token refill to ensure the internal count is up-to-date before the check.
+        token_manager.refill()
+
         # Cost to fetch product history (most expensive part)
         COST_PER_PRODUCT = 17  # Approximate cost for history=1, offers=20
         product_fetch_cost = len(valid_deals_to_process) * COST_PER_PRODUCT
@@ -153,7 +163,10 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
 
         total_estimated_cost = product_fetch_cost + seller_fetch_cost
 
-        logger.info(f"COMPREHENSIVE TOKEN CHECK: Total Estimated Cost = {total_estimated_cost} (Products: {product_fetch_cost}, Sellers: {seller_fetch_cost})")
+        # --- Enhanced Logging for Token Debugging ---
+        logger.info(f"PRE-FLIGHT TOKEN CHECK: Deals to process={len(valid_deals_to_process)}")
+        logger.info(f"PRE-FLIGHT TOKEN CHECK: Calculated total_estimated_cost={total_estimated_cost}")
+        logger.info(f"PRE-FLIGHT TOKEN CHECK: Token manager balance BEFORE check={token_manager.tokens}")
 
         if not token_manager.has_enough_tokens(total_estimated_cost):
             error_msg = f"Insufficient tokens for full run. Estimated Cost: {total_estimated_cost}, Available: {token_manager.tokens}. Aborting task."
