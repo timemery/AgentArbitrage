@@ -178,7 +178,10 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         all_fetched_products_map = {}
         for batch in asin_batches:
             batch_asins = [d['asin'] for d in batch]
-            # No need to check tokens here, as we've done a comprehensive check above.
+
+            # CRITICAL FIX: Restore the throttling mechanism. This waits if the refill rate is slower than the request rate.
+            token_manager.request_permission_for_call(estimated_cost=len(batch_asins) * COST_PER_PRODUCT)
+
             product_data_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
             token_manager.update_after_call(tokens_left)
             if product_data_response and 'products' in product_data_response:
