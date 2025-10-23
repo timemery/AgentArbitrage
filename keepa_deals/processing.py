@@ -90,7 +90,20 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
         title = row_data.get('Title', '')
         categories = row_data.get('Categories - Sub', '')
         manufacturer = row_data.get('Manufacturer', '')
-        detailed_season = classify_seasonality(title, categories, manufacturer, xai_api_key=xai_api_key)
+
+        # Extract peak and trough seasons from the pre-calculated analytics cache
+        analytics_cache = product_data.get('analytics_cache', {})
+        peak_season_str = analytics_cache.get('peak_season', '-')
+        trough_season_str = analytics_cache.get('trough_season', '-')
+
+        detailed_season = classify_seasonality(
+            title,
+            categories,
+            manufacturer,
+            peak_season_str,
+            trough_season_str,
+            xai_api_key=xai_api_key
+        )
 
         row_data['Detailed_Seasonality'] = "None" if detailed_season == "Year-round" else detailed_season
         row_data['Sells'] = get_sells_period(detailed_season)

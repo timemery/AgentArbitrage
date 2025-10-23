@@ -22,3 +22,5 @@ scan_status.json
 # Temporary test scripts
 trigger_task.py*.log
 watermark.json
+cjar
+celerybeat-schedule

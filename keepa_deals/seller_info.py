@@ -40,9 +40,14 @@ def _get_best_offer_analysis(product, seller_data_cache):
     # 3. Iterate through `offers` for a potentially lower USED price
     if offers:
         for offer in offers:
+            # CRITICAL FIX: Ensure the offer is a dictionary before processing
+            if not isinstance(offer, dict):
+                logger.warning(f"ASIN {asin}: Skipping a malformed offer that is not a dictionary: {offer}")
+                continue
+
             # We only care about USED offers (condition 2-6)
             condition = offer.get('condition', {}).get('value')
-            if not isinstance(offer, dict) or offer.get('sellerId') == WAREHOUSE_SELLER_ID or condition == 1: # 1 is 'New'
+            if offer.get('sellerId') == WAREHOUSE_SELLER_ID or condition == 1: # 1 is 'New'
                 continue
 
             offer_history = offer.get('offerCSV', [])

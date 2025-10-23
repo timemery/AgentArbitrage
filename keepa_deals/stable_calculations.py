@@ -17,7 +17,7 @@ from scipy import stats as st
 
 # --- XAI Rate Limiter ---
 XAI_LAST_CALL_TIMESTAMP = 0
-XAI_MIN_INTERVAL_SECONDS = 2  # At least 2 seconds between calls
+XAI_MIN_INTERVAL_SECONDS = 3  # At least 3 seconds between calls
 
 
 # Keepa epoch is minutes from 2011-01-01

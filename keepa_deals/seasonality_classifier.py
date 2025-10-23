@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Basic rate limiting to prevent spamming the API.
 # This is a simple in-memory implementation suitable for a single-process worker.
 XAI_LAST_CALL_TIMESTAMP = 0
-XAI_MIN_INTERVAL_SECONDS = 2  # At least 2 seconds between calls
+XAI_MIN_INTERVAL_SECONDS = 3  # At least 3 seconds between calls
 
 SEASON_CLASSIFICATIONS = [
     "Textbook (Summer)", "Textbook (Winter)", "High School AP Textbooks",

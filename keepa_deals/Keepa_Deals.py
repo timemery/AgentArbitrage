@@ -19,15 +19,15 @@ from .keepa_api import (
 )
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
+from .processing import _process_single_deal
+from .stable_calculations import infer_sale_events, analyze_sales_performance
 from .seller_info import get_all_seller_info
 import sqlite3
 from .business_calculations import (
     load_settings as business_load_settings,
-    calculate_all_in_cost,
-    calculate_profit_and_margin,
-    calculate_min_listing_price,
 )
 
+MAX_ASINS_PER_BATCH = 100
 
 def set_scan_status(status_data):
     """Helper to write to the status file."""
@@ -139,9 +139,19 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         asin_batches = [valid_deals_to_process[i:i + MAX_ASINS_PER_BATCH] for i in range(0, len(valid_deals_to_process), MAX_ASINS_PER_BATCH)]
 
         all_fetched_products_map = {}
+        # --- Token Safety Check ---
+        # Estimate the cost of the most expensive part of the script: fetching product data.
+        # Cost per ASIN with history=1, offers=20 is roughly 17 tokens.
+        estimated_cost = len(valid_deals_to_process) * 17
+        if not token_manager.has_enough_tokens(estimated_cost):
+            error_msg = f"Insufficient tokens. Estimated cost: {estimated_cost}, Available: {token_manager.tokens}. Aborting."
+            logger.error(error_msg)
+            _update_cli_status({'status': 'Failed', 'message': error_msg})
+            return # Abort the task cleanly
+
         for batch in asin_batches:
             batch_asins = [d['asin'] for d in batch]
-            token_manager.request_permission_for_call(len(batch_asins) * 8)
+            token_manager.request_permission_for_call(len(batch_asins) * 17) # Use a more accurate estimate
             product_data_response, _, _, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
             token_manager.update_after_call(tokens_left)
             if product_data_response and 'products' in product_data_response:
@@ -160,43 +170,70 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 if seller_data and 'sellers' in seller_data:
                     seller_data_cache.update(seller_data['sellers'])
 
+        # =================================================================
+        # NEW: Multi-stage processing pipeline
+        # =================================================================
+
+        # --- Stage 1: Analytics Pre-calculation ---
+        # Run analytics first to get data needed for later stages (e.g., seasonality)
+        logger.info("Starting Stage 1: Analytics Pre-calculation")
+        for asin, product in all_fetched_products_map.items():
+            try:
+                sale_events, _ = infer_sale_events(product)
+                analysis_results = analyze_sales_performance(product, sale_events)
+                # Store results back into the main product object
+                product['analytics_cache'] = analysis_results
+            except Exception as e:
+                logger.error(f"ASIN {asin}: Analytics pre-calculation failed: {e}", exc_info=True)
+                product['analytics_cache'] = {} # Ensure the key exists
+        logger.info("Finished Stage 1.")
+
+
+        # --- Stage 2: Main Data Processing ---
+        logger.info("Starting Stage 2: Main Data Processing")
+        business_settings = business_load_settings()
         final_rows = []
+        processed_count = 0
+
         for deal in deals_to_process:
             asin = deal['asin']
             product_data = all_fetched_products_map.get(asin)
+
             if not product_data:
-                final_rows.append({'ASIN': asin})
+                final_rows.append({'ASIN': asin, 'Title': 'Product data not found'})
                 continue
 
-            product_data.update(deal)
-            row = {'ASIN': asin}
-            for header, func in zip(HEADERS, FUNCTION_LIST):
-                if func:
-                    try:
-                        row.update(func(product_data))
-                    except Exception:
-                        row[header] = '-'
+            try:
+                # Combine the original deal info with the full product data
+                product_data.update(deal)
 
-            seller_info = get_all_seller_info(product_data, seller_data_cache)
-            row.update(seller_info)
+                # Call the centralized processing function from processing.py
+                processed_row = _process_single_deal(
+                    product_data,
+                    seller_data_cache=seller_data_cache,
+                    xai_api_key=XAI_API_KEY,
+                    business_settings=business_settings,
+                    headers=HEADERS
+                )
 
-            business_settings = business_load_settings()
-            list_at_price = float(str(row.get('List at', '0')).replace('$', ''))
-            now_price = float(str(row.get('Now', '0')).replace('$', ''))
-            fba_fee = float(row.get('FBA Pick&Pack Fee', 0))
-            ref_percent = float(str(row.get('Referral Fee %', '0')).replace('%', ''))
-            shipping_included = str(row.get('Shipping Included', 'no')).lower() == 'yes'
+                if processed_row:
+                    final_rows.append(processed_row)
 
-            all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, ref_percent, business_settings, shipping_included)
-            profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost)
-            min_list_price = calculate_min_listing_price(all_in_cost, business_settings)
+            except Exception as e:
+                logger.error(f"ASIN {asin}: Critical error in main processing loop for deal: {e}", exc_info=True)
+                final_rows.append({'ASIN': asin, 'Title': f"Processing Error: {e}"})
 
-            row.update({'All-in Cost': all_in_cost, 'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'], 'Min. Listing Price': min_list_price})
+            processed_count += 1
+            if processed_count % 10 == 0:
+                 status_update_callback({"processed_deals": processed_count})
 
-            final_rows.append(row)
+        logger.info("Finished Stage 2.")
 
-        write_csv(final_rows, deals_to_process)
+        # --- Stage 3: Save to Database ---
+        logger.info("Starting Stage 3: Saving to Database")
+        write_csv(final_rows, deals_to_process) # Still useful for debugging
         save_to_database(final_rows, HEADERS, logger)
+        logger.info("Finished Stage 3.")
 
         _update_cli_status({'status': 'Completed', 'message': 'Scan completed successfully.'})
 
