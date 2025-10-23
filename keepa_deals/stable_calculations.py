@@ -55,16 +55,37 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
     }
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    try:
-        with httpx.Client(timeout=30.0) as client:
-            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
-            response.raise_for_status()
-            content = response.json()['choices'][0]['message']['content'].strip().lower()
-            logging.info(f"XAI Reasonableness Check for '{title}' at ${price_usd:.2f}: AI responded '{content}'")
-            return "yes" in content
-    except Exception as e:
-        logging.error(f"XAI API request for reasonableness check failed: {e}")
-        return True # Default to reasonable on failure to avoid blocking deals
+    max_retries = 4
+    base_delay = 5  # Start with a 5-second delay
+
+    for attempt in range(max_retries):
+        try:
+            with httpx.Client(timeout=30.0) as client:
+                response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+
+                if response.status_code == 429:
+                    # Specific handling for rate limiting
+                    delay = base_delay * (2 ** attempt)
+                    logger.warning(f"XAI API rate limit hit (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                    continue # Go to the next attempt
+
+                response.raise_for_status() # Raise exceptions for other bad responses (500, etc.)
+
+                content = response.json()['choices'][0]['message']['content'].strip().lower()
+                logging.info(f"XAI Reasonableness Check for '{title}' at ${price_usd:.2f}: AI responded '{content}'")
+                return "yes" in content
+
+        except httpx.RequestError as e:
+            logging.error(f"XAI API request (reasonableness) failed: {e}")
+            # For network errors, it's often best to fail fast and default to reasonable
+            return True
+        except Exception as e:
+            logging.error(f"An unexpected error occurred during XAI reasonableness check: {e}")
+            return True # Default to reasonable on unknown errors
+
+    logging.error(f"XAI API (reasonableness) failed after {max_retries} retries. Defaulting to reasonable.")
+    return True # Default to reasonable if all retries fail
 
 # Percent Down 365 starts
 def percent_down_365(product):

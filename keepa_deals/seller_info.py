@@ -22,31 +22,22 @@ def _get_best_offer_analysis(product, seller_data_cache):
     stats = product.get('stats', {})
     offers = product.get('offers', [])
     
-    # --- Refactored Logic to find lowest price and seller simultaneously ---
-    lowest_used_price = float('inf')
-    best_seller_id = None
-    source = "N/A"
-
-    # 1. Check `stats` data for a baseline lowest price.
-    # The USED price is at index 2 of the 'current' array.
-    if stats and 'current' in stats and len(stats['current']) > 2 and stats['current'][2] is not None and stats['current'][2] > 0:
-        price_from_stats = stats['current'][2]
-        if price_from_stats < lowest_used_price:
-            lowest_used_price = price_from_stats
-            source = "stats.current[2]"
-            # Note: We cannot definitively get a seller ID from stats alone.
+    # --- Final Refactored Logic ---
     
-    # 2. Iterate through `offers` to find a potentially lower price and capture the seller ID.
+    lowest_offer_price = float('inf')
+    best_seller_id_from_offers = None
+    offer_source = "N/A"
+
+    # 1. Find the best price from the OFFERS list first.
     if offers:
         for offer in offers:
             if not isinstance(offer, dict):
-                logger.warning(f"ASIN {asin}: Skipping a malformed offer that is not a dictionary: {offer}")
+                logger.warning(f"ASIN {asin}: Skipping malformed offer: {offer}")
                 continue
 
             condition = offer.get('condition', {}).get('value')
             seller_id = offer.get('sellerId')
 
-            # Skip NEW offers (condition 1) and Amazon Warehouse deals
             if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
                 continue
 
@@ -58,29 +49,47 @@ def _get_best_offer_analysis(product, seller_data_cache):
                     if shipping == -1: shipping = 0
                     total_price = price + shipping
                     
-                    if total_price > 0 and total_price < lowest_used_price:
-                        lowest_used_price = total_price
-                        best_seller_id = seller_id  # Capture the seller ID with the price
-                        source = f"offer array (seller: {seller_id})"
+                    if 0 < total_price < lowest_offer_price:
+                        lowest_offer_price = total_price
+                        best_seller_id_from_offers = seller_id
+                        offer_source = f"offer (seller: {seller_id})"
                 except (ValueError, IndexError):
                     continue
 
-    if lowest_used_price == float('inf'):
-        logger.warning(f"ASIN {asin}: No valid USED price found. 'Now' price will be empty.")
+    # 2. Compare the best offer price with prices from the STATS object.
+    final_price = lowest_offer_price
+    final_seller_id = best_seller_id_from_offers
+    final_source = offer_source
+
+    # Check stats.current[2] (USED price)
+    if stats and 'current' in stats and len(stats['current']) > 2 and stats['current'][2] is not None and 0 < stats['current'][2] < final_price:
+        final_price = stats['current'][2]
+        final_seller_id = None # Invalidate seller ID, as this price isn't from a specific offer
+        final_source = "stats.current[2]"
+
+    # Check stats.buyBoxUsedPrice
+    if stats and 'buyBoxUsedPrice' in stats and stats['buyBoxUsedPrice'] is not None and 0 < stats['buyBoxUsedPrice'] < final_price:
+        final_price = stats['buyBoxUsedPrice']
+        final_seller_id = None # Invalidate seller ID
+        final_source = "stats.buyBoxUsedPrice"
+
+
+    if final_price == float('inf'):
+        logger.warning(f"ASIN {asin}: No valid USED price found in any source.")
         return {'Now': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
 
-    logger.info(f"ASIN {asin}: Determined lowest USED price ('Now') is {lowest_used_price / 100:.2f} from '{source}'.")
+    logger.info(f"ASIN {asin}: Final 'Now' price is {final_price / 100:.2f} from '{final_source}'.")
 
     final_analysis = {
-        'Now': f"${lowest_used_price / 100:.2f}",
-        'Seller ID': best_seller_id or 'N/A',
+        'Now': f"${final_price / 100:.2f}",
+        'Seller ID': final_seller_id or 'N/A',
         'Seller': '-',
         'Seller Rank': '-',
         'Seller_Quality_Score': '-'
     }
-    logger.info(f"ASIN {asin}: Best price {final_analysis['Now']} from validated live offers, matched to Seller ID: {best_seller_id}")
+    logger.info(f"ASIN {asin}: Best price {final_analysis['Now']} from validated live offers, matched to Seller ID: {final_seller_id}")
 
-    if not best_seller_id:
+    if not final_seller_id:
         logger.warning(f"ASIN {asin}: Cannot get seller score because no seller ID was found for the winning price.")
         return final_analysis
 

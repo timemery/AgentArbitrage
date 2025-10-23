@@ -81,23 +81,37 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
         "Content-Type": "application/json"
     }
 
-    try:
-        with httpx.Client(timeout=30.0) as client:
-            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
-            response.raise_for_status()
-            data = response.json()
-            llm_choice = data['choices'][0]['message']['content'].strip()
+    max_retries = 4
+    base_delay = 5 # Start with a 5-second delay
 
-            # Validate the response is one of the allowed classifications
-            if llm_choice in SEASON_CLASSIFICATIONS:
-                logger.info(f"LLM classified '{title}' as: {llm_choice}")
-                return llm_choice
-            else:
-                logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
-                return "Year-round"
-    except (httpx.RequestError, httpx.HTTPStatusError, json.JSONDecodeError, KeyError, IndexError) as e:
-        logger.error(f"XAI API request failed for title '{title}': {e}")
-        return "Year-round"
+    for attempt in range(max_retries):
+        try:
+            with httpx.Client(timeout=30.0) as client:
+                response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+
+                if response.status_code == 429:
+                    delay = base_delay * (2 ** attempt)
+                    logger.warning(f"XAI API rate limit hit for seasonality (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                    continue
+
+                response.raise_for_status()
+                data = response.json()
+                llm_choice = data['choices'][0]['message']['content'].strip()
+
+                if llm_choice in SEASON_CLASSIFICATIONS:
+                    logger.info(f"LLM classified '{title}' as: {llm_choice}")
+                    return llm_choice
+                else:
+                    logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
+                    return "Year-round"
+
+        except (httpx.RequestError, json.JSONDecodeError, KeyError, IndexError) as e:
+            logger.error(f"XAI API request failed for title '{title}': {e}")
+            return "Year-round" # Fail fast on non-rate-limit errors
+
+    logger.error(f"XAI API (seasonality) failed after {max_retries} retries for title '{title}'. Defaulting to Year-round.")
+    return "Year-round"
 
 
 def classify_seasonality(title, categories_sub, manufacturer, peak_season_str, trough_season_str, xai_api_key=None):
