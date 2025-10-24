@@ -50,6 +50,14 @@ class TokenManager:
                 self.last_refill_timestamp = now
                 logger.debug(f"Refilled {refill_amount:.2f} tokens. Current tokens: {self.tokens:.2f}")
 
+    def has_enough_tokens(self, estimated_cost):
+        """
+        Checks if there are enough tokens for a call without waiting.
+        Also triggers a refill check.
+        """
+        self._refill_tokens()
+        return self.tokens >= estimated_cost
+
     def request_permission_for_call(self, estimated_cost):
         """
         Checks if an API call can be made, waits if necessary.

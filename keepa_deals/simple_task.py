@@ -99,8 +99,8 @@ def update_recent_deals():
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
             # Sort by newest first (sortType=0)
-            deal_response, tokens_consumed, _ = fetch_deals_for_deals(page, api_key, sort_type=0)
-            token_manager.update_after_call(tokens_consumed)
+            deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=0)
+            token_manager.update_after_call(tokens_left)
 
             if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
                 logger.info("No more deals found on subsequent pages. Stopping pagination.")
@@ -141,7 +141,7 @@ def update_recent_deals():
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
             )
-            token_manager.update_after_call(tokens_consumed)
+            token_manager.update_after_call(tokens_left)
 
             if product_response and 'products' in product_response and not (api_info and api_info.get('error_status_code')):
                 for p in product_response['products']:
@@ -162,7 +162,7 @@ def update_recent_deals():
             for i in range(0, len(seller_id_list), 100):
                 batch_seller_ids = seller_id_list[i:i+100]
                 seller_data_response, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
-                token_manager.update_after_call(tokens_consumed)
+                token_manager.update_after_call(tokens_left)
                 if seller_data_response and 'sellers' in seller_data_response:
                     seller_data_cache.update(seller_data_response['sellers'])
         logger.info(f"Step 4 Complete: Fetched data for {len(seller_data_cache)} unique sellers.")
