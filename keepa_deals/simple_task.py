@@ -78,6 +78,12 @@ def update_recent_deals():
 
         # --- New Delta Sync Logic ---
         logger.info("Step 1: Initializing Delta Sync...")
+
+        # CRITICAL FIX: Add token check before any API calls
+        if not token_manager.has_enough_tokens(5): # 5 tokens is the cost of a single deal page
+            logger.warning("Upserter: Insufficient tokens to check for new deals. Skipping run.")
+            return
+
         watermark_iso = load_watermark()
         if watermark_iso is None:
             logger.error("CRITICAL: Watermark not found. The backfiller must be run at least once before the upserter. Aborting.")

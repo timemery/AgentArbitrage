@@ -206,6 +206,8 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             else:
                 for i in range(0, len(seller_id_list), 100):
                     batch_ids = seller_id_list[i:i+100]
+                    # Add the throttling back here as well
+                    token_manager.request_permission_for_call(estimated_cost=len(batch_ids) / 100.0)
                     seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
                     token_manager.update_after_call(tokens_left)
                     if seller_data and 'sellers' in seller_data:
