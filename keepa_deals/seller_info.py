@@ -61,15 +61,23 @@ def _get_best_offer_analysis(product, seller_data_cache):
     final_seller_id = best_seller_id_from_offers
     final_source = offer_source
 
+    logger.info(f"ASIN {asin} [SELLER DEBUG]: After offers loop - lowest_offer_price: {lowest_offer_price}, seller_id: {best_seller_id_from_offers}")
+
     # Check stats.current[2] (USED price)
-    if stats and 'current' in stats and len(stats['current']) > 2 and stats['current'][2] is not None and 0 < stats['current'][2] < final_price:
-        final_price = stats['current'][2]
+    stats_current_used = stats.get('current', [])[2] if stats.get('current') and len(stats['current']) > 2 else None
+    logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.current[2] - value: {stats_current_used}")
+    if stats_current_used is not None and 0 < stats_current_used < final_price:
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.current[2] ({stats_current_used}) is better than current final_price ({final_price}). Updating price and clearing seller.")
+        final_price = stats_current_used
         final_seller_id = None # Invalidate seller ID, as this price isn't from a specific offer
         final_source = "stats.current[2]"
 
     # Check stats.buyBoxUsedPrice
-    if stats and 'buyBoxUsedPrice' in stats and stats['buyBoxUsedPrice'] is not None and 0 < stats['buyBoxUsedPrice'] < final_price:
-        final_price = stats['buyBoxUsedPrice']
+    buy_box_price = stats.get('buyBoxUsedPrice')
+    logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.buyBoxUsedPrice - value: {buy_box_price}")
+    if buy_box_price is not None and 0 < buy_box_price < final_price:
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.buyBoxUsedPrice ({buy_box_price}) is better than current final_price ({final_price}). Updating price and clearing seller.")
+        final_price = buy_box_price
         final_seller_id = None # Invalidate seller ID
         final_source = "stats.buyBoxUsedPrice"
 
