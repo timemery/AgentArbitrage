@@ -16,7 +16,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_config import celery
-from keepa_deals.recalculator import recalculate_deals
+# from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.log')
@@ -688,8 +688,8 @@ def settings():
             with open(SETTINGS_FILE, 'w') as f:
                 json.dump(settings_data, f, indent=4)
 
-            # Trigger the background recalculation task
-            recalculate_deals.delay()
+            # Trigger the background recalculation task by name
+            celery.send_task('keepa_deals.recalculator.recalculate_deals')
 
             flash('Settings saved successfully! Recalculating deals in the background...', 'success')
         except Exception as e:
@@ -972,7 +972,7 @@ def refresh_all_deals():
     # if status.get('status') == 'Running':
     #     return jsonify({'status': 'error', 'message': 'A scan is already in progress.'}), 409
 
-    recalculate_deals.delay()
+    celery.send_task('keepa_deals.recalculator.recalculate_deals')
     return jsonify({'status': 'success', 'message': 'Full data refresh has been initiated.'})
 
 @app.route('/api/debug/deal/<string:asin>')
