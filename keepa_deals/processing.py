@@ -49,14 +49,20 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     # 2. Seller Info
     try:
         seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
-        row_data.update(seller_info)
+        # --- CRITICAL FIX: Map the keys from seller_info to the correct headers ---
+        row_data['Price Now'] = seller_info.get('Now')
+        row_data['Seller'] = seller_info.get('Seller')
+        row_data['Seller - Rank'] = seller_info.get('Seller Rank')
+        row_data['Seller - Quality Score'] = seller_info.get('Seller_Quality_Score')
+        # Also, "Best Price" is an alias for the "Now" price in this context
+        row_data['Best Price'] = seller_info.get('Now')
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
 
     # 3. Business Calculations
     try:
         list_at_price = _parse_price(row_data.get('List at', '0'))
-        now_price = _parse_price(row_data.get('Now', '0'))
+        now_price = _parse_price(row_data.get('Price Now', '0')) # Corrected key
         fba_fee = _parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
         referral_percent = _parse_percent(row_data.get('Referral Fee %', '0'))
         shipping_included_flag = str(row_data.get('Shipping Included', 'no')).lower() == 'yes'

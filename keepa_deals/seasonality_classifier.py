@@ -60,6 +60,11 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
     {', '.join(SEASON_CLASSIFICATIONS)}
     """
 
+    # --- DETAILED LOGGING FOR DEBUGGING ---
+    logger.info(f"XAI Seasonality Request for ASIN '{title}':")
+    logger.info(f"  - Peak: {peak_season_str}, Trough: {trough_season_str}")
+    logger.info(f"  - Prompt Snippet: {prompt[:250].replace('\n', ' ')}...") # Log a snippet of the prompt
+
     payload = {
         "messages": [
             {
@@ -97,6 +102,10 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
 
                 response.raise_for_status()
                 data = response.json()
+
+                # --- DETAILED LOGGING FOR DEBUGGING ---
+                logger.info(f"XAI Seasonality Raw Response for ASIN '{title}':\n{json.dumps(data, indent=2)}")
+
                 llm_choice = data['choices'][0]['message']['content'].strip()
 
                 if llm_choice in SEASON_CLASSIFICATIONS:
