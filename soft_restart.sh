@@ -20,6 +20,8 @@ find . -type d -name "__pycache__" -delete
 
 echo "--> Step 4: Starting services..."
 sudo systemctl start redis-server
+echo "--> Waiting for Redis to initialize..."
+sleep 2 # CRITICAL: Give Redis a moment to start before trying to connect.
 
 # Define variables
 VENV_PYTHON="/var/www/agentarbitrage/venv/bin/python"
@@ -28,7 +30,8 @@ APP_DIR="/var/www/agentarbitrage"
 
 # --- NEW CRITICAL STEP: Purge the Celery message queue ---
 echo "--> Step 4a: Purging any old tasks from the message queue..."
-sudo -u www-data sh -c "cd $APP_DIR && $VENV_PYTHON -m celery -A worker.celery purge -f"
+# Added '|| true' to make this step resilient. If it fails, the script will continue.
+sudo -u www-data sh -c "cd $APP_DIR && $VENV_PYTHON -m celery -A worker.celery purge -f" || true
 
 echo "--> Step 4b: Restarting web server..."
 # Touch the wsgi.py file to gracefully reload the application in Apache/mod_wsgi
