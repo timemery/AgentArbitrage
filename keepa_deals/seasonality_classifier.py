@@ -63,7 +63,8 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
     # --- DETAILED LOGGING FOR DEBUGGING ---
     logger.info(f"XAI Seasonality Request for ASIN '{title}':")
     logger.info(f"  - Peak: {peak_season_str}, Trough: {trough_season_str}")
-    logger.info(f"  - Prompt Snippet: {prompt[:250].replace('\n', ' ')}...") # Log a snippet of the prompt
+    prompt_snippet = prompt[:250].replace('\n', ' ')
+    logger.info(f"  - Prompt Snippet: {prompt_snippet}...")
 
     payload = {
         "messages": [
