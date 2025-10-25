@@ -22,6 +22,7 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .processing import _process_single_deal, clean_numeric_values
+from .stable_calculations import clear_analysis_cache
 
 # Configure logging
 logger = getLogger(__name__)
@@ -54,6 +55,10 @@ def backfill_deals():
 
     try:
         logger.info("--- Task: backfill_deals started ---")
+
+        # --- CRITICAL FIX: Clear the memoization cache ---
+        clear_analysis_cache()
+
         recreate_deals_table()
 
         api_key = os.getenv("KEEPA_API_KEY")

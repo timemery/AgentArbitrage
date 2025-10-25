@@ -385,6 +385,12 @@ def analyze_sales_performance(product, sale_events):
 # --- Memoization cache for analysis results ---
 _analysis_cache = {}
 
+def clear_analysis_cache():
+    """Clears the memoization cache for sales analysis."""
+    global _analysis_cache
+    _analysis_cache = {}
+    logging.info("Sales analysis memoization cache has been cleared.")
+
 def _get_analysis(product):
     """
     Helper to get or compute sales performance analysis, caching the result.
