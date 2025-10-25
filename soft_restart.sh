@@ -14,9 +14,11 @@ echo "--> Step 2: Setting correct file permissions..."
 cd /var/www/agentarbitrage
 sudo chown -R www-data:www-data .
 
-echo "--> Step 3: Cleaning Python cache..."
+echo "--> Step 3: Cleaning Python cache and old Celery schedule..."
 find . -type f -name "*.pyc" -delete
 find . -type d -name "__pycache__" -delete
+# --- FINAL FIX: Remove the corrupted schedule file ---
+rm -f celerybeat-schedule
 
 echo "--> Step 4: Starting services..."
 sudo systemctl start redis-server
