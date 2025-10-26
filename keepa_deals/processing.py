@@ -2,7 +2,6 @@ from logging import getLogger
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 from .business_calculations import (
-    calculate_total_amz_fees,
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
@@ -50,25 +49,30 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     # 2. Seller Info
     try:
         seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
-        row_data.update(seller_info)
+        # --- CRITICAL FIX: Map the keys from seller_info to the correct headers ---
+        row_data['Price Now'] = seller_info.get('Now')
+        row_data['Seller'] = seller_info.get('Seller')
+        row_data['Seller - Rank'] = seller_info.get('Seller Rank')
+        row_data['Seller - Quality Score'] = seller_info.get('Seller_Quality_Score')
+        # Also, "Best Price" is an alias for the "Now" price in this context
+        row_data['Best Price'] = seller_info.get('Now')
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
 
     # 3. Business Calculations
     try:
-        peak_price = _parse_price(row_data.get('Expected Peak Price', '0'))
+        list_at_price = _parse_price(row_data.get('List at', '0'))
+        now_price = _parse_price(row_data.get('Price Now', '0')) # Corrected key
         fba_fee = _parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
         referral_percent = _parse_percent(row_data.get('Referral Fee %', '0'))
-        best_price = _parse_price(row_data.get('Best Price', '0'))
         shipping_included_flag = str(row_data.get('Shipping Included', 'no')).lower() == 'yes'
 
-        total_amz_fees = calculate_total_amz_fees(peak_price, fba_fee, referral_percent)
-        all_in_cost = calculate_all_in_cost(best_price, total_amz_fees, business_settings, shipping_included_flag)
-        profit_margin = calculate_profit_and_margin(peak_price, all_in_cost)
+        all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_percent, business_settings, shipping_included_flag)
+        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost)
         min_listing = calculate_min_listing_price(all_in_cost, business_settings)
 
         row_data.update({
-            'Total AMZ fees': total_amz_fees, 'All-in Cost': all_in_cost,
+            'All-in Cost': all_in_cost,
             'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
             'Min. Listing Price': min_listing
         })
@@ -92,7 +96,20 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
         title = row_data.get('Title', '')
         categories = row_data.get('Categories - Sub', '')
         manufacturer = row_data.get('Manufacturer', '')
-        detailed_season = classify_seasonality(title, categories, manufacturer, xai_api_key=xai_api_key)
+
+        # Extract peak and trough seasons from the pre-calculated analytics cache
+        analytics_cache = product_data.get('analytics_cache', {})
+        peak_season_str = analytics_cache.get('peak_season', '-')
+        trough_season_str = analytics_cache.get('trough_season', '-')
+
+        detailed_season = classify_seasonality(
+            title,
+            categories,
+            manufacturer,
+            peak_season_str,
+            trough_season_str,
+            xai_api_key=xai_api_key
+        )
 
         row_data['Detailed_Seasonality'] = "None" if detailed_season == "Year-round" else detailed_season
         row_data['Sells'] = get_sells_period(detailed_season)

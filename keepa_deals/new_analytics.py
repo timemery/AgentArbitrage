@@ -139,76 +139,75 @@ def get_percent_discount(avg_price_str, best_price_str, logger=None):
 
 from itertools import groupby
 
-def _calculate_trend_from_history(price_history, logger, asin, condition_type):
-    """Helper function to calculate trend from a given price history list."""
-    prices = [price_history[i] for i in range(1, len(price_history), 2) if price_history[i] > 0]
-    unique_prices = [k for k, g in groupby(prices)]
-    logger.debug(f"ASIN {asin} ({condition_type}): Found {len(unique_prices)} unique consecutive prices.")
-
-    if len(unique_prices) < 2:
-        logger.info(f"ASIN {asin} ({condition_type}): Not enough unique price points ({len(unique_prices)}) to determine a trend.")
-        return "-"
-
-    last_n_prices = unique_prices[-6:]
-    logger.debug(f"ASIN {asin} ({condition_type}): Analyzing last {len(last_n_prices)} prices: {last_n_prices}")
-
-    if len(last_n_prices) < 2:
-        return "-"
-
-    up_count = 0
-    down_count = 0
-    for i in range(1, len(last_n_prices)):
-        if last_n_prices[i] > last_n_prices[i-1]:
-            up_count += 1
-        elif last_n_prices[i] < last_n_prices[i-1]:
-            down_count += 1
-
-    logger.debug(f"ASIN {asin} ({condition_type}): Trend counts - Up: {up_count}, Down: {down_count}")
-
-    trend_symbol = "-"
-    if up_count > down_count:
-        trend_symbol = "⇧"
-    elif down_count > up_count:
-        trend_symbol = "⇩"
-    elif up_count == down_count and up_count > 0:
-        last_price = last_n_prices[-1]
-        second_to_last_price = last_n_prices[-2]
-        if last_price > second_to_last_price:
-            trend_symbol = "⇧"
-            logger.debug(f"ASIN {asin} ({condition_type}): Tie-breaker determined trend UP.")
-        elif last_price < second_to_last_price:
-            trend_symbol = "⇩"
-            logger.debug(f"ASIN {asin} ({condition_type}): Tie-breaker determined trend DOWN.")
-
-    return trend_symbol
-
 def get_trend(product, logger=None):
     """
-    Indicates the price trend based on the last 5 unique price changes.
-    It first checks NEW price history, and if no trend is found, it falls back to USED price history.
+    Indicates the price trend based on a dynamic sample of recent unique price changes.
+    The sample size is determined by the 365-day average sales rank.
+    It analyzes both NEW and USED price histories combined.
     """
     if not logger:
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
-    logger.debug(f"ASIN {asin}: Running get_trend.")
+    logger.debug(f"ASIN {asin}: Running get_trend with dynamic sampling.")
 
+    # --- Determine Dynamic Sample Size ---
+    stats = product.get('stats', {})
+    SALES_RANK_INDEX = 0  # Assuming sales rank is at index 0
+    avg_365_rank_raw = stats.get('avg365', [])
+
+    avg_rank = -1
+    if len(avg_365_rank_raw) > SALES_RANK_INDEX and avg_365_rank_raw[SALES_RANK_INDEX] is not None:
+        avg_rank = avg_365_rank_raw[SALES_RANK_INDEX]
+
+    sample_size = 3  # Default for low velocity
+    if avg_rank > 0:
+        if avg_rank < 100000:
+            sample_size = 10  # High velocity
+        elif avg_rank < 500000:
+            sample_size = 5   # Medium velocity
+    logger.debug(f"ASIN {asin}: Using dynamic sample size of {sample_size} based on 365-day avg rank of {avg_rank}.")
+
+    # --- Combine and Process Price Histories ---
     csv_data = product.get('csv', [])
-    trend_symbol = "-"
+    combined_history = []
 
-    # 1. Try with NEW price history (index 1)
+    # NEW price history (index 1)
     if csv_data and len(csv_data) > 1 and csv_data[1] and len(csv_data[1]) >= 2:
-        logger.debug(f"ASIN {asin}: Attempting trend analysis on NEW prices.")
-        trend_symbol = _calculate_trend_from_history(csv_data[1], logger, asin, "NEW")
-    else:
-        logger.debug(f"ASIN {asin}: No NEW price data available for trend analysis.")
+        combined_history.extend(csv_data[1])
+    # USED price history (index 2)
+    if csv_data and len(csv_data) > 2 and csv_data[2] and len(csv_data[2]) >= 2:
+        combined_history.extend(csv_data[2])
 
-    # 2. If no trend from NEW, try with USED price history (index 2)
-    if trend_symbol == "-":
-        if csv_data and len(csv_data) > 2 and csv_data[2] and len(csv_data[2]) >= 2:
-            logger.debug(f"ASIN {asin}: No trend from NEW prices, falling back to USED prices.")
-            trend_symbol = _calculate_trend_from_history(csv_data[2], logger, asin, "USED")
-        else:
-            logger.debug(f"ASIN {asin}: No USED price data available for trend analysis.")
+    if not combined_history:
+        logger.debug(f"ASIN {asin}: No NEW or USED price data available.")
+        return {"Trend": "⇨"} # Flat if no data
 
-    logger.debug(f"ASIN {asin}: Final trend determined. Symbol: {trend_symbol}")
+    # Create pairs of (timestamp, price) and sort by timestamp
+    price_points = sorted([(combined_history[i], combined_history[i+1]) for i in range(0, len(combined_history), 2) if combined_history[i+1] > 0])
+
+    # Get unique consecutive prices
+    unique_prices = [k for k, g in groupby([p[1] for p in price_points])]
+    logger.debug(f"ASIN {asin}: Found {len(unique_prices)} unique consecutive prices from combined history.")
+
+    if len(unique_prices) < 2:
+        logger.info(f"ASIN {asin}: Not enough unique price points ({len(unique_prices)}) to determine a trend.")
+        return {"Trend": "⇨"} # Flat if not enough data
+
+    # --- Analyze Trend from Dynamic Sample ---
+    analysis_window = unique_prices[-sample_size:]
+    logger.debug(f"ASIN {asin}: Analyzing last {len(analysis_window)} prices: {analysis_window}")
+
+    if len(analysis_window) < 2:
+        return {"Trend": "⇨"}
+
+    first_price = analysis_window[0]
+    last_price = analysis_window[-1]
+
+    trend_symbol = "⇨" # Default to flat
+    if last_price > first_price:
+        trend_symbol = "⇧"
+    elif last_price < first_price:
+        trend_symbol = "⇩"
+
+    logger.debug(f"ASIN {asin}: Final trend determined. First: {first_price}, Last: {last_price}, Symbol: {trend_symbol}")
     return {"Trend": trend_symbol}

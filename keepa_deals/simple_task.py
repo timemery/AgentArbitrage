@@ -15,7 +15,6 @@ from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 from .business_calculations import (
     load_settings as business_load_settings,
-    calculate_total_amz_fees,
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
@@ -69,7 +68,7 @@ def update_recent_deals():
         create_deals_table_if_not_exists()
 
         api_key = os.getenv("KEEPA_API_KEY")
-        xai_api_key = os.getenv("XAI_API_KEY")
+        xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
         if not api_key:
             logger.error("KEEPA_API_KEY not set. Aborting.")
             return
@@ -79,6 +78,12 @@ def update_recent_deals():
 
         # --- New Delta Sync Logic ---
         logger.info("Step 1: Initializing Delta Sync...")
+
+        # CRITICAL FIX: Add token check before any API calls
+        if not token_manager.has_enough_tokens(5): # 5 tokens is the cost of a single deal page
+            logger.warning("Upserter: Insufficient tokens to check for new deals. Skipping run.")
+            return
+
         watermark_iso = load_watermark()
         if watermark_iso is None:
             logger.error("CRITICAL: Watermark not found. The backfiller must be run at least once before the upserter. Aborting.")
@@ -94,8 +99,8 @@ def update_recent_deals():
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
             # Sort by newest first (sortType=0)
-            deal_response, tokens_consumed, _ = fetch_deals_for_deals(page, api_key, sort_type=0)
-            token_manager.update_after_call(tokens_consumed)
+            deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=0)
+            token_manager.update_after_call(tokens_left)
 
             if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
                 logger.info("No more deals found on subsequent pages. Stopping pagination.")
@@ -136,7 +141,7 @@ def update_recent_deals():
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
             )
-            token_manager.update_after_call(tokens_consumed)
+            token_manager.update_after_call(tokens_left)
 
             if product_response and 'products' in product_response and not (api_info and api_info.get('error_status_code')):
                 for p in product_response['products']:
@@ -157,7 +162,7 @@ def update_recent_deals():
             for i in range(0, len(seller_id_list), 100):
                 batch_seller_ids = seller_id_list[i:i+100]
                 seller_data_response, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_seller_ids)
-                token_manager.update_after_call(tokens_consumed)
+                token_manager.update_after_call(tokens_left)
                 if seller_data_response and 'sellers' in seller_data_response:
                     seller_data_cache.update(seller_data_response['sellers'])
         logger.info(f"Step 4 Complete: Fetched data for {len(seller_data_cache)} unique sellers.")

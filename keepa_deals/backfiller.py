@@ -8,14 +8,13 @@ from dotenv import load_dotenv
 import redis
 
 from celery_config import celery
-from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, save_watermark
+from .db_utils import recreate_deals_table, sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_all_seller_info
 from .business_calculations import (
     load_settings as business_load_settings,
-    calculate_total_amz_fees,
     calculate_all_in_cost,
     calculate_profit_and_margin,
     calculate_min_listing_price,
@@ -23,6 +22,7 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .processing import _process_single_deal, clean_numeric_values
+from .stable_calculations import clear_analysis_cache
 
 # Configure logging
 logger = getLogger(__name__)
@@ -55,10 +55,14 @@ def backfill_deals():
 
     try:
         logger.info("--- Task: backfill_deals started ---")
-        create_deals_table_if_not_exists()
+
+        # --- CRITICAL FIX: Clear the memoization cache ---
+        clear_analysis_cache()
+
+        recreate_deals_table()
 
         api_key = os.getenv("KEEPA_API_KEY")
-        xai_api_key = os.getenv("XAI_API_KEY")
+        xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
         if not api_key:
             logger.error("KEEPA_API_KEY not set. Aborting.")
             return

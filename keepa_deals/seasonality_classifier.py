@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Basic rate limiting to prevent spamming the API.
 # This is a simple in-memory implementation suitable for a single-process worker.
 XAI_LAST_CALL_TIMESTAMP = 0
-XAI_MIN_INTERVAL_SECONDS = 2  # At least 2 seconds between calls
+XAI_MIN_INTERVAL_SECONDS = 3  # At least 3 seconds between calls
 
 SEASON_CLASSIFICATIONS = [
     "Textbook (Summer)", "Textbook (Winter)", "High School AP Textbooks",
@@ -22,9 +22,9 @@ SEASON_CLASSIFICATIONS = [
     "Year-round"
 ]
 
-def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
+def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_str, trough_season_str, api_key):
     """
-    Queries the XAI API to classify seasonality as a fallback.
+    Queries the XAI API to classify seasonality, now with sales data insights.
     Includes rate limiting.
     """
     global XAI_LAST_CALL_TIMESTAMP
@@ -43,7 +43,8 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
         return "Year-round"
 
     prompt = f"""
-    Based on the following book details, choose the single most likely sales season from the provided list.
+    Based on the following book details and historical sales data, choose the single most likely sales season from the provided list.
+    The sales data indicates when the book's price has historically been highest (peak) and lowest (trough).
     Respond with ONLY the name of the season from the list.
 
     **Book Details:**
@@ -51,9 +52,19 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
     - **Category:** "{categories_sub}"
     - **Publisher:** "{manufacturer}"
 
+    **Sales Data Insights:**
+    - **Inferred Peak Price Month:** "{peak_season_str if peak_season_str and peak_season_str != '-' else 'N/A'}"
+    - **Inferred Trough Price Month:** "{trough_season_str if trough_season_str and trough_season_str != '-' else 'N/A'}"
+
     **Season List:**
     {', '.join(SEASON_CLASSIFICATIONS)}
     """
+
+    # --- DETAILED LOGGING FOR DEBUGGING ---
+    logger.info(f"XAI Seasonality Request for ASIN '{title}':")
+    logger.info(f"  - Peak: {peak_season_str}, Trough: {trough_season_str}")
+    prompt_snippet = prompt[:250].replace('\n', ' ')
+    logger.info(f"  - Prompt Snippet: {prompt_snippet}...")
 
     payload = {
         "messages": [
@@ -76,38 +87,58 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, api_key):
         "Content-Type": "application/json"
     }
 
-    try:
-        with httpx.Client(timeout=30.0) as client:
-            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
-            response.raise_for_status()
-            data = response.json()
-            llm_choice = data['choices'][0]['message']['content'].strip()
+    max_retries = 4
+    base_delay = 5 # Start with a 5-second delay
 
-            # Validate the response is one of the allowed classifications
-            if llm_choice in SEASON_CLASSIFICATIONS:
-                logger.info(f"LLM classified '{title}' as: {llm_choice}")
-                return llm_choice
-            else:
-                logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
-                return "Year-round"
-    except (httpx.RequestError, httpx.HTTPStatusError, json.JSONDecodeError, KeyError, IndexError) as e:
-        logger.error(f"XAI API request failed for title '{title}': {e}")
-        return "Year-round"
+    for attempt in range(max_retries):
+        try:
+            with httpx.Client(timeout=30.0) as client:
+                response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+
+                if response.status_code == 429:
+                    delay = base_delay * (2 ** attempt)
+                    logger.warning(f"XAI API rate limit hit for seasonality (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                    continue
+
+                response.raise_for_status()
+                data = response.json()
+
+                # --- DETAILED LOGGING FOR DEBUGGING ---
+                logger.info(f"XAI Seasonality Raw Response for ASIN '{title}':\n{json.dumps(data, indent=2)}")
+
+                llm_choice = data['choices'][0]['message']['content'].strip()
+
+                if llm_choice in SEASON_CLASSIFICATIONS:
+                    logger.info(f"LLM classified '{title}' as: {llm_choice}")
+                    return llm_choice
+                else:
+                    logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
+                    return "Year-round"
+
+        except (httpx.RequestError, json.JSONDecodeError, KeyError, IndexError) as e:
+            logger.error(f"XAI API request failed for title '{title}': {e}")
+            return "Year-round" # Fail fast on non-rate-limit errors
+
+    logger.error(f"XAI API (seasonality) failed after {max_retries} retries for title '{title}'. Defaulting to Year-round.")
+    return "Year-round"
 
 
-def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
+def classify_seasonality(title, categories_sub, manufacturer, peak_season_str, trough_season_str, xai_api_key=None):
     """
-    Classifies a book's seasonality based on title, categories, and manufacturer.
-    Uses an LLM as a fallback if heuristics result in "Year-round".
+    Classifies a book's seasonality based on heuristics and an XAI model,
+    now enriched with inferred sales data.
 
     Args:
         title (str): The title of the book.
         categories_sub (str): The sub-category string.
-        manufacturer (str): The manufacturer/publisher of the book.
+        manufacturer (str): The manufacturer/publisher.
+        peak_season_str (str): The inferred month of peak prices (e.g., "Jan").
+        trough_season_str (str): The inferred month of trough prices (e.g., "Jul").
         xai_api_key (str, optional): The API key for the XAI service.
 
     Returns:
-        str: The classified season, or "Year-round" if no specific season is found.
+        str: The classified season.
     """
     if not title: title = ""
     if not categories_sub: categories_sub = ""
@@ -161,33 +192,29 @@ def classify_seasonality(title, categories_sub, manufacturer, xai_api_key=None):
     if "valentine" in title_lower or "romance" in cat_lower:
         return "Romance/Valentine's Day"
 
-    # If no specific season is found by heuristics, the default is "Year-round".
-    heuristic_season = "Year-round"
+    # --- Fallback to LLM with enriched data ---
+    # Heuristics resulted in "Year-round", so we query the AI with the date data for a more refined answer.
+    logger.info(f"Heuristics resulted in 'Year-round' for '{title}'. Querying XAI with sales data for refinement.")
 
-    # --- Fallback to LLM for potential improvement ---
-    # Only try to use the LLM if the heuristic result is generic.
-    logger.info(f"Heuristics resulted in 'Year-round' for '{title}'. Attempting LLM fallback for refinement.")
-    llm_result = _query_xai_for_seasonality(title, categories_sub, manufacturer, xai_api_key)
+    llm_result = _query_xai_for_seasonality(
+        title, categories_sub, manufacturer, peak_season_str, trough_season_str, xai_api_key
+    )
 
-    # If the LLM provides a valid, more specific season, use it.
-    # Otherwise, stick with the original heuristic result.
-    if llm_result and llm_result != "Year-round":
-        return llm_result
-    else:
-        # This now correctly falls back to the original "Year-round" if the LLM fails or also says "Year-round".
-        return heuristic_season
+    # The AI's response is now the final answer for this logic path.
+    return llm_result
 
 
 def get_sells_period(detailed_season):
     """
-    Maps a detailed season classification to a specific selling period string.
+    Maps a detailed season classification from the 'Detailed_Seasonality' column
+    to a specific selling period string for the 'Sells' column.
 
     Args:
-        detailed_season (str): The detailed season name from classify_seasonality.
+        detailed_season (str): The detailed season name.
 
     Returns:
         str: A string representing the peak selling period (e.g., "Nov-Dec").
-             Returns "Year-round" if no specific period is applicable.
+             Returns "All Year" if no specific period is applicable.
     """
     period_map = {
         "Textbook (Summer)": "Jul - Sep",

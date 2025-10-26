@@ -195,7 +195,7 @@ def categories_tree(product):
 # ASIN starts
 def get_asin(product):
     asin = product.get('asin', '-')
-    result = {'ASIN': f'="{asin}"' if asin != '-' else '-'}
+    result = {'ASIN': asin}
     logger.debug(f"get_asin result for ASIN {asin}: {result}")
     return result
 # ASIN ends

@@ -13,7 +13,7 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
 def sanitize_col_name(name):
     """Sanitizes a string to be a valid SQLite column name."""
-    name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent')
+    name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent').replace('&', 'and')
     return re.sub(r'[^a-zA-Z0-9_]', '', name)
 
 def get_table_columns(cursor, table_name):
@@ -38,11 +38,10 @@ def has_unique_index_on_asin(cursor, table_name):
         logger.error(f"Error checking for unique index: {e}")
         return False
 
-
 def create_deals_table_if_not_exists():
     """
     Ensures the 'deals' table exists and has the correct schema.
-    This function is idempotent and safe to run multiple times.
+    This is a non-destructive function safe for frequent checks.
     """
     logger.info(f"Database check: Ensuring table '{TABLE_NAME}' at '{DB_PATH}' is correctly configured.")
     try:
@@ -50,67 +49,91 @@ def create_deals_table_if_not_exists():
             cursor = conn.cursor()
 
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'")
-            table_exists = cursor.fetchone()
+            if not cursor.fetchone():
+                # If the table doesn't exist at all, we can safely call the full recreation.
+                logger.warning(f"Table '{TABLE_NAME}' not found. Calling recreate_deals_table() to build it.")
+                # This part of the code is now safe because recreate_deals_table is in the same file.
+                # We need to drop out of the 'with' block to avoid database locking issues.
+                conn.close()
+                recreate_deals_table()
+                return # The table is now created, so we're done.
 
-            if not table_exists:
-                logger.info(f"Table '{TABLE_NAME}' not found. Creating it.")
-                with open(HEADERS_PATH) as f:
-                    headers = json.load(f)
+            # If the table exists, just perform safe checks.
+            logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")
+            existing_columns = get_table_columns(cursor, TABLE_NAME)
 
-                # Infer types from header names for a more robust schema
-                cols_sql = []
-                for header in headers:
-                    sanitized_header = sanitize_col_name(header)
-                    if sanitized_header == 'ASIN':
-                        # ASIN is the primary key for deals
-                        cols_sql.append(f'"{sanitized_header}" TEXT NOT NULL UNIQUE')
-                    elif header in ["Sales Rank - Current", "Sales Rank - 365 days avg."]:
-                        cols_sql.append(f'"{sanitized_header}" INTEGER')
-                    elif 'Price' in sanitized_header or 'Cost' in sanitized_header or 'Fee' in sanitized_header or 'Profit' in sanitized_header or 'Margin' in sanitized_header:
-                        cols_sql.append(f'"{sanitized_header}" REAL')
-                    elif 'Rank' in sanitized_header or 'Count' in sanitized_header or 'Drops' in sanitized_header:
-                        cols_sql.append(f'"{sanitized_header}" INTEGER')
-                    else:
-                        cols_sql.append(f'"{sanitized_header}" TEXT')
+            # Add missing columns (idempotent)
+            if 'last_seen_utc' not in existing_columns:
+                logger.info("Adding 'last_seen_utc' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN last_seen_utc TIMESTAMP')
 
-                # Ensure 'id' is the primary key for SQLite's ROWID aliasing
-                create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, {', '.join(cols_sql)})"
-                cursor.execute(create_table_sql)
-                logger.info(f"Table '{TABLE_NAME}' created with a UNIQUE constraint on ASIN.")
+            if 'source' not in existing_columns:
+                logger.info("Adding 'source' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN source TEXT')
 
-            else:
-                logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")
-                existing_columns = get_table_columns(cursor, TABLE_NAME)
-
-                # Add missing columns
-                if 'last_seen_utc' not in existing_columns:
-                    logger.info("Adding 'last_seen_utc' column.")
-                    cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN last_seen_utc TIMESTAMP')
-
-                if 'source' not in existing_columns:
-                    logger.info("Adding 'source' column.")
-                    cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN source TEXT')
-
-                # Verify UNIQUE index on ASIN
-                if not has_unique_index_on_asin(cursor, TABLE_NAME):
-                    logger.warning("No unique index found on ASIN column. Attempting to create one.")
-                    try:
-                        # This will fail if there are duplicate ASINs, which indicates a pre-existing data integrity issue.
-                        cursor.execute(f"CREATE UNIQUE INDEX idx_asin_unique ON {TABLE_NAME}(ASIN)")
-                        logger.info("Successfully created a unique index on ASIN.")
-                    except sqlite3.IntegrityError as e:
-                        logger.error(f"FATAL: Could not create UNIQUE index on ASIN because duplicate ASINs exist in the database. Please clean the data. Error: {e}")
-                        # This is a critical failure, we should not proceed.
-                        raise
+            if not has_unique_index_on_asin(cursor, TABLE_NAME):
+                logger.warning("No unique index found on ASIN column. This should have been created with the table.")
 
             conn.commit()
             logger.info("Database schema check complete.")
 
-    except sqlite3.Error as e:
-        logger.error(f"A database error occurred during schema setup: {e}", exc_info=True)
+    except (sqlite3.Error, Exception) as e:
+        logger.error(f"An unexpected error occurred during schema check: {e}", exc_info=True)
         raise
-    except Exception as e:
-        logger.error(f"An unexpected error occurred during schema setup: {e}", exc_info=True)
+
+def recreate_deals_table():
+    """
+    Destroys and recreates the 'deals' table to ensure a fresh schema.
+    This is the authoritative function for creating the table and should be
+    used by the backfiller.
+    """
+    logger.info(f"Recreating '{TABLE_NAME}' table at '{DB_PATH}'. This will delete all existing data in the table.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+
+            # Drop the old table to ensure a completely fresh start
+            cursor.execute(f"DROP TABLE IF EXISTS {TABLE_NAME}")
+            logger.info(f"Dropped existing '{TABLE_NAME}' table.")
+
+            with open(HEADERS_PATH) as f:
+                headers = json.load(f)
+
+            # --- Define explicit REAL types for financial columns ---
+            # This is critical for correct sorting and display in the UI.
+            explicit_real_types = [
+                "Price", "Cost", "Fee", "Profit", "Margin", "List at"
+            ]
+
+            cols_sql = []
+            for header in headers:
+                sanitized_header = sanitize_col_name(header)
+
+                # Determine data type with more robust rules
+                col_type = 'TEXT' # Default
+                if any(keyword in header for keyword in explicit_real_types):
+                    col_type = 'REAL'
+                elif "Rank" in header or "Count" in header or "Drops" in header:
+                    col_type = 'INTEGER'
+
+                if sanitized_header == 'ASIN':
+                    cols_sql.append(f'"{sanitized_header}" TEXT NOT NULL UNIQUE')
+                else:
+                    cols_sql.append(f'"{sanitized_header}" {col_type}')
+
+            create_table_sql = f"CREATE TABLE {TABLE_NAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, {', '.join(cols_sql)})"
+            cursor.execute(create_table_sql)
+            logger.info(f"Successfully recreated '{TABLE_NAME}' table with up-to-date schema.")
+
+            # Create the unique index on ASIN immediately after table creation.
+            cursor.execute(f"CREATE UNIQUE INDEX idx_asin_unique ON {TABLE_NAME}(ASIN)")
+            logger.info("Created unique index on ASIN.")
+
+            conn.commit()
+            logger.info("Database schema recreation complete.")
+
+    except (sqlite3.Error, IOError, json.JSONDecodeError) as e:
+        logger.error(f"A critical error occurred during table recreation: {e}", exc_info=True)
         raise
 
 WATERMARK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'watermark.json')
