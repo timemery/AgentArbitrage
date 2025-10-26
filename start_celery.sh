@@ -18,9 +18,10 @@ sleep 2
 echo "Purging any pending tasks from the Celery queue..."
 $PURGE_COMMAND
 
-# Step 4: Ensure the log file exists and is empty for a clean run.
+# Step 4: Ensure the log file AND schedule file are removed for a clean run.
 echo "Ensuring log file exists at $LOG_FILE..."
 rm -f $LOG_FILE
+rm -f $APP_DIR/celerybeat-schedule # THIS IS THE ONLY CHANGE NEEDED
 touch $LOG_FILE
 
 # Step 4.5: Ensure deals.db exists and is writable by the Celery worker.

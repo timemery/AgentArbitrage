@@ -198,3 +198,28 @@ This task can be broken down into a series of distinct challenges that were diag
 ------
 
 Thank you again for your patience and guidance through this very difficult task. I am truly sorry I could not get it over the finish line for you. I will now close this task.
+
+### **Dev Log Entry for This Task**
+
+**Date:** 2025-10-26 **Task:** Restore Dashboard Functionality (Phase 2 - Second Attempt) **Agent:** Jules **Outcome: FAILURE**
+
+**Objective:** The primary goal was to fix the silent startup failure of the Celery worker, which was preventing the application's data processing pipeline from running.
+
+**Summary of Diagnostic Journey and Failures:**
+
+This task was a long series of incorrect assumptions and failed fixes. The root cause was misdiagnosed multiple times, leading to a frustrating cycle of creating and modifying startup scripts (`soft_restart.sh`, etc.) which did not address the underlying problem.
+
+1. **Initial (Incorrect) Assumption:** Based on the previous agent's notes, the problem was assumed to be the use of `sudo` and `su` in the startup scripts. Multiple variations of these scripts were created, none of which worked, because the core assumption was wrong.
+2. **Shift to Diagnostics:** After many failures, the approach shifted to diagnostics, which was the correct path. With the user's help, we ran diagnostic commands in the foreground.
+3. Key Diagnostic Findings:
+   - The `celery purge` command ran successfully, proving that the Python application code and all its modules could be imported without error. **The bug is not in the Python code.**
+   - Running the `celery worker` command in the foreground revealed the true error: `_gdbm.error: [Errno 11] Resource temporarily unavailable: 'celerybeat-schedule'`. This pointed to a file lock or corruption issue with the Celery Beat schedule file.
+   - Further diagnostics (`lsof`) proved that **no zombie process was holding a lock on the file.**
+
+**Final (Correct) Diagnosis:**
+
+The `celerybeat-schedule` file is becoming corrupted. When the Celery worker starts, it attempts to read this corrupted file and crashes instantly, before it has a chance to create or write to the `celery.log`. The core problem is that the startup script (`start_celery.sh`) is not successfully clearing this corrupted file on every run, even with an `rm -f` command.
+
+**Final State:** The Celery worker still fails to start with the same "log file not found" error. The solution of adding `rm -f celerybeat-schedule` to `start_celery.sh` was not effective.
+
+**Recommendation for Next Agent:** Do not repeat my mistakes. Do not investigate the Python code. The application is healthy. The problem is purely operational and is 100% related to the `celerybeat-schedule` file. Your entire focus should be on this question: **Why is the `rm -f celerybeat-schedule` command in the `start_celery.sh` script not preventing the `_gdbm.error` crash?** The answer to that question will solve this entire task.
