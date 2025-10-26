@@ -1,45 +1,62 @@
 #!/bin/bash
 set -e
 
-echo "--- (As www-data) BEGINNING SOFT RESTART ---"
+# ==============================================================================
+# ==           AGENT ARBITRAGE - DEFINITIVE SOFT RESTART SCRIPT             ==
+# ==============================================================================
+#
+#  This script provides a fully automated, robust restart procedure.
+#  It MUST be run as the root user.
+#
+#  It solves the core environmental issues by:
+#    1. Ensuring all file permissions are correct before any other action.
+#    2. Using the 'su' command to reliably execute the worker startup logic
+#       as the 'www-data' user in a persistent background session.
+#
+# ==============================================================================
 
-# This script is designed to be run as the www-data user from the application root.
-# e.g., sudo -u www-data /var/www/agentarbitrage/soft_restart.sh
-# It assumes services like Apache and Redis are managed separately by a privileged user.
+echo "--- [ROOT] Starting Definitive Soft Restart ---"
 
-echo "--> Step 1: Stopping any running Celery workers..."
-# As www-data, this will only kill workers running as the same user.
+APP_DIR="/var/www/agentarbitrage"
+
+echo "--> Step 1: Terminating any old Celery or WSGI processes..."
+# As root, ensure a clean slate by stopping any lingering processes.
 pkill -f 'celery' || true
+pkill -f 'wsgi' || true
 sleep 2
 
-echo "--> Step 2: Cleaning Python cache and old Celery schedule..."
-# Ensure paths are relative to the application directory where the script is run.
-find . -type f -name "*.pyc" -delete
-find . -type d -name "__pycache__" -delete
-rm -f celerybeat-schedule
+echo "--> Step 2: Setting correct file ownership for the entire application..."
+# This is the critical step that fixes the root cause of previous failures.
+cd $APP_DIR
+chown -R www-data:www-data .
 
-# Define variables
-# Use a relative path for the virtual environment
-VENV_PYTHON="./venv/bin/python"
-LOG_FILE="./celery.log"
-APP_DIR="."
+# Define the full command to be executed as the www-data user.
+# This includes cleanup, purging, and the CRITICAL 'nohup ... &' for persistence.
+WORKER_STARTUP_COMMAND="
+    set -e;
+    cd $APP_DIR;
+    echo '---> [www-data] Cleaning cache and old schedule file...';
+    rm -f celerybeat-schedule;
+    find . -type f -name '*.pyc' -delete;
+    find . -type d -name '__pycache__' -delete;
 
-echo "--> Step 3: Purging any old tasks from the message queue..."
-$VENV_PYTHON -m celery -A worker.celery purge -f
+    echo '---> [www-data] Purging Celery message queue...';
+    ./venv/bin/python -m celery -A worker.celery purge -f;
 
-echo "--> Step 4: Triggering web server reload via touch..."
-# This will gracefully reload the mod_wsgi application if Apache is configured to watch wsgi.py
-touch wsgi.py
+    echo '---> [www-data] Touching wsgi.py to reload web server...';
+    touch wsgi.py;
 
-echo "--> Step 5: Starting new Celery worker in the background..."
-# Ensure the log file exists and is writable by the current user (www-data).
-touch $LOG_FILE
+    echo '---> [www-data] Starting new Celery worker in the background...';
+    touch celery.log;
+    nohup ./venv/bin/python -m celery -A worker.celery worker --loglevel=INFO --beat >> celery.log 2>&1 &
+"
 
-# The core fix: Run nohup directly as the current user (www-data), which is the correct way.
-nohup $VENV_PYTHON -m celery -A worker.celery worker --loglevel=INFO --beat >> $LOG_FILE 2>&1 &
+echo "--> Step 3: Executing worker startup process as www-data user..."
+# Use 'su' to switch to the www-data user and execute the entire startup
+# command string in a new shell. This is the most reliable method.
+su -s /bin/bash -c "$WORKER_STARTUP_COMMAND" www-data
 
 echo ""
-echo "--- (As www-data) SYSTEM RESTART COMMANDS ISSUED ---"
-echo "Please wait ~15 seconds for the worker to start."
-echo "You can monitor its progress with: tail -f celery.log"
-echo "NOTE: This script does not manage root services (e.g., Apache, Redis)."
+echo "--- [ROOT] System restart commands have been issued. ---"
+echo "The Celery worker should now be running as www-data."
+echo "You can monitor its progress with: tail -f $APP_DIR/celery.log"
