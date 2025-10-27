@@ -21,7 +21,7 @@ $PURGE_COMMAND
 # Step 4: Ensure the log file AND schedule file are removed for a clean run.
 echo "Ensuring log file exists at $LOG_FILE..."
 rm -f $LOG_FILE
-sudo rm -f $APP_DIR/celerybeat-schedule # THIS IS THE ONLY CHANGE NEEDED
+rm -f $APP_DIR/celerybeat-schedule # THIS IS THE ONLY CHANGE NEEDED
 touch $LOG_FILE
 
 # Step 4.5: Ensure deals.db exists and is writable by the Celery worker.
@@ -31,7 +31,7 @@ chmod 666 deals.db
 
 # Step 5: Start the Celery worker using nohup.
 echo "Starting Celery worker in the background, logging to $LOG_FILE..."
-nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &
+su -s /bin/bash -c "nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
 
 sleep 2
 echo "Celery worker startup command has been issued. Check status with 'ps aux | grep celery'."
