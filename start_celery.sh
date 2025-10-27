@@ -23,6 +23,7 @@ echo "Ensuring log file exists at $LOG_FILE..."
 rm -f $LOG_FILE
 rm -f $APP_DIR/celerybeat-schedule # THIS IS THE ONLY CHANGE NEEDED
 touch $LOG_FILE
+chown www-data:www-data $LOG_FILE
 
 # Step 4.5: Ensure deals.db exists and is writable by the Celery worker.
 echo "Ensuring deals.db exists and is writable..."
