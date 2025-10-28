@@ -1,6 +1,6 @@
 # trigger_backfill_task.py
 import logging
-from celery_config import celery
+from celery_app import celery_app
 from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ def main():
     print("Triggering the 'keepa_deals.backfiller.backfill_deals' task by name...")
 
     # Send the task by its registered name to avoid direct imports
-    task_result = celery.send_task('keepa_deals.backfiller.backfill_deals')
+    task_result = celery_app.send_task('keepa_deals.backfiller.backfill_deals')
 
     print(f"Task has been sent to the queue. Task ID: {task_result.id}")
     logger.info("Please check the Celery worker logs for execution details.")

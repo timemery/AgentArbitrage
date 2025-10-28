@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 import redis
 
-from celery_config import celery
+from celery_app import celery_app
 from .db_utils import recreate_deals_table, sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
@@ -44,9 +44,9 @@ def _convert_keepa_time_to_iso(keepa_minutes):
     dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
     return dt_object.isoformat()
 
-@celery.task(name='keepa_deals.backfiller.backfill_deals')
+@celery_app.task(name='keepa_deals.backfiller.backfill_deals')
 def backfill_deals():
-    redis_client = redis.Redis.from_url(celery.conf.broker_url)
+    redis_client = redis.Redis.from_url(celery_app.conf.broker_url)
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
 
     if not lock.acquire(blocking=False):

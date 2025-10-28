@@ -7,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 import redis
 
-from celery_config import celery
+from celery_app import celery_app
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
@@ -54,9 +54,9 @@ def _convert_iso_to_keepa_time(iso_str):
     return int(delta.total_seconds() / 60)
 
 
-@celery.task(name='keepa_deals.simple_task.update_recent_deals')
+@celery_app.task(name='keepa_deals.simple_task.update_recent_deals')
 def update_recent_deals():
-    redis_client = redis.Redis.from_url(celery.conf.broker_url)
+    redis_client = redis.Redis.from_url(celery_app.conf.broker_url)
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
 
     if not lock.acquire(blocking=False):
