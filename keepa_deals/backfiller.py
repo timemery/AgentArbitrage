@@ -122,7 +122,8 @@ def backfill_deals():
         unique_seller_ids = set()
         for product in all_fetched_products.values():
             for offer in product.get('offers', []):
-                if offer.get('sellerId'):
+                # Defensive check for malformed data from the API
+                if isinstance(offer, dict) and offer.get('sellerId'):
                     unique_seller_ids.add(offer['sellerId'])
 
         from .keepa_api import fetch_seller_data
@@ -137,28 +138,41 @@ def backfill_deals():
                     seller_data_cache.update(seller_data['sellers'])
         logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers.")
 
-
         # 4. Process and save deals to DB
+        logger.info("Starting main processing loop...")
         rows_to_upsert = []
-        for deal in all_deals:
+        for i, deal in enumerate(all_deals):
             asin = deal['asin']
             if asin not in all_fetched_products:
+                logger.warning(f"Skipping ASIN {asin} from deals list as no corresponding product data was fetched.")
                 continue
 
             product_data = all_fetched_products[asin]
-            product_data.update(deal) # Combine deal info with product info
+            # It's crucial to merge the original deal data (like `lastUpdate`) into the full product object
+            product_data.update(deal)
 
-            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
+            # Call the centralized processing function from processing.py
+            processed_row = _process_single_deal(
+                product_data,
+                seller_data_cache,
+                xai_api_key,
+                business_settings,
+                headers
+            )
 
             if processed_row:
-                # Clean the numeric values before upserting
                 processed_row = clean_numeric_values(processed_row)
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                 processed_row['source'] = 'backfiller'
                 rows_to_upsert.append(processed_row)
 
-        logger.info(f"Processed {len(rows_to_upsert)} deals. Upserting to database.")
+            if (i + 1) % 50 == 0:
+                logger.info(f"Processed {i + 1}/{len(all_deals)} deals...")
+
+        logger.info(f"Main processing complete. Total rows to save: {len(rows_to_upsert)}. Writing to database...")
         if rows_to_upsert:
+            # Final log before the database write
+            logger.info(f"Attempting to save {len(rows_to_upsert)} rows to the database in a single transaction.")
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
