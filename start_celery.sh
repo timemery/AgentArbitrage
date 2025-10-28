@@ -10,12 +10,13 @@ chown -R www-data:www-data /var/www/agentarbitrage
 APP_DIR="/var/www/agentarbitrage"
 LOG_FILE="$APP_DIR/celery.log"
 VENV_PYTHON="$APP_DIR/venv/bin/python" # Absolute path to the venv python
-WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery worker --beat --loglevel=INFO"
-PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery purge -f"
+WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --beat --loglevel=INFO"
+PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
 
 # Step 2: Kill any lingering Celery worker processes.
 echo "Attempting to stop any old Celery workers..."
-pkill -f "celery -A worker.celery" || true
+# Use a more generic pattern to ensure the correct process is killed regardless of the app name
+pkill -f "celery -A worker" || true
 sleep 2
 
 # Step 3: Purge any waiting tasks from the message queue.
