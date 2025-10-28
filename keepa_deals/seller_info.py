@@ -31,8 +31,10 @@ def _get_best_offer_analysis(product, seller_data_cache):
     # 1. Find the best price from the OFFERS list first.
     if offers:
         for offer in offers:
+            # --- Defensive Type Check ---
+            # This handles rare edge cases where the API might return a non-dict item.
             if not isinstance(offer, dict):
-                logger.warning(f"ASIN {asin}: Skipping malformed offer: {offer}")
+                logger.warning(f"ASIN {asin}: Skipping malformed offer item in seller_info: {offer}")
                 continue
 
             condition = offer.get('condition', {}).get('value')
