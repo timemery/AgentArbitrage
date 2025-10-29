@@ -49,13 +49,13 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     # 2. Seller Info
     try:
         seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
-        # --- CRITICAL FIX: Map the keys from seller_info to the correct headers ---
-        row_data['Price Now'] = seller_info.get('Now')
-        row_data['Seller'] = seller_info.get('Seller')
-        row_data['Seller - Rank'] = seller_info.get('Seller Rank')
-        row_data['Seller - Quality Score'] = seller_info.get('Seller_Quality_Score')
-        # Also, "Best Price" is an alias for the "Now" price in this context
-        row_data['Best Price'] = seller_info.get('Now')
+        if seller_info:
+            # The get_all_seller_info function returns a dictionary with the exact
+            # keys needed for the final row. We can just update our main dictionary with it.
+            row_data.update(seller_info)
+            # Ensure 'Best Price' is an alias for 'Now'
+            if 'Now' in seller_info:
+                row_data['Best Price'] = seller_info['Now']
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
 
