@@ -43,7 +43,10 @@ chown www-data:www-data $APP_DIR/deals.db
 # Step 5: Start the Celery worker using nohup.
 echo "Starting Celery worker in the background, logging to $LOG_FILE..."
 # The worker must be started from the app directory to find the modules.
-su -s /bin/bash -c "cd $APP_DIR && nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
+# CRITICAL: We explicitly load the .env file within the command to ensure the worker has the API key.
+ENV_COMMAND="dotenv -f $APP_DIR/.env run --"
+FULL_WORKER_COMMAND="$ENV_COMMAND $WORKER_COMMAND"
+su -s /bin/bash -c "cd $APP_DIR && nohup $FULL_WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
 
 sleep 2
 echo "Celery worker startup command has been issued. Check status with 'ps aux | grep celery'."
