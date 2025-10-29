@@ -31,21 +31,21 @@ def _get_best_offer_analysis(product, seller_data_cache):
     # 1. Find the best price from the OFFERS list first.
     if offers:
         for offer in offers:
-            # --- Defensive Type Check ---
-            # This handles rare edge cases where the API might return a non-dict item.
-            if not isinstance(offer, dict):
-                logger.warning(f"ASIN {asin}: Skipping malformed offer item in seller_info: {offer}")
-                continue
+            try:
+                # Defensive coding: The Keepa API can sometimes return non-dict items
+                # in the offers list. This block will safely skip them.
+                if not isinstance(offer, dict):
+                    logger.warning(f"ASIN {asin}: Skipping malformed offer of type {type(offer)}: {offer}")
+                    continue
 
-            condition = offer.get('condition', {}).get('value')
-            seller_id = offer.get('sellerId')
+                condition = offer.get('condition', {}).get('value')
+                seller_id = offer.get('sellerId')
 
-            if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
-                continue
+                if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
+                    continue
 
-            offer_history = offer.get('offerCSV', [])
-            if len(offer_history) >= 2:
-                try:
+                offer_history = offer.get('offerCSV', [])
+                if len(offer_history) >= 2:
                     price = int(offer_history[-2])
                     shipping = int(offer_history[-1])
                     if shipping == -1: shipping = 0
@@ -55,8 +55,10 @@ def _get_best_offer_analysis(product, seller_data_cache):
                         lowest_offer_price = total_price
                         best_seller_id_from_offers = seller_id
                         offer_source = f"offer (seller: {seller_id})"
-                except (ValueError, IndexError):
-                    continue
+
+            except (AttributeError, ValueError, IndexError) as e:
+                logger.error(f"ASIN {asin}: Could not process an offer due to unexpected data format. Offer: {offer}. Error: {e}")
+                continue
 
     # 2. Compare the best offer price with prices from the STATS object.
     final_price = lowest_offer_price

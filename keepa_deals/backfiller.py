@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 import redis
 
-from celery_app import celery_app
+from celery_config import celery
 from .db_utils import recreate_deals_table, sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
@@ -44,9 +44,9 @@ def _convert_keepa_time_to_iso(keepa_minutes):
     dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
     return dt_object.isoformat()
 
-@celery_app.task(name='keepa_deals.backfiller.backfill_deals')
+@celery.task(name='keepa_deals.backfiller.backfill_deals')
 def backfill_deals():
-    redis_client = redis.Redis.from_url(celery_app.conf.broker_url)
+    redis_client = redis.Redis.from_url(celery.conf.broker_url)
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
 
     if not lock.acquire(blocking=False):
@@ -68,6 +68,12 @@ def backfill_deals():
             return
 
         token_manager = TokenManager(api_key)
+
+        # --- TOKEN SYNC FIX ---
+        # Authoritatively sync the token count with the Keepa API at the start of the task.
+        # This prevents the task from starting with an incorrect, assumed token count.
+        token_manager.sync_tokens()
+
         business_settings = business_load_settings()
 
         with open(HEADERS_PATH) as f:
@@ -80,8 +86,15 @@ def backfill_deals():
         # 1. Paginate through all deals
         while True:
             logger.info(f"Fetching page {page} of deals...")
+            # --- RATE LIMITING FIX ---
+            # Request permission BEFORE making the call to respect rate limits.
+            token_manager.request_permission_for_call(estimated_cost=5) # Deals endpoint costs ~5 tokens
+
             deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True)
-            token_manager.update_after_call(tokens_consumed)
+
+            # --- TOKEN SYNC FIX ---
+            # Update the manager with the authoritative 'tokens_left' value from the API response.
+            token_manager.update_after_call(tokens_left)
 
             if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
                 logger.info("No more deals found. Pagination complete.")
@@ -111,8 +124,17 @@ def backfill_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            product_response, _, tokens_consumed, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-            token_manager.update_after_call(tokens_consumed)
+
+            # --- RATE LIMITING FIX ---
+            # History and offers are expensive, estimate cost accordingly.
+            estimated_cost = 15 * len(batch_asins)
+            token_manager.request_permission_for_call(estimated_cost)
+
+            product_response, _, tokens_consumed, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+
+            # --- TOKEN SYNC FIX ---
+            token_manager.update_after_call(tokens_left)
+
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
@@ -122,8 +144,7 @@ def backfill_deals():
         unique_seller_ids = set()
         for product in all_fetched_products.values():
             for offer in product.get('offers', []):
-                # Defensive check for malformed data from the API
-                if isinstance(offer, dict) and offer.get('sellerId'):
+                if offer.get('sellerId'):
                     unique_seller_ids.add(offer['sellerId'])
 
         from .keepa_api import fetch_seller_data
@@ -132,47 +153,41 @@ def backfill_deals():
             seller_id_list = list(unique_seller_ids)
             for i in range(0, len(seller_id_list), 100):
                 batch_ids = seller_id_list[i:i+100]
-                seller_data, _, tokens_consumed, _ = fetch_seller_data(api_key, batch_ids)
-                token_manager.update_after_call(tokens_consumed)
+
+                # --- RATE LIMITING FIX ---
+                token_manager.request_permission_for_call(estimated_cost=len(batch_ids))
+
+                seller_data, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_ids)
+
+                # --- TOKEN SYNC FIX ---
+                token_manager.update_after_call(tokens_left)
+
                 if seller_data and 'sellers' in seller_data:
                     seller_data_cache.update(seller_data['sellers'])
         logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers.")
 
+
         # 4. Process and save deals to DB
-        logger.info("Starting main processing loop...")
         rows_to_upsert = []
-        for i, deal in enumerate(all_deals):
+        for deal in all_deals:
             asin = deal['asin']
             if asin not in all_fetched_products:
-                logger.warning(f"Skipping ASIN {asin} from deals list as no corresponding product data was fetched.")
                 continue
 
             product_data = all_fetched_products[asin]
-            # It's crucial to merge the original deal data (like `lastUpdate`) into the full product object
-            product_data.update(deal)
+            product_data.update(deal) # Combine deal info with product info
 
-            # Call the centralized processing function from processing.py
-            processed_row = _process_single_deal(
-                product_data,
-                seller_data_cache,
-                xai_api_key,
-                business_settings,
-                headers
-            )
+            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:
+                # Clean the numeric values before upserting
                 processed_row = clean_numeric_values(processed_row)
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                 processed_row['source'] = 'backfiller'
                 rows_to_upsert.append(processed_row)
 
-            if (i + 1) % 50 == 0:
-                logger.info(f"Processed {i + 1}/{len(all_deals)} deals...")
-
-        logger.info(f"Main processing complete. Total rows to save: {len(rows_to_upsert)}. Writing to database...")
+        logger.info(f"Processed {len(rows_to_upsert)} deals. Upserting to database.")
         if rows_to_upsert:
-            # Final log before the database write
-            logger.info(f"Attempting to save {len(rows_to_upsert)} rows to the database in a single transaction.")
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
