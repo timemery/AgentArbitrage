@@ -24,6 +24,10 @@ echo "Purging any pending tasks from the Celery queue..."
 # Must be run from the app directory to find the celery app
 su -s /bin/bash -c "cd $APP_DIR && $PURGE_COMMAND" www-data
 
+# Step 3.5: CRITICAL - Clear stale Python bytecode caches
+echo "Clearing Python bytecode cache (__pycache__ directories)..."
+su -s /bin/bash -c "cd $APP_DIR && find . -type d -name '__pycache__' -exec rm -rf {} +" www-data
+
 # Step 4: Ensure the log file AND schedule file are removed for a clean run.
 echo "Ensuring log file exists at $LOG_FILE..."
 rm -f $LOG_FILE
