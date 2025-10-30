@@ -21,7 +21,7 @@ sleep 2
 # Step 3: Purge any waiting tasks from the message queue.
 echo "Purging any pending tasks from the Celery queue..."
 # Must be run from the app directory to find the celery app
-su -s /bin/bash -c "cd $APP_DIR && $PURGE_COMMAND" www-data
+su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. $PURGE_COMMAND" www-data
 
 # Step 4: Ensure the log file AND schedule file are removed for a clean run.
 echo "Ensuring log file exists at $LOG_FILE..."
@@ -38,7 +38,7 @@ chown www-data:www-data $APP_DIR/deals.db
 # Step 5: Start the Celery worker using nohup.
 echo "Starting Celery worker in the background, logging to $LOG_FILE..."
 # The worker must be started from the app directory to find the modules.
-su -s /bin/bash -c "cd $APP_DIR && nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
+su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
 
 sleep 2
 echo "Celery worker startup command has been issued. Check status with 'ps aux | grep celery'."

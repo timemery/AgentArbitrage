@@ -1,12 +1,13 @@
 # This file is the entry point for the Celery worker.
-# It imports the celery app instance from celery_config.py
+# It now imports the celery_app instance from the new celery_app.py file.
+# This breaks the circular dependency that was causing startup hangs.
 #
-# DO NOT import task modules directly here (e.g., `from keepa_deals import simple_task`).
-# Task discovery is handled by the `imports` tuple in `celery_config.py`.
-# Direct imports in this file can cause the worker to crash on startup if any
-# imported module has an error, preventing the worker from ever starting.
+# DO NOT import task modules directly here.
+# Task discovery is handled by the `imports` tuple in `celery_config.py`,
+# which is loaded by the celery_app.
 
-from celery_config import celery
+from celery_app import celery_app
 
-# The celery variable must be exposed in this module's namespace for the
-# `celery -A worker.celery worker` command to find it. No other code is needed.
+# The celery_app variable must be exposed in this module's namespace for the
+# `celery -A worker.celery_app worker` command to find it. The `-A` flag now
+# needs to point to this new object.

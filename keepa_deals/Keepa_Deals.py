@@ -8,7 +8,6 @@ import time
 import math
 import os
 from dotenv import load_dotenv
-from celery_config import celery
 from datetime import datetime
 
 from .keepa_api import (
@@ -39,10 +38,10 @@ def set_scan_status(status_data):
         # This will be logged by the Celery worker
         print(f"Error writing status file: {e}")
 
-@celery.task
+
 def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
     """
-    Main Celery task to run the Keepa deals fetching and processing script.
+    Main script to run the Keepa deals fetching and processing script.
     """
     logger = logging.getLogger(__name__) # Use standard logging
     load_dotenv()

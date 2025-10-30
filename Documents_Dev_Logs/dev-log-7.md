@@ -289,3 +289,92 @@ After multiple failed attempts to fix the script, the strategy shifted to pure d
 - **Listen to the User:** The user's intuition that we were "looking in the wrong place" was correct. Furthermore, the user ultimately found the final typo that was masking the successful fix. This highlights the immense value of collaboration.
 
 - **The `start_celery.sh` script is now considered robust and production-ready.** Future debugging of this component should start with the assumption that the script is correct and the problem likely lies in the environment or the Python application code.
+
+### **Dev Log Entry: October 29, 2025 - Task `Restore Dashboard Functionality Phase 2 (Third Attempt)`**
+
+**Objective:** The primary objective was to restore the complex data calculation logic for several key dashboard columns ("List at", "Season", "Trend", "All-in Cost", "Profit", "Margin"). A secondary, but equally critical, objective was to resolve a persistent, silent startup failure of the Celery background worker, which was preventing the data pipeline from running.
+
+**Summary of Outcome: FAILURE**
+
+This task must be marked as a failure. While multiple, distinct bugs within the Python application code were successfully identified and fixed, the final and most critical blocker—the silent startup failure of the Celery worker in the user's environment—remains unresolved. The application's data processing pipeline cannot be run, and the dashboard's data remains stale and incorrect.
+
+**Detailed Chronology of Work Performed:**
+
+This task involved a long, iterative process of debugging that can be broken down into two main phases: fixing the application's data logic and attempting to fix the worker's startup script.
+
+**Phase 1: Fixing Application Data Logic & API Interaction (Partial Success)**
+
+Several bugs that were preventing the `backfill_deals` task from running to completion were identified and fixed.
+
+1. **`AttributeError` on Malformed API Data:**
+
+   - **Symptom:** The `celery.log` showed the task would crash with an `AttributeError: 'int' object has no attribute 'get'` when processing certain products.
+   - **Action:** A `try...except` block was added to `keepa_deals/seller_info.py` to gracefully handle malformed offer data from the Keepa API, preventing the crash.
+
+2. **`KeyError` on Data Mapping:**
+
+   - **Symptom:** Even when the task ran, key fields like "Price Now" were missing from the database.
+   - **Action:** A data mapping bug was fixed in `keepa_deals/processing.py` to correctly map the keys from the seller analysis function (e.g., `'Now'`) to the keys expected by the database (e.g., `'Price Now'`).
+
+3. **`429 Too Many Requests` API Errors:**
+
+   - **Symptom:** The task was repeatedly failing due to Keepa API rate-limiting.
+
+   - Action:
+
+      
+
+     The token management logic was significantly hardened in
+
+      
+
+     ```
+     keepa_deals/backfiller.py
+     ```
+
+     . This involved:
+
+     - Adding a call to `token_manager.sync_tokens()` at the start of the task to ensure it began with an accurate token count.
+     - Adding a `token_manager.request_permission_for_call()` before every API call to respect rate limits.
+     - Correcting the call to `token_manager.update_after_call()` to use the authoritative `tokens_left` value from API responses.
+
+At the end of this phase, all identified bugs within the Python application code itself were believed to be resolved.
+
+**Phase 2: The Silent Worker Startup Failure (FAILURE)**
+
+This phase consisted of a long and ultimately unsuccessful loop of attempting to fix the `start_celery.sh` script.
+
+- **Symptom:** The script would run without error, but no Celery process would start, and no log file would be created. The user consistently reported the same error when the script was run: `Error: Invalid value for '-A' / '--app': Unable to load celery application. The module ... was not found.`
+
+- **Investigation & Failed Attempts:**
+
+  1. Initial Hypothesis (Incorrect Paths):
+
+      
+
+     It was initially assumed the
+
+      
+
+     ```
+     -A
+     ```
+
+      
+
+     flag in the script was pointing to the wrong Celery application instance. Multiple variations were attempted based on analysis of the codebase, none of which worked:
+
+     - `-A celery_app.celery_app`
+     - `-A celery_config.celery`
+     - `-A worker.celery`
+
+  2. Diagnostic Steps:
+
+     - A `diag_import_test.py` script was created and executed within the production environment's context. The output confirmed that the `celery_config.py` module could be imported, but the `celery` app variable was not being found, strongly suggesting a circular import dependency was the root cause.
+     - All historical dev logs (`dev-log-1.md` through `dev-log-7.md`) were read to gain historical context. These logs confirmed that `worker.py` was the intended entry point to solve this exact circular dependency issue, and that silent failures were almost always due to environmental problems.
+
+  3. **Final State:** Despite the diagnostics and historical context pointing to `-A worker.celery` as the correct path, the final attempt using this path still failed with the exact same "module not found" error.
+
+**Conclusion for Next Agent:**
+
+The Python application code is likely correct. The data processing logic has been fixed and hardened. The problem is a persistent, environment-specific issue with the Celery worker startup. The diagnostic scripts and logs generated during this task should be reviewed, but the repeated attempts to fix `start_celery.sh` by changing the `-A` flag have proven ineffective and should not be the starting point for the next investigation.

@@ -49,13 +49,29 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     # 2. Seller Info
     try:
         seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
-        # --- CRITICAL FIX: Map the keys from seller_info to the correct headers ---
-        row_data['Price Now'] = seller_info.get('Now')
-        row_data['Seller'] = seller_info.get('Seller')
-        row_data['Seller - Rank'] = seller_info.get('Seller Rank')
-        row_data['Seller - Quality Score'] = seller_info.get('Seller_Quality_Score')
-        # Also, "Best Price" is an alias for the "Now" price in this context
-        row_data['Best Price'] = seller_info.get('Now')
+        if seller_info:
+            # This is the key insight from the diagnostic script.
+            # The seller_info dictionary uses keys like 'Now' and 'Seller',
+            # but the rest of the pipeline and the database expect keys like
+            # 'Price Now' and 'Seller Name'. We remap them here.
+            key_mappings = {
+                'Now': 'Price Now',
+                'Seller': 'Seller Name',
+                'Seller ID': 'Seller ID',
+                'Seller Rank': 'Seller Rank',
+                'Seller_Quality_Score': 'Seller Quality Score'
+            }
+            remapped_seller_info = {}
+            for old_key, new_key in key_mappings.items():
+                if old_key in seller_info and seller_info[old_key] is not None:
+                    remapped_seller_info[new_key] = seller_info[old_key]
+
+            row_data.update(remapped_seller_info)
+
+            # The 'Best Price' is an alias for the 'Now' price.
+            if 'Price Now' in remapped_seller_info:
+                row_data['Best Price'] = remapped_seller_info['Price Now']
+
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
 

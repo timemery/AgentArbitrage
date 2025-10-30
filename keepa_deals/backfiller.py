@@ -68,6 +68,12 @@ def backfill_deals():
             return
 
         token_manager = TokenManager(api_key)
+
+        # --- TOKEN SYNC FIX ---
+        # Authoritatively sync the token count with the Keepa API at the start of the task.
+        # This prevents the task from starting with an incorrect, assumed token count.
+        token_manager.sync_tokens()
+
         business_settings = business_load_settings()
 
         with open(HEADERS_PATH) as f:
@@ -80,8 +86,15 @@ def backfill_deals():
         # 1. Paginate through all deals
         while True:
             logger.info(f"Fetching page {page} of deals...")
+            # --- RATE LIMITING FIX ---
+            # Request permission BEFORE making the call to respect rate limits.
+            token_manager.request_permission_for_call(estimated_cost=5) # Deals endpoint costs ~5 tokens
+
             deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True)
-            token_manager.update_after_call(tokens_consumed)
+
+            # --- TOKEN SYNC FIX ---
+            # Update the manager with the authoritative 'tokens_left' value from the API response.
+            token_manager.update_after_call(tokens_left)
 
             if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
                 logger.info("No more deals found. Pagination complete.")
@@ -111,8 +124,17 @@ def backfill_deals():
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-            product_response, _, tokens_consumed, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-            token_manager.update_after_call(tokens_consumed)
+
+            # --- RATE LIMITING FIX ---
+            # History and offers are expensive, estimate cost accordingly.
+            estimated_cost = 15 * len(batch_asins)
+            token_manager.request_permission_for_call(estimated_cost)
+
+            product_response, _, tokens_consumed, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+
+            # --- TOKEN SYNC FIX ---
+            token_manager.update_after_call(tokens_left)
+
             if product_response and 'products' in product_response:
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
@@ -131,8 +153,15 @@ def backfill_deals():
             seller_id_list = list(unique_seller_ids)
             for i in range(0, len(seller_id_list), 100):
                 batch_ids = seller_id_list[i:i+100]
-                seller_data, _, tokens_consumed, _ = fetch_seller_data(api_key, batch_ids)
-                token_manager.update_after_call(tokens_consumed)
+
+                # --- RATE LIMITING FIX ---
+                token_manager.request_permission_for_call(estimated_cost=len(batch_ids))
+
+                seller_data, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_ids)
+
+                # --- TOKEN SYNC FIX ---
+                token_manager.update_after_call(tokens_left)
+
                 if seller_data and 'sellers' in seller_data:
                     seller_data_cache.update(seller_data['sellers'])
         logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers.")
