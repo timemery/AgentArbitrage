@@ -35,11 +35,10 @@ echo "Ensuring deals.db exists and is writable..."
 touch $APP_DIR/deals.db
 chown www-data:www-data $APP_DIR/deals.db
 
-# Step 5: Start the diagnostic script using nohup.
-echo "Starting diagnostic script in the background, logging to $LOG_FILE..."
+# Step 5: Start the Celery worker using nohup.
+echo "Starting Celery worker in the background, logging to $LOG_FILE..."
 # The worker must be started from the app directory to find the modules.
-DIAG_COMMAND="$VENV_PYTHON $APP_DIR/diag_import_test.py"
-su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. nohup $DIAG_COMMAND >> $LOG_FILE 2>&1 &" www-data
+su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
 
 sleep 2
 echo "Celery worker startup command has been issued. Check status with 'ps aux | grep celery'."
