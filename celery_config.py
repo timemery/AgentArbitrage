@@ -7,7 +7,7 @@ broker_url = 'redis://127.0.0.1:6379/0'
 result_backend = 'redis://127.0.0.1:6379/0'
 
 imports = ('keepa_deals.Keepa_Deals', 'keepa_deals.tasks', 'keepa_deals.simple_task', 'keepa_deals.backfiller', 'keepa_deals.recalculator')
-beat_schedule_filename = '/var/www/agentarbitrage/celerybeat-schedule'
+beat_schedule_filename = 'celerybeat-schedule'
 worker_log_file = 'celery_worker.log'
 worker_log_level = 'INFO'
 task_serializer = 'json'

@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_PATH = 'deals.db'
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db')
 TABLE_NAME = 'deals'
 
 print("--- Running Database Check Script ---")

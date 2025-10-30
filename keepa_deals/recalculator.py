@@ -5,7 +5,7 @@ import time
 import os
 import re
 from dotenv import load_dotenv
-from celery_app import celery_app
+from worker import celery
 import sqlite3
 from .business_calculations import (
     load_settings as business_load_settings,
@@ -32,7 +32,7 @@ def _sanitize_col_name(name):
     name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent').replace('&', '')
     return re.sub(r'[^a-zA-Z0-9_]', '', name)
 
-@celery_app.task(name='keepa_deals.recalculator.recalculate_deals')
+@celery.task(name='keepa_deals.recalculator.recalculate_deals')
 def recalculate_deals():
     """
     Celery task to perform a database-only data refresh for all deals.

@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 import redis
 
-from celery_config import celery
+from worker import celery
 from .db_utils import recreate_deals_table, sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
@@ -136,8 +136,7 @@ def backfill_deals():
             token_manager.update_after_call(tokens_left)
 
             if product_response and 'products' in product_response:
-                for p in product_response['products']:
-                    all_fetched_products[p['asin']] = p
+                all_fetched_products.update({p['asin']: p for p in product_response['products']})
             logger.info(f"Fetched product data for batch {i//MAX_ASINS_PER_BATCH + 1}/{(len(asin_list) + MAX_ASINS_PER_BATCH - 1)//MAX_ASINS_PER_BATCH}")
 
         # 3. Pre-fetch seller data
@@ -180,15 +179,21 @@ def backfill_deals():
             processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
 
             if processed_row:
+                logger.info(f"Appending processed row for ASIN: {asin}")
                 # Clean the numeric values before upserting
                 processed_row = clean_numeric_values(processed_row)
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                 processed_row['source'] = 'backfiller'
                 rows_to_upsert.append(processed_row)
+                logger.info(f"rows_to_upsert now contains {len(rows_to_upsert)} rows.")
 
         logger.info(f"Processed {len(rows_to_upsert)} deals. Upserting to database.")
+        logger.info(f"Checking if rows_to_upsert is empty before database connection. Length is {len(rows_to_upsert)}")
         if rows_to_upsert:
-            with sqlite3.connect(DB_PATH) as conn:
+            logger.info(f"Connecting to database at {DB_PATH}")
+            conn = sqlite3.connect(DB_PATH, timeout=30)
+            try:
+                logger.info("Database connection successful. Creating cursor.")
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
                 sanitized_headers.extend(['last_seen_utc', 'source'])
@@ -205,6 +210,8 @@ def backfill_deals():
                 cursor.executemany(upsert_sql, data_tuples)
                 conn.commit()
                 logger.info(f"Successfully upserted {cursor.rowcount} rows.")
+            finally:
+                conn.close()
 
         # 5. Save the watermark
         if max_last_update > 0:

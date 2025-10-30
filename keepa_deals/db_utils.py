@@ -116,6 +116,10 @@ def recreate_deals_table():
                 elif "Rank" in header or "Count" in header or "Drops" in header:
                     col_type = 'INTEGER'
 
+                # Force Percent_Down to be TEXT to allow for "Too New"
+                if "Percent_Down" in header:
+                    col_type = 'TEXT'
+
                 if sanitized_header == 'ASIN':
                     cols_sql.append(f'"{sanitized_header}" TEXT NOT NULL UNIQUE')
                 else:

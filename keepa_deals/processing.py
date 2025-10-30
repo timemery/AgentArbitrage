@@ -25,6 +25,7 @@ def _parse_percent(value_str):
 
 def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers):
     asin = product_data.get('asin')
+    logger.info(f"Processing ASIN: {asin}")
     if not asin:
         return None
 
@@ -132,6 +133,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
 
+    logger.info(f"Finished processing ASIN: {asin}. Row data: {row_data}")
     return row_data
 
 def clean_numeric_values(row_data):
