@@ -378,3 +378,39 @@ This phase consisted of a long and ultimately unsuccessful loop of attempting to
 **Conclusion for Next Agent:**
 
 The Python application code is likely correct. The data processing logic has been fixed and hardened. The problem is a persistent, environment-specific issue with the Celery worker startup. The diagnostic scripts and logs generated during this task should be reviewed, but the repeated attempts to fix `start_celery.sh` by changing the `-A` flag have proven ineffective and should not be the starting point for the next investigation.
+
+### Dev Log: Task - Restore Dashboard Functionality Phase 2
+
+**Objective:** The primary objective was to resolve the silent startup failure of the Celery background worker and fix the subsequent data pipeline issue where the database was not being populated, ultimately restoring the dashboard's data calculation functionality.
+
+**Summary of Outcome:** FAILURE
+
+This task must be marked as a failure. While multiple, distinct, and critical bugs within the application's environment, configuration, and code were identified and fixed, the final and most critical blocker remains unresolved. The `backfill_deals` task runs to completion in the logs but silently fails to commit the final data transaction to the SQLite database. The application's data processing pipeline cannot be successfully run, and the database remains empty.
+
+**Detailed Chronology of Work Performed:**
+
+The debugging process was extensive and can be broken down into several phases:
+
+1. **Phase 1: Stabilizing the Celery Worker Environment**
+   - **Symptom:** The Celery worker failed to start with a `ModuleNotFoundError`.
+   - Actions Taken:
+     - A sandbox-safe startup script, `start_celery_local.sh`, was created to use relative paths and avoid production-specific `sudo` commands.
+     - Missing Python dependencies from `requirements.txt` were installed.
+     - The `redis-server` dependency was installed and started.
+     - Multiple `ImportError` issues across task modules were resolved by centralizing the Celery app instance in `worker.py` to break a circular dependency.
+   - **Result:** The Celery worker was successfully and reliably started in the sandbox for the first time.
+2. **Phase 2: Diagnosing the "Empty Database" Problem**
+   - **Symptom:** With the worker running, the `backfill_deals` task would appear to run to completion in `celery.log` (including log messages about processing deals), but the database file consistently showed 0 rows.
+   - Investigation & Actions:
+     - A missing `.env` file was created to supply the required `KEEPA_API_KEY`.
+     - A `NameError: name 'logger' is not defined` was discovered and fixed in `keepa_deals/stable_calculations.py`. This error was being silently caught by a `try...except` block but was a critical flaw.
+     - A stale Redis lock (`backfill_deals_lock`) was discovered in the logs, which prevented subsequent task runs. A process was established to clear this lock (`redis-cli DEL ...`) before triggering the task.
+3. **Phase 3: The Database Path Mismatch**
+   - **Symptom:** Even after fixing the code errors and Redis lock, the database remained empty.
+   - Investigation & Actions:
+     - A thorough file review revealed a critical configuration mismatch. The `backfiller.py` task was hardcoded to write to `deals.db`, while the trigger script (`trigger_backfill_task.py`) and diagnostic script (`check_db.py`) were both initially configured to look at `agent_deals.db` during a debugging phase.
+     - All relevant files (`backfiller.py`, `db_utils.py`, `check_db.py`) were corrected to consistently use the original `deals.db` path. Debugging artifacts like `agent_deals.db` and `db_write_test.py` were removed.
+4. **Phase 4: Token Insufficiency and Final State**
+   - **Symptom:** With the pathing fixed, the logs revealed the task was stalling for over 90 minutes with an `Insufficient tokens` warning. The logic fetched a list of all 795 deals before attempting the expensive, token-heavy API calls, at which point it would run out of tokens and wait.
+   - **Action:** A temporary debugging limit of 10 deals was added to `backfiller.py` to force the task to run end-to-end with the available tokens. This limit was removed before the final commit, per the user's request.
+   - **Final Result:** Despite all the preceding fixes, the `backfill_deals` task ran to completion in the logs but **still resulted in an empty database**. The final `conn.commit()` operation appears to fail silently when, and only when, executed from within a Celery worker process in this environment. The root cause for this silent commit failure remains unknown.

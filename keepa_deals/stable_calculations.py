@@ -66,7 +66,7 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
                 if response.status_code == 429:
                     # Specific handling for rate limiting
                     delay = base_delay * (2 ** attempt)
-                    logger.warning(f"XAI API rate limit hit (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
+                    logging.warning(f"XAI API rate limit hit (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
                     time.sleep(delay)
                     continue # Go to the next attempt
 
