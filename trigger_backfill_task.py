@@ -8,7 +8,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Corrected Import: The celery app instance is exposed via the 'worker' module.
-from worker import celery as celery_app
+from worker import celery_app
 # Corrected Import: Use the function that handles its own DB connection and clears the table.
 from keepa_deals.db_utils import recreate_deals_table
 
