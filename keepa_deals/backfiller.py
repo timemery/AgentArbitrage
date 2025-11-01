@@ -34,7 +34,7 @@ load_dotenv()
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-MAX_ASINS_PER_BATCH = 50
+MAX_ASINS_PER_BATCH = 30
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 60 * 60 * 4 # 4 hours for a full backfill
 
