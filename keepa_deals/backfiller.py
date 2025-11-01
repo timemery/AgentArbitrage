@@ -34,7 +34,13 @@ load_dotenv()
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-MAX_ASINS_PER_BATCH = 30
+# This batch size is a critical performance and stability parameter.
+# It is set to a conservative value (20) to ensure that the estimated cost of a single
+# batch API call (~15 tokens/ASIN * 20 ASINs = ~300 tokens) remains close to or
+# slightly above the maximum token bucket size (300). This allows the TokenManager's
+# "controlled deficit" strategy to function effectively, preventing excessive negative
+# token balances and minimizing long wait times for token refills.
+MAX_ASINS_PER_BATCH = 20
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 60 * 60 * 4 # 4 hours for a full backfill
 
