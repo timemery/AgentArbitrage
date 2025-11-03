@@ -30,6 +30,11 @@ logger = getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
+# --- TEMPORARY TEST LIMIT ---
+# To prevent long runs that may hit memory limits, this temporarily limits
+# the number of deals processed. Set to None for a full production run.
+TEMP_DEAL_LIMIT = 100
+
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
 TABLE_NAME = 'deals'
@@ -109,6 +114,12 @@ def backfill_deals():
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
             all_deals.extend(deals_on_page)
             logger.info(f"Found {len(deals_on_page)} deals on page {page}. Total deals so far: {len(all_deals)}")
+
+            # --- APPLY TEMPORARY LIMIT ---
+            if TEMP_DEAL_LIMIT is not None and len(all_deals) >= TEMP_DEAL_LIMIT:
+                logger.warning(f"TEMPORARY LIMIT REACHED: Truncating deal list to {TEMP_DEAL_LIMIT} deals for this test run.")
+                all_deals = all_deals[:TEMP_DEAL_LIMIT]
+                break # Exit the pagination loop
 
             # Track the latest update timestamp
             for deal in deals_on_page:
