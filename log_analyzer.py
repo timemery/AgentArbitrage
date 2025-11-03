@@ -57,7 +57,8 @@ def analyze_log(log_file_path):
                 # The end of seller fetch is the last log entry before processing starts
                 # So we find the last seller-related log entry
                 if "Fetching data for batch of" in line:
-                     timestamps["seller_fetch_end"] = datetime.strptime(line.split(',')[0], '%Y-%m-%d %H:%M:%S')
+                     clean_timestamp = line.split(',')[0].lstrip('[')
+                     timestamps["seller_fetch_end"] = datetime.strptime(clean_timestamp, '%Y-%m-%d %H:%M:%S')
 
 
                 proc_match = processing_start_pattern.search(line)
