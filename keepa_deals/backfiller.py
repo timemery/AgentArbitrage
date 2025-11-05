@@ -116,22 +116,19 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
             rows_to_upsert.append(processed_row)
 
     if rows_to_upsert:
-        logger.info(f"Upserting {len(rows_to_upsert)} rows for this page.")
-        conn = sqlite3.connect(DB_PATH, timeout=30)
+        logger.info(f"Appending {len(rows_to_upsert)} processed deals to temp_deals.json.")
+        # Read existing data from the file, or start with an empty list
         try:
-            cursor = conn.cursor()
-            sanitized_headers = [sanitize_col_name(h) for h in headers]
-            sanitized_headers.extend(['last_seen_utc', 'source'])
-            cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
-            vals_str = ', '.join(['?'] * len(sanitized_headers))
-            update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
-            upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
-            data_tuples = [tuple(row.get(h) for h in headers) + (row.get('last_seen_utc'), row.get('source')) for row in rows_to_upsert]
-            cursor.executemany(upsert_sql, data_tuples)
-            conn.commit()
-            logger.info(f"Successfully upserted {cursor.rowcount} rows for this page.")
-        finally:
-            conn.close()
+            with open('temp_deals.json', 'r') as f:
+                existing_data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            existing_data = []
+
+        # Append new rows and write back to the file
+        existing_data.extend(rows_to_upsert)
+        with open('temp_deals.json', 'w') as f:
+            json.dump(existing_data, f, indent=4)
+        logger.info(f"Successfully appended deals. temp_deals.json now contains {len(existing_data)} deals.")
 
 
 @celery.task(name='keepa_deals.backfiller.backfill_deals')
@@ -145,6 +142,11 @@ def backfill_deals():
 
     try:
         logger.info("--- Task: backfill_deals started ---")
+
+        # Ensure a clean start by deleting any old temp file
+        if os.path.exists('temp_deals.json'):
+            os.remove('temp_deals.json')
+            logger.info("Removed existing temp_deals.json for a clean start.")
 
         # --- CRITICAL FIX: Clear the memoization cache ---
         clear_analysis_cache()
