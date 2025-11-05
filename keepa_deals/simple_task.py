@@ -57,8 +57,15 @@ def _convert_iso_to_keepa_time(iso_str):
 @celery_app.task(name='keepa_deals.simple_task.update_recent_deals')
 def update_recent_deals():
     redis_client = redis.Redis.from_url(celery_app.conf.broker_url)
-    lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
 
+    # --- Backfiller Lock Check ---
+    # Check if the main backfill task is running. If it is, exit immediately.
+    backfill_lock = redis_client.lock("backfill_deals_lock")
+    if backfill_lock.locked():
+        logger.warning("Backfill task is running. Skipping update_recent_deals to prevent interference.")
+        return
+
+    lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
     if not lock.acquire(blocking=False):
         logger.info("--- Task: update_recent_deals is already running. Skipping execution. ---")
         return
