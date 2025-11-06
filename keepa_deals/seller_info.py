@@ -31,16 +31,23 @@ def _get_best_offer_analysis(product, seller_data_cache):
     # 1. Find the best price from the OFFERS list first.
     if offers:
         for offer in offers:
+            # --- Robustness Fix ---
+            # This entire block is wrapped in a try/except and contains multiple checks
+            # to handle malformed data from the Keepa API gracefully without crashing or flooding logs.
             try:
-                # Defensive coding: The Keepa API can sometimes return non-dict items
-                # in the offers list. This block will safely skip them.
+                # 1. Ensure the offer itself is a dictionary.
                 if not isinstance(offer, dict):
-                    logger.warning(f"ASIN {asin}: Skipping malformed offer of type {type(offer)}: {offer}")
                     continue
 
-                condition = offer.get('condition', {}).get('value')
+                # 2. Ensure the 'condition' field is a dictionary before accessing its 'value'.
+                condition_data = offer.get('condition')
+                if not isinstance(condition_data, dict):
+                    continue
+
+                condition = condition_data.get('value')
                 seller_id = offer.get('sellerId')
 
+                # Skip NEW items or Amazon Warehouse deals.
                 if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
                     continue
 
@@ -56,8 +63,9 @@ def _get_best_offer_analysis(product, seller_data_cache):
                         best_seller_id_from_offers = seller_id
                         offer_source = f"offer (seller: {seller_id})"
 
-            except (AttributeError, ValueError, IndexError) as e:
-                logger.error(f"ASIN {asin}: Could not process an offer due to unexpected data format. Offer: {offer}. Error: {e}")
+            except Exception:
+                # Broad exception to catch any other unforeseen data format issue with an offer,
+                # preventing a single bad offer from crashing the process for a whole product.
                 continue
 
     # 2. Compare the best offer price with prices from the STATS object.

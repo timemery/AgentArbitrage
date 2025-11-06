@@ -20,6 +20,9 @@ echo "--- Restarting Redis server in the background ---"
 sudo redis-server &
 sleep 2 # Give Redis a moment to start up
 
+echo "--- Flushing all data from Redis (queues, locks, etc.) ---"
+redis-cli FLUSHALL
+
 echo "--- Optional, more aggressive cleaning (commented out) ---"
 # The following commands are for more extreme situations, like data corruption.
 # Use with caution.

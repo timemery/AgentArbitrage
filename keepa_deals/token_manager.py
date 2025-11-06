@@ -48,8 +48,23 @@ class TokenManager:
 
     def request_permission_for_call(self, estimated_cost):
         """
-        Checks if an API call can be made, waits if necessary.
-        This is the main public method for controlling API access.
+        Checks if an API call can be made and waits if necessary. This method
+        implements a "controlled deficit" strategy based on Keepa API behavior.
+
+        Keepa API Rule: A call can be made as long as the token balance is positive.
+        The call is allowed to drive the balance into a negative value.
+
+        Our Strategy:
+        1.  **Hard Stop at Zero:** If tokens are <= 0, we must wait until they
+            refill to a positive number.
+        2.  **Controlled Deficit:** If a call's `estimated_cost` is greater
+            than the `current_tokens` (but tokens are > 0), we don't proceed
+            immediately. This would risk hitting an unknown maximum deficit limit
+            and is inefficient. Instead, we proactively wait until the token bucket
+            is completely full (`self.max_tokens`).
+        3.  **Proceed:** Once the bucket is full, we allow the expensive call to
+            proceed. This allows it to create a small, predictable, and safe
+            negative balance, which will be recovered during the next wait cycle.
         """
         now = time.time()
         time_since_last_call = now - self.last_api_call_timestamp
@@ -60,21 +75,33 @@ class TokenManager:
 
         self._refill_tokens()
 
-        if self.tokens < estimated_cost:
-            tokens_needed = estimated_cost - self.tokens
+        wait_time_seconds = 0
+        if self.tokens <= 0:
+            # Hard stop: Must wait to get back to a positive balance.
+            tokens_needed = 1 - self.tokens  # Need at least 1 token
+            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+            logger.warning(
+                f"Zero or negative tokens. Have: {self.tokens:.2f}. "
+                f"Waiting for {wait_time_seconds} seconds to ensure a positive balance."
+            )
+        elif self.tokens < estimated_cost:
+            # Controlled deficit: Proactively wait for a full bucket before making an expensive call.
+            tokens_needed = self.max_tokens - self.tokens
+            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+            logger.warning(
+                f"Insufficient tokens for estimated cost. Have: {self.tokens:.2f}, Need: {estimated_cost}. "
+                f"Proactively waiting for {wait_time_seconds} seconds to refill to max ({self.max_tokens}) tokens."
+            )
+
+        if wait_time_seconds > 0:
             if self.REFILL_RATE_PER_MINUTE > 0:
-                wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-                logger.warning(
-                    f"Insufficient tokens. Have: {self.tokens:.2f}, Need an estimated: {estimated_cost}. "
-                    f"Waiting for {wait_time_seconds} seconds to refill."
-                )
                 time.sleep(wait_time_seconds)
                 self._refill_tokens()
             else:
                 logger.error("Zero refill rate, cannot wait for tokens. Pausing for 15 minutes as a fallback.")
                 time.sleep(900)
                 self._refill_tokens()
-        
+
         logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
 
     def sync_tokens(self):
