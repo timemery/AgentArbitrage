@@ -69,7 +69,7 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
             {"role": "system", "content": "You are a book classification expert. Your task is to select the most appropriate seasonal category for a book from a given list."},
             {"role": "user", "content": prompt}
         ],
-        "model": "grok-4-fast", # Switched to the faster, cheaper model
+        "model": "grok-4-fast-reasoning", # Using the specific reasoning model
         "temperature": 0.1,
         "max_tokens": 50
     }
