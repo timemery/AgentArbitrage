@@ -115,6 +115,10 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
             processed_row['source'] = 'backfiller'
             rows_to_upsert.append(processed_row)
 
+        # --- Stability Fix ---
+        # Add a short delay to prevent CPU usage spikes that could get the worker killed.
+        time.sleep(1)
+
     if rows_to_upsert:
         logger.info(f"Appending {len(rows_to_upsert)} processed deals to temp_deals.json.")
         # Read existing data from the file, or start with an empty list
