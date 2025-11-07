@@ -14,7 +14,7 @@ JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'temp
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
 @celery.task(name='keepa_deals.importer_task.import_deals')
-def import_deals():
+def import_deals(previous_task_result=None):
     """
     Reads processed deals from a JSON file and upserts them into the SQLite database.
     This task is intended to be run automatically after the backfill_deals task completes.
