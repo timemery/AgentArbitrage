@@ -75,23 +75,43 @@ def _get_best_offer_analysis(product, seller_data_cache):
 
     logger.info(f"ASIN {asin} [SELLER DEBUG]: After offers loop - lowest_offer_price: {lowest_offer_price}, seller_id: {best_seller_id_from_offers}")
 
+    # --- Data Logic Fix ---
+    # Store all seller prices from the offers loop to re-associate them later.
+    offer_prices_to_seller_ids = {}
+    if offers:
+        for offer in offers:
+            try:
+                if isinstance(offer, dict):
+                    price = int(offer.get('offerCSV', [])[-2])
+                    shipping = int(offer.get('offerCSV', [])[-1])
+                    if shipping == -1: shipping = 0
+                    total_price = price + shipping
+                    seller_id = offer.get('sellerId')
+                    if seller_id:
+                        offer_prices_to_seller_ids[total_price] = seller_id
+            except (IndexError, TypeError, ValueError):
+                continue
+
     # Check stats.current[2] (USED price)
     stats_current_used = stats.get('current', [])[2] if stats.get('current') and len(stats['current']) > 2 else None
     logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.current[2] - value: {stats_current_used}")
     if stats_current_used is not None and 0 < stats_current_used < final_price:
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.current[2] ({stats_current_used}) is better than current final_price ({final_price}). Updating price and clearing seller.")
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.current[2] ({stats_current_used}) is better than current final_price ({final_price}). Updating price.")
         final_price = stats_current_used
-        final_seller_id = None # Invalidate seller ID, as this price isn't from a specific offer
+        # The seller ID is now determined *after* the final price is found.
         final_source = "stats.current[2]"
 
     # Check stats.buyBoxUsedPrice
     buy_box_price = stats.get('buyBoxUsedPrice')
     logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.buyBoxUsedPrice - value: {buy_box_price}")
     if buy_box_price is not None and 0 < buy_box_price < final_price:
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.buyBoxUsedPrice ({buy_box_price}) is better than current final_price ({final_price}). Updating price and clearing seller.")
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.buyBoxUsedPrice ({buy_box_price}) is better than current final_price ({final_price}). Updating price.")
         final_price = buy_box_price
-        final_seller_id = None # Invalidate seller ID
+        # The seller ID is now determined *after* the final price is found.
         final_source = "stats.buyBoxUsedPrice"
+
+    # After finding the absolute best price, try to find a matching seller.
+    final_seller_id = offer_prices_to_seller_ids.get(final_price, best_seller_id_from_offers)
 
 
     if final_price == float('inf'):
