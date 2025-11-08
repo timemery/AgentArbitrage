@@ -53,13 +53,13 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
             # This is the key insight from the diagnostic script.
             # The seller_info dictionary uses keys like 'Now' and 'Seller',
             # but the rest of the pipeline and the database expect keys like
-            # 'Price Now' and 'Seller Name'. We remap them here.
+            # 'Price_Now' and 'Seller'. We remap them here to match the database schema.
             key_mappings = {
-                'Now': 'Price Now',
-                'Seller': 'Seller Name',
-                'Seller ID': 'Seller ID',
-                'Seller Rank': 'Seller Rank',
-                'Seller_Quality_Score': 'Seller Quality Score'
+                'Now': 'Price_Now',
+                'Seller': 'Seller',
+                'Seller ID': 'Seller_ID',
+                'Seller Rank': 'Seller_Rank',
+                'Seller_Quality_Score': 'Seller_Quality_Score'
             }
             remapped_seller_info = {}
             for old_key, new_key in key_mappings.items():
@@ -78,7 +78,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     # 3. Business Calculations
     try:
         list_at_price = _parse_price(row_data.get('List at', '0'))
-        now_price = _parse_price(row_data.get('Price Now', '0')) # Corrected key
+        now_price = _parse_price(row_data.get('Price_Now', '0')) # Corrected key
         fba_fee = _parse_price(row_data.get('FBA Pick&Pack Fee', '0'))
         referral_percent = _parse_percent(row_data.get('Referral Fee %', '0'))
         shipping_included_flag = str(row_data.get('Shipping Included', 'no')).lower() == 'yes'
