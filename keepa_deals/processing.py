@@ -56,7 +56,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
             # 'Price Now' and 'Seller Name'. We remap them here.
             key_mappings = {
                 'Now': 'Price Now',
-                'Seller': 'Seller Name',
+                'Seller': 'Seller',
                 'Seller ID': 'Seller ID',
                 'Seller Rank': 'Seller Rank',
                 'Seller_Quality_Score': 'Seller Quality Score'
@@ -71,6 +71,8 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
             # The 'Best Price' is an alias for the 'Now' price.
             if 'Price Now' in remapped_seller_info:
                 row_data['Best Price'] = remapped_seller_info['Price Now']
+            elif 'Price_Now' in remapped_seller_info:
+                row_data['Best Price'] = remapped_seller_info['Price_Now']
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
