@@ -223,7 +223,7 @@ def infer_sale_events(product):
 
         # --- Search for subsequent signals ---
         confirmed_sales = []
-        search_window = timedelta(hours=72)
+        search_window = timedelta(hours=168)
         df_rank = df_rank.sort_values('timestamp').reset_index(drop=True)
         df_rank['rank_diff'] = df_rank['rank'].diff()
         
