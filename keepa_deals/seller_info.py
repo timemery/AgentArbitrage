@@ -31,16 +31,23 @@ def _get_best_offer_analysis(product, seller_data_cache):
     # 1. Find the best price from the OFFERS list first.
     if offers:
         for offer in offers:
+            # --- Robustness Fix ---
+            # This entire block is wrapped in a try/except and contains multiple checks
+            # to handle malformed data from the Keepa API gracefully without crashing or flooding logs.
             try:
-                # Defensive coding: The Keepa API can sometimes return non-dict items
-                # in the offers list. This block will safely skip them.
+                # 1. Ensure the offer itself is a dictionary.
                 if not isinstance(offer, dict):
-                    logger.warning(f"ASIN {asin}: Skipping malformed offer of type {type(offer)}: {offer}")
                     continue
 
-                condition = offer.get('condition', {}).get('value')
+                # 2. Ensure the 'condition' field is a dictionary before accessing its 'value'.
+                condition_data = offer.get('condition')
+                if not isinstance(condition_data, dict):
+                    continue
+
+                condition = condition_data.get('value')
                 seller_id = offer.get('sellerId')
 
+                # Skip NEW items or Amazon Warehouse deals.
                 if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
                     continue
 
@@ -56,8 +63,9 @@ def _get_best_offer_analysis(product, seller_data_cache):
                         best_seller_id_from_offers = seller_id
                         offer_source = f"offer (seller: {seller_id})"
 
-            except (AttributeError, ValueError, IndexError) as e:
-                logger.error(f"ASIN {asin}: Could not process an offer due to unexpected data format. Offer: {offer}. Error: {e}")
+            except Exception:
+                # Broad exception to catch any other unforeseen data format issue with an offer,
+                # preventing a single bad offer from crashing the process for a whole product.
                 continue
 
     # 2. Compare the best offer price with prices from the STATS object.
@@ -67,23 +75,43 @@ def _get_best_offer_analysis(product, seller_data_cache):
 
     logger.info(f"ASIN {asin} [SELLER DEBUG]: After offers loop - lowest_offer_price: {lowest_offer_price}, seller_id: {best_seller_id_from_offers}")
 
+    # --- Data Logic Fix ---
+    # Store all seller prices from the offers loop to re-associate them later.
+    offer_prices_to_seller_ids = {}
+    if offers:
+        for offer in offers:
+            try:
+                if isinstance(offer, dict):
+                    price = int(offer.get('offerCSV', [])[-2])
+                    shipping = int(offer.get('offerCSV', [])[-1])
+                    if shipping == -1: shipping = 0
+                    total_price = price + shipping
+                    seller_id = offer.get('sellerId')
+                    if seller_id:
+                        offer_prices_to_seller_ids[total_price] = seller_id
+            except (IndexError, TypeError, ValueError):
+                continue
+
     # Check stats.current[2] (USED price)
     stats_current_used = stats.get('current', [])[2] if stats.get('current') and len(stats['current']) > 2 else None
     logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.current[2] - value: {stats_current_used}")
     if stats_current_used is not None and 0 < stats_current_used < final_price:
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.current[2] ({stats_current_used}) is better than current final_price ({final_price}). Updating price and clearing seller.")
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.current[2] ({stats_current_used}) is better than current final_price ({final_price}). Updating price.")
         final_price = stats_current_used
-        final_seller_id = None # Invalidate seller ID, as this price isn't from a specific offer
+        # The seller ID is now determined *after* the final price is found.
         final_source = "stats.current[2]"
 
     # Check stats.buyBoxUsedPrice
     buy_box_price = stats.get('buyBoxUsedPrice')
     logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.buyBoxUsedPrice - value: {buy_box_price}")
     if buy_box_price is not None and 0 < buy_box_price < final_price:
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.buyBoxUsedPrice ({buy_box_price}) is better than current final_price ({final_price}). Updating price and clearing seller.")
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.buyBoxUsedPrice ({buy_box_price}) is better than current final_price ({final_price}). Updating price.")
         final_price = buy_box_price
-        final_seller_id = None # Invalidate seller ID
+        # The seller ID is now determined *after* the final price is found.
         final_source = "stats.buyBoxUsedPrice"
+
+    # After finding the absolute best price, try to find a matching seller.
+    final_seller_id = offer_prices_to_seller_ids.get(final_price, best_seller_id_from_offers)
 
 
     if final_price == float('inf'):

@@ -107,16 +107,18 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)
 
-    # 5. Seasonality
+    # 5. Seasonality (Two-Pass Analysis)
+    # This must run *after* the main analytics functions in Step 1 & 4 have
+    # populated the row_data with 'Peak Season' and 'Trough Season'.
     try:
         title = row_data.get('Title', '')
         categories = row_data.get('Categories - Sub', '')
         manufacturer = row_data.get('Manufacturer', '')
 
-        # Extract peak and trough seasons from the pre-calculated analytics cache
-        analytics_cache = product_data.get('analytics_cache', {})
-        peak_season_str = analytics_cache.get('peak_season', '-')
-        trough_season_str = analytics_cache.get('trough_season', '-')
+        # FIX: Extract peak and trough seasons from row_data, which was populated
+        # by the get_peak_season and get_trough_season functions earlier.
+        peak_season_str = row_data.get('Peak Season', '-')
+        trough_season_str = row_data.get('Trough Season', '-')
 
         detailed_season = classify_seasonality(
             title,
@@ -127,6 +129,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
             xai_api_key=xai_api_key
         )
 
+        # Overwrite the 'Detailed_Seasonality' from heuristics with the refined AI result.
         row_data['Detailed_Seasonality'] = "None" if detailed_season == "Year-round" else detailed_season
         row_data['Sells'] = get_sells_period(detailed_season)
     except Exception as e:

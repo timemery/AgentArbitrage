@@ -8,8 +8,8 @@ APP_DIR=$(pwd)
 LOG_FILE="$APP_DIR/celery.log"
 # Use the python3 in the current environment's PATH
 PYTHON_EXEC="python3"
-WORKER_COMMAND="$PYTHON_EXEC -m celery -A worker.celery worker --beat --loglevel=INFO"
-PURGE_COMMAND="$PYTHON_EXEC -m celery -A worker.celery purge -f"
+WORKER_COMMAND="$PYTHON_EXEC -m celery -A worker.celery_app worker --beat --loglevel=INFO"
+PURGE_COMMAND="$PYTHON_EXEC -m celery -A worker.celery_app purge -f"
 
 # Step 2: Kill any lingering Celery worker processes.
 echo "Attempting to stop any old Celery workers..."

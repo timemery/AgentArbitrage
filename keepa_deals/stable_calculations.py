@@ -14,33 +14,41 @@ import os
 import httpx
 import time
 from scipy import stats as st
+from .xai_token_manager import XaiTokenManager
+from .xai_cache import XaiCache
 
-# --- XAI Rate Limiter ---
-XAI_LAST_CALL_TIMESTAMP = 0
-XAI_MIN_INTERVAL_SECONDS = 3  # At least 3 seconds between calls
-
+# Initialize cache and token manager at the module level
+xai_cache = XaiCache()
+xai_token_manager = XaiTokenManager()
 
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
 
-
 def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
     """
-    Queries the XAI API to act as a reasonableness check for a calculated price.
+    Queries the XAI API to act as a reasonableness check for a calculated price,
+    now with caching and token management.
     """
-    global XAI_LAST_CALL_TIMESTAMP
-    elapsed = time.time() - XAI_LAST_CALL_TIMESTAMP
-    if elapsed < XAI_MIN_INTERVAL_SECONDS:
-        wait_time = XAI_MIN_INTERVAL_SECONDS - elapsed
-        logging.info(f"XAI rate limit (reasonableness): waiting for {wait_time:.2f}s.")
-        time.sleep(wait_time)
-
-    XAI_LAST_CALL_TIMESTAMP = time.time()
-
     if not api_key:
         logging.warning("XAI_API_KEY not provided. Skipping reasonableness check.")
-        return True  # Default to reasonable if API is not configured
+        return True
 
+    # 1. Create a unique cache key
+    cache_key = f"reasonableness:{title}|{category}|{season}|{price_usd:.2f}"
+
+    # 2. Check cache first
+    cached_result = xai_cache.get(cache_key)
+    if cached_result is not None:
+        is_reasonable = cached_result.lower() == 'true'
+        logging.info(f"XAI Cache HIT for reasonableness. Found '{is_reasonable}' for title '{title}'.")
+        return is_reasonable
+
+    # 3. If not in cache, check for permission to make a call
+    if not xai_token_manager.request_permission():
+        logging.warning(f"XAI daily limit reached. Cannot perform reasonableness check for '{title}'. Defaulting to reasonable.")
+        return True
+
+    # 4. If permission granted, proceed with the API call
     prompt = f"""
     Given the following book details, is a peak selling price of ${price_usd:.2f} reasonable?
     Respond with only "Yes" or "No".
@@ -51,41 +59,30 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
     """
     payload = {
         "messages": [{"role": "user", "content": prompt}],
-        "model": "grok-4-latest", "temperature": 0.1, "max_tokens": 10
+        "model": "grok-4-fast-reasoning", "temperature": 0.1, "max_tokens": 10
     }
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    max_retries = 4
-    base_delay = 5  # Start with a 5-second delay
+    logging.info(f"XAI Reasonableness Request for '{title}' (Cache MISS)")
 
-    for attempt in range(max_retries):
-        try:
-            with httpx.Client(timeout=30.0) as client:
-                response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+            response.raise_for_status()
 
-                if response.status_code == 429:
-                    # Specific handling for rate limiting
-                    delay = base_delay * (2 ** attempt)
-                    logging.warning(f"XAI API rate limit hit (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
-                    time.sleep(delay)
-                    continue # Go to the next attempt
+            content = response.json()['choices'][0]['message']['content'].strip().lower()
+            is_reasonable = "yes" in content
 
-                response.raise_for_status() # Raise exceptions for other bad responses (500, etc.)
+            logging.info(f"XAI Reasonableness Check for '{title}' at ${price_usd:.2f}: AI responded '{content}'")
 
-                content = response.json()['choices'][0]['message']['content'].strip().lower()
-                logging.info(f"XAI Reasonableness Check for '{title}' at ${price_usd:.2f}: AI responded '{content}'")
-                return "yes" in content
+            # 5. Cache the successful result as a string
+            xai_cache.set(cache_key, str(is_reasonable))
+            return is_reasonable
 
-        except httpx.RequestError as e:
-            logging.error(f"XAI API request (reasonableness) failed: {e}")
-            # For network errors, it's often best to fail fast and default to reasonable
-            return True
-        except Exception as e:
-            logging.error(f"An unexpected error occurred during XAI reasonableness check: {e}")
-            return True # Default to reasonable on unknown errors
-
-    logging.error(f"XAI API (reasonableness) failed after {max_retries} retries. Defaulting to reasonable.")
-    return True # Default to reasonable if all retries fail
+    except (httpx.HTTPStatusError, httpx.RequestError, Exception) as e:
+        logging.error(f"An unexpected error occurred during XAI reasonableness check for '{title}': {e}")
+        # Default to reasonable on any API error
+        return True
 
 # Percent Down 365 starts
 def percent_down_365(product):

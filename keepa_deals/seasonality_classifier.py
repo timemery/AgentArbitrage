@@ -3,16 +3,15 @@ import re
 import httpx
 import json
 import logging
-import time
+from .xai_token_manager import XaiTokenManager
+from .xai_cache import XaiCache
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# --- XAI Rate Limiter ---
-# Basic rate limiting to prevent spamming the API.
-# This is a simple in-memory implementation suitable for a single-process worker.
-XAI_LAST_CALL_TIMESTAMP = 0
-XAI_MIN_INTERVAL_SECONDS = 3  # At least 3 seconds between calls
+# Initialize cache and token manager at the module level to act as singletons
+xai_cache = XaiCache()
+xai_token_manager = XaiTokenManager()
 
 SEASON_CLASSIFICATIONS = [
     "Textbook (Summer)", "Textbook (Winter)", "High School AP Textbooks",
@@ -24,27 +23,29 @@ SEASON_CLASSIFICATIONS = [
 
 def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_str, trough_season_str, api_key):
     """
-    Queries the XAI API to classify seasonality, now with sales data insights.
-    Includes rate limiting.
+    Queries the XAI API to classify seasonality, now with caching and token management.
     """
-    global XAI_LAST_CALL_TIMESTAMP
-
-    # --- Rate Limiting Check ---
-    elapsed = time.time() - XAI_LAST_CALL_TIMESTAMP
-    if elapsed < XAI_MIN_INTERVAL_SECONDS:
-        wait_time = XAI_MIN_INTERVAL_SECONDS - elapsed
-        logger.info(f"XAI rate limit: waiting for {wait_time:.2f} seconds.")
-        time.sleep(wait_time)
-
-    XAI_LAST_CALL_TIMESTAMP = time.time()
-
     if not api_key:
         logger.warning("XAI API key is not provided. Skipping LLM classification.")
         return "Year-round"
 
+    # 1. Create a unique cache key
+    cache_key = f"seasonality:{title}|{categories_sub}|{manufacturer}"
+
+    # 2. Check cache first
+    cached_result = xai_cache.get(cache_key)
+    if cached_result:
+        logger.info(f"XAI Cache HIT for seasonality. Found classification '{cached_result}' for title '{title}'.")
+        return cached_result
+
+    # 3. If not in cache, check for permission to make a call
+    if not xai_token_manager.request_permission():
+        logger.warning(f"XAI daily limit reached. Cannot classify '{title}'. Defaulting to Year-round.")
+        return "Year-round"
+
+    # 4. If permission granted, proceed with the API call
     prompt = f"""
     Based on the following book details and historical sales data, choose the single most likely sales season from the provided list.
-    The sales data indicates when the book's price has historically been highest (peak) and lowest (trough).
     Respond with ONLY the name of the season from the list.
 
     **Book Details:**
@@ -60,24 +61,15 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
     {', '.join(SEASON_CLASSIFICATIONS)}
     """
 
-    # --- DETAILED LOGGING FOR DEBUGGING ---
-    logger.info(f"XAI Seasonality Request for ASIN '{title}':")
+    logger.info(f"XAI Seasonality Request for ASIN '{title}' (Cache MISS):")
     logger.info(f"  - Peak: {peak_season_str}, Trough: {trough_season_str}")
-    prompt_snippet = prompt[:250].replace('\n', ' ')
-    logger.info(f"  - Prompt Snippet: {prompt_snippet}...")
 
     payload = {
         "messages": [
-            {
-                "role": "system",
-                "content": "You are a book classification expert. Your task is to select the most appropriate seasonal category for a book from a given list."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
+            {"role": "system", "content": "You are a book classification expert. Your task is to select the most appropriate seasonal category for a book from a given list."},
+            {"role": "user", "content": prompt}
         ],
-        "model": "grok-4-latest",
+        "model": "grok-4-fast-reasoning", # Using the specific reasoning model
         "temperature": 0.1,
         "max_tokens": 50
     }
@@ -87,41 +79,25 @@ def _query_xai_for_seasonality(title, categories_sub, manufacturer, peak_season_
         "Content-Type": "application/json"
     }
 
-    max_retries = 4
-    base_delay = 5 # Start with a 5-second delay
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+            response.raise_for_status() # This will now handle 429 errors as failures
+            data = response.json()
+            llm_choice = data['choices'][0]['message']['content'].strip()
 
-    for attempt in range(max_retries):
-        try:
-            with httpx.Client(timeout=30.0) as client:
-                response = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+            if llm_choice in SEASON_CLASSIFICATIONS:
+                logger.info(f"LLM classified '{title}' as: {llm_choice}")
+                xai_cache.set(cache_key, llm_choice) # 5. Cache the successful result
+                return llm_choice
+            else:
+                logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
+                return "Year-round"
 
-                if response.status_code == 429:
-                    delay = base_delay * (2 ** attempt)
-                    logger.warning(f"XAI API rate limit hit for seasonality (attempt {attempt + 1}/{max_retries}). Retrying in {delay} seconds...")
-                    time.sleep(delay)
-                    continue
-
-                response.raise_for_status()
-                data = response.json()
-
-                # --- DETAILED LOGGING FOR DEBUGGING ---
-                logger.info(f"XAI Seasonality Raw Response for ASIN '{title}':\n{json.dumps(data, indent=2)}")
-
-                llm_choice = data['choices'][0]['message']['content'].strip()
-
-                if llm_choice in SEASON_CLASSIFICATIONS:
-                    logger.info(f"LLM classified '{title}' as: {llm_choice}")
-                    return llm_choice
-                else:
-                    logger.warning(f"LLM returned an invalid classification: '{llm_choice}'. Defaulting to Year-round.")
-                    return "Year-round"
-
-        except (httpx.RequestError, json.JSONDecodeError, KeyError, IndexError) as e:
-            logger.error(f"XAI API request failed for title '{title}': {e}")
-            return "Year-round" # Fail fast on non-rate-limit errors
-
-    logger.error(f"XAI API (seasonality) failed after {max_retries} retries for title '{title}'. Defaulting to Year-round.")
-    return "Year-round"
+    except (httpx.HTTPStatusError, httpx.RequestError, json.JSONDecodeError, KeyError, IndexError) as e:
+        logger.error(f"XAI API request failed for title '{title}': {e}")
+        # We no longer retry here; the token manager prevents us from hitting 429s.
+        return "Year-round"
 
 
 def classify_seasonality(title, categories_sub, manufacturer, peak_season_str, trough_season_str, xai_api_key=None):
