@@ -24,3 +24,4 @@ trigger_task.py*.log
 watermark.json
 cjar
 celerybeat-schedule
+xai_token_state.json

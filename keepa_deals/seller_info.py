@@ -92,26 +92,37 @@ def _get_best_offer_analysis(product, seller_data_cache):
             except (IndexError, TypeError, ValueError):
                 continue
 
-    # Check stats.current[2] (USED price)
+    # --- Final, Simplified Logic ---
+    # Find the best price from the STATS object.
+    best_stats_price = float('inf')
+    stats_source = "N/A"
     stats_current_used = stats.get('current', [])[2] if stats.get('current') and len(stats['current']) > 2 else None
-    logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.current[2] - value: {stats_current_used}")
-    if stats_current_used is not None and 0 < stats_current_used < final_price:
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.current[2] ({stats_current_used}) is better than current final_price ({final_price}). Updating price.")
-        final_price = stats_current_used
-        # The seller ID is now determined *after* the final price is found.
-        final_source = "stats.current[2]"
-
-    # Check stats.buyBoxUsedPrice
+    if stats_current_used is not None and 0 < stats_current_used:
+        best_stats_price = stats_current_used
+        stats_source = "stats.current[2]"
     buy_box_price = stats.get('buyBoxUsedPrice')
-    logger.info(f"ASIN {asin} [SELLER DEBUG]: Checking stats.buyBoxUsedPrice - value: {buy_box_price}")
-    if buy_box_price is not None and 0 < buy_box_price < final_price:
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: stats.buyBoxUsedPrice ({buy_box_price}) is better than current final_price ({final_price}). Updating price.")
-        final_price = buy_box_price
-        # The seller ID is now determined *after* the final price is found.
-        final_source = "stats.buyBoxUsedPrice"
+    if buy_box_price is not None and 0 < buy_box_price < best_stats_price:
+        best_stats_price = buy_box_price
+        stats_source = "stats.buyBoxUsedPrice"
 
-    # After finding the absolute best price, try to find a matching seller.
-    final_seller_id = offer_prices_to_seller_ids.get(final_price, best_seller_id_from_offers)
+    # Compare the best offer price with the best stats price and decide.
+    if final_price <= best_stats_price:
+        # The best price is from a specific offer, which we already have.
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: Best price is from OFFERS: ${final_price/100:.2f}, Seller: {final_seller_id}")
+    elif offer_prices_to_seller_ids:
+        # The stats price is better, AND we have offers to associate with.
+        # Find the closest offer for data integrity.
+        closest_offer_price = min(offer_prices_to_seller_ids.keys(), key=lambda k: abs(k - best_stats_price))
+        final_price = closest_offer_price
+        final_seller_id = offer_prices_to_seller_ids[closest_offer_price]
+        final_source = f"closest offer to {stats_source}"
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: Stats price was better. Adopting closest offer: Price=${final_price/100:.2f}, Seller={final_seller_id}")
+    else:
+        # The stats price is better, but there are NO offers. Use the stats price directly.
+        final_price = best_stats_price
+        final_seller_id = None
+        final_source = stats_source
+        logger.info(f"ASIN {asin} [SELLER DEBUG]: Stats price is best, but no offers. Using stats price: ${final_price/100:.2f}")
 
 
     if final_price == float('inf'):

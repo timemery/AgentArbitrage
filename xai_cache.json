@@ -38,5 +38,13 @@
     "reasonableness:The Ultimate Egg Bites Cookbook: Delicious Egg Bites You Can Make at Home Using an Egg Bite Maker|Books > Subjects > Cookbooks, Food & Wine > Cooking Methods|Aug|495.51": "False",
     "seasonality:Can You See a Chimpanzee?: All About Primates (Cat in the Hat's Learning Library)|Children's Books, Animals, Apes & Monkeys|Random House Books for Young Readers": "Christmas",
     "seasonality:All The Truths: A Dark New Adult Romance (Lies & Truths Duet)|Literature & Fiction, Genre Fiction, Gothic|Blackthorn Books, LLC": "Halloween",
-    "seasonality:The Maple Hills Hannah Grace 2 Books Collection Set (Icebreaker, Wildfire)|Literature & Fiction|Simon & Schuster Ltd": "Romance/Valentine's Day"
+    "seasonality:The Maple Hills Hannah Grace 2 Books Collection Set (Icebreaker, Wildfire)|Literature & Fiction|Simon & Schuster Ltd": "Romance/Valentine's Day",
+    "reasonableness:Can You See a Chimpanzee?: All About Primates (Cat in the Hat's Learning Library)|Books > Subjects > Children's Books > Animals > Apes & Monkeys|May|12.69": "True",
+    "reasonableness:All The Truths: A Dark New Adult Romance (Lies & Truths Duet)|Books > Subjects > Literature & Fiction > Genre Fiction > Gothic|Oct|24.00": "True",
+    "seasonality:Survivants: 1916: Attaques Du Requin (French Edition)|Children's Books, Literature & Fiction, Historical Fiction|Scholastic": "Year-round",
+    "seasonality:El Conocimiento del Dios Santo (Spanish Edition)|Religion & Spirituality, Christian Books & Bibles, Theology, Apologetics|Vida": "Year-round",
+    "seasonality:Royal Elite Epilogue|Literature & Fiction|Blackthorn Books, LLC": "Year-round",
+    "reasonableness:El Conocimiento del Dios Santo (Spanish Edition)|Books > Subjects > Religion & Spirituality > Christian Books & Bibles > Theology > Apologetics|Jun|24.52": "True",
+    "reasonableness:Royal Elite Epilogue|Books > Subjects > Literature & Fiction|Oct|4.69": "True",
+    "reasonableness:Let There Be Light|Books > Subjects > Science & Math > Physics > Optics|Feb|44.50": "True"
 }

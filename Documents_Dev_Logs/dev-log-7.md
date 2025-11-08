@@ -527,3 +527,43 @@ So, the current fix is a pragmatic trade-off. It prioritizes **stability**. It a
 
 - **Partial Success:** The primary objective of making the pipeline architecturally stable and able to run to completion **was achieved**. The final test runs successfully executed the entire `backfill -> import` chain, and data was successfully written to the database without the process being killed or the database write failing silently.
 - **Partial Failure:** The task **was not a complete success** because the ultimate business goal of producing usable, correct data was not met. Despite the final attempts to fix the data logic, the pipeline still produces data with incorrect or missing values in key columns related to seller information and XAI-driven analytics. The architectural problems were solved, but the data-layer problems remain.
+
+# Dev Log - Task: Fix Data Quality Issues
+
+**Date:** 2025-11-08
+
+**Objective:** Resolve multiple data quality issues in the deals dashboard, primarily related to empty or default values in seller information columns (`Seller`, `Seller ID`, `Seller Rank`, `Seller Quality Score`) and analytics columns (`List_at`, `Detailed_Seasonality`, `Sells`).
+
+---
+
+### Initial Analysis & Actions
+
+- **Problem 1: Analytics Columns (Seasonality, etc.)**: Initial investigation suggested that the `List_at` price and seasonality calculations were failing because an underlying function, `infer_sale_events` in `keepa_deals/stable_calculations.py`, was not generating a sufficient number of sale events to meet the minimum threshold for analysis.
+- **Action 1**: The `search_window` variable in the `infer_sale_events` function was changed from `timedelta(hours=72)` to `timedelta(hours=168)`. This change was successful and resulted in the correct population of the `List_at`, `Detailed_Seasonality`, and `Sells` columns in subsequent test runs.
+
+- **Problem 2: Seller Information Columns**: The `Seller`, `Seller ID`, and related columns were consistently empty. The root cause was identified in the `_get_best_offer_analysis` function in `keepa_deals/seller_info.py`, where the association between the best price and the seller was being lost, particularly when a better price was found in the generic `stats` object rather than a specific `offers` entry.
+
+---
+
+### Iterative Development & Challenges
+
+A series of iterative changes were made to address the seller information issue, which led to several challenges and regressions.
+
+1.  **First Attempt (`seller_info.py`)**: The logic was modified to find the "closest" matching offer price if a better price was found in the `stats` object. This led to a user concern about data integrity (associating a seller with a price they didn't actually offer).
+
+2.  **Second Attempt (`seller_info.py`)**: The logic was revised to adopt both the price and the seller ID from the closest matching offer. This change, however, introduced a critical regression where the "Now" price column became empty.
+
+3.  **Third Attempt (File Resets & Re-implementation)**: An attempt to revert the faulty logic using `git restore` and `reset_all` was unsuccessful due to unexpected behavior in the environment. The files were eventually reset by manually overwriting them with content from the last commit. A final, robust version of the price-finding logic was then implemented in `seller_info.py`, which successfully fixed the empty "Now" price column.
+
+4.  **Key Mapping Issues (`processing.py`)**: Throughout the process, multiple conflicting changes were made to the `key_mappings` dictionary in `keepa_deals/processing.py` in an attempt to fix data propagation issues. This led to a "whack-a-mole" scenario where fixing one column (e.g., `Now`) would break another (e.g., `Seller Name`).
+
+5.  **Diagnostic Script**: To resolve the persistent mapping issues, a diagnostic script (`diag_seller_info.py`) was created. This script isolated the `get_all_seller_info` function and printed its raw output, confirming that the function itself was correctly calculating all required values, including the Seller Name and Seller Quality Score. This proved the remaining bug was in the downstream processing.
+
+---
+
+### Final State & Task Outcome
+
+- **Outcome**: Partial Success.
+- **What is working**: The `Now`, `% ⇩`, `Season`, `Sells`, and `Name` columns are now populated with correct data. The underlying logic for sale inference and price-finding appears to be robust.
+- **What is NOT working**: The `Trust` column (`Seller_Quality_Score`) remains empty (`-`) in the final UI and database output.
+- **Reason**: Despite the diagnostic script confirming that the `Seller_Quality_Score` is being correctly calculated and returned from the `get_all_seller_info` function, this value is being dropped somewhere in the `_process_single_deal` function before being saved to the database. The root cause of this final data-loss issue was not identified.
