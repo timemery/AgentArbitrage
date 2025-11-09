@@ -401,6 +401,7 @@ button:disabled {
     border-right: 1px solid rgba(102, 153, 204, 0.4);
     border-top: 0;
     border-left: 0;
+    white-space: nowrap; /* Prevent wrapping on all columns */
 }
 
 /* Add top border to all header cells */
@@ -512,18 +513,38 @@ button:disabled {
     padding: 8px 16px;
     margin: 0 5px;
 }
-.title-cell, .seller-cell, .genre-cell {
-    max-width: 120px;
-    white-space: nowrap;
+
+/* Base style for truncated cells */
+.title-cell, .seller-cell, .genre-cell, .season-detail-cell {
+    max-width: 120px; /* Standardized width */
     overflow: hidden;
     text-overflow: ellipsis;
+    position: relative; /* Needed for hover effect */
 }
 
+/* Specific width for season detail to match title */
 .season-detail-cell {
-    max-width: 175px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+/* Hover effect for truncated cells */
+.title-cell:hover,
+.seller-cell:hover,
+.genre-cell:hover,
+.season-detail-cell:hover {
+    overflow: visible; /* Allow the inner span to overflow the cell bounds */
+}
+
+/* Style the inner span on hover */
+.deal-row:hover .title-cell:hover span,
+.deal-row:hover .seller-cell:hover span,
+.deal-row:hover .genre-cell:hover span,
+.deal-row:hover .season-detail-cell:hover span {
+    position: relative; /* Ensure z-index is respected */
+    background-color: #011b2a;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    padding: 2px 5px; /* Add some padding for better appearance */
 }
 
 /* New Dashboard Layout Styles */
