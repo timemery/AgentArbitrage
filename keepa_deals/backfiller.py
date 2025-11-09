@@ -33,7 +33,7 @@ load_dotenv()
 # --- TEMPORARY TEST LIMIT ---
 # To prevent long runs that may hit memory limits, this temporarily limits
 # the number of deals processed. Set to None for a full production run.
-TEMP_DEAL_LIMIT = 10
+TEMP_DEAL_LIMIT = 110
 
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')

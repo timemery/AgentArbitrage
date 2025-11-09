@@ -567,3 +567,21 @@ A series of iterative changes were made to address the seller information issue,
 - **What is working**: The `Now`, `% ⇩`, `Season`, `Sells`, and `Name` columns are now populated with correct data. The underlying logic for sale inference and price-finding appears to be robust.
 - **What is NOT working**: The `Trust` column (`Seller_Quality_Score`) remains empty (`-`) in the final UI and database output.
 - **Reason**: Despite the diagnostic script confirming that the `Seller_Quality_Score` is being correctly calculated and returned from the `get_all_seller_info` function, this value is being dropped somewhere in the `_process_single_deal` function before being saved to the database. The root cause of this final data-loss issue was not identified.
+
+**Dev Log - Task: Fix Final Data Quality Issues**
+
+- **Date:** 2025-11-08
+- **Objective:** Resolve the final remaining data quality issue where the `Seller_Quality_Score` (aliased as the "Trust" column) was consistently empty in the deals dashboard. This task was a continuation of a previous effort that had successfully fixed other data quality problems.
+- **Initial Analysis:** The starting point was the previous dev log, which concluded that the `Seller_Quality_Score` value was being correctly calculated by the `get_all_seller_info` function but was being dropped somewhere within the `_process_single_deal` function in `keepa_deals/processing.py` before database insertion.
+- Investigation & Actions:
+  1. The investigation began by examining the code in `keepa_deals/processing.py`, specifically focusing on the `key_mappings` dictionary, which was identified in previous logs as a source of similar bugs.
+  2. The `headers.json` file, which serves as the canonical source for all database and display column names, was inspected to determine the correct header for the seller quality score. This revealed the expected key was `Seller_Quality_Score` (with an underscore).
+  3. A comparison between `headers.json` and the `key_mappings` dictionary in `processing.py` revealed a discrepancy. The mapping was incorrectly changing the key from `Seller_Quality_Score` to `Seller Quality Score` (with a space), causing it to be dropped by downstream processes that expected the original key.
+  4. A patch was applied to correct this mapping, ensuring the key remained unchanged throughout the processing pipeline.
+- Verification & Challenges:
+  1. The primary challenge was ensuring the fix was correct and did not introduce regressions. To verify, the full pipeline diagnostic script (`diag_full_pipeline.py`) was executed.
+  2. The initial run of the script failed due to missing Python dependencies (`ModuleNotFoundError`). This was resolved by installing all required packages from `requirements.txt`.
+  3. The second run of the script failed because the necessary API keys were not available (`KEEPA_API_KEY: NOT FOUND`). This was resolved by creating a `.env` file in the project root with the required credentials.
+  4. The final run of the diagnostic script completed successfully. The log output was inspected and confirmed that the `Seller_Quality_Score` was now present in the final processed data with the correct key.
+- **Outcome:** Success.
+- **Reasoning:** The task successfully resolved the final data quality issue. The "Trust" column is now populated correctly in the database. The fix was verified through a full-pipeline diagnostic test, which confirmed the data was flowing correctly from the initial API call to the final processing stage without regressions. The user confirmed visually that all columns now contain data.
