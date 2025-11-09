@@ -528,9 +528,13 @@ button:disabled {
 }
 
 /* Hover effect to show full content */
-.title-cell:hover, .seller-cell:hover, .genre-cell:hover, .season-detail-cell:hover {
+/* Increased specificity to override the general row hover effect */
+.deal-row:hover .title-cell:hover,
+.deal-row:hover .seller-cell:hover,
+.deal-row:hover .genre-cell:hover,
+.deal-row:hover .season-detail-cell:hover {
     overflow: visible;
-    background-color: #011b2a;
+    background-color: #011b2a; /* Use the same dark, opaque color as the sort-arrow row */
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,0.4);
 }
