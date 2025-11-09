@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
                     } else if (col === 'Title') {
                         const fullTitle = deal[col] || '';
-                        table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
+                        table += `<td class="title-cell" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
                     } else if (col === 'Categories___Sub') {
                         let displayValue = value;
                         if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
@@ -363,13 +363,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (displayValue.trim() === '' || displayValue.trim() === '-') {
                             displayValue = 'No Subject Listed';
                         }
-                        table += `<td class="genre-cell">${displayValue}</td>`;
+                        table += `<td class="genre-cell"><span>${displayValue}</span></td>`;
                     } else if (col === 'Detailed_Seasonality') {
-                        table += `<td class="season-detail-cell">${value}</td>`;
+                        table += `<td class="season-detail-cell"><span>${value}</span></td>`;
                     } else if (col === 'Sells') {
-                        table += `<td class="sells-cell">${value}</td>`;
+                        table += `<td class="sells-cell"><span>${value}</span></td>`;
                     } else if (col === 'Seller') {
-                        table += `<td class="seller-cell">${value}</td>`;
+                        table += `<td class="seller-cell"><span>${value}</span></td>`;
                     } else if (col === 'ASIN') {
                         table += `<td>${cleanAsin}</td>`;
                     } else if (col === 'Best_Price' && cleanAsin) {

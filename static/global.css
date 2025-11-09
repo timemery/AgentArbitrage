@@ -527,16 +527,24 @@ button:disabled {
     max-width: 120px;
 }
 
-/* Hover effect to show full content */
-/* Increased specificity to override the general row hover effect */
-.deal-row:hover .title-cell:hover,
-.deal-row:hover .seller-cell:hover,
-.deal-row:hover .genre-cell:hover,
-.deal-row:hover .season-detail-cell:hover {
-    overflow: visible;
-    background-color: #011b2a; /* Use the same dark, opaque color as the sort-arrow row */
+/* Hover effect for truncated cells */
+.title-cell:hover,
+.seller-cell:hover,
+.genre-cell:hover,
+.season-detail-cell:hover {
+    overflow: visible; /* Allow the inner span to overflow the cell bounds */
+}
+
+/* Style the inner span on hover */
+.deal-row:hover .title-cell:hover span,
+.deal-row:hover .seller-cell:hover span,
+.deal-row:hover .genre-cell:hover span,
+.deal-row:hover .season-detail-cell:hover span {
+    position: relative; /* Ensure z-index is respected */
+    background-color: #011b2a;
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    padding: 2px 5px; /* Add some padding for better appearance */
 }
 
 /* New Dashboard Layout Styles */
