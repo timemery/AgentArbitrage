@@ -530,8 +530,7 @@ button:disabled {
 /* Hover effect to show full content */
 .title-cell:hover, .seller-cell:hover, .genre-cell:hover, .season-detail-cell:hover {
     overflow: visible;
-    white-space: normal; /* Allow text to wrap on hover */
-    background-color: #011b2a; /* Use sort arrow row color for contrast */
+    background-color: #011b2a;
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,0.4);
 }

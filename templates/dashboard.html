@@ -264,6 +264,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderTable(deals) {
+        // Ensure the table headers are always visible, even if there are no deals.
+        // This prevents the Playwright script from timing out.
+        document.querySelector('#deals-table').style.visibility = 'visible';
+
         let table = '<table><thead>';
 
         // Add the new group header row
