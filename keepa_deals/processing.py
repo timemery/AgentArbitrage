@@ -59,7 +59,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
                 'Seller': 'Seller',
                 'Seller ID': 'Seller ID',
                 'Seller Rank': 'Seller Rank',
-                'Seller_Quality_Score': 'Seller Quality Score'
+                'Seller_Quality_Score': 'Seller_Quality_Score'
             }
             remapped_seller_info = {}
             for old_key, new_key in key_mappings.items():
