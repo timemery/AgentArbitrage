@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "Percent_Down": "% ⇩",
         "Seller_Quality_Score": "Trust",
         "Sales_Rank___Current": "Current",
-        "Sales_Rank___365_days_avg": "365 day Avg.",
+        "Sales_Rank___365_days_avg": "1yr. Avg",
         "Binding": "Binding",
         "Condition": "Condition",
         "Sells": "Sells",
@@ -264,11 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderTable(deals) {
-        if (!deals || deals.length === 0) {
-            tableContainer.innerHTML = '<p>No deals found matching the criteria.</p>';
-            return;
-        }
-
         let table = '<table><thead>';
 
         // Add the new group header row
@@ -308,79 +303,83 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         table += '</tr></thead><tbody>';
 
-        deals.forEach(deal => {
-            let cleanAsin = deal.ASIN ? String(deal.ASIN).replace(/=|\"/g, '') : '';
-            if (cleanAsin.length === 9) {
-                cleanAsin = '0' + cleanAsin;
-            }
-            table += `<tr class="deal-row" data-asin="${cleanAsin}" style="cursor: pointer;">`;
-            columnsToShow.forEach(col => {
-                let value = deal[col] != null ? deal[col] : '-';
-                // Re-written formatting logic for robustness
-                const numValue = parseFloat(value);
-                if (col === 'Seller_Quality_Score') {
-                    if (!isNaN(numValue)) {
-                        const score = Math.round(numValue * 10);
-                        value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
-                    } else if (typeof value === 'string' && value.trim().toLowerCase() === 'new seller') {
-                        value = `<span>Unrated</span>`;
-                    } else if (typeof value === 'string' && value) {
-                        // Handle other string values
-                        value = `<span>${value}</span>`;
-                    }
-                } else if (col === 'Deal_found' || col === 'last_price_change') {
-                    value = formatTimeAgo(value);
-                } else if (!isNaN(numValue)) { // Check if the parsed value is a number
-                    if (col === 'Profit_Confidence') {
-                        value = `${Math.round(numValue)}%`;
-                    } else if (col === 'Percent_Down') {
-                        value = `${Math.round(numValue)}%`;
-                    } else if (col === 'Sales_Rank___Current' || col === 'Sales_Rank___365_days_avg') {
-                        value = numValue.toLocaleString('en-US');
-                    } else if (col === 'Margin') {
-                        value = `${numValue.toFixed(2)}%`;
-                    } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost')) {
-                        value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    }
-                } else if (col === 'Binding' || col === 'Condition') {
-                    value = formatCondition(value);
+        if (deals && deals.length > 0) {
+            deals.forEach(deal => {
+                let cleanAsin = deal.ASIN ? String(deal.ASIN).replace(/=|\"/g, '') : '';
+                if (cleanAsin.length === 9) {
+                    cleanAsin = '0' + cleanAsin;
                 }
+                table += `<tr class="deal-row" data-asin="${cleanAsin}" style="cursor: pointer;">`;
+                columnsToShow.forEach(col => {
+                    let value = deal[col] != null ? deal[col] : '-';
+                    // Re-written formatting logic for robustness
+                    const numValue = parseFloat(value);
+                    if (col === 'Seller_Quality_Score') {
+                        if (!isNaN(numValue)) {
+                            const score = Math.round(numValue * 10);
+                            value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
+                        } else if (typeof value === 'string' && value.trim().toLowerCase() === 'new seller') {
+                            value = `<span>Unrated</span>`;
+                        } else if (typeof value === 'string' && value) {
+                            // Handle other string values
+                            value = `<span>${value}</span>`;
+                        }
+                    } else if (col === 'Deal_found' || col === 'last_price_change') {
+                        value = formatTimeAgo(value);
+                    } else if (!isNaN(numValue)) { // Check if the parsed value is a number
+                        if (col === 'Profit_Confidence') {
+                            value = `${Math.round(numValue)}%`;
+                        } else if (col === 'Percent_Down') {
+                            value = `${Math.round(numValue)}%`;
+                        } else if (col === 'Sales_Rank___Current' || col === 'Sales_Rank___365_days_avg') {
+                            value = numValue.toLocaleString('en-US');
+                        } else if (col === 'Margin') {
+                            value = `${numValue.toFixed(2)}%`;
+                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost')) {
+                            value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        }
+                    } else if (col === 'Binding' || col === 'Condition') {
+                        value = formatCondition(value);
+                    }
 
-                if (col === 'Gated') {
-                    table += `<td><a href="https://sellercentral.amazon.com/product-search/keywords/search?q=${cleanAsin}" target="_blank" onclick="event.stopPropagation()" style="color: #84b36f; text-decoration: none;" class="buy-now-link">►</a></td>`;
-                } else if (col === 'Buy_Now') {
-                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
-                } else if (col === 'Title') {
-                    const fullTitle = deal[col] || '';
-                    table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
-                } else if (col === 'Categories___Sub') {
-                    let displayValue = value;
-                    if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
-                        // Remove "Subjects" or "Subjects," from the start of the string
-                        displayValue = displayValue.replace(/^Subjects,?\s*/, '');
+                    if (col === 'Gated') {
+                        table += `<td><a href="https://sellercentral.amazon.com/product-search/keywords/search?q=${cleanAsin}" target="_blank" onclick="event.stopPropagation()" style="color: #84b36f; text-decoration: none;" class="buy-now-link">►</a></td>`;
+                    } else if (col === 'Buy_Now') {
+                        table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
+                    } else if (col === 'Title') {
+                        const fullTitle = deal[col] || '';
+                        table += `<td class="title-cell" data-full-title="${escape(fullTitle)}">${value}</td>`;
+                    } else if (col === 'Categories___Sub') {
+                        let displayValue = value;
+                        if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
+                            // Remove "Subjects" or "Subjects," from the start of the string
+                            displayValue = displayValue.replace(/^Subjects,?\s*/, '');
+                        }
+                        // If the result is empty or just a hyphen, show the custom message
+                        if (displayValue.trim() === '' || displayValue.trim() === '-') {
+                            displayValue = 'No Subject Listed';
+                        }
+                        table += `<td class="genre-cell">${displayValue}</td>`;
+                    } else if (col === 'Detailed_Seasonality') {
+                        table += `<td class="season-detail-cell">${value}</td>`;
+                    } else if (col === 'Sells') {
+                        table += `<td class="sells-cell">${value}</td>`;
+                    } else if (col === 'Seller') {
+                        table += `<td class="seller-cell">${value}</td>`;
+                    } else if (col === 'ASIN') {
+                        table += `<td>${cleanAsin}</td>`;
+                    } else if (col === 'Best_Price' && cleanAsin) {
+                        table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
                     }
-                    // If the result is empty or just a hyphen, show the custom message
-                    if (displayValue.trim() === '' || displayValue.trim() === '-') {
-                        displayValue = 'No Subject Listed';
+                    else {
+                        table += `<td>${value}</td>`;
                     }
-                    table += `<td class="genre-cell">${displayValue}</td>`;
-                } else if (col === 'Detailed_Seasonality') {
-                    table += `<td class="season-detail-cell">${value}</td>`;
-                } else if (col === 'Sells') {
-                    table += `<td class="sells-cell">${value}</td>`;
-                } else if (col === 'Seller') {
-                    table += `<td class="seller-cell">${value}</td>`;
-                } else if (col === 'ASIN') {
-                    table += `<td>${cleanAsin}</td>`;
-                } else if (col === 'Best_Price' && cleanAsin) {
-                    table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
-                }
-                else {
-                    table += `<td>${value}</td>`;
-                }
+                });
+                table += '</tr>';
             });
-            table += '</tr>';
-        });
+        } else {
+            table += `<tr><td colspan="${columnsToShow.length}" style="text-align: center; padding: 20px;">No deals found matching the criteria.</td></tr>`;
+        }
 
         table += '</tbody></table>';
         tableContainer.innerHTML = table;
