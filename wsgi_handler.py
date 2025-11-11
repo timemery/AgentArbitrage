@@ -244,51 +244,6 @@ def dashboard():
         return redirect(url_for('index'))
     return render_template('dashboard.html')
 
-@app.route('/deal/<string:asin>')
-def deal_detail(asin):
-    if not session.get('logged_in'):
-        return redirect(url_for('index'))
-
-    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db')
-    TABLE_NAME = 'deals'
-    deal = None
-
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        # The ASIN in the DB is stored as a plain string.
-        cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN = ?", (asin,))
-        row = cursor.fetchone()
-        
-        if row:
-            deal = dict(row)
-            # Convert fields that need to be numbers from string to float
-            for key in ['All_in_Cost', 'Profit', 'Margin', 'Min_Listing_Price', 'Expected_Trough_Price', 'Expected_Peak_Price']:
-                if deal.get(key) is not None:
-                    try:
-                        deal[key] = float(deal[key])
-                    except (ValueError, TypeError):
-                        app.logger.warning(f"Could not convert {key} with value '{deal[key]}' to float for ASIN {asin}. Setting to None.")
-                        deal[key] = None # Or set to 0.0, depending on desired behavior for invalid data
-
-            app.logger.info(f"Deal data for ASIN {asin}: {deal}")
-            app.logger.info(f"Keys available in deal dictionary: {list(deal.keys())}")
-        
-    except sqlite3.Error as e:
-        app.logger.error(f"Database error on deal detail page for ASIN {asin}: {e}")
-        flash("A database error occurred while fetching deal details.", "error")
-    finally:
-        if conn:
-            conn.close()
-            
-    if not deal:
-        flash(f"Deal with ASIN {asin} not found.", "error")
-        return redirect(url_for('dashboard'))
-
-    return render_template('deal_detail.html', deal=deal)
-
 
 @app.route('/learn', methods=['POST'])
 def learn():
@@ -843,8 +798,7 @@ def api_deals():
     filter_params = []
 
     if filters.get("sales_rank_current_lte") is not None:
-        # The sanitized column name for "Sales Rank: Current" is "Sales_Rank___Current"
-        where_clauses.append("\"Sales_Rank___Current\" <= ?")
+        where_clauses.append("\"Sales Rank - Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
 
     if filters.get("margin_gte") is not None:
@@ -913,6 +867,19 @@ def api_deals():
         }
 
         for deal in deals_list:
+            # Convert numeric fields
+            numeric_fields = [
+                'All_in_Cost', 'Profit', 'Margin', 'Min_Listing_Price',
+                'Expected_Trough_Price', 'Expected_Peak_Price', 'Profit_Confidence',
+                'Sales_Rank___Current', 'Sales_Rank___Drops_last_365_days'
+            ]
+            for key in numeric_fields:
+                if deal.get(key) is not None:
+                    try:
+                        deal[key] = float(deal[key])
+                    except (ValueError, TypeError):
+                        deal[key] = None
+
             # Translate condition code to string if it's a digit
             if 'Condition' in deal and deal['Condition'] and str(deal['Condition']).isdigit():
                 code = str(deal['Condition'])
