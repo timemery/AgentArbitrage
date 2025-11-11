@@ -31,6 +31,8 @@ logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitr
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
+DATABASE_URL = os.getenv("DATABASE_URL", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db'))
+
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
 AGENT_BRAIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agent_brain.json')
 SETTINGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json')
@@ -748,7 +750,7 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
 
 @app.route('/api/deals')
 def api_deals():
-    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db')
+    DB_PATH = DATABASE_URL
     TABLE_NAME = 'deals'
 
     # --- Connect and get column names ---
@@ -798,7 +800,8 @@ def api_deals():
     filter_params = []
 
     if filters.get("sales_rank_current_lte") is not None:
-        where_clauses.append("\"Sales Rank - Current\" <= ?")
+        # The sanitized column name for "Sales Rank: Current" is "Sales_Rank___Current"
+        where_clauses.append("\"Sales_Rank___Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
 
     if filters.get("margin_gte") is not None:

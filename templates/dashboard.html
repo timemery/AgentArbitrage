@@ -624,28 +624,28 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchDeals();
 
     function populateOverlay(deal) {
-        document.getElementById('overlay-title').textContent = deal['Title'] || 'N/A';
-        document.getElementById('overlay-asin').textContent = deal['ASIN'] || 'N/A';
+        document.getElementById('overlay-title').textContent = deal.Title || 'N/A';
+        document.getElementById('overlay-asin').textContent = deal.ASIN || 'N/A';
 
         // Pricing & Seasonality
-        document.getElementById('overlay-seasonality-type').textContent = deal['Seasonality Type'] || 'N/A';
-        document.getElementById('overlay-expected-trough-price').textContent = deal['Expected Trough Price'] ? `$${deal['Expected Trough Price'].toFixed(2)}` : '-';
-        document.getElementById('overlay-expected-peak-price').textContent = deal['Expected Peak Price'] ? `$${deal['Expected Peak Price'].toFixed(2)}` : '-';
-        document.getElementById('overlay-profit-confidence').textContent = deal['Profit Confidence'] ? `${deal['Profit Confidence'].toFixed(0)}%` : '-';
+        document.getElementById('overlay-seasonality-type').textContent = deal.Seasonality_Type || 'N/A';
+        document.getElementById('overlay-expected-trough-price').textContent = deal.Expected_Trough_Price ? `$${deal.Expected_Trough_Price.toFixed(2)}` : '-';
+        document.getElementById('overlay-expected-peak-price').textContent = deal.Expected_Peak_Price ? `$${deal.Expected_Peak_Price.toFixed(2)}` : '-';
+        document.getElementById('overlay-profit-confidence').textContent = deal.Profit_Confidence ? `${deal.Profit_Confidence.toFixed(0)}%` : '-';
 
         // Profit Calculation
-        document.getElementById('overlay-all-in-cost').textContent = deal['All-in Cost'] ? `$${deal['All-in Cost'].toFixed(2)}` : '-';
-        document.getElementById('overlay-profit').textContent = deal['Profit'] ? `$${deal['Profit'].toFixed(2)}` : '-';
-        document.getElementById('overlay-margin').textContent = deal['Margin'] ? `${deal['Margin'].toFixed(2)}%` : '-';
-        document.getElementById('overlay-min-listing-price').textContent = deal['Min. Listing Price'] ? `$${deal['Min. Listing Price'].toFixed(2)}` : '-';
+        document.getElementById('overlay-all-in-cost').textContent = deal.All_in_Cost ? `$${deal.All_in_Cost.toFixed(2)}` : '-';
+        document.getElementById('overlay-profit').textContent = deal.Profit ? `$${deal.Profit.toFixed(2)}` : '-';
+        document.getElementById('overlay-margin').textContent = deal.Margin ? `${deal.Margin.toFixed(2)}%` : '-';
+        document.getElementById('overlay-min-listing-price').textContent = deal.Min_Listing_Price ? `$${deal.Min_Listing_Price.toFixed(2)}` : '-';
 
         // Sales Rank
-        document.getElementById('overlay-sales-rank-current').textContent = deal['Sales Rank - Current'] ? deal['Sales Rank - Current'].toLocaleString() : '-';
-        document.getElementById('overlay-sales-rank-drops').textContent = deal['Sales Rank - Drops last 365 days'] || '-';
+        document.getElementById('overlay-sales-rank-current').textContent = deal.Sales_Rank___Current ? deal.Sales_Rank___Current.toLocaleString() : '-';
+        document.getElementById('overlay-sales-rank-drops').textContent = deal.Sales_Rank___Drops_last_365_days || '-';
 
         // External Links
-        document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal['ASIN']}`;
-        document.getElementById('overlay-keepa-link').href = `https://keepa.com/#!product/1-${deal['ASIN']}`;
+        document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal.ASIN}`;
+        document.getElementById('overlay-keepa-link').href = `https://keepa.com/#!product/1-${deal.ASIN}`;
     }
 
     closeOverlayBtn.addEventListener('click', () => {
