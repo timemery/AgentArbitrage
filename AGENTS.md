@@ -1,4 +1,22 @@
-## Timestamp Handling Notes (from Task starting ~June 24-25, 2025)
+# Agent Instructions
+
+## Database Management (CRITICAL)
+
+**Production Data:** The `deals.db` file is the production database and should NOT be modified or deleted during development. Your top priority is to protect this file.
+
+**Development Database:** To work on the application, use a separate database file for development. This can be configured by setting the `DATABASE_URL` environment variable to the path of your development database file (e.g., `export DATABASE_URL=dev_deals.db`). All development and testing must be done against this separate database.
+
+**Backup and Restore:** Before making significant changes, it is wise to create a backup. Use the following scripts to manage the production database:
+- `./backup_db.sh`: Creates a timestamped backup of the database.
+- `./restore_db.sh`: Restores the database from the most recent backup.
+
+---
+
+## Technical and Historical Notes
+
+This section contains valuable context and learnings from previous development tasks. Consult these notes before working on related parts of the codebase.
+
+### Timestamp Handling Notes (from Task starting ~June 24-25, 2025)
 
 When working with timestamp fields like 'last update' and 'last price change', the goal is to reflect the most recent relevant event as accurately as possible, aligning with user expectations from observing Keepa.com.
 
@@ -17,7 +35,7 @@ This field aims to find the most recent price change for relevant used condition
 **General Timestamp Conversion:**
 All Keepa minute timestamps should be converted to datetime objects using `KEEPA_EPOCH = datetime(2011, 1, 1)`, then localized from naive UTC to aware UTC (`timezone('UTC').localize(dt)`), and finally converted to 'America/Toronto' (`astimezone(TORONTO_TZ)`), formatted as '%Y-%m-%d %H:%M:%S'. Timestamps <= 100000 are generally considered invalid/too old.
 
-## My Learnings from Investigating "Used, acceptable - Current" (Date: YYYY-MM-DD)
+### My Learnings from Investigating "Used, acceptable - Current" (Date: YYYY-MM-DD)
 
 **Task Context:** I investigated discrepancies in the "Used, acceptable - Current" column of `Keepa_Deals_Export.csv`. It turned out some prices were incorrect due to historical fallback logic in the script.
 
@@ -48,7 +66,7 @@ All Keepa minute timestamps should be converted to datetime objects using `KEEPA
 *   No code changes were needed for this specific problem as the fix was pre-existing.
 *   This investigation highlighted the importance of dev logs and careful analysis of the current codebase against historical issues.
 
-## Task: FIX (second attempt) the “New, 3rd Party FBA - Lowest” Column (Solved June 2025)
+### Task: FIX (second attempt) the “New, 3rd Party FBA - Lowest” Column (Solved June 2025)
 
 **Core Problem:** The "New, 3rd Party FBA - Lowest" column in `Keepa_Deals_Export.csv` was showing incorrect data or hyphens.
 
@@ -86,7 +104,7 @@ All Keepa minute timestamps should be converted to datetime objects using `KEEPA
 
 The solution was to modify `stable_products.py -> new_3rd_party_fba_lowest(product)` to use `product.stats.min[10][1]` to get the historical lowest price, ensuring safe access and correct formatting.
 
-## Task: Fix "New, 3rd Party FBM - Current" Column (June 2025)
+### Task: Fix "New, 3rd Party FBM - Current" Column (June 2025)
 
 **Objective:** Ensure the "New, 3rd Party FBM - Current" column in `Keepa_Deals_Export.csv` accurately reflects the price shown on Keepa.com for this specific metric.
 
@@ -131,7 +149,7 @@ When a new column is required, or an existing one is incorrect:
 *   If not, or if the goal is to find the "absolute lowest of all available offers" of a type, then careful parsing of `product['offers']` is needed, paying attention to `condition`, `isFBA`, `sellerId`, and robustly extracting price + shipping (likely from `offerCSV`'s latest entry or direct `price`/`shippingCost` fields).
 *   Always verify against Keepa.com, and use detailed logging to trace the script's logic.
 
-## Character Encoding and Symbol Compatibility (Task: Percent Down 365, YYYY-MM-DD)
+### Character Encoding and Symbol Compatibility (Task: Percent Down 365, YYYY-MM-DD)
 
 **Learning:** When implementing features that involve special characters or symbols (e.g., arrows like ⇧⇩ for indicating price changes), always consider cross-platform compatibility and potential rendering issues in different environments (terminals, CSV viewers, etc.).
 
@@ -141,11 +159,11 @@ When a new column is required, or an existing one is incorrect:
 *   Switched to universally compatible ASCII symbols: "+" for an increase (price above average) and "-" for a decrease (price below average). No symbol is used for a 0% difference.
 *   **Principle:** Prioritize widely supported character sets (like ASCII or well-tested UTF-8 subsets) for textual indicators unless specific rich text rendering is guaranteed and tested across all target environments. If special symbols are desired, ensure they are tested for compatibility or provide simpler fallbacks.
 
-## CSV Data Interpretation Notes
+### CSV Data Interpretation Notes
 
 *   **Date Formatting in Viewing Software:** Be aware that spreadsheet programs (like Microsoft Excel, Google Sheets, etc.) often automatically interpret columns containing date-like strings (e.g., "YYYY-MM-DD", "YYYY-MM") as dates. Their default display formatting for these dates might differ from the raw string in the CSV file (e.g., "1985-06" in the CSV might be displayed as "Jun-85" in Excel). Always verify the raw CSV content in a text editor if precise string formatting is critical and appears different in a spreadsheet.
 
-## Keepa API `stats` Object Insights (Specifically `avg...` arrays)
+### Keepa API `stats` Object Insights (Specifically `avg...` arrays)
 
 When working with aggregated statistical arrays from the Keepa API `/product` endpoint (e.g., `stats.current`, `stats.avg30`, `stats.avg90`, `stats.avg365`), the indices for different price types can be specific and sometimes require empirical verification if not explicitly documented for every array type.
 
@@ -168,7 +186,7 @@ When working with aggregated statistical arrays from the Keepa API `/product` en
 `[-1, 9021 (Amazon), 2742 (Used), ..., 9257 (New FBM), ..., 11460 (New FBA), ..., 6916 (Buy Box Shipping), ...]`
 *(Note: This is a simplified representation; always refer to the full array for accurate indexing.)*
 
-## Keepa API `stats` Object Insights (Specifically `avg...` arrays)
+### Keepa API `stats` Object Insights (Specifically `avg...` arrays)
 
 When working with aggregated statistical arrays from the Keepa API `/product` endpoint (e.g., `stats.current`, `stats.avg30`, `stats.avg90`, `stats.avg365`), the indices for different price types can be specific and sometimes require empirical verification if not explicitly documented for every array type.
 
@@ -190,7 +208,7 @@ When working with aggregated statistical arrays from the Keepa API `/product` en
     4.  Confirm with local testing, especially when an index is hypothesized.
 
 ---
-## General Notes for Agents:
+### General Notes for Agents:
 
 - **Function Placement & Imports:**
     - Be mindful of the distinction between `stable_products.py`, `stable_deals.py`, and `stable_calculations.py`.
@@ -200,7 +218,7 @@ When working with aggregated statistical arrays from the Keepa API `/product` en
     - When adding or modifying function mappings in `field_mappings.py`, double-check that functions are imported from their correct source file to avoid `ImportError` issues. An `ImportError` traceback pointing to an import from `stable_deals` for a function actually in `stable_products` (or vice-versa) has been a recurring theme.
 ---
 
-## AGENTS.md - Troubleshooting `ImportError: cannot import name 'FUNCTION_LIST' from 'field_mappings'`
+### Troubleshooting `ImportError: cannot import name 'FUNCTION_LIST' from 'field_mappings'`
 
 When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_mappings'`, consider the following common causes, especially after adding new functions/fields:
 
@@ -258,7 +276,7 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
     *   **Used Offer Count - 365 days avg.**: Found at `product['stats']['avg365'][12]`. This index corresponds to the historical data type `COUNT_USED` (used offer count history, often seen as `csv[12]` in `product.csv`).
     *   *Note:* The indices `stats.current[5]`, `stats.current[6]`, `stats.avg365[5]`, and `stats.avg365[6]` were found to be incorrect for these specific offer counts and likely represent other data.
 
-    ## Keepa API Product Data Structure Notes
+    ### Keepa API Product Data Structure Notes
 
 *   **FBA Pick & Pack Fee:** To retrieve the FBA Pick & Pack Fee for a product, access the `product_data` object (JSON response from the `/product` endpoint) as follows:
     *   The fee is stored within a dictionary named `fbaFees`.
@@ -267,7 +285,7 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
     *   Example path: `product_data.get('fbaFees', {}).get('pickAndPackFee')`
     *   Ensure to handle cases where `fbaFees` or `pickAndPackFee` might be missing or `None`.
 
-## Keepa API Product Data Structure Notes
+### Keepa API Product Data Structure Notes
 
 *   **FBA Pick & Pack Fee:** To retrieve the FBA Pick & Pack Fee for a product, access the `product_data` object (JSON response from the `/product` endpoint) as follows:
     *   The fee is stored within a dictionary named `fbaFees`.
@@ -283,18 +301,18 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
     *   If these direct fields are not present, referral fee information might also be speculatively found nested under an `fbaFees` object, similar to other fees (e.g., `product_data.get('fbaFees', {}).get('referralFeePercentage')` or `product_data.get('fbaFees', {}).get('referralFee', {}).get('percent')`).
     *   When implementing, check for the more precise `referralFeePercentage` first, then fall back to other known or speculative locations. The value is a direct percentage (e.g., 14.99 for 14.99%).
 
-## Keepa API Interaction Notes
+### Keepa API Interaction Notes
 
-### Rate Limiting and Headers
+#### Rate Limiting and Headers
 
 *   **No Server-Side Rate Limit Headers**: As of [mention date or task reference if possible, e.g., July 2024 analysis / Task X], it has been confirmed that the Keepa API **does not** return standard rate limit headers (e.g., `x-rate-limit-limit`, `x-rate-limit-remaining`, `x-rate-limit-reset`) in its responses.
-*   **Implications for Scripting**: 
+*   **Implications for Scripting**:
     *   The `rate_limit_info` dictionary (or similar structures in scripts attempting to parse these headers) will consistently reflect `{'limit': None, 'remaining': None, 'reset': None}` (or equivalent empty/null values).
     *   Any client-side logic designed for dynamic rate limit adjustments based on these specific headers will be **ineffective** as it will not receive the necessary data from the API.
     *   Strategies for avoiding 429 "Too Many Requests" errors must rely on conservative fixed delays between API calls (e.g., `MIN_TIME_SINCE_LAST_CALL_SECONDS`) and potentially client-side quota estimations if Keepa publishes separate, non-header-based usage limits.
 *   **Current Strategy**: The `Keepa_Deals.py` script has been modified to use a fixed delay between calls and does not attempt to parse or react to these non-existent headers for dynamic rate adjustments.
 
-## Keepa API - Potential for Batch Product Queries
+#### Potential for Batch Product Queries
 
 **Date of Research:** July 5, 2025 (via Grok, based on user query)
 
@@ -319,7 +337,7 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
 *   `Keepa_Deals.py` currently makes individual API calls for each ASIN's product details.
 *   Implementation of batch querying is pending further verification of the above questions and successful testing of the current individual-call fixed-delay strategy.
 
-## Keepa API - Batch Product Query Details (Follow-up Research)
+#### Batch Product Query Details (Follow-up Research)
 
 **Date of Research:** July 5, 2025 (via Grok, second query)
 **Source:** Primarily Keepa API documentation and community forums, focusing on direct HTTP implications and Python library behavior.
@@ -351,13 +369,13 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
 
 **Next Steps (Post-Current Test):**
 1.  Confirm the outcome of the current test (individual calls with 60s delay).
-2.  If proceeding with batch implementation: 
+2.  If proceeding with batch implementation:
     *   Prioritize verifying the exact token cost per ASIN for the *specific parameters* we use (`stats`, `offers`, `stock`, `buybox`, etc.) when called in a batch via direct HTTP.
     *   Verify if `tokensLeft` and `refillIn` are present in the direct HTTP batch response.
     *   Plan a phased implementation, starting with a new function for batch fetching via direct HTTP.
 
 ---
-## Keepa API Token Costs & Batching Strategy (Learnings as of July 8, 2025 - Revised with Official Docs)
+#### Token Costs & Batching Strategy (Learnings as of July 8, 2025 - Revised with Official Docs)
 
 **Token Cost Primary Source: `tokensConsumed` Field**
 *   The Keepa API (including `/product` and `/deal` endpoints) returns a `tokensConsumed` field in its JSON response. This field indicates the *actual* number of tokens consumed by that specific API call.
@@ -395,8 +413,7 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
     *   If a 429 response includes `tokensConsumed > 0`, those tokens ARE deducted.
 *   **Token Refill Simulation:** Now based on **5 tokens per minute**, checked every 60 seconds, to more closely match Keepa's actual refill rate.
 
-## Agent Performance Notes & Learnings
-- (Add this section if it doesn't exist)
+### Agent Performance Notes & Learnings
 
 ### Token Cost Estimation (Keepa_Deals.py)
 - **Updated: 2025-07-11**
@@ -404,7 +421,7 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
 - This value should be periodically reviewed and adjusted based on analysis of `tokensConsumed` data from full runs, as actual API costs can vary.
 - Do not assume a low value; use data from `debug_log.txt` from substantial runs to inform this constant.
 
-## Debugging Persistent or Recurring Errors
+### Debugging Persistent or Recurring Errors
 
 **Date of Learning:** July 12, 2025
 

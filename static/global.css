@@ -385,6 +385,76 @@ button:disabled {
     white-space: nowrap;
 }
 
+/* --- Deal Overlay Styles --- */
+.deal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+.deal-overlay-content {
+    background-color: #003852;
+    color: #ffffff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 1200px;
+    border-radius: 10px;
+    position: relative;
+}
+.deal-overlay-content h1, .deal-overlay-content h2, .deal-overlay-content h3 {
+    color: #ffffff;
+}
+.close-overlay {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-overlay:hover,
+.close-overlay:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+.tab-nav {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+.tab-link {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffffff; /* Explicitly set color for better visibility */
+}
+.tab-link.active {
+    border-bottom: 2px solid #1976d2;
+    color: #1976d2; /* Match active border color */
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.grid-item span {
+    font-weight: normal;
+    color: #ccc;
+}
+
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 100%;

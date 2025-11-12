@@ -47,6 +47,63 @@
     </div>
 </div>
 <div id="custom-tooltip" class="custom-tooltip"></div>
+
+<div id="deal-overlay" class="deal-overlay">
+    <div class="deal-overlay-content">
+        <span class="close-overlay">&times;</span>
+        <div class="deal-header">
+            <h1 id="overlay-title"></h1>
+            <p>ASIN: <span id="overlay-asin"></span></p>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-link active" data-tab="profit">Profit Analysis</button>
+            <button class="tab-link" data-tab="prep">Prep & Listing</button>
+            <button class="tab-link" data-tab="sales">Sales Tracking</button>
+        </div>
+
+        <div id="profit" class="tab-content active">
+            <h2>Profit Analysis</h2>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3>Pricing & Seasonality</h3>
+                    <p><span>Seasonality Type:</span> <strong id="overlay-seasonality-type"></strong></p>
+                    <p><span>Expected Trough Price:</span> <strong id="overlay-expected-trough-price"></strong></p>
+                    <p><span>Expected Peak Price:</span> <strong id="overlay-expected-peak-price"></strong></p>
+                    <p><span>Profit Confidence:</span> <strong id="overlay-profit-confidence"></strong></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Profit Calculation</h3>
+                    <p><span>All-in Cost:</span> <strong id="overlay-all-in-cost"></strong></p>
+                    <p><span>Profit:</span> <strong id="overlay-profit"></strong></p>
+                    <p><span>Margin:</span> <strong id="overlay-margin"></strong></p>
+                    <p><span>Min. Listing Price:</span> <strong id="overlay-min-listing-price"></strong></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Sales Rank</h3>
+                    <p><span>Current:</span> <strong id="overlay-sales-rank-current"></strong></p>
+                    <p><span>Drops (365d):</span> <strong id="overlay-sales-rank-drops"></strong></p>
+                </div>
+                <div class="grid-item">
+                    <h3>External Links</h3>
+                    <p><a id="overlay-amz-link" href="#" target="_blank">View on Amazon</a></p>
+                    <p><a id="overlay-keepa-link" href="#" target="_blank">View on Keepa</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="prep" class="tab-content">
+            <h2>Prep & Listing</h2>
+            <p>(Prep and listing tracking form will go here.)</p>
+        </div>
+
+        <div id="sales" class="tab-content">
+            <h2>Sales Tracking</h2>
+            <p>(Sales tracking form will go here.)</p>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.querySelector('.container');
@@ -109,6 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPage = 1;
     let totalPages = 1;
     let currentSort = { by: 'id', order: 'asc' };
+    let currentDeals = [];
+
+    const overlay = document.getElementById('deal-overlay');
+    const closeOverlayBtn = document.querySelector('.close-overlay');
 
     const columnsToShow = [
         // Book Details
@@ -255,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/api/deals?${query}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
+            currentDeals = data.deals; // Store the deals
             renderTable(data.deals);
             renderPagination(data.pagination);
         } catch (error) {
@@ -268,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // This prevents the Playwright script from timing out.
         document.querySelector('#deals-table').style.visibility = 'visible';
 
-        let table = '<table><thead>';
+        let table = '<table class="deal-table"><thead>';
 
         // Add the new group header row
         table += '<tr class="group-header">';
@@ -396,7 +458,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('#deals-table tbody tr').forEach(row => {
             row.addEventListener('click', () => {
                 const asin = row.dataset.asin;
-                if (asin) window.location.href = '/deal/' + asin;
+                const deal = currentDeals.find(d => d.ASIN === asin);
+                if (deal) {
+                    populateOverlay(deal);
+                    overlay.style.display = 'block';
+                }
             });
         });
 
@@ -491,6 +557,54 @@ document.addEventListener('DOMContentLoaded', function() {
     pollInterval = setInterval(checkRecalcStatus, 3000); // Poll every 3 seconds
 
     fetchDeals();
+
+    function populateOverlay(deal) {
+        document.getElementById('overlay-title').textContent = deal.Title || 'N/A';
+        document.getElementById('overlay-asin').textContent = deal.ASIN || 'N/A';
+
+        // Pricing & Seasonality
+        document.getElementById('overlay-seasonality-type').textContent = deal.Seasonality_Type || 'N/A';
+        document.getElementById('overlay-expected-trough-price').textContent = deal.Expected_Trough_Price ? `$${deal.Expected_Trough_Price.toFixed(2)}` : '-';
+        document.getElementById('overlay-expected-peak-price').textContent = deal.Expected_Peak_Price ? `$${deal.Expected_Peak_Price.toFixed(2)}` : '-';
+        document.getElementById('overlay-profit-confidence').textContent = deal.Profit_Confidence ? `${deal.Profit_Confidence.toFixed(0)}%` : '-';
+
+        // Profit Calculation
+        document.getElementById('overlay-all-in-cost').textContent = deal.All_in_Cost ? `$${deal.All_in_Cost.toFixed(2)}` : '-';
+        document.getElementById('overlay-profit').textContent = deal.Profit ? `$${deal.Profit.toFixed(2)}` : '-';
+        document.getElementById('overlay-margin').textContent = deal.Margin ? `${deal.Margin.toFixed(2)}%` : '-';
+        document.getElementById('overlay-min-listing-price').textContent = deal.Min_Listing_Price ? `$${deal.Min_Listing_Price.toFixed(2)}` : '-';
+
+        // Sales Rank
+        document.getElementById('overlay-sales-rank-current').textContent = deal.Sales_Rank___Current ? deal.Sales_Rank___Current.toLocaleString() : '-';
+        document.getElementById('overlay-sales-rank-drops').textContent = deal.Sales_Rank___Drops_last_365_days || '-';
+
+        // External Links
+        document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal.ASIN}`;
+        document.getElementById('overlay-keepa-link').href = `https://keepa.com/#!product/1-${deal.ASIN}`;
+    }
+
+    closeOverlayBtn.addEventListener('click', () => {
+        overlay.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == overlay) {
+            overlay.style.display = 'none';
+        }
+    });
+
+    const tabs = document.querySelectorAll('.tab-link');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(item => item.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
 });
 </script>
 {% endblock %}
