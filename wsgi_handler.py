@@ -945,34 +945,6 @@ def refresh_all_deals():
     celery_app.send_task('keepa_deals.recalculator.recalculate_deals')
     return jsonify({'status': 'success', 'message': 'Full data refresh has been initiated.'})
 
-@app.route('/api/debug/deal/<string:asin>')
-def debug_deal(asin):
-    if not session.get('logged_in'):
-        return jsonify({'error': 'Not authenticated'}), 401
-
-    from keepa_deals.keepa_api import fetch_product_batch
-    from keepa_deals.token_manager import TokenManager
-
-    # Use the KEEPA_API_KEY defined at the top of the file
-    if not KEEPA_API_KEY:
-        return jsonify({'error': 'KEEPA_API_KEY not configured on server.'}), 500
-
-    # The fetch_product_batch function expects a list of ASINs
-    # We now receive tokens_left as well, so we unpack it and ignore it with _.
-    product_data, api_info, tokens_consumed, _ = fetch_product_batch(KEEPA_API_KEY, [asin])
-
-    if api_info and api_info.get('error_status_code'):
-        return jsonify({
-            'error': 'Failed to fetch data from Keepa API',
-            'status_code': api_info.get('error_status_code'),
-            'asin': asin
-        }), 502
-
-    if not product_data or not product_data.get('products'):
-        return jsonify({'error': 'No product data returned from Keepa', 'asin': asin}), 404
-
-    # Return the raw product data as JSON
-    return jsonify(product_data['products'][0])
 
 
 if __name__ == '__main__':
