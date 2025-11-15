@@ -72,7 +72,7 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
 
     for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
         batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-        estimated_cost = 15 * len(batch_asins)
+        estimated_cost = 12 * len(batch_asins)
         token_manager.request_permission_for_call(estimated_cost)
         product_response, _, tokens_consumed, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
         token_manager.update_after_call(tokens_left)
@@ -93,7 +93,7 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
         seller_id_list = list(unique_seller_ids)
         for i in range(0, len(seller_id_list), 100):
             batch_ids = seller_id_list[i:i+100]
-            token_manager.request_permission_for_call(estimated_cost=len(batch_ids))
+            token_manager.request_permission_for_call(estimated_cost=1)
             seller_data, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_ids)
             token_manager.update_after_call(tokens_left)
             if seller_data and 'sellers' in seller_data:
