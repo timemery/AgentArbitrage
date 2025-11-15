@@ -6,8 +6,8 @@ import os
 
 logger = logging.getLogger(__name__)
 
-@celery_app.task(name='keepa_deals.tasks.run_keepa_script')
-def run_keepa_script_task(no_cache=False, output_dir='data'):
+@celery_app.task(name='keepa_deals.tasks.run_keepa_script', bind=True)
+def run_keepa_script_task(self, no_cache=False, output_dir='data'):
     """
     Celery task wrapper for the main Keepa script.
     It retrieves the API key from environment variables and calls the main function.
@@ -25,7 +25,8 @@ def run_keepa_script_task(no_cache=False, output_dir='data'):
             no_cache=no_cache,
             output_dir=output_dir,
             deal_limit=None, # Explicitly set to None to ensure no limit is used
-            status_update_callback=None
+            status_update_callback=None,
+            task_id=self.request.id
         )
     except Exception as e:
         logger.error(f"An error occurred while running the Keepa script task: {e}", exc_info=True)

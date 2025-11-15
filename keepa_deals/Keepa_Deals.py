@@ -39,7 +39,7 @@ def set_scan_status(status_data):
         print(f"Error writing status file: {e}")
 
 
-def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None):
+def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None, status_update_callback=None, task_id=None):
     """
     Main script to run the Keepa deals fetching and processing script.
     """
@@ -65,7 +65,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             "status": "Running",
             "start_time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
             "message": "Worker has started processing the scan.",
-            "task_id": run_keepa_script.request.id
+            "task_id": task_id
         }
         set_scan_status(initial_status)
 
@@ -144,34 +144,12 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
         valid_deals_to_process = [d for d in deals_to_process if validate_asin(d.get('asin'))]
         asin_batches = [valid_deals_to_process[i:i + MAX_ASINS_PER_BATCH] for i in range(0, len(valid_deals_to_process), MAX_ASINS_PER_BATCH)]
 
-        # --- Comprehensive Token Safety Check ---
-        # This is a critical guard to prevent runaway token usage.
-        # It calculates the total estimated cost for the entire process before starting.
-
-        # Force a token refill to ensure the internal count is up-to-date before the check.
-        token_manager.refill()
+        # --- Comprehensive Token Safety Check (REMOVED) ---
+        # This global pre-flight check was too aggressive and was preventing runs from starting.
+        # The per-call checks in the loops below are sufficient for token management.
 
         # Cost to fetch product history (most expensive part)
-        COST_PER_PRODUCT = 17  # Approximate cost for history=1, offers=20
-        product_fetch_cost = len(valid_deals_to_process) * COST_PER_PRODUCT
-
-        # Cost to fetch seller data (1 token per 100 sellers)
-        # This is an estimate, as we don't know the exact number of unique sellers yet.
-        # We assume a worst-case of 1 unique seller per product.
-        seller_fetch_cost = math.ceil(len(valid_deals_to_process) / 100.0)
-
-        total_estimated_cost = product_fetch_cost + seller_fetch_cost
-
-        # --- Enhanced Logging for Token Debugging ---
-        logger.info(f"PRE-FLIGHT TOKEN CHECK: Deals to process={len(valid_deals_to_process)}")
-        logger.info(f"PRE-FLIGHT TOKEN CHECK: Calculated total_estimated_cost={total_estimated_cost}")
-        logger.info(f"PRE-FLIGHT TOKEN CHECK: Token manager balance BEFORE check={token_manager.tokens}")
-
-        if not token_manager.has_enough_tokens(total_estimated_cost):
-            error_msg = f"Insufficient tokens for full run. Estimated Cost: {total_estimated_cost}, Available: {token_manager.tokens}. Aborting task."
-            logger.error(error_msg)
-            _update_cli_status({'status': 'Failed', 'message': error_msg})
-            return  # Hard stop to prevent any token spend
+        COST_PER_PRODUCT = 12  # More realistic, but still safe, estimate
 
         # --- Product Data Fetching ---
         all_fetched_products_map = {}
@@ -199,18 +177,23 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
             seller_id_list = list(unique_seller_ids)
 
             # This is a secondary, more accurate check just for the seller part.
-            seller_cost = math.ceil(len(seller_id_list) / 100.0)
-            if not token_manager.has_enough_tokens(seller_cost):
-                 logger.warning(f"Insufficient tokens for seller data fetch. Cost: {seller_cost}, Available: {token_manager.tokens}. Skipping seller info.")
-            else:
-                for i in range(0, len(seller_id_list), 100):
-                    batch_ids = seller_id_list[i:i+100]
-                    # Add the throttling back here as well
-                    token_manager.request_permission_for_call(estimated_cost=len(batch_ids) / 100.0)
-                    seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
-                    token_manager.update_after_call(tokens_left)
-                    if seller_data and 'sellers' in seller_data:
-                        seller_data_cache.update(seller_data['sellers'])
+            logger.info(f"Preparing to fetch data for {len(seller_id_list)} unique sellers.")
+            for i in range(0, len(seller_id_list), 100):
+                batch_ids = seller_id_list[i:i+100]
+                logger.info(f"Requesting permission for seller batch {i//100 + 1}...")
+                # The request_permission_for_call will handle waiting if tokens are low.
+                token_manager.request_permission_for_call(estimated_cost=1) # 1 token per 100 sellers
+
+                logger.info(f"Fetching data for {len(batch_ids)} seller IDs.")
+                seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
+                token_manager.update_after_call(tokens_left)
+
+                if seller_data and 'sellers' in seller_data:
+                    found_sellers = len(seller_data['sellers'])
+                    seller_data_cache.update(seller_data['sellers'])
+                    logger.info(f"Successfully fetched and cached data for {found_sellers} sellers in this batch.")
+                else:
+                    logger.warning(f"Seller data API call for batch {i//100 + 1} did not return any seller data.")
 
         # =================================================================
         # NEW: Multi-stage processing pipeline
