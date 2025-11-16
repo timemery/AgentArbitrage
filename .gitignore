@@ -25,3 +25,4 @@ watermark.json
 cjar
 celerybeat-schedule
 xai_token_state.json
+db_backups/
