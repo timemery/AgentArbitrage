@@ -27,12 +27,6 @@ def run_diagnostic():
     token_manager = TokenManager(api_key)
     token_manager.sync_tokens()
 
-    # Wait if we are in a token deficit
-    if token_manager.tokens <= 0:
-        wait_time = token_manager.get_refill_time_in_seconds(1)
-        logging.warning(f"Initial token balance is {token_manager.tokens}. Waiting {wait_time} seconds to ensure a positive balance.")
-        time.sleep(wait_time)
-
     # 1. Find 5 ASINs with "No Seller Info" from the local database
     logging.info(f"Connecting to database at '{DB_PATH}' to find failing ASINs...")
     asin_to_test = []
