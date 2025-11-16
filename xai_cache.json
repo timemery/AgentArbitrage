@@ -235,5 +235,8 @@
     "seasonality:Techniques of Traditional Icon Painting|Arts & Photography|Search Press": "Year-round",
     "seasonality:Letters of Paul, Hebrews and the Book of Psalms|-|Kregel Publications": "Textbook (Winter)",
     "seasonality:Laurie Lipton Drawing|Arts & Photography, Individual Artists, Monographs|Last Gasp": "Year-round",
-    "seasonality:Fundamentals of Molecular Symmetry (Series in Chemical Physics)|Science & Math, Chemistry, Physical & Theoretical|CRC Press": "Textbook (Summer)"
+    "seasonality:Fundamentals of Molecular Symmetry (Series in Chemical Physics)|Science & Math, Chemistry, Physical & Theoretical|CRC Press": "Textbook (Summer)",
+    "reasonableness:Connect Access Card for Strategic Management, 6th Edition|Books > Subjects|Jun|86.05": "True",
+    "reasonableness:Christmas Roses: Legends for Advent|Books > Subjects > Business & Money > Processes & Infrastructure|Apr|49.99": "False",
+    "reasonableness:AIRWOLF ANNUAL 1986|Books > Subjects|May|95.07": "True"
 }
