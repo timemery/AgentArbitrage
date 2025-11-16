@@ -81,12 +81,16 @@ def run_diagnostic():
         seller_ids = {offer['sellerId'] for offer in product_data.get('offers', []) if isinstance(offer, dict) and 'sellerId' in offer}
         seller_data_cache = {}
         if seller_ids:
-            token_manager.request_permission_for_call(1)
-            seller_data, _, _, tokens_left = fetch_seller_data(api_key, list(seller_ids))
-            if tokens_left is not None:
-                token_manager.update_after_call(tokens_left)
-            if seller_data and 'sellers' in seller_data:
-                seller_data_cache = seller_data['sellers']
+            seller_id_list = list(seller_ids)
+            logging.info(f"Found {len(seller_id_list)} unique seller IDs to fetch for this ASIN.")
+            for i in range(0, len(seller_id_list), 100):
+                batch_ids = seller_id_list[i:i+100]
+                token_manager.request_permission_for_call(1)
+                seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
+                if tokens_left is not None:
+                    token_manager.update_after_call(tokens_left)
+                if seller_data and 'sellers' in seller_data:
+                    seller_data_cache.update(seller_data['sellers'])
 
         # c. Call the seller info function
         logging.info(f"Calling get_all_seller_info for {asin}...")
