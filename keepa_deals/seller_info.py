@@ -13,65 +13,44 @@ WAREHOUSE_SELLER_ID = 'A2L77EE7U53NWQ'
 def _get_best_offer_analysis(product, seller_data_cache):
     """
     Finds the best live USED offer. This logic is critical for the 'Now' price.
-    It ensures a value is always found if any USED price is available in the product data,
-    without filtering out sellers.
+    It correctly parses FBA and FBM offers and compares them against aggregated stats
+    to find the most accurate current price and seller.
     """
     asin = product.get('asin', 'N/A')
     logger.debug(f"ASIN {asin}: Analyzing offers to find the 'Now' price (lowest USED price).")
 
-    stats = product.get('stats', {})
     offers = product.get('offers', [])
-    
-    # --- Final Refactored Logic ---
-    
-    lowest_offer_price = float('inf')
-    best_seller_id_from_offers = None
-    offer_source = "N/A"
+    stats = product.get('stats', {})
 
-    # 1. Find the best price from the OFFERS list first.
+    # 1. Find the best live offer from the 'offers' list, correctly parsing price.
+    best_live_offer = None
+    lowest_offer_price = float('inf')
+
     if offers:
         for offer in offers:
-            # --- Robustness Fix ---
-            # This entire block is wrapped in a try/except and contains multiple checks
-            # to handle malformed data from the Keepa API gracefully without crashing or flooding logs.
             try:
-                # 1. Ensure the offer itself is a dictionary.
+                # Basic validation
                 if not isinstance(offer, dict):
                     continue
 
-                # 2. Ensure the 'condition' field is a dictionary before accessing its 'value'.
                 condition_data = offer.get('condition')
-                if not isinstance(condition_data, dict):
+                if not isinstance(condition_data, dict) or condition_data.get('value') == 1:  # Skip NEW items
                     continue
 
-                condition = condition_data.get('value')
-                seller_id = offer.get('sellerId')
-
-                # Skip NEW items or Amazon Warehouse deals.
-                if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
+                if offer.get('sellerId') == WAREHOUSE_SELLER_ID:
                     continue
 
-                # Correctly parse the offerCSV to find the most recent price and shipping
                 offer_history = offer.get('offerCSV', [])
-                is_fba = offer.get('isFBA', False)
-
-                # The last value is always stock, the one before is price.
-                # For FBM, the value before price *might* be shipping.
-                # We need to parse the history to find the most recent price point.
-
-                # --- FINAL, CORRECTED, DATA-DRIVEN PARSING LOGIC ---
-                offer_history = offer.get('offerCSV', [])
-                is_fba = offer.get('isFBA', False)
-
-                if len(offer_history) < 2:
+                if len(offer_history) < 2:  # Must have at least timestamp and price
                     continue
 
+                # --- CRITICAL PARSING LOGIC FIX ---
                 price = int(offer_history[-2])
-                shipping = 0  # Default for FBA offers
+                shipping = 0
+                is_fba = offer.get('isFBA', False)
 
                 if not is_fba:
-                    # For FBM offers, the last value is the shipping cost.
-                    # This check is crucial to distinguish from FBA's stock count.
+                    # For FBM offers, the last element is shipping cost.
                     shipping = int(offer_history[-1])
                     if shipping == -1:  # Keepa uses -1 for unknown shipping
                         shipping = 0
@@ -80,74 +59,47 @@ def _get_best_offer_analysis(product, seller_data_cache):
 
                 if 0 < total_price < lowest_offer_price:
                     lowest_offer_price = total_price
-                    best_seller_id_from_offers = seller_id
-                    offer_source = f"offer (seller: {seller_id})"
+                    best_live_offer = offer
 
             except (IndexError, TypeError, ValueError) as e:
-                logger.warning(f"ASIN {asin}: Could not parse offer. Error: {e}. Offer data: {offer}")
+                logger.warning(f"ASIN {asin}: Could not parse a specific offer. Error: {e}. Offer data: {offer}")
                 continue
 
-    # 2. Compare the best offer price with prices from the STATS object.
-    final_price = lowest_offer_price
-    final_seller_id = best_seller_id_from_offers
-    final_source = offer_source
-
-    logger.info(f"ASIN {asin} [SELLER DEBUG]: After offers loop - lowest_offer_price: {lowest_offer_price}, seller_id: {best_seller_id_from_offers}")
-
-    # --- Data Logic Fix ---
-    # Store all seller prices from the offers loop to re-associate them later.
-    offer_prices_to_seller_ids = {}
-    if offers:
-        for offer in offers:
-            try:
-                if isinstance(offer, dict):
-                    is_fba = offer.get('isFBA', False)
-                    price = int(offer.get('offerCSV', [])[-2])
-                    shipping = 0
-                    if not is_fba:
-                        shipping = int(offer.get('offerCSV', [])[-1])
-                        if shipping == -1: shipping = 0
-                    total_price = price + shipping
-                    seller_id = offer.get('sellerId')
-                    if seller_id:
-                        offer_prices_to_seller_ids[total_price] = seller_id
-            except (IndexError, TypeError, ValueError):
-                continue
-
-    # --- Final, Simplified Logic ---
-    # Find the best price from the STATS object.
+    # 2. Find the best price from the 'stats' object as a reference.
     best_stats_price = float('inf')
     stats_source = "N/A"
+
     stats_current_used = stats.get('current', [])[2] if stats.get('current') and len(stats['current']) > 2 else None
     if stats_current_used is not None and 0 < stats_current_used:
         best_stats_price = stats_current_used
         stats_source = "stats.current[2]"
+
     buy_box_price = stats.get('buyBoxUsedPrice')
     if buy_box_price is not None and 0 < buy_box_price < best_stats_price:
         best_stats_price = buy_box_price
         stats_source = "stats.buyBoxUsedPrice"
 
-    # Compare the best offer price with the best stats price and decide.
-    if final_price <= best_stats_price:
-        # The best price is from a specific offer, which we already have.
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: Best price is from OFFERS: ${final_price/100:.2f}, Seller: {final_seller_id}")
-    elif offer_prices_to_seller_ids:
-        # The stats price is better, AND we have offers to associate with.
-        # Find the closest offer for data integrity.
-        closest_offer_price = min(offer_prices_to_seller_ids.keys(), key=lambda k: abs(k - best_stats_price))
-        final_price = closest_offer_price
-        final_seller_id = offer_prices_to_seller_ids[closest_offer_price]
-        final_source = f"closest offer to {stats_source}"
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: Stats price was better. Adopting closest offer: Price=${final_price/100:.2f}, Seller={final_seller_id}")
-    else:
-        # The stats price is better, but there are NO offers. Use the stats price directly.
+    # 3. Determine the final price and seller.
+    final_price = None
+    final_seller_id = None
+    final_source = "N/A"
+
+    # Compare the best price from the live offers list with the best price from the stats object.
+    if best_live_offer and lowest_offer_price <= best_stats_price:
+        # The best price was found in the offers list. This is the most reliable source.
+        final_price = lowest_offer_price
+        final_seller_id = best_live_offer.get('sellerId')
+        final_source = f"live offer (seller: {final_seller_id})"
+        logger.info(f"ASIN {asin}: Best price found in live offers: ${final_price/100:.2f}")
+    elif best_stats_price != float('inf'):
+        # The stats object has a better price, or no live offers were found.
+        # We use the stats price but cannot reliably know the seller.
         final_price = best_stats_price
-        final_seller_id = None
-        final_source = stats_source
-        logger.info(f"ASIN {asin} [SELLER DEBUG]: Stats price is best, but no offers. Using stats price: ${final_price/100:.2f}")
-
-
-    if final_price == float('inf'):
+        final_seller_id = None  # Seller is unknown in this case.
+        final_source = f"stats object ({stats_source})"
+        logger.info(f"ASIN {asin}: Best price from stats object is superior: ${final_price/100:.2f}. No matching live offer.")
+    else:
+        # No price found in offers or stats.
         logger.warning(f"ASIN {asin}: No valid USED price found in any source.")
         return {'Now': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
 
@@ -180,6 +132,10 @@ def _get_best_offer_analysis(product, seller_data_cache):
         else:
             logger.warning(f"ASIN {asin}: No data in cache for seller ID {final_seller_id}.")
             result['Seller'] = "No Seller Info"
+    else:
+        # This handles the case where the best price came from stats.
+        result['Seller'] = "(Price from Keepa stats)"
+
 
     return result
 
