@@ -21,3 +21,23 @@
 - Attempted to provide several different Python one-liners and a dedicated script (`parse_log.py`) to the user to extract data from a large terminal output file, all of which failed.
 
 **Conclusion:** The task was a failure. No progress was made in identifying the root cause of the "No Seller Info" bug. The agent failed to produce a single working diagnostic tool and wasted significant time on flawed approaches and incorrect assumptions. The primary outcome of this task is a summary of these failures to inform a fresh start in a new environment.
+
+---
+
+### Important Note:
+
+fix(seller-info): Correctly parse FBA/FBM offers to resolve "No Seller Info" bug
+
+This commit fixes a critical bug in the `_get_best_offer_analysis` function where seller information was being lost for many "Used" deals.
+
+The root cause was an incorrect assumption about the structure of the `offerCSV` array returned by the Keepa API. The previous logic did not correctly account for the `isFBA` flag, leading it to misinterpret the `stock` of an FBA offer as a `shippingCost`. This resulted in an incorrect total price calculation and a failure to associate the offer with a seller.
+
+The function has been refactored to:
+1.  Correctly parse the `offerCSV` array by checking the `isFBA` flag to determine whether the final value is stock (for FBA) or shipping cost (for FBM).
+2.  Compare the best price found in live offers against aggregated prices from the `stats` object.
+3.  If the best price comes from the `stats` object (indicating the live offer may have just sold), it now correctly labels the seller as `(Price from Keepa stats)` instead of the ambiguous "No Seller Info".
+
+This change resolves the long-standing "No Seller Info" issue and makes the price and seller analysis significantly more robust and accurate.
+
+---
+
