@@ -33,7 +33,7 @@ load_dotenv()
 # --- TEMPORARY TEST LIMIT ---
 # To prevent long runs that may hit memory limits, this temporarily limits
 # the number of deals processed. Set to None for a full production run.
-TEMP_DEAL_LIMIT = 25
+TEMP_DEAL_LIMIT = 100
 
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
@@ -93,11 +93,20 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
         seller_id_list = list(unique_seller_ids)
         for i in range(0, len(seller_id_list), 100):
             batch_ids = seller_id_list[i:i+100]
-            token_manager.request_permission_for_call(estimated_cost=1)
-            seller_data, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_ids)
-            token_manager.update_after_call(tokens_left)
-            if seller_data and 'sellers' in seller_data:
-                seller_data_cache.update(seller_data['sellers'])
+            while True:
+                logger.info(f"Attempting to fetch seller data for {len(batch_ids)} seller IDs.")
+                # Request permission inside the loop to re-evaluate tokens on each retry
+                token_manager.request_permission_for_call(estimated_cost=1)
+                seller_data, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_ids)
+                token_manager.update_after_call(tokens_left)
+
+                if seller_data and 'sellers' in seller_data and seller_data['sellers']:
+                    seller_data_cache.update(seller_data['sellers'])
+                    logger.info(f"Successfully fetched seller data for batch. Cache size now: {len(seller_data_cache)}")
+                    break  # Exit loop on success
+                else:
+                    logger.warning(f"Failed to fetch a batch of seller data or seller data was empty. Tokens left: {tokens_left}. Retrying in 15 seconds.")
+                    time.sleep(15) # Wait before retrying to avoid spamming the API
     logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers for this page.")
 
     # 4. Process and save deals to DB for the page

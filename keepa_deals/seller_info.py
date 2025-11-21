@@ -51,21 +51,40 @@ def _get_best_offer_analysis(product, seller_data_cache):
                 if condition == 1 or seller_id == WAREHOUSE_SELLER_ID:
                     continue
 
+                # Correctly parse the offerCSV to find the most recent price and shipping
                 offer_history = offer.get('offerCSV', [])
-                if len(offer_history) >= 2:
-                    price = int(offer_history[-2])
-                    shipping = int(offer_history[-1])
-                    if shipping == -1: shipping = 0
-                    total_price = price + shipping
-                    
-                    if 0 < total_price < lowest_offer_price:
-                        lowest_offer_price = total_price
-                        best_seller_id_from_offers = seller_id
-                        offer_source = f"offer (seller: {seller_id})"
+                is_fba = offer.get('isFBA', False)
 
-            except Exception:
-                # Broad exception to catch any other unforeseen data format issue with an offer,
-                # preventing a single bad offer from crashing the process for a whole product.
+                # The last value is always stock, the one before is price.
+                # For FBM, the value before price *might* be shipping.
+                # We need to parse the history to find the most recent price point.
+
+                # --- FINAL, CORRECTED, DATA-DRIVEN PARSING LOGIC ---
+                offer_history = offer.get('offerCSV', [])
+                is_fba = offer.get('isFBA', False)
+
+                if len(offer_history) < 2:
+                    continue
+
+                price = int(offer_history[-2])
+                shipping = 0  # Default for FBA offers
+
+                if not is_fba:
+                    # For FBM offers, the last value is the shipping cost.
+                    # This check is crucial to distinguish from FBA's stock count.
+                    shipping = int(offer_history[-1])
+                    if shipping == -1:  # Keepa uses -1 for unknown shipping
+                        shipping = 0
+
+                total_price = price + shipping
+
+                if 0 < total_price < lowest_offer_price:
+                    lowest_offer_price = total_price
+                    best_seller_id_from_offers = seller_id
+                    offer_source = f"offer (seller: {seller_id})"
+
+            except (IndexError, TypeError, ValueError) as e:
+                logger.warning(f"ASIN {asin}: Could not parse offer. Error: {e}. Offer data: {offer}")
                 continue
 
     # 2. Compare the best offer price with prices from the STATS object.
@@ -82,9 +101,12 @@ def _get_best_offer_analysis(product, seller_data_cache):
         for offer in offers:
             try:
                 if isinstance(offer, dict):
+                    is_fba = offer.get('isFBA', False)
                     price = int(offer.get('offerCSV', [])[-2])
-                    shipping = int(offer.get('offerCSV', [])[-1])
-                    if shipping == -1: shipping = 0
+                    shipping = 0
+                    if not is_fba:
+                        shipping = int(offer.get('offerCSV', [])[-1])
+                        if shipping == -1: shipping = 0
                     total_price = price + shipping
                     seller_id = offer.get('sellerId')
                     if seller_id:
@@ -158,6 +180,9 @@ def _get_best_offer_analysis(product, seller_data_cache):
         else:
             logger.warning(f"ASIN {asin}: No data in cache for seller ID {final_seller_id}.")
             result['Seller'] = "No Seller Info"
+    else:
+        # This is the case where the price came from stats, but there was no matching offer.
+        result['Seller'] = "(Price from Keepa stats)"
 
     return result
 
