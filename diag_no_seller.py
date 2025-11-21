@@ -1,146 +1,131 @@
-import sqlite3
-import json
 import os
+import sys
+import json
 import logging
-import time
 from dotenv import load_dotenv
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Add project root to Python path to allow module imports
-import sys
-sys.path.append(os.getcwd())
+# Add the project root to the Python path
+project_root = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, project_root)
 
 from keepa_deals.keepa_api import fetch_product_batch, fetch_seller_data
 from keepa_deals.seller_info import get_all_seller_info
-from keepa_deals.token_manager import TokenManager
+from keepa_deals.processing import _process_single_deal
 
-def diagnose_seller_issues():
+# --- Configuration ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Load environment variables
+load_dotenv()
+KEEPA_API_KEY = os.getenv("KEEPA_API_KEY")
+
+if not KEEPA_API_KEY:
+    logging.error("KEEPA_API_KEY not found in .env file.")
+    sys.exit(1)
+
+def run_diagnostic(asin):
     """
-    Diagnoses issues where deals have "No Seller Info" or other related problems by
-    re-fetching and re-processing the data for failing ASINs.
+    Runs a diagnostic trace on a single ASIN to identify where seller info is lost.
     """
-    db_path = 'deals.db'
-    if not os.path.exists(db_path):
-        logger.error(f"Database not found at '{db_path}'. Please run the backfiller first.")
+    if not asin:
+        logging.error("Please provide an ASIN.")
         return
 
-    api_key = os.getenv("KEEPA_API_KEY")
-    if not api_key:
-        logger.error("KEEPA_API_KEY not found in environment variables.")
+    logging.info(f"--- STARTING DIAGNOSTIC FOR ASIN: {asin} ---")
+
+    # 1. Fetch raw product data
+    logging.info("\n--- STEP 1: Fetching raw product data from Keepa API ---")
+    product_data, api_info, tokens_consumed, tokens_left = fetch_product_batch(KEEPA_API_KEY, [asin])
+    if not product_data or not product_data.get('products'):
+        logging.error(f"Failed to fetch product data for ASIN {asin}. Response: {product_data}")
         return
 
-    token_manager = TokenManager(api_key)
-    token_manager.sync_tokens()
+    raw_product = product_data['products'][0]
+    print("\nRaw product data snippet:")
+    print(json.dumps({
+        'asin': raw_product.get('asin'),
+        'offers': raw_product.get('offers', [])[:2], # Show first 2 offers
+        'stats': raw_product.get('stats', {}),
+    }, indent=2, default=str))
 
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
 
-    # Find a sample of ASINs with the specified issues
-    try:
-        cursor.execute("""
-            SELECT ASIN FROM deals
-            WHERE Seller = 'No Seller Info' OR Seller = '-' OR Price_Now = '-'
-            LIMIT 10
-        """)
-        failing_asins = [row['ASIN'] for row in cursor.fetchall()]
-    finally:
-        conn.close()
-
-    if not failing_asins:
-        logger.info("No deals found with 'No Seller Info', '-', or missing 'Price_Now'. Nothing to diagnose.")
-        return
-
-    logger.info(f"Found {len(failing_asins)} failing ASINs to investigate: {failing_asins}")
-
-    diagnostic_results = []
-
-    # 1. Fetch all product data for the failing ASINs
-    all_fetched_products = {}
-    logger.info("Fetching product data for all failing ASINs...")
-    product_data_fetched = False
-    while not product_data_fetched:
-        estimated_cost = 12 * len(failing_asins)  # Rough estimate
-        token_manager.request_permission_for_call(estimated_cost)
-        product_response, _, _, tokens_left = fetch_product_batch(api_key, failing_asins, history=0, offers=20)
-        token_manager.update_after_call(tokens_left)
-        if product_response and 'products' in product_response:
-            all_fetched_products = {p['asin']: p for p in product_response['products']}
-            product_data_fetched = True
-            logger.info("Successfully fetched product data.")
-        else:
-            logger.warning(f"Failed to fetch product data batch (tokens left: {tokens_left}), retrying in 15 seconds...")
-            time.sleep(15)
-
-    # 2. Collect all unique seller IDs from all fetched products
-    all_unique_seller_ids = set()
-    for product in all_fetched_products.values():
-        offers = product.get('offers', [])
-        if not isinstance(offers, list):
-            logger.warning(f"ASIN {product.get('asin')}: 'offers' is not a list, it's a {type(offers)}. Skipping seller ID collection.")
-            continue
+    # 2. Build seller cache (mimicking the real process)
+    logging.info("\n--- STEP 2: Building seller data cache ---")
+    seller_ids = set()
+    offers = raw_product.get('offers', [])
+    if offers:
         for offer in offers:
-            if isinstance(offer, dict) and offer.get('sellerId'):
-                all_unique_seller_ids.add(offer['sellerId'])
+            if isinstance(offer, dict) and 'sellerId' in offer:
+                seller_ids.add(offer['sellerId'])
 
-    # 3. Fetch all seller data in batches to build a complete cache
     seller_data_cache = {}
-    if all_unique_seller_ids:
-        seller_id_list = list(all_unique_seller_ids)
-        logger.info(f"Found {len(seller_id_list)} unique seller IDs. Fetching their data in batches...")
-        for i in range(0, len(seller_id_list), 100):
-            batch_ids = seller_id_list[i:i+100]
-            batch_fetched = False
-            while not batch_fetched:
-                logger.info(f"Attempting to fetch seller data for a batch of {len(batch_ids)} IDs.")
-                token_manager.request_permission_for_call(estimated_cost=1)
-                seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
-                token_manager.update_after_call(tokens_left)
-                if seller_data and 'sellers' in seller_data and seller_data['sellers']:
-                    seller_data_cache.update(seller_data['sellers'])
-                    batch_fetched = True
-                    logger.info(f"Successfully fetched seller batch. Total sellers in cache: {len(seller_data_cache)}")
-                else:
-                    logger.warning(f"Failed to fetch a seller batch or data was empty. Tokens left: {tokens_left}. Retrying in 15 seconds...")
-                    time.sleep(15)
+    if seller_ids:
+        logging.info(f"Found {len(seller_ids)} unique seller IDs. Fetching their data.")
+        seller_data_list, _, _, _ = fetch_seller_data(KEEPA_API_KEY, list(seller_ids))
+        if seller_data_list and 'sellers' in seller_data_list:
+             for seller_id, seller_info in seller_data_list['sellers'].items():
+                 seller_data_cache[seller_id] = seller_info
+        logging.info("Seller cache built.")
+    else:
+        logging.info("No live offers found to build seller cache from.")
 
-    # 4. Process each failing ASIN individually using the complete cache
-    for asin in failing_asins:
-        logger.info(f"--- Diagnosing ASIN: {asin} ---")
-        product_data = all_fetched_products.get(asin)
 
-        if not product_data:
-            logger.warning(f"Could not find fetched product data for ASIN {asin}. Skipping.")
-            continue
+    # 3. Initial analysis from seller_info.py
+    logging.info("\n--- STEP 3: Running get_all_seller_info() ---")
+    seller_info_result = get_all_seller_info(raw_product, seller_data_cache)
+    print("\nOutput of get_all_seller_info():")
+    print(json.dumps(seller_info_result, indent=2))
+    if seller_info_result.get('Seller') in ['-', 'No Seller Info', '(Price from Keepa stats)']:
+         logging.warning("Seller info is already missing or ambiguous at the initial processing stage.")
 
-        # Re-run the specific logic to determine the best price and seller
-        calculated_seller_info = get_all_seller_info(product_data, seller_data_cache)
 
-        diagnostic_results.append({
-            "failing_asin": asin,
-            "calculated_seller_info": calculated_seller_info,
-            "raw_product_data": product_data,
-        })
-        logger.info(f"Finished diagnosis for ASIN: {asin}")
+    # 4. Final processing from processing.py
+    logging.info("\n--- STEP 4: Running _process_single_deal() ---")
+    try:
+        with open('settings.json', 'r') as f:
+            business_settings = json.load(f)
+    except FileNotFoundError:
+        logging.error("settings.json not found. Cannot proceed.")
+        return
+    # This function requires the full list of headers/functions
+    try:
+        with open('keepa_deals/headers.json', 'r') as f:
+            headers = json.load(f)
+    except FileNotFoundError:
+        logging.error("headers.json not found. Cannot proceed.")
+        return
+    # The function mutates the product object and also returns a dict
+    final_processed_data = _process_single_deal(raw_product, seller_data_cache, os.getenv("XAI_TOKEN"), business_settings, headers)
 
-    # Add the raw seller cache to the final log for full context
-    final_log = {
-        "diagnosed_asins": diagnostic_results,
-        "raw_seller_data_cache": seller_data_cache
-    }
+    print("\nFinal processed data dictionary (subset of relevant fields):")
+    relevant_keys = [
+        "Price Now", "Seller", "Seller ID", "Seller_Quality_Score", "Trust", "List at",
+        "All-in Cost", "Profit", "Margin", "Detailed_Seasonality", "Sells"
+    ]
 
-    # Write diagnostic results to a file
-    output_filename = 'diag_seller_issue_log.json'
-    with open(output_filename, 'w') as f:
-        json.dump(final_log, f, indent=4)
+    final_output = {}
+    for key in relevant_keys:
+        # Sanitize key for matching the output of _process_single_deal
+        sanitized_key = key.replace(' ', '_').replace('__', '_')
+        final_output[key] = final_processed_data.get(sanitized_key, 'NOT FOUND')
 
-    logger.info(f"Diagnostic complete. Results saved to '{output_filename}'")
+
+    print(json.dumps(final_output, indent=2))
+
+    logging.info("\n--- DIAGNOSTIC COMPLETE ---")
+    if final_output.get("Seller") in ['-', 'No Seller Info', '(Price from Keepa stats)', 'NOT FOUND']:
+        logging.error("FAIL: Final processed data is missing seller information.")
+    else:
+        logging.info("SUCCESS: Seller information appears to be present in the final processed data.")
+
 
 if __name__ == "__main__":
-    diagnose_seller_issues()
+    # Check if an ASIN is provided as a command-line argument
+    if len(sys.argv) > 1:
+        input_asin = sys.argv[1]
+    else:
+        # Use a default ASIN if none is provided
+        input_asin = "0964953005" # An ASIN known to have caused issues
+        logging.warning(f"No ASIN provided. Using default: {input_asin}")
+
+    run_diagnostic(input_asin)

@@ -107,7 +107,8 @@ def _get_best_offer_analysis(product, seller_data_cache):
 
     # --- Build the final result dictionary ---
     result = {
-        'Now': f"${final_price / 100:.2f}",
+        'Price Now': f"${final_price / 100:.2f}" if final_price is not None else '-',
+        'Best Price': f"${final_price / 100:.2f}" if final_price is not None else '-',
         'Seller ID': final_seller_id or '-',
         'Seller': '-',
         'Seller Rank': '-',
