@@ -41,12 +41,14 @@ def run_diagnostic(asin):
         return
 
     raw_product = product_data['products'][0]
-    print("\nRaw product data snippet:")
-    print(json.dumps({
-        'asin': raw_product.get('asin'),
-        'offers': raw_product.get('offers', [])[:2], # Show first 2 offers
-        'stats': raw_product.get('stats', {}),
-    }, indent=2, default=str))
+
+    # Dump the entire raw product data to a file for forensic analysis
+    dump_filepath = 'raw_asin_dump.json'
+    logging.info(f"Dumping full raw product data to '{dump_filepath}'")
+    with open(dump_filepath, 'w') as f:
+        json.dump(raw_product, f, indent=2, default=str)
+
+    print(f"\nFull raw product data for ASIN {asin} has been saved to {dump_filepath}")
 
 
     # 2. Build seller cache (mimicking the real process)
