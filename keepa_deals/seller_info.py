@@ -44,16 +44,13 @@ def _get_best_offer_analysis(product, seller_data_cache):
                 if len(offer_history) < 2:  # Must have at least timestamp and price
                     continue
 
-                # --- CRITICAL PARSING LOGIC FIX ---
+                # --- Restore Original Parsing Logic ---
+                # The offerCSV is a flat list of [timestamp, price, shipping, ...].
+                # The last two elements are the most recent price and shipping.
                 price = int(offer_history[-2])
-                shipping = 0
-                is_fba = offer.get('isFBA', False)
-
-                if not is_fba:
-                    # For FBM offers, the last element is shipping cost.
-                    shipping = int(offer_history[-1])
-                    if shipping == -1:  # Keepa uses -1 for unknown shipping
-                        shipping = 0
+                shipping = int(offer_history[-1])
+                if shipping == -1: # Keepa uses -1 for unknown shipping
+                    shipping = 0
 
                 total_price = price + shipping
 

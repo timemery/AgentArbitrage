@@ -105,9 +105,7 @@ def run_diagnostic(asin):
 
     final_output = {}
     for key in relevant_keys:
-        # Sanitize key for matching the output of _process_single_deal
-        sanitized_key = key.replace(' ', '_').replace('__', '_')
-        final_output[key] = final_processed_data.get(sanitized_key, 'NOT FOUND')
+        final_output[key] = final_processed_data.get(key, 'NOT FOUND')
 
 
     print(json.dumps(final_output, indent=2))
