@@ -434,3 +434,22 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
 1.  **Verify Fixes with Targeted Log Analysis:** When a specific error is reported in logs (e.g., a `TypeError` at a specific line or for a specific function), do not assume a fix is successful until a new test run's log is analyzed to confirm the *absence* of that specific error message. A general "it seems to work now" is insufficient.
 2.  **Trust the Latest Log:** The latest log is the ground truth. If an error that was supposedly fixed reappears in a new log, it means the fix was not effective. The investigation must restart by re-examining the code for the same error pattern, rather than assuming a new, different cause.
 3.  **Searching is a Key Tool:** Using precise searches to find specific error messages or ASINs in large log files is an essential and effective debugging strategy. When a narrow search returns no results, broaden the search (e.g., to just the ASIN) to confirm if the item was processed at all before concluding the specific error is gone.
+
+---
+### Standard Operating Procedures (SOP) for System Stability
+
+To ensure the stability and performance of the development environment, the following procedures must be followed:
+
+1.  **Handling Large Files (especially logs):**
+    *   **NEVER** read an entire file if it is known or suspected to be large (e.g., > 10 MB). Log files in this project can exceed 100 MB and reading them whole will cause critical system instability.
+    *   **ALWAYS** use targeted commands to inspect large files.
+        *   To view the end of a file: `tail -n 100 <filepath>`
+        *   To view the beginning of a file: `head -n 100 <filepath>`
+        *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
+    *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
+
+2.  **Initial Codebase Exploration ("Filesystem Tour"):**
+    *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
+    *   Use `ls -RF` or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files and subdirectories.
+    *   Read `README.md` and this `AGENTS.md` file in full.
+    *   This initial exploration provides essential context, helps locate relevant code modules, and prevents unnecessary file reading later in the task. Adhering to this practice is mandatory for efficient and stable operation.
