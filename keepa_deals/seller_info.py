@@ -1,103 +1,109 @@
+
 import logging
 from .stable_calculations import calculate_seller_quality_score
-import json
 
 logger = logging.getLogger(__name__)
 
 # Constants
 WAREHOUSE_SELLER_ID = 'A2L77EE7U53NWQ'
+AMAZON_SELLER_ID = 'ATVPDKIKX0DER'
 
 def _get_best_offer_analysis(product, seller_data_cache):
     """
-    Finds the best live USED offer by validating live offer prices against the authoritative
-    'stats.current' array. This ensures price accuracy and correctly retrieves seller info.
+    Finds the best (lowest total price) live "Used" offer directly from the offers array.
+    This is the most reliable way to get an actionable price and seller information.
     """
     asin = product.get('asin', 'N/A')
-    stats = product.get('stats', {})
-    current_prices_from_stats = stats.get('current', [])
+    raw_offers = product.get('offers', [])
 
-    # Create a set of valid current prices from the reliable stats array for USED conditions.
-    # Indices are: 2 (Used), 19 (Used-LikeNew), 20 (Used-VeryGood), 21 (Used-Good), 22 (Used-Acceptable), 32 (BuyBoxUsed)
-    price_indices = [2, 19, 20, 21, 22, 32]
-    valid_stat_prices = set()
-    for index in price_indices:
-        if len(current_prices_from_stats) > index and current_prices_from_stats[index] is not None and current_prices_from_stats[index] > 0:
-            valid_stat_prices.add(current_prices_from_stats[index])
-
-    if not valid_stat_prices:
-        logger.warning(f"ASIN {asin}: No valid USED prices found in stats.current. Cannot determine best price.")
-        return {'Price Now': '-', 'Best Price': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-'}
-
-    # Now, find the best offer by iterating through live offers and validating their price against our ground truth.
     best_offer_details = {
-        'price': float('inf'),
+        'total_price': float('inf'),
         'seller_id': None,
-        'offer_obj': None
+        'offer_obj': None,
+        'condition': None
     }
 
-    raw_offers = product.get('offers', [])
     if not raw_offers:
-        logger.warning(f"ASIN {asin}: No 'offers' array to search for a seller, but found valid prices in stats: {valid_stat_prices}")
+        logger.warning(f"ASIN {asin}: No 'offers' array found. Cannot determine best price.")
     else:
         for offer in raw_offers:
             try:
-                if not isinstance(offer, dict) or offer.get('sellerId') == WAREHOUSE_SELLER_ID:
+                # Basic validation and filtering
+                if not isinstance(offer, dict):
+                    continue
+                if offer.get('sellerId') in [WAREHOUSE_SELLER_ID, AMAZON_SELLER_ID]:
                     continue
 
-                # Skip NEW items
+                # We are only interested in "Used" items (condition != 1)
                 condition_data = offer.get('condition')
-                if not isinstance(condition_data, dict) or condition_data.get('value') == 1:
+                condition_value = None
+                if isinstance(condition_data, dict):
+                    condition_value = condition_data.get('value')
+                elif isinstance(condition_data, int):
+                    condition_value = condition_data
+
+                if condition_value == 1: # 1 is "New"
                     continue
 
+                # The most recent price and shipping are at the end of offerCSV
                 offer_history = offer.get('offerCSV', [])
                 if len(offer_history) < 2:
                     continue
 
-                # The price in the offerCSV is the base price without shipping.
                 price = int(offer_history[-2])
+                shipping = int(offer_history[-1])
+                if shipping == -1: shipping = 0 # -1 means shipping is not specified, treat as 0 for FBA/Prime
 
-                # This is the crucial validation step.
-                if price in valid_stat_prices:
-                    shipping = int(offer_history[-1])
-                    if shipping == -1: shipping = 0
-                    total_price = price + shipping
+                total_price = price + shipping
 
-                    if total_price < best_offer_details['price']:
-                        best_offer_details['price'] = total_price
-                        best_offer_details['seller_id'] = offer.get('sellerId')
-                        best_offer_details['offer_obj'] = offer
+                if total_price < best_offer_details['total_price']:
+                    best_offer_details['total_price'] = total_price
+                    best_offer_details['seller_id'] = offer.get('sellerId')
+                    best_offer_details['offer_obj'] = offer
+                    best_offer_details['condition'] = condition_data.get('name', 'Used') if isinstance(condition_data, dict) else 'Used'
+
             except (ValueError, IndexError, TypeError) as e:
                 logger.warning(f"ASIN {asin}: Could not parse a specific offer. Error: {e}. Offer data: {offer}")
                 continue
 
-    if best_offer_details['price'] == float('inf'):
-        logger.warning(f"ASIN {asin}: Could not find any live offer whose base price matched a valid price in stats.current. Falling back to lowest stat price.")
-        # Fallback: if no live offer's base price matches, use the minimum valid price from stats.
-        min_price_cents = min(valid_stat_prices)
-        return {
-            'Price Now': f"${min_price_cents / 100:.2f}",
-            'Best Price': f"${min_price_cents / 100:.2f}",
-            'Seller ID': '-',
-            'Seller': '(Price from Keepa stats)',
-            'Seller Rank': '-',
-            'Seller_Quality_Score': '-'
-        }
+    # If after checking all offers, we still haven't found a used one, then we fall back.
+    if best_offer_details['total_price'] == float('inf'):
+        logger.warning(f"ASIN {asin}: No valid 'Used' offers found in the offers array. Attempting fallback to stats.")
+        stats = product.get('stats', {})
+        current_prices_from_stats = stats.get('current', [])
 
-    # We have found the best, validated live offer. Build the final result.
+        # Fallback to the primary 'Used' price from stats if available
+        if len(current_prices_from_stats) > 2 and current_prices_from_stats[2] > 0:
+            min_price_cents = current_prices_from_stats[2]
+            logger.info(f"ASIN {asin}: Using fallback price from stats.current[2]: {min_price_cents}")
+            return {
+                'Price Now': f"${min_price_cents / 100:.2f}",
+                'Best Price': f"${min_price_cents / 100:.2f}",
+                'Seller ID': '-',
+                'Seller': '(Price from Keepa stats)',
+                'Seller Rank': '-',
+                'Seller_Quality_Score': '-',
+                'Condition': 'Used'
+            }
+        else:
+            logger.error(f"ASIN {asin}: No used offers found and no fallback price in stats. Cannot determine price.")
+            return {'Price Now': '-', 'Best Price': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-', 'Condition': '-'}
+
+    # We found a winning offer. Now, build the results and enrich with seller data.
     best_seller_id = best_offer_details['seller_id']
     result = {
-        'Price Now': f"${best_offer_details['price'] / 100:.2f}",
-        'Best Price': f"${best_offer_details['price'] / 100:.2f}",
+        'Price Now': f"${best_offer_details['total_price'] / 100:.2f}",
+        'Best Price': f"${best_offer_details['total_price'] / 100:.2f}",
         'Seller ID': best_seller_id,
-        'Seller': '-',
+        'Seller': 'N/A',
         'Seller Rank': '-',
-        'Seller_Quality_Score': '-'
+        'Seller_Quality_Score': '-',
+        'Condition': best_offer_details['condition']
     }
 
-    logger.info(f"ASIN {asin}: Found best validated price {result['Price Now']} from Seller ID: {best_seller_id}")
+    logger.info(f"ASIN {asin}: Found best 'Used' offer. Price: {result['Price Now']}, Seller ID: {best_seller_id}")
 
-    # Fetch seller data from the pre-populated cache.
-    if best_seller_id:
+    if best_seller_id and seller_data_cache:
         seller_data = seller_data_cache.get(best_seller_id)
         if seller_data:
             result['Seller'] = seller_data.get('sellerName', 'N/A')
