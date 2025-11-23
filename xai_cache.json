@@ -480,5 +480,16 @@
     "seasonality:Kana Pict-o-Graphix: Mnemonics for Japanese Hiragana and Katakana|History, Asia|Stone Bridge Press": "Textbook (Winter)",
     "seasonality:Cut Foliage: A practical guide to its selection and care by Susan Whale (2013-10-31)|-|Jago Publishing Ltd": "Gardening",
     "seasonality:The Saucer Fleet|Arts & Photography, Performing Arts|Collector's Guide Publishing, Inc.": "Textbook (Winter)",
-    "seasonality:Eduqas Biology For A Level Yea|-|Illuminate Publishing": "High School AP Textbooks"
+    "seasonality:Eduqas Biology For A Level Yea|-|Illuminate Publishing": "High School AP Textbooks",
+    "reasonableness:Love and Destiny: Discover the Secret Language of Relationships|Books > Subjects > Self-Help > Relationships > Love & Romance|Aug|69.70": "False",
+    "reasonableness:Unfuck Your Anger: Using Science to Understand Frustration, Rage, and Forgiveness (5-minute Therapy)|Books > Subjects > Self-Help > Anger Management|Jul|4.95": "True",
+    "reasonableness:The Counterfeit Marriage|Books > Subjects > Literature & Fiction > Contemporary|Nov|22.80": "True",
+    "reasonableness:Mid-Century Modern Architecture Travel Guide: West Coast USA|Books > Subjects > Arts & Photography > Architecture > Regional|Jan|98.64": "True",
+    "reasonableness:Patterns of the Hypnotic Techniques of Milton H. Erickson, M.D., Vol. 2|Books > Subjects > Self-Help > Personal Transformation|Oct|39.99": "True",
+    "reasonableness:The Keeper of Stars: A Novel|Books > Subjects > Literature & Fiction > Genre Fiction > Small Town & Rural|Oct|29.00": "True",
+    "reasonableness:The Norwegian Prison System|Books > Subjects > Law > Specialties|Dec|32.20": "True",
+    "reasonableness:The Saucer Fleet|Books > Subjects > Arts & Photography > Performing Arts|Apr|146.19": "False",
+    "reasonableness:Come Drill a Well in My Back Yard|Books > Subjects > Science & Math > Earth Sciences|Oct|79.79": "True",
+    "reasonableness:Introduction to Spatial Data Analysis|Books > Subjects > Engineering & Transportation > Engineering > Computer Modelling > Remote Sensing & GIS|Mar|42.03": "True",
+    "reasonableness:Essentials of Intentional Interviewing: Counseling in a Multicultural World|Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Counseling|Dec|24.93": "True"
 }
