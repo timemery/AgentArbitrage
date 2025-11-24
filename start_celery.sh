@@ -23,10 +23,8 @@ echo "Purging any pending tasks from the Celery queue..."
 # Must be run from the app directory to find the celery app
 su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. $PURGE_COMMAND" www-data
 
-# Step 4: Ensure the log file AND schedule file are removed for a clean run.
+# Step 4: Ensure the log file exists and has correct permissions.
 echo "Ensuring log file exists at $LOG_FILE..."
-rm -f $LOG_FILE
-sudo rm -f $APP_DIR/celerybeat-schedule
 touch $LOG_FILE
 chown www-data:www-data $LOG_FILE
 
@@ -38,7 +36,8 @@ chown www-data:www-data $APP_DIR/deals.db
 # Step 5: Start the Celery worker using nohup.
 echo "Starting Celery worker in the background, logging to $LOG_FILE..."
 # The worker must be started from the app directory to find the modules.
-su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
+# Sourcing .env within the su command makes the variables available to the worker process.
+su -s /bin/bash -c "cd $APP_DIR && set -a && source .env && set +a && PYTHONPATH=. nohup $WORKER_COMMAND >> $LOG_FILE 2>&1 &" www-data
 
 sleep 2
 echo "Celery worker startup command has been issued. Check status with 'ps aux | grep celery'."
