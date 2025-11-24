@@ -23,8 +23,10 @@ echo "Purging any pending tasks from the Celery queue..."
 # Must be run from the app directory to find the celery app
 su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. $PURGE_COMMAND" www-data
 
-# Step 4: Ensure the log file exists and has correct permissions.
-echo "Ensuring log file exists at $LOG_FILE..."
+# Step 4: Ensure a clean start for the scheduler and log file.
+echo "Ensuring a clean start for scheduler and logs..."
+# Forcefully remove the old schedule file to prevent the scheduler from starting in a stale state.
+sudo rm -f $APP_DIR/celerybeat-schedule
 touch $LOG_FILE
 chown www-data:www-data $LOG_FILE
 
