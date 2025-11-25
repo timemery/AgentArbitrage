@@ -205,8 +205,8 @@ def last_price_change(deal_object, logger_param=None, product_data=None): # Rena
         # Refer to Keepa API documentation for full list of CSV indices.
         # We will also check common ones like:
         # LIGHTNING_DEALS (3), WAREHOUSE (4), NEW_SUPER_FAST_SHIPPING (5), USED_LIKE_NEW (6),
-        # Check 'USED' (2), 'USED_LIKE_NEW' (6), 'USED_VERY_GOOD' (7), 'USED_GOOD' (8).
-        relevant_used_csv_indices = [2, 6, 7, 8]
+        # Check 'USED' (2), 'USED_LIKE_NEW' (6), 'USED_VERY_GOOD' (7), 'USED_GOOD' (8), and 'USED_ACCEPTABLE' (22).
+        relevant_used_csv_indices = [2, 6, 7, 8, 22]
         
         timestamps_from_csv = []
         current_logger.debug(f"ASIN: {asin} - Checking product_data.csv for used item timestamps using indices: {relevant_used_csv_indices}")
