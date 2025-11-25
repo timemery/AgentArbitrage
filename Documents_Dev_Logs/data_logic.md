@@ -6,13 +6,14 @@ This document serves as the canonical source of truth for how each data column i
 
 ## Data Processing Workflow Overview
 
-The data for each deal is generated in a multi-stage pipeline orchestrated by the `_process_single_deal` function in `keepa_deals/processing.py`.
+The data for each deal is generated in a multi-stage pipeline orchestrated by the `_process_single_deal` function in `keepa_deals/processing.py`. If a product fails certain critical data quality checks at any stage, its processing is halted, and it is excluded from the database.
 
 1.  **Initial Data Extraction**: Basic product attributes are extracted directly from the Keepa `/product` API response. Many of these are simple lookups from the `product` object or the `stats` object within it.
-2.  **Seller & Price Analysis**: The `offers` array from the API response is analyzed by `keepa_deals/seller_info.py` to find the best (lowest total price) "Used" offer. This determines the `Price Now` and all associated seller information.
-3.  **Analytics & Inferred Sales**: The historical `csv` data from the API response is analyzed by `keepa_deals/stable_calculations.py` to infer historical sale events. A sale is inferred when a drop in the offer count is followed by a drop in the sales rank. These inferred sales are the foundation for many advanced analytics.
+2.  **Seller & Price Analysis**: The `offers` array from the API response is analyzed by `keepa_deals/seller_info.py` to find the best (lowest total price) "Used" offer. This determines the `Price Now` and all associated seller information. If no valid "Used" offers are found, the product is excluded.
+3.  **Analytics & Inferred Sales**: The historical `csv` data from the API response is analyzed by `keepa_deals/stable_calculations.py` to infer historical sale events. A sale is inferred when a drop in the offer count is followed by a drop in the sales rank. These inferred sales are the foundation for many advanced analytics. If there are fewer than 3 inferred sales in the last year, the product is excluded.
 4.  **AI-Enriched Seasonality**: The book's title, category, and inferred peak/trough sales months are used to query an AI model (`grok-4-fast-reasoning`) in `keepa_deals/seasonality_classifier.py`. The AI chooses the most likely sales season from a predefined list, providing a more nuanced classification than simple keywords.
-5.  **Business Calculations**: Finally, `keepa_deals/business_calculations.py` takes all the previously generated data (acquisition price, Amazon fees, AI-suggested list price, user-defined prep costs) to calculate the final financial metrics like `All-in Cost`, `Profit`, and `Margin`.
+5.  **AI-Verified Pricing**: A target "List at" price is determined based on the most frequent sale price during the book's peak season. This price is then sent to an AI model for a reasonableness check. If the AI deems the price unreasonable, or if no price can be determined, the product is excluded.
+6.  **Business Calculations**: Finally, `keepa_deals/business_calculations.py` takes all the previously generated data (acquisition price, Amazon fees, AI-verified list price, user-defined prep costs) to calculate the final financial metrics like `All-in Cost`, `Profit`, and `Margin`.
 
 ---
 
@@ -50,13 +51,14 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`last price change`**:
     -   **Source**: `keepa_deals/stable_deals.py` -> `last_price_change()`
-    -   **Logic**: Specifically finds the most recent price change for **"Used" items (excluding 'Acceptable')**. It prioritizes historical data from `product.csv` and falls back to `deal.currentSince` if necessary. Converts the timestamp to a `YYYY-MM-DD HH:MM:SS` string in the 'America/Toronto' timezone.
+    -   **Logic**: Finds the most recent price change for any **"Used" item (including 'Acceptable')**. It prioritizes historical data from `product.csv` and falls back to `deal.currentSince` if necessary. Converts the timestamp to a `YYYY-MM-DD HH:MM:SS` string in the 'America/Toronto' timezone.
 
 ### Seller and Offer Information
 
 -   **`Price Now`**:
     -   **Source**: `keepa_deals/seller_info.py` -> `_get_best_offer_analysis()`
-    -   **Logic**: This is the **lowest total price (item price + shipping)** found by iterating through all "Used" offers in the live `offers` array from the API. If no "Used" offers are found, it falls back to the `stats.current[2]` value and the seller is marked as `(Price from Keepa stats)`.
+    -   **Logic**: This is the **lowest total price (item price + shipping)** found by iterating through all "Used" offers in the live `offers` array from the API.
+    -   **Exclusion Condition**: If no valid "Used" offers are found, the product is excluded from the database.
 
 -   **`Best Price`**:
     -   **Source**: Same as `Price Now`.
@@ -88,19 +90,21 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Source**: `keepa_deals/new_analytics.py` -> `get_1yr_avg_sale_price()`
     -   **Logic**: Calculates the **mean (average)** of all **inferred sale prices** that occurred within the last 365 days.
     -   **Dependency**: Relies on `stable_calculations.infer_sale_events()`.
-    -   **Note**: Returns "Too New" if fewer than 3 inferred sales are found in the last year.
+    -   **Exclusion Condition**: If fewer than 3 inferred sales are found in the last year, the product is excluded from the database.
 
 -   **`% Down`**:
     -   **Source**: `keepa_deals/new_analytics.py` -> `get_percent_discount()`
     -   **Logic**: A simple percentage calculation: `((1yr. Avg. - Best Price) / 1yr. Avg.) * 100`. If `Best Price` is higher than `1yr. Avg.`, it returns `0%`.
+
 -   **`Trend`**:
     -   **Source**: `keepa_deals/new_analytics.py` -> `get_trend()`
-    -   **Logic**: Determines the recent price trend (⇧, ⇩, ⇨). It combines the "New" and "Used" price histories, takes a dynamic sample of the most recent unique price points (sample size is larger for lower sales rank books), and compares the first and last price in the sample.
+    -   **Logic**: Determines the recent price trend (⇧, ⇩, ⇨). It combines both "New" and "Used" price histories, sorts them, and identifies unique consecutive prices. It then analyzes a dynamic sample of the most recent unique prices (larger sample size for better-selling books) by comparing the first and last price in the sample. This use of unique prices provides a more accurate view of recent movement than a simple mean or median.
 
 -   **`Recent Inferred Sale Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py` -> `recent_inferred_sale_price()`
     -   **Logic**: The price of the single most recent inferred sale event.
     -   **Dependency**: Relies on `stable_calculations.infer_sale_events()`.
+    -   **Note**: This data point is calculated but is not currently displayed in the UI or used in any other downstream calculations.
 
 -   **`Profit Confidence`**:
     -   **Source**: `keepa_deals/stable_calculations.py` -> `profit_confidence()`
@@ -135,7 +139,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         1.  It first identifies all inferred sale prices that occurred during the `Peak Season`.
         2.  It calculates the statistical **mode** (most frequently occurring price) of those sales. If no clear mode exists, it falls back to the median.
         3.  This calculated price is then sent to the `grok-4-fast-reasoning` AI model for a **reasonableness check**. The AI is asked "Is a peak selling price of $X.XX reasonable for this book?".
-        4.  If the AI responds "No", the price is discarded and "Too New" is returned. Otherwise, the calculated price is used.
+        4.  **Exclusion Condition**: If the AI responds "No", or if a price cannot be calculated, the product is excluded from the database.
 
 ### Business & Financial Metrics
 
