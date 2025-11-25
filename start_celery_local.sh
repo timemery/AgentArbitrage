@@ -11,18 +11,6 @@ PYTHON_EXEC="python3"
 WORKER_COMMAND="$PYTHON_EXEC -m celery -A worker.celery_app worker --beat --loglevel=INFO"
 PURGE_COMMAND="$PYTHON_EXEC -m celery -A worker.celery_app purge -f"
 
-# Step 1.5: Load environment variables from .env file
-# 'set -a' exports all variables created or modified.
-# 'set +a' disables this behavior.
-if [ -f .env ]; then
-    echo "Loading environment variables from .env..."
-    set -a
-    source .env
-    set +a
-else
-    echo "Warning: .env file not found. Celery tasks may fail if they need environment variables."
-fi
-
 # Step 2: Kill any lingering Celery worker processes.
 echo "Attempting to stop any old Celery workers..."
 # Use pkill with a pattern that matches the local command
@@ -36,6 +24,8 @@ $PURGE_COMMAND
 
 # Step 4: Ensure the log file AND schedule file are removed for a clean run.
 echo "Ensuring log file exists at $LOG_FILE..."
+rm -f "$LOG_FILE"
+rm -f "$APP_DIR/celerybeat-schedule"
 touch "$LOG_FILE"
 
 # Step 4.5: Ensure deals.db exists.
