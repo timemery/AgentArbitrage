@@ -117,6 +117,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 ---
 
+**Request an edit to this document regarding this question:**
+
 **There are additional details that define this result... I believe we considered mean, mode median, and settled on one (can't remember which) would provided the best answer... can you provide those additional details in order to ensure that logic is recorded and not lost during a future update?**
 
 ---
@@ -127,6 +129,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Dependency**: Relies on `stable_calculations.infer_sale_events()`.
 
 ---
+
+**Request an edit to this document regarding this question:**
 
 **I'm not sure where we show this price in the web UI, or if/how we use it in other columns. Can you clarify? If this is the price we show in the "List at" column, it's not what should be listed there (unless I'm misinterpreting your explanation). The "List at" price is intended to provide the most likley price a book will sell at during its peak selling season. If its a book without a clear season, and sells year round that should still represent the peak price a user can expect to list and sell it at by knowing "what the market will bear" at those peak selling times.**
 
@@ -169,7 +173,13 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 ---
 
-**I'm not sure I like the "Too New" lable here as a fallback. If there's truly no way to make an educated guess at what the potential sale price is for this book, we should be excluding that book from the results rather than listing it with "Too New" since the purpose of this application is to find profitable books, if we cannot predict it's most likley sale price to list it at, we cannot reccommend it as a book worth buying to arbitrage. Are there other things we can do to find a price that MIGHT be good, and then adjust the "Profit Trust" rating to reflect the lack of trust we have in that predicted sale/list price? This is just theoretical, and I'm just looking for ideas. If the best idea is to eliminate that book when we can't provide a trust worthy "List at" price, I'm good with that. The only downside to that is a reduced number of books we can recommend, however it might be better not to list a book we aren't sure will sell at our "List at" price if we're not confident in that number.**  
+**I'm not sure I like the "Too New" lable here as a fallback. If there's truly no way to make an educated guess at what the potential sale price is for this book, we should be excluding that book from the results rather than listing it with "Too New" since the purpose of this application is to find profitable books, if we cannot predict it's most likley sale price to list it at, we cannot reccommend it as a book worth buying to arbitrage. **
+
+
+
+**Possible update to this logic?:**
+
+**Perhaps though there are there other things we can do to find a price that MIGHT be good, and then adjust the "Profit Trust" rating to reflect the lack of trust we have in that predicted sale/list price? This is just theoretical, and I'm just looking for ideas. If the best idea is to eliminate that book when we can't provide a trust worthy "List at" price, I'm good with that. The only downside to that is a reduced number of books we can recommend, however it might be better not to list a book we aren't sure will sell at our "List at" price if we're not confident in that number.**  
 
 ---
 
@@ -213,6 +223,8 @@ The following columns are generally direct extractions from the Keepa `stats` ob
 -   **Amazon Price Columns** (`Amazon - Current`, `Amazon - 365 days avg.`, etc.): Extracted from the `stats` object at index `0`.
 
 ---
+
+**Possible update to this logic?:**
 
 **Amazon Price is not a column we're currently showing in the web UI, which is fine, however I'm realizing now that this Price is a useful indicator of what the market will bear, since it is almost certain that an FBA seller can never sell a book at a price that's higher than what Amazon sells it at. This Amazon Price could be useful in determining whether or not a suggested list price is reasonable or not. This would be complex calculation, and wouldn't always be applied since Amazon does not sell every book, so some books would not have the Amazon Price available as a "landmark" for what the market will bear.**
 
