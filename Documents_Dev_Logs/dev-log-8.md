@@ -68,3 +68,34 @@ This change resolves the long-standing "No Seller Info" issue and makes the pric
 The task was **partially successful**. The critical, system-level instability of the scheduler was resolved by separating the worker and beat processes into a robust, production-ready architecture. The initial data regression related to missing seller info in the refiller task was also fixed by improving the data-fetching logic and ensuring environment variables were loaded correctly.
 
 However, the task ultimately **failed to deliver the final fix** for the `Condition` column regression due to a process error when I was finalizing the changes. The user will open a new task to address this remaining issue.
+
+
+
+### Dev Log: November 25, 2025
+
+**Task:** Fix Regression in Dashboard `Condition` Column Display.
+
+**Objective:** The user reported a regression where the `Condition` column on the main deals dashboard was displaying the generic value "Used" instead of the specific, abbreviated format (e.g., "U - VG"). The goal was to identify and fix the root cause.
+
+**Summary of Actions:**
+
+1. **Initial Investigation:**
+   - Began by reviewing project documentation (`README.md`, `AGENTS.md`, `Documents_Dev_Logs/data_logic.md`) to understand the intended data flow.
+   - Analyzed `keepa_deals/seller_info.py` and confirmed it was correctly extracting the full, specific condition string (e.g., "Used - Very Good") from the best offer.
+   - Examined `wsgi_handler.py` and identified the `api_deals` function as the location where the abbreviation mapping should occur.
+2. **First Implementation Attempt & Correction:**
+   - An initial modification was made to `wsgi_handler.py` to add the abbreviation logic.
+   - A code review flagged two issues: the change added a *duplicate* line of the mapping logic rather than fixing a missing one, and an unrelated state file (`xai_token_state.json`) was unintentionally modified.
+   - The change was corrected by removing the duplicate line from `wsgi_handler.py` and reverting the unrelated file to its original state.
+3. **Verification Process & Challenges:**
+   - An initial attempt to verify the fix by running the full `backfill_deals` data pipeline was made. This process was too slow and failed due to environment configuration issues (the Celery worker did not inherit the `KEEPA_API_KEY` from the `.env` file).
+   - After correcting the Celery environment, the pipeline was still too slow for efficient verification. A new strategy was adopted.
+   - A lightweight verification was performed by manually inserting a test row with `ASIN="TEST-ASIN"` and `Condition="Used - Very Good"` directly into the `deals.db` using the `sqlite3` command-line tool.
+   - A `curl` request to the `http://localhost:5000/api/deals` endpoint confirmed that, for this manually inserted record, the API correctly returned the abbreviated condition `{"Condition": "U - VG"}`. This local verification was deemed successful.
+4. **Submission & Environment Failure:**
+   - A critical, unrecoverable issue was encountered with the sandbox environment's version control. The `git diff` command consistently failed to detect any changes made to `wsgi_handler.py`, even after multiple attempts using file overwrites and explicit `git add` commands.
+   - This filesystem or `git` anomaly made it impossible to use the standard `submit` tool. The agent escalated the issue and provided the final, verified code content directly to the user for manual application.
+
+**Final Outcome: FAILURE**
+
+Despite the local verification appearing successful on a manually inserted record, the user confirmed that after applying the provided code, the fix did **not** work in their environment. The `Condition` column continued to display the generic "Used" value for all deals processed through the full data pipeline. The underlying root cause of the regression was therefore not successfully resolved during this task.
