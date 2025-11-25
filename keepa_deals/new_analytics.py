@@ -47,13 +47,13 @@ def get_1yr_avg_sale_price(product, logger=None):
     # Defensive check for required data
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
         logger.warning(f"ASIN {asin}: Product data is missing 'csv' field or 'csv' is incomplete. Cannot calculate {COLUMN_NAME}.")
-        return {COLUMN_NAME: "Too New"}
+        return None
 
     sale_events, _ = infer_sale_events(product)
 
     if not sale_events:
         logger.debug(f"ASIN {asin}: No sale events found for {COLUMN_NAME} calculation.")
-        return {COLUMN_NAME: "Too New"}
+        return None
 
     try:
         df = pd.DataFrame(sale_events)
@@ -66,8 +66,8 @@ def get_1yr_avg_sale_price(product, logger=None):
         logger.debug(f"ASIN {asin}: Found {len(df_last_year)} sale events in the last year.")
 
         if len(df_last_year) < 3:
-            logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful average.")
-            return {COLUMN_NAME: "Too New"}
+            logger.info(f"ASIN {asin}: Insufficient sale events in the last year ({len(df_last_year)}) to calculate a meaningful average. This deal will be excluded.")
+            return None
 
         # Calculate and log both the median and mean price
         median_price_cents = df_last_year['inferred_sale_price_cents'].median()

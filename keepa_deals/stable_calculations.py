@@ -413,13 +413,16 @@ def get_peak_season(product):
 def get_list_at_price(product):
     """
     Wrapper to get the 'List at' price, which is the mode of peak season prices.
-    Returns 'Too New' if the price is invalid.
+    Returns None if the price is invalid, signaling for exclusion.
     """
     analysis = _get_analysis(product)
     price_cents = analysis.get('peak_price_mode_cents', -1)
     if price_cents and price_cents > 0:
         return {'List at': f"${price_cents / 100:.2f}"}
-    return {'List at': 'Too New'}
+    logger = logging.getLogger(__name__)
+    asin = product.get('asin', 'N/A')
+    logger.info(f"ASIN {asin}: No valid 'List at' price could be determined. This deal will be excluded.")
+    return None
 
 def get_trough_season(product):
     """Wrapper to get the Trough Season from the new analysis."""

@@ -228,10 +228,10 @@ def last_price_change(deal_object, logger_param=None, product_data=None): # Rena
     if latest_ts <= 100000:
         current_logger.info(f"ASIN: {asin} - No valid used item timestamp from product_data.csv (latest_ts={latest_ts}). Falling back to deal_object.currentSince for used items.")
         current_since_array = deal_object.get('currentSince', [])
-        # Indices in currentSince for Used conditions (excluding Acceptable):
-        # 2 (Used), 19 (Used-Like New), 20 (Used-Very Good), 21 (Used-Good)
+        # Indices in currentSince for Used conditions (including Acceptable):
+        # 2 (Used), 19 (Used-Like New), 20 (Used-Very Good), 21 (Used-Good), 22 (Used-Acceptable)
         # These correspond to stats.current indices.
-        relevant_current_since_indices = [2, 19, 20, 21] # Used, Used-LikeNew, Used-VeryGood, Used-Good
+        relevant_current_since_indices = [2, 19, 20, 21, 22] # Used, Used-LikeNew, Used-VeryGood, Used-Good, Used-Acceptable
         valid_current_since_ts = []
 
         current_logger.debug(f"ASIN: {asin} - Checking deal_object.currentSince for used item timestamps using base indices: {relevant_current_since_indices}")

@@ -82,28 +82,10 @@ def _get_best_offer_analysis(product, seller_data_cache):
                 logger.warning(f"ASIN {asin}: Could not parse a specific offer. Error: {e}. Offer data: {offer}")
                 continue
 
-    # If after checking all offers, we still haven't found a used one, then we fall back.
+    # If after checking all offers, we still haven't found a used one, the deal is invalid.
     if best_offer_details['total_price'] == float('inf'):
-        logger.warning(f"ASIN {asin}: No valid 'Used' offers found in the offers array. Attempting fallback to stats.")
-        stats = product.get('stats', {})
-        current_prices_from_stats = stats.get('current', [])
-
-        # Fallback to the primary 'Used' price from stats if available
-        if len(current_prices_from_stats) > 2 and current_prices_from_stats[2] > 0:
-            min_price_cents = current_prices_from_stats[2]
-            logger.info(f"ASIN {asin}: Using fallback price from stats.current[2]: {min_price_cents}")
-            return {
-                'Price Now': f"${min_price_cents / 100:.2f}",
-                'Best Price': f"${min_price_cents / 100:.2f}",
-                'Seller ID': '-',
-                'Seller': '(Price from Keepa stats)',
-                'Seller Rank': '-',
-                'Seller_Quality_Score': '-',
-                'Condition': 'Used'
-            }
-        else:
-            logger.error(f"ASIN {asin}: No used offers found and no fallback price in stats. Cannot determine price.")
-            return {'Price Now': '-', 'Best Price': '-', 'Seller ID': '-', 'Seller': '-', 'Seller Rank': '-', 'Seller_Quality_Score': '-', 'Condition': '-'}
+        logger.error(f"ASIN {asin}: No valid 'Used' offers found in the offers array. This deal will be excluded.")
+        return None
 
     # We found a winning offer. Now, build the results and enrich with seller data.
     best_seller_id = best_offer_details['seller_id']

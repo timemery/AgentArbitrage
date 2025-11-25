@@ -42,15 +42,24 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
                     result = func(product_data, logger)
                 else:
                     result = func(product_data)
-                row_data.update(result)
+
+                # Check for exclusion signal from get_list_at_price
+                if func.__name__ == 'get_list_at_price' and result is None:
+                    # The function already logs the reason for exclusion.
+                    return None
+
+                if result:  # prevent update with None
+                    row_data.update(result)
             except Exception as e:
                 logger.error(f"Function {func.__name__} failed for ASIN {asin}, header '{header}': {e}", exc_info=True)
 
     # 2. Seller Info
     try:
         seller_info = get_all_seller_info(product_data, seller_data_cache=seller_data_cache)
-        if seller_info:
-            row_data.update(seller_info)
+        if seller_info is None:
+            # The function returns None if no valid used offer is found.
+            return None  # Halt processing
+        row_data.update(seller_info)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get seller info: {e}", exc_info=True)
 
@@ -77,6 +86,10 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key, business_
     # 4. Analytics
     try:
         yr_avg_info = get_1yr_avg_sale_price(product_data, logger=logger)
+        if yr_avg_info is None:
+            # The function returns None if there are not enough sales.
+            return None  # Halt processing
+
         trend_info = get_trend(product_data, logger=logger)
         row_data.update(yr_avg_info)
         row_data.update(trend_info)
