@@ -33,7 +33,7 @@ load_dotenv()
 # --- TEMPORARY TEST LIMIT ---
 # To prevent long runs that may hit memory limits, this temporarily limits
 # the number of deals processed. Set to None for a full production run.
-TEMP_DEAL_LIMIT = 10
+TEMP_DEAL_LIMIT = 5
 
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
@@ -45,7 +45,7 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 # slightly above the maximum token bucket size (300). This allows the TokenManager's
 # "controlled deficit" strategy to function effectively, preventing excessive negative
 # token balances and minimizing long wait times for token refills.
-MAX_ASINS_PER_BATCH = 20
+MAX_ASINS_PER_BATCH = 10
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days, to prevent expiration during very long runs
 

@@ -491,5 +491,13 @@
     "reasonableness:The Saucer Fleet|Books > Subjects > Arts & Photography > Performing Arts|Apr|146.19": "False",
     "reasonableness:Come Drill a Well in My Back Yard|Books > Subjects > Science & Math > Earth Sciences|Oct|79.79": "True",
     "reasonableness:Introduction to Spatial Data Analysis|Books > Subjects > Engineering & Transportation > Engineering > Computer Modelling > Remote Sensing & GIS|Mar|42.03": "True",
-    "reasonableness:Essentials of Intentional Interviewing: Counseling in a Multicultural World|Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Counseling|Dec|24.93": "True"
+    "reasonableness:Essentials of Intentional Interviewing: Counseling in a Multicultural World|Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Counseling|Dec|24.93": "True",
+    "reasonableness:Poetry Is Useless|Books > Subjects > Comics & Graphic Novels > Graphic Novels|Aug|65.96": "False",
+    "reasonableness:Colorful File Folder Games, Grade K (Colorful Game Books Series)|Books > Subjects > Children's Books > Activities, Crafts & Games > Games|Jun|37.99": "False",
+    "seasonality:Many Mansions|Mystery, Thriller & Suspense, Mystery, Police Procedurals|Neville Spearman": "Year-round",
+    "seasonality:The mysterious numbers of the Hebrew kings|Religion & Spirituality|Zondervan Pub. House": "Textbook (Summer)",
+    "seasonality:Blue Oyster Cult: Every album, every song (On Track)|Arts & Photography, Music, History & Criticism|Sonicbond Publishing": "Halloween",
+    "seasonality:Midsummer Magic (Regency Magic Trilogy, 1)|Literature & Fiction|Severn House": "Year-round",
+    "seasonality:Punisher Vs. Bullseye|Comics & Graphic Novels, Graphic Novels, Mystery|Marvel Enterprises": "Year-round",
+    "reasonableness:Punisher Vs. Bullseye|Books > Subjects > Comics & Graphic Novels > Graphic Novels > Mystery|May|136.49": "False"
 }

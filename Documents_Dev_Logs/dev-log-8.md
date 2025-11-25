@@ -41,3 +41,30 @@ This change resolves the long-standing "No Seller Info" issue and makes the pric
 
 ---
 
+### Dev Log: Stabilize Data Pipeline and Address Regressions
+
+**Date:** 2025-11-24 **Task:** Resolve data regression in the "refiller" task and stabilize the periodic scheduling of data updates.
+
+**Initial Objective:** The primary goal was to resolve a data regression where the periodic "refiller" task (`update_recent_deals`) was overwriting correct seller 'Name' and 'Trust' information with 'N/A' values after a successful initial backfill. A secondary objective that emerged was to ensure this refiller task ran reliably on its 15-minute schedule.
+
+**Challenges & Investigation Steps:**
+
+1. **Environment Instability:** The initial verification process was significantly hampered by a series of cascading environmental failures.
+   - Core dependencies such as `celery` and `redis-server` were found to be uninstalled, requiring manual installation via `pip` and `apt-get`.
+   - The Celery worker failed to start due to missing environment variables (e.g., `KEEPA_API_KEY`). Investigation revealed that the startup scripts (`start_celery_local.sh` and `start_celery.sh`) were not configured to load the `.env` file. This was addressed by modifying the scripts to source the file.
+2. **API Rate Limiting:** Once the environment was stabilized, the backfill process was observed to start with a negative Keepa API token balance. This triggered the `TokenManager`'s designed waiting period (approx. 13 minutes), significantly delaying the ability to verify changes.
+3. **Silent Process Termination:** A major challenge arose when the backfill task would appear to start processing in the logs but would terminate without writing its output (`temp_deals.json`) or logging any errors. The database remained empty. This behavior was consistent with the operating system silently killing the worker process, likely due to high memory consumption.
+4. **Scheduler Failure:** The user reported that after a successful (but limited) backfill, the periodic refiller task was not being triggered every 15 minutes as scheduled.
+   - Logs confirmed that the Celery Beat scheduler process was starting but was not subsequently sending tasks after the initial backfill completed.
+   - Deeper analysis, based on user-provided logs, confirmed that the entire Celery process (worker + embedded scheduler) was terminating after the backfill, which pointed back to the silent process kill as the root cause of the scheduler's disappearance.
+   - This was addressed by re-architecting the `start_celery.sh` script to launch the Celery worker and the Celery Beat scheduler as two separate, independent daemons, each with its own log file (`celery_worker.log` and `celery_beat.log`).
+5. **Data Presentation Regression:** During the final round of testing, the user identified a new regression: the `Condition` column on the dashboard was displaying a generic "Used" instead of the specific, abbreviated format (e.g., "U - VG").
+   - Investigation traced the issue to the `api_deals` function in `wsgi_handler.py`, where the logic to apply the abbreviation map was missing.
+   - Multiple attempts to apply a targeted code patch failed. The fix was eventually implemented by replacing the entire contents of the file.
+6. **Final Commit Failure:** A final verification by the user revealed that the commit intended to fix the `Condition` regression did not actually contain the updated `wsgi_handler.py` file, indicating a failure in my final verification-before-commit step.
+
+**Outcome:**
+
+The task was **partially successful**. The critical, system-level instability of the scheduler was resolved by separating the worker and beat processes into a robust, production-ready architecture. The initial data regression related to missing seller info in the refiller task was also fixed by improving the data-fetching logic and ensuring environment variables were loaded correctly.
+
+However, the task ultimately **failed to deliver the final fix** for the `Condition` column regression due to a process error when I was finalizing the changes. The user will open a new task to address this remaining issue.

@@ -40,17 +40,23 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Source**: `keepa_deals/stable_deals.py` -> `deal_found()`
     -   **Logic**: Converts the `creationDate` (a Keepa timestamp in minutes) from the `/deal` API response into a full ISO 8601 formatted datetime string, localized to the 'America/Toronto' timezone.
 
-*** Future feature will make this timestamp local to the users timezone, whether they are in Toronto or New Zealand, or any timezone worldwide.
+*Future feature will make this timestamp local to the users timezone, whether they are in Toronto or New Zealand, or any timezone worldwide.*
 
 -   **`last update`**:
     -   **Source**: `keepa_deals/stable_deals.py` -> `last_update()`
     -   **Logic**: Takes the **most recent** timestamp from three possible sources in the API data: `product.lastUpdate`, `deal.lastUpdate`, and `stats.lastOffersUpdate`. Converts this timestamp to a `YYYY-MM-DD HH:MM:SS` string in the 'America/Toronto' timezone.
 
+*Future feature will make this timestamp local to the users timezone, whether they are in Toronto or New Zealand, or any timezone worldwide.*
+
 -   **`last price change`**:
     -   **Source**: `keepa_deals/stable_deals.py` -> `last_price_change()`
     -   **Logic**: Specifically finds the most recent price change for **"Used" items (excluding 'Acceptable')**. It prioritizes historical data from `product.csv` and falls back to `deal.currentSince` if necessary. Converts the timestamp to a `YYYY-MM-DD HH:MM:SS` string in the 'America/Toronto' timezone.
 
-*** Most of this should be fine, however we do not want to exclude Acceptable condition books. This was an old specification that I realized would lead to fewer deals, and the user can see the seller trust associated to that listing, and can decide for themselves whether or not this is a good buy, even in acceptable condition.
+---
+
+**Most of this should be fine, however we do not want to exclude Acceptable condition books. This was an old specification that I realized would lead to fewer deals, and the user can see the seller trust associated to that listing, and can decide for themselves whether or not this is a good buy, even in acceptable condition.**
+
+---
 
 ### Seller and Offer Information
 
@@ -58,7 +64,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Source**: `keepa_deals/seller_info.py` -> `_get_best_offer_analysis()`
     -   **Logic**: This is the **lowest total price (item price + shipping)** found by iterating through all "Used" offers in the live `offers` array from the API. If no "Used" offers are found, it falls back to the `stats.current[2]` value and the seller is marked as `(Price from Keepa stats)`.
 
-*** Falbacks are not useful, because if there are no used offers, there are simply no used offers, and so that ASIN should be excluded from collection to the db.
+---
+
+**Falbacks are not useful, because if there are no used offers, there are simply no used offers, and so that ASIN should be excluded from collection to the db.**
+
+---
 
 -   **`Best Price`**:
     -   **Source**: Same as `Price Now`.
@@ -92,24 +102,35 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Dependency**: Relies on `stable_calculations.infer_sale_events()`.
     -   **Note**: Returns "Too New" if fewer than 3 inferred sales are found in the last year.
 
-*** If fewer than 3 sales are found in the inferred sales, that book is not likely to be a good buy, and so should be excluded from collection to the db.
+---
+
+**If fewer than 3 sales are found in the inferred sales, that book is not likely to be a good buy, and so should be excluded from collection to the db.**
+
+---
 
 -   **`% Down`**:
     -   **Source**: `keepa_deals/new_analytics.py` -> `get_percent_discount()`
     -   **Logic**: A simple percentage calculation: `((1yr. Avg. - Best Price) / 1yr. Avg.) * 100`. If `Best Price` is higher than `1yr. Avg.`, it returns `0%`.
-
 -   **`Trend`**:
     -   **Source**: `keepa_deals/new_analytics.py` -> `get_trend()`
     -   **Logic**: Determines the recent price trend (⇧, ⇩, ⇨). It combines the "New" and "Used" price histories, takes a dynamic sample of the most recent unique price points (sample size is larger for lower sales rank books), and compares the first and last price in the sample.
 
-*** There are additional details that define this result... I believe we considered mean, mode median, and settled on one (can't remember which) would provided the best answer... can you provide those additional details in order to ensure that logic is recorded and not lost during a future update?
+---
+
+**There are additional details that define this result... I believe we considered mean, mode median, and settled on one (can't remember which) would provided the best answer... can you provide those additional details in order to ensure that logic is recorded and not lost during a future update?**
+
+---
 
 -   **`Recent Inferred Sale Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py` -> `recent_inferred_sale_price()`
     -   **Logic**: The price of the single most recent inferred sale event.
     -   **Dependency**: Relies on `stable_calculations.infer_sale_events()`.
 
-*** I'm not sure where we show this price in the web UI, or if/how we use it in other columns. Can you clarify? If this is the price we show in the "List at" column, it's not what should be listed there (unless I'm misinterpreting your explanation). The "List at" price is intended to provide the most likley price a book will sell at during its peak selling season. If its a book without a clear season, and sells year round that should still represent the peak price a user can expect to list and sell it at by knowing "what the market will bear" at those peak selling times.   
+---
+
+**I'm not sure where we show this price in the web UI, or if/how we use it in other columns. Can you clarify? If this is the price we show in the "List at" column, it's not what should be listed there (unless I'm misinterpreting your explanation). The "List at" price is intended to provide the most likley price a book will sell at during its peak selling season. If its a book without a clear season, and sells year round that should still represent the peak price a user can expect to list and sell it at by knowing "what the market will bear" at those peak selling times.**
+
+---
 
 -   **`Profit Confidence`**:
     -   **Source**: `keepa_deals/stable_calculations.py` -> `profit_confidence()`
@@ -146,7 +167,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         3.  This calculated price is then sent to the `grok-4-fast-reasoning` AI model for a **reasonableness check**. The AI is asked "Is a peak selling price of $X.XX reasonable for this book?".
         4.  If the AI responds "No", the price is discarded and "Too New" is returned. Otherwise, the calculated price is used.
 
-*** I'm not sure I like the "Too New" lable here as a fallback. If there's truly no way to make an educated guess at what the potential sale price is for this book, we might consider excluding that book from the results rather than listing it with "Too New" since the purpose of this application is to find profitable books, if we cannot predict it's most likley sale price to list it at, we cannot reccommend it as a book worth buying to arbitrage. Are there other things we can do to find a price that MIGHT be good, and then adjust the "Profit Trust" rating to reflect the lack of trust we have in that predicted sale/list price? This is just theoretical, and I'm just looking for ideas. If the best idea is to eliminate that book when we can't provide a trust worthy "List at" price, I'm good with that. The only downside to that is a reduced number of books we can recommend, however it might be better not to list a book we aren't sure will sell at our "List at" price if we're not confident in that number.  
+---
+
+**I'm not sure I like the "Too New" lable here as a fallback. If there's truly no way to make an educated guess at what the potential sale price is for this book, we should be excluding that book from the results rather than listing it with "Too New" since the purpose of this application is to find profitable books, if we cannot predict it's most likley sale price to list it at, we cannot reccommend it as a book worth buying to arbitrage. Are there other things we can do to find a price that MIGHT be good, and then adjust the "Profit Trust" rating to reflect the lack of trust we have in that predicted sale/list price? This is just theoretical, and I'm just looking for ideas. If the best idea is to eliminate that book when we can't provide a trust worthy "List at" price, I'm good with that. The only downside to that is a reduced number of books we can recommend, however it might be better not to list a book we aren't sure will sell at our "List at" price if we're not confident in that number.**  
+
+---
 
 ### Business & Financial Metrics
 
@@ -187,11 +212,14 @@ The following columns are generally direct extractions from the Keepa `stats` ob
 -   **Sales Rank Columns** (`Sales Rank - Current`, `Sales Rank - 30 days avg.`, etc.): Extracted from the `stats` object at index `3`.
 -   **Amazon Price Columns** (`Amazon - Current`, `Amazon - 365 days avg.`, etc.): Extracted from the `stats` object at index `0`.
 
-*** This is not a column we're currently showing in the web UI, however I'm realizing now that this Price is a useful indicator of what the market will bear, because it is almost certain that an FBA seller can never sell a book at a price that's higher than what Amazon sells it at. This Amazon Price could be useful in determining whether or not a suggested list price is reasonable or not. This would be complex 
+---
 
+**Amazon Price is not a column we're currently showing in the web UI, which is fine, however I'm realizing now that this Price is a useful indicator of what the market will bear, since it is almost certain that an FBA seller can never sell a book at a price that's higher than what Amazon sells it at. This Amazon Price could be useful in determining whether or not a suggested list price is reasonable or not. This would be complex calculation, and wouldn't always be applied since Amazon does not sell every book, so some books would not have the Amazon Price available as a "landmark" for what the market will bear.**
 
+---
 
--   **New Price Columns** (`New - Current`, `New - 365 days avg.`, etc.): Extracted from the `stats` object at index `1`.
+- **New Price Columns** (`New - Current`, `New - 365 days avg.`, etc.): Extracted from the `stats` object at index `1`.
+
 -   **Used Price Columns** (`Used - Current`, `Used - 365 days avg.`, etc.): Extracted from the `stats` object at index `2`.
 -   **Sub-Condition Columns** (`Used, like new - Current`, `Used, very good - 365 days avg.`, etc.): Extracted from the `stats` object at specific indices (`19` for Like New, `20` for Very Good, etc.).
 -   **Buy Box Columns** (`Buy Box - Current`, `Buy Box - 365 days avg.`, etc.): Extracted from the `stats` object at specific indices (`18` for overall Buy Box, `32` for Used Buy Box).
