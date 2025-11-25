@@ -4,9 +4,18 @@ from .stable_calculations import calculate_seller_quality_score
 
 logger = logging.getLogger(__name__)
 
-# Constants
+# --- Constants ---
 WAREHOUSE_SELLER_ID = 'A2L77EE7U53NWQ'
 AMAZON_SELLER_ID = 'ATVPDKIKX0DER'
+CONDITION_CODE_MAP = {
+    1: "New",
+    2: "Used - Like New",
+    3: "Used - Very Good",
+    4: "Used - Good",
+    5: "Used - Acceptable",
+    10: "Collectible - Like New",
+    11: "Collectible - Very Good",
+}
 
 def _get_best_offer_analysis(product, seller_data_cache):
     """
@@ -60,7 +69,14 @@ def _get_best_offer_analysis(product, seller_data_cache):
                     best_offer_details['total_price'] = total_price
                     best_offer_details['seller_id'] = offer.get('sellerId')
                     best_offer_details['offer_obj'] = offer
-                    best_offer_details['condition'] = condition_data.get('name', 'Used') if isinstance(condition_data, dict) else 'Used'
+
+                    # Determine the condition string
+                    if isinstance(condition_data, dict):
+                        best_offer_details['condition'] = condition_data.get('name', 'Used')
+                    elif isinstance(condition_value, int):
+                        best_offer_details['condition'] = CONDITION_CODE_MAP.get(condition_value, f'Used ({condition_value})')
+                    else:
+                        best_offer_details['condition'] = 'Used'
 
             except (ValueError, IndexError, TypeError) as e:
                 logger.warning(f"ASIN {asin}: Could not parse a specific offer. Error: {e}. Offer data: {offer}")
