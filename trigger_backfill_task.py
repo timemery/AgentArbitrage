@@ -1,43 +1,42 @@
-# Restoring Dashboard Functionality
 # trigger_backfill_task.py
 
 import sys
 import os
+import argparse
 
 # This ensures the script can find the 'keepa_deals' module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Corrected Import: The celery app instance is exposed via the 'worker' module.
-from celery import chain
 from worker import celery_app
-# Import the tasks themselves to create signatures
 from keepa_deals.backfiller import backfill_deals
-from keepa_deals.importer_task import import_deals
-# Corrected Import: Use the function that handles its own DB connection and clears the table.
-from keepa_deals.db_utils import recreate_deals_table
 
 def main():
     """
-    Triggers a chained workflow: backfill_deals -> import_deals.
-    This is the official way to start the full data population process.
-    The import task will run automatically only after the backfill task succeeds.
+    Triggers the backfill_deals Celery task.
+
+    By default, this script triggers a resumable backfill, which will pick up
+    from the last completed page.
+
+    Use the --reset flag to start a fresh backfill. This will clear the
+    backfill state and recreate the database table before starting from page 0.
     """
-    print("--- Triggering Celery Backfill Workflow (backfill -> import) ---")
+    parser = argparse.ArgumentParser(description='Trigger the backfill_deals Celery task.')
+    parser.add_argument('--reset', action='store_true',
+                        help='Perform a fresh backfill, clearing old data and state.')
+    args = parser.parse_args()
+
+    if args.reset:
+        print("--- Triggering a FRESH backfill. All existing data and backfill state will be cleared. ---")
+    else:
+        print("--- Triggering a RESUMABLE backfill. The process will continue from the last saved state. ---")
 
     try:
-        # The backfiller task now handles table recreation, so we don't need to do it here.
+        # The backfill_deals task now directly accepts a 'reset' parameter.
+        backfill_deals.delay(reset=args.reset)
 
-        print("Creating and sending the chained workflow to the Celery worker...")
-
-        # Create a chain of task signatures. The '.s()' creates a signature.
-        workflow = chain(backfill_deals.s(), import_deals.s())
-
-        # Execute the workflow
-        workflow.apply_async()
-
-        print("\n[SUCCESS] Workflow sent to the queue.")
+        print("\n[SUCCESS] Task sent to the queue.")
         print("You should now monitor the Celery worker logs to see the progress.")
-        print("Run: 'tail -f celery.log'")
+        print("Run: 'tail -f celery_worker.log'")
 
     except Exception as e:
         print(f"\n[ERROR] Failed to send task: {e}")
