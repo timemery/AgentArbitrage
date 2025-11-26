@@ -47,58 +47,73 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
     Accepts a page number and a sort_type.
     Returns the response data, tokens consumed, and the number of tokens left.
     """
-    logger.info(f"Fetching deals using a hardcoded, stable query. Page: {page}, Sort: {sort_type}")
+    logger.info(f"Fetching deals. Page: {page}, Sort: {sort_type}")
 
-    # This query is provided by the user and is known to return 700-1000+ deals daily.
-    deal_query = {
-        "page": page,
-        "domainId": "1",
-        "excludeCategories": [],
-        "includeCategories": [
-            283155
-        ],
-        "priceTypes": [
-            2
-        ],
-        "deltaRange": [
-            1950,
-            9900
-        ],
-        "deltaPercentRange": [
-            50,
-            2147483647
-        ],
-        "salesRankRange": [
-            50000,
-            1500000
-        ],
-        "currentRange": [
-            2000,
-            30100
-        ],
-        "minRating": 10,
-        "isLowest": False,
-        "isLowest90": False,
-        "isLowestOffer": False,
-        "isOutOfStock": False,
-        "titleSearch": "",
-        "isRangeEnabled": True,
-        "isFilterEnabled": True,
-        "filterErotic": False,
-        "singleVariation": True,
-        "hasReviews": False,
-        "isPrimeExclusive": False,
-        "mustHaveAmazonOffer": False,
-        "mustNotHaveAmazonOffer": False,
-        "sortType": sort_type,
-        "dateRange": "3",
-        "warehouseConditions": [
-            2,
-            3,
-            4,
-            5
-        ]
-    }
+    KEEPA_QUERY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'keepa_query.json')
+
+    try:
+        with open(KEEPA_QUERY_FILE, 'r') as f:
+            deal_query = json.load(f)
+        logger.info("Using Keepa query from keepa_query.json")
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.warning("keepa_query.json not found or invalid. Using hardcoded fallback query.")
+        # NOTE FOR FUTURE AGENTS:
+        # The following dictionary is a hardcoded fallback query.
+        # It is ONLY used if the `keepa_query.json` file is missing or contains invalid JSON.
+        # The primary source for the query is the `/deals` page in the web UI.
+        deal_query = {
+            "page": page,
+            "domainId": "1",
+            "excludeCategories": [],
+            "includeCategories": [
+                283155
+            ],
+            "priceTypes": [
+                2
+            ],
+            "deltaRange": [
+                1950,
+                9900
+            ],
+            "deltaPercentRange": [
+                50,
+                2147483647
+            ],
+            "salesRankRange": [
+                50000,
+                1500000
+            ],
+            "currentRange": [
+                2000,
+                30100
+            ],
+            "minRating": 10,
+            "isLowest": False,
+            "isLowest90": False,
+            "isLowestOffer": False,
+            "isOutOfStock": False,
+            "titleSearch": "",
+            "isRangeEnabled": True,
+            "isFilterEnabled": True,
+            "filterErotic": False,
+            "singleVariation": True,
+            "hasReviews": False,
+            "isPrimeExclusive": False,
+            "mustHaveAmazonOffer": False,
+            "mustNotHaveAmazonOffer": False,
+            "sortType": sort_type,
+            "dateRange": "3",
+            "warehouseConditions": [
+                2,
+                3,
+                4,
+                5
+            ]
+        }
+
+    # Ensure the page and sortType are updated to the current request's values
+    deal_query['page'] = page
+    deal_query['sortType'] = sort_type
 
     query_json = json.dumps(deal_query, separators=(',', ':'), sort_keys=True)
     encoded_selection = urllib.parse.quote(query_json)

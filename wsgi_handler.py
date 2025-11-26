@@ -748,6 +748,35 @@ def fetch_keepa_deals_command(no_cache, output_dir, limit):
             'message': f"An error occurred: {str(e)}"
         })
 
+@app.route('/deals', methods=['GET', 'POST'])
+def deals():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+
+    KEEPA_QUERY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'keepa_query.json')
+
+    if request.method == 'POST':
+        keepa_query = request.form.get('keepa_query')
+        try:
+            json.loads(keepa_query)
+            with open(KEEPA_QUERY_FILE, 'w') as f:
+                f.write(keepa_query)
+            flash('Keepa query saved successfully!', 'success')
+        except json.JSONDecodeError:
+            flash('Invalid JSON. Please check the syntax.', 'error')
+        except Exception as e:
+            flash(f'Error saving Keepa query: {e}', 'error')
+        return redirect(url_for('deals'))
+
+    # GET request
+    try:
+        with open(KEEPA_QUERY_FILE, 'r') as f:
+            keepa_query = f.read()
+    except (FileNotFoundError, json.JSONDecodeError):
+        keepa_query = ''
+
+    return render_template('deals.html', keepa_query=keepa_query)
+
 @app.route('/api/deals')
 def api_deals():
     DB_PATH = DATABASE_URL
