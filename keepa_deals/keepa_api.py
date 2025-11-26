@@ -57,7 +57,10 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
         logger.info("Using Keepa query from keepa_query.json")
     except (FileNotFoundError, json.JSONDecodeError):
         logger.warning("keepa_query.json not found or invalid. Using hardcoded fallback query.")
-        # This query is provided by the user and is known to return 700-1000+ deals daily.
+        # NOTE FOR FUTURE AGENTS:
+        # The following dictionary is a hardcoded fallback query.
+        # It is ONLY used if the `keepa_query.json` file is missing or contains invalid JSON.
+        # The primary source for the query is the `/deals` page in the web UI.
         deal_query = {
             "page": page,
             "domainId": "1",
