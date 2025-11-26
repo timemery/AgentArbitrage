@@ -121,3 +121,33 @@ Once the environment was correctly configured, the diagnostic script was run suc
 Following verification, a code review was requested. The feedback was positive and included two minor, non-blocking suggestions to improve code quality by refactoring the new mapping dictionary into a module-level constant and using integer keys. This feedback was implemented, and the diagnostic script was run again to confirm the refactored code remained correct.
 
 **Outcome:** The task was a **success**. The regression was fixed at its source within the data processing logic. The final submitted code ensures that specific book conditions are correctly identified, stored in the database, and subsequently displayed on the dashboard as intended.
+
+### Dev Log: Externalizing Keepa Deal Query
+
+**Date:** 2025-11-26
+
+**Task:** Externalize the hardcoded Keepa API query string from `keepa_api.py` to allow for administrative configuration via a web interface.
+
+**Summary of Changes:**
+
+1. **Web Interface Creation:**
+   - A new route, `/deals`, was created in `wsgi_handler.py` to serve a new configuration page.
+   - A corresponding `templates/deals.html` file was created, containing a form with a large `<textarea>` for the user to input the Keepa JSON query.
+   - The main navigation bar in `templates/layout.html` was updated to include a link to the new "Deals" page.
+2. **Backend Logic:**
+   - The `/deals` route in `wsgi_handler.py` was implemented to handle both `GET` and `POST` requests. On `POST`, it validates that the submitted string is valid JSON and writes it to a file named `keepa_query.json` in the project root. On `GET`, it reads the content of this file to populate the textarea.
+   - The `fetch_deals_for_deals` function in `keepa_api.py` was modified. It now attempts to read and parse `keepa_query.json`. If the file is found and valid, that query is used. If the file is missing or contains invalid JSON, the function logs a warning and reverts to using the original hardcoded query as a fallback.
+3. **User-Requested Modifications:**
+   - A comment block was added to `keepa_api.py` above the hardcoded fallback query to clarify its role and explain that the primary source of the query is the new web UI.
+   - A new CSS rule was added to `static/global.css` to increase the size of the `<textarea>` on the `/deals` page to 750px by 500px for better usability.
+
+**Challenges Encountered During Development:**
+
+- **Initial Verification Failure:** The frontend verification process initially failed because the Flask development server could not be started. The `flask.log` file showed a `ModuleNotFoundError`, which was traced back to the Python dependencies not being installed in the sandbox environment. This was addressed by running `pip install -r requirements.txt`.
+- **Playwright Script Timeout:** After resolving the dependency issue, the Playwright verification script failed with a `TimeoutError`. The script was unable to reliably locate the correct "Log In" button to submit the login form. The initial selector was not specific enough to distinguish between two buttons with the same name. The script was subsequently modified to use a more precise selector targeting the button within the context of the login form. This required me to discard the old verification script and create a new one after my initial patch attempts failed.
+- **CSS Modification Failure:** My attempt to resize the textarea initially failed because I was trying to modify a CSS class that did not exist in the `static/global.css` file. The issue was resolved by adding a new, correct CSS rule to the file instead of attempting to modify a non-existent one.
+
+**Final Outcome:**
+
+The task was completed successfully. The functionality was implemented according to the user's request, and all encountered environmental and scripting challenges were resolved. The final changes were committed to the codebase.
+

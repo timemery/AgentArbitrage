@@ -385,6 +385,14 @@ button:disabled {
     white-space: nowrap;
 }
 
+.settings-form .large-textarea {
+    min-height: 200px; /* Taller than a standard text field */
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.5;
+    width: 750px;
+    height: 500px;
+}
+
 /* --- Deal Overlay Styles --- */
 .deal-overlay {
     display: none;
