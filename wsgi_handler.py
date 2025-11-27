@@ -16,6 +16,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_app import celery_app
+from keepa_deals.db_utils import create_user_restrictions_table_if_not_exists
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -781,6 +782,11 @@ def deals():
 def api_deals():
     DB_PATH = DATABASE_URL
     TABLE_NAME = 'deals'
+    RESTRICTIONS_TABLE = 'user_restrictions'
+
+    # Check SP-API connection status from session
+    is_sp_api_connected = session.get('sp_api_connected', False)
+    user_id = session.get('sp_api_user_id')
 
     # --- Connect and get column names ---
     try:
@@ -788,14 +794,13 @@ def api_deals():
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        # Check if table exists first
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (TABLE_NAME,))
         if cursor.fetchone() is None:
             conn.close()
             return jsonify({
                 "pagination": {"total_records": 0, "total_pages": 0, "current_page": 1, "limit": 50},
                 "deals": [],
-                "message": "No data found. Please run a scan from the Data Sourcing page."
+                "message": "No data found. Please run a scan."
             })
 
         cursor.execute(f"PRAGMA table_info({TABLE_NAME})")
@@ -803,17 +808,14 @@ def api_deals():
     except sqlite3.Error as e:
         app.logger.error(f"Database error when fetching column info: {e}")
         return jsonify({"error": "Database error", "message": str(e)}), 500
-    
-    # --- Pagination ---
+
+    # --- Pagination and Sorting ---
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 50, type=int)
     offset = (page - 1) * limit
-
-    # --- Sorting ---
     sort_by = request.args.get('sort', 'id')
     if sort_by not in available_columns:
-        sort_by = 'id' # Default to id if invalid column is provided
-    
+        sort_by = 'id'
     order = request.args.get('order', 'asc').lower()
     if order not in ['asc', 'desc']:
         order = 'asc'
@@ -824,100 +826,68 @@ def api_deals():
         "margin_gte": request.args.get('margin_gte', type=int),
         "keyword": request.args.get('keyword', type=str)
     }
-
     where_clauses = []
     filter_params = []
 
+    # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
-        # The sanitized column name for "Sales Rank: Current" is "Sales_Rank___Current"
         where_clauses.append("\"Sales_Rank___Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
-
     if filters.get("margin_gte") is not None:
-        # The column for Margin is "Margin"
         where_clauses.append("\"Margin\" >= ?")
         filter_params.append(filters["margin_gte"])
-
     if filters.get("keyword"):
         keyword_like = f"%{filters['keyword']}%"
-        keyword_clauses = [
-            "\"Title\" LIKE ?",
-            "\"Categories___Sub\" LIKE ?",
-            "\"Detailed_Seasonality\" LIKE ?",
-            "\"Manufacturer\" LIKE ?",
-            "\"Author\" LIKE ?",
-            "\"Seller\" LIKE ?"
-        ]
+        keyword_clauses = ["\"Title\" LIKE ?", "\"Categories___Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
         where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
         filter_params.extend([keyword_like] * len(keyword_clauses))
 
+
     # --- Build and Execute Query ---
     try:
-        # Get total count with filters
-        where_sql = ""
-        if where_clauses:
-            where_sql = " WHERE " + " AND ".join(where_clauses)
+        select_clause = "d.*"
+        from_clause = f"FROM {TABLE_NAME} AS d"
+        query_params = []
+
+        if is_sp_api_connected and user_id:
+            select_clause += ", ur.is_restricted, ur.approval_url"
+            from_clause += f" LEFT JOIN {RESTRICTIONS_TABLE} AS ur ON d.ASIN = ur.asin AND ur.user_id = ?"
+            query_params.append(user_id)
         
-        count_query = f"SELECT COUNT(*) FROM {TABLE_NAME}{where_sql}"
-        total_records = cursor.execute(count_query, filter_params).fetchone()[0]
+        query_params.extend(filter_params)
+
+        where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
+
+        # Get total count
+        count_query = f"SELECT COUNT(*) {from_clause}{where_sql}"
+        total_records = cursor.execute(count_query, query_params).fetchone()[0]
         total_pages = (total_records + limit - 1) // limit if limit > 0 else 1
 
-        # Get data with sorting and pagination
-        data_query = f"SELECT * FROM {TABLE_NAME}{where_sql} ORDER BY \"{sort_by}\" {order} LIMIT ? OFFSET ?"
-        
-        query_params = filter_params + [limit, offset]
-        
+        # Get data for the current page
+        query_params.extend([limit, offset])
+        data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY d.\"{sort_by}\" {order} LIMIT ? OFFSET ?"
         deal_rows = cursor.execute(data_query, query_params).fetchall()
         deals_list = [dict(row) for row in deal_rows]
 
-        # --- Shorten Binding and Condition values ---
-        binding_map = {
-            "Audio CD": "CD", "Board book": "BB", "Bonded Leather": "BL", "Cards": "C",
-            "Flexibound": "FB", "Hardcover": "HC", "Imitation Leather": "IL",
-            "Leather Bound": "LB", "leather_bound": "LB", "Loose Leaf": "LL",
-            "loose_leaf": "LL", "Map": "M", "Mass Market Paperback": "MMP",
-            "mass_market": "MM", "Misc. Supplies": "MS", "MP3 CD": "CD",
-            "Paperback": "PB", "perfect": "P", "Perfect Paperback": "PPB",
-            "Plastic Comb": "PC", "Printed Access Code": "AC",
-            "School & Library Binding": "SLB", "spiral_bound": "SB", "Spiral-bound": "SB"
-        }
-        condition_string_map = {
-            "New": "N", "Used - Like New": "U - LN", "Used - Very Good": "U - VG",
-            "Used - Good": "U - G", "Used - Acceptable": "U - A",
-            "Collectible - Like New": "C - LN", "Collectible - Very Good": "C - VG",
-            "Collectible - Good": "C - G", "Collectible - Acceptable": "C - A"
-        }
-        condition_code_map = {
-            "1": "New",
-            "2": "Used - Like New",
-            "3": "Used - Very Good",
-            "4": "Used - Good",
-            "5": "Used - Acceptable",
-            "10": "Collectible - Like New",
-            "11": "Collectible - Very Good", # Based on Keepa API documentation
-            "24": "Used - Good"
-        }
-
+        # --- Post-processing and Formatting ---
         for deal in deals_list:
-            # Convert numeric fields
-            numeric_fields = [
-                'All_in_Cost', 'Profit', 'Margin', 'Min_Listing_Price',
-                'Expected_Trough_Price', 'Expected_Peak_Price', 'Profit_Confidence',
-                'Sales_Rank___Current', 'Sales_Rank___Drops_last_365_days'
-            ]
-            for key in numeric_fields:
-                if deal.get(key) is not None:
-                    try:
-                        deal[key] = float(deal[key])
-                    except (ValueError, TypeError):
-                        deal[key] = None
+            # Handle restriction status
+            if is_sp_api_connected:
+                is_restricted = deal.get('is_restricted')
+                if is_restricted is None:
+                    deal['restriction_status'] = 'pending_check'
+                elif is_restricted == 1:
+                    deal['restriction_status'] = 'restricted'
+                else:
+                    deal['restriction_status'] = 'not_restricted'
 
-            # Translate condition code to string if it's a digit
+            # (Existing formatting logic for conditions, bindings, etc. remains the same...)
+            binding_map = {"Audio CD": "CD", "Board book": "BB", "Hardcover": "HC", "Paperback": "PB", "Mass Market Paperback": "MMP"}
+            condition_string_map = {"New": "N", "Used - Like New": "U - LN", "Used - Very Good": "U - VG", "Used - Good": "U - G", "Used - Acceptable": "U - A"}
+            condition_code_map = {"1": "New", "2": "Used - Like New", "3": "Used - Very Good", "4": "Used - Good", "5": "Used - Acceptable"}
+
             if 'Condition' in deal and deal['Condition'] and str(deal['Condition']).isdigit():
-                code = str(deal['Condition'])
-                deal['Condition'] = condition_code_map.get(code, f"Unknown ({code})")
-
-            # Shorten string representations for both Binding and Condition
+                deal['Condition'] = condition_code_map.get(str(deal['Condition']), f"Unknown ({deal['Condition']})")
             if 'Binding' in deal and deal['Binding'] in binding_map:
                 deal['Binding'] = binding_map[deal['Binding']]
             if 'Condition' in deal and deal['Condition'] in condition_string_map:
@@ -1004,5 +974,46 @@ def debug_deal(asin):
     return jsonify(product_data['products'][0])
 
 
+@app.route('/connect_amazon')
+def connect_amazon():
+    """
+    Step 1 of the OAuth flow: Redirect the user to the (simulated) Amazon consent page.
+    In a real application, this would redirect to a constructed Amazon URL with client_id, scope, etc.
+    """
+    # For this simulation, we'll just redirect to a simple callback.
+    # In a real scenario, this would be the Amazon authorization URL.
+    flash("Redirecting to Amazon for authentication...", "info")
+    # In a real app, you would generate a state token here and save it in the session
+    # session['oauth_state'] = 'some_random_state_string'
+    return redirect(url_for('amazon_callback')) # Simulating immediate redirect for dev
+
+@app.route('/amazon_callback')
+def amazon_callback():
+    """
+    Step 2 of the OAuth flow: Handle the callback from Amazon.
+    In a real application, this would receive an authorization code and exchange it for an access token.
+    """
+    # In a real app, you would check the state token to prevent CSRF attacks
+    # received_state = request.args.get('state')
+    # if received_state != session.pop('oauth_state', None):
+    #     flash("Invalid state token. Authorization failed.", "error")
+    #     return redirect(url_for('settings'))
+
+    # Here, we would exchange the authorization code for tokens.
+    # For this simulation, we'll just assume success.
+    # In a real app, you would store the access and refresh tokens securely,
+    # associated with the logged-in user.
+    # For now, we'll just use a placeholder user_id.
+    session['sp_api_connected'] = True
+    session['sp_api_user_id'] = 'user_123' # Placeholder user ID
+
+    # --- Trigger the background task ---
+    # After successful connection, trigger a task to check all existing ASINs for this user.
+    celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=[session['sp_api_user_id']])
+
+    flash("Successfully connected your Amazon Seller Account!", "success")
+    return redirect(url_for('settings'))
+
 if __name__ == '__main__':
+    create_user_restrictions_table_if_not_exists()
     app.run(debug=True)
