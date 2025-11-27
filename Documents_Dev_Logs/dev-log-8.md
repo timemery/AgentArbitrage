@@ -151,3 +151,34 @@ Following verification, a code review was requested. The feedback was positive a
 
 The task was completed successfully. The functionality was implemented according to the user's request, and all encountered environmental and scripting challenges were resolved. The final changes were committed to the codebase.
 
+### Dev Log Entry: November 27, 2025
+
+**Task:** `refactor/chunked-backfill`
+
+**Objective:** Re-architect the `backfill_deals` task to process and save data in smaller, page-sized chunks. The stated goals were to prevent memory and CPU exhaustion on the server, make the long-running process resumable in case of failure, and integrate the existing "refiller" task to keep the data fresh during the backfill.
+
+**Summary of Architectural Changes:**
+
+The existing "all-at-once" architecture was replaced. The previous process involved fetching all deal ASINs, fetching all product data, processing all deals in a single large loop, writing the results to a `temp_deals.json` file, and then triggering a separate `importer_task` to save the data to the database.
+
+The new implementation in `keepa_deals/backfiller.py` follows a chunk-based, resumable model:
+
+1. **State Management:** A `backfill_state.json` file was introduced to persist the last successfully completed page number. On startup, the task reads this file to determine its starting point. The trigger script, `trigger_backfill_task.py`, was modified to accept a `--reset` flag, which deletes this state file and signals the task to recreate the database for a fresh start.
+2. **Chunked Processing Loop:** The task now operates within a `while` loop that fetches one page of deals from the Keepa API at a time.
+3. **Direct Database Writes:** After processing the deals for a single page, the results are now written directly to the `deals.db` SQLite database using an `INSERT OR REPLACE` statement. The intermediate `temp_deals.json` file and the `importer_task.py` module were rendered obsolete by this change and were subsequently deleted.
+4. **Refiller Integration:** A call to trigger the `update_recent_deals` Celery task was added, which executes after each successful database write for a page of deals.
+5. **Configuration Cleanup:** The reference to the deleted `importer_task` was removed from the `imports` tuple in `celery_config.py`.
+
+**Verification and Observed Behavior:**
+
+- A fresh backfill was initiated by the user with the `--reset` flag.
+- The `celery_worker.log` confirmed the task started and correctly recreated the database table.
+- A significant delay of several hours was observed during the processing of the first page of deals.
+- Log analysis during this period showed the task was making numerous API calls to fetch data for hundreds of unique seller IDs found within the first page of deals. This activity consumed a large number of API tokens, causing the application's `TokenManager` to repeatedly pause execution for long intervals (e.g., "Waiting for 924 seconds") to allow the token balance to regenerate. The task process itself did not crash or exit during this time.
+- After approximately 18 hours, the processing of the first page completed. The log confirmed that 17 deals were successfully written to the database. The user visually confirmed that the deals appeared on the web UI with correct data.
+- The backfill task then concluded, as the user's configured deal query did not yield any further pages of results.
+- Subsequent logs showed that the system transitioned to its normal operational state, with the separate `update_recent_deals` task running automatically on its 15-minute schedule as intended.
+
+**Final Task Outcome:**
+
+The task is considered **complete**. The requested architectural changes were fully implemented, and the new system successfully processed and saved data to the database without being terminated by the host environment, which was the primary failure mode of the previous architecture.
