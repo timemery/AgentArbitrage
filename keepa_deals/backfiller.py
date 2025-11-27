@@ -154,6 +154,13 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
             conn.commit()
             logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")
 
+            # After a successful chunk save, trigger the restriction check for the new ASINs.
+            new_asins = [row['ASIN'] for row in rows_to_upsert if 'ASIN' in row]
+            if new_asins:
+                from worker import celery_app
+                celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs. ---")
+
             # After a successful chunk save, trigger the refiller task.
             from worker import celery_app
             celery_app.send_task('keepa_deals.simple_task.update_recent_deals')

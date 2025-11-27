@@ -409,7 +409,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     if (col === 'Gated') {
-                        table += `<td><a href="https://sellercentral.amazon.com/product-search/keywords/search?q=${cleanAsin}" target="_blank" onclick="event.stopPropagation()" style="color: #84b36f; text-decoration: none;" class="buy-now-link">►</a></td>`;
+                        let gatedContent = '';
+                        switch (deal.restriction_status) {
+                            case 'restricted':
+                                gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
+                                break;
+                            case 'not_restricted':
+                                gatedContent = '<span class="status-icon checkmark">✓</span>';
+                                break;
+                            case 'pending_check':
+                                gatedContent = '<div class="spinner"></div>';
+                                break;
+                            default:
+                                gatedContent = '-'; // Not connected or no data
+                        }
+                        table += `<td>${gatedContent}</td>`;
                     } else if (col === 'Buy_Now') {
                         table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
                     } else if (col === 'Title') {
