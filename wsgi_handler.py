@@ -987,6 +987,14 @@ def connect_amazon():
     # session['oauth_state'] = 'some_random_state_string'
     return redirect(url_for('amazon_callback')) # Simulating immediate redirect for dev
 
+@app.route('/reset_test_user_state', methods=['POST'])
+def reset_test_user_state():
+    """Resets the session state for the test user."""
+    session.clear()
+    # Re-establish a basic logged-in state for the test script if needed,
+    # or just clear it completely. Clearing is safer for tests.
+    return jsonify({'status': 'success', 'message': 'Test user state reset.'})
+
 @app.route('/amazon_callback')
 def amazon_callback():
     """

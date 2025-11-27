@@ -52,11 +52,10 @@ def create_deals_table_if_not_exists():
             if not cursor.fetchone():
                 # If the table doesn't exist at all, we can safely call the full recreation.
                 logger.warning(f"Table '{TABLE_NAME}' not found. Calling recreate_deals_table() to build it.")
-                # This part of the code is now safe because recreate_deals_table is in the same file.
-                # We need to drop out of the 'with' block to avoid database locking issues.
-                conn.close()
+                # The connection is implicitly handled by the 'with' statement.
+                # We must not close it manually here. The recreation function will open its own connection.
                 recreate_deals_table()
-                return # The table is now created, so we're done.
+                return  # The table is now created, so we're done.
 
             # If the table exists, just perform safe checks.
             logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")
