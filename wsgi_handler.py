@@ -45,8 +45,17 @@ XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 # --- Keepa API Configuration ---
 KEEPA_API_KEY = os.getenv("KEEPA_API_KEY")
 
+# --- Amazon SP-API Configuration ---
+SP_API_CLIENT_ID = os.getenv("SP_API_CLIENT_ID")
+SP_API_CLIENT_SECRET = os.getenv("SP_API_CLIENT_SECRET")
+SP_API_APP_ID = os.getenv("SP_API_APP_ID") # Often the same as Client ID
+AMAZON_AUTH_URL = "https://sellercentral.amazon.com/apps/authorize/consent"
+AMAZON_TOKEN_URL = "https://api.amazon.com/auth/o2/token"
+
+
 app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded KEEPA_API_KEY: {'*' * len(KEEPA_API_KEY) if KEEPA_API_KEY else 'Not found'}")
+app.logger.info(f"Loaded SP_API_CLIENT_ID: {'*' * len(SP_API_CLIENT_ID) if SP_API_CLIENT_ID else 'Not found'}")
 
 def query_xai_api(payload):
     if not XAI_API_KEY:
@@ -974,52 +983,103 @@ def debug_deal(asin):
     return jsonify(product_data['products'][0])
 
 
+import secrets
+from urllib.parse import urlencode
+
 @app.route('/connect_amazon')
 def connect_amazon():
     """
-    Step 1 of the OAuth flow: Redirect the user to the (simulated) Amazon consent page.
-    In a real application, this would redirect to a constructed Amazon URL with client_id, scope, etc.
+    Step 1 of the real OAuth flow: Redirect the user to the Amazon consent page.
     """
-    # For this simulation, we'll just redirect to a simple callback.
-    # In a real scenario, this would be the Amazon authorization URL.
+    if not SP_API_APP_ID:
+        flash("SP-API application ID is not configured.", "error")
+        return redirect(url_for('settings'))
+
+    # Generate a random state token to prevent CSRF attacks
+    state = secrets.token_urlsafe(16)
+    session['oauth_state'] = state
+
+    # Construct the authorization URL
+    auth_params = {
+        'application_id': SP_API_APP_ID,
+        'state': state,
+        'redirect_uri': url_for('amazon_callback', _external=True)
+    }
+    authorization_url = f"{AMAZON_AUTH_URL}?{urlencode(auth_params)}"
+
     flash("Redirecting to Amazon for authentication...", "info")
-    # In a real app, you would generate a state token here and save it in the session
-    # session['oauth_state'] = 'some_random_state_string'
-    return redirect(url_for('amazon_callback')) # Simulating immediate redirect for dev
+    return redirect(authorization_url)
 
 @app.route('/reset_test_user_state', methods=['POST'])
 def reset_test_user_state():
     """Resets the session state for the test user."""
     session.clear()
-    # Re-establish a basic logged-in state for the test script if needed,
-    # or just clear it completely. Clearing is safer for tests.
     return jsonify({'status': 'success', 'message': 'Test user state reset.'})
 
 @app.route('/amazon_callback')
 def amazon_callback():
     """
-    Step 2 of the OAuth flow: Handle the callback from Amazon.
-    In a real application, this would receive an authorization code and exchange it for an access token.
+    Step 2 of the real OAuth flow: Handle the callback from Amazon,
+    exchange the authorization code for tokens.
     """
-    # In a real app, you would check the state token to prevent CSRF attacks
-    # received_state = request.args.get('state')
-    # if received_state != session.pop('oauth_state', None):
-    #     flash("Invalid state token. Authorization failed.", "error")
-    #     return redirect(url_for('settings'))
+    # --- Security Check: Validate the state token ---
+    received_state = request.args.get('state')
+    if not received_state or received_state != session.pop('oauth_state', None):
+        flash("Invalid state token. Authorization failed due to a potential CSRF attack.", "error")
+        app.logger.warning("OAuth failed: State token mismatch.")
+        return redirect(url_for('settings'))
 
-    # Here, we would exchange the authorization code for tokens.
-    # For this simulation, we'll just assume success.
-    # In a real app, you would store the access and refresh tokens securely,
-    # associated with the logged-in user.
-    # For now, we'll just use a placeholder user_id.
-    session['sp_api_connected'] = True
-    session['sp_api_user_id'] = 'user_123' # Placeholder user ID
+    # --- Exchange the authorization code for tokens ---
+    auth_code = request.args.get('spapi_oauth_code')
+    seller_id = request.args.get('selling_partner_id')
 
-    # --- Trigger the background task ---
-    # After successful connection, trigger a task to check all existing ASINs for this user.
-    celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=[session['sp_api_user_id']])
+    if not auth_code or not seller_id:
+        flash("Authorization failed: Missing required parameters from Amazon.", "error")
+        app.logger.warning(f"OAuth failed: Missing auth_code or seller_id. Code: {auth_code}, Seller ID: {seller_id}")
+        return redirect(url_for('settings'))
 
-    flash("Successfully connected your Amazon Seller Account!", "success")
+    token_payload = {
+        'grant_type': 'authorization_code',
+        'code': auth_code,
+        'redirect_uri': url_for('amazon_callback', _external=True),
+        'client_id': SP_API_CLIENT_ID,
+        'client_secret': SP_API_CLIENT_SECRET
+    }
+
+    try:
+        with httpx.Client() as client:
+            response = client.post(AMAZON_TOKEN_URL, data=token_payload)
+            response.raise_for_status()
+            token_data = response.json()
+
+        # --- Store Tokens Securely ---
+        access_token = token_data['access_token']
+        session['sp_api_access_token'] = access_token
+        session['sp_api_refresh_token'] = token_data['refresh_token']
+        session['sp_api_token_expiry'] = time.time() + token_data['expires_in']
+        session['sp_api_seller_id'] = seller_id
+        session['sp_api_connected'] = True
+        session['sp_api_user_id'] = seller_id # Use the seller_id as the unique user identifier
+
+        refresh_token = token_data['refresh_token']
+        session['sp_api_refresh_token'] = refresh_token
+
+        app.logger.info(f"Successfully obtained SP-API tokens for seller_id: {seller_id}")
+
+        # --- Trigger the background task with all necessary info ---
+        task_args = [seller_id, seller_id, access_token, refresh_token]
+        celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=task_args)
+
+        flash("Successfully connected your Amazon Seller Account!", "success")
+
+    except httpx.HTTPStatusError as e:
+        error_details = e.response.json()
+        flash(f"Failed to get API tokens from Amazon: {error_details.get('error_description', 'Unknown error')}", "error")
+        app.logger.error(f"SP-API token exchange failed: {e.response.text}")
+    except Exception as e:
+        flash("An unexpected error occurred during token exchange.", "error")
+        app.logger.error(f"An unexpected error occurred during token exchange: {e}", exc_info=True)
+
     return redirect(url_for('settings'))
 
 if __name__ == '__main__':
