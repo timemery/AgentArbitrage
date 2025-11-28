@@ -35,7 +35,7 @@ STATE_FILE = 'backfill_state.json'
 # slightly above the maximum token bucket size (300). This allows the TokenManager's
 # "controlled deficit" strategy to function effectively, preventing excessive negative
 # token balances and minimizing long wait times for token refills.
-MAX_ASINS_PER_BATCH = 10
+MAX_ASINS_PER_BATCH = 5
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days, to prevent expiration during very long runs
 
