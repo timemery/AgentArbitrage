@@ -182,3 +182,25 @@ The new implementation in `keepa_deals/backfiller.py` follows a chunk-based, res
 **Final Task Outcome:**
 
 The task is considered **complete**. The requested architectural changes were fully implemented, and the new system successfully processed and saved data to the database without being terminated by the host environment, which was the primary failure mode of the previous architecture.
+
+### **Dev Log Entry: Check Restrictions Feature Implementation**
+
+- **Objective:** Implement the "Check Restrictions Feature" as per the provided development plan. This involved creating a new database table, adding a simulated SP-API OAuth flow, creating asynchronous Celery tasks to check for product restrictions, and updating the frontend to display the results.
+- **Summary of Actions:**
+  - A new database table, `user_restrictions`, was created to store user-specific gating data.
+  - A new module, `keepa_deals/sp_api_tasks.py`, was created to contain the Celery tasks responsible for asynchronously checking restrictions.
+  - The main web application (`wsgi_handler.py`) was modified to include routes for a simulated OAuth flow and to update the `/api/deals` endpoint, joining the new table to provide restriction status to the UI.
+  - The frontend templates (`settings.html`, `dashboard.html`) were updated to include the "Connect" button and the new "Gated" column with logic to display loading spinners, checkmarks, or "Apply" links.
+  - Existing data-sourcing Celery tasks were modified to trigger restriction checks for newly discovered ASINs.
+- **Challenges Encountered:**
+  1. **Initial Feature Failure:** Upon deployment for user testing, the primary feature failed to function. The "Gated" column on the dashboard displayed perpetual loading spinners that never resolved.
+  2. **Root Cause Identification:** Analysis of the user-provided `celery_worker.log` revealed a critical `KeyError`, indicating that the Celery workers had not registered the new `check_all_restrictions_for_user` task. This was traced to a typo in the `imports` tuple within `celery_config.py`.
+  3. **Secondary Bug Discovery:** The logs also exposed a pre-existing, unrelated `UnboundLocalError` bug in the scheduled `update_recent_deals` task within `keepa_deals/simple_task.py`.
+  4. Remediation Attempts:
+     - A patch was successfully applied to correct the typo in `celery_config.py`.
+     - A separate patch was applied to fix the `UnboundLocalError` in `simple_task.py`.
+     - A significant amount of time was spent attempting to guide the user through a restart of the application services (Flask and Celery) to apply the patches. Standard restart procedures (`pkill`, `touch wsgi.py`, `start_celery.sh`) proved ineffective, as the Celery workers continued running the old, broken code.
+     - A more forceful "hard reset" script (`kill_everything.sh`) was employed to stop all related processes and clear temporary state files before restarting.
+     - Browser caching issues were also encountered and addressed by instructing the user to test in a new incognito window.
+- **Final Status: Unsuccessful**
+  - Despite correcting the underlying code and configuration errors, the task was not successful. The primary blocker was an intractable environmental issue that prevented the Celery workers from being reliably restarted to load the corrected configuration. Even after a hard reset, the final user test yielded the same result: the feature did not work, and the dashboard spinners remained indefinitely. Due to the persistent environmental instability and repeated failures, the task was abandoned at the user's request.

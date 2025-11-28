@@ -52,11 +52,10 @@ def create_deals_table_if_not_exists():
             if not cursor.fetchone():
                 # If the table doesn't exist at all, we can safely call the full recreation.
                 logger.warning(f"Table '{TABLE_NAME}' not found. Calling recreate_deals_table() to build it.")
-                # This part of the code is now safe because recreate_deals_table is in the same file.
-                # We need to drop out of the 'with' block to avoid database locking issues.
-                conn.close()
+                # The connection is implicitly handled by the 'with' statement.
+                # We must not close it manually here. The recreation function will open its own connection.
                 recreate_deals_table()
-                return # The table is now created, so we're done.
+                return  # The table is now created, so we're done.
 
             # If the table exists, just perform safe checks.
             logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")
@@ -165,3 +164,40 @@ def load_watermark() -> str | None:
     except (IOError, json.JSONDecodeError) as e:
         logger.error(f"Error loading watermark from {WATERMARK_PATH}: {e}", exc_info=True)
         return None
+
+def create_user_restrictions_table_if_not_exists():
+    """
+    Ensures the 'user_restrictions' table exists with the correct schema.
+    This is a non-destructive function safe for frequent checks.
+    """
+    table_name = 'user_restrictions'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' is correctly configured.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if cursor.fetchone():
+                logger.info(f"Table '{table_name}' already exists.")
+                # You could add schema verification/migration logic here if needed
+                return
+
+            logger.info(f"Table '{table_name}' not found. Creating it now.")
+            create_table_sql = f"""
+            CREATE TABLE {table_name} (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL,
+                asin TEXT NOT NULL,
+                is_restricted INTEGER,
+                approval_url TEXT,
+                last_checked_timestamp TIMESTAMP,
+                UNIQUE(user_id, asin)
+            )
+            """
+            cursor.execute(create_table_sql)
+            logger.info(f"Successfully created table '{table_name}'.")
+            conn.commit()
+
+    except (sqlite3.Error, Exception) as e:
+        logger.error(f"An unexpected error occurred during '{table_name}' table creation: {e}", exc_info=True)
+        raise
