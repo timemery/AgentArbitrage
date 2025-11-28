@@ -876,3 +876,54 @@ body.home-background::before {
     line-height: 1;
     white-space: nowrap;
 }
+/* --- New Pagination Styles --- */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* Space between buttons */
+    margin-top: 25px;
+    padding-bottom: 10px; /* Add some space at the bottom */
+}
+
+.page-btn {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #c5c5c5;
+    border: 1px solid rgba(102, 153, 204, 0.5);
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px; /* Ensure number buttons have a nice width */
+    box-sizing: border-box;
+}
+
+.page-btn:hover:not(:disabled) {
+    background-color: rgba(102, 153, 204, 0.2);
+    color: #ffffff;
+}
+
+.page-btn.active {
+    background-color: #336699;
+    color: #ffffff;
+    border-color: #336699;
+    font-weight: bold;
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-ellipsis {
+    color: #c5c5c5;
+    padding: 0 8px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+}
