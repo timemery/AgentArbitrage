@@ -204,3 +204,47 @@ The task is considered **complete**. The requested architectural changes were fu
      - Browser caching issues were also encountered and addressed by instructing the user to test in a new incognito window.
 - **Final Status: Unsuccessful**
   - Despite correcting the underlying code and configuration errors, the task was not successful. The primary blocker was an intractable environmental issue that prevented the Celery workers from being reliably restarted to load the corrected configuration. Even after a hard reset, the final user test yielded the same result: the feature did not work, and the dashboard spinners remained indefinitely. Due to the persistent environmental instability and repeated failures, the task was abandoned at the user's request.
+
+### **Dev Log - November 28, 2025**
+
+**Task:** Implement Live Amazon SP-API Integration
+
+**Objective:** The primary goal was to replace the existing simulated "Check Restrictions" feature with a production-ready implementation that connects to the live Amazon Selling Partner (SP) API. This involved implementing the full OAuth 2.0 authentication flow, replacing the placeholder API call with a real one, and ensuring the architecture was robust enough for a production environment.
+
+**Implementation Summary:**
+
+1. **Initial OAuth 2.0 and API Implementation:**
+   - Added placeholder environment variables for SP-API credentials (`CLIENT_ID`, `CLIENT_SECRET`, `APP_ID`) to `wsgi_handler.py`.
+   - The `/connect_amazon` and `/amazon_callback` routes in `wsgi_handler.py` were rewritten to perform the standard OAuth 2.0 authorization code grant flow. This included generating a `state` token for CSRF protection and exchanging the authorization code for an `access_token` and `refresh_token`.
+   - The simulated `check_restrictions` function in `keepa_deals/amazon_sp_api.py` was replaced with a live implementation using `httpx` to call the `/listings/2021-08-01/restrictions` endpoint. This included adding the required `x-amz-access-token` header and rate-limiting logic.
+   - An initial token refresh mechanism was created in a new file, `keepa_deals/sp_api_token_manager.py`, which relied on the Flask user `session` for storing tokens.
+2. **Architectural Refactoring (Post-Code Review):**
+   - A code review identified a critical architectural flaw: the Celery background task was attempting to access the Flask `session` from a separate process, which is not possible. A `TypeError` due to an incorrect number of arguments passed to the task was also noted.
+   - To correct this, the architecture was significantly refactored:
+     - The `check_all_restrictions_for_user` task in `keepa_deals/sp_api_tasks.py` was modified to accept the `seller_id`, `access_token`, and `refresh_token` as direct arguments, removing all session dependency.
+     - The `amazon_callback` route in `wsgi_handler.py` was updated to pass these arguments directly to the Celery task upon successful authentication.
+     - The session-based token refresh logic was moved into a self-contained helper function (`_refresh_sp_api_token`) inside `keepa_deals/sp_api_tasks.py`.
+     - The `keepa_deals/sp_api_token_manager.py` file was deleted as it was now redundant.
+3. **Final `MD9100` Error Fix:**
+   - During user testing, an `MD9100` error ("not set up for third-party authorization") occurred. This was diagnosed as a mismatch between the self-authorized app type and the parameters in the authorization URL.
+   - A final code change was made to `wsgi_handler.py` to remove the `version: 'beta'` parameter from the authorization URL, aligning it with the requirements for a private, self-authorized application.
+
+**Challenges Encountered:**
+
+- **Architectural Flaw:** The initial design incorrectly coupled the background worker with the web server's session context, requiring a significant refactor.
+
+- Amazon UI Discrepancies:
+
+   
+
+  The user encountered major difficulties navigating the Amazon Seller Central "Developer Central" interface. The UI did not match documented or expected layouts, leading to confusion.
+
+  - The user was initially routed to an incorrect "Enrollment" page.
+  - The process for creating a developer profile was unclear and resulted in an "Invalid Request" error when the user selected their old, inactive store name.
+
+- **Final Blocker:** The user was unable to locate the "OAuth Redirect URI" configuration section within their Amazon developer console. The UI's "Edit App" section did not present the expected editable fields, which prevented the final, crucial configuration step from being completed.
+
+**Task Outcome: Partial Success**
+
+- **Code Implementation:** The coding portion of the task was a **success**. The final submitted code represents a robust, secure, and architecturally correct implementation of the SP-API integration, incorporating feedback and best practices for decoupling background tasks.
+- **End-to-End Feature:** The overall task is considered a **failure**, as the user was ultimately unable to get the feature working in their live environment. The blocker was not the code itself, but an external dependency: a confusing and seemingly buggy user interface on the Amazon Seller Central website that prevented the final, necessary configuration step.
