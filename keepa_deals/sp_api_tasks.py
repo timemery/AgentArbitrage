@@ -7,8 +7,7 @@ import logging
 from datetime import datetime
 
 # Assuming a shared Celery app instance is available
-# from worker import celery_app as celery
-from celery_app import celery_app as celery
+from worker import celery_app as celery
 from keepa_deals.amazon_sp_api import check_restrictions
 from keepa_deals.db_utils import DB_PATH
 
