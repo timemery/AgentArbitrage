@@ -274,3 +274,49 @@ The task is considered **complete**. The requested architectural changes were fu
 The task is considered a **partial success**. The ultimate goal of making the feature fully operational was not achieved. However, the true root cause of the blocker was successfully and precisely identified. The problem was diagnosed not as a simple misconfiguration of an app, but as a fundamental miscategorization of the user's developer profile with Amazon.
 
 A clear and actionable path to resolution has been provided to the user, which now depends on an external party (Amazon Seller Support). The user has confirmed they have sent the support request. The task is now blocked pending Amazon's intervention. No code changes were made, and no regressions were introduced.
+
+### **Dev Log Entry**
+
+**Date:** 2025-11-28 **Task:** Diagnose and Fix Stalled Data Collection and Scheduled Refiller **Status:** **SUCCESS**
+
+**Objective:** The primary goal was to diagnose and resolve a critical failure in the data collection system. The `backfill_deals` task had completely stalled, and the scheduled `update_recent_deals` refiller task was not running, leading to a complete halt in data acquisition.
+
+**Summary of Outcome:**
+
+The task was a success. After a comprehensive, multi-stage diagnostic process that addressed a cascade of environmental, configuration, and performance issues, both the `backfill_deals` task and the scheduled `update_recent_deals` task are now fully operational. The system is stable and collecting data as intended.
+
+------
+
+### **Detailed Chronology of Diagnostic Journey & Resolutions**
+
+The investigation revealed that the system was not stalled due to a single bug but was completely non-operational due to a series of foundational setup issues. The resolution required systematically rebuilding the execution environment before the application-level performance issue could be addressed.
+
+1. **Initial State: System Offline**
+   - **Symptom:** The log files specified in the task description (`/var/www/agentarbitrage/celery_worker.log` and `celery_beat.log`) did not exist. A process check confirmed that no Celery worker or beat scheduler processes were running.
+   - **Conclusion:** The entire data processing system was down.
+2. **Challenge: Environment Incompatibility**
+   - **Symptom:** The production startup script (`start_celery.sh`) failed to execute in the test environment. It was hardcoded with production paths (e.g., `/var/www/agentarbitrage`) and user permissions (`chown www-data`, `su ... www-data`) that were not available.
+   - **Resolution:** A new, sandbox-safe startup script, `start_celery_local.sh`, was created. This script uses relative paths and removes all `sudo`/`chown`/`su` commands, making it compatible with the local test environment.
+3. **Challenge: Missing Core Dependencies**
+   - **Symptom:** The new `start_celery_local.sh` script failed with `ModuleNotFoundError: No module named celery` and `No such file or directory` for the `.env` file.
+   - Resolution:
+     1. All required Python packages were installed by running `pip install -r requirements.txt`.
+     2. A `.env` file was created in the project root with the necessary API credentials.
+4. **Challenge: Missing Infrastructure (Redis)**
+   - **Symptom:** With Python dependencies fixed, the startup script still failed, this time with `redis.exceptions.ConnectionError`.
+   - **Resolution:** The `redis-server` package was installed via `apt-get`, and the Redis server process was started in the background. This completed the environment setup.
+5. **Challenge: Diagnosing the "Stall"**
+   - **Initial Hypothesis (Incorrect):** It was initially suspected that a stale Redis lock (`backfill_deals_lock`) from a previous failed run was preventing new tasks from starting. This was disproven when `redis-cli KEYS "*lock*"` returned empty.
+   - **Discovery of Missing State:** An inspection of the file system revealed that both `backfill_state.json` and `watermark.json` were missing. This was a key finding, as the absence of the watermark file would cause the `update_recent_deals` task to abort by design.
+   - **The True Root Cause (Performance Bottleneck):** After manually triggering the `backfill_deals` task, log analysis revealed the true cause of the "stall." The task was not crashed but was entering a very long, intentional wait period (over 30 minutes). The log message `Insufficient tokens for estimated cost... Proactively waiting...` confirmed that the `TokenManager`'s "controlled deficit" strategy was being triggered. The `MAX_ASINS_PER_BATCH` value was too high, causing the estimated API cost to exceed the available tokens, leading to the long pauses.
+6. **Challenge: Course Correction & Final Fixes**
+   - **User Feedback:** An initial attempt to fix the performance by setting the batch size to `50` was correctly identified by the user as a potential regression.
+   - **Log Archaeology:** As requested, a review of the `Documents_Dev_Logs` folder uncovered a comment in a previous dev log (`dev-log-8.md`) that justified a much more conservative batch size of `20`.
+   - **Final Bug Discovery & Tuning:** Further testing revealed that even a batch size of `20` was too aggressive for the available token balance. A new bug, an `UnboundLocalError`, was also discovered in `keepa_deals/simple_task.py` that was preventing the scheduled task from running.
+   - Final Resolution:
+     1. The `UnboundLocalError` was fixed by correcting the Celery app import in `keepa_deals/simple_task.py`.
+     2. The `MAX_ASINS_PER_BATCH` in `keepa_deals/backfiller.py` was reduced to a final, very conservative value of `5` to guarantee steady progress without long token-related pauses.
+
+**Final Verification:**
+
+The fully patched system was tested one final time. User-provided logs confirmed that the `backfill_deals` task is now running and making steady progress without stalls. The logs also confirmed that the Celery Beat scheduler is correctly sending the `update_recent_deals` task, and the previous crash has been resolved. The system is now fully operational.
