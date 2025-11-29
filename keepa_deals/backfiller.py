@@ -35,7 +35,7 @@ STATE_FILE = 'backfill_state.json'
 # slightly above the maximum token bucket size (300). This allows the TokenManager's
 # "controlled deficit" strategy to function effectively, preventing excessive negative
 # token balances and minimizing long wait times for token refills.
-MAX_ASINS_PER_BATCH = 10
+MAX_ASINS_PER_BATCH = 5
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days, to prevent expiration during very long runs
 
@@ -73,7 +73,7 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
 
     for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
         batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-        estimated_cost = 12 * len(batch_asins)
+        estimated_cost = 8 * len(batch_asins)
         token_manager.request_permission_for_call(estimated_cost)
         product_response, _, tokens_consumed, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
         token_manager.update_after_call(tokens_left)
