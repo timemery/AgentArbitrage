@@ -820,7 +820,7 @@ def api_deals():
 
     # --- Pagination and Sorting ---
     page = request.args.get('page', 1, type=int)
-    limit = request.args.get('limit', 50, type=int)
+    limit = request.args.get('limit', 25, type=int)
     offset = (page - 1) * limit
     sort_by = request.args.get('sort', 'id')
     if sort_by not in available_columns:

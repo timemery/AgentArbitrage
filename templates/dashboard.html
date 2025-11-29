@@ -39,10 +39,8 @@
     </div>
     <div class="table-container">
         <div id="deals-table"></div>
-        <div class="pagination-controls">
-            <button id="prev-page">Previous</button>
-            <span id="page-info"></span>
-            <button id="next-page">Next</button>
+        <div id="pagination-container" class="pagination-controls">
+            <!-- Pagination will be dynamically rendered here by JavaScript -->
         </div>
     </div>
 </div>
@@ -113,9 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const tableContainer = document.getElementById('deals-table');
-    const pageInfo = document.getElementById('page-info');
-    const prevButton = document.getElementById('prev-page');
-    const nextButton = document.getElementById('next-page');
     const filterForm = document.getElementById('filter-form');
     const resetBtn = document.getElementById('reset-filters');
     const tooltip = document.getElementById('custom-tooltip');
@@ -305,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function fetchDeals(page = 1, sortBy = 'id', order = 'asc') {
-        const limit = 50;
+        const limit = 25;
         const filters = getFilters();
         let query = `page=${page}&limit=${limit}&sort=${sortBy}&order=${order}`;
         for (const key in filters) {
@@ -496,13 +491,57 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderPagination(pagination) {
         currentPage = pagination.current_page;
         totalPages = pagination.total_pages;
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-        prevButton.disabled = currentPage <= 1;
-        nextButton.disabled = currentPage >= totalPages;
+        const paginationContainer = document.getElementById('pagination-container');
+        paginationContainer.innerHTML = ''; // Clear existing controls
 
-        // Update the new deal counter
         const dealCount = pagination.total_records || 0;
         dealCounterSpan.textContent = `${dealCount.toLocaleString()} Deals Found`;
+
+        if (totalPages <= 1) return;
+
+        let paginationHTML = '';
+
+        // First & Previous Buttons
+        paginationHTML += `<button class="page-btn" data-page="1" ${currentPage === 1 ? 'disabled' : ''}>First</button>`;
+        paginationHTML += `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
+
+        // Helper functions for page number logic
+        const getPageButton = (page) => `<button class="page-btn ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>`;
+        const ellipsis = `<span class="page-ellipsis">...</span>`;
+
+        if (totalPages <= 7) { // Show all pages if 7 or fewer
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += getPageButton(i);
+            }
+        } else {
+            paginationHTML += getPageButton(1); // Always show first page
+            if (currentPage > 3) {
+                paginationHTML += ellipsis;
+            }
+            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                paginationHTML += getPageButton(i);
+            }
+            if (currentPage < totalPages - 2) {
+                paginationHTML += ellipsis;
+            }
+            paginationHTML += getPageButton(totalPages); // Always show last page
+        }
+
+        // Next & Last Buttons
+        paginationHTML += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
+        paginationHTML += `<button class="page-btn" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>`;
+
+        paginationContainer.innerHTML = paginationHTML;
+
+        // Add event listeners to new buttons
+        paginationContainer.querySelectorAll('.page-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const page = parseInt(button.dataset.page);
+                if (page && page !== currentPage && !button.disabled) {
+                    fetchDeals(page, currentSort.by, currentSort.order);
+                }
+            });
+        });
     }
 
     filterForm.addEventListener('submit', e => {
@@ -516,14 +555,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPage = 1;
         currentSort = { by: 'id', order: 'asc' };
         fetchDeals(currentPage, currentSort.by, currentSort.order);
-    });
-
-    prevButton.addEventListener('click', () => {
-        if (currentPage > 1) fetchDeals(currentPage - 1, currentSort.by, currentSort.order);
-    });
-
-    nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) fetchDeals(currentPage + 1, currentSort.by, currentSort.order);
     });
 
     salesRankSlider.addEventListener('input', () => {
