@@ -222,11 +222,13 @@ def update_recent_deals():
                     row_tuple = tuple(row_dict.get(h) for h in headers) + (row_dict.get('last_seen_utc'), row_dict.get('source'))
                     data_for_upsert.append(row_tuple)
 
+                # FIX: Wrap all column names in double quotes for both INSERT and UPDATE parts.
                 cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
                 vals_str = ', '.join(['?'] * len(sanitized_headers))
+                # The original update_str was already correctly quoting, but this ensures consistency.
                 update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
                 upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
-                
+
                 cursor.executemany(upsert_sql, data_for_upsert)
                 conn.commit()
                 logger.info(f"Step 6 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
