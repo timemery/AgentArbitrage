@@ -153,8 +153,11 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
             if 'source' not in db_columns:
                 db_columns.append('source')
 
+            # FIX: Wrap all column names in double quotes to prevent syntax errors
+            # with sanitized names that might start with numbers or contain special chars.
+            quoted_columns = [f'"{col}"' for col in db_columns]
             placeholders = ', '.join(['?'] * len(db_columns))
-            query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(db_columns)}) VALUES ({placeholders})"
+            query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(quoted_columns)}) VALUES ({placeholders})"
 
             data_to_insert = []
             for row in rows_to_upsert:
