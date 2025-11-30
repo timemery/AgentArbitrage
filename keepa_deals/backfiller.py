@@ -73,7 +73,19 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
 
     for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
         batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-        estimated_cost = 12 * len(batch_asins)
+        # --- Token Cost Estimation ---
+        # This is a critical tuning parameter. Do not change it without careful analysis.
+        #
+        # - Maximum Theoretical Cost: The API call uses `offers=20`, which requires 2 "offer pages".
+        #   The documentation states a cost of 6 tokens per page, so the max cost per ASIN is 12.
+        #
+        # - Observed Average Cost: Analysis of live logs shows the real-world average cost
+        #   is consistently between 7 and 10 tokens per ASIN.
+        #
+        # - The Multiplier (8): We use 8 as a safe, data-driven average. It is high enough
+        #   to be conservative but low enough to prevent the TokenManager from constantly
+        #   triggering long, unnecessary pauses when the token balance is moderately low.
+        estimated_cost = 8 * len(batch_asins)
         token_manager.request_permission_for_call(estimated_cost)
         product_response, _, tokens_consumed, tokens_left = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
         token_manager.update_after_call(tokens_left)
@@ -123,7 +135,6 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
             processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
             processed_row['source'] = 'backfiller'
             rows_to_upsert.append(processed_row)
-        time.sleep(1)
 
     # 5. Save processed deals directly to the database
     if rows_to_upsert:
@@ -136,7 +147,7 @@ def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manag
             with open(HEADERS_PATH) as f:
                 headers_data = json.load(f)
 
-            db_columns = [sanitize_col_name(h['header']) for h in headers_data]
+            db_columns = [sanitize_col_name(h) for h in headers_data]
             if 'last_seen_utc' not in db_columns:
                 db_columns.append('last_seen_utc')
             if 'source' not in db_columns:
@@ -228,7 +239,12 @@ def backfill_deals(reset=False):
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
             logger.info(f"Found {len(deals_on_page)} deals on page {page}.")
 
-            _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manager, business_settings, headers)
+            # --- Process in smaller chunks for faster UI updates ---
+            chunk_size = 50
+            for i in range(0, len(deals_on_page), chunk_size):
+                chunk_to_process = deals_on_page[i:i + chunk_size]
+                logger.info(f"Processing chunk {i//chunk_size + 1}/{(len(deals_on_page) + chunk_size - 1)//chunk_size} with {len(chunk_to_process)} deals.")
+                _process_and_save_deal_page(chunk_to_process, api_key, xai_api_key, token_manager, business_settings, headers)
 
             save_backfill_state(page)
 

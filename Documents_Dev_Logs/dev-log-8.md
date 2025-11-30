@@ -320,3 +320,69 @@ The investigation revealed that the system was not stalled due to a single bug b
 **Final Verification:**
 
 The fully patched system was tested one final time. User-provided logs confirmed that the `backfill_deals` task is now running and making steady progress without stalls. The logs also confirmed that the Celery Beat scheduler is correctly sending the `update_recent_deals` task, and the previous crash has been resolved. The system is now fully operational.
+
+### **Dev Log Entry**
+
+**Date:** 2025-11-30 **Task:** Diagnose and Fix Stalled Data Collection and Scheduled Refiller **Status:** **FAILURE**
+
+**Objective:** The primary goal was to diagnose and resolve a critical failure where the `backfill_deals` task had stalled and the scheduled `update_recent_deals` task was not running, leading to a complete halt in data acquisition.
+
+**Summary of Outcome:**
+
+This task must be marked as a failure. Despite a long and arduous multi-day debugging process, the data collection pipeline remains non-functional. While multiple, distinct layers of problems were uncovered and solved, each fix revealed a deeper, more fundamental bug. The final attempt to run the backfill task resulted in a fatal `TypeError` and then a `sqlite3.OperationalError`, preventing any data from being saved to the database. The root causes were only definitively identified at the very end of the task, and the core issue of an inefficient and painfully slow testing cycle prevented a successful resolution.
+
+------
+
+### **Detailed Chronology of Diagnostic Journey & Failures**
+
+This task was a classic example of "peeling the onion," where each layer of bugs masked a more critical one underneath.
+
+1. **Phase 1: Stabilizing the Execution Environment**
+
+   - **Initial State:** The investigation began with the discovery that the entire Celery system was offline. No worker or beat processes were running, and no log files existed.
+   - Challenges & Resolutions:
+     - **Environment Incompatibility:** The production `start_celery.sh` script was unusable in the test environment. A sandbox-safe `start_celery_local.sh` was created to use relative paths and remove production-specific user commands.
+     - **Missing Dependencies:** The environment was missing core Python packages (`celery`, `redis`, etc.) and the `.env` file. These were created and installed.
+     - **Missing Infrastructure:** The `redis-server` was not installed or running. It was installed via `apt-get` and a stable startup protocol was established.
+   - **Result:** After significant effort, a stable and repeatable environment for running the Celery tasks was finally achieved.
+
+2. **Phase 2: Diagnosing the "Stall" (Performance Tuning)**
+
+   - **Symptom:** With the system running, the `backfill_deals` task would start but then enter extremely long wait periods (50-60 minutes), appearing to be stalled.
+   - **Investigation:** Log analysis revealed the `TokenManager` was "proactively waiting" because the estimated cost of API calls was exceeding the available token balance.
+   - Actions & Course Correction:
+     - The `MAX_ASINS_PER_BATCH` in `backfiller.py` was tuned (from 50, to 20, and finally to 5) in an attempt to reduce the cost of each batch.
+     - The token cost estimation multiplier itself was identified as a key issue. Based on analysis of API documentation and historical logs, the multiplier was adjusted from a worst-case `12` to a more realistic average of `8`.
+     - A new bottleneck was discovered in the seller data fetching loop, which was adding significant delays. An unnecessary `time.sleep()` call was removed to optimize this.
+
+3. **Phase 3: The Final, Fatal Crashes**
+
+   - **Symptom:** After 12+ hours of the "fixed" backfill task running, it ultimately crashed without saving any data. The dashboard remained unchanged.
+
+   - Final Root Cause Analysis:
+
+      
+
+     A thorough review of the final log output revealed two definitive, fatal bugs that were happening at the very end of the long process:
+
+     1. **`TypeError: string indices must be integers`:** The first crash occurred because the code in `backfiller.py` was incorrectly parsing the `headers.json` file, expecting a list of objects when it is a list of strings.
+     2. **`sqlite3.OperationalError: unrecognized token: "1yr_Avg"`:** After fixing the `TypeError`, a subsequent run revealed a deeper bug. The `sanitize_col_name` function in `db_utils.py` was failing to remove the `.` character from the column name "1yr. Avg.", causing the final `INSERT` query to be malformed and crash the database write.
+
+   - **Persistent Secondary Bug:** Throughout this entire process, the logs consistently showed the `update_recent_deals` task crashing with an `UnboundLocalError`, confirming that the corrected `simple_task.py` file was never successfully deployed and activated in the user's environment.
+
+**Key Learnings for Next Agent:**
+
+- **The Testing Loop is the Main Blocker:** The core reason for the repeated failures of this task was the incredibly long feedback loop. Relying on 12+ hour runs of the full `backfill_deals` task to find bugs is not a viable strategy.
+
+- **A Diagnostic Tool is Not Optional, It's Essential:** The immediate priority for the next task must be the creation of a "pre-flight check" script that can run the entire data pipeline for a single ASIN in seconds. This is the only way to enable rapid, iterative debugging.
+
+- Multiple, Confirmed Bugs Remain:
+
+   
+
+  The next agent should not need to re-diagnose the core problems. The work should start with the known, confirmed bugs:
+
+  - The sanitization logic in `keepa_deals/db_utils.py` is broken.
+  - The Celery app import in `keepa_deals/simple_task.py` needs to be fixed and verified.
+
+This task failed because it took too long to uncover the true, fundamental bugs, and the testing methodology itself was a major handicap. A fresh start with a focus on creating a fast diagnostic tool is the only logical path forward.
