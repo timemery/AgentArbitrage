@@ -13,7 +13,7 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
 def sanitize_col_name(name):
     """Sanitizes a string to be a valid SQLite column name."""
-    name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent').replace('&', 'and')
+    name = name.replace(' ', '_').replace('.', '_').replace('-', '_').replace('%', 'Percent').replace('&', 'and')
     return re.sub(r'[^a-zA-Z0-9_]', '', name)
 
 def get_table_columns(cursor, table_name):
