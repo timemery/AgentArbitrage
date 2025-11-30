@@ -13,6 +13,13 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
 def sanitize_col_name(name):
     """Sanitizes a string to be a valid SQLite column name."""
+    # Special case for "1yr. Avg." which can cause an "unrecognized token" error
+    # during table creation. We give it a unique, safe name.
+    if name == "1yr. Avg.":
+        return "yr_1_Avg"
+
+    # For all other columns, we use the original logic to ensure generated names
+    # match the schema of the user's existing database (e.g., "Avg. Price 90" -> "Avg_Price_90").
     name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent').replace('&', 'and')
     return re.sub(r'[^a-zA-Z0-9_]', '', name)
 
