@@ -1,131 +1,161 @@
-
 import logging
-from .stable_calculations import calculate_seller_quality_score
+from keepa_deals.keepa_api import fetch_seller_data
+from keepa_deals.token_manager import TokenManager
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# --- Constants ---
-WAREHOUSE_SELLER_ID = 'A2L77EE7U53NWQ'
-AMAZON_SELLER_ID = 'ATVPDKIKX0DER'
 CONDITION_CODE_MAP = {
-    1: "New",
-    2: "Used - Like New",
-    3: "Used - Very Good",
-    4: "Used - Good",
-    5: "Used - Acceptable",
-    10: "Collectible - Like New",
-    11: "Collectible - Very Good",
+    0: 'New, unopened',
+    1: 'New, open box',
+    2: 'Used - Like New',
+    3: 'Used - Very Good',
+    4: 'Used - Good',
+    5: 'Used - Acceptable',
+    6: 'Used - Refurbished',
+    7: 'Collectible - Like New',
+    8: 'Collectible - Very Good',
+    9: 'Collectible - Good',
+    10: 'Collectible - Acceptable',
+    11: 'New, other'
 }
 
-def _get_best_offer_analysis(product, seller_data_cache):
+def get_seller_info_for_single_deal(product, api_key, token_manager: TokenManager):
     """
-    Finds the best (lowest total price) live "Used" offer directly from the offers array.
-    This is the most reliable way to get an actionable price and seller information.
+    Finds the lowest-priced used offer for a single product, fetches data
+    for only that seller, and returns a cache containing their info.
+    This is a major optimization to reduce token consumption.
     """
-    asin = product.get('asin', 'N/A')
-    raw_offers = product.get('offers', [])
+    lowest_price_offer = None
+    min_total_price = float('inf')
+    used_condition_codes = {2, 3, 4, 5}
 
-    best_offer_details = {
-        'total_price': float('inf'),
-        'seller_id': None,
-        'offer_obj': None,
-        'condition': None
-    }
+    if 'offers' not in product or not product['offers']:
+        return {}
 
-    if not raw_offers:
-        logger.warning(f"ASIN {asin}: No 'offers' array found. Cannot determine best price.")
-    else:
-        for offer in raw_offers:
-            try:
-                # Basic validation and filtering
-                if not isinstance(offer, dict):
-                    continue
-                if offer.get('sellerId') in [WAREHOUSE_SELLER_ID, AMAZON_SELLER_ID]:
-                    continue
-
-                # We are only interested in "Used" items (condition != 1)
-                condition_data = offer.get('condition')
-                condition_value = None
-                if isinstance(condition_data, dict):
-                    condition_value = condition_data.get('value')
-                elif isinstance(condition_data, int):
-                    condition_value = condition_data
-
-                if condition_value == 1: # 1 is "New"
-                    continue
-
-                # The most recent price and shipping are at the end of offerCSV
-                offer_history = offer.get('offerCSV', [])
-                if len(offer_history) < 2:
-                    continue
-
-                price = int(offer_history[-2])
-                shipping = int(offer_history[-1])
-                if shipping == -1: shipping = 0 # -1 means shipping is not specified, treat as 0 for FBA/Prime
-
-                total_price = price + shipping
-
-                if total_price < best_offer_details['total_price']:
-                    best_offer_details['total_price'] = total_price
-                    best_offer_details['seller_id'] = offer.get('sellerId')
-                    best_offer_details['offer_obj'] = offer
-
-                    # Determine the condition string
-                    if isinstance(condition_data, dict):
-                        best_offer_details['condition'] = condition_data.get('name', 'Used')
-                    elif isinstance(condition_value, int):
-                        best_offer_details['condition'] = CONDITION_CODE_MAP.get(condition_value, f'Used ({condition_value})')
-                    else:
-                        best_offer_details['condition'] = 'Used'
-
-            except (ValueError, IndexError, TypeError) as e:
-                logger.warning(f"ASIN {asin}: Could not parse a specific offer. Error: {e}. Offer data: {offer}")
-                continue
-
-    # If after checking all offers, we still haven't found a used one, the deal is invalid.
-    if best_offer_details['total_price'] == float('inf'):
-        logger.error(f"ASIN {asin}: No valid 'Used' offers found in the offers array. This deal will be excluded.")
-        return None
-
-    # We found a winning offer. Now, build the results and enrich with seller data.
-    best_seller_id = best_offer_details['seller_id']
-    result = {
-        'Price Now': f"${best_offer_details['total_price'] / 100:.2f}",
-        'Best Price': f"${best_offer_details['total_price'] / 100:.2f}",
-        'Seller ID': best_seller_id,
-        'Seller': 'N/A',
-        'Seller Rank': '-',
-        'Seller_Quality_Score': '-',
-        'Condition': best_offer_details['condition']
-    }
-
-    logger.info(f"ASIN {asin}: Found best 'Used' offer. Price: {result['Price Now']}, Seller ID: {best_seller_id}")
-
-    if best_seller_id and seller_data_cache:
-        seller_data = seller_data_cache.get(best_seller_id)
-        if seller_data:
-            result['Seller'] = seller_data.get('sellerName', 'N/A')
-            rating_count = seller_data.get('currentRatingCount', 0)
-
-            if rating_count > 0:
-                result['Seller Rank'] = rating_count
-                rating_percentage = seller_data.get('currentRating', 0)
-                positive_ratings = round((rating_percentage / 100.0) * rating_count)
-                score = calculate_seller_quality_score(positive_ratings, rating_count)
-                result['Seller_Quality_Score'] = f"{score:.1f}/5.0"
-            else:
-                result['Seller_Quality_Score'] = "New Seller"
+    for offer in product.get('offers', []):
+        condition_val = offer.get('condition')
+        condition_code = None
+        if isinstance(condition_val, dict):
+            condition_code = condition_val.get('value')
         else:
-            logger.warning(f"ASIN {asin}: No data in cache for seller ID {best_seller_id}.")
-            result['Seller'] = "No Seller Info"
+            condition_code = condition_val
 
-    return result
+        if condition_code in used_condition_codes:
+            offer_csv = offer.get('offerCSV', [])
+            if len(offer_csv) >= 2:
+                price_cents = offer_csv[0]
+                shipping_cents = offer_csv[1] if offer_csv[1] != -1 else 0
+                total_price_cents = price_cents + shipping_cents
 
-def get_all_seller_info(product, seller_data_cache=None):
+                if total_price_cents < min_total_price:
+                    min_total_price = total_price_cents
+                    lowest_price_offer = offer
+
+    if not lowest_price_offer or 'sellerId' not in lowest_price_offer:
+        logger.warning(f"ASIN {product.get('asin')}: Could not determine the lowest-priced used seller.")
+        return {}
+
+    seller_id = lowest_price_offer['sellerId']
+    logger.info(f"ASIN {product.get('asin')}: Found lowest-priced seller: {seller_id}. Fetching their data.")
+
+    # Estimate cost and wait for tokens
+    estimated_cost = 1
+    token_manager.request_permission_for_call(estimated_cost, f"Fetching single seller {seller_id}")
+
+    # Fetch seller data from Keepa
+    seller_data, _, tokens_left, _ = fetch_seller_data(api_key, [seller_id])
+    token_manager.update_after_call(tokens_left)
+
+    if seller_data and seller_data.get('sellers'):
+        return seller_data['sellers']
+    else:
+        logger.warning(f"ASIN {product.get('asin')}: Failed to fetch data for seller {seller_id}.")
+        return {}
+
+
+def get_all_seller_info(product_list, api_key, token_manager: TokenManager):
     """
-    Public function to get all seller-related information in a single dictionary.
-    This function relies on a pre-populated cache of seller data.
+    DEPRECATED METHOD.
+    Collects all unique seller IDs from a list of products, fetches their data
+    in a single batch call, and returns a dictionary mapping seller IDs to their info.
     """
-    if seller_data_cache is None:
-        seller_data_cache = {}
-    return _get_best_offer_analysis(product, seller_data_cache)
+    logger.warning("Using deprecated 'get_all_seller_info'. This is inefficient.")
+    unique_seller_ids = set()
+    for product in product_list:
+        if 'sellerIds' in product and product['sellerIds'] is not None:
+            # The API returns lists for different offer types (new, used, etc.)
+            for seller_id_list in product['sellerIds']:
+                if seller_id_list:
+                    unique_seller_ids.update(seller_id_list)
+
+    if not unique_seller_ids:
+        logger.info("No seller IDs found in the product list.")
+        return {}
+
+    seller_ids_list = list(unique_seller_ids)
+    logger.info(f"Found {len(seller_ids_list)} unique sellers. Fetching their data.")
+
+    # Estimate cost and wait for tokens if necessary
+    # Cost is 1 token per seller.
+    estimated_cost = len(seller_ids_list)
+    token_manager.request_permission_for_call(estimated_cost, f"Fetching {len(seller_ids_list)} sellers")
+
+    # Fetch seller data from Keepa
+    keepa = KeepaAPI(api_key)
+    seller_data = keepa.get_seller_info(seller_ids_list)
+    token_manager.update_after_call(seller_data.get('tokensLeft', token_manager.get_tokens_left()))
+
+    if seller_data and seller_data.get('sellers'):
+        return seller_data['sellers']
+    else:
+        logger.warning("Failed to fetch seller data from Keepa API.")
+        return {}
+
+
+def get_used_product_info(product):
+    """
+    Extracts information about the lowest-priced used offer from a product's data.
+
+    Returns a tuple: (price, seller_id, is_fba, condition_code)
+    or (None, None, None, None) if no used offer is found.
+    """
+    offers = product.get('offers')
+    if not offers:
+        return None, None, None, None
+
+    min_price = float('inf')
+    best_offer = None
+    used_condition_codes = {2, 3, 4, 5}
+
+    for offer in offers:
+        try:
+            # Handle both dict and int for condition
+            condition_val = offer.get('condition')
+            condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
+
+            if condition_code in used_condition_codes:
+                # In `offers`, `price` and `shippingCost` are in cents.
+                price = offer['price']
+                shipping_cost = offer.get('shippingCost', 0) if offer.get('shippingCost', -1) != -1 else 0
+                total_price = price + shipping_cost
+
+                if total_price < min_price:
+                    min_price = total_price
+                    best_offer = offer
+        except (AttributeError, KeyError, TypeError) as e:
+            logger.error(f"Malformed offer found for ASIN {product.get('asin')}: {offer}. Error: {e}")
+            continue
+
+    if best_offer:
+        price_now = min_price
+        seller_id = best_offer.get('sellerId')
+        is_fba = best_offer.get('isFBA', False)
+
+        condition_val = best_offer.get('condition')
+        condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
+
+        return price_now, seller_id, is_fba, condition_code
+    else:
+        return None, None, None, None
