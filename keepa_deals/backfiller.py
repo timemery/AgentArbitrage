@@ -36,6 +36,7 @@ STATE_FILE = 'backfill_state.json'
 # "controlled deficit" strategy to function effectively, preventing excessive negative
 # token balances and minimizing long wait times for token refills.
 MAX_ASINS_PER_BATCH = 5
+MAX_DEALS_PER_CHUNK = 2  # New constant for smaller processing chunks
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days, to prevent expiration during very long runs
 
@@ -240,10 +241,9 @@ def backfill_deals(reset=False):
             logger.info(f"Found {len(deals_on_page)} deals on page {page}.")
 
             # --- Process in smaller chunks for faster UI updates ---
-            chunk_size = 50
-            for i in range(0, len(deals_on_page), chunk_size):
-                chunk_to_process = deals_on_page[i:i + chunk_size]
-                logger.info(f"Processing chunk {i//chunk_size + 1}/{(len(deals_on_page) + chunk_size - 1)//chunk_size} with {len(chunk_to_process)} deals.")
+            for i in range(0, len(deals_on_page), MAX_DEALS_PER_CHUNK):
+                chunk_to_process = deals_on_page[i:i + MAX_DEALS_PER_CHUNK]
+                logger.info(f"Processing chunk {i//MAX_DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + MAX_DEALS_PER_CHUNK - 1)//MAX_DEALS_PER_CHUNK} with {len(chunk_to_process)} deals.")
                 _process_and_save_deal_page(chunk_to_process, api_key, xai_api_key, token_manager, business_settings, headers)
 
             save_backfill_state(page)
