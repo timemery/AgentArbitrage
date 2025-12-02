@@ -69,57 +69,62 @@ def backfill_deals(reset=False):
 
         asins = [deal['asin'] for deal in deals_response['deals']['dr']]
 
+        # Step 2: Process ASINs in small batches to ensure data freshness and quick DB updates
+        for i in range(0, len(asins), DEALS_PER_PAGE):
+            batch_asins = asins[i:i + DEALS_PER_PAGE]
+            all_deals_data_for_batch = []
+            logging.info(f"--- Processing batch of {len(batch_asins)} ASINs from page {page} ---")
 
-        # Step 2: Process each ASIN individually to ensure data freshness
-        all_deals_data = []
-        for asin in asins:
-            logging.info(f"--- Processing ASIN: {asin} ---")
-            try:
-                # A) Fetch complete product data with live offers
-                estimated_cost = 7 # ~6 for offers, 1 for product
-                token_manager.request_permission_for_call(estimated_cost, f"Fetching product data for {asin}")
-                product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], offers=20)
-                token_manager.update_after_call(tokens_left)
+            for asin in batch_asins:
+                logging.info(f"--- Processing ASIN: {asin} ---")
+                try:
+                    # A) Fetch complete product data with live offers
+                    estimated_cost = 7 # ~6 for offers, 1 for product
+                    token_manager.request_permission_for_call(estimated_cost, f"Fetching product data for {asin}")
+                    product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], offers=20)
+                    token_manager.update_after_call(tokens_left)
 
-                if not product_data or not product_data.get('products'):
-                    logging.warning(f"Could not retrieve product data for ASIN {asin}. Skipping.")
-                    continue
-                product = product_data['products'][0]
+                    if not product_data or not product_data.get('products'):
+                        logging.warning(f"Could not retrieve product data for ASIN {asin}. Skipping.")
+                        continue
+                    product = product_data['products'][0]
 
-                # B) Immediately find the lowest seller and fetch their data
-                seller_cache = get_seller_info_for_single_deal(product, keepa_api_key, token_manager)
+                    # B) Immediately find the lowest seller and fetch their data
+                    seller_cache = get_seller_info_for_single_deal(product, keepa_api_key, token_manager)
 
-                # C) Process the deal with fresh product and seller data
-                processed_deal = _process_single_deal(product, seller_cache, xai_api_key)
-                if processed_deal:
-                    all_deals_data.append(processed_deal)
-                    logging.info(f"Successfully processed ASIN {asin}.")
-                else:
-                    logging.warning(f"Processing returned no data for ASIN {asin}. It might be excluded by a filter.")
+                    # C) Process the deal with fresh product and seller data
+                    processed_deal = _process_single_deal(product, seller_cache, xai_api_key)
+                    if processed_deal:
+                        all_deals_data_for_batch.append(processed_deal)
+                        logging.info(f"Successfully processed ASIN {asin}.")
+                    else:
+                        logging.warning(f"Processing returned no data for ASIN {asin}. It might be excluded by a filter.")
 
-                time.sleep(1) # Small delay to be respectful to APIs
+                    # Add a delay to prevent the worker from being killed by the OS for high resource usage
+                    time.sleep(1)
 
-            except Exception as e:
-                logging.error(f"Error processing ASIN {asin}: {e}", exc_info=True)
+                except Exception as e:
+                    logging.error(f"Error processing ASIN {asin}: {e}", exc_info=True)
 
-        # Step 3: Save the fully processed deals for this page to the database
-        if all_deals_data:
-            logging.info(f"Saving {len(all_deals_data)} processed deals from page {page} to the database.")
-            save_deals_to_db(all_deals_data)
+            # Step 3: Save the fully processed deals for this BATCH to the database
+            if all_deals_data_for_batch:
+                logging.info(f"Saving {len(all_deals_data_for_batch)} processed deals from batch to the database.")
+                save_deals_to_db(all_deals_data_for_batch)
 
-            # --- CRITICAL: Restore missing task triggers ---
-            new_asins = [d['ASIN'] for d in all_deals_data if 'ASIN' in d]
-            if new_asins:
-                celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                logging.info(f"Triggered restriction check for {len(new_asins)} new ASINs.")
+                # --- CRITICAL: Restore missing task triggers ---
+                new_asins = [d['ASIN'] for d in all_deals_data_for_batch if 'ASIN' in d]
+                if new_asins:
+                    celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                    logging.info(f"Triggered restriction check for {len(new_asins)} new ASINs.")
 
-            # Trigger the refiller to keep existing deals fresh
-            celery.send_task('keepa_deals.simple_task.update_recent_deals')
-            logging.info("Triggered the update_recent_deals (refiller) task.")
+                # Trigger the refiller to keep existing deals fresh
+                celery.send_task('keepa_deals.simple_task.update_recent_deals')
+                logging.info("Triggered the update_recent_deals (refiller) task.")
 
-        else:
-            logging.warning(f"No deals from page {page} were successfully processed to be saved.")
+            else:
+                logging.warning(f"No deals from this batch were successfully processed to be saved.")
 
+        # After processing all batches for a page, update the state.
         state.set_last_completed_page(page)
         logging.info(f"Finished page {page}. Current tokens: {token_manager.get_tokens_left()}")
 
