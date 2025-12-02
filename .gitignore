@@ -27,3 +27,6 @@ celerybeat-schedule
 xai_token_state.json
 db_backups/data_quality_filters.patch
 task_description.md
+migrate_db.py
+backfill_state.json
+xai_token_state.json
