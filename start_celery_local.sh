@@ -1,26 +1,18 @@
 #!/bin/bash
 
-# This script is designed for a production environment.
+# This script is designed for a local/sandbox environment.
 # It starts Redis, the Celery worker, and Celery Beat scheduler in a resilient loop.
 
-# Step 1: Set ownership
-echo "Ensuring www-data owns the entire application directory..."
-chown -R www-data:www-data /var/www/agentarbitrage
-
-# Step 2: Define constants
-APP_DIR="/var/www/agentarbitrage"
-VENV_PYTHON="$APP_DIR/venv/bin/python"
+# Step 1: Define constants
+APP_DIR=$(pwd)
 WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
 BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
 MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
 
 # Define the commands
-WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO"
-BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO"
-PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
-
-# Common environment setup
-ENV_SETUP="cd $APP_DIR && set -a && source .env && set +a && PYTHONPATH=."
+WORKER_COMMAND="celery -A worker.celery_app worker --loglevel=INFO"
+BEAT_COMMAND="celery -A worker.celery_app beat --loglevel=INFO"
+PURGE_COMMAND="celery -A worker.celery_app purge -f"
 
 # --- Main Resiliency Loop (to be run in the background) ---
 monitor_and_restart() {
@@ -30,7 +22,7 @@ monitor_and_restart() {
         redis-cli ping > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo "Redis not responding. Starting Redis server..." >> "$MONITOR_LOG_FILE"
-            sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
+            sudo redis-server > redis.log 2>&1 &
             sleep 5
             redis-cli ping > /dev/null 2>&1
             if [ $? -ne 0 ]; then
@@ -43,51 +35,48 @@ monitor_and_restart() {
             echo "Redis is already running." >> "$MONITOR_LOG_FILE"
         fi
 
-        # Kill any old/zombie Celery processes
+        # Kill any old Celery processes
         echo "Attempting to stop any old Celery processes..." >> "$MONITOR_LOG_FILE"
         pkill -f "celery -A worker.celery_app" || echo "No old Celery processes found." >> "$MONITOR_LOG_FILE"
         sleep 2
 
         # Purge tasks and clean up state
         echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
-        su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. $PURGE_COMMAND" www-data
-        sudo rm -f "$APP_DIR/celerybeat-schedule"
-        touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
-        chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
+        $PURGE_COMMAND
+        rm -f "$APP_DIR/celerybeat-schedule"
+        touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE"
 
         # Start the daemons
-        echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
-        su -s /bin/bash -c "$ENV_SETUP nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
-        su -s /bin/bash -c "$ENV_SETUP nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+        set -a
+        source .env
+        set +a
 
-        echo "Services started. Monitoring for crashes..." >> "$MONITOR_LOG_FILE"
+        echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
+        nohup $WORKER_COMMAND > "$WORKER_LOG_FILE" 2>&1 &
+        WORKER_PID=$!
+        nohup $BEAT_COMMAND > "$BEAT_LOG_FILE" 2>&1 &
+        BEAT_PID=$!
+
+        echo "Services started. Monitoring PIDs: Worker=$WORKER_PID, Beat=$BEAT_PID" >> "$MONITOR_LOG_FILE"
 
         # Monitor loop
-        while true; do
-            if ! pgrep -f "$WORKER_COMMAND" > /dev/null; then
-                echo "Celery worker process appears to have crashed. Restarting all services..." >> "$MONITOR_LOG_FILE"
-                break
-            fi
-            if ! pgrep -f "$BEAT_COMMAND" > /dev/null; then
-                echo "Celery beat process appears to have crashed. Restarting all services..." >> "$MONITOR_LOG_FILE"
-                break
-            fi
+        while kill -0 $WORKER_PID > /dev/null 2>&1 && kill -0 $BEAT_PID > /dev/null 2>&1; do
             sleep 30
         done
 
         echo "Detected a service failure. Waiting for 10 seconds before restarting..." >> "$MONITOR_LOG_FILE"
+        kill $WORKER_PID > /dev/null 2>&1
+        kill $BEAT_PID > /dev/null 2>&1
         sleep 10
     done
 }
 
 # --- Script Entry Point ---
-# Check if the monitor is already running
-if pgrep -f "start_celery.sh" | grep -v $$ > /dev/null; then
+if pgrep -f "start_celery_local.sh" | grep -v $$ > /dev/null; then
     echo "The resilient startup script is already running in the background. To restart, kill the existing process first."
     exit 1
 fi
 
-# Launch the monitor function in the background and disown it
 nohup bash -c 'monitor_and_restart' >> "$MONITOR_LOG_FILE" 2>&1 &
 disown
 
