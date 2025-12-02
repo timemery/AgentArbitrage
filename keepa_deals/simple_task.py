@@ -7,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 import redis
 
-from worker import celery_app
+from worker import celery_app # Import the shared Celery app instance
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager

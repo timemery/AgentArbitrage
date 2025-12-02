@@ -20,89 +20,78 @@ class TokenManager:
         self.max_tokens = 300
         self.last_api_call_timestamp = time.time() - self.MIN_TIME_BETWEEN_CALLS_SECONDS
         self.last_refill_timestamp = time.time()
+        self.proactive_refill_threshold = 100 # If a call needs more than we have and we have less than this, wait.
+
 
         logger.info("TokenManager initialized without a blocking API call.")
 
-    def _refill_tokens(self):
+    def _simulate_refill(self):
         """
         Calculates and adds tokens that have been refilled since the last check.
+        This is a simulation based on time elapsed.
         """
         now = time.time()
         seconds_elapsed = now - self.last_refill_timestamp
         
         if seconds_elapsed > 0:
-            refill_amount = (seconds_elapsed / 60) * self.REFILL_RATE_PER_MINUTE
+            # Refill rate is per minute, so calculate per second and multiply.
+            refill_amount = (self.REFILL_RATE_PER_MINUTE / 60) * seconds_elapsed
             
             if refill_amount > 0:
                 self.tokens = min(self.max_tokens, self.tokens + refill_amount)
                 self.last_refill_timestamp = now
-                logger.debug(f"Refilled {refill_amount:.2f} tokens. Current tokens: {self.tokens:.2f}")
+                logger.debug(f"Simulated refill of {refill_amount:.2f} tokens. Current tokens: {self.tokens:.2f}")
 
     def has_enough_tokens(self, estimated_cost):
         """
         Checks if there are enough tokens for a call without waiting.
         Also triggers a refill check.
         """
-        self._refill_tokens()
+        self._simulate_refill()
         return self.tokens >= estimated_cost
 
-    def request_permission_for_call(self, estimated_cost):
+    def request_permission_for_call(self, estimated_cost, reason=""):
         """
-        Checks if an API call can be made and waits if necessary. This method
-        implements a "controlled deficit" strategy based on Keepa API behavior.
-
-        Keepa API Rule: A call can be made as long as the token balance is positive.
-        The call is allowed to drive the balance into a negative value.
-
-        Our Strategy:
-        1.  **Hard Stop at Zero:** If tokens are <= 0, we must wait until they
-            refill to a positive number.
-        2.  **Controlled Deficit:** If a call's `estimated_cost` is greater
-            than the `current_tokens` (but tokens are > 0), we don't proceed
-            immediately. This would risk hitting an unknown maximum deficit limit
-            and is inefficient. Instead, we proactively wait until the token bucket
-            is completely full (`self.max_tokens`).
-        3.  **Proceed:** Once the bucket is full, we allow the expensive call to
-            proceed. This allows it to create a small, predictable, and safe
-            negative balance, which will be recovered during the next wait cycle.
+        Checks if enough tokens are available. If not, it might wait.
+        A 'controlled deficit' is allowed, but if it gets too large,
+        this function will block and wait for a full refill.
         """
+        # First, ensure minimum time has passed since the last actual API call.
         now = time.time()
         time_since_last_call = now - self.last_api_call_timestamp
         if time_since_last_call < self.MIN_TIME_BETWEEN_CALLS_SECONDS:
             wait_duration = self.MIN_TIME_BETWEEN_CALLS_SECONDS - time_since_last_call
-            logger.info(f"Rate limit: Pausing for {wait_duration:.2f} seconds.")
+            logger.info(f"Rate limit: Pausing for {wait_duration:.2f} seconds before '{reason}'.")
             time.sleep(wait_duration)
 
-        self._refill_tokens()
+        # Simulate token refill that occurred during the pause or since the last check
+        self._simulate_refill()
 
-        wait_time_seconds = 0
-        if self.tokens <= 0:
-            # Hard stop: Must wait to get back to a positive balance.
-            tokens_needed = 1 - self.tokens  # Need at least 1 token
-            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+        # Proactive long wait to prevent deep deficit
+        if self.tokens < estimated_cost and self.tokens < self.proactive_refill_threshold:
+            tokens_needed_for_max = self.max_tokens - self.tokens
+            # Calculate wait time in seconds to reach max tokens
+            wait_time_seconds = (tokens_needed_for_max / self.REFILL_RATE_PER_MINUTE) * 60 if self.REFILL_RATE_PER_MINUTE > 0 else 3600
+
+            # Ensure we wait at least a minute to avoid rapid loops on miscalculation
+            wait_time_seconds = max(60, wait_time_seconds)
+
             logger.warning(
-                f"Zero or negative tokens. Have: {self.tokens:.2f}. "
-                f"Waiting for {wait_time_seconds} seconds to ensure a positive balance."
+                f"Insufficient tokens for '{reason}' (Have: {self.tokens:.2f}, Need: {estimated_cost}). "
+                f"Proactively waiting for {wait_time_seconds:.0f} seconds to perform a full refill."
             )
-        elif self.tokens < estimated_cost:
-            # Controlled deficit: Proactively wait for a full bucket before making an expensive call.
-            tokens_needed = self.max_tokens - self.tokens
-            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-            logger.warning(
-                f"Insufficient tokens for estimated cost. Have: {self.tokens:.2f}, Need: {estimated_cost}. "
-                f"Proactively waiting for {wait_time_seconds} seconds to refill to max ({self.max_tokens}) tokens."
-            )
+            time.sleep(wait_time_seconds)
+            self.sync_tokens() # Authoritatively re-sync after a long wait
 
-        if wait_time_seconds > 0:
-            if self.REFILL_RATE_PER_MINUTE > 0:
-                time.sleep(wait_time_seconds)
-                self._refill_tokens()
-            else:
-                logger.error("Zero refill rate, cannot wait for tokens. Pausing for 15 minutes as a fallback.")
-                time.sleep(900)
-                self._refill_tokens()
+        # Standard wait loop if still not enough tokens
+        while self.get_tokens_left() < estimated_cost:
+            # Wait for one minute, then check again
+            logger.info(f"Waiting for 60s for tokens to refill for: {reason}")
+            time.sleep(60)
+            self._simulate_refill()
 
-        logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
+        logger.info(f"Permission granted for API call '{reason}'. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
+
 
     def sync_tokens(self):
         """
@@ -123,6 +112,7 @@ class TokenManager:
         """
         old_token_count = self.tokens
         self.tokens = float(tokens_left_from_api)
+        # Reset the refill timer to now, since the API's value is the most current truth.
         self.last_refill_timestamp = time.time()
         logger.info(
             f"Token count authoritatively synced from API response. "
@@ -134,4 +124,12 @@ class TokenManager:
         Updates the token count and timestamp after an API call using the authoritative response.
         """
         self.last_api_call_timestamp = time.time()
-        self._sync_tokens_from_response(tokens_left_from_api)
+        if tokens_left_from_api is not None:
+             self._sync_tokens_from_response(tokens_left_from_api)
+        else:
+            logger.warning("API response did not include tokensLeft. Cannot sync token count.")
+
+    def get_tokens_left(self):
+        """Returns the current token count after simulating a refill."""
+        self._simulate_refill()
+        return self.tokens
