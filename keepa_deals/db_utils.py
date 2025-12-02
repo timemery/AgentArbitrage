@@ -201,3 +201,46 @@ def create_user_restrictions_table_if_not_exists():
     except (sqlite3.Error, Exception) as e:
         logger.error(f"An unexpected error occurred during '{table_name}' table creation: {e}", exc_info=True)
         raise
+
+def save_deals_to_db(deals_data):
+    """Saves a list of deal dictionaries to the deals.db SQLite database."""
+    if not deals_data:
+        return
+
+    conn = sqlite3.connect('deals.db')
+    cursor = conn.cursor()
+
+    # Get the columns from the deals table to ensure we only insert what's expected
+    cursor.execute("PRAGMA table_info(deals)")
+    table_columns = {row[1] for row in cursor.fetchall()}
+
+    for deal in deals_data:
+        # Filter out keys that are not in the table's columns
+        filtered_deal = {k: v for k, v in deal.items() if k in table_columns}
+
+        columns = ', '.join(filtered_deal.keys())
+        placeholders = ', '.join(['?'] * len(filtered_deal))
+        values = list(filtered_deal.values())
+
+        # Use INSERT OR REPLACE to handle both new deals and updates gracefully
+        sql = f"INSERT OR REPLACE INTO deals ({columns}) VALUES ({placeholders})"
+
+        try:
+            cursor.execute(sql, values)
+        except sqlite3.Error as e:
+            logging.error(f"Failed to save deal for ASIN {deal.get('ASIN', 'N/A')} to database: {e}")
+            logging.error(f"SQL: {sql}")
+            logging.error(f"Values: {values}")
+
+
+    conn.commit()
+    conn.close()
+    logging.info(f"Successfully saved/updated {len(deals_data)} deals to the database.")
+
+def clear_deals_table():
+    conn = sqlite3.connect('deals.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM deals")
+    conn.commit()
+    conn.close()
+    logging.info("Deals table cleared.")

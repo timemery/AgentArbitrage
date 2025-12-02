@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script is designed for a production environment.
-# It starts the Celery worker and Celery Beat scheduler as separate, resilient daemons.
+# It starts Redis, the Celery worker, and Celery Beat scheduler in a resilient loop.
 
 # Step 1: Set ownership
 echo "Ensuring www-data owns the entire application directory..."
@@ -12,49 +12,88 @@ APP_DIR="/var/www/agentarbitrage"
 VENV_PYTHON="$APP_DIR/venv/bin/python"
 WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
 BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
+MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
 
-# Define the commands for the worker and scheduler (note: --beat is removed from worker)
+# Define the commands
 WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO"
 BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO"
 PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
 
-# Step 3: Kill any old Celery processes
-echo "Attempting to stop any old Celery processes..."
-# A broader pattern to kill both worker and beat processes
-pkill -f "celery -A worker.celery_app" || echo "No old Celery processes found."
-sleep 2
-
-# Step 4: Purge any waiting tasks
-echo "Purging any pending tasks from the message queue..."
-su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. $PURGE_COMMAND" www-data
-
-# Step 5: Clean up old state and prepare files
-echo "Preparing log files and cleaning scheduler state..."
-# Forcefully remove the old schedule file to prevent the scheduler from starting in a stale state.
-sudo rm -f "$APP_DIR/celerybeat-schedule"
-# Ensure both log files exist and have correct permissions
-touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE"
-chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE"
-
-# Step 6: Ensure deals.db exists and is writable
-echo "Ensuring deals.db exists and is writable..."
-touch "$APP_DIR/deals.db"
-chown www-data:www-data "$APP_DIR/deals.db"
-
-# Step 7: Start the daemons
-# Common environment setup to be used for both processes
+# Common environment setup
 ENV_SETUP="cd $APP_DIR && set -a && source .env && set +a && PYTHONPATH=."
 
-# Start the Celery Worker daemon
-echo "Starting Celery worker daemon..."
-su -s /bin/bash -c "$ENV_SETUP nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+# --- Main Resiliency Loop (to be run in the background) ---
+monitor_and_restart() {
+    while true; do
+        # Ensure Redis is running
+        echo "Checking Redis status and starting if not running..." >> "$MONITOR_LOG_FILE"
+        redis-cli ping > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "Redis not responding. Starting Redis server..." >> "$MONITOR_LOG_FILE"
+            sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
+            sleep 5
+            redis-cli ping > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo "CRITICAL: Failed to start Redis. Waiting before retry." >> "$MONITOR_LOG_FILE"
+                sleep 60
+                continue
+            fi
+            echo "Redis started successfully." >> "$MONITOR_LOG_FILE"
+        else
+            echo "Redis is already running." >> "$MONITOR_LOG_FILE"
+        fi
 
-# Start the Celery Beat Scheduler daemon
-echo "Starting Celery Beat scheduler daemon..."
-su -s /bin/bash -c "$ENV_SETUP nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+        # Kill any old/zombie Celery processes
+        echo "Attempting to stop any old Celery processes..." >> "$MONITOR_LOG_FILE"
+        pkill -f "celery -A worker.celery_app" || echo "No old Celery processes found." >> "$MONITOR_LOG_FILE"
+        sleep 2
 
-sleep 2
-echo "Celery worker and beat scheduler daemons have been started."
-echo "You can now monitor their logs independently:"
+        # Purge tasks and clean up state
+        echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
+        su -s /bin/bash -c "cd $APP_DIR && PYTHONPATH=. $PURGE_COMMAND" www-data
+        sudo rm -f "$APP_DIR/celerybeat-schedule"
+        touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
+        chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
+
+        # Start the daemons
+        echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
+        su -s /bin/bash -c "$ENV_SETUP nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+        su -s /bin/bash -c "$ENV_SETUP nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+
+        echo "Services started. Monitoring for crashes..." >> "$MONITOR_LOG_FILE"
+
+        # Monitor loop
+        while true; do
+            if ! pgrep -f "$WORKER_COMMAND" > /dev/null; then
+                echo "Celery worker process appears to have crashed. Restarting all services..." >> "$MONITOR_LOG_FILE"
+                break
+            fi
+            if ! pgrep -f "$BEAT_COMMAND" > /dev/null; then
+                echo "Celery beat process appears to have crashed. Restarting all services..." >> "$MONITOR_LOG_FILE"
+                break
+            fi
+            sleep 30
+        done
+
+        echo "Detected a service failure. Waiting for 10 seconds before restarting..." >> "$MONITOR_LOG_FILE"
+        sleep 10
+    done
+}
+
+# --- Script Entry Point ---
+# Check if the monitor is already running
+if pgrep -f "start_celery.sh" | grep -v $$ > /dev/null; then
+    echo "The resilient startup script is already running in the background. To restart, kill the existing process first."
+    exit 1
+fi
+
+# Launch the monitor function in the background and disown it
+nohup bash -c 'monitor_and_restart' >> "$MONITOR_LOG_FILE" 2>&1 &
+disown
+
+echo "The resilient Celery service monitor has been started in the background."
+echo "You can now safely close this terminal. To see the monitor's logs, run:"
+echo "tail -f $MONITOR_LOG_FILE"
+echo "To see worker/beat logs, run:"
 echo "tail -f $WORKER_LOG_FILE"
 echo "tail -f $BEAT_LOG_FILE"
