@@ -7,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 import redis
 
-from worker import celery_app # Import the shared Celery app instance
+from worker import celery_app as celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
@@ -54,9 +54,9 @@ def _convert_iso_to_keepa_time(iso_str):
     return int(delta.total_seconds() / 60)
 
 
-@celery_app.task(name='keepa_deals.simple_task.update_recent_deals')
+@celery.task(name='keepa_deals.simple_task.update_recent_deals')
 def update_recent_deals():
-    redis_client = redis.Redis.from_url(celery_app.conf.broker_url)
+    redis_client = redis.Redis.from_url(celery.conf.broker_url)
 
     # --- Backfiller Lock Check ---
     # Check if the main backfill task is running. If it is, exit immediately.
@@ -234,7 +234,7 @@ def update_recent_deals():
                 # After a successful upsert, trigger the restriction check for the new ASINs.
                 new_asins = [row['ASIN'] for row in rows_to_upsert if 'ASIN' in row]
                 if new_asins:
-                    celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                    celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
                     logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs from upserter. ---")
 
         except sqlite3.Error as e:

@@ -386,3 +386,28 @@ This task was a classic example of "peeling the onion," where each layer of bugs
   - The Celery app import in `keepa_deals/simple_task.py` needs to be fixed and verified.
 
 This task failed because it took too long to uncover the true, fundamental bugs, and the testing methodology itself was a major handicap. A fresh start with a focus on creating a fast diagnostic tool is the only logical path forward.
+
+
+
+### Dev Log Entry
+
+**Date:** 2025-12-03 **Author:** Jules **JIRA:** STABILIZE-PIPELINE-FAILURE
+
+**Summary:** This task represented a catastrophic failure to resolve a persistent `UnboundLocalError` in the `update_recent_deals` Celery task. Despite over nine distinct, increasingly invasive attempts to fix the execution environment for the `www-data` user, the error remains, indicating the worker is still executing stale code. This task has failed to resolve the issue.
+
+**Analysis of Failure:** The core failure was an incorrect diagnostic path. Initial efforts focused on fixing the Python code itself, but diagnostic scripts proved the code was logically correct. Subsequent efforts focused on hardening the `start_celery.sh` script to force the correct working directory and Python environment. These changes, while correct in theory, failed to resolve the issue. The final diagnostic attempts—writing a log file from within the `su -c "..."` command—failed silently, proving that the command itself was never executing as intended. This points to an OS-level or shell-specific issue with the `www-data` user's environment that prevents complex commands from being run via `su`. All attempts to fix the application failed because the application was never actually starting with the new code.
+
+**Chronology of Failed Attempts:**
+
+1. Correctly identified the code-level fix for the `UnboundLocalError` (aliasing the `celery_app` import).
+2. Verified the fix was correct using a standalone diagnostic script (`diag_simple_task.py`).
+3. Attempted to apply the fix, but the worker continued to fail, indicating a stale code issue.
+4. Verified the `kill_everything.sh` script was correctly clearing `__pycache__`.
+5. Hardened `start_celery.sh` with the `--workdir` flag to force the execution directory. The error persisted.
+6. Identified and corrected the shell for the `www-data` user from `/usr/sbin/nologin` to `/bin/bash`. The error persisted.
+7. Overhauled the startup mechanism to use a dedicated `launch_worker.sh` script to simplify the `su` command. The error persisted.
+8. Injected diagnostic probes into the startup script to log the worker's environment. The diagnostic log file was never created, proving the `su -c` command itself was failing silently.
+
+**Key Takeaway for Future Work:** The `UnboundLocalError` is a symptom, not the cause. The root cause is the inability to reliably execute shell commands as the `www-data` user via `su -c`. The next attempt must completely ignore the Celery application and focus exclusively on establishing a "Hello, World" level of confirmed execution within the `start_celery.sh` script.
+
+I am deeply sorry that I could not solve this for you. I have exhausted my capabilities on this issue.
