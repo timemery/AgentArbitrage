@@ -411,3 +411,55 @@ This task failed because it took too long to uncover the true, fundamental bugs,
 **Key Takeaway for Future Work:** The `UnboundLocalError` is a symptom, not the cause. The root cause is the inability to reliably execute shell commands as the `www-data` user via `su -c`. The next attempt must completely ignore the Celery application and focus exclusively on establishing a "Hello, World" level of confirmed execution within the `start_celery.sh` script.
 
 I am deeply sorry that I could not solve this for you. I have exhausted my capabilities on this issue.
+
+### **Dev Log Entry**
+
+**Date:** 2025-12-03 **Task:** Diagnose and definitively resolve the persistent `UnboundLocalError` in the `update_recent_deals` Celery task. **Status:** **SUCCESS**
+
+**Summary of Outcome:**
+
+The task was a success. After a prolonged and difficult diagnostic process that spanned multiple incorrect hypotheses, the true root cause of the `UnboundLocalError` was identified and fixed. The resolution required abandoning sandbox-based diagnostics in favor of creating and deploying a targeted diagnostic tool to gather data directly from the user's production environment. The final fix was a single-line code change, and the entire Celery system is now stable and fully operational.
+
+------
+
+### **Detailed Chronology of Diagnostic Journey & Resolutions**
+
+This task was a critical lesson in the importance of environment-specific diagnosis. The core challenge was not the bug itself, but the inability to see the evidence of the bug within the user's live environment.
+
+1. **Phase 1: The Zombie Process Hypothesis**
+   - **Symptom:** The user repeatedly reported the `UnboundLocalError` even after multiple, theoretically correct code patches were deployed. The Celery worker logs showed timestamps from the previous day, indicating the service was not restarting.
+   - **Investigation:** It was confirmed that the worker process was a "zombie"—an old, broken process that was not being terminated by the standard `start_celery.sh` script. This meant no new code was ever being loaded.
+   - **Action:** The strategy pivoted away from fixing the application code to focus entirely on killing the zombie process and verifying that a new process could be started with the latest code.
+2. **Phase 2: The Manual Restart and Diagnostic Breakthrough**
+   - **Action 1 (Force Kill):** A new, aggressive `force_kill.sh` script was created. This script used `sudo kill -9` to ensure any and all Celery processes, regardless of owner, were definitively terminated.
+   - **Action 2 (Diagnostic Tooling):** A diagnostic Celery task (`keepa_deals/env_diag.py`) was created. Its sole purpose was to run inside the worker and act as a "black box recorder," logging critical details about its own execution environment (current user, Python path, and the exact source code it had loaded) to a `diag_output.log` file.
+   - **Action 3 (Manual Start):** The user was provided with a set of explicit, manual commands to kill the old process, delete the old logs, and start the worker and beat services directly, bypassing the complex `start_celery.sh` script. This ensured a verifiable, clean start.
+3. **Phase 3: The Definitive Root Cause Analysis**
+   - **Success:** The manual restart worked. The user provided a new `celery_worker.log` which confirmed that the new worker had started and, most importantly, had successfully loaded and run the diagnostic task.
+   - **The "Black Box" Data:** The user then provided the contents of the `diag_output.log`. This file contained the final, definitive evidence. It showed the full source code of the `keepa_deals/simple_task.py` file as it existed on the server.
+   - **The True Root Cause:** The log revealed a simple but critical typo. The file correctly imported the Celery app with an alias (`from worker import celery_app as celery`), but the crashing line of code was incorrectly trying to use the original name (`redis_client = redis.Redis.from_url(celery_app.conf.broker_url)`). The variable `celery_app` was out of scope, causing the `UnboundLocalError`.
+
+### **Final Resolution**
+
+1. **The Fix:** A final commit was prepared that made a single-line change to `keepa_deals/simple_task.py`, correcting `celery_app.conf.broker_url` to `celery.conf.broker_url`.
+2. **Cleanup:** The same commit also removed all the temporary diagnostic files (`force_kill.sh`, `env_diag.py`, `trigger_diag.py`) and reverted the configuration changes, leaving the codebase clean.
+3. **Confirmation:** The user synced the final changes, performed one last manual restart, and provided a new `celery_worker.log`. The log was clean and showed the scheduled `update_recent_deals` task running successfully without any errors, confirming the fix.
+
+### **Dev Log Entry**
+
+**Date:** 2025-12-03 **Task:** Diagnose and definitively resolve the persistent `UnboundLocalError` in the `update_recent_deals` Celery task. **Status:** **Partial Success**
+
+**Summary of Outcome:** The primary objective of this task—to find and fix the `UnboundLocalError` that was crashing the Celery worker—was a **success**. After a deep and complex diagnostic process, the root causes related to the execution environment and a typo in the code were identified and corrected. The Celery system is now stable, and tasks run without crashing.
+
+However, this success immediately revealed a severe, pre-existing data integrity regression in the `backfill_deals` task. Because the data pipeline is still not producing usable data, the overall task can only be considered a partial success.
+
+**Detailed Chronology of Diagnostic Journey & Resolutions:**
+
+1. **Initial State & Failed Hypotheses:** The task began with the worker crashing every 15 minutes with an `UnboundLocalError`. Initial attempts to fix the problem focused on correcting the Celery startup script (`start_celery.sh`), replacing the problematic `su` command with a more reliable `sudo -u` command. While theoretically correct, these changes had no effect, pointing to a deeper issue.
+2. **The Zombie Process Discovery:** Analysis of the user's `celery_worker.log` revealed timestamps from the previous day. This was the critical breakthrough, proving that the startup script was failing to terminate an old, broken "zombie" process. No new code was ever being loaded, which explained why none of the fixes worked.
+3. **Shift to Environment-Specific Diagnostics:** The strategy pivoted entirely. All diagnostic work in the isolated sandbox was halted. A new plan was formed to build tools that would run directly in the user's environment. This involved creating a `force_kill.sh` script to aggressively terminate the zombie process, and a special diagnostic Celery task (`keepa_deals/env_diag.py`) designed to act as a "black box recorder" inside the worker.
+4. **Manual Restart & Definitive Proof:** The user was guided through a manual, verifiable restart process: using the kill script, deleting the old logs, and starting the services with explicit commands. This worked perfectly. The new worker started and successfully ran the diagnostic task, writing its findings to a `diag_output.log` file.
+5. **Root Cause 1 (UnboundLocalError):** The `diag_output.log` provided the first-ever direct evidence from the user's running worker. It contained the full source code of the problematic file (`keepa_deals/simple_task.py`), which revealed a simple but critical typo: the code was calling `celery_app` when it should have been calling `celery` (the alias used during import).
+6. **Resolution and Regression Discovery:** The typo was corrected and deployed. A final manual restart confirmed that the `UnboundLocalError` was completely gone. However, when the user then triggered the `backfill_deals` task, it was discovered that while the task no longer crashed, it was writing rows of almost entirely `None` values to the database. Further log analysis showed the script was performing calculations with impossible numbers (e.g., a book price of over $57,000), confirming a catastrophic data-parsing bug was now the primary issue.
+
+**Final Outcome:** The task succeeded in stabilizing the Celery execution environment, which was a major and critical achievement. However, this success unmasked a deeper, dormant regression in the application's data logic that is just as severe. A new task will be required to diagnose and fix this newly discovered data integrity problem.
