@@ -62,7 +62,7 @@ def get_seller_info_for_single_deal(product, api_key, token_manager: TokenManage
 
     # Estimate cost and wait for tokens
     estimated_cost = 1
-    token_manager.request_permission_for_call(estimated_cost, f"Fetching single seller {seller_id}")
+    token_manager.request_permission_for_call(estimated_cost)
 
     # Fetch seller data from Keepa
     seller_data, _, tokens_left, _ = fetch_seller_data(api_key, [seller_id])

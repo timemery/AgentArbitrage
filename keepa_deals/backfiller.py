@@ -52,7 +52,7 @@ def backfill_deals(reset=False):
         logging.info(f"Fetching deals for page {page}...")
         try:
             estimated_cost = 10  # Safe estimate for /deal endpoint
-            token_manager.request_permission_for_call(estimated_cost, f"Fetching deal page {page}")
+            token_manager.request_permission_for_call(estimated_cost)
 
             deals_response, _, tokens_left = fetch_deals_for_deals(page=page, api_key=keepa_api_key)
             if not deals_response or 'deals' not in deals_response or not deals_response['deals']:
@@ -80,7 +80,7 @@ def backfill_deals(reset=False):
                 try:
                     # A) Fetch complete product data with live offers
                     estimated_cost = 7 # ~6 for offers, 1 for product
-                    token_manager.request_permission_for_call(estimated_cost, f"Fetching product data for {asin}")
+                    token_manager.request_permission_for_call(estimated_cost)
                     product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], offers=20)
                     token_manager.update_after_call(tokens_left)
 
