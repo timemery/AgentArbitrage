@@ -57,9 +57,10 @@ monitor_and_restart() {
         chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
 
         # Start the daemons using the 'su' command for reliability in this environment
+        # The inner 'nohup' is removed as the parent monitor is already nohup'd.
         echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
-        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
-        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
 
         echo "Services started. Monitoring for crashes..." >> "$MONITOR_LOG_FILE"
 
