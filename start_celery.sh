@@ -50,16 +50,15 @@ monitor_and_restart() {
 
         # Purge tasks and clean up state
         echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
-        # The --workdir flag in the command handles the directory change, simplifying the su command
-        sudo -u www-data bash -c "$ENV_SETUP && $PURGE_COMMAND"
+        su -s /bin/bash -c "$ENV_SETUP && $PURGE_COMMAND" www-data
         sudo rm -f "$APP_DIR/celerybeat-schedule"
         touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
         chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
 
-        # Start the daemons using a direct, robust method
+        # Start the daemons using the 'su' command for reliability in this environment
         echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
-        sudo -u www-data bash -c "cd $APP_DIR && $ENV_SETUP && nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &"
-        sudo -u www-data bash -c "cd $APP_DIR && $ENV_SETUP && nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &"
+        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
 
         echo "Services started. Monitoring for crashes..." >> "$MONITOR_LOG_FILE"
 
