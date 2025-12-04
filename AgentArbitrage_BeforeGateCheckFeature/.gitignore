@@ -1,0 +1,29 @@
+venv/
+*.pem
+*.key
+/etc/letsencrypt/
+__pycache__/
+.env
+app.log
+celery.log
+*.bak.env.save
+*.log
+deals.db
+dump.rdb
+My_Notes/
+
+# Status files
+recalc_status.json
+scan_status.json
+
+# Environment variables
+.env
+
+# Temporary test scripts
+trigger_task.py*.log
+watermark.json
+cjar
+celerybeat-schedule
+xai_token_state.json
+db_backups/data_quality_filters.patch
+task_description.md

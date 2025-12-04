@@ -463,3 +463,26 @@ However, this success immediately revealed a severe, pre-existing data integrity
 6. **Resolution and Regression Discovery:** The typo was corrected and deployed. A final manual restart confirmed that the `UnboundLocalError` was completely gone. However, when the user then triggered the `backfill_deals` task, it was discovered that while the task no longer crashed, it was writing rows of almost entirely `None` values to the database. Further log analysis showed the script was performing calculations with impossible numbers (e.g., a book price of over $57,000), confirming a catastrophic data-parsing bug was now the primary issue.
 
 **Final Outcome:** The task succeeded in stabilizing the Celery execution environment, which was a major and critical achievement. However, this success unmasked a deeper, dormant regression in the application's data logic that is just as severe. A new task will be required to diagnose and fix this newly discovered data integrity problem.
+
+Dev Log Entry for This Task:
+# Dev Log - December 4, 2025
+
+**Task:** Diagnose and Fix Critical Data Integrity Regression in Backfiller
+
+**Author:** Jules
+
+**Summary:**
+This task involved a deep diagnostic process to resolve a multi-faceted regression in the `backfill_deals` Celery task. The initial symptoms were corrupted data (NULL values, absurdly high prices) being written to the database and the process stalling without consuming API tokens.
+
+**Diagnostic Journey & Fixes:**
+
+1.  **Initial Diagnosis (Data Integrity):** My initial hypothesis was a data contract mismatch with the Keepa API. I created a targeted diagnostic script (`diag_data_integrity.py`) to process a single ASIN. This test quickly proved the hypothesis correct: the `offerCSV` array format from Keepa had changed to include a timestamp as the first element, which my parsing logic was misinterpreting as a price. The fix was to adjust the array indices in `keepa_deals/seller_info.py`.
+
+2.  **Second Diagnosis (Stalling):** After fixing the data issue, the process still stalled in the user's environment. At the user's request, I performed "code archaeology," comparing the current, broken files against known-good backups provided by the user. This revealed a significant regression in `keepa_deals/token_manager.py`. The rate-limiting logic had been changed to a complex, flawed "proactive refill" system. I reverted this module to the simpler, more robust "controlled deficit" strategy from the backup, which resolved the stalling logic.
+
+3.  **Final Roadblock & Root Cause (Stale Cache):** The fully patched code worked perfectly when run via the standalone diagnostic script but continued to fail when run as a Celery task. The "smoking gun" was a log message from the Celery worker that was impossible to generate with the new code. **This definitively proved that the Celery worker was executing old, cached code.**
+
+**Key Learning & Handoff:**
+The root cause of the final failure was environmental. The `kill_everything.sh` script was not using `sudo` to clear the `__pycache__` directories owned by the `www-data` user. The Celery worker was therefore never loading the new code. My agent environment became unstable and prevented me from applying the final fix to the script.
+
+**Final Action:** I handed off the task to a new agent with the precise instruction to enhance `kill_everything.sh` by adding `sudo` to the cache-clearing command, which should permanently resolve this recurring environmental issue.

@@ -1,0 +1,177 @@
+{% extends "layout.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Settings</h1>
+    <p>Manage your API keys and business costs here.</p>
+    <div id="recalc-indicator" style="display: none; text-align: center; padding: 10px; background-color: rgba(25, 118, 210, 0.2); border: 1px solid #1976d2; border-radius: 5px; margin-bottom: 20px;">
+        Recalculating deals with new settings... The table will refresh automatically when complete.
+    </div>
+
+<style>
+    .settings-form-grid {
+        display: grid;
+        grid-template-columns: auto; /* Single column for rows */
+        gap: 15px; /* Space between setting rows */
+        max-width: 500px; /* Or adjust as needed */
+    }
+    .setting-row {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between elements in a row */
+    }
+    .setting-symbol {
+        font-size: 1.2em;
+        width: 20px; /* Fixed width for alignment */
+        text-align: center;
+    }
+    .setting-input {
+        width: 120px; /* Smaller width for the input boxes */
+    }
+    .setting-label {
+        font-size: 1em;
+        margin-bottom: 0; /* Override default label margins if any */
+    }
+    .tax-exempt-row {
+        justify-content: flex-start; /* Align checkbox to the left */
+        padding-left: 30px; /* Indent to align with input boxes */
+    }
+</style>
+
+    <div class="card my-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Business Costs</h5>
+        <div>
+            <button type="button" id="refresh-all-data" class="btn btn-info mr-2">Refresh All Data</button>
+            <button id="editButton" class="btn btn-primary">Edit</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="settingsForm" method="POST" action="{{ url_for('settings') }}">
+            <fieldset id="settingsFieldset" disabled>
+                <div class="settings-form-grid">
+                    <!-- Prep Fee -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">$</span>
+                        <input type="number" class="styled-text-field setting-input" id="prep_fee_per_book" name="prep_fee_per_book" step="0.01" value="{{ settings.prep_fee_per_book }}">
+                        <label for="prep_fee_per_book" class="setting-label">Prep Fee Per Book</label>
+                    </div>
+                    <!-- Estimated Shipping -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">$</span>
+                        <input type="number" class="styled-text-field setting-input" id="estimated_shipping_per_book" name="estimated_shipping_per_book" step="0.01" value="{{ settings.estimated_shipping_per_book }}">
+                        <label for="estimated_shipping_per_book" class="setting-label">Estimated Shipping Per Book</label>
+                    </div>
+                    <!-- Default Markup -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">%</span>
+                        <input type="number" class="styled-text-field setting-input" id="default_markup" name="default_markup" step="1" value="{{ settings.default_markup }}">
+                        <label for="default_markup" class="setting-label">Default Markup</label>
+                    </div>
+                    <!-- Estimated Tax -->
+                    <div class="setting-row">
+                        <span class="setting-symbol">%</span>
+                        <input type="number" class="styled-text-field setting-input" id="estimated_tax_per_book" name="estimated_tax_per_book" step="1" value="{{ settings.estimated_tax_per_book }}">
+                        <label for="estimated_tax_per_book" class="setting-label">Estimated Tax Per Book</label>
+                    </div>
+                    <!-- Tax Exempt -->
+                    <div class="setting-row tax-exempt-row">
+                        <input class="form-check-input" type="checkbox" id="tax_exempt" name="tax_exempt" {% if settings.tax_exempt %}checked{% endif %}>
+                        <label class="form-check-label setting-label" for="tax_exempt">Tax Exempt</label>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editButton = document.getElementById('editButton');
+    const settingsForm = document.getElementById('settingsForm');
+    const settingsFieldset = document.getElementById('settingsFieldset');
+    const taxExemptCheckbox = document.getElementById('tax_exempt');
+    const taxInput = document.getElementById('estimated_tax_per_book');
+
+    function toggleTaxInput() {
+        taxInput.disabled = taxExemptCheckbox.checked;
+        if (taxExemptCheckbox.checked) {
+            taxInput.value = '';
+        }
+    }
+
+    editButton.addEventListener('click', function() {
+        if (settingsFieldset.disabled) {
+            settingsFieldset.disabled = false;
+            editButton.textContent = 'Save Changes';
+            editButton.classList.remove('btn-primary');
+            editButton.classList.add('btn-success');
+            toggleTaxInput(); // Re-evaluate tax input state on edit
+        } else {
+            settingsForm.submit();
+        }
+    });
+
+    taxExemptCheckbox.addEventListener('change', toggleTaxInput);
+
+    // Initial state
+    toggleTaxInput();
+
+    // --- Recalculation Logic ---
+    const recalcIndicator = document.getElementById('recalc-indicator');
+    const refreshButton = document.getElementById('refresh-all-data');
+    let pollInterval;
+
+    async function checkRecalcStatus() {
+        try {
+            const response = await fetch('/api/recalc-status');
+            const data = await response.json();
+            if (data.status === 'Running') {
+                recalcIndicator.style.display = 'block';
+            } else {
+                recalcIndicator.style.display = 'none';
+                if (pollInterval) clearInterval(pollInterval);
+            }
+        } catch (error) {
+            console.error('Error polling recalc status:', error);
+            recalcIndicator.style.display = 'none';
+            if (pollInterval) clearInterval(pollInterval);
+        }
+    }
+
+    refreshButton.addEventListener('click', async () => {
+        const userConfirmed = confirm("Are you sure? This is a very long and expensive operation that will consume a large number of API tokens. This should only be used for system maintenance.");
+        if (!userConfirmed) {
+            return; // Stop if the user clicks "Cancel"
+        }
+
+        try {
+            refreshButton.disabled = true;
+            refreshButton.textContent = 'Refreshing...';
+            const response = await fetch('/api/refresh-all-deals', { method: 'POST' });
+            const data = await response.json();
+            if (response.ok) {
+                checkRecalcStatus(); // Immediately show indicator
+                pollInterval = setInterval(checkRecalcStatus, 3000);
+            } else {
+                alert(`Error: ${data.message || 'Could not start refresh.'}`);
+            }
+        } catch (error) {
+            alert('An error occurred while trying to start the refresh.');
+        } finally {
+            setTimeout(() => {
+                refreshButton.disabled = false;
+                refreshButton.textContent = 'Refresh All Data';
+            }, 3000);
+        }
+    });
+
+    // Initial check in case a job is already running
+    checkRecalcStatus();
+});
+</script>
+{% endblock %}
