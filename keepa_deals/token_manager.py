@@ -107,15 +107,19 @@ class TokenManager:
     def sync_tokens(self):
         """
         Authoritatively fetches the current token status from the Keepa API
-        and updates the internal state.
+        and updates the internal state. Returns the tokens left and consumed.
         """
         from .keepa_api import get_token_status
         logger.info("Performing authoritative token sync with Keepa API...")
         status_data = get_token_status(self.api_key)
         if status_data and 'tokensLeft' in status_data:
-            self._sync_tokens_from_response(status_data['tokensLeft'])
+            tokens_left = status_data['tokensLeft']
+            tokens_consumed = status_data.get('tokensConsumed', 0)
+            self._sync_tokens_from_response(tokens_left)
+            return tokens_left, tokens_consumed
         else:
             logger.error("Failed to sync tokens. API did not return valid token data.")
+            return None, None
 
     def _sync_tokens_from_response(self, tokens_left_from_api):
         """
