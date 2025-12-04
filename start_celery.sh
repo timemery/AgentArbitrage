@@ -14,12 +14,13 @@ WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
 BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
 MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
 
-# Define the commands - now with --workdir for robustness
-WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO --workdir=$APP_DIR"
-BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO --workdir=$APP_DIR"
-PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f --workdir=$APP_DIR"
+# Define the commands. The --workdir flag is removed as it's not supported by the Celery version.
+# The 'cd' command within the 'su' block will handle the working directory.
+WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO"
+BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO"
+PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
 
-# Common environment setup - simplified as --workdir handles the path
+# Common environment setup
 ENV_SETUP="set -a && source $APP_DIR/.env && set +a"
 
 # --- Main Resiliency Loop (to be run in the background) ---
