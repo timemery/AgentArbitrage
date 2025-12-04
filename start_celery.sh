@@ -56,14 +56,10 @@ monitor_and_restart() {
         touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
         chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
 
-        # Make the new worker launch script executable
-        chmod +x "$APP_DIR/launch_worker.sh"
-        chown www-data:www-data "$APP_DIR/launch_worker.sh"
-
-        # Start the daemons using the new, robust method
+        # Start the daemons using a direct, robust method
         echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
-        sudo -u www-data bash -c "$APP_DIR/launch_worker.sh"
-        sudo -u www-data bash -c "cd $APP_DIR && set -a && source .env && set +a && nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &"
+        sudo -u www-data bash -c "cd $APP_DIR && $ENV_SETUP && nohup $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &"
+        sudo -u www-data bash -c "cd $APP_DIR && $ENV_SETUP && nohup $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &"
 
         echo "Services started. Monitoring for crashes..." >> "$MONITOR_LOG_FILE"
 
