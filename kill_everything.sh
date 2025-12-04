@@ -11,7 +11,7 @@ echo "--- Removing Celery Beat schedule file ---"
 sudo rm -f celerybeat-schedule
 
 echo "--- Clearing all Python caches ---"
-find . -type d -name "__pycache__" -exec rm -r {} +
+sudo find . -type d -name "__pycache__" -exec rm -rf {} +
 
 echo "--- Checking for open file handles on deals.db ---"
 lsof deals.db || echo "No open file handles on deals.db"
