@@ -12,6 +12,73 @@
 
 ---
 
+### Standard Operating Procedures (SOP) for System Stability
+
+To ensure the stability and performance of the development environment, the following procedures must be followed:
+
+1. **Handling Large Files (especially logs):**
+
+   *   **NEVER** read an entire file if it is known or suspected to be large (e.g., > 10 MB). Log files in this project can exceed 100 MB and reading them whole will cause critical system instability.
+   *   **ALWAYS** use targeted commands to inspect large files.
+       *   To view the end of a file: `tail -n 100 <filepath>`
+       *   To view the beginning of a file: `head -n 100 <filepath>`
+       *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
+   *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
+
+2. **Initial Codebase Exploration ("Filesystem Tour"):**
+
+   *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
+   *   Use `ls -RF` or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files and subdirectories.
+   *   Read `README.md` and this `AGENTS.md` file in full.
+   *   This initial exploration provides essential context, helps locate relevant code modules, and prevents unnecessary file reading later in the task. Adhering to this practice is mandatory for efficient and stable operation.
+
+3. ### Environment and Verification Protocol (EVP)
+
+   To ensure stability and efficiency, the following protocol is mandatory for all tasks. Failure to adhere to these steps can lead to mission failure due to environmental instability.
+
+   1. **Environment Sanity Check (ESC):** Before beginning any code analysis or modification, you MUST verify the sandbox environment's integrity. Perform a simple file creation and version control check: `touch test_agent_sanity.txt && git add test_agent_sanity.txt && git diff --staged`. This command MUST show a diff indicating a new file. If it returns empty, the environment is faulty. You MUST halt immediately and report the environment as unstable. Afterwards, clean up with `git reset HEAD test_agent_sanity.txt && rm test_agent_sanity.txt`. Do not attempt to work around a broken environment.
+   2. **Principle of Least Impact Verification (LIV):** Your verification plan MUST use the most lightweight and targeted method possible. Do not run resource-intensive, end-to-end data pipelines (like `backfill_deals`) to verify small, isolated changes.
+      - **Example for a backend/API change:** Manually insert a single test row into the database using `sqlite3` and query the specific API endpoint with `curl`.
+      - **Example for a frontend change:** Use the provided frontend verification tools without populating the entire database. This principle is critical to minimizing resource usage and avoiding sandbox failures.
+
+---
+
+## The Stability Pact: A Standard Operating Procedure for Preventing Regression
+
+To prevent regressions and ensure that "hard-won" code remains stable, I will adhere to the following principles for every task. This pact is my primary directive.
+
+**1. Principle of Minimum Scope:**
+
+*   I will only change the absolute minimum code necessary to complete the current task.
+*   I will not perform unrelated refactoring or "cleanup" of files I am not explicitly tasked to work on.
+*   Every change I make must be directly justifiable by the user's request.
+
+**2. "Code Archaeology" Before Action:**
+
+*   Before modifying any existing code, I must first understand its history and purpose.
+*   I will use `git log -p <filepath>` to review the recent history of the file to understand why it is in its current state.
+*   I will consult the `Documents_Dev_Logs/` directory and existing notes in this `AGENTS.md` file to find context on "hard-won" implementations.
+*   My goal is to understand the *intent* behind the existing code before I propose a change.
+
+**3. Strict Separation of Code and Configuration:**
+
+*   I will not change configuration values (e.g., batch sizes, timeouts, thresholds) unless the task is specifically about tuning those parameters.
+*   Such values should be stored in dedicated internal configuration files (e.g., `app_config.py`).
+*   If I find hardcoded configuration values during a task, I will report them to you and ask for permission before moving them to a dedicated file.
+
+**4. Test-Driven Development as a Rule:**
+
+*   For all future bug fixes, my first step will be to write a new, failing test that precisely reproduces the bug.
+*   For all new features, I will write tests that define the feature's correct behavior.
+*   I will run the *entire* test suite before submitting any change. A failing test is a hard blocker. This is our primary automated guard against regression.
+
+**5. Explicit Confirmation for Scope Creep:**
+
+*   If, during a task, I identify a necessary change that falls outside the original scope (e.g., a required refactor in an unrelated file), I will **stop**.
+*   I will present my finding and the proposed change to you and will not proceed until I receive your explicit permission.
+
+---
+
 ## Technical and Historical Notes
 
 This section contains valuable context and learnings from previous development tasks. Consult these notes before working on related parts of the codebase.
@@ -435,30 +502,3 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
 2.  **Trust the Latest Log:** The latest log is the ground truth. If an error that was supposedly fixed reappears in a new log, it means the fix was not effective. The investigation must restart by re-examining the code for the same error pattern, rather than assuming a new, different cause.
 3.  **Searching is a Key Tool:** Using precise searches to find specific error messages or ASINs in large log files is an essential and effective debugging strategy. When a narrow search returns no results, broaden the search (e.g., to just the ASIN) to confirm if the item was processed at all before concluding the specific error is gone.
 
----
-### Standard Operating Procedures (SOP) for System Stability
-
-To ensure the stability and performance of the development environment, the following procedures must be followed:
-
-1. **Handling Large Files (especially logs):**
-   *   **NEVER** read an entire file if it is known or suspected to be large (e.g., > 10 MB). Log files in this project can exceed 100 MB and reading them whole will cause critical system instability.
-   *   **ALWAYS** use targeted commands to inspect large files.
-       *   To view the end of a file: `tail -n 100 <filepath>`
-       *   To view the beginning of a file: `head -n 100 <filepath>`
-       *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
-   *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
-
-2. **Initial Codebase Exploration ("Filesystem Tour"):**
-   *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
-   *   Use `ls -RF` or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files and subdirectories.
-   *   Read `README.md` and this `AGENTS.md` file in full.
-   *   This initial exploration provides essential context, helps locate relevant code modules, and prevents unnecessary file reading later in the task. Adhering to this practice is mandatory for efficient and stable operation.
-
-3. ### Environment and Verification Protocol (EVP)
-
-   To ensure stability and efficiency, the following protocol is mandatory for all tasks. Failure to adhere to these steps can lead to mission failure due to environmental instability.
-
-   1. **Environment Sanity Check (ESC):** Before beginning any code analysis or modification, you MUST verify the sandbox environment's integrity. Perform a simple file creation and version control check: `touch test_agent_sanity.txt && git add test_agent_sanity.txt && git diff --staged`. This command MUST show a diff indicating a new file. If it returns empty, the environment is faulty. You MUST halt immediately and report the environment as unstable. Afterwards, clean up with `git reset HEAD test_agent_sanity.txt && rm test_agent_sanity.txt`. Do not attempt to work around a broken environment.
-   2. **Principle of Least Impact Verification (LIV):** Your verification plan MUST use the most lightweight and targeted method possible. Do not run resource-intensive, end-to-end data pipelines (like `backfill_deals`) to verify small, isolated changes.
-      - **Example for a backend/API change:** Manually insert a single test row into the database using `sqlite3` and query the specific API endpoint with `curl`.
-      - **Example for a frontend change:** Use the provided frontend verification tools without populating the entire database. This principle is critical to minimizing resource usage and avoiding sandbox failures.
