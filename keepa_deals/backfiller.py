@@ -1,135 +1,258 @@
-from celery import Celery
-import logging
+from logging import getLogger
 import os
+import json
+import sqlite3
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
+from dotenv import load_dotenv
+import redis
 
-from keepa_deals.db_utils import create_deals_table_if_not_exists, save_deals_to_db, clear_deals_table, save_watermark
-from keepa_deals.keepa_api import fetch_product_batch, fetch_deals_for_deals
-from keepa_deals.processing import _process_single_deal
-from keepa_deals.token_manager import TokenManager
 from worker import celery_app as celery
-from .backfill_state import BackfillState
-from keepa_deals.seller_info import get_seller_info_for_single_deal
+from .db_utils import sanitize_col_name, save_watermark
+from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
+from .token_manager import TokenManager
+from .seller_info import get_all_seller_info
+from .business_calculations import (
+    load_settings as business_load_settings,
+)
+from .processing import _process_single_deal, clean_numeric_values
+from .stable_calculations import clear_analysis_cache
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = getLogger(__name__)
 
-BACKFILL_STATE_FILE = 'backfill_state.json'
-DEALS_PER_PAGE = 2
+# Load environment variables
+load_dotenv()
+
+# --- Constants ---
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+TABLE_NAME = 'deals'
+HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
+STATE_FILE = 'backfill_state.json'
+# This batch size is a critical performance and stability parameter.
+# It is set to a conservative value (20) to ensure that the estimated cost of a single
+# batch API call (~15 tokens/ASIN * 20 ASINs = ~300 tokens) remains close to or
+# slightly above the maximum token bucket size (300). This allows the TokenManager's
+# "controlled deficit" strategy to function effectively, preventing excessive negative
+# token balances and minimizing long wait times for token refills.
+MAX_ASINS_PER_BATCH = 10
+LOCK_KEY = "backfill_deals_lock"
+LOCK_TIMEOUT = 864000 # 10 days, to prevent expiration during very long runs
+
+def load_backfill_state():
+    """Loads the last completed page number from the state file."""
+    if not os.path.exists(STATE_FILE):
+        return 0
+    try:
+        with open(STATE_FILE, 'r') as f:
+            state = json.load(f)
+            return state.get('last_completed_page', 0)
+    except (json.JSONDecodeError, FileNotFoundError):
+        return 0
+
+def save_backfill_state(page_number):
+    """Saves the last completed page number to the state file."""
+    with open(STATE_FILE, 'w') as f:
+        json.dump({'last_completed_page': page_number}, f)
+    logger.info(f"--- Backfill state saved. Last completed page: {page_number} ---")
+
+def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manager, business_settings, headers):
+    """
+    Processes a single page of deals and saves them to the database.
+    This function encapsulates the fetch-process-save logic for a chunk of deals.
+    """
+    if not deals_on_page:
+        logger.info("No deals on this page to process.")
+        return
+
+    logger.info(f"--- Starting processing for a page with {len(deals_on_page)} deals. ---")
+
+    # 2. Fetch product data for all collected ASINs on the page
+    all_fetched_products = {}
+    asin_list = [d['asin'] for d in deals_on_page]
+
+    for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
+        batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
+        estimated_cost = 12 * len(batch_asins)
+        token_manager.request_permission_for_call(estimated_cost)
+        product_response, _, tokens_left, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
+        token_manager.update_after_call(tokens_left)
+        if product_response and 'products' in product_response:
+            all_fetched_products.update({p['asin']: p for p in product_response['products']})
+        logger.info(f"Fetched product data for sub-batch {i//MAX_ASINS_PER_BATCH + 1}/{(len(asin_list) + MAX_ASINS_PER_BATCH - 1)//MAX_ASINS_PER_BATCH}")
+
+    # 3. Pre-fetch seller data for the page
+    unique_seller_ids = set()
+    for product in all_fetched_products.values():
+        for offer in product.get('offers', []):
+            if isinstance(offer, dict) and offer.get('sellerId'):
+                unique_seller_ids.add(offer['sellerId'])
+
+    from .keepa_api import fetch_seller_data
+    seller_data_cache = {}
+    if unique_seller_ids:
+        seller_id_list = list(unique_seller_ids)
+        for i in range(0, len(seller_id_list), 100):
+            batch_ids = seller_id_list[i:i+100]
+            while True:
+                logger.info(f"Attempting to fetch seller data for {len(batch_ids)} seller IDs.")
+                token_manager.request_permission_for_call(estimated_cost=1)
+                seller_data, _, tokens_left = fetch_seller_data(api_key, batch_ids)
+                token_manager.update_after_call(tokens_left)
+
+                if seller_data and 'sellers' in seller_data and seller_data['sellers']:
+                    seller_data_cache.update(seller_data['sellers'])
+                    logger.info(f"Successfully fetched seller data for batch. Cache size now: {len(seller_data_cache)}")
+                    break
+                else:
+                    logger.warning(f"Failed to fetch a batch of seller data or seller data was empty. Tokens left: {tokens_left}. Retrying in 15 seconds.")
+                    time.sleep(15)
+    logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers for this page.")
+
+    # 4. Process deals for the page
+    rows_to_upsert = []
+    for deal in deals_on_page:
+        asin = deal['asin']
+        if asin not in all_fetched_products:
+            continue
+        product_data = all_fetched_products[asin]
+        product_data.update(deal)
+        processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
+        if processed_row:
+            processed_row = clean_numeric_values(processed_row)
+            processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+            processed_row['source'] = 'backfiller'
+            rows_to_upsert.append(processed_row)
+        time.sleep(1)
+
+    # 5. Save processed deals directly to the database
+    if rows_to_upsert:
+        logger.info(f"Upserting {len(rows_to_upsert)} processed deals into the database.")
+        conn = None
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+
+            with open(HEADERS_PATH) as f:
+                headers_data = json.load(f)
+
+            db_columns = [sanitize_col_name(h['header']) for h in headers_data]
+            if 'last_seen_utc' not in db_columns:
+                db_columns.append('last_seen_utc')
+            if 'source' not in db_columns:
+                db_columns.append('source')
+
+            placeholders = ', '.join(['?'] * len(db_columns))
+            query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(db_columns)}) VALUES ({placeholders})"
+
+            data_to_insert = []
+            for row in rows_to_upsert:
+                ordered_row = tuple(row.get(col) for col in db_columns)
+                data_to_insert.append(ordered_row)
+
+            cursor.executemany(query, data_to_insert)
+            conn.commit()
+            logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")
+
+            # After a successful chunk save, trigger downstream tasks
+            from worker import celery_app
+
+            # Trigger restriction checks for the newly added ASINs
+            new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
+            if new_asins:
+                celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs. ---")
+
+            # Trigger the refiller task to keep existing deals fresh
+            celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
+            logger.info("--- Triggered update_recent_deals task to sync recent changes. ---")
+
+        except sqlite3.Error as e:
+            logger.error(f"Database error while upserting deals: {e}", exc_info=True)
+            raise
+        finally:
+            if conn:
+                conn.close()
+
 
 @celery.task(name='keepa_deals.backfiller.backfill_deals')
 def backfill_deals(reset=False):
-    logging.info("Starting backfill_deals task with one-book-at-a-time strategy.")
-    keepa_api_key = os.getenv("KEEPA_API_KEY")
-    xai_api_key = os.getenv("XAI_TOKEN")
-    if not keepa_api_key or not xai_api_key:
-        logging.error("API keys not configured. Set KEEPA_API_KEY and XAI_TOKEN environment variables.")
+    if reset:
+        if os.path.exists(STATE_FILE):
+            os.remove(STATE_FILE)
+            logger.info(f"Removed state file {STATE_FILE} for a fresh start.")
+        from .db_utils import recreate_deals_table
+        recreate_deals_table()
+        logger.info("Database has been reset.")
+
+
+    redis_client = redis.Redis.from_url(celery.conf.broker_url)
+    lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
+
+    if not lock.acquire(blocking=False):
+        logger.warning(f"--- Task: backfill_deals is already running. Skipping execution. ---")
         return
 
-    create_deals_table_if_not_exists()
-    token_manager = TokenManager(keepa_api_key)
-    state = BackfillState(BACKFILL_STATE_FILE)
+    try:
+        logger.info("--- Task: backfill_deals started ---")
+        clear_analysis_cache()
 
-    if reset:
-        logging.info("Resetting backfill state and clearing deals table.")
-        state.reset()
-        clear_deals_table()
-        save_watermark((datetime.now() - timedelta(days=365)).isoformat())
+        api_key = os.getenv("KEEPA_API_KEY")
+        xai_api_key = os.getenv("XAI_TOKEN")
+        if not api_key:
+            logger.error("KEEPA_API_KEY not set. Aborting.")
+            return
 
-    logging.info("Performing initial token sync with Keepa API.")
-    token_manager.sync_tokens()
-    logging.info(f"Initial token count: {token_manager.tokens}")
+        token_manager = TokenManager(api_key)
+        token_manager.sync_tokens()
+        business_settings = business_load_settings()
 
-    page = state.get_last_completed_page()
-    total_pages = 0
+        with open(HEADERS_PATH) as f:
+            headers = json.load(f)
 
-    while True:
-        page += 1
-        logging.info(f"Processing page {page}.")
+        page = load_backfill_state()
+        logger.info(f"--- Resuming backfill from page {page} ---")
 
-        # Step 1: Fetch a page of ASINs from Keepa's /deal endpoint
-        logging.info(f"Fetching deals for page {page}...")
-        try:
-            estimated_cost = 10  # Safe estimate for /deal endpoint
-            token_manager.request_permission_for_call(estimated_cost)
+        max_last_update = 0
+        total_deals_processed_this_run = 0
 
-            deals_response, _, tokens_left = fetch_deals_for_deals(page=page, api_key=keepa_api_key)
-            if not deals_response or 'deals' not in deals_response or not deals_response['deals']:
-                logging.info("No more deals found. Backfill complete.")
-                break
-
-            total_pages = deals_response.get('totalPages', total_pages)
+        while True:
+            logger.info(f"Fetching page {page} of deals...")
+            token_manager.request_permission_for_call(estimated_cost=5)
+            deal_response, _, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True)
             token_manager.update_after_call(tokens_left)
 
-        except Exception as e:
-            logging.error(f"Error fetching deals on page {page}: {e}")
-            time.sleep(60)
-            continue
+            if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
+                logger.info("No more deals found. Pagination complete.")
+                break
 
-        asins = [deal['asin'] for deal in deals_response['deals']['dr']]
+            deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
+            logger.info(f"Found {len(deals_on_page)} deals on page {page}.")
 
-        # Step 2: Process ASINs in small batches to ensure data freshness and quick DB updates
-        for i in range(0, len(asins), DEALS_PER_PAGE):
-            batch_asins = asins[i:i + DEALS_PER_PAGE]
-            all_deals_data_for_batch = []
-            logging.info(f"--- Processing batch of {len(batch_asins)} ASINs from page {page} ---")
+            _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manager, business_settings, headers)
 
-            for asin in batch_asins:
-                logging.info(f"--- Processing ASIN: {asin} ---")
-                try:
-                    # A) Fetch complete product data with live offers
-                    estimated_cost = 7 # ~6 for offers, 1 for product
-                    token_manager.request_permission_for_call(estimated_cost)
-                    product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], offers=20)
-                    token_manager.update_after_call(tokens_left)
+            save_backfill_state(page)
 
-                    if not product_data or not product_data.get('products'):
-                        logging.warning(f"Could not retrieve product data for ASIN {asin}. Skipping.")
-                        continue
-                    product = product_data['products'][0]
+            total_deals_processed_this_run += len(deals_on_page)
 
-                    # B) Immediately find the lowest seller and fetch their data
-                    seller_cache = get_seller_info_for_single_deal(product, keepa_api_key, token_manager)
+            for deal in deals_on_page:
+                if deal.get('lastUpdate', 0) > max_last_update:
+                    max_last_update = deal['lastUpdate']
 
-                    # C) Process the deal with fresh product and seller data
-                    processed_deal = _process_single_deal(product, seller_cache, xai_api_key)
-                    if processed_deal:
-                        all_deals_data_for_batch.append(processed_deal)
-                        logging.info(f"Successfully processed ASIN {asin}.")
-                    else:
-                        logging.warning(f"Processing returned no data for ASIN {asin}. It might be excluded by a filter.")
+            page += 1
+            time.sleep(1)
 
-                    # Add a delay to prevent the worker from being killed by the OS for high resource usage
-                    time.sleep(1)
+        if total_deals_processed_this_run > 0 and max_last_update > 0:
+            keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+            watermark_datetime = keepa_epoch + timedelta(minutes=max_last_update)
+            watermark_iso = watermark_datetime.isoformat()
+            save_watermark(watermark_iso)
+            logger.info(f"Final watermark set to {watermark_iso} based on the newest deal processed.")
 
-                except Exception as e:
-                    logging.error(f"Error processing ASIN {asin}: {e}", exc_info=True)
+        logger.info(f"--- Task: backfill_deals finished. Processed {total_deals_processed_this_run} deals in this run. ---")
 
-            # Step 3: Save the fully processed deals for this BATCH to the database
-            if all_deals_data_for_batch:
-                logging.info(f"Saving {len(all_deals_data_for_batch)} processed deals from batch to the database.")
-                save_deals_to_db(all_deals_data_for_batch)
-
-                # --- CRITICAL: Restore missing task triggers ---
-                new_asins = [d['ASIN'] for d in all_deals_data_for_batch if 'ASIN' in d]
-                if new_asins:
-                    celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                    logging.info(f"Triggered restriction check for {len(new_asins)} new ASINs.")
-
-                # Trigger the refiller to keep existing deals fresh
-                celery.send_task('keepa_deals.simple_task.update_recent_deals')
-                logging.info("Triggered the update_recent_deals (refiller) task.")
-
-            else:
-                logging.warning(f"No deals from this batch were successfully processed to be saved.")
-
-        # After processing all batches for a page, update the state.
-        state.set_last_completed_page(page)
-        logging.info(f"Finished page {page}. Current tokens: {token_manager.tokens}")
-
-        if page >= total_pages:
-            logging.info(f"Reached the last page ({page}/{total_pages}). Backfill complete.")
-            break
-
-    logging.info("backfill_deals task finished.")
+    except Exception as e:
+        logger.error(f"An unexpected error occurred in backfill_deals task: {e}", exc_info=True)
+    finally:
+        lock.release()
+        logger.info("--- Task: backfill_deals lock released. ---")
