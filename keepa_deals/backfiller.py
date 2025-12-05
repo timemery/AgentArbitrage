@@ -39,7 +39,7 @@ def backfill_deals(reset=False):
 
     logging.info("Performing initial token sync with Keepa API.")
     token_manager.sync_tokens()
-    logging.info(f"Initial token count: {token_manager.get_tokens_left()}")
+    logging.info(f"Initial token count: {token_manager.tokens}")
 
     page = state.get_last_completed_page()
     total_pages = 0
@@ -126,7 +126,7 @@ def backfill_deals(reset=False):
 
         # After processing all batches for a page, update the state.
         state.set_last_completed_page(page)
-        logging.info(f"Finished page {page}. Current tokens: {token_manager.get_tokens_left()}")
+        logging.info(f"Finished page {page}. Current tokens: {token_manager.tokens}")
 
         if page >= total_pages:
             logging.info(f"Reached the last page ({page}/{total_pages}). Backfill complete.")
