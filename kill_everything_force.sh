@@ -1,8 +1,13 @@
 #!/bin/bash
 echo "--- Starting Forceful Shutdown ---"
 
-# Step 1: Forcefully kill all processes with 'celery' in their command line
-echo "[1/5] Forcefully terminating all Celery processes (worker, beat, etc.)..."
+# Step 1: Forcefully kill the monitor process
+echo "[1/6] Forcefully terminating the monitor process..."
+sudo pkill -f "monitor_and_restart"
+sleep 2 # Give a moment for the process to die
+
+# Step 2: Forcefully kill all processes with 'celery' in their command line
+echo "[2/6] Forcefully terminating all Celery processes (worker, beat, etc.)..."
 sudo pkill -9 -f celery
 sleep 2 # Give a moment for processes to die
 
@@ -15,22 +20,22 @@ else
     echo "All Celery processes terminated successfully."
 fi
 
-# Step 2: Kill any process listening on the Redis port (6379)
-echo "[2/5] Terminating Redis server..."
+# Step 3: Kill any process listening on the Redis port (6379)
+echo "[3/6] Terminating Redis server..."
 sudo fuser -k 6379/tcp || echo "Redis was not running or could not be killed."
 sleep 1
 
-# Step 3: Delete the Celery Beat schedule file
-echo "[3/5] Deleting Celery Beat schedule file..."
+# Step 4: Delete the Celery Beat schedule file
+echo "[4/6] Deleting Celery Beat schedule file..."
 sudo rm -f celerybeat-schedule
 
-# Step 4: Recursively find and delete all __pycache__ directories
-echo "[4/5] Deleting all Python cache directories (__pycache__)..."
+# Step 5: Recursively find and delete all __pycache__ directories
+echo "[5/6] Deleting all Python cache directories (__pycache__)..."
 sudo find . -type d -name "__pycache__" -exec rm -r {} +
 echo "Cache cleared."
 
-# Step 5: Restarting Redis server for a clean slate
-echo "[5/5] Restarting Redis server..."
+# Step 6: Restarting Redis server for a clean slate
+echo "[6/6] Restarting Redis server..."
 sudo service redis-server start
 
 echo "--- Forceful Shutdown Complete ---"
