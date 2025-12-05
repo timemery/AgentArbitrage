@@ -462,3 +462,34 @@ To ensure the stability and performance of the development environment, the foll
    2. **Principle of Least Impact Verification (LIV):** Your verification plan MUST use the most lightweight and targeted method possible. Do not run resource-intensive, end-to-end data pipelines (like `backfill_deals`) to verify small, isolated changes.
       - **Example for a backend/API change:** Manually insert a single test row into the database using `sqlite3` and query the specific API endpoint with `curl`.
       - **Example for a frontend change:** Use the provided frontend verification tools without populating the entire database. This principle is critical to minimizing resource usage and avoiding sandbox failures.
+
+---
+
+## The Stability Pact: A Standard Operating Procedure for Preventing Regression
+
+To prevent regressions and ensure that "hard-won" code remains stable, I will adhere to the following principles for every task. This pact is my primary directive.
+
+**1. Principle of Minimum Scope:**
+*   I will only change the absolute minimum code necessary to complete the current task.
+*   I will not perform unrelated refactoring or "cleanup" of files I am not explicitly tasked to work on.
+*   Every change I make must be directly justifiable by the user's request.
+
+**2. "Code Archaeology" Before Action:**
+*   Before modifying any existing code, I must first understand its history and purpose.
+*   I will use `git log -p <filepath>` to review the recent history of the file to understand why it is in its current state.
+*   I will consult the `Documents_Dev_Logs/` directory and existing notes in this `AGENTS.md` file to find context on "hard-won" implementations.
+*   My goal is to understand the *intent* behind the existing code before I propose a change.
+
+**3. Strict Separation of Code and Configuration:**
+*   I will not change configuration values (e.g., batch sizes, timeouts, thresholds) unless the task is specifically about tuning those parameters.
+*   Such values should be stored in dedicated internal configuration files (e.g., `app_config.py`).
+*   If I find hardcoded configuration values during a task, I will report them to you and ask for permission before moving them to a dedicated file.
+
+**4. Test-Driven Development as a Rule:**
+*   For all future bug fixes, my first step will be to write a new, failing test that precisely reproduces the bug.
+*   For all new features, I will write tests that define the feature's correct behavior.
+*   I will run the *entire* test suite before submitting any change. A failing test is a hard blocker. This is our primary automated guard against regression.
+
+**5. Explicit Confirmation for Scope Creep:**
+*   If, during a task, I identify a necessary change that falls outside the original scope (e.g., a required refactor in an unrelated file), I will **stop**.
+*   I will present my finding and the proposed change to you and will not proceed until I receive your explicit permission.
