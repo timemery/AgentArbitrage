@@ -40,3 +40,6 @@ sudo service redis-server start
 
 echo "--- Forceful Shutdown Complete ---"
 echo "The environment has been forcefully reset. You should now be able to start services cleanly."
+
+# Reset terminal to a sane state to fix display issues
+stty sane
