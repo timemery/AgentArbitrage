@@ -26,3 +26,25 @@
    - **Result:** None of these changes resolved the silent startup failure. At every step, the `celery_worker.log` remained static, showing old log entries, proving the new worker process never successfully launched to the point of writing to its log file.
 
 **Conclusion:** The root cause is a deep, persistent environmental issue that prevents the `start_celery.sh` script from successfully launching the Celery worker daemon as the `www-data` user. The failure is completely silent, with no errors being written to any of the monitored logs. The problem is not with the Python application code itself but with the shell execution environment. The task is being handed off for a fresh perspective on this environmental challenge.
+
+### **Dev Log Entry**
+
+**Dev Log - 2025-12-05: Diagnosing and Attempting to Fix Silent Celery Worker Failure**
+
+**Task:** Diagnose and fix a silent failure of the `backfill_deals` Celery task. Symptoms included stale logs, no API token consumption, and NULL database entries, pointing to a pre-execution crash.
+
+**Challenges & Investigation:**
+
+1. **Initial Misdiagnosis:** Initial investigation focused on code-level bugs. While a minor bug was found, it was not the root cause.
+2. **"Zombie" Worker Discovery:** The key breakthrough came from analyzing logs showing the worker executing an old, unrelated task. This provided definitive proof of a "zombie" worker: a stale, unresponsive process running old, cached code.
+3. **Environmental Instability:** The core challenge was identified as an environmental issue. The standard restart scripts were not forceful enough to terminate this zombie process and clear the stale Python cache (`__pycache__`).
+4. **Startup Script Failures:** After creating a more aggressive `kill_everything_force.sh` script, a new problem was uncovered: the main `start_celery.sh` script was failing to launch the worker at all due to a bash function not being correctly exported to a subshell.
+5. **Resilient Monitor Interference:** A final key insight, identified by the user, was that the `monitor_and_restart` process itself was resisting shutdown attempts, preventing clean restarts. The kill scripts were not targeting this parent monitor process.
+
+**Work Performed:**
+
+1. Created a `kill_everything_force.sh` script using `pkill -f celery` and `find` to aggressively terminate Celery processes and delete `__pycache__` directories.
+2. Corrected the `start_celery.sh` script by adding `export -f monitor_and_restart`.
+3. Submitted these two script changes to the repository.
+
+**Outcome: Unsuccessful (but significant progress made)** The task was not successfully completed. The `celery_worker.log` file is still not being created. However, the root causes have been narrowed down considerably. The remaining problem is almost certainly related to the execution environment of the `www-data` user, compounded by the resilient monitor process interfering with clean restarts.

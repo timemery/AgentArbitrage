@@ -1,23 +1,29 @@
+# trigger_diag_task.py
 
 import sys
-from worker import celery_app as celery
+import os
 
-def trigger_diagnostic_task():
+# This ensures the script can find the 'worker' module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from worker import celery_app
+
+def main():
     """
-    Sends the API connectivity diagnostic task to the Celery queue.
+    Triggers the run_environment_diagnostic Celery task.
     """
+    print("--- Triggering Environment Diagnostic Task ---")
     try:
-        print("--- Triggering the API Connectivity Diagnostic Task ---")
-        # Send the task by its registered name
-        celery.send_task("keepa_deals.diag_task.run_api_connectivity_test")
+        # Use the registered task name to send the task
+        celery_app.send_task('keepa_deals.env_diag.run_environment_diagnostic')
+
         print("\n[SUCCESS] Diagnostic task sent to the queue.")
-        print("You should now monitor the Celery worker logs to see the result.")
-        print("Run: 'tail -f celery_worker.log'")
+        print("Please now check the contents of 'diag_output.log' after a moment.")
+        print("Run: 'cat diag_output.log'")
 
     except Exception as e:
-        print(f"\n[ERROR] Failed to send task to the queue: {e}", file=sys.stderr)
-        print("Please ensure that Redis is running and Celery is correctly configured.", file=sys.stderr)
-        sys.exit(1)
+        print(f"\n[ERROR] Failed to send task: {e}")
+        print("Please ensure that the Celery worker and Redis server are running.")
 
 if __name__ == "__main__":
-    trigger_diagnostic_task()
+    main()

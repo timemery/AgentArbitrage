@@ -96,6 +96,9 @@ if pgrep -f "monitor_and_restart" > /dev/null; then
     exit 1
 fi
 
+# Export the function so it's available to the subshell
+export -f monitor_and_restart
+
 # Launch the monitor function in the background and disown it
 nohup bash -c 'monitor_and_restart' >> "$MONITOR_LOG_FILE" 2>&1 &
 disown
