@@ -63,3 +63,31 @@
 
 **Final Status:** A one-line fix is required in `backfiller.py` to change the list comprehension from `h['header']` to `h`. This is the last identified blocker. Due to the length of the current session and the series of minor errors, a fresh task and environment is recommended to apply this final, simple fix cleanly.
 
+### Dev Log Entry
+
+**Date:** 2025-12-06 **Task:** Resolve final bug in `backfill_deals` task.
+
+**Initial Problem:** The `backfill_deals` task was crashing with a `TypeError: string indices must be integers` when processing headers from `headers.json`. This prevented any data from being written to the database.
+
+**Actions Taken - Part 1 (Success):**
+
+1. Identified the `TypeError` in `keepa_deals/backfiller.py` and corrected the list comprehension to properly handle the list of strings from `headers.json`.
+2. Resolved a series of environmental issues in the sandbox, which included installing Redis, creating the application directory, setting up the Python virtual environment with dependencies, and creating the `.env` file.
+3. After the initial fix, a new error emerged: `sqlite3.OperationalError: unrecognized token: "1yr_Avg"`. This was diagnosed as an SQL syntax error caused by an unquoted column name.
+4. Fixed the SQL error by modifying `backfiller.py` to wrap all column names in double quotes in the `INSERT` statement.
+5. Verified that the task now runs, creates the database, and successfully inserts the first two rows of data.
+
+**Result - Part 1:** Success. The initial crashing bug was fully resolved.
+
+**New Problem Discovered:** The user confirmed that while the task no longer crashed, the data being written to the database was mostly `None`, indicating a severe data loss or processing failure.
+
+**Actions Taken - Part 2 (Failure):**
+
+1. A new plan was created to diagnose the data loss.
+2. The `diag_full_pipeline.py` script was used to trace the data flow. After encountering and working around API rate-limiting issues by using a local `test_product_data.json` file, the script revealed that the `get_used_product_info` function in `keepa_deals/seller_info.py` was returning `None` for the test ASIN.
+3. This pointed to a flaw in how the `offerCSV` field from the Keepa API was being parsed.
+4. Multiple attempts were made to "fix" this parsing logic, based on incorrect assumptions about the `offerCSV` data structure (e.g., whether the latest data was at the beginning or end of the array). These attempts all failed verification.
+5. The user provided crucial guidance: to stop guessing and perform "Code Archaeology" on the backup codebase at `AgentArbitrage_BeforeGateCheckFeature/` to find the correct, previously working logic.
+6. A review of the backup `seller_info.py` revealed the correct parsing method. However, a subsequent attempt to implement this fix was also flawed and failed verification.
+
+**Final Result:** Failure. After multiple failed attempts to correctly diagnose and fix the data loss issue, it was clear that I was stuck in a non-productive loop and lacked a fundamental understanding of the data structure. To prevent further incorrect changes, I reset the entire codebase to its original state. The initial `TypeError` crash is now present again, but the repository is in a clean state for a new agent to take over with a fresh perspective and the user's guidance.
