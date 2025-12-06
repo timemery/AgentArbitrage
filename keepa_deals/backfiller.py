@@ -23,6 +23,9 @@ logger = getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
+# --- Version Identifier ---
+BACKFILLER_VERSION = "2.1-chunk-processing-fix"
+
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
 TABLE_NAME = 'deals'
@@ -72,7 +75,7 @@ def backfill_deals(reset=False):
         return
 
     try:
-        logger.info("--- Task: backfill_deals started ---")
+        logger.info(f"--- Task: backfill_deals started ---")
         clear_analysis_cache()
 
         api_key = os.getenv("KEEPA_API_KEY")
