@@ -21,7 +21,7 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Version Identifier ---
-BACKFILLER_VERSION = "2.4-final-arg-fix"
+BACKFILLER_VERSION = "2.5-final-typo-fix"
 
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
@@ -112,7 +112,8 @@ def backfill_deals(reset=False):
 
                 seller_data_cache = {}
                 if unique_seller_ids:
-                    seller_id_.list = list(unique_seller_ids)
+                    # CRITICAL BUG FIX: Correct the variable name typo
+                    seller_id_list = list(unique_seller_ids)
                     for j in range(0, len(seller_id_list), 100):
                         batch_ids = seller_id_list[j:j+100]
                         while True:
@@ -134,7 +135,6 @@ def backfill_deals(reset=False):
                     product_data = all_fetched_products[asin]
                     product_data.update(deal)
 
-                    # CRITICAL BUG FIX: Call _process_single_deal with the correct 3 arguments
                     processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
 
                     if processed_row:
