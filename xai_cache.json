@@ -1118,5 +1118,15 @@
     "seasonality:Every Fifteen Minutes (Thorndike Press large print basic)|Books, Subjects, Literature & Fiction, United States|Thorndike Press": "Year-round",
     "seasonality:The Mad Ship|Books, Subjects, Science Fiction & Fantasy|Voyager": "Year-round",
     "seasonality:Moby Dick (Illustrated Library of Graphic Classics, Series 1, Volume 1)|Books, Subjects|Pendulum Press": "High School AP Textbooks",
-    "seasonality:Cien cepilladas antes de dormir (Spanish Edition)|Books, Subjects, Literature & Fiction|Emec\u00e9 Editores, S.A.": "Year-round"
+    "seasonality:Cien cepilladas antes de dormir (Spanish Edition)|Books, Subjects, Literature & Fiction|Emec\u00e9 Editores, S.A.": "Year-round",
+    "reasonableness:PASKO, The Philippine Christmas|Books > Subjects|Jan|40.00": "False",
+    "seasonality:Espresso. Kultur und K\u00fcche.|Books, Subjects|H\u00e4decke": "Year-round",
+    "seasonality:Rocks Through My Window|Books, Subjects, Religion & Spirituality, Christian Books & Bibles, Literature & Fiction|Merrimack Media": "Year-round",
+    "seasonality:70 Years of Porsche Sportscars|Books, Subjects, Engineering & Transportation, Automotive, History|Delius Klasing Verlag Gmbh": "Year-round",
+    "seasonality:Skin Grows Over|Books, Subjects, Literature & Fiction, Genre Fiction, Horror|Ghost Orchid Press": "Halloween",
+    "seasonality:Not dead yet|Books, Subjects, Arts & Photography, Music, Reference|MICHEL LAFON": "Year-round",
+    "seasonality:Stepping Up Video Event|Books, Subjects|Family Life Publishing": "Year-round",
+    "seasonality:Vittorio, the Vampire: New Tales of the Vampires (Random House Large Print)|Books, Subjects, Literature & Fiction|Random House Large Print": "Halloween",
+    "seasonality:Des fleurs dans la tourmente|Books, Subjects, Literature & Fiction, Genre Fiction|J'AI LU": "Romance/Valentine's Day",
+    "seasonality:How to Turn a Place Around|Books, Subjects, Arts & Photography, Architecture, Landscape|Project for Public Spaces Inc": "Year-round"
 }

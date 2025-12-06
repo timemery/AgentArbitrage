@@ -91,3 +91,29 @@
 6. A review of the backup `seller_info.py` revealed the correct parsing method. However, a subsequent attempt to implement this fix was also flawed and failed verification.
 
 **Final Result:** Failure. After multiple failed attempts to correctly diagnose and fix the data loss issue, it was clear that I was stuck in a non-productive loop and lacked a fundamental understanding of the data structure. To prevent further incorrect changes, I reset the entire codebase to its original state. The initial `TypeError` crash is now present again, but the repository is in a clean state for a new agent to take over with a fresh perspective and the user's guidance.
+
+### Dev Log - December 6, 2025
+
+**Task:** Resolve a data loss issue and `TypeError` crash in the `backfill_deals` task.
+
+**Initial State:** The `backfill_deals` Celery task was running without crashing but was saving incomplete data to the `deals.db` database. Specifically, many key fields, including the price, were `None`. This was a regression from a previous state where the task was crashing with a `TypeError`. The codebase had been reset, which re-introduced the `TypeError`.
+
+**Challenges Faced:**
+
+1. **`TypeError` Crash:** The immediate challenge was to re-apply the fix for the `TypeError` that occurred when the `_process_single_deal` function in `processing.py` attempted to unpack a `None` value returned from `get_used_product_info`.
+2. **Silent Data Loss:** The core challenge was identifying the root cause of the data loss. The `get_used_product_info` function in `seller_info.py` was returning `None` because its logic for parsing the `offerCSV` field from the Keepa API's product data was incorrect, causing it to fail to find valid "used" offers.
+
+**Investigation & Resolution Steps:**
+
+1. **Fixing the Crash:** The `TypeError` in `keepa_deals/processing.py` was addressed by modifying the code to first assign the result of `get_used_product_info` to a variable and then checking if it was `None` *before* attempting to unpack it. This made the crash-handling more robust.
+2. **Diagnosing Data Loss:** Analysis confirmed the data loss originated in `keepa_deals/seller_info.py`. The function was incorrectly assuming that the price and shipping information were at the beginning of the `offerCSV` array (e.g., indices `[1]` and `[2]`).
+3. **Code Archaeology:** As per user instruction, a backup of the codebase at `AgentArbitrage_BeforeGateCheckFeature/` was inspected. The file `AgentArbitrage_BeforeGateCheckFeature/keepa_deals/seller_info.py` revealed the correct, previously working logic: the most recent offer data is at the **end** of the `offerCSV` array. Specifically, the price is at index `[-2]` and the shipping cost is at `[-1]`.
+4. **Implementing the Fix:** The `get_used_product_info` function in the current `keepa_deals/seller_info.py` was manually updated to reflect this correct logic, without copy-pasting the old file.
+5. **Verification:**
+   - The `diag_full_pipeline.py` script was used for verification.
+   - An initial attempt to run the script failed due to a bug within the script itself (passing incorrect arguments to a function call), which was corrected.
+   - Further attempts failed due to missing Python dependencies (`python-dotenv`, `requests`). The environment was fully set up by installing all packages from `requirements.txt` and creating a `.env` file.
+   - The corrected script was executed and completed successfully. The log output confirmed that the `'Price Now'` field was being populated correctly, validating the fix.
+6. **Code Review:** The solution was submitted for review. Feedback indicated that runtime state files (`xai_cache.json`, `xai_token_state.json`) were incorrectly included in the commit. These files were removed from the staging area, and their paths were added to `.gitignore` to prevent future inclusion.
+
+**Outcome:** **Success.** The core data loss and crash issues were resolved, confirmed by diagnostics. The user confirmed the successful run of the diagnostic on their end. A follow-on inefficiency was identified but deferred to a separate task.

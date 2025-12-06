@@ -37,10 +37,11 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         row_data['Manufacturer'] = product_data.get('manufacturer')
 
     try:
-        price_now, seller_id, is_fba, condition_code = get_used_product_info(product_data)
-        if price_now is None:
+        used_product_info = get_used_product_info(product_data)
+        if not used_product_info or used_product_info[0] is None:
             logger.info(f"ASIN {asin}: No used offer found. Halting processing.")
             return None
+        price_now, seller_id, is_fba, condition_code = used_product_info
 
         row_data['Price Now'] = price_now / 100.0
         row_data['Seller'] = seller_id
