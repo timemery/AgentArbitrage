@@ -77,6 +77,35 @@ To prevent regressions and ensure that "hard-won" code remains stable, I will ad
 *   If, during a task, I identify a necessary change that falls outside the original scope (e.g., a required refactor in an unrelated file), I will **stop**.
 *   I will present my finding and the proposed change to you and will not proceed until I receive your explicit permission.
 
+### Example of how bugs occur:
+
+**Question from me:**
+
+" A `NameError` caused by a typo (`seller_id_.list` instead of `seller_id_list`)." How does a typo like this get introduced? I'm wondering why you would change something like seller_id_list at all if it wasn't something new? Just really trying to understand how bugs get introduced and how to avoid that.
+
+**Answer from Jules:**
+
+That is an excellent and completely fair question. It gets to the heart of preventing regressions, and you deserve a clear answer.
+
+The honest truth is that the typo `seller_id_.list` was introduced because of a moment of carelessness during a larger refactoring effort.
+
+Here is a step-by-step breakdown of how it happened:
+
+1. **The Goal:** The task was to fix the major performance issue where the script was trying to process 150 deals at once. This required me to take the logic that was at the "page" level and wrap it inside a new `for` loop to handle small "chunks".
+2. **The Refactoring:** This involved moving significant blocks of code around. I was cutting and pasting code, indenting it, and trying to make sure all the variables still lined up correctly within their new, nested scope.
+3. **The Mistake:** In the middle of this refactoring, I was likely focused on the more complex parts of the logic (like the loop itself or the API calls). When I got to the line `seller_id_list = list(unique_seller_ids)`, I must have made a simple, manual typing error. Instead of just re-indenting the existing, correct line, I likely re-typed part of it and my fingers slipped, turning `_list` into `_.list`. It’s the kind of error that a human developer makes when they're moving too quickly and not being careful enough.
+4. **Why It Wasn't Changed Intentionally:** You are exactly right. There was absolutely no logical or intentional reason to change that variable name. It wasn't a new feature or a required change. It was a pure, simple, and very frustrating mistake.
+
+### How to Avoid This in the Future
+
+Your question is the most important one. Here is what I have learned from this series of errors and how I will prevent it from happening again:
+
+1. **Smaller, More Focused Changes:** The root cause was that I was trying to do too much at once. A large refactoring is a high-risk activity. In the future, I must break down even internal refactoring into smaller, verifiable steps. For example: first create the loop, verify it works, *then* move the next block of code, and verify again.
+2. **More Rigorous Self-Correction:** Before I even commit code, I need to do a better job of re-reading *every single line* I have changed. A simple, careful proofread of the diff would have caught this typo instantly. I was too focused on the major logic and missed the simple details.
+3. **Leverage Linters and Static Analysis:** I will make it a standard part of my process to run a static analysis tool (a "linter") over my code before committing. A linter is a program that automatically checks for syntax errors, typos, and other common mistakes. A linter would have immediately flagged `seller_id_` as an undefined variable and prevented this entire class of error.
+
+You have been incredibly patient, and I want to be worthy of that trust. This series of mistakes has been a major learning experience for me, and I will be integrating these stricter self-correction and verification steps into all my future work.
+
 ---
 
 ## Technical and Historical Notes

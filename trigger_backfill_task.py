@@ -8,7 +8,7 @@ import argparse
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from worker import celery_app
-from keepa_deals.backfiller import backfill_deals
+from keepa_deals.backfiller import backfill_deals, BACKFILLER_VERSION
 
 def main():
     """
@@ -25,10 +25,12 @@ def main():
                         help='Perform a fresh backfill, clearing old data and state.')
     args = parser.parse_args()
 
+    print(f"--- Triggering Backfiller Version: {BACKFILLER_VERSION} ---")
+
     if args.reset:
-        print("--- Triggering a FRESH backfill. All existing data and backfill state will be cleared. ---")
+        print("--- Mode: FRESH backfill. All existing data and backfill state will be cleared. ---")
     else:
-        print("--- Triggering a RESUMABLE backfill. The process will continue from the last saved state. ---")
+        print("--- Mode: RESUMABLE backfill. The process will continue from the last saved state. ---")
 
     try:
         # The backfill_deals task now directly accepts a 'reset' parameter.

@@ -7,24 +7,19 @@
 echo "Ensuring www-data owns the entire application directory..."
 chown -R www-data:www-data /var/www/agentarbitrage
 
-# Step 2: Define constants
-APP_DIR="/var/www/agentarbitrage"
-VENV_PYTHON="$APP_DIR/venv/bin/python"
-WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
-BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
-MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
-
-# Define the commands. The --workdir flag is removed as it's not supported by the Celery version.
-# The 'cd' command within the 'su' block will handle the working directory.
-WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO"
-BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO"
-PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
-
-# Common environment setup
-ENV_SETUP="set -a && source $APP_DIR/.env && set +a"
-
 # --- Main Resiliency Loop (to be run in the background) ---
 monitor_and_restart() {
+    # Define constants INSIDE the function to ensure they are available in the subshell
+    APP_DIR="/var/www/agentarbitrage"
+    VENV_PYTHON="$APP_DIR/venv/bin/python"
+    WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
+    BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
+    MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
+    WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO"
+    BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO"
+    PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
+    ENV_SETUP="set -a && source $APP_DIR/.env && set +a"
+
     while true; do
         # Ensure Redis is running
         echo "Checking Redis status and starting if not running..." >> "$MONITOR_LOG_FILE"
@@ -99,6 +94,9 @@ fi
 # Export the function so it's available to the subshell
 export -f monitor_and_restart
 
+# Define MONITOR_LOG_FILE here just for the initial nohup redirection
+MONITOR_LOG_FILE="/var/www/agentarbitrage/celery_monitor.log"
+
 # Launch the monitor function in the background and disown it
 nohup bash -c 'monitor_and_restart' >> "$MONITOR_LOG_FILE" 2>&1 &
 disown
@@ -107,5 +105,5 @@ echo "The resilient Celery service monitor has been started in the background."
 echo "You can now safely close this terminal. To see the monitor's logs, run:"
 echo "tail -f $MONITOR_LOG_FILE"
 echo "To see worker/beat logs, run:"
-echo "tail -f $WORKER_LOG_FILE"
-echo "tail -f $BEAT_LOG_FILE"
+echo "tail -f /var/www/agentarbitrage/celery_worker.log"
+echo "tail -f /var/www/agentarbitrage/celery_beat.log"
