@@ -152,10 +152,12 @@ def backfill_deals(reset=False):
                         cursor = conn.cursor()
                         with open(HEADERS_PATH) as f:
                             headers_data = json.load(f)
-                        db_columns = [sanitize_col_name(h['header']) for h in headers_data]
+                        db_columns = [sanitize_col_name(h) for h in headers_data]
                         db_columns.extend(['last_seen_utc', 'source'])
                         placeholders = ', '.join(['?'] * len(db_columns))
-                        query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(db_columns)}) VALUES ({placeholders})"
+                        # Quote column names to handle special characters and numbers at the start
+                        quoted_columns = [f'"{col}"' for col in db_columns]
+                        query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(quoted_columns)}) VALUES ({placeholders})"
                         data_to_insert = [tuple(row.get(col) for col in db_columns) for row in rows_to_upsert]
                         cursor.executemany(query, data_to_insert)
                         conn.commit()

@@ -1,7 +1,12 @@
 import sqlite3
 import os
+import argparse
 
-DB_PATH = 'deals.db'
+parser = argparse.ArgumentParser(description='Check the contents of the deals database.')
+parser.add_argument('--path', default='deals.db', help='The path to the database file.')
+args = parser.parse_args()
+
+DB_PATH = args.path
 TABLE_NAME = 'deals'
 
 print("--- Running Database Check Script ---")
