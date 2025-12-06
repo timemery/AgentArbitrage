@@ -11,7 +11,6 @@ from worker import celery_app as celery
 from .db_utils import sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
-from .seller_info import get_all_seller_info
 from .business_calculations import (
     load_settings as business_load_settings,
 )
@@ -29,13 +28,10 @@ DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 STATE_FILE = 'backfill_state.json'
-# This batch size is a critical performance and stability parameter.
-# It is set to a conservative value (20) to ensure that the estimated cost of a single
-# batch API call (~15 tokens/ASIN * 20 ASINs = ~300 tokens) remains close to or
-# slightly above the maximum token bucket size (300). This allows the TokenManager's
-# "controlled deficit" strategy to function effectively, preventing excessive negative
-# token balances and minimizing long wait times for token refills.
-MAX_ASINS_PER_BATCH = 10
+# This is a critical performance parameter. We process deals in very small
+# chunks to ensure that data is written to the database frequently and to
+# avoid long pauses for API token refills.
+DEALS_PER_CHUNK = 2
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days, to prevent expiration during very long runs
 
@@ -55,124 +51,6 @@ def save_backfill_state(page_number):
     with open(STATE_FILE, 'w') as f:
         json.dump({'last_completed_page': page_number}, f)
     logger.info(f"--- Backfill state saved. Last completed page: {page_number} ---")
-
-def _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manager, business_settings, headers):
-    """
-    Processes a single page of deals and saves them to the database.
-    This function encapsulates the fetch-process-save logic for a chunk of deals.
-    """
-    if not deals_on_page:
-        logger.info("No deals on this page to process.")
-        return
-
-    logger.info(f"--- Starting processing for a page with {len(deals_on_page)} deals. ---")
-
-    # 2. Fetch product data for all collected ASINs on the page
-    all_fetched_products = {}
-    asin_list = [d['asin'] for d in deals_on_page]
-
-    for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
-        batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
-        estimated_cost = 12 * len(batch_asins)
-        token_manager.request_permission_for_call(estimated_cost)
-        product_response, _, tokens_left, _ = fetch_product_batch(api_key, batch_asins, history=1, offers=20)
-        token_manager.update_after_call(tokens_left)
-        if product_response and 'products' in product_response:
-            all_fetched_products.update({p['asin']: p for p in product_response['products']})
-        logger.info(f"Fetched product data for sub-batch {i//MAX_ASINS_PER_BATCH + 1}/{(len(asin_list) + MAX_ASINS_PER_BATCH - 1)//MAX_ASINS_PER_BATCH}")
-
-    # 3. Pre-fetch seller data for the page
-    unique_seller_ids = set()
-    for product in all_fetched_products.values():
-        for offer in product.get('offers', []):
-            if isinstance(offer, dict) and offer.get('sellerId'):
-                unique_seller_ids.add(offer['sellerId'])
-
-    from .keepa_api import fetch_seller_data
-    seller_data_cache = {}
-    if unique_seller_ids:
-        seller_id_list = list(unique_seller_ids)
-        for i in range(0, len(seller_id_list), 100):
-            batch_ids = seller_id_list[i:i+100]
-            while True:
-                logger.info(f"Attempting to fetch seller data for {len(batch_ids)} seller IDs.")
-                token_manager.request_permission_for_call(estimated_cost=1)
-                seller_data, _, tokens_left = fetch_seller_data(api_key, batch_ids)
-                token_manager.update_after_call(tokens_left)
-
-                if seller_data and 'sellers' in seller_data and seller_data['sellers']:
-                    seller_data_cache.update(seller_data['sellers'])
-                    logger.info(f"Successfully fetched seller data for batch. Cache size now: {len(seller_data_cache)}")
-                    break
-                else:
-                    logger.warning(f"Failed to fetch a batch of seller data or seller data was empty. Tokens left: {tokens_left}. Retrying in 15 seconds.")
-                    time.sleep(15)
-    logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers for this page.")
-
-    # 4. Process deals for the page
-    rows_to_upsert = []
-    for deal in deals_on_page:
-        asin = deal['asin']
-        if asin not in all_fetched_products:
-            continue
-        product_data = all_fetched_products[asin]
-        product_data.update(deal)
-        processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
-        if processed_row:
-            processed_row = clean_numeric_values(processed_row)
-            processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-            processed_row['source'] = 'backfiller'
-            rows_to_upsert.append(processed_row)
-        time.sleep(1)
-
-    # 5. Save processed deals directly to the database
-    if rows_to_upsert:
-        logger.info(f"Upserting {len(rows_to_upsert)} processed deals into the database.")
-        conn = None
-        try:
-            conn = sqlite3.connect(DB_PATH)
-            cursor = conn.cursor()
-
-            with open(HEADERS_PATH) as f:
-                headers_data = json.load(f)
-
-            db_columns = [sanitize_col_name(h['header']) for h in headers_data]
-            if 'last_seen_utc' not in db_columns:
-                db_columns.append('last_seen_utc')
-            if 'source' not in db_columns:
-                db_columns.append('source')
-
-            placeholders = ', '.join(['?'] * len(db_columns))
-            query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(db_columns)}) VALUES ({placeholders})"
-
-            data_to_insert = []
-            for row in rows_to_upsert:
-                ordered_row = tuple(row.get(col) for col in db_columns)
-                data_to_insert.append(ordered_row)
-
-            cursor.executemany(query, data_to_insert)
-            conn.commit()
-            logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")
-
-            # After a successful chunk save, trigger downstream tasks
-            from worker import celery_app
-
-            # Trigger restriction checks for the newly added ASINs
-            new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
-            if new_asins:
-                celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs. ---")
-
-            # Trigger the refiller task to keep existing deals fresh
-            celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
-            logger.info("--- Triggered update_recent_deals task to sync recent changes. ---")
-
-        except sqlite3.Error as e:
-            logger.error(f"Database error while upserting deals: {e}", exc_info=True)
-            raise
-        finally:
-            if conn:
-                conn.close()
 
 
 @celery.task(name='keepa_deals.backfiller.backfill_deals')
@@ -229,7 +107,102 @@ def backfill_deals(reset=False):
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
             logger.info(f"Found {len(deals_on_page)} deals on page {page}.")
 
-            _process_and_save_deal_page(deals_on_page, api_key, xai_api_key, token_manager, business_settings, headers)
+            # --- Start Chunk Processing ---
+            # Process the deals from the page in small, manageable chunks to ensure
+            # frequent database writes and avoid long token refill pauses.
+            for i in range(0, len(deals_on_page), DEALS_PER_CHUNK):
+                chunk_deals = deals_on_page[i:i + DEALS_PER_CHUNK]
+                if not chunk_deals:
+                    continue
+
+                logger.info(f"--- Processing chunk {i//DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + DEALS_PER_CHUNK - 1)//DEALS_PER_CHUNK} on page {page} ---")
+
+                # 1. Fetch product data for the CHUNK
+                all_fetched_products = {}
+                asin_list = [d['asin'] for d in chunk_deals]
+                estimated_cost = 12 * len(asin_list)
+                token_manager.request_permission_for_call(estimated_cost)
+                product_response, _, tokens_left, _ = fetch_product_batch(api_key, asin_list, history=1, offers=20)
+                token_manager.update_after_call(tokens_left)
+                if product_response and 'products' in product_response:
+                    all_fetched_products.update({p['asin']: p for p in product_response['products']})
+                logger.info(f"Fetched product data for {len(all_fetched_products)} ASINs in chunk.")
+
+                # 2. Pre-fetch seller data for the CHUNK
+                unique_seller_ids = set()
+                for product in all_fetched_products.values():
+                    for offer in product.get('offers', []):
+                        if isinstance(offer, dict) and offer.get('sellerId'):
+                            unique_seller_ids.add(offer['sellerId'])
+
+                from .keepa_api import fetch_seller_data
+                seller_data_cache = {}
+                if unique_seller_ids:
+                    seller_id_list = list(unique_seller_ids)
+                    for j in range(0, len(seller_id_list), 100):
+                        batch_ids = seller_id_list[j:j+100]
+                        while True:
+                            token_manager.request_permission_for_call(estimated_cost=1)
+                            seller_data, _, tokens_left = fetch_seller_data(api_key, batch_ids)
+                            token_manager.update_after_call(tokens_left)
+                            if seller_data and 'sellers' in seller_data and seller_data['sellers']:
+                                seller_data_cache.update(seller_data['sellers'])
+                                break
+                            else:
+                                logger.warning(f"Failed to fetch a batch of seller data. Retrying in 15 seconds.")
+                                time.sleep(15)
+                logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers for this chunk.")
+
+                # 3. Process deals for the CHUNK
+                rows_to_upsert = []
+                for deal in chunk_deals:
+                    asin = deal['asin']
+                    if asin not in all_fetched_products:
+                        continue
+                    product_data = all_fetched_products[asin]
+                    product_data.update(deal)
+                    processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
+                    if processed_row:
+                        processed_row = clean_numeric_values(processed_row)
+                        processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                        processed_row['source'] = 'backfiller'
+                        rows_to_upsert.append(processed_row)
+                    time.sleep(1) # Small delay to reduce CPU pressure
+
+                # 4. Save processed deals directly to the database
+                if rows_to_upsert:
+                    logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")
+                    conn = None
+                    try:
+                        conn = sqlite3.connect(DB_PATH)
+                        cursor = conn.cursor()
+                        with open(HEADERS_PATH) as f:
+                            headers_data = json.load(f)
+                        db_columns = [sanitize_col_name(h['header']) for h in headers_data]
+                        if 'last_seen_utc' not in db_columns: db_columns.append('last_seen_utc')
+                        if 'source' not in db_columns: db_columns.append('source')
+                        placeholders = ', '.join(['?'] * len(db_columns))
+                        query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(db_columns)}) VALUES ({placeholders})"
+                        data_to_insert = [tuple(row.get(col) for col in db_columns) for row in rows_to_upsert]
+                        cursor.executemany(query, data_to_insert)
+                        conn.commit()
+                        logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")
+
+                        # Trigger downstream tasks after a successful chunk save
+                        from worker import celery_app
+                        new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
+                        if new_asins:
+                            celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                        celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
+                        logger.info(f"--- Triggered downstream tasks for {len(new_asins)} ASINs. ---")
+
+                    except sqlite3.Error as e:
+                        logger.error(f"Database error while upserting deals: {e}", exc_info=True)
+                        raise
+                    finally:
+                        if conn:
+                            conn.close()
+            # --- End Chunk Processing ---
 
             save_backfill_state(page)
 
