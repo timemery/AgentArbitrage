@@ -12,6 +12,7 @@ from .db_utils import sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
 from .processing import _process_single_deal, clean_numeric_values
+from .seller_info import get_seller_info_for_single_deal
 from .stable_calculations import clear_analysis_cache
 
 # Configure logging
@@ -108,32 +109,17 @@ def backfill_deals(reset=False):
                     all_fetched_products.update({p['asin']: p for p in product_response['products']})
                 logger.info(f"Fetched product data for {len(all_fetched_products)} ASINs in chunk.")
 
-                unique_seller_ids = {offer.get('sellerId') for product in all_fetched_products.values() for offer in product.get('offers', []) if isinstance(offer, dict) and offer.get('sellerId')}
-
-                seller_data_cache = {}
-                if unique_seller_ids:
-                    # CRITICAL BUG FIX: Correct the variable name typo
-                    seller_id_list = list(unique_seller_ids)
-                    for j in range(0, len(seller_id_list), 100):
-                        batch_ids = seller_id_list[j:j+100]
-                        while True:
-                            token_manager.request_permission_for_call(estimated_cost=1)
-                            seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
-                            token_manager.update_after_call(tokens_left)
-                            if seller_data and 'sellers' in seller_data and seller_data['sellers']:
-                                seller_data_cache.update(seller_data['sellers'])
-                                break
-                            else:
-                                logger.warning(f"Failed to fetch a batch of seller data. Retrying in 15 seconds.")
-                                time.sleep(15)
-                logger.info(f"Fetched data for {len(seller_data_cache)} unique sellers for this chunk.")
-
                 rows_to_upsert = []
                 for deal in chunk_deals:
                     asin = deal['asin']
                     if asin not in all_fetched_products: continue
                     product_data = all_fetched_products[asin]
                     product_data.update(deal)
+
+                    # --- OPTIMIZATION ---
+                    # Fetch seller data for ONLY the lowest-priced 'Used' offer.
+                    seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
+                    # --- END OPTIMIZATION ---
 
                     processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
 
