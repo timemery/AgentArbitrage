@@ -117,3 +117,25 @@
 6. **Code Review:** The solution was submitted for review. Feedback indicated that runtime state files (`xai_cache.json`, `xai_token_state.json`) were incorrectly included in the commit. These files were removed from the staging area, and their paths were added to `.gitignore` to prevent future inclusion.
 
 **Outcome:** **Success.** The core data loss and crash issues were resolved, confirmed by diagnostics. The user confirmed the successful run of the diagnostic on their end. A follow-on inefficiency was identified but deferred to a separate task.
+
+### Dev Log Entry: December 6, 2025
+
+**Task:** `feat/optimize-seller-fetching`
+
+**Objective:** To refactor the `backfill_deals` task to reduce Keepa API token consumption by fetching seller data for only the single seller associated with the live "Price Now" for each product, instead of all sellers.
+
+**Summary of Actions:**
+
+1. **Code Analysis:** The task began with a thorough analysis of `keepa_deals/backfiller.py` and `keepa_deals/seller_info.py`. This confirmed that the `backfiller` was inefficiently collecting all unique seller IDs from a chunk of products and making a large, token-expensive batch API call to fetch their data. The analysis also confirmed that `seller_info.py` already contained a more efficient function, `get_seller_info_for_single_deal`, designed to find the lowest-priced "Used" offer for a *single* product and fetch data for only that seller.
+2. **Refactoring Implementation:** The core of the task was a surgical refactoring of `backfiller.py`.
+   - The entire code block responsible for creating the `unique_seller_ids` set and making the large, batch call to `fetch_seller_data` was removed.
+   - The main processing loop was modified. Inside the `for deal in chunk_deals:` loop, a new call was added to the optimized `get_seller_info_for_single_deal` function for each individual product.
+   - This function returns a `seller_data_cache` containing information for only one seller. This targeted cache was then passed to the downstream `_process_single_deal` function, which required no modifications as its data contract was still fulfilled.
+
+**Challenges Encountered:**
+
+- This task was notably free of significant challenges. The user's initial analysis and recommended plan were precise and correct, which allowed for a direct and efficient implementation. The primary focus was on careful execution of the plan without introducing regressions.
+
+**Final Outcome:**
+
+The task was a **success**. The implemented solution directly addresses the user's objective, resulting in a significant optimization of the data collection pipeline. User-provided logs confirmed the new logic is working as expected, with messages like "Found lowest-priced seller: A10WDVSWRJT2SO. Fetching their data." indicating that the system is now correctly targeting individual sellers. This change will drastically reduce API token consumption and improve the overall speed and efficiency of the `backfill_deals` task.
