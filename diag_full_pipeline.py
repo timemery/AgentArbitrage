@@ -108,9 +108,7 @@ try:
     processed_row = _process_single_deal(
         single_product_data,
         seller_data_cache,
-        XAI_API_KEY,
-        business_settings,
-        headers
+        XAI_API_KEY
     )
     if processed_row:
         logger.info("Successfully processed a single deal.")

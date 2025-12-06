@@ -137,15 +137,15 @@ def get_used_product_info(product):
 
             if condition_code in used_condition_codes:
                 # When using the `offers` parameter, price info is in `offerCSV`.
-                # The most recent entry is at the start of the list.
-                # Format is [timestamp, price_cents, shipping_cents, stock, condition, ...]
+                # The most recent entry is at the END of the list.
+                # Format is [..., timestamp, price_cents, shipping_cents]
                 offer_csv = offer.get('offerCSV', [])
-                if len(offer_csv) < 3: # Need at least timestamp, price, and shipping
+                if len(offer_csv) < 2: # Need at least price and shipping
                     logger.warning(f"Malformed offerCSV for ASIN {product.get('asin')}: {offer_csv}")
                     continue
 
-                price = offer_csv[1]
-                shipping_cost = offer_csv[2] if offer_csv[2] != -1 else 0
+                price = offer_csv[-2]
+                shipping_cost = offer_csv[-1] if offer_csv[-1] != -1 else 0
                 total_price = price + shipping_cost
 
                 if total_price < min_price:
