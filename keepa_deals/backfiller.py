@@ -11,9 +11,6 @@ from worker import celery_app as celery
 from .db_utils import sanitize_col_name, save_watermark
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
-from .business_calculations import (
-    load_settings as business_load_settings,
-)
 from .processing import _process_single_deal, clean_numeric_values
 from .stable_calculations import clear_analysis_cache
 
@@ -24,7 +21,7 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Version Identifier ---
-BACKFILLER_VERSION = "2.3-final-token-bug-fix"
+BACKFILLER_VERSION = "2.4-final-arg-fix"
 
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
@@ -76,9 +73,6 @@ def backfill_deals(reset=False):
 
         token_manager = TokenManager(api_key)
         token_manager.sync_tokens()
-        business_settings = business_load_settings()
-        with open(HEADERS_PATH) as f:
-            headers = json.load(f)
 
         page = load_backfill_state()
         logger.info(f"--- Resuming backfill from page {page} ---")
@@ -106,7 +100,6 @@ def backfill_deals(reset=False):
                 estimated_cost = 12 * len(asin_list)
                 token_manager.request_permission_for_call(estimated_cost)
 
-                # CRITICAL BUG FIX #1: Correctly unpack 4 values from fetch_product_batch
                 product_response, _, _, tokens_left = fetch_product_batch(api_key, asin_list, history=1, offers=20)
                 token_manager.update_after_call(tokens_left)
 
@@ -119,12 +112,11 @@ def backfill_deals(reset=False):
 
                 seller_data_cache = {}
                 if unique_seller_ids:
-                    seller_id_list = list(unique_seller_ids)
+                    seller_id_.list = list(unique_seller_ids)
                     for j in range(0, len(seller_id_list), 100):
                         batch_ids = seller_id_list[j:j+100]
                         while True:
                             token_manager.request_permission_for_call(estimated_cost=1)
-                            # CRITICAL BUG FIX #2: Correctly unpack 4 values from fetch_seller_data
                             seller_data, _, _, tokens_left = fetch_seller_data(api_key, batch_ids)
                             token_manager.update_after_call(tokens_left)
                             if seller_data and 'sellers' in seller_data and seller_data['sellers']:
@@ -141,7 +133,10 @@ def backfill_deals(reset=False):
                     if asin not in all_fetched_products: continue
                     product_data = all_fetched_products[asin]
                     product_data.update(deal)
-                    processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
+
+                    # CRITICAL BUG FIX: Call _process_single_deal with the correct 3 arguments
+                    processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
+
                     if processed_row:
                         processed_row = clean_numeric_values(processed_row)
                         processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
