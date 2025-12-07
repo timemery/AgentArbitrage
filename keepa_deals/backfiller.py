@@ -22,7 +22,7 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Version Identifier ---
-BACKFILLER_VERSION = "2.6-another-fix"
+BACKFILLER_VERSION = "2.8-final-fix"
 
 # --- Constants ---
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
