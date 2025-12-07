@@ -68,7 +68,7 @@ def run_single_deal_diag(asin: str):
     # 5. Save to Database
     logging.info("Saving processed deal to the database...")
     save_deals_to_db([processed_deal])
-    logging.info("--- Diagnostic Complete for ASIN: {asin} ---")
+    logging.info(f"--- Diagnostic Complete for ASIN: {asin} ---")
 
 
 if __name__ == "__main__":

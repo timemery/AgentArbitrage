@@ -28,3 +28,4 @@ xai_token_state.json
 db_backups/data_quality_filters.patch
 task_description.md
 migrate_db.py
+xai_cache.json
