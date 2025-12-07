@@ -39,7 +39,7 @@ def run_single_deal_diag(asin: str):
     logging.info(f"Fetching product data for ASIN {asin} with live offers...")
     estimated_cost = 12 # ~6 for offers, 1 for product, plus stats/history
     token_manager.request_permission_for_call(estimated_cost)
-    product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], days=365, history=1, offers=20)
+    product_data, _, _, tokens_left = fetch_product_batch(keepa_api_key, [asin], days=365, history=1, offers=20)
     token_manager.update_after_call(tokens_left)
 
     if not product_data or not product_data.get('products'):
@@ -68,7 +68,7 @@ def run_single_deal_diag(asin: str):
     # 5. Save to Database
     logging.info("Saving processed deal to the database...")
     save_deals_to_db([processed_deal])
-    logging.info("--- Diagnostic Complete for ASIN: {asin} ---")
+    logging.info(f"--- Diagnostic Complete for ASIN: {asin} ---")
 
 
 if __name__ == "__main__":

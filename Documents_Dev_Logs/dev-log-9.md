@@ -139,3 +139,33 @@
 **Final Outcome:**
 
 The task was a **success**. The implemented solution directly addresses the user's objective, resulting in a significant optimization of the data collection pipeline. User-provided logs confirmed the new logic is working as expected, with messages like "Found lowest-priced seller: A10WDVSWRJT2SO. Fetching their data." indicating that the system is now correctly targeting individual sellers. This change will drastically reduce API token consumption and improve the overall speed and efficiency of the `backfill_deals` task.
+
+### Dev Log: Task - Resolve Widespread `None` Values in Database
+
+**Date:** 2025-12-07 **Agent:** Jules
+
+**Initial Problem:** The `backfill_deals` task was observed to be running without crashing, but the majority of analytical and historical columns in the `deals.db` database were being populated with `None` values. Core "live" data points like `Price Now` and `Seller` were correct, but downstream calculated fields were null, indicating a silent failure within the data enrichment pipeline.
+
+**Investigation and Actions Taken:**
+
+The investigation proceeded in several stages, with each step uncovering a deeper layer of the problem.
+
+1. **Hypothesis 1: Incomplete API Data Fetch.**
+   - **Action:** The investigation began by examining the API call in `keepa_deals/backfiller.py`. It was discovered that the call to `fetch_product_batch` was missing the `stats` and `days` parameters, which are required to get historical and statistical data from the Keepa API.
+   - **Result:** The call in `keepa_deals/keepa_api.py` was corrected to include these parameters. Diagnostic logging was added to `keepa_deals/processing.py` to print the top-level keys of the fetched `product_data` object. A subsequent run of the `diag_single_deal.py` script confirmed that the `stats` and `csv` objects were now being correctly fetched from the API. However, the `None` values persisted in the database.
+2. **Hypothesis 2: Failure to Extract Fetched Data.**
+   - **Action:** A "code archaeology" review was conducted. This revealed that a large number of data-extraction functions located in `keepa_deals/stable_products.py` (e.g., `sales_rank_current`, `used_365_days_avg`) were never being called by the main `_process_single_deal` function. The `FUNCTION_LIST` in `keepa_deals/field_mappings.py` was identified as the mechanism intended to orchestrate these calls.
+   - **Result:** The `_process_single_deal` function was modified to import and iterate through the `FUNCTION_LIST`, calling each function to populate the `row_data` dictionary. This was a significant architectural correction.
+3. **Hypothesis 3: Data Contract Mismatch at Database Layer.**
+   - **Action:** Even after integrating the extraction functions, verification failed. A deeper analysis of the logs from the diagnostic script revealed a critical `sqlite3.OperationalError: unrecognized token`. This error was being silently caught and suppressed by a broad `try/except` block in the `save_deals_to_db` function within `keepa_deals/db_utils.py`. The root cause was twofold: a. The `sanitize_col_name` function was not correctly handling all special characters (specifically the `.` in headers like `1yr. Avg.`), leading to invalid SQL column names. b. The processing pipeline was creating a dictionary with human-readable keys (e.g., `'Used - 365 days avg.'`), but the database insertion logic expected sanitized keys (e.g., `'Used_365_days_avg'`). This mismatch caused the data to be silently dropped.
+   - **Result:** Several attempts were made to fix this by modifying `sanitize_col_name` and the data flow between `processing.py` and `db_utils.py`.
+
+**Challenges Faced:**
+
+Throughout the task, the agent's sandboxed environment exhibited significant and recurring instability. Multiple tool calls (`replace_with_git_merge_diff`, `restore_file`) failed with internal errors, necessitating repeated environment resets and the use of more robust but slower file manipulation strategies (e.g., `read_file` followed by `overwrite_file_with_block`). This instability severely hampered the pace of the investigation and led to several confusing and contradictory results, ultimately prolonging the task.
+
+**Final Outcome:**
+
+**Failure.**
+
+Despite correctly identifying the multiple, cascading bugs (missing API parameters, missing function calls, flawed sanitization logic, and suppressed database exceptions), the agent's environment became completely unstable at the final step. The agent was unable to implement the definitive fix and verify it, leaving the codebase in a partially modified state and the core issue unresolved. The task was aborted due to an unusable environment.

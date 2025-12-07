@@ -159,8 +159,8 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
     logger.info(f"Fetching batch of {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
     comma_separated_asins = ','.join(asins_list)
-    # Optimized URL for the upserter: no history, no stock, no buybox info.
-    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&offers={offers}&rating={rating}&history={history}&only_live_offers=1"
+    # Corrected URL to include both 'stats' and 'days' for historical and statistical data
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&days={days}&offers={offers}&rating={rating}&history={history}&only_live_offers=1"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
 
     try:
