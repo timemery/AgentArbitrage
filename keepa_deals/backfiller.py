@@ -101,7 +101,7 @@ def backfill_deals(reset=False):
                 estimated_cost = 12 * len(asin_list)
                 token_manager.request_permission_for_call(estimated_cost)
 
-                product_response, _, _, tokens_left = fetch_product_batch(api_key, asin_list, history=1, offers=20)
+                product_response, _, _, tokens_left = fetch_product_batch(api_key, asin_list, days=365, history=1, offers=20)
                 token_manager.update_after_call(tokens_left)
 
                 all_fetched_products = {}

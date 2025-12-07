@@ -33,13 +33,13 @@ def run_single_deal_diag(asin: str):
     create_deals_table_if_not_exists()
     token_manager = TokenManager(keepa_api_key)
     token_manager.sync_tokens()
-    logging.info(f"Initial token count: {token_manager.get_tokens_left()}")
+    logging.info(f"Initial token count: {token_manager.tokens}")
 
     # 2. Fetch Product Data with Live Offers
     logging.info(f"Fetching product data for ASIN {asin} with live offers...")
-    estimated_cost = 7 # ~6 for offers, 1 for product
-    token_manager.request_permission_for_call(estimated_cost, f"Diag fetch for {asin}")
-    product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], offers=20)
+    estimated_cost = 12 # ~6 for offers, 1 for product, plus stats/history
+    token_manager.request_permission_for_call(estimated_cost)
+    product_data, _, tokens_left, _ = fetch_product_batch(keepa_api_key, [asin], days=365, history=1, offers=20)
     token_manager.update_after_call(tokens_left)
 
     if not product_data or not product_data.get('products'):
