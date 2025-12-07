@@ -13,8 +13,11 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
 def sanitize_col_name(name):
     """Sanitizes a string to be a valid SQLite column name."""
-    name = name.replace(' ', '_').replace('.', '').replace('-', '_').replace('%', 'Percent').replace('&', 'and')
-    return re.sub(r'[^a-zA-Z0-9_]', '', name)
+    name = name.replace('%', 'Percent').replace('&', 'and').replace('.', '_')
+    name = re.sub(r'[^a-zA-Z0-9_]', '_', name)
+    name = re.sub(r'__+', '_', name)
+    name = name.strip('_')
+    return name
 
 def get_table_columns(cursor, table_name):
     """Fetches the column names for a given table."""
@@ -215,22 +218,26 @@ def save_deals_to_db(deals_data):
     table_columns = {row[1] for row in cursor.fetchall()}
 
     for deal in deals_data:
-        # Filter out keys that are not in the table's columns
-        filtered_deal = {k: v for k, v in deal.items() if k in table_columns}
+        # Create a new dictionary with sanitized keys
+        sanitized_deal = {}
+        for k, v in deal.items():
+            sanitized_key = sanitize_col_name(k)
+            if sanitized_key in table_columns:
+                 sanitized_deal[sanitized_key] = v
 
-        columns = ', '.join(filtered_deal.keys())
-        placeholders = ', '.join(['?'] * len(filtered_deal))
-        values = list(filtered_deal.values())
+        if not sanitized_deal:
+             logger.warning(f"Skipping deal for ASIN {deal.get('ASIN')} because no valid columns were found.")
+             continue
+
+
+        columns = ', '.join([f'"{k}"' for k in sanitized_deal.keys()])
+        placeholders = ', '.join(['?'] * len(sanitized_deal))
+        values = list(sanitized_deal.values())
 
         # Use INSERT OR REPLACE to handle both new deals and updates gracefully
         sql = f"INSERT OR REPLACE INTO deals ({columns}) VALUES ({placeholders})"
 
-        try:
-            cursor.execute(sql, values)
-        except sqlite3.Error as e:
-            logging.error(f"Failed to save deal for ASIN {deal.get('ASIN', 'N/A')} to database: {e}")
-            logging.error(f"SQL: {sql}")
-            logging.error(f"Values: {values}")
+        cursor.execute(sql, values)
 
 
     conn.commit()

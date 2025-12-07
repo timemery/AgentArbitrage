@@ -68,6 +68,31 @@ def run_single_deal_diag(asin: str):
     # 5. Save to Database
     logging.info("Saving processed deal to the database...")
     save_deals_to_db([processed_deal])
+
+    # 6. Verify Database
+    logging.info("Verifying database content...")
+    import sqlite3
+    conn = sqlite3.connect('deals.db')
+    cursor = conn.cursor()
+    # Check for a specific column known to be problematic, e.g., 'Used_365_days_avg'
+    # Note: Column name must match the sanitized version.
+    col_name = "Used_365_days_avg" # This matches the NEW sanitization of "Used - 365 days avg."
+
+    try:
+        cursor.execute(f"SELECT \"{col_name}\" FROM deals WHERE ASIN = ?", (asin,))
+        row = cursor.fetchone()
+        if row and row[0] is not None:
+             logging.info(f"Verification Check: {col_name} = {row[0]}")
+             print("--- VERIFICATION SUCCESS ---")
+        else:
+             logging.error(f"Verification Failed: {col_name} is None or row missing.")
+             print("--- VERIFICATION FAILED ---")
+    except Exception as e:
+        logging.error(f"Verification Error: {e}")
+        print("--- VERIFICATION FAILED ---")
+    finally:
+        conn.close()
+
     logging.info(f"--- Diagnostic Complete for ASIN: {asin} ---")
 
 

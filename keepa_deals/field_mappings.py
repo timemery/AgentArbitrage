@@ -531,6 +531,7 @@ FUNCTION_LIST = [
     None,                           # Sales Rank - Drops last 180 days
     sales_rank_drops_last_365_days, # Sales Rank - Drops last 365 days
     None,                           # Seller ID (handled in decoupled loop)
+    None,                           # Seller
     buy_box_current,                # Buy Box - Current
     None,                           # Buy Box - 30 days avg.
     None,                           # Buy Box - 60 days avg.
@@ -691,11 +692,13 @@ FUNCTION_LIST = [
     None,                           # Seller_Quality_Score (handled in decoupled loop)
     None,                           # Best Price (handled in decoupled loop)
     recent_inferred_sale_price,     # Recent Inferred Sale Price
+    None,                           # Seasonality Type
     None,                           # Detailed_Seasonality
     None,                           # Sells
     get_peak_season,                # Peak Season
     get_list_at_price,              # List at
     get_trough_season,              # Trough Season
+    None,                           # Expected Trough Price
     profit_confidence,              # Profit Confidence
     None,                           # Min. Listing Price
     None,                           # All-in Cost

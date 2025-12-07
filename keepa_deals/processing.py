@@ -9,8 +9,20 @@ from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_tre
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
 from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events
+from .field_mappings import FUNCTION_LIST
+import json
+import os
 
 logger = getLogger(__name__)
+HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
+
+# Load headers at module level to avoid I/O in loop
+try:
+    with open(HEADERS_PATH, 'r') as f:
+        HEADERS = json.load(f)
+except Exception as e:
+    logger.error(f"Failed to load headers from {HEADERS_PATH}: {e}")
+    HEADERS = []
 
 def _parse_price(value_str):
     if isinstance(value_str, (int, float)): return float(value_str)
@@ -59,6 +71,25 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get live price/seller info: {e}", exc_info=True)
         return None
+
+    # Extract fields using FUNCTION_LIST
+    try:
+        headers = HEADERS
+
+        for i, func in enumerate(FUNCTION_LIST):
+            if func:
+                try:
+                    res = func(product_data)
+                    if isinstance(res, dict):
+                        val = next(iter(res.values())) if res else None
+                    else:
+                        val = res
+                    if i < len(headers):
+                        row_data[headers[i]] = val
+                except Exception as e:
+                    logger.warning(f"ASIN {asin}: Error extracting {headers[i] if i < len(headers) else 'Unknown'}: {e}")
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Error in generic field extraction: {e}", exc_info=True)
 
     business_settings = business_load_settings()
     sale_events, _ = infer_sale_events(product_data)
