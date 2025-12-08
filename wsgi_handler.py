@@ -840,14 +840,18 @@ def api_deals():
 
     # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
-        where_clauses.append("\"Sales_Rank___Current\" <= ?")
-        filter_params.append(filters["sales_rank_current_lte"])
+        # If the filter is "Infinite" (or close to it), we skip filtering to include NULLs (missing rank)
+        if filters["sales_rank_current_lte"] >= 99999999:
+            pass
+        else:
+            where_clauses.append("\"Sales_Rank_Current\" <= ?")
+            filter_params.append(filters["sales_rank_current_lte"])
     if filters.get("margin_gte") is not None:
         where_clauses.append("\"Margin\" >= ?")
         filter_params.append(filters["margin_gte"])
     if filters.get("keyword"):
         keyword_like = f"%{filters['keyword']}%"
-        keyword_clauses = ["\"Title\" LIKE ?", "\"Categories___Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
+        keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
         where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
         filter_params.extend([keyword_like] * len(keyword_clauses))
 
