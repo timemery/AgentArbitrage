@@ -62,17 +62,22 @@ We should organize the repository to reduce cognitive load (noise) for the agent
     *   **Reasoning:** You correctly identified that `kill_everything_force.sh` is the superior, most up-to-date version. A comparison confirms that `kill_everything.sh` is older, less robust (misses the "monitor" process), and redundant. `force_kill.sh` is also redundant as `kill_everything_force.sh` includes the same logic.
     *   **Recommendation:** Delete `kill_everything.sh` and `force_kill.sh`. Keep only `kill_everything_force.sh`.
 
-**Proposed Cleanup Actions (I can perform these if requested):**
-1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py`, `trigger_*.py`, and `test_run.py` files there.
-2.  **Archive Dev Logs:** Create `Documents_Dev_Logs/archive/` and move older logs there.
-3.  **Delete Artifacts:** Remove `test_launch.log`, `kill_everything.sh`, and `force_kill.sh`.
+### Step 3: Prompt Tuning (Critical New Finding)
 
-### Step 3: Focused Tasking
-Your current approach of "single focused issue" is correct. To further improve stability:
+**Issue:** Your updated prompt includes the instruction:
+> *"Read: ... All Dev Logs in Documents_Dev_Logs/"*
 
-*   **Explicit "Do Not Read":** In your prompt, list files the agent should *ignore* (e.g., "Do not read the full logs").
-*   **Fresh Starts:** Continue requesting a "Fresh Sandbox" for every new task. This clears out temporary artifacts and ensures a clean slate.
+**The Risk:** The `Documents_Dev_Logs/` directory contains more than just small text logs. It includes:
+1.  **`RAW_PRODUCT_DATA.md` (424 KB):** This file is massive. Reading this single file consumes more context than many source code files combined.
+2.  **`Keepa_Documentation-official-2.md` (135 KB):** Another very large file.
+3.  **`dev-log-*.md`:** There are 9 of these, averaging ~50KB each. Reading all of them is ~450KB.
+
+**Recommendation:**
+Do **not** instruct the agent to read "All Dev Logs." This invites the same context overload as the `celery.log` issue.
+
+**Revised Prompt Instruction:**
+> *"Read: `Documents_Dev_Logs/data_logic.md` and the **most recent** Dev Log (e.g., `dev-log-9.md`). Do NOT read `RAW_PRODUCT_DATA.md` or other historical logs unless specifically requested."*
 
 ## Conclusion
 
-The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By systematically "pruning" the log file before the agent sees it, you eliminate the possibility of a crash while preserving the critical information needed for debugging.
+The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By systematically "pruning" the log file before the agent sees it, and explicitly limiting *which* documentation files it reads (avoiding the 400KB+ data dumps), you eliminate the possibility of a crash while preserving the critical information needed for debugging.
