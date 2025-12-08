@@ -54,13 +54,15 @@ We should organize the repository to reduce cognitive load (noise) for the agent
 **Assessment of Specific Files:**
 
 *   **`test_launch.log`**: **DELETE**. This is a stale artifact from a previous debugging session. It contains no code, only old output. It is safe to remove.
-*   **`test_run.py`**: **ARCHIVE (or Move to `diagnostics/`)**. This is a manual trigger script. It is useful for testing but contributes to root directory clutter. It should be moved to the `diagnostics/` folder alongside other `diag_*.py` scripts.
 *   **`tests/verify_dashboard.py`**: **ARCHIVE**. This is a specific Playwright verification script for the "Gated Column" feature. Since that feature is currently disabled/under maintenance, this test is not part of the active suite. Keep it for reference in `Documents_Dev_Logs/archive/` or a `tests/archive/` folder, but it is not needed for daily operations.
+*   **Trigger Scripts (`trigger_diag_task.py`, `trigger_env_diag.py`, `test_run.py`)**: **MOVE TO `diagnostics/`**.
+    *   **Reasoning:** While these scripts are simple wrappers around `celery.send_task` and *could* be recreated, they contain the specific task names (e.g., `keepa_deals.env_diag.run_environment_diagnostic`) which are tedious to remember.
+    *   **Recommendation:** Do not delete them. Moving them to a `diagnostics/` folder clears the root directory clutter while preserving these useful "shortcuts" for future debugging.
 
 **Proposed Cleanup Actions (I can perform these if requested):**
-1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py` (and `test_run.py`) files there.
+1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py`, `trigger_*.py`, and `test_run.py` files there.
 2.  **Archive Dev Logs:** Create `Documents_Dev_Logs/archive/` and move older logs there.
-3.  **Delete Artifacts:** Remove `test_launch.log` and `verify_dashboard.py` (or move to archive).
+3.  **Delete Artifacts:** Remove `test_launch.log`.
 
 ### Step 3: Focused Tasking
 Your current approach of "single focused issue" is correct. To further improve stability:
