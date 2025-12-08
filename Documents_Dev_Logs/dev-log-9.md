@@ -280,3 +280,52 @@ The task was successful. The `backfill_deals` and `update_recent_deals` tasks no
 
 - **Verification:** Custom automated tests confirmed that the application creates the `system_state` table, migrates existing JSON data (if present), and correctly updates the state in the database.
 - **Observation:** In the final environment test, the system correctly identified the state (even after a reset to 0) and reported "Resuming backfill from page 0", confirming that the database-driven state logic is active and functioning.
+
+## Dev Log Entry: Backfiller Performance Optimization (Chunk Size Increase)
+
+**Date:** 2025-12-08 **Task:** Increase Backfiller Chunk Size for Performance **Files Modified:** `keepa_deals/backfiller.py`
+
+### Overview
+
+The objective was to optimize the `backfill_deals` background task to process deals significantly faster. The identified bottleneck was the small batch size (`DEALS_PER_CHUNK = 2`), which resulted in excessive API call overhead (one call per 2 products). The goal was to increase this to 20, leveraging Keepa's ability to batch fetch up to 100 ASINs, thereby reducing network latency and token consumption overhead.
+
+### Technical Implementation
+
+1. **Configuration Change:**
+   - Modified `keepa_deals/backfiller.py` to update the constant `DEALS_PER_CHUNK` from `2` to `20`.
+   - This constant controls the slicing of the `deals_on_page` list (typically 150 items) during processing.
+2. **Logic Verification:**
+   - Confirmed that the loop `for i in range(0, len(deals_on_page), DEALS_PER_CHUNK)` correctly handles the new stride.
+   - Verified that `fetch_product_batch` receives the larger list of ASINs (up to 20) and correctly retrieves product details in a single API call.
+
+### Challenges & Troubleshooting
+
+1. **Process Reloading (State Persistence):**
+
+   - **Issue:** During verification, the Celery worker logs continued to show "Processing chunk 1/75" (indicating a chunk size of 2) even after the file was modified.
+
+   - **Root Cause:** The Celery worker process (and potentially compiled bytecode/`__pycache__`) had loaded the old version of the `backfiller` module. Simply restarting the worker via `pkill` was initially insufficient due to lingering processes or lock states.
+
+   - Resolution:
+
+      
+
+     Performed a hard reset of the environment:
+
+     1. Deleted `backfill_deals_lock` from Redis (`redis-cli del backfill_deals_lock`).
+     2. Force-killed all Celery processes (`pkill -9 -f celery`).
+     3. Cleared `__pycache__`.
+     4. Restarted the Celery worker.
+
+   - **Key Learning:** When modifying constants in long-running worker tasks, a full process restart (ensuring no "zombie" workers remain) is critical for the change to take effect.
+
+2. **User Deployment Verification:**
+
+   - **Issue:** The user initially reported the fix wasn't working in their environment.
+   - **Root Cause:** The user had not uploaded the modified `backfiller.py` file to the server before running the test.
+   - **Resolution:** User self-corrected by uploading the file.
+
+### Outcome
+
+- **Performance:** The backfiller now processes chunks of 20 deals at a time. For a standard page of 150 deals, this reduces the number of product-fetching API calls from 75 to 8 (an ~89% reduction in request overhead).
+- **Status:** Validated in sandbox and confirmed by user in production.
