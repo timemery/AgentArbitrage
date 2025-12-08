@@ -20,62 +20,42 @@ monitor_and_restart() {
     PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
     ENV_SETUP="set -a && source $APP_DIR/.env && set +a"
 
-    while true; do
-        # Ensure Redis is running
-        echo "Checking Redis status and starting if not running..." >> "$MONITOR_LOG_FILE"
+    # Ensure Redis is running
+    echo "Checking Redis status and starting if not running..." >> "$MONITOR_LOG_FILE"
+    redis-cli ping > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "Redis not responding. Starting Redis server..." >> "$MONITOR_LOG_FILE"
+        sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
+        sleep 5
         redis-cli ping > /dev/null 2>&1
         if [ $? -ne 0 ]; then
-            echo "Redis not responding. Starting Redis server..." >> "$MONITOR_LOG_FILE"
-            sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
-            sleep 5
-            redis-cli ping > /dev/null 2>&1
-            if [ $? -ne 0 ]; then
-                echo "CRITICAL: Failed to start Redis. Waiting before retry." >> "$MONITOR_LOG_FILE"
-                sleep 60
-                continue
-            fi
-            echo "Redis started successfully." >> "$MONITOR_LOG_FILE"
-        else
-            echo "Redis is already running." >> "$MONITOR_LOG_FILE"
+            echo "CRITICAL: Failed to start Redis. Aborting." >> "$MONITOR_LOG_FILE"
+            return 1
         fi
+        echo "Redis started successfully." >> "$MONITOR_LOG_FILE"
+    else
+        echo "Redis is already running." >> "$MONITOR_LOG_FILE"
+    fi
 
-        # Kill any old/zombie Celery processes
-        echo "Attempting to stop any old Celery processes..." >> "$MONITOR_LOG_FILE"
-        pkill -f "celery -A worker.celery_app" || echo "No old Celery processes found." >> "$MONITOR_LOG_FILE"
-        sleep 2
+    # Kill any old/zombie Celery processes
+    echo "Attempting to stop any old Celery processes..." >> "$MONITOR_LOG_FILE"
+    pkill -f "celery -A worker.celery_app" || echo "No old Celery processes found." >> "$MONITOR_LOG_FILE"
+    sleep 2
 
-        # Purge tasks and clean up state
-        echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
-        su -s /bin/bash -c "$ENV_SETUP && $PURGE_COMMAND" www-data
-        sudo rm -f "$APP_DIR/celerybeat-schedule"
-        touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
-        chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
+    # Purge tasks and clean up state
+    echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
+    su -s /bin/bash -c "$ENV_SETUP && $PURGE_COMMAND" www-data
+    sudo rm -f "$APP_DIR/celerybeat-schedule"
+    touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
+    chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
 
-        # Start the daemons using the 'su' command for reliability in this environment
-        # The inner 'nohup' is removed as the parent monitor is already nohup'd.
-        echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
-        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
-        su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+    # Start the daemons using the 'su' command for reliability in this environment
+    # The inner 'nohup' is removed as the parent monitor is already nohup'd.
+    echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
+    su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+    su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
 
-        echo "Services started. Monitoring for crashes..." >> "$MONITOR_LOG_FILE"
-
-        # Monitor loop - simplified to check for the main worker process
-        while true; do
-            # The worker is launched via the launch_worker.sh script, but the process name is the celery command itself
-            if ! pgrep -f "celery -A worker.celery_app worker" > /dev/null; then
-                echo "Celery worker process appears to have crashed. Restarting all services..." >> "$MONITOR_LOG_FILE"
-                break
-            fi
-             if ! pgrep -f "celery -A worker.celery_app beat" > /dev/null; then
-                echo "Celery beat process appears to have crashed. Restarting all services..." >> "$MONITOR_LOG_FILE"
-                break
-            fi
-            sleep 30
-        done
-
-        echo "Detected a service failure. Waiting for 10 seconds before restarting..." >> "$MONITOR_LOG_FILE"
-        sleep 10
-    done
+    echo "Services started. Auto-restart disabled." >> "$MONITOR_LOG_FILE"
 }
 
 # --- Script Entry Point ---
