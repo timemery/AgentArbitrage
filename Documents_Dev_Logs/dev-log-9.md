@@ -169,3 +169,47 @@ Throughout the task, the agent's sandboxed environment exhibited significant and
 **Failure.**
 
 Despite correctly identifying the multiple, cascading bugs (missing API parameters, missing function calls, flawed sanitization logic, and suppressed database exceptions), the agent's environment became completely unstable at the final step. The agent was unable to implement the definitive fix and verify it, leaving the codebase in a partially modified state and the core issue unresolved. The task was aborted due to an unusable environment.
+
+## Dev Log: Fix Sales Rank Extraction & Disable Gated Check
+**Date:** 2025-12-08
+
+### 1. The "Missing Sales Rank" Investigation
+**Problem:**
+The "Sales Rank - Current" column in the database was frequently populating with `NULL` (or `'-'`) even for valid books. This caused the dashboard's "Infinite" filters to hide these deals, as SQL filters typically exclude NULL values. The user's observation was that "All books have a sales rank," implying the data collection logic was at fault.
+
+**Investigation:**
+*   We created a reproduction script (`repro_sales_rank.py`) to fetch live data for specific failing ASINs.
+*   **Discovery:** The Keepa API's primary field for current sales rank, `stats.current[3]`, was indeed returning `-1` (Keepa's code for "no data") for these ASINs.
+*   However, deeper inspection of the `product` object revealed that valid sales rank history *did* exist in secondary fields:
+    *   `product['csv'][3]`: The raw history array often contained a recent valid rank.
+    *   `product['salesRanks']`: The dictionary of category-specific ranks also contained valid recent data.
+
+**Solution:**
+*   We modified `keepa_deals/stable_products.py`.
+*   The `sales_rank_current` function was refactored to implement a "Waterfall Fallback" strategy:
+    1.  **Primary:** Check `stats.current[3]`. If valid (>0), use it.
+    2.  **Fallback 1:** If invalid, check the last entry of the `csv[3]` history array.
+    3.  **Fallback 2:** If still invalid, iterate through `salesRanks` to find the most recent valid value across all categories.
+*   **Result:** Verified with mock data that the function now returns a valid formatted string (e.g., "57,828") even when the primary source fails.
+
+### 2. Disabling the "Gated" Check Task
+**Problem:**
+The background task `check_restriction_for_asins` (which checks if an item is restricted/gated on Amazon) was failing due to known API permission issues, causing log noise and potential task failures.
+
+**Solution:**
+*   We modified `keepa_deals/backfiller.py` and `keepa_deals/simple_task.py`.
+*   The calls to `celery.send_task(..., 'check_restriction_for_asins', ...)` were commented out.
+*   A comment `# Disabled temporarily due to Amazon permission issues` was added to preserve the context.
+*   **Result:** The logic remains in the codebase for future re-enablement, but the failing task is no longer triggered.
+
+### 3. Backfiller Restart Analysis (Observation Only)
+**Observation:**
+During verification, it was noted that the Backfiller task restarted from Page 0 instead of resuming.
+
+**Analysis:**
+*   This occurred because the `backfill_state.json` file (which stores the last page number) was missing from the environment.
+*   It was confirmed that this "restart" is an **Upsert** operation (updating existing records), so it is non-destructive and safe, though potentially redundant.
+*   **Recommendation:** Future tasks should move this state tracking into the `deals.db` database to prevent restarts after deployments.
+
+### **Summary of Success**
+The task was a success. The Sales Rank extraction is now significantly more robust, capturing data that was previously missed. The application stability is improved by silencing the failing Gated Check task.
