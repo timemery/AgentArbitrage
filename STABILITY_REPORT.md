@@ -13,7 +13,7 @@ It is **not** an issue with your computer's speed or memory. The issue lies in t
 
 ## Addressing Your Specific Question: "Are my warnings sufficient?"
 
-**You asked:** *Is the text in my task description and `AGENTS.md` (warning about the 115MB file and instructing to use `tail`) sufficient?*
+**You asked:** *Is the text in my task description and `AGENTS.md` sufficient?*
 
 **The Verdict:**
 Your instructions are **linguistically perfect** (specific, actionable, prominent). However, relying on them is a strategy of **Hazard Avoidance** (warning signs), which fails when an agent inevitably prioritizes "gathering context" over "safety protocols."
@@ -51,10 +51,16 @@ To work together without interruptions, we must implement a strict hygiene proto
 ### Step 2: Codebase Cleanup (Context Management)
 We should organize the repository to reduce cognitive load (noise) for the agent.
 
-**Proposed Actions (I can perform these if requested):**
-1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py` files there.
-2.  **Archive Dev Logs:** Create `Documents_Dev_Logs/archive/` and move older logs (e.g., `dev-log-1` through `dev-log-6`) there.
-3.  **Rotate Logs:** Consider adding a simple script or cron job to rotate `celery.log` automatically.
+**Assessment of Specific Files:**
+
+*   **`test_launch.log`**: **DELETE**. This is a stale artifact from a previous debugging session. It contains no code, only old output. It is safe to remove.
+*   **`test_run.py`**: **ARCHIVE (or Move to `diagnostics/`)**. This is a manual trigger script. It is useful for testing but contributes to root directory clutter. It should be moved to the `diagnostics/` folder alongside other `diag_*.py` scripts.
+*   **`tests/verify_dashboard.py`**: **ARCHIVE**. This is a specific Playwright verification script for the "Gated Column" feature. Since that feature is currently disabled/under maintenance, this test is not part of the active suite. Keep it for reference in `Documents_Dev_Logs/archive/` or a `tests/archive/` folder, but it is not needed for daily operations.
+
+**Proposed Cleanup Actions (I can perform these if requested):**
+1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py` (and `test_run.py`) files there.
+2.  **Archive Dev Logs:** Create `Documents_Dev_Logs/archive/` and move older logs there.
+3.  **Delete Artifacts:** Remove `test_launch.log` and `verify_dashboard.py` (or move to archive).
 
 ### Step 3: Focused Tasking
 Your current approach of "single focused issue" is correct. To further improve stability:
