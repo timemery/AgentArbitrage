@@ -144,7 +144,7 @@ def backfill_deals(reset=False):
                         # Quote column names to handle special characters and numbers at the start
                         quoted_columns = [f'"{col}"' for col in db_columns]
                         query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(quoted_columns)}) VALUES ({placeholders})"
-                        data_to_insert = [tuple(row.get(col) for col in db_columns) for row in rows_to_upsert]
+                        data_to_insert = [tuple(row.get(h) for h in headers_data) + (row.get('last_seen_utc'), row.get('source')) for row in rows_to_upsert]
                         cursor.executemany(query, data_to_insert)
                         conn.commit()
                         logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")

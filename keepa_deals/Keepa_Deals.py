@@ -253,9 +253,7 @@ def run_keepa_script(api_key, no_cache=False, output_dir='data', deal_limit=None
                 processed_row = _process_single_deal(
                     product_data,
                     seller_data_cache=seller_data_cache,
-                    xai_api_key=XAI_API_KEY,
-                    business_settings=business_settings,
-                    headers=HEADERS
+                    xai_api_key=XAI_API_KEY
                 )
 
                 if processed_row:
