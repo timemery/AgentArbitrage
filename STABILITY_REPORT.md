@@ -13,23 +13,17 @@ It is **not** an issue with your computer's speed or memory. The issue lies in t
 
 ## Addressing Your Specific Question: "Are my warnings sufficient?"
 
-**You asked:** *Is the text in my task description and `AGENTS.md` (warning about the 115MB file and instructing to use `tail`) sufficient, or does it need to be more strongly worded?*
+**You asked:** *Is the text in my task description and `AGENTS.md` (warning about the 115MB file and instructing to use `tail`) sufficient?*
 
 **The Verdict:**
-Your instructions are **linguistically perfect**. They are:
-1.  **Specific:** You mention the exact filename (`celery.log`) and size.
-2.  **Actionable:** You provide the exact commands to use instead (`tail`, `grep`).
-3.  **Prominent:** They are in the task description and `AGENTS.md`.
-
-**Why is it still failing?**
-If the text is perfect, why does the agent still become unresponsive?
-1.  **Agent Fallibility:** In complex reasoning tasks, agents prioritize "gathering context." Sometimes, the urge to "read the log to find the error" overrides the instruction to "not read the *whole* file." The agent might intend to read "just a bit" but mistakenly uses a tool that fetches the whole thing.
-2.  **Tooling Limits:** Some agent tools might try to index or "peek" at files automatically. A 115MB file acts like a black hole—even touching it can cause a timeout before the agent even decides to stop.
-3.  **Hazard Avoidance vs. Hazard Removal:** Your current strategy is "Hazard Avoidance" (putting a "Do Not Touch" sign on a dangerous button). This relies on the agent reading the sign and obeying it every single time. A safer strategy is "Hazard Removal" (removing the button entirely).
+Your instructions are **linguistically perfect** (specific, actionable, prominent). However, relying on them is a strategy of **Hazard Avoidance** (warning signs), which fails when an agent inevitably prioritizes "gathering context" over "safety protocols."
 
 **Recommendation:**
-**Do not rewrite the warning. Remove the file.**
-The most robust solution is to eliminate the possibility of error.
+Switch to **Hazard Removal** (eliminating the file's size).
+
+**You asked:** *Can I keep the head and tail of the log instead of deleting it?*
+
+**Yes.** This is the best of both worlds: it preserves the startup context (head) and the most recent errors (tail) while removing the massive bulk of repetitive data in the middle.
 
 ---
 
@@ -37,12 +31,22 @@ The most robust solution is to eliminate the possibility of error.
 
 To work together without interruptions, we must implement a strict hygiene protocol.
 
-### Step 1: Log Management (Hazard Removal)
-**Action:** Truncate or delete the `celery.log` **before** assigning the task to the agent.
+### Step 1: Log Pruning (Hazard Removal)
+**Action:** Run this command **before** assigning the task. It will reduce the 115MB file to a few kilobytes, keeping only the first 50 and last 50 lines.
 
-*   **Command:** `> celery.log` (This empties the file without deleting it, keeping the file handle valid).
-*   **Why:** If the file is 0KB, the agent can mistakenly read the whole thing without crashing. You eliminate the risk entirely.
-*   **Agent Instruction Update:** Change your instruction to: *"I have truncated celery.log. It is safe to read. If it fills up again, use `tail`."*
+**The "Pruning" Command:**
+```bash
+(head -n 50 /var/www/agentarbitrage/celery.log && echo -e "\n... (LOG TRUNCATED BY USER FOR STABILITY) ...\n" && tail -n 50 /var/www/agentarbitrage/celery.log) > /var/www/agentarbitrage/celery.log.tmp && mv /var/www/agentarbitrage/celery.log.tmp /var/www/agentarbitrage/celery.log
+```
+
+*   **What this does:**
+    1.  Reads the first 50 lines (`head`).
+    2.  Inserts a warning marker ("... LOG TRUNCATED ...").
+    3.  Reads the last 50 lines (`tail`).
+    4.  Saves this "digest" to a temporary file.
+    5.  Overwrites the original giant log with this lightweight digest.
+
+*   **Agent Instruction Update:** Change your instruction to: *"I have pruned `celery.log`. It contains the startup logs and the most recent errors. It is safe to read."*
 
 ### Step 2: Codebase Cleanup (Context Management)
 We should organize the repository to reduce cognitive load (noise) for the agent.
@@ -60,4 +64,4 @@ Your current approach of "single focused issue" is correct. To further improve s
 
 ## Conclusion
 
-The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By shifting from "warning about the file" to "managing the file's size," we can guarantee a stable environment for Jules.
+The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By systematically "pruning" the log file before the agent sees it, you eliminate the possibility of a crash while preserving the critical information needed for debugging.
