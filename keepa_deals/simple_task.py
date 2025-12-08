@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import redis
 
 from worker import celery_app as celery
-from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark
+from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark, DB_PATH
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
@@ -30,7 +30,7 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Constants ---
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+# DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 MAX_ASINS_PER_BATCH = 50
