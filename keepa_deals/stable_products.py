@@ -402,8 +402,45 @@ def listed_since(product):
 # Sales Rank - Current starts
 def sales_rank_current(product):
     stats = product.get('stats', {})
-    result = {'Sales Rank - Current': get_stat_value(stats, 'current', 3, is_price=False)}
-    return result
+    val = get_stat_value(stats, 'current', 3, is_price=False)
+
+    if val != '-':
+        return {'Sales Rank - Current': val}
+
+    # Fallback to CSV (index 3 is Sales Rank)
+    csv = product.get('csv')
+    if csv and len(csv) > 3 and csv[3]:
+        history = csv[3]
+        # history is [time, val, time, val...]
+        if len(history) >= 2:
+             last_val = history[-1]
+             if last_val != -1:
+                 logger.info(f"ASIN {product.get('asin', 'unknown')}: Using CSV fallback for Sales Rank: {last_val}")
+                 return {'Sales Rank - Current': f"{last_val:,}"}
+
+    # Fallback to salesRanks
+    sales_ranks = product.get('salesRanks')
+    if sales_ranks and isinstance(sales_ranks, dict):
+        best_val = -1
+        max_ts = -1
+
+        for cat_id, history in sales_ranks.items():
+            if history and len(history) >= 2:
+                # history is [time, val, time, val...]
+                # Iterate in pairs from the end
+                # Actually, standard keepa history is a flat list [ts, val, ts, val...]
+                # So -2 is timestamp, -1 is value of the last entry.
+                ts = history[-2]
+                val = history[-1]
+                if val != -1 and ts > max_ts:
+                    max_ts = ts
+                    best_val = val
+
+        if best_val != -1:
+             logger.info(f"ASIN {product.get('asin', 'unknown')}: Using salesRanks fallback for Sales Rank: {best_val}")
+             return {'Sales Rank - Current': f"{best_val:,}"}
+
+    return {'Sales Rank - Current': '-'}
 # Sales Rank - Current ends
 
 # Sales Rank - 30 days avg starts

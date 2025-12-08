@@ -233,9 +233,10 @@ def update_recent_deals():
 
                 # After a successful upsert, trigger the restriction check for the new ASINs.
                 new_asins = [row['ASIN'] for row in rows_to_upsert if 'ASIN' in row]
-                if new_asins:
-                    celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                    logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs from upserter. ---")
+                # Disabled temporarily due to Amazon permission issues
+                # if new_asins:
+                #     celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                #     logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs from upserter. ---")
 
         except sqlite3.Error as e:
             logger.error(f"Step 6 Failed: Database error during upsert: {e}", exc_info=True)
