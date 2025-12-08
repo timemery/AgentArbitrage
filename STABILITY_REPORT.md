@@ -5,28 +5,31 @@
 
 ## Executive Summary
 
-The recurring unresponsiveness you are experiencing is primarily caused by **Resource Exhaustion** and **Context Window Overload**, triggered by massive log files (specifically `celery.log`) and an increasingly cluttered root directory.
+The recurring unresponsiveness is primarily caused by **Resource Exhaustion** and **Context Window Overload**, triggered by massive log files (specifically `celery.log`) and an increasingly cluttered root directory.
 
-It is **not** an issue with your computer's speed or memory. The issue lies in the sheer volume of text the agent attempts to process, which exceeds the strict limits of the underlying LLM (Large Language Model) environment.
+It is **not** an issue with your computer's speed or memory. The issue lies in the volume of text the agent attempts to process, which exceeds the strict limits of the underlying LLM environment.
 
-## Root Cause Analysis
+---
 
-### 1. The "Silent Killer": `celery.log` (115MB)
-*   **The Limit:** LLM agents typically have a "context window" (working memory) of 32,000 to 128,000 tokens (roughly 100-400 pages of text).
-*   **The Problem:** A 115MB text file is approximately **30-40 million tokens**.
-*   **The Crash:** When an agent attempts to read this file (even to "check errors"), it instantly overflows its memory buffer. This results in:
-    *   **Timeouts:** The system hangs while trying to load the text.
-    *   **Silent Failures:** The agent "stops communicating" because the process hosting it crashes or is terminated by the platform for excessive resource usage.
-    *   **Frozen Interfaces:** If the browser tries to render even a fraction of this log, it can freeze your local tab.
+## Addressing Your Specific Question: "Are my warnings sufficient?"
 
-### 2. File System Clutter
-*   **Diagnostic Scripts:** The root directory contains 15+ `diag_*.py` files.
-*   **Dev Logs:** The `Documents_Dev_Logs` directory is growing with every session.
-*   **Impact:** When the agent runs `ls` or tries to "understand the codebase," it is presented with a wall of noise. This dilutes its attention and uses up valuable tokens that should be spent on the actual code logic (`backfiller.py`, `processing.py`).
+**You asked:** *Is the text in my task description and `AGENTS.md` (warning about the 115MB file and instructing to use `tail`) sufficient, or does it need to be more strongly worded?*
 
-### 3. Complexity vs. Focus
-*   The application logic *is* complex, but complexity alone doesn't cause crashes. *Reading irrelevant complexity* does.
-*   If the agent is not strictly directed, it may try to read "everything related to the task," leading to overload.
+**The Verdict:**
+Your instructions are **linguistically perfect**. They are:
+1.  **Specific:** You mention the exact filename (`celery.log`) and size.
+2.  **Actionable:** You provide the exact commands to use instead (`tail`, `grep`).
+3.  **Prominent:** They are in the task description and `AGENTS.md`.
+
+**Why is it still failing?**
+If the text is perfect, why does the agent still become unresponsive?
+1.  **Agent Fallibility:** In complex reasoning tasks, agents prioritize "gathering context." Sometimes, the urge to "read the log to find the error" overrides the instruction to "not read the *whole* file." The agent might intend to read "just a bit" but mistakenly uses a tool that fetches the whole thing.
+2.  **Tooling Limits:** Some agent tools might try to index or "peek" at files automatically. A 115MB file acts like a black hole—even touching it can cause a timeout before the agent even decides to stop.
+3.  **Hazard Avoidance vs. Hazard Removal:** Your current strategy is "Hazard Avoidance" (putting a "Do Not Touch" sign on a dangerous button). This relies on the agent reading the sign and obeying it every single time. A safer strategy is "Hazard Removal" (removing the button entirely).
+
+**Recommendation:**
+**Do not rewrite the warning. Remove the file.**
+The most robust solution is to eliminate the possibility of error.
 
 ---
 
@@ -34,16 +37,17 @@ It is **not** an issue with your computer's speed or memory. The issue lies in t
 
 To work together without interruptions, we must implement a strict hygiene protocol.
 
-### Step 1: Log Management (Critical)
-**Action:** You must truncate or delete the `celery.log` before starting any new task, especially if it has grown large.
+### Step 1: Log Management (Hazard Removal)
+**Action:** Truncate or delete the `celery.log` **before** assigning the task to the agent.
 
-*   **Command:** `> celery.log` (This empties the file without deleting it).
-*   **Agent Instruction:** Explicitly tell the agent: *"Do not read celery.log. Use `tail -n 50 celery.log` if you need to check the status."*
+*   **Command:** `> celery.log` (This empties the file without deleting it, keeping the file handle valid).
+*   **Why:** If the file is 0KB, the agent can mistakenly read the whole thing without crashing. You eliminate the risk entirely.
+*   **Agent Instruction Update:** Change your instruction to: *"I have truncated celery.log. It is safe to read. If it fills up again, use `tail`."*
 
-### Step 2: Codebase Cleanup
-We should organize the repository to reduce cognitive load.
+### Step 2: Codebase Cleanup (Context Management)
+We should organize the repository to reduce cognitive load (noise) for the agent.
 
-**Proposed Actions:**
+**Proposed Actions (I can perform these if requested):**
 1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py` files there.
 2.  **Archive Dev Logs:** Create `Documents_Dev_Logs/archive/` and move older logs (e.g., `dev-log-1` through `dev-log-6`) there.
 3.  **Rotate Logs:** Consider adding a simple script or cron job to rotate `celery.log` automatically.
@@ -56,4 +60,4 @@ Your current approach of "single focused issue" is correct. To further improve s
 
 ## Conclusion
 
-The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By keeping the working environment clean and the log files small, we can return to a state where Jules is fast, responsive, and effective.
+The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By shifting from "warning about the file" to "managing the file's size," we can guarantee a stable environment for Jules.
