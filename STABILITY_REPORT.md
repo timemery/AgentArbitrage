@@ -62,22 +62,19 @@ We should organize the repository to reduce cognitive load (noise) for the agent
     *   **Reasoning:** You correctly identified that `kill_everything_force.sh` is the superior, most up-to-date version. A comparison confirms that `kill_everything.sh` is older, less robust (misses the "monitor" process), and redundant. `force_kill.sh` is also redundant as `kill_everything_force.sh` includes the same logic.
     *   **Recommendation:** Delete `kill_everything.sh` and `force_kill.sh`. Keep only `kill_everything_force.sh`.
 
-### Step 3: Prompt Tuning (Critical New Finding)
+### Step 3: Prompt Tuning (Final Verification)
 
-**Issue:** Your updated prompt includes the instruction:
-> *"Read: ... All Dev Logs in Documents_Dev_Logs/"*
+**You asked:** *Is reading the last TWO Dev Logs (`dev-log-8.md` and `dev-log-9.md`) safe?*
 
-**The Risk:** The `Documents_Dev_Logs/` directory contains more than just small text logs. It includes:
-1.  **`RAW_PRODUCT_DATA.md` (424 KB):** This file is massive. Reading this single file consumes more context than many source code files combined.
-2.  **`Keepa_Documentation-official-2.md` (135 KB):** Another very large file.
-3.  **`dev-log-*.md`:** There are 9 of these, averaging ~50KB each. Reading all of them is ~450KB.
+**The Verdict: YES.**
+*   **`dev-log-8.md`**: ~56 KB
+*   **`dev-log-9.md`**: ~30 KB
+*   **Total:** ~86 KB.
 
-**Recommendation:**
-Do **not** instruct the agent to read "All Dev Logs." This invites the same context overload as the `celery.log` issue.
+This is well within the safety margin. The danger arises when the agent attempts to read the *entire* `Documents_Dev_Logs/` folder, which contains huge files like `RAW_PRODUCT_DATA.md` (424 KB).
 
-**Revised Prompt Instruction:**
-> *"Read: `Documents_Dev_Logs/data_logic.md` and the **most recent** Dev Log (e.g., `dev-log-9.md`). Do NOT read `RAW_PRODUCT_DATA.md` or other historical logs unless specifically requested."*
+**Your Updated Prompt:**
+Your revised prompt (filtering out `RAW_PRODUCT_DATA.md` and `Archive/` directories) is **excellent**. It is precise, restrictive where it needs to be, and permissive where it helps context.
 
-## Conclusion
-
-The "unresponsiveness" is a defense mechanism of the system protecting itself from data overload. By systematically "pruning" the log file before the agent sees it, and explicitly limiting *which* documentation files it reads (avoiding the 400KB+ data dumps), you eliminate the possibility of a crash while preserving the critical information needed for debugging.
+**Stability Status:**
+With **Log Pruning** (Step 1) and your **Revised Prompt** (Step 3), the risk of "unresponsiveness" due to context overload is effectively eliminated. You are ready to resume development.
