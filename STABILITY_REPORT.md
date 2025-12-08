@@ -58,11 +58,14 @@ We should organize the repository to reduce cognitive load (noise) for the agent
 *   **Trigger Scripts (`trigger_diag_task.py`, `trigger_env_diag.py`, `test_run.py`)**: **MOVE TO `diagnostics/`**.
     *   **Reasoning:** While these scripts are simple wrappers around `celery.send_task` and *could* be recreated, they contain the specific task names (e.g., `keepa_deals.env_diag.run_environment_diagnostic`) which are tedious to remember.
     *   **Recommendation:** Do not delete them. Moving them to a `diagnostics/` folder clears the root directory clutter while preserving these useful "shortcuts" for future debugging.
+*   **Kill Scripts (`kill_everything.sh`, `force_kill.sh`)**: **DELETE**.
+    *   **Reasoning:** You correctly identified that `kill_everything_force.sh` is the superior, most up-to-date version. A comparison confirms that `kill_everything.sh` is older, less robust (misses the "monitor" process), and redundant. `force_kill.sh` is also redundant as `kill_everything_force.sh` includes the same logic.
+    *   **Recommendation:** Delete `kill_everything.sh` and `force_kill.sh`. Keep only `kill_everything_force.sh`.
 
 **Proposed Cleanup Actions (I can perform these if requested):**
 1.  **Move Diagnostic Scripts:** Create a `diagnostics/` folder and move all `diag_*.py`, `trigger_*.py`, and `test_run.py` files there.
 2.  **Archive Dev Logs:** Create `Documents_Dev_Logs/archive/` and move older logs there.
-3.  **Delete Artifacts:** Remove `test_launch.log`.
+3.  **Delete Artifacts:** Remove `test_launch.log`, `kill_everything.sh`, and `force_kill.sh`.
 
 ### Step 3: Focused Tasking
 Your current approach of "single focused issue" is correct. To further improve stability:
