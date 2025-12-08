@@ -120,7 +120,7 @@ def run_single_asin_diagnostic(asin: str):
     deal_object = {'asin': asin, 'lastUpdate': product_data.get('lastUpdate', 0)}
     product_data.update(deal_object)
 
-    processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
+    processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
 
     logger.info("--- FINAL PROCESSED ROW ---")
     logger.info(json.dumps(processed_row, indent=2))

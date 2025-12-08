@@ -197,7 +197,7 @@ def update_recent_deals():
             product_data = all_fetched_products[asin]
             product_data.update(deal)
 
-            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key, business_settings, headers)
+            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
 
             if processed_row:
                 processed_row = clean_numeric_values(processed_row)

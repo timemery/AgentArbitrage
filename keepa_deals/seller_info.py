@@ -65,7 +65,7 @@ def get_seller_info_for_single_deal(product, api_key, token_manager: TokenManage
     token_manager.request_permission_for_call(estimated_cost)
 
     # Fetch seller data from Keepa
-    seller_data, _, tokens_left, _ = fetch_seller_data(api_key, [seller_id])
+    seller_data, _, _, tokens_left = fetch_seller_data(api_key, [seller_id])
     token_manager.update_after_call(tokens_left)
 
     if seller_data and seller_data.get('sellers'):
