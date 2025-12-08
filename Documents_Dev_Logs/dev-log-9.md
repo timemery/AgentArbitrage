@@ -213,3 +213,70 @@ During verification, it was noted that the Backfiller task restarted from Page 0
 
 ### **Summary of Success**
 The task was a success. The Sales Rank extraction is now significantly more robust, capturing data that was previously missed. The application stability is improved by silencing the failing Gated Check task.
+
+# Dev Log: Persistent DB State for Backfiller
+
+**Date:** July 12, 2025 **Task:** Implement Persistent DB State for Backfiller
+
+## Context & Objective
+
+The `backfill_deals` task previously relied on a local JSON file (`backfill_state.json`) to track its progress (the last processed page). This method was fragile; if the file was deleted or lost during a deployment or container restart, the scraper would unintentionally restart from Page 0. The objective was to move this state tracking into the persistent `deals.db` SQLite database to ensure resiliency. A secondary objective was to apply the same logic to the `watermark.json` file used by the `update_recent_deals` task.
+
+## Implementation Details
+
+### 1. Database Schema Update (`keepa_deals/db_utils.py`)
+
+- New Table:
+
+   
+
+  Created a generic
+
+   
+
+  ```
+  system_state
+  ```
+
+   
+
+  table with the schema:
+
+  - `key` (TEXT PRIMARY KEY)
+  - `value` (TEXT)
+  - `updated_at` (TIMESTAMP)
+
+- **Helper Functions:** Implemented `get_system_state(key)` and `set_system_state(key, value)` to abstract SQL interactions.
+
+- **Centralized Configuration:** Refactored `DB_PATH` to prioritize a `DATABASE_URL` environment variable, enabling safer testing and consistency across modules.
+
+### 2. Backfiller Refactoring (`keepa_deals/backfiller.py`)
+
+- **State Logic:** Replaced file I/O operations with calls to `get_system_state` and `set_system_state`.
+- **Migration Strategy:** Implemented a "check-and-migrate" logic. On startup, if the DB state for `backfill_page` is missing but the legacy `backfill_state.json` exists, the system reads the JSON, saves the value to the DB, and then proceeds. This ensures no progress is lost during the upgrade.
+- **Reset Functionality:** The `backfill_deals(reset=True)` function was updated to explicitly set `backfill_page` to `0` in the database and remove any legacy JSON files, ensuring a clean state for fresh runs.
+- **Robustness:** Added an immediate check (`create_deals_table_if_not_exists`) at the start of the task to ensure the database structure is valid before any state operations are attempted.
+
+### 3. Watermark Persistence (`keepa_deals/db_utils.py`)
+
+- Refactored `load_watermark` and `save_watermark` to use the `system_state` table (key: `watermark_iso`).
+- Applied the same migration logic: if the DB entry is missing, it attempts to import from the legacy `watermark.json`.
+
+## Challenges & Solutions
+
+### Challenge 1: Environment Stability & Safe Testing
+
+- **Issue:** Direct modification of the production `deals.db` during development carries the risk of data loss.
+- **Solution:** Enhanced `db_utils.py` to support a `DATABASE_URL` environment variable. This allowed for the creation of a dedicated test script (`test_state_persistence.py`) that mocked the environment, created a temporary `test_deals.db`, generated dummy legacy JSON files, and verified the entire migration and persistence lifecycle without touching the production database.
+
+### Challenge 2: Inconsistent Database Paths
+
+- **Issue:** Multiple files (`simple_task.py`, `backfiller.py`) contained hardcoded paths to `../deals.db`, leading to potential inconsistencies and making it difficult to redirect the application to a test database.
+- **Solution:** Centralized the `DB_PATH` definition in `keepa_deals/db_utils.py` and refactored other modules to import this constant. This ensures all parts of the application use the single, correct database location.
+
+## Outcome
+
+The task was successful. The `backfill_deals` and `update_recent_deals` tasks now persist their state in `deals.db`.
+
+- **Verification:** Custom automated tests confirmed that the application creates the `system_state` table, migrates existing JSON data (if present), and correctly updates the state in the database.
+- **Observation:** In the final environment test, the system correctly identified the state (even after a reset to 0) and reported "Resuming backfill from page 0", confirming that the database-driven state logic is active and functioning.

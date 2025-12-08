@@ -4,12 +4,15 @@ import json
 import os
 import re
 import logging
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+# Use DATABASE_URL if set, otherwise default to deals.db in parent directory
+DB_PATH = os.getenv('DATABASE_URL', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db'))
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
+WATERMARK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'watermark.json')
 
 def sanitize_col_name(name):
     """Sanitizes a string to be a valid SQLite column name."""
@@ -41,11 +44,64 @@ def has_unique_index_on_asin(cursor, table_name):
         logger.error(f"Error checking for unique index: {e}")
         return False
 
+def create_system_state_table_if_not_exists():
+    """
+    Ensures the 'system_state' table exists.
+    Schema: key (TEXT PRIMARY KEY), value (TEXT), updated_at (TIMESTAMP)
+    """
+    logger.info(f"Database check: Ensuring table 'system_state' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS system_state (
+                    key TEXT PRIMARY KEY,
+                    value TEXT,
+                    updated_at TIMESTAMP
+                )
+            """)
+            conn.commit()
+    except sqlite3.Error as e:
+        logger.error(f"Error creating system_state table: {e}", exc_info=True)
+        raise
+
+def get_system_state(key: str, default=None):
+    """Retrieves a value from the system_state table."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT value FROM system_state WHERE key = ?", (key,))
+            row = cursor.fetchone()
+            if row:
+                return row[0]
+            return default
+    except sqlite3.Error as e:
+        logger.error(f"Error retrieving system state for key '{key}': {e}", exc_info=True)
+        return default
+
+def set_system_state(key: str, value: str):
+    """Sets a value in the system_state table."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            updated_at = datetime.now(timezone.utc).isoformat()
+            cursor.execute("""
+                INSERT OR REPLACE INTO system_state (key, value, updated_at)
+                VALUES (?, ?, ?)
+            """, (key, str(value), updated_at))
+            conn.commit()
+            logger.info(f"System state updated: {key}={value}")
+    except sqlite3.Error as e:
+        logger.error(f"Error setting system state for key '{key}': {e}", exc_info=True)
+
 def create_deals_table_if_not_exists():
     """
     Ensures the 'deals' table exists and has the correct schema.
-    This is a non-destructive function safe for frequent checks.
+    Also ensures 'system_state' table exists.
     """
+    # Ensure system state table exists
+    create_system_state_table_if_not_exists()
+
     logger.info(f"Database check: Ensuring table '{TABLE_NAME}' at '{DB_PATH}' is correctly configured.")
     try:
         with sqlite3.connect(DB_PATH) as conn:
@@ -138,35 +194,37 @@ def recreate_deals_table():
         logger.error(f"A critical error occurred during table recreation: {e}", exc_info=True)
         raise
 
-WATERMARK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'watermark.json')
-
 def save_watermark(timestamp: str):
-    """Saves the given ISO 8601 timestamp to the watermark file."""
+    """Saves the given ISO 8601 timestamp to the system_state table."""
     logger.info(f"Saving new watermark timestamp: {timestamp}")
-    try:
-        with open(WATERMARK_PATH, 'w') as f:
-            json.dump({'lastUpdate': timestamp}, f)
-        logger.info("Watermark saved successfully.")
-    except IOError as e:
-        logger.error(f"Error saving watermark to {WATERMARK_PATH}: {e}", exc_info=True)
+    set_system_state('watermark_iso', timestamp)
 
 def load_watermark() -> str | None:
     """
-    Loads the watermark timestamp from the file.
-    Returns the ISO 8601 timestamp string or None if the file doesn't exist.
+    Loads the watermark timestamp from the system_state table.
+    Migrates from 'watermark.json' if the DB entry is missing.
     """
-    if not os.path.exists(WATERMARK_PATH):
-        logger.warning("Watermark file not found. Assuming this is the first run.")
-        return None
-    try:
-        with open(WATERMARK_PATH, 'r') as f:
-            data = json.load(f)
-            timestamp = data.get('lastUpdate')
-            logger.info(f"Loaded watermark: {timestamp}")
-            return timestamp
-    except (IOError, json.JSONDecodeError) as e:
-        logger.error(f"Error loading watermark from {WATERMARK_PATH}: {e}", exc_info=True)
-        return None
+    # Try loading from DB first
+    val = get_system_state('watermark_iso')
+    if val:
+        return val
+
+    # Fallback: Check for legacy file
+    if os.path.exists(WATERMARK_PATH):
+        logger.info("Watermark missing in DB. Checking legacy file...")
+        try:
+            with open(WATERMARK_PATH, 'r') as f:
+                data = json.load(f)
+                timestamp = data.get('lastUpdate')
+                if timestamp:
+                    logger.info(f"Found legacy watermark: {timestamp}. Migrating to DB.")
+                    save_watermark(timestamp)
+                    return timestamp
+        except (IOError, json.JSONDecodeError) as e:
+            logger.error(f"Error loading watermark from {WATERMARK_PATH}: {e}", exc_info=True)
+
+    logger.warning("Watermark not found in DB or file. Assuming this is the first run.")
+    return None
 
 def create_user_restrictions_table_if_not_exists():
     """
@@ -210,7 +268,7 @@ def save_deals_to_db(deals_data):
     if not deals_data:
         return
 
-    conn = sqlite3.connect('deals.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     # Get the columns from the deals table to ensure we only insert what's expected
@@ -245,7 +303,7 @@ def save_deals_to_db(deals_data):
     logging.info(f"Successfully saved/updated {len(deals_data)} deals to the database.")
 
 def clear_deals_table():
-    conn = sqlite3.connect('deals.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM deals")
     conn.commit()

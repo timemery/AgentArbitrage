@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 import redis
 
 from worker import celery_app as celery
-from .db_utils import sanitize_col_name, save_watermark
+from .db_utils import (
+    sanitize_col_name, save_watermark, DB_PATH,
+    get_system_state, set_system_state, recreate_deals_table,
+    create_deals_table_if_not_exists
+)
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
 from .processing import _process_single_deal, clean_numeric_values
@@ -22,37 +26,71 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Version Identifier ---
-BACKFILLER_VERSION = "2.8-final-fix"
+BACKFILLER_VERSION = "2.9-persistent-state"
 
 # --- Constants ---
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'deals.db')
+# DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-STATE_FILE = 'backfill_state.json'
 DEALS_PER_CHUNK = 2
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days
+STATE_FILE_LEGACY = 'backfill_state.json'
 
 def load_backfill_state():
-    if not os.path.exists(STATE_FILE): return 0
-    try:
-        with open(STATE_FILE, 'r') as f:
-            return json.load(f).get('last_completed_page', 0)
-    except (json.JSONDecodeError, FileNotFoundError):
-        return 0
+    """
+    Loads the last completed page from the system_state table.
+    Migrates from legacy JSON file if DB entry is missing.
+    """
+    # 1. Try loading from DB
+    val = get_system_state('backfill_page')
+    if val is not None:
+        try:
+            return int(val)
+        except ValueError:
+            logger.error(f"Invalid backfill_page in DB: {val}. Defaulting to 0.")
+            return 0
+
+    # 2. Migration: Check legacy file
+    if os.path.exists(STATE_FILE_LEGACY):
+        logger.info("Backfill state missing in DB. Checking legacy file...")
+        try:
+            with open(STATE_FILE_LEGACY, 'r') as f:
+                data = json.load(f)
+                page = data.get('last_completed_page', 0)
+                logger.info(f"Found legacy backfill state: page {page}. Migrating to DB.")
+                save_backfill_state(page)
+                return page
+        except (json.JSONDecodeError, FileNotFoundError, ValueError) as e:
+            logger.error(f"Error loading legacy backfill state: {e}")
+            return 0
+
+    return 0
 
 def save_backfill_state(page_number):
-    with open(STATE_FILE, 'w') as f:
-        json.dump({'last_completed_page': page_number}, f)
+    """Saves the last completed page to the system_state table."""
+    set_system_state('backfill_page', str(page_number))
     logger.info(f"--- Backfill state saved. Last completed page: {page_number} ---")
 
 @celery.task(name='keepa_deals.backfiller.backfill_deals')
 def backfill_deals(reset=False):
+    # Ensure tables exist immediately
+    create_deals_table_if_not_exists()
+
     if reset:
-        if os.path.exists(STATE_FILE):
-            os.remove(STATE_FILE)
-            logger.info(f"Removed state file {STATE_FILE} for a fresh start.")
-        from .db_utils import recreate_deals_table
+        logger.info("Reset requested. Clearing backfill state and database.")
+        # Reset DB state to 0
+        save_backfill_state(0)
+
+        # Remove legacy file if it exists
+        if os.path.exists(STATE_FILE_LEGACY):
+            try:
+                os.remove(STATE_FILE_LEGACY)
+                logger.info(f"Removed legacy state file {STATE_FILE_LEGACY}.")
+            except OSError as e:
+                logger.warning(f"Could not remove legacy state file: {e}")
+
+        # Recreate table (clears data)
         recreate_deals_table()
         logger.info("Database has been reset.")
 
