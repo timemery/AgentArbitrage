@@ -10,7 +10,8 @@ import redis
 from worker import celery_app as celery
 from .db_utils import (
     sanitize_col_name, save_watermark, DB_PATH,
-    get_system_state, set_system_state, recreate_deals_table
+    get_system_state, set_system_state, recreate_deals_table,
+    create_deals_table_if_not_exists
 )
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
@@ -73,6 +74,9 @@ def save_backfill_state(page_number):
 
 @celery.task(name='keepa_deals.backfiller.backfill_deals')
 def backfill_deals(reset=False):
+    # Ensure tables exist immediately
+    create_deals_table_if_not_exists()
+
     if reset:
         logger.info("Reset requested. Clearing backfill state and database.")
         # Reset DB state to 0
