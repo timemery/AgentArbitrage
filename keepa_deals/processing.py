@@ -68,18 +68,23 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             row_data['Seller Review Count'] = seller_details.get('ratingCount')
 
             # Calculate Seller Quality Score (Trust)
-            rating_percent = seller_details.get('rating', 0)
-            rating_count = seller_details.get('ratingCount', 0)
+            # Prioritize 'current' fields if available, otherwise fall back to history arrays
+            rating_percent = seller_details.get('currentRating')
+            if rating_percent is None:
+                rating_percent = seller_details.get('rating', 0)
+                if isinstance(rating_percent, list) and rating_percent:
+                    rating_percent = rating_percent[-1]
 
-            # Handle Keepa's array format for seller history
-            if isinstance(rating_percent, list) and rating_percent:
-                rating_percent = rating_percent[-1]
-            if isinstance(rating_count, list) and rating_count:
-                rating_count = rating_count[-1]
+            rating_count = seller_details.get('currentRatingCount')
+            if rating_count is None:
+                rating_count = seller_details.get('ratingCount', 0)
+                if isinstance(rating_count, list) and rating_count:
+                    rating_count = rating_count[-1]
 
             if rating_percent is not None and rating_count is not None and isinstance(rating_percent, (int, float)) and isinstance(rating_count, (int, float)):
                 positive_ratings = int((rating_percent / 100.0) * rating_count)
-                row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count)
+                # Wilson score is 0-1. Multiply by 100 to align with 0-100 scale.
+                row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count) * 100
             else:
                 row_data['Seller_Quality_Score'] = 0.0
         else:
