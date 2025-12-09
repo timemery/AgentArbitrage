@@ -70,7 +70,7 @@ def get_percent_discount(avg_price, now_price, logger=None):
     """
     Calculates the percentage discount of the current 'Price Now' compared to the '1yr. Avg.'
     """
-    COLUMN_NAME = "Discount %"
+    COLUMN_NAME = "Percent Down"
     if not logger:
         logger = logging.getLogger(__name__)
 
@@ -93,7 +93,9 @@ from itertools import groupby
 def get_trend(product, logger=None):
     """
     Indicates the price trend based on a dynamic sample of recent unique price changes.
+    Returns an arrow string: ⇧ (up), ⇩ (down), ⇨ (flat).
     """
+    COLUMN_NAME = "Trend"
     if not logger:
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
@@ -115,26 +117,32 @@ def get_trend(product, logger=None):
     if csv_data and len(csv_data) > 2 and csv_data[2]: combined_history.extend(csv_data[2])
 
     if not combined_history:
-        return {"Price Trend %": 0}
+        return {COLUMN_NAME: "⇨"}
 
     price_points = sorted([(combined_history[i], combined_history[i+1]) for i in range(0, len(combined_history), 2) if combined_history[i+1] > 0])
     unique_prices = [k for k, g in groupby([p[1] for p in price_points])]
 
     if len(unique_prices) < 2:
-        return {"Price Trend %": 0}
+        return {COLUMN_NAME: "⇨"}
 
     analysis_window = unique_prices[-sample_size:]
     if len(analysis_window) < 2:
-        return {"Price Trend %": 0}
+        return {COLUMN_NAME: "⇨"}
 
     first_price = analysis_window[0]
     last_price = analysis_window[-1]
 
     if first_price == 0:
-        return {"Price Trend %": 0}
+        return {COLUMN_NAME: "⇨"}
 
     trend_percent = ((last_price - first_price) / first_price) * 100
-    return {"Price Trend %": trend_percent}
+
+    if trend_percent > 0:
+        return {COLUMN_NAME: "⇧"}
+    elif trend_percent < 0:
+        return {COLUMN_NAME: "⇩"}
+    else:
+        return {COLUMN_NAME: "⇨"}
 
 def analyze_sales_rank_trends(product):
     """

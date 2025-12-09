@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             value = numValue.toLocaleString('en-US');
                         } else if (col === 'Margin') {
                             value = `${numValue.toFixed(2)}%`;
-                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost')) {
+                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost') || col === '1yr_Avg') {
                             value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         }
                     } else if (col === 'Binding' || col === 'Condition') {
