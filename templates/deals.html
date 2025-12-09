@@ -21,5 +21,32 @@
             </div>
         </form>
     </div>
+
+    <div class="settings-card" style="margin-top: 2rem; border-color: #ff4d4d;">
+        <h2 style="color: #ff4d4d;">Danger Zone</h2>
+        <p>
+            Resetting the database will clear all existing deals and restart the backfill process from scratch.
+            This action cannot be undone.
+        </p>
+        <button id="reset-db-btn" class="styled-button" style="background-color: #ff4d4d; color: white;">
+            Reset Database & Restart Backfill
+        </button>
+    </div>
 </div>
+
+<script>
+    document.getElementById('reset-db-btn').addEventListener('click', function() {
+        if (confirm('Are you ABSOLUTELY SURE you want to delete all data and restart the backfill? This process will take hours.')) {
+            fetch('/api/reset-database', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred.');
+                });
+        }
+    });
+</script>
 {% endblock %}

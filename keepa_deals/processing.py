@@ -63,14 +63,21 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
 
         if seller_id and seller_data_cache and seller_id in seller_data_cache:
             seller_details = seller_data_cache[seller_id]
-            row_data['Seller'] = seller_details.get('name', seller_id) # Use name if available
+            row_data['Seller'] = seller_details.get('sellerName', seller_details.get('name', seller_id)) # Use sellerName if available
             row_data['Seller Rating'] = seller_details.get('rating')
             row_data['Seller Review Count'] = seller_details.get('ratingCount')
 
             # Calculate Seller Quality Score (Trust)
             rating_percent = seller_details.get('rating', 0)
             rating_count = seller_details.get('ratingCount', 0)
-            if rating_percent is not None and rating_count is not None:
+
+            # Handle Keepa's array format for seller history
+            if isinstance(rating_percent, list) and rating_percent:
+                rating_percent = rating_percent[-1]
+            if isinstance(rating_count, list) and rating_count:
+                rating_count = rating_count[-1]
+
+            if rating_percent is not None and rating_count is not None and isinstance(rating_percent, (int, float)) and isinstance(rating_count, (int, float)):
                 positive_ratings = int((rating_percent / 100.0) * rating_count)
                 row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count)
             else:
