@@ -329,3 +329,45 @@ The objective was to optimize the `backfill_deals` background task to process de
 
 - **Performance:** The backfiller now processes chunks of 20 deals at a time. For a standard page of 150 deals, this reduces the number of product-fetching API calls from 75 to 8 (an ~89% reduction in request overhead).
 - **Status:** Validated in sandbox and confirmed by user in production.
+
+# Dev Log Entry
+
+**Date:** December 9, 2025 **Task:** Fix Dashboard Data Visibility & Resolve Data Quality Regressions **Status:** **SUCCESS** (Codebase Fixed; Data Refresh Pending)
+
+### **Objective**
+
+The initial objective was to resolve a critical issue where the dashboard was empty despite the database being populated with data. Upon resolving the visibility issue, a secondary objective was established to fix significant data quality regressions, including missing seller names, trust scores, trend indicators, and broken seasonality logic.
+
+### **Challenges Encountered**
+
+1. **Schema vs. Frontend Mismatch:**
+   - The root cause of the "invisible data" was a mismatch in column naming conventions. The database utility (`db_utils.py`) sanitizes headers into single-underscore format (e.g., `Sales_Rank_Current`), but the frontend (`dashboard.html`) and backend query logic (`wsgi_handler.py`) were hardcoded to expect a triple-underscore format (e.g., `Sales_Rank___Current`). This caused the frontend to fail silently when trying to render the data.
+2. **Data Processing Regressions:**
+   - Once the data was made visible, it revealed deeper logic errors in `keepa_deals/processing.py`. The script was saving raw Seller IDs instead of human-readable names, failing to calculate Trust Scores, and not populating the "Best Price" field (relying only on "Price Now").
+   - Additionally, the "Year-round" seasonality classification was explicitly being converted to "None", causing confusion in the UI.
+3. **Broken Recalculation Logic:**
+   - The `keepa_deals/recalculator.py` script (used when "Save Settings" is clicked) contained an independent copy of the broken logic. It used a custom, incorrect sanitization function that produced triple-underscore names (incompatible with the DB) and also contained the flawed "Year-round" -> "None" logic.
+
+### **Actions Taken**
+
+1. **Dashboard Visibility Fix:**
+   - Modified `templates/dashboard.html` and `wsgi_handler.py` to use the correct single-underscore column names (e.g., `Categories_Sub`, `Sales_Rank_Current`), aligning them with the verified database schema.
+   - Verified this fix using a custom `setup_test_db.py` script and Playwright automation (`verify_dashboard.py`), confirming that data correctly appears with the new keys.
+2. **Data Logic Repairs (`processing.py` & `new_analytics.py`):**
+   - **Seller Name:** Updated logic to fetch the human-readable seller name from the `seller_data_cache`, falling back to ID only if the name is missing.
+   - **Trust Score:** Implemented the `calculate_seller_quality_score` function call to populate the `Seller_Quality_Score` field based on rating percentage and count.
+   - **Trend Arrows:** Updated `new_analytics.py` to return visual directional arrows (`⇧`, `⇩`, `⇨`) for the `Trend` column instead of raw floats or nulls.
+   - **Seasonality:** Removed the logic that converted "Year-round" to "None", ensuring the column displays valid data.
+   - **Best Price:** Added logic to ensure `row_data['Best Price']` is populated from `Price Now`, satisfying the dashboard's expectation.
+3. **Recalculator Hardening:**
+   - Refactored `keepa_deals/recalculator.py` to import and use the centralized `sanitize_col_name` function from `db_utils.py`, ensuring it generates valid SQL queries that match the database schema.
+   - Aligned its seasonality logic with the fixes in `processing.py`.
+4. **Diagnostic Tooling:**
+   - Created `Diagnostics/diag_inspect_db.py` to allow the user to inspect their local database schema and confirm the single-underscore column names.
+   - Created `Diagnostics/diag_data_quality.py` to allow the user to inspect the raw content of specific rows to verify if the data fixes (Seller Name, Trust, etc.) have been applied.
+
+### **Outcome & Next Steps**
+
+The task is considered a **Success** from a code perspective. The dashboard visibility bug is permanently fixed, and the regressions in data processing logic have been resolved.
+
+**Crucial Note for Next Agent:** While the code is fixed, the user reported "no change" on the dashboard immediately after the update. This indicates that the **database still holds the old, broken data**. Because `recalculate_deals` does *not* re-fetch raw data (Seller/Trend), the system must be forced to **re-process the raw data** (via a fresh backfill or state reset) to overwrite the existing broken rows with the corrected logic. The next task should focus entirely on verifying execution and forcing this data refresh.

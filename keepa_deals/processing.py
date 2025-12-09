@@ -8,7 +8,7 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
-from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events
+from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score
 from .field_mappings import FUNCTION_LIST
 import json
 import os
@@ -56,17 +56,29 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         price_now, seller_id, is_fba, condition_code = used_product_info
 
         row_data['Price Now'] = price_now / 100.0
-        row_data['Seller'] = seller_id
+        row_data['Best Price'] = row_data['Price Now'] # Ensure Best Price is populated
+        row_data['Seller'] = seller_id # Default to ID
         row_data['FBA'] = is_fba
         row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
 
         if seller_id and seller_data_cache and seller_id in seller_data_cache:
             seller_details = seller_data_cache[seller_id]
+            row_data['Seller'] = seller_details.get('name', seller_id) # Use name if available
             row_data['Seller Rating'] = seller_details.get('rating')
             row_data['Seller Review Count'] = seller_details.get('ratingCount')
+
+            # Calculate Seller Quality Score (Trust)
+            rating_percent = seller_details.get('rating', 0)
+            rating_count = seller_details.get('ratingCount', 0)
+            if rating_percent is not None and rating_count is not None:
+                positive_ratings = int((rating_percent / 100.0) * rating_count)
+                row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count)
+            else:
+                row_data['Seller_Quality_Score'] = 0.0
         else:
             row_data['Seller Rating'] = "N/A"
             row_data['Seller Review Count'] = "N/A"
+            row_data['Seller_Quality_Score'] = 0.0
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to get live price/seller info: {e}", exc_info=True)
@@ -159,7 +171,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             xai_api_key=xai_api_key
         )
 
-        row_data['Detailed_Seasonality'] = "None" if detailed_season == "Year-round" else detailed_season
+        row_data['Detailed_Seasonality'] = detailed_season # Keep "Year-round" instead of "None"
         row_data['Sells'] = get_sells_period(detailed_season)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
