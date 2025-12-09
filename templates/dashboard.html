@@ -168,9 +168,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const columnsToShow = [
         // Book Details
-        "ASIN", "Title", "Categories___Sub", "Binding", "Condition",
+        "ASIN", "Title", "Categories_Sub", "Binding", "Condition",
         // Sales Rank
-        "Sales_Rank___Current", "Sales_Rank___365_days_avg", "Detailed_Seasonality", "Sells",
+        "Sales_Rank_Current", "Sales_Rank_365_days_avg", "Detailed_Seasonality", "Sells",
         // Seller
         "Seller", "Seller_Quality_Score",
         // Deal Details & Current Best Price
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     const headerTitleMap = {
-        "Categories___Sub": "Genre",
+        "Categories_Sub": "Genre",
         "Gated": "Gated",
         "last_price_change": "Changed",
         "Seller": "Name",
@@ -190,8 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
         "1yr_Avg": "1yr. Avg.",
         "Percent_Down": "% ⇩",
         "Seller_Quality_Score": "Trust",
-        "Sales_Rank___Current": "Current",
-        "Sales_Rank___365_days_avg": "1yr. Avg",
+        "Sales_Rank_Current": "Current",
+        "Sales_Rank_365_days_avg": "1yr. Avg",
         "Binding": "Binding",
         "Condition": "Condition",
         "Sells": "Sells",
@@ -392,11 +392,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             value = `${Math.round(numValue)}%`;
                         } else if (col === 'Percent_Down') {
                             value = `${Math.round(numValue)}%`;
-                        } else if (col === 'Sales_Rank___Current' || col === 'Sales_Rank___365_days_avg') {
+                        } else if (col === 'Sales_Rank_Current' || col === 'Sales_Rank_365_days_avg') {
                             value = numValue.toLocaleString('en-US');
                         } else if (col === 'Margin') {
                             value = `${numValue.toFixed(2)}%`;
-                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost')) {
+                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost') || col === '1yr_Avg') {
                             value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         }
                     } else if (col === 'Binding' || col === 'Condition') {
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'Title') {
                         const fullTitle = deal[col] || '';
                         table += `<td class="title-cell" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
-                    } else if (col === 'Categories___Sub') {
+                    } else if (col === 'Categories_Sub') {
                         let displayValue = value;
                         if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
                             // Remove "Subjects" or "Subjects," from the start of the string
@@ -620,8 +620,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('overlay-min-listing-price').textContent = deal.Min_Listing_Price ? `$${deal.Min_Listing_Price.toFixed(2)}` : '-';
 
         // Sales Rank
-        document.getElementById('overlay-sales-rank-current').textContent = deal.Sales_Rank___Current ? deal.Sales_Rank___Current.toLocaleString() : '-';
-        document.getElementById('overlay-sales-rank-drops').textContent = deal.Sales_Rank___Drops_last_365_days || '-';
+        document.getElementById('overlay-sales-rank-current').textContent = deal.Sales_Rank_Current ? deal.Sales_Rank_Current.toLocaleString() : '-';
+        document.getElementById('overlay-sales-rank-drops').textContent = deal.Sales_Rank_Drops_last_365_days || '-';
 
         // External Links
         document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal.ASIN}`;
