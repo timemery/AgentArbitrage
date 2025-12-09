@@ -24,6 +24,7 @@ To ensure the stability and performance of the development environment, the foll
        *   To view the beginning of a file: `head -n 100 <filepath>`
        *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
    *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
+   *   I have pruned `celery.log`. It contains the startup logs and the most recent errors. It is safe to read.
 
 2. **Initial Codebase Exploration ("Filesystem Tour"):**
 
