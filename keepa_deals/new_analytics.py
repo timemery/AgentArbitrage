@@ -70,7 +70,7 @@ def get_percent_discount(avg_price, now_price, logger=None):
     """
     Calculates the percentage discount of the current 'Price Now' compared to the '1yr. Avg.'
     """
-    COLUMN_NAME = "Percent Down"
+    COLUMN_NAME = "% Down"
     if not logger:
         logger = logging.getLogger(__name__)
 
