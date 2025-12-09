@@ -27,37 +27,13 @@ def get_seller_info_for_single_deal(product, api_key, token_manager: TokenManage
     for only that seller, and returns a cache containing their info.
     This is a major optimization to reduce token consumption.
     """
-    lowest_price_offer = None
-    min_total_price = float('inf')
-    used_condition_codes = {2, 3, 4, 5}
+    # Reuse the exact logic from get_used_product_info to ensure consistency
+    price_now, seller_id, is_fba, condition_code = get_used_product_info(product)
 
-    if 'offers' not in product or not product['offers']:
-        return {}
-
-    for offer in product.get('offers', []):
-        condition_val = offer.get('condition')
-        condition_code = None
-        if isinstance(condition_val, dict):
-            condition_code = condition_val.get('value')
-        else:
-            condition_code = condition_val
-
-        if condition_code in used_condition_codes:
-            offer_csv = offer.get('offerCSV', [])
-            if len(offer_csv) >= 2:
-                price_cents = offer_csv[0]
-                shipping_cents = offer_csv[1] if offer_csv[1] != -1 else 0
-                total_price_cents = price_cents + shipping_cents
-
-                if total_price_cents < min_total_price:
-                    min_total_price = total_price_cents
-                    lowest_price_offer = offer
-
-    if not lowest_price_offer or 'sellerId' not in lowest_price_offer:
+    if not seller_id:
         logger.warning(f"ASIN {product.get('asin')}: Could not determine the lowest-priced used seller.")
         return {}
 
-    seller_id = lowest_price_offer['sellerId']
     logger.info(f"ASIN {product.get('asin')}: Found lowest-priced seller: {seller_id}. Fetching their data.")
 
     # Estimate cost and wait for tokens

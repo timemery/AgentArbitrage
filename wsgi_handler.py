@@ -953,6 +953,16 @@ def refresh_all_deals():
     celery_app.send_task('keepa_deals.recalculator.recalculate_deals')
     return jsonify({'status': 'success', 'message': 'Full data refresh has been initiated.'})
 
+@app.route('/api/reset-database', methods=['POST'])
+def reset_database():
+    if not session.get('logged_in'):
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    # Trigger the task with reset=True
+    celery_app.send_task('keepa_deals.backfiller.backfill_deals', kwargs={'reset': True})
+
+    return jsonify({'status': 'success', 'message': 'Database reset and full backfill initiated.'})
+
 @app.route('/api/debug/deal/<string:asin>')
 def debug_deal(asin):
     if not session.get('logged_in'):
