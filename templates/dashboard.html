@@ -377,8 +377,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     const numValue = parseFloat(value);
                     if (col === 'Seller_Quality_Score') {
                         if (!isNaN(numValue)) {
-                            const score = Math.round(numValue * 10);
-                            value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
+                            // Handle both 0-1 and 0-100 scales gracefully
+                            if (numValue > 1) {
+                                value = `<span>${Math.round(numValue)}<span class="trust-suffix">%</span></span>`;
+                            } else {
+                                const score = Math.round(numValue * 10);
+                                value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
+                            }
                         } else if (typeof value === 'string' && value.trim().toLowerCase() === 'new seller') {
                             value = `<span>Unrated</span>`;
                         } else if (typeof value === 'string' && value) {
