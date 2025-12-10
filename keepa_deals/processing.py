@@ -83,8 +83,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
 
             if rating_percent is not None and rating_count is not None and isinstance(rating_percent, (int, float)) and isinstance(rating_count, (int, float)):
                 positive_ratings = int((rating_percent / 100.0) * rating_count)
-                # Wilson score is 0-1. Multiply by 100 to align with 0-100 scale.
-                row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count) * 100
+                row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count)
             else:
                 row_data['Seller_Quality_Score'] = 0.0
         else:
