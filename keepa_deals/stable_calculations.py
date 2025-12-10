@@ -313,7 +313,7 @@ def analyze_sales_performance(product, sale_events):
     asin = product.get('asin', 'N/A')
     xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
 
-    MIN_SALES_FOR_ANALYSIS = 3
+    MIN_SALES_FOR_ANALYSIS = 1
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
         logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for performance analysis.")
         return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
@@ -324,11 +324,12 @@ def analyze_sales_performance(product, sale_events):
 
     # --- Peak/Trough Season Identification ---
     monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
-    if len(monthly_stats) < 2:
-        logger.debug(f"ASIN {asin}: Not enough monthly data to determine peak/trough seasons.")
-        return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
+
+    if len(monthly_stats) < 1:
+         return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
 
     peak_month = monthly_stats['median'].idxmax()
+    # If only 1 month, peak and trough are the same
     trough_month = monthly_stats['median'].idxmin()
     peak_season_str = datetime(2000, int(peak_month), 1).strftime('%b')
     trough_season_str = datetime(2000, int(trough_month), 1).strftime('%b')
