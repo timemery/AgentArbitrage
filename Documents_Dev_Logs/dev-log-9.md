@@ -465,3 +465,42 @@ The objective was to resolve critical data regressions where the `Seller` column
 - **Logs:** Confirmed via `celery_worker.log` that the worker is running the new logic (`--- PROCESSING WITH NEW LOGIC ---`) and successfully resolving Seller Details keys (`sellerName`, `currentRating`).
 - **Diagnostics:** `diag_data_quality.py` (when run on localized test data) confirmed that Seller Names are readable, Trust Scores are populated, and Trend arrows are visible.
 - **UI:** Validated the presence and functionality of the Reset button.
+
+# Dev Log Entry - December 11, 2025
+
+**Task:** Data Coverage Investigation & Logic Optimization (1yr Avg, List At, Profit/Margin)
+
+**Objective:** Investigate why key deal metrics (`1yr. Avg.`, `Percent Down`, `List at`, `Profit`, `Margin`) remained unpopulated ("-") or showed anomalous values for a significant portion of inventory, despite previous efforts to relax data thresholds. The goal was to improve the "catch rate" for low-volume items while simultaneously ensuring that incomplete or invalid deals are strictly excluded from the database.
+
+**Investigation & Findings:**
+
+1. **`1yr. Avg.` Coverage Blocker:**
+   - **Finding:** While the global constant `MIN_SALES_FOR_ANALYSIS` in `stable_calculations.py` was correctly set to `1`, a *separate*, hardcoded check in `keepa_deals/new_analytics.py` (`get_1yr_avg_sale_price`) was still enforcing a strict limit of `< 3` sales.
+   - **Impact:** This caused items with 1 or 2 sales to return `None` for `1yr. Avg.`, which cascaded to block the calculation of `Percent Down`.
+2. **`List at` Missing Data:**
+   - **Finding:** The `List at` price is derived from the mode of inferred sale prices during the book's peak season. It can return `None` ("-") for valid reasons, such as the calculated price failing the AI reasonableness check (`_query_xai_for_reasonableness` returns False) or simply insufficient data to form a mode.
+   - **Impact:** Rows were being collected with `List at: -`, leading to incomplete dashboard entries.
+3. **Profit & Margin Anomalies:**
+   - **Finding:** Negative values for `Profit` and `Margin` were investigated and confirmed to be mathematically correct results of the formula `Profit = List at - All-in Cost`. This occurs when the acquisition cost (`Price Now`) plus fees exceeds the target selling price (`List at`).
+   - **Observation:** A `Margin` of "0%" often indicates a `Profit` near zero or a display artifact, but the backend correctly calculates the float value.
+4. **Profit Trust:**
+   - **Finding:** A value of "-" for Profit Trust correctly indicates that `total_offer_drops` is 0. The logic relies entirely on offer count drops to infer sales; if inventory counts do not change (e.g., deep stock), no sales can be inferred with high confidence using the current method.
+
+**Actions Taken:**
+
+1. **Relaxed Sales Threshold:**
+   - Modified `keepa_deals/new_analytics.py` to lower the hardcoded threshold from `3` to `1`. This aligns it with `stable_calculations.py` and unblocks analytics for low-volume long-tail items.
+2. **Implemented Strict Exclusion Logic:**
+   - Modified `keepa_deals/processing.py` to add explicit checks after data extraction.
+   - **1yr. Avg. Filter:** Any deal returning `None` for `1yr. Avg.` (implying 0 inferred sales or missing history) is now immediately excluded.
+   - **List at Filter:** Any deal returning `None` for `List at` (implying price rejection by AI or calculation failure) is now immediately excluded.
+3. **Verification:**
+   - Created and executed reproduction scripts (`repro_analytics.py`, `verify_exclusion.py`, `verify_exclusion_list_at.py`) to simulate scenarios with 0, 1, and 2 sales.
+   - **Result:** Verified that items with 2 sales are now successfully processed (previously ignored) and items with 0 sales or missing `List at` are correctly rejected.
+
+**Challenges Faced:**
+
+- **Logic Fragmentation:** The threshold logic was split between `stable_calculations.py` (using a constant) and `new_analytics.py` (using a literal integer), leading to inconsistent behavior where one part of the system accepted a deal (calculating `List at`) while another part rejected it (missing `1yr. Avg.`).
+- **Test Environment State:** Ensuring isolation between test runs was critical. The memoization cache in `stable_calculations.py` (`_analysis_cache`) persisted across mock tests, initially causing false negatives in verification scripts. Explicitly clearing the cache resolved this.
+
+**Outcome:** **Success.** The system now correctly captures deals with as few as 1 sale event, significantly improving coverage for relevant inventory. simultaneously, it aggressively filters out "zombie" rows that lack critical data (`1yr. Avg.` or `List at`), ensuring the database remains clean and actionable.
