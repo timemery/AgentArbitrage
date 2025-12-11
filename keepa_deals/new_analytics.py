@@ -55,7 +55,7 @@ def get_1yr_avg_sale_price(product, logger=None):
         one_year_ago = datetime.now() - timedelta(days=365)
         df_last_year = df[df['event_timestamp'] >= one_year_ago]
 
-        if len(df_last_year) < 3:
+        if len(df_last_year) < 1:
             logger.info(f"ASIN {asin}: Insufficient sale events ({len(df_last_year)}) for a meaningful average.")
             return None
 
