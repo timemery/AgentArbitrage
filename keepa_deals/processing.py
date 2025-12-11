@@ -114,6 +114,12 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
     except Exception as e:
         logger.error(f"ASIN {asin}: Error in generic field extraction: {e}", exc_info=True)
 
+    # Exclusion: List at
+    val_list = row_data.get('List at')
+    if not val_list or val_list == '-' or val_list == 'N/A':
+        logger.info(f"ASIN {asin}: Excluding deal because 'List at' is missing (Price validation failed or insufficient data).")
+        return None
+
     business_settings = business_load_settings()
     sale_events, _ = infer_sale_events(product_data)
 
@@ -154,6 +160,12 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         yr_avg_info = get_1yr_avg_sale_price(product_data)
         if yr_avg_info:
             row_data.update(yr_avg_info)
+
+        # Exclusion: Do not collect deals with missing 1yr. Avg.
+        # This implies < 1 sale event in the last year or missing history.
+        if row_data.get('1yr. Avg.') is None:
+            logger.info(f"ASIN {asin}: Excluding deal because '1yr. Avg.' is missing (insufficient sales data).")
+            return None
 
         trend_info = get_trend(product_data)
         if trend_info:
