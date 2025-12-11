@@ -371,3 +371,97 @@ The initial objective was to resolve a critical issue where the dashboard was em
 The task is considered a **Success** from a code perspective. The dashboard visibility bug is permanently fixed, and the regressions in data processing logic have been resolved.
 
 **Crucial Note for Next Agent:** While the code is fixed, the user reported "no change" on the dashboard immediately after the update. This indicates that the **database still holds the old, broken data**. Because `recalculate_deals` does *not* re-fetch raw data (Seller/Trend), the system must be forced to **re-process the raw data** (via a fresh backfill or state reset) to overwrite the existing broken rows with the corrected logic. The next task should focus entirely on verifying execution and forcing this data refresh.
+
+# Dev Log: Data Quality Fixes & Pipeline Stabilization
+
+**Date:** December 9, 2025 **Task:** Force Data Refresh & Verify Pipeline Execution (Fix Data Regressions) **Status:** **SUCCESS**
+
+## 1. Task Overview
+
+The objective was to resolve critical data regressions where the `Seller` column displayed IDs instead of names, `Seller_Quality_Score` (Trust Score) was `0.0`, and other analytical columns (`Percent_Down`, `1yr. Avg.`, `List at`) were missing or malformed. Additionally, the user requested a mechanism to force a full data refresh ("nuclear option") to clear corrupted data from the database.
+
+## 2. Key Issues & Root Causes
+
+### A. Missing Seller Names & Trust Scores
+
+- **Symptom:** Database showed raw Seller IDs (e.g., "A1234...") and `0.0` scores.
+
+- Root Cause 1 (Logic Divergence):
+
+   
+
+  The function responsible for fetching seller details (
+
+  ```
+  get_seller_info_for_single_deal
+  ```
+
+  ) used different logic than the main processing loop to identify the "lowest price" offer.
+
+  - *Specific Bug:* It accessed `offerCSV[0]` to get the price. In Keepa's format, index `[0]` is often a **timestamp** (e.g., 2,700,000+), whereas the price is at `[-2]`. This caused the function to reject valid offers as "too expensive" or pick the wrong seller entirely.
+
+- Root Cause 2 (Data Parsing):
+
+   
+
+  Even when the correct seller was found, the parsing logic in
+
+   
+
+  ```
+  processing.py
+  ```
+
+   
+
+  failed:
+
+  - It looked for the key `'name'`, but the Keepa API provides `'sellerName'`.
+  - It treated `rating` and `ratingCount` as integers, but Keepa returns them as **arrays** (history: `[timestamp, value, ...]`). This caused `TypeError` exceptions or silent failures.
+
+### B. Missing `Percent_Down` Data
+
+- **Symptom:** Column was consistently `NULL` in the database.
+- **Root Cause:** A key mismatch between the analytics module and the database schema mapping. `new_analytics.py` returned `{'Percent Down': ...}`, but `headers.json` (used by the backfiller) defined the field as `'% Down'`.
+
+### C. Missing `1yr. Avg.` and `List at` Data
+
+- **Symptom:** Columns showed `-` for many low-volume books.
+- **Root Cause:** The calculation logic enforced a strict threshold of **3 inferred sale events** within the last year. Books with only 1 or 2 sales were treated as having "insufficient data."
+
+## 3. Solutions Implemented
+
+### A. Unified Seller Identification Logic
+
+- **Refactor:** Modified `keepa_deals/seller_info.py` to call `get_used_product_info` directly. This enforces a "Single Source of Truth," guaranteeing that the seller ID used to fetch details matches exactly the seller ID associated with the "Price Now".
+- **Indexing Fix:** Standardized all `offerCSV` access to use `[-2]` (Price) and `[-1]` (Shipping).
+
+### B. Robust Data Parsing
+
+- **Key Correction:** Updated `keepa_deals/processing.py` to prioritize the `'sellerName'` key.
+- **Array Handling:** Implemented logic to check if `rating`/`ratingCount` are lists. If so, it now correctly extracts the last element (`[-1]`) to get the current value. It also prioritizes direct fields `currentRating` and `currentRatingCount` if provided by the API.
+
+### C. Threshold Relaxation
+
+- **Change:** Lowered `MIN_SALES_FOR_ANALYSIS` from 3 to **1** in `new_analytics.py` and `stable_calculations.py`.
+- **Impact:** `1yr. Avg.`, `Percent Down`, and `List at` are now calculated even if a book has only sold once in the last year, significantly improving data coverage for long-tail inventory.
+
+### D. "Danger Zone" Reset Feature
+
+- **Backend:** Added `/api/reset-database` endpoint in `wsgi_handler.py` that triggers the `backfill_deals` task with `reset=True`.
+- **Frontend:** Added a "Danger Zone" section to the **Deals** page template (`templates/deals.html`) with a confirmation prompt. This deletes the SQLite database table and restarts the backfill from Page 0.
+
+### E. User Preference Tuning
+
+- **Trust Score:** Reverted a change that scaled scores to 0-100%. Restored the original "X / 10" weighted display format (using Wilson Score) as requested by the user.
+
+## 4. Challenges Faced
+
+- **Token Limits in Sandbox:** The `backfill_deals` task consumes significant API tokens. Verifying fixes required careful "micro-batch" testing (modifying chunk sizes to 5) to avoid hitting 429 errors or long wait times during development.
+- **Environment State:** The "nuclear" reset required verifying that the worker process, Redis, and database were all correctly synchronized and restarted. Stale `.pyc` files or zombie processes occasionally masked code updates.
+
+## 5. Verification
+
+- **Logs:** Confirmed via `celery_worker.log` that the worker is running the new logic (`--- PROCESSING WITH NEW LOGIC ---`) and successfully resolving Seller Details keys (`sellerName`, `currentRating`).
+- **Diagnostics:** `diag_data_quality.py` (when run on localized test data) confirmed that Seller Names are readable, Trust Scores are populated, and Trend arrows are visible.
+- **UI:** Validated the presence and functionality of the Reset button.
