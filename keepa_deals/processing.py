@@ -114,6 +114,12 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
     except Exception as e:
         logger.error(f"ASIN {asin}: Error in generic field extraction: {e}", exc_info=True)
 
+    # Exclusion: List at
+    val_list = row_data.get('List at')
+    if not val_list or val_list == '-' or val_list == 'N/A':
+        logger.info(f"ASIN {asin}: Excluding deal because 'List at' is missing (Price validation failed or insufficient data).")
+        return None
+
     business_settings = business_load_settings()
     sale_events, _ = infer_sale_events(product_data)
 
