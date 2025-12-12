@@ -1,0 +1,655 @@
+{% extends "layout.html" %}
+{% block title %}Deals Dashboard - Agent Arbitrage{% endblock %}
+{% block content %}
+<h1>Deals Dashboard</h1>
+<div id="recalc-indicator" style="display: none; text-align: center; padding: 10px; background-color: rgba(25, 118, 210, 0.2); border: 1px solid #1976d2; border-radius: 5px; margin-bottom: 20px;">
+    Recalculating deals with new settings... The table will refresh automatically when complete.
+</div>
+<div class="dashboard-content-wrapper">
+    <div class="filters-container">
+        <form id="filter-form">
+            <div class="filter-group-left">
+                <div class="filter-item">
+                    <label for="keyword_search">Keyword Search:</label>
+                    <input type="text" id="keyword_search" name="keyword" class="styled-text-field">
+                </div>
+                <div class="filter-item">
+                    <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">∞</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="20" value="20" class="slider" id="max_sales_rank_slider">
+                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">0%</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="20" value="0" class="slider" id="min_profit_margin_slider">
+                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="filter-buttons">
+                <button type="submit">Apply Filters</button>
+                <button type="reset" id="reset-filters">Reset</button>
+            </div>
+        </form>
+    </div>
+    <div class="deal-counter-container">
+        <span id="deal-counter"></span>
+    </div>
+    <div class="table-container">
+        <div id="deals-table"></div>
+        <div id="pagination-container" class="pagination-controls">
+            <!-- Pagination will be dynamically rendered here by JavaScript -->
+        </div>
+    </div>
+</div>
+<div id="custom-tooltip" class="custom-tooltip"></div>
+
+<div id="deal-overlay" class="deal-overlay">
+    <div class="deal-overlay-content">
+        <span class="close-overlay">&times;</span>
+        <div class="deal-header">
+            <h1 id="overlay-title"></h1>
+            <p>ASIN: <span id="overlay-asin"></span></p>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-link active" data-tab="profit">Profit Analysis</button>
+            <button class="tab-link" data-tab="prep">Prep & Listing</button>
+            <button class="tab-link" data-tab="sales">Sales Tracking</button>
+        </div>
+
+        <div id="profit" class="tab-content active">
+            <h2>Profit Analysis</h2>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3>Pricing & Seasonality</h3>
+                    <p><span>Seasonality Type:</span> <strong id="overlay-seasonality-type"></strong></p>
+                    <p><span>Expected Trough Price:</span> <strong id="overlay-expected-trough-price"></strong></p>
+                    <p><span>Expected Peak Price:</span> <strong id="overlay-expected-peak-price"></strong></p>
+                    <p><span>Profit Confidence:</span> <strong id="overlay-profit-confidence"></strong></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Profit Calculation</h3>
+                    <p><span>All-in Cost:</span> <strong id="overlay-all-in-cost"></strong></p>
+                    <p><span>Profit:</span> <strong id="overlay-profit"></strong></p>
+                    <p><span>Margin:</span> <strong id="overlay-margin"></strong></p>
+                    <p><span>Min. Listing Price:</span> <strong id="overlay-min-listing-price"></strong></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Sales Rank</h3>
+                    <p><span>Current:</span> <strong id="overlay-sales-rank-current"></strong></p>
+                    <p><span>Drops (365d):</span> <strong id="overlay-sales-rank-drops"></strong></p>
+                </div>
+                <div class="grid-item">
+                    <h3>External Links</h3>
+                    <p><a id="overlay-amz-link" href="#" target="_blank">View on Amazon</a></p>
+                    <p><a id="overlay-keepa-link" href="#" target="_blank">View on Keepa</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="prep" class="tab-content">
+            <h2>Prep & Listing</h2>
+            <p>(Prep and listing tracking form will go here.)</p>
+        </div>
+
+        <div id="sales" class="tab-content">
+            <h2>Sales Tracking</h2>
+            <p>(Sales tracking form will go here.)</p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.container');
+    if (container) {
+        container.classList.remove('container');
+        container.classList.add('container-full-width');
+    }
+
+    const tableContainer = document.getElementById('deals-table');
+    const filterForm = document.getElementById('filter-form');
+    const resetBtn = document.getElementById('reset-filters');
+    const tooltip = document.getElementById('custom-tooltip');
+    const salesRankSlider = document.getElementById('max_sales_rank_slider');
+    const salesRankValueSpan = document.getElementById('sales-rank-value');
+    const hiddenSalesRankInput = document.getElementById('max_sales_rank');
+
+    const profitMarginSlider = document.getElementById('min_profit_margin_slider');
+    const profitMarginValueSpan = document.getElementById('profit-margin-value');
+    const hiddenProfitMarginInput = document.getElementById('min_profit_margin');
+    const dealCounterSpan = document.getElementById('deal-counter');
+
+    // --- New Slider Logic ---
+    const salesRankSteps = [
+        { value: 10000, label: '10k' }, { value: 50000, label: '50k' }, { value: 100000, label: '100k' },
+        { value: 200000, label: '200k' }, { value: 300000, label: '300k' }, { value: 400000, label: '400k' },
+        { value: 500000, label: '500k' }, { value: 600000, label: '600k' }, { value: 700000, label: '700k' },
+        { value: 800000, label: '800k' }, { value: 900000, label: '900k' }, { value: 1000000, label: '1m' },
+        { value: 1500000, label: '1.5m' }, { value: 2000000, label: '2m' }, { value: 2500000, label: '2.5m' },
+        { value: 3000000, label: '3m' }, { value: 3500000, label: '3.5m' }, { value: 4000000, label: '4m' },
+        { value: 4500000, label: '4.5m' }, { value: 5000000, label: '5m' }, { value: Infinity, label: '∞' }
+    ];
+
+    const profitMarginSteps = [
+        { value: 0, label: '0%' }, { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
+        { value: 40, label: '40%' }, { value: 50, label: '50%' }, { value: 60, label: '60%' },
+        { value: 70, label: '70%' }, { value: 80, label: '80%' }, { value: 90, label: '90%' },
+        { value: 100, label: '100%' }, { value: 150, label: '150%' }, { value: 200, label: '200%' },
+        { value: 250, label: '250%' }, { value: 300, label: '300%' }, { value: 350, label: '350%' },
+        { value: 400, label: '400%' }, { value: 450, label: '450%' }, { value: 500, label: '500%' },
+        { value: Infinity, label: '∞' }
+    ];
+
+    // Set initial slider values based on defaults
+    const initialSalesRankIndex = salesRankSteps.findIndex(s => s.value === Infinity);
+    salesRankSlider.value = initialSalesRankIndex;
+    salesRankValueSpan.textContent = salesRankSteps[initialSalesRankIndex].label;
+    hiddenSalesRankInput.value = (salesRankSteps[initialSalesRankIndex].value === Infinity) ? '99999999' : salesRankSteps[initialSalesRankIndex].value;
+
+    const initialProfitMarginIndex = profitMarginSteps.findIndex(p => p.value === 0);
+    if (initialProfitMarginIndex !== -1) {
+        profitMarginSlider.value = initialProfitMarginIndex;
+        profitMarginValueSpan.textContent = profitMarginSteps[initialProfitMarginIndex].label;
+        hiddenProfitMarginInput.value = profitMarginSteps[initialProfitMarginIndex].value;
+    }
+
+
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentSort = { by: 'id', order: 'asc' };
+    let currentDeals = [];
+
+    const overlay = document.getElementById('deal-overlay');
+    const closeOverlayBtn = document.querySelector('.close-overlay');
+
+    const columnsToShow = [
+        // Book Details
+        "ASIN", "Title", "Categories_Sub", "Binding", "Condition",
+        // Sales Rank
+        "Sales_Rank_Current", "Sales_Rank_365_days_avg", "Detailed_Seasonality", "Sells",
+        // Seller
+        "Seller", "Seller_Quality_Score",
+        // Deal Details & Current Best Price
+        "last_price_change", "1yr_Avg", "Best_Price", "Percent_Down", "Trend",
+        // Profit Estimates & Recommended Listing Price
+        "All_in_Cost", "Min_Listing_Price", "List_at", "Profit", "Margin", "Profit_Confidence",
+        // Actions
+        "Gated", "Buy_Now"
+    ];
+
+    const headerTitleMap = {
+        "Categories_Sub": "Genre",
+        "Gated": "Gated",
+        "last_price_change": "Changed",
+        "Seller": "Name",
+        "Min_Listing_Price": "Min. List",
+        "1yr_Avg": "1yr. Avg.",
+        "Percent_Down": "% ⇩",
+        "Seller_Quality_Score": "Trust",
+        "Sales_Rank_Current": "Current",
+        "Sales_Rank_365_days_avg": "1yr. Avg",
+        "Binding": "Binding",
+        "Condition": "Condition",
+        "Sells": "Sells",
+        "Detailed_Seasonality": "Season",
+        "List_at": "List at",
+        "Profit_Confidence": "Profit Trust",
+        "Deal_found": "Found",
+        "Buy_Now": "Buy",
+        "Best_Price": "Now"
+    };
+
+    function formatTimeAgo(dateString) {
+        if (!dateString || dateString === '-') return '-';
+
+        let date;
+        // Handle "MM/DD/YY HH:MM" format specifically
+        if (dateString.includes('/') && dateString.includes(':')) {
+            const parts = dateString.split(' ');
+            const dateParts = parts[0].split('/');
+            const timeParts = parts[1].split(':');
+            // new Date(year, monthIndex, day, hours, minutes)
+            date = new Date(
+                2000 + parseInt(dateParts[2], 10),
+                parseInt(dateParts[0], 10) - 1, // Month is 0-indexed
+                parseInt(dateParts[1], 10),
+                parseInt(timeParts[0], 10),
+                parseInt(timeParts[1], 10)
+            );
+        } else {
+            // Fallback for ISO format and other standard formats
+            date = new Date(dateString);
+        }
+
+        if (isNaN(date.getTime())) {
+            return '-'; // Safeguard against invalid dates
+        }
+
+        const now = new Date();
+        const seconds = Math.round((now - date) / 1000);
+        const minutes = Math.round(seconds / 60);
+
+        if (minutes < 60) {
+            if (minutes <= 1) return `1 <span class="time-suffix">min. ago</span>`;
+            return `${minutes} <span class="time-suffix">mins. ago</span>`;
+        }
+
+        const hours = Math.round(minutes / 60);
+        if (hours < 24) {
+            if (hours === 1) return `1 <span class="time-suffix">hr. ago</span>`;
+            return `${hours} <span class="time-suffix">hrs. ago</span>`;
+        }
+
+        const days = Math.round(hours / 24);
+        if (days < 30) {
+            if (days === 1) return `1 <span class="time-suffix">day ago</span>`;
+            return `${days} <span class="time-suffix">days ago</span>`;
+        }
+
+        const months = Math.round(days / 30);
+        if (months < 12) {
+            if (months === 1) return `1 <span class="time-suffix">mo. ago</span>`;
+            return `${months} <span class="time-suffix">mos. ago</span>`;
+        }
+
+        const years = Math.round(days / 365);
+        if (years === 1) return `1<span class="time-suffix">yr. ago</span>`;
+        return `${years}<span class="time-suffix">yrs. ago</span>`;
+    }
+
+    function formatCondition(value) {
+        if (!value || typeof value !== 'string' || value.trim() === '-') return '-';
+
+        const cleanedValue = value.toLowerCase().replace(/[\s_-]/g, '');
+
+        const mapping = {
+            'spiralbound': 'SB',
+            'boardbook': 'BB',
+            'hardcover': 'HC',
+            'paperback': 'PB',
+            'massmarketpaperback': 'MMPB',
+            'audiobook': 'Audio',
+            'audiocd': 'Audio',
+            'looseleaf': 'LL',
+            'leatherbound': 'LB',
+            'likenew': 'LN',
+            'verygood': 'VG',
+            'good': 'G',
+            'acceptable': 'A'
+        };
+
+        return mapping[cleanedValue] || value;
+    }
+
+    function getFilters() {
+        const filters = {};
+        // Manually get values from the form elements, including hidden inputs
+        const keyword = document.getElementById('keyword_search').value;
+        const salesRank = hiddenSalesRankInput.value;
+        const profitMargin = hiddenProfitMarginInput.value;
+
+        if (keyword) filters['keyword'] = keyword;
+        if (salesRank) filters['sales_rank_current_lte'] = salesRank;
+        if (profitMargin) filters['margin_gte'] = profitMargin;
+
+        return filters;
+    }
+
+    async function fetchDeals(page = 1, sortBy = 'id', order = 'asc') {
+        const limit = 50;
+        const filters = getFilters();
+        let query = `page=${page}&limit=${limit}&sort=${sortBy}&order=${order}`;
+        for (const key in filters) {
+            if (filters[key]) query += `&${key}=${encodeURIComponent(filters[key])}`;
+        }
+
+        try {
+            const response = await fetch(`/api/deals?${query}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            currentDeals = data.deals; // Store the deals
+            renderTable(data.deals);
+            renderPagination(data.pagination);
+        } catch (error) {
+            console.error('Error fetching deals:', error);
+            tableContainer.innerHTML = '<p>Error loading deals. Please try again later.</p>';
+        }
+    }
+
+    function renderTable(deals) {
+        // Ensure the table headers are always visible, even if there are no deals.
+        // This prevents the Playwright script from timing out.
+        document.querySelector('#deals-table').style.visibility = 'visible';
+
+        let table = '<table class="deal-table"><thead>';
+
+        // Add the new group header row
+        table += '<tr class="group-header">';
+        table += '<th colspan="5">Book Details</th>';
+        table += '<th colspan="4">Sales Rank & Seasonality</th>';
+        table += '<th colspan="2">Seller Details</th>';
+        table += '<th colspan="5">Deal Details & Current Best Price</th>';
+        table += '<th colspan="6">Profit Estimates & Recommended Listing Price</th>';
+        table += '<th colspan="2">Actions</th>';
+        table += '</tr>';
+
+        // Main header row
+        table += '<tr>';
+        columnsToShow.forEach(header => {
+            let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
+            table += `<th data-sort="${header}">${headerText}</th>`;
+        });
+        table += '</tr>';
+
+        // New sorting arrows row
+        table += '<tr class="sort-arrows-row">';
+        columnsToShow.forEach(header => {
+            if (header === 'Gated' || header === 'Buy_Now') {
+                table += '<td></td>'; // No arrows for these columns
+            } else {
+                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/UpArrow_on.png' : 'static/UpArrow_off.png';
+                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DownArrow_on.png' : 'static/DownArrow_off.png';
+                table += `
+                    <td>
+                        <div class="sort-arrows-container">
+                            <img src="${upArrowSrc}" class="sort-arrow" data-order="asc" data-column="${header}">
+                            <img src="${downArrowSrc}" class="sort-arrow" data-order="desc" data-column="${header}">
+                        </div>
+                    </td>`;
+            }
+        });
+        table += '</tr></thead><tbody>';
+
+        if (deals && deals.length > 0) {
+            deals.forEach(deal => {
+                let cleanAsin = deal.ASIN ? String(deal.ASIN).replace(/=|\"/g, '') : '';
+                if (cleanAsin.length === 9) {
+                    cleanAsin = '0' + cleanAsin;
+                }
+                table += `<tr class="deal-row" data-asin="${cleanAsin}" style="cursor: pointer;">`;
+                columnsToShow.forEach(col => {
+                    let value = deal[col] != null ? deal[col] : '-';
+                    // Re-written formatting logic for robustness
+                    const numValue = parseFloat(value);
+                    if (col === 'Seller_Quality_Score') {
+                        if (!isNaN(numValue)) {
+                            const score = Math.round(numValue * 10);
+                            value = `<span>${score} <span class="trust-suffix">/ 10</span></span>`;
+                        } else if (typeof value === 'string' && value.trim().toLowerCase() === 'new seller') {
+                            value = `<span>Unrated</span>`;
+                        } else if (typeof value === 'string' && value) {
+                            // Handle other string values
+                            value = `<span>${value}</span>`;
+                        }
+                    } else if (col === 'Deal_found' || col === 'last_price_change') {
+                        value = formatTimeAgo(value);
+                    } else if (!isNaN(numValue)) { // Check if the parsed value is a number
+                        if (col === 'Profit_Confidence') {
+                            value = `${Math.round(numValue)}%`;
+                        } else if (col === 'Percent_Down') {
+                            value = `${Math.round(numValue)}%`;
+                        } else if (col === 'Sales_Rank_Current' || col === 'Sales_Rank_365_days_avg') {
+                            value = numValue.toLocaleString('en-US');
+                        } else if (col === 'Margin') {
+                            value = `${numValue.toFixed(2)}%`;
+                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost') || col === '1yr_Avg') {
+                            value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        }
+                    } else if (col === 'Binding' || col === 'Condition') {
+                        value = formatCondition(value);
+                    }
+
+                    if (col === 'Gated') {
+                        let gatedContent = '';
+                        switch (deal.restriction_status) {
+                            case 'restricted':
+                                gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
+                                break;
+                            case 'not_restricted':
+                                gatedContent = '<span class="status-icon checkmark">✓</span>';
+                                break;
+                            case 'pending_check':
+                                gatedContent = '<div class="spinner"></div>';
+                                break;
+                            default:
+                                gatedContent = '-'; // Not connected or no data
+                        }
+                        table += `<td>${gatedContent}</td>`;
+                    } else if (col === 'Buy_Now') {
+                        table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
+                    } else if (col === 'Title') {
+                        const fullTitle = deal[col] || '';
+                        table += `<td class="title-cell" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
+                    } else if (col === 'Categories_Sub') {
+                        let displayValue = value;
+                        if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
+                            // Remove "Subjects" or "Subjects," from the start of the string
+                            displayValue = displayValue.replace(/^Subjects,?\s*/, '');
+                        }
+                        // If the result is empty or just a hyphen, show the custom message
+                        if (displayValue.trim() === '' || displayValue.trim() === '-') {
+                            displayValue = 'No Subject Listed';
+                        }
+                        table += `<td class="genre-cell"><span>${displayValue}</span></td>`;
+                    } else if (col === 'Detailed_Seasonality') {
+                        table += `<td class="season-detail-cell"><span>${value}</span></td>`;
+                    } else if (col === 'Sells') {
+                        table += `<td class="sells-cell"><span>${value}</span></td>`;
+                    } else if (col === 'Seller') {
+                        table += `<td class="seller-cell"><span>${value}</span></td>`;
+                    } else if (col === 'ASIN') {
+                        table += `<td>${cleanAsin}</td>`;
+                    } else if (col === 'Best_Price' && cleanAsin) {
+                        table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
+                    }
+                    else {
+                        table += `<td>${value}</td>`;
+                    }
+                });
+                table += '</tr>';
+            });
+        } else {
+            table += `<tr><td colspan="${columnsToShow.length}" style="text-align: center; padding: 20px;">No deals found matching the criteria.</td></tr>`;
+        }
+
+        table += '</tbody></table>';
+        tableContainer.innerHTML = table;
+        
+        // Add event listeners for navigation and sorting
+        addEventListeners();
+    }
+    
+    function addEventListeners() {
+        document.querySelectorAll('#deals-table tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                const asin = row.dataset.asin;
+                const deal = currentDeals.find(d => d.ASIN === asin);
+                if (deal) {
+                    populateOverlay(deal);
+                    overlay.style.display = 'block';
+                }
+            });
+        });
+
+        document.querySelectorAll('.sort-arrow').forEach(arrow => {
+            arrow.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent row click navigation
+                const sortBy = arrow.dataset.column;
+                const order = arrow.dataset.order;
+                if (sortBy && order) {
+                    currentSort = { by: sortBy, order: order };
+                    fetchDeals(currentPage, currentSort.by, currentSort.order);
+                }
+            });
+        });
+    }
+
+    function renderPagination(pagination) {
+        currentPage = pagination.current_page;
+        totalPages = pagination.total_pages;
+        const paginationContainer = document.getElementById('pagination-container');
+        paginationContainer.innerHTML = ''; // Clear existing controls
+
+        const dealCount = pagination.total_records || 0;
+        dealCounterSpan.textContent = `${dealCount.toLocaleString()} Deals Found`;
+
+        if (totalPages <= 1) return;
+
+        let paginationHTML = '';
+
+        // First & Previous Buttons
+        paginationHTML += `<button class="page-btn" data-page="1" ${currentPage === 1 ? 'disabled' : ''}>First</button>`;
+        paginationHTML += `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
+
+        // Helper functions for page number logic
+        const getPageButton = (page) => `<button class="page-btn ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>`;
+        const ellipsis = `<span class="page-ellipsis">...</span>`;
+
+        if (totalPages <= 7) { // Show all pages if 7 or fewer
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += getPageButton(i);
+            }
+        } else {
+            paginationHTML += getPageButton(1); // Always show first page
+            if (currentPage > 3) {
+                paginationHTML += ellipsis;
+            }
+            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                paginationHTML += getPageButton(i);
+            }
+            if (currentPage < totalPages - 2) {
+                paginationHTML += ellipsis;
+            }
+            paginationHTML += getPageButton(totalPages); // Always show last page
+        }
+
+        // Next & Last Buttons
+        paginationHTML += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
+        paginationHTML += `<button class="page-btn" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>`;
+
+        paginationContainer.innerHTML = paginationHTML;
+
+        // Add event listeners to new buttons
+        paginationContainer.querySelectorAll('.page-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const page = parseInt(button.dataset.page);
+                if (page && page !== currentPage && !button.disabled) {
+                    fetchDeals(page, currentSort.by, currentSort.order);
+                }
+            });
+        });
+    }
+
+    filterForm.addEventListener('submit', e => {
+        e.preventDefault();
+        currentPage = 1;
+        fetchDeals(currentPage, currentSort.by, currentSort.order);
+    });
+
+    resetBtn.addEventListener('click', () => {
+        filterForm.reset();
+        currentPage = 1;
+        currentSort = { by: 'id', order: 'asc' };
+        fetchDeals(currentPage, currentSort.by, currentSort.order);
+    });
+
+    salesRankSlider.addEventListener('input', () => {
+        const stepIndex = parseInt(salesRankSlider.value);
+        const step = salesRankSteps[stepIndex];
+        salesRankValueSpan.textContent = step.label;
+        hiddenSalesRankInput.value = (step.value === Infinity) ? '99999999' : step.value;
+    });
+
+    profitMarginSlider.addEventListener('input', () => {
+        const stepIndex = parseInt(profitMarginSlider.value);
+        const step = profitMarginSteps[stepIndex];
+        profitMarginValueSpan.textContent = step.label;
+        hiddenProfitMarginInput.value = (step.value === Infinity) ? '9999' : step.value;
+    });
+
+    // --- Recalculation Status Polling ---
+    const recalcIndicator = document.getElementById('recalc-indicator');
+    let pollInterval;
+
+    async function checkRecalcStatus() {
+        try {
+            const response = await fetch('/api/recalc-status');
+            const data = await response.json();
+
+            if (data.status === 'Running') {
+                recalcIndicator.style.display = 'block';
+            } else if (data.status === 'Completed') {
+                recalcIndicator.style.display = 'none';
+                fetchDeals(currentPage, currentSort.by, currentSort.order); // Refresh table
+                clearInterval(pollInterval); // Stop polling
+            } else {
+                 recalcIndicator.style.display = 'none';
+                 clearInterval(pollInterval); // Stop polling on idle or error
+            }
+        } catch (error) {
+            console.error('Error polling recalc status:', error);
+            recalcIndicator.style.display = 'none';
+            clearInterval(pollInterval);
+        }
+    }
+
+    // Start polling immediately on page load to catch ongoing jobs, then set interval
+    checkRecalcStatus();
+    pollInterval = setInterval(checkRecalcStatus, 3000); // Poll every 3 seconds
+
+    fetchDeals();
+
+    function populateOverlay(deal) {
+        document.getElementById('overlay-title').textContent = deal.Title || 'N/A';
+        document.getElementById('overlay-asin').textContent = deal.ASIN || 'N/A';
+
+        // Pricing & Seasonality
+        document.getElementById('overlay-seasonality-type').textContent = deal.Seasonality_Type || 'N/A';
+        document.getElementById('overlay-expected-trough-price').textContent = deal.Expected_Trough_Price ? `$${deal.Expected_Trough_Price.toFixed(2)}` : '-';
+        document.getElementById('overlay-expected-peak-price').textContent = deal.Expected_Peak_Price ? `$${deal.Expected_Peak_Price.toFixed(2)}` : '-';
+        document.getElementById('overlay-profit-confidence').textContent = deal.Profit_Confidence ? `${deal.Profit_Confidence.toFixed(0)}%` : '-';
+
+        // Profit Calculation
+        document.getElementById('overlay-all-in-cost').textContent = deal.All_in_Cost ? `$${deal.All_in_Cost.toFixed(2)}` : '-';
+        document.getElementById('overlay-profit').textContent = deal.Profit ? `$${deal.Profit.toFixed(2)}` : '-';
+        document.getElementById('overlay-margin').textContent = deal.Margin ? `${deal.Margin.toFixed(2)}%` : '-';
+        document.getElementById('overlay-min-listing-price').textContent = deal.Min_Listing_Price ? `$${deal.Min_Listing_Price.toFixed(2)}` : '-';
+
+        // Sales Rank
+        document.getElementById('overlay-sales-rank-current').textContent = deal.Sales_Rank_Current ? deal.Sales_Rank_Current.toLocaleString() : '-';
+        document.getElementById('overlay-sales-rank-drops').textContent = deal.Sales_Rank_Drops_last_365_days || '-';
+
+        // External Links
+        document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal.ASIN}`;
+        document.getElementById('overlay-keepa-link').href = `https://keepa.com/#!product/1-${deal.ASIN}`;
+    }
+
+    closeOverlayBtn.addEventListener('click', () => {
+        overlay.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == overlay) {
+            overlay.style.display = 'none';
+        }
+    });
+
+    const tabs = document.querySelectorAll('.tab-link');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(item => item.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+});
+</script>
+{% endblock %}

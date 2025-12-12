@@ -1,0 +1,221 @@
+from logging import getLogger
+from .business_calculations import (
+    calculate_all_in_cost,
+    calculate_profit_and_margin,
+    calculate_min_listing_price,
+    load_settings as business_load_settings,
+)
+from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends
+from .seasonality_classifier import classify_seasonality, get_sells_period
+from .seller_info import get_used_product_info, CONDITION_CODE_MAP
+from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score
+from .field_mappings import FUNCTION_LIST
+import json
+import os
+
+logger = getLogger(__name__)
+HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
+
+# Load headers at module level to avoid I/O in loop
+try:
+    with open(HEADERS_PATH, 'r') as f:
+        HEADERS = json.load(f)
+except Exception as e:
+    logger.error(f"Failed to load headers from {HEADERS_PATH}: {e}")
+    HEADERS = []
+
+def _parse_price(value_str):
+    if isinstance(value_str, (int, float)): return float(value_str)
+    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']: return 0.0
+    try: return float(value_str.strip().replace('$', '').replace(',', ''))
+    except ValueError: return 0.0
+
+def _parse_percent(value_str):
+    if isinstance(value_str, (int, float)): return float(value_str)
+    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']: return 0.0
+    try: return float(value_str.strip().replace('%', ''))
+    except ValueError: return 0.0
+
+def _process_single_deal(product_data, seller_data_cache, xai_api_key):
+    asin = product_data.get('asin')
+    if not asin:
+        return None
+
+    row_data = {'ASIN': asin}
+
+    if product_data.get('title'):
+        row_data['Title'] = product_data['title']
+    if product_data.get('manufacturer'):
+        row_data['Manufacturer'] = product_data.get('manufacturer')
+
+    try:
+        used_product_info = get_used_product_info(product_data)
+        if not used_product_info or used_product_info[0] is None:
+            logger.info(f"ASIN {asin}: No used offer found. Halting processing.")
+            return None
+        price_now, seller_id, is_fba, condition_code = used_product_info
+
+        row_data['Price Now'] = price_now / 100.0
+        row_data['Best Price'] = row_data['Price Now'] # Ensure Best Price is populated
+        row_data['Seller'] = seller_id # Default to ID
+        row_data['FBA'] = is_fba
+        row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
+
+        if seller_id and seller_data_cache and seller_id in seller_data_cache:
+            seller_details = seller_data_cache[seller_id]
+            row_data['Seller'] = seller_details.get('sellerName', seller_details.get('name', seller_id)) # Use sellerName if available
+            row_data['Seller Rating'] = seller_details.get('rating')
+            row_data['Seller Review Count'] = seller_details.get('ratingCount')
+
+            # Calculate Seller Quality Score (Trust)
+            # Prioritize 'current' fields if available, otherwise fall back to history arrays
+            rating_percent = seller_details.get('currentRating')
+            if rating_percent is None:
+                rating_percent = seller_details.get('rating', 0)
+                if isinstance(rating_percent, list) and rating_percent:
+                    rating_percent = rating_percent[-1]
+
+            rating_count = seller_details.get('currentRatingCount')
+            if rating_count is None:
+                rating_count = seller_details.get('ratingCount', 0)
+                if isinstance(rating_count, list) and rating_count:
+                    rating_count = rating_count[-1]
+
+            if rating_percent is not None and rating_count is not None and isinstance(rating_percent, (int, float)) and isinstance(rating_count, (int, float)):
+                positive_ratings = int((rating_percent / 100.0) * rating_count)
+                row_data['Seller_Quality_Score'] = calculate_seller_quality_score(positive_ratings, rating_count)
+            else:
+                row_data['Seller_Quality_Score'] = 0.0
+        else:
+            row_data['Seller Rating'] = "N/A"
+            row_data['Seller Review Count'] = "N/A"
+            row_data['Seller_Quality_Score'] = 0.0
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed to get live price/seller info: {e}", exc_info=True)
+        return None
+
+    # Extract fields using FUNCTION_LIST
+    try:
+        headers = HEADERS
+
+        for i, func in enumerate(FUNCTION_LIST):
+            if func:
+                try:
+                    res = func(product_data)
+                    if isinstance(res, dict):
+                        val = next(iter(res.values())) if res else None
+                    else:
+                        val = res
+                    if i < len(headers):
+                        row_data[headers[i]] = val
+                except Exception as e:
+                    logger.warning(f"ASIN {asin}: Error extracting {headers[i] if i < len(headers) else 'Unknown'}: {e}")
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Error in generic field extraction: {e}", exc_info=True)
+
+    # Exclusion: List at
+    val_list = row_data.get('List at')
+    if not val_list or val_list == '-' or val_list == 'N/A':
+        logger.info(f"ASIN {asin}: Excluding deal because 'List at' is missing (Price validation failed or insufficient data).")
+        return None
+
+    business_settings = business_load_settings()
+    sale_events, _ = infer_sale_events(product_data)
+
+    try:
+        sales_perf = analyze_sales_performance(product_data, sale_events)
+        if sales_perf is None:
+            logger.warning(f"ASIN {asin}: Could not analyze sales performance. Skipping.")
+            return None
+        row_data.update(sales_perf)
+
+        list_at_price = _parse_price(row_data.get('List at', '0'))
+        now_price = row_data.get('Price Now', 0.0)
+        fba_fee = product_data.get('fbaFees', {}).get('pickAndPackFee', 0) / 100.0
+
+        referral_percent = product_data.get('referralFeePercentage', 15.0)
+
+        shipping_included_flag = False
+        if 'offers' in product_data and product_data['offers']:
+            for offer in product_data['offers']:
+                offer_csv = offer.get('offerCSV', [])
+                if len(offer_csv) >=2 and offer_csv[0] + (offer_csv[1] if offer_csv[1] != -1 else 0) == price_now:
+                     shipping_included_flag = (offer_csv[1] == 0)
+                     break
+
+        all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_percent, business_settings, shipping_included_flag)
+        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost)
+        min_listing = calculate_min_listing_price(all_in_cost, business_settings)
+
+        row_data.update({
+            'All-in Cost': all_in_cost,
+            'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
+            'Min. Listing Price': min_listing
+        })
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed business calculations: {e}", exc_info=True)
+
+    try:
+        yr_avg_info = get_1yr_avg_sale_price(product_data)
+        if yr_avg_info:
+            row_data.update(yr_avg_info)
+
+        # Exclusion: Do not collect deals with missing 1yr. Avg.
+        # This implies < 1 sale event in the last year or missing history.
+        if row_data.get('1yr. Avg.') is None:
+            logger.info(f"ASIN {asin}: Excluding deal because '1yr. Avg.' is missing (insufficient sales data).")
+            return None
+
+        trend_info = get_trend(product_data)
+        if trend_info:
+            row_data.update(trend_info)
+
+        discount_info = get_percent_discount(row_data.get('1yr. Avg.'), row_data.get('Price Now'))
+        if discount_info:
+            row_data.update(discount_info)
+
+        row_data.update(recent_inferred_sale_price(product_data))
+        row_data.update(analyze_sales_rank_trends(product_data))
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)
+
+    try:
+        title = row_data.get('Title', '')
+        categories = ', '.join([cat['name'] for cat in product_data.get('categoryTree', [])])
+        manufacturer = row_data.get('Manufacturer', '')
+        peak_season_str = row_data.get('Peak Sales Month', '-')
+        trough_season_str = row_data.get('Trough Sales Month', '-')
+
+        detailed_season = classify_seasonality(
+            title, categories, manufacturer,
+            peak_season_str, trough_season_str,
+            xai_api_key=xai_api_key
+        )
+
+        row_data['Detailed_Seasonality'] = detailed_season # Keep "Year-round" instead of "None"
+        row_data['Sells'] = get_sells_period(detailed_season)
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
+
+    return row_data
+
+def clean_numeric_values(row_data):
+    """
+    Cleans and converts numeric string values in the row data to actual numbers.
+    """
+    for key, value in row_data.items():
+        if value is None or not isinstance(value, str):
+            continue
+        cleaned_value = value.strip().replace('$', '').replace(',', '')
+        if "Rank" in key or "Count" in key:
+            try: row_data[key] = int(cleaned_value)
+            except (ValueError, TypeError): row_data[key] = None
+        elif "%" in value:
+            try: row_data[key] = float(cleaned_value.replace('%', ''))
+            except (ValueError, TypeError): row_data[key] = None
+        elif any(k in key for k in ["Price", "Cost", "Fee", "Profit", "Margin"]):
+            try: row_data[key] = float(cleaned_value)
+            except (ValueError, TypeError): row_data[key] = None
+    return row_data

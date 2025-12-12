@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}Keepa Deals Query{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <h1 class="settings-header">Keepa Deals Query</h1>
+    <p class="settings-description">
+        Use this page to set the Keepa deals query. The query must be a valid JSON object.
+    </p>
+
+    <div class="settings-card">
+        <form action="{{ url_for('deals') }}" method="post" class="settings-form">
+            <div class="form-group">
+                <label for="keepa_query">Keepa API Query</label>
+                <textarea id="keepa_query" name="keepa_query" class="styled-text-field large-textarea" rows="20">{{ keepa_query }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="styled-button">Save Query</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="settings-card" style="margin-top: 2rem; border-color: #ff4d4d;">
+        <h2 style="color: #ff4d4d;">Danger Zone</h2>
+        <p>
+            Resetting the database will clear all existing deals and restart the backfill process from scratch.
+            This action cannot be undone.
+        </p>
+        <button id="reset-db-btn" class="styled-button" style="background-color: #ff4d4d; color: white;">
+            Reset Database & Restart Backfill
+        </button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('reset-db-btn').addEventListener('click', function() {
+        if (confirm('Are you ABSOLUTELY SURE you want to delete all data and restart the backfill? This process will take hours.')) {
+            fetch('/api/reset-database', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred.');
+                });
+        }
+    });
+</script>
+{% endblock %}

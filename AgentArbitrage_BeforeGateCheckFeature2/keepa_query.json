@@ -1,0 +1,53 @@
+{
+    "page": 0,
+    "domainId": "1",
+    "excludeCategories": [],
+    "includeCategories": [
+        283155
+    ],
+    "priceTypes": [
+        2
+    ],
+    "deltaRange": [
+        0,
+        10000
+    ],
+    "deltaPercentRange": [
+        10,
+        2147483647
+    ],
+    "salesRankRange": [
+        10000,
+        10000000
+    ],
+    "currentRange": [
+        0,
+        2147483647
+    ],
+    "minRating": 10,
+    "isLowest": false,
+    "isLowest90": false,
+    "isLowestOffer": false,
+    "isOutOfStock": false,
+    "titleSearch": "",
+    "isRangeEnabled": true,
+    "isFilterEnabled": true,
+    "filterErotic": false,
+    "singleVariation": true,
+    "hasReviews": false,
+    "isPrimeExclusive": false,
+    "mustHaveAmazonOffer": false,
+    "mustNotHaveAmazonOffer": false,
+    "sortType": 4,
+    "dateRange": "4",
+    "warehouseConditions": [
+        2,
+        3,
+        4,
+        5
+    ],
+    "deltaLastRange": [
+        500,
+        2147483647
+    ]
+}
