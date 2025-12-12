@@ -1013,7 +1013,8 @@ def connect_amazon():
     auth_params = {
         'application_id': SP_API_APP_ID,
         'state': state,
-        'redirect_uri': "https://agentarbitrage.co/amazon_callback"
+        'redirect_uri': "https://agentarbitrage.co/amazon_callback",
+        'version': 'beta'
     }
     authorization_url = f"{AMAZON_AUTH_URL}?{urlencode(auth_params)}"
 
