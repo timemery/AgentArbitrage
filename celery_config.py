@@ -15,8 +15,8 @@ result_serializer = 'json'
 accept_content = ['json']
 
 beat_schedule = {
-    'update-recent-deals-every-15-minutes': {
+    'update-recent-deals-every-minute': {
         'task': 'keepa_deals.simple_task.update_recent_deals',
-        'schedule': crontab(minute='*/15'),
+        'schedule': crontab(minute='*'),
     },
 }

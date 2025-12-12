@@ -1,0 +1,130 @@
+# Data Logic and Column Definitions
+
+This document serves as the canonical source of truth for how each data column in the `deals.db` database is populated, calculated, and transformed. Its purpose is to prevent regressions and provide a clear reference for future development.
+
+For visual presentation rules (formatting, abbreviations, column order), please refer to **`Dashboard_Specification.md`**.
+
+---
+
+## Data Processing Workflow (Calculation Pipeline)
+
+The data for each deal is generated in a multi-stage pipeline orchestrated by the `_process_single_deal` function in `keepa_deals/processing.py`. If a product fails certain critical data quality checks at any stage, its processing is halted, and it is excluded from the database.
+
+1.  **Extraction (Raw Data)**:
+    *   Basic attributes (ASIN, Title, Category) are pulled from the Keepa `/product` API.
+    *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
+
+2.  **Seller & Price Analysis**:
+    *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
+    *   **Selection:** It finds the "Used" offer (Conditions: Like New, Very Good, Good, Acceptable) with the **lowest total price** (Price + Shipping).
+    *   **Exclusion:** If no valid "Used" offer is found, the deal is dropped.
+    *   **Output:** `Price Now`, `Seller`, `Seller ID`, `Seller_Quality_Score`.
+
+3.  **Inferred Sales (The Engine)**:
+    *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
+    *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed closely by a drop in **Sales Rank** (Amazon registered the sale).
+    *   **Output:** A list of `sale_events` used for all downstream analytics.
+
+4.  **Analytics & Seasonality**:
+    *   **Logic:** `keepa_deals/new_analytics.py` and `seasonality_classifier.py`.
+    *   **1yr. Avg.:** The mean price of all inferred sales in the last 365 days.
+    *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped.
+    *   **Seasonality:** AI (`grok-4-fast-reasoning`) classifies the book (e.g., "Fall Semester") based on title, category, and historical peak sales months.
+
+5.  **AI Price Check ("List at")**:
+    *   **Logic:** `keepa_deals/stable_calculations.py` -> `get_list_at_price`.
+    *   **Calculation:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
+    *   **Verification:** Queries AI: "Is a peak price of $X.XX reasonable for this book?"
+    *   **Exclusion:** If AI says "No" or calculation fails, the deal is dropped.
+
+6.  **Business Math**:
+    *   **Logic:** `keepa_deals/business_calculations.py`.
+    *   **Inputs:** `Price Now`, `List at`, Amazon Fees (FBA + Referral), User Settings (Prep, Tax).
+    *   **Output:** `All-in Cost`, `Profit`, `Margin`, `Min. Listing Price`.
+
+---
+
+## Column Breakdown
+
+### Core Deal & Product Information
+
+-   **`ASIN`**: Directly from Keepa.
+-   **`Title`**: Directly from Keepa.
+-   **`Deal found`**: ISO timestamp of when the deal was processed.
+-   **`last_price_change`**: Timestamp of the most recent price change for any "Used" item. Prioritizes `product.csv` history, falls back to `deal.currentSince`.
+
+### Seller and Offer Information
+
+-   **`Price Now` / `Best Price`**:
+    -   **Source**: `keepa_deals/seller_info.py`.
+    -   **Logic**: Lowest total price (Item + Shipping) of the best "Used" offer.
+    -   **Note**: `Best Price` is a duplicate of `Price Now` required for the dashboard.
+
+-   **`Seller`**:
+    -   **Source**: `keepa_deals/processing.py` (via `seller_info`).
+    -   **Logic**: The `sellerName` of the winning offer. Falls back to `sellerId` if name is missing.
+
+-   **`Seller_Quality_Score` (Trust)**:
+    -   **Source**: `keepa_deals/stable_calculations.py`.
+    -   **Logic**: **Wilson Score Confidence Interval**. Uses `rating` (0-500) and `ratingCount`.
+    -   **Display**: Dashboard converts this 0.0-5.0 float into a "X / 10" integer format (e.g., 4.9 -> 49 / 10).
+
+-   **`Condition`**:
+    -   **Source**: `keepa_deals/stable_deals.py`.
+    -   **Logic**: Returns the condition of the winning offer (e.g., "Used, very good").
+    -   **Transformation**: Converted to numeric code (1-5) for DB storage, then re-mapped to abbreviations (e.g., "U - VG") by the API for display.
+
+### Advanced Analytics
+
+-   **`1yr. Avg.`**:
+    -   **Source**: `keepa_deals/new_analytics.py`.
+    -   **Logic**: Mean of inferred sale prices over last 365 days.
+    -   **Threshold**: Requires **at least 1** inferred sale. If 0, returns None and deal is excluded.
+
+-   **`Percent Down` (% ⇩)**:
+    -   **Source**: `keepa_deals/new_analytics.py`.
+    -   **Logic**: `((1yr. Avg. - Price Now) / 1yr. Avg.) * 100`.
+    -   **Rule**: If `Price Now` > `1yr. Avg.`, returns 0%.
+
+-   **`Trend`**:
+    -   **Source**: `keepa_deals/new_analytics.py`.
+    -   **Logic**: Analyzes a sample (size 3-10) of recent **unique** price points.
+    -   **Output**:
+        -   `⇧` (Up) if last price > first price of sample.
+        -   `⇩` (Down) if last price < first price.
+        -   `⇨` (Flat) otherwise.
+
+-   **`Profit Confidence` (Profit Trust)**:
+    -   **Source**: `keepa_deals/stable_calculations.py`.
+    -   **Logic**: `(Count of Inferred Sales / Count of Offer Drops) * 100`.
+    -   **Meaning**: High % means offer drops reliably correlate with sales rank drops (confirmed sales). Low % implies noise or fake drops.
+
+### AI-Driven Seasonality and Pricing
+
+-   **`Detailed_Seasonality`**:
+    -   **Source**: `keepa_deals/seasonality_classifier.py`.
+    -   **Logic**: AI classification based on Title, Category, and Peak Months.
+
+-   **`List at`**:
+    -   **Source**: `keepa_deals/stable_calculations.py`.
+    -   **Logic**: **Mode** (or Median fallback) of inferred sales prices during the **Peak Season**.
+    -   **AI Check**: Validated by `grok-4-fast-reasoning`.
+
+### Business & Financial Metrics
+
+-   **`All-in Cost`**:
+    -   **Source**: `keepa_deals/business_calculations.py`.
+    -   **Formula**: `Price Now + Tax + Prep Fee + FBA Fee + Referral Fee + Shipping`.
+    -   **Referral Fee**: Calculated based on the **List at** price (not Price Now).
+
+-   **`Profit`**:
+    -   **Source**: `keepa_deals/business_calculations.py`.
+    -   **Formula**: `List at - All-in Cost`.
+
+-   **`Margin`**:
+    -   **Source**: `keepa_deals/business_calculations.py`.
+    -   **Formula**: `(Profit / List at) * 100`.
+
+-   **`Min. Listing Price`**:
+    -   **Source**: `keepa_deals/business_calculations.py`.
+    -   **Formula**: `All-in Cost / (1 - Default Markup %)`.

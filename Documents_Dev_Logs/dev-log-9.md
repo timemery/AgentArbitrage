@@ -504,3 +504,51 @@ The objective was to resolve critical data regressions where the `Seller` column
 - **Test Environment State:** Ensuring isolation between test runs was critical. The memoization cache in `stable_calculations.py` (`_analysis_cache`) persisted across mock tests, initially causing false negatives in verification scripts. Explicitly clearing the cache resolved this.
 
 **Outcome:** **Success.** The system now correctly captures deals with as few as 1 sale event, significantly improving coverage for relevant inventory. simultaneously, it aggressively filters out "zombie" rows that lack critical data (`1yr. Avg.` or `List at`), ensuring the database remains clean and actionable.
+
+### Dev Log Entry
+
+**Date:** 2025-12-11 **Task:** Increase Refiller Frequency to 1 Minute **Status:** **SUCCESS**
+
+**Objective:** The goal was to increase the execution frequency of the `update_recent_deals` (refiller) task from every 15 minutes to every 1 minute. This change allows the system to detect deep-discount "flash" sales much faster, leveraging the available Keepa API token budget more aggressively while relying on existing safety mechanisms to prevent overuse.
+
+**Technical Analysis & Safety Check:** Before implementing the schedule change, the agent verified the safety of running the task at such a high frequency. Analysis of `keepa_deals/simple_task.py` confirmed the existence of a critical safeguard:
+
+```
+if not token_manager.has_enough_tokens(5):
+    logger.warning("Upserter: Insufficient tokens... Skipping run.")
+    return
+```
+
+This logic ensures that if the token balance is low, the task simply skips execution rather than crashing or causing an API deficit loop. This confirmed that increasing the frequency to 1 minute is a safe "best effort" strategy.
+
+**Actions Taken:**
+
+1. Configuration Update:
+
+   Modified
+
+   ```
+   celery_config.py
+   ```
+
+   to update the
+
+   ```
+   beat_schedule
+   ```
+
+   dictionary.
+
+   - **Changed Schedule:** Updated `crontab(minute='*/15')` to `crontab(minute='*')` to trigger the task every minute.
+   - **Renamed Key:** Renamed the schedule key from `'update-recent-deals-every-15-minutes'` to `'update-recent-deals-every-minute'` to ensure the configuration name accurately reflects the new behavior.
+
+2. **Verification:** Validated that `celery_config.py` was the only file modified and confirmed that no code changes were required in the task logic itself.
+
+3. **User Guidance:** Clarified for the user that `trigger_backfill_task.py` is **not** required for this change and warned that using its `--reset` flag would destructively wipe the database. Confirmed that a restart of the Celery Beat service is the only action needed to apply the new schedule.
+
+**Challenges Encountered:**
+
+- **Documentation Gaps:** The initial "read list" included files (`Documents_Dev_Logs/System_Architecture.md`, `Documents_Dev_Logs/Dashboard_Specification.md`) that were missing from the repository. The agent had to adapt by relying on `data_logic.md` and direct code inspection to understand the system.
+- **Environmental Context:** Operating within an isolated sandbox meant the agent could not directly verify the service restart or the resulting log output on the production VPS. Verification relied on code correctness and user confirmation.
+
+**Final Outcome:** The task was **successful**. The configuration was updated correctly, and the user confirmed that the logs show the system is now operating on the new 1-minute schedule. The system is now optimized for rapid deal detection without compromising API stability.
