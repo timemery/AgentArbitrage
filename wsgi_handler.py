@@ -1013,7 +1013,7 @@ def connect_amazon():
     auth_params = {
         'application_id': SP_API_APP_ID,
         'state': state,
-        'redirect_uri': url_for('amazon_callback', _external=True)
+        'redirect_uri': "https://agentarbitrage.co/amazon_callback"
     }
     authorization_url = f"{AMAZON_AUTH_URL}?{urlencode(auth_params)}"
 
@@ -1051,7 +1051,7 @@ def amazon_callback():
     token_payload = {
         'grant_type': 'authorization_code',
         'code': auth_code,
-        'redirect_uri': url_for('amazon_callback', _external=True),
+        'redirect_uri': "https://agentarbitrage.co/amazon_callback",
         'client_id': SP_API_CLIENT_ID,
         'client_secret': SP_API_CLIENT_SECRET
     }
