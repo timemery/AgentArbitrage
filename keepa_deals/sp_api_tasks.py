@@ -11,7 +11,7 @@ import os
 import httpx
 from worker import celery_app as celery
 from keepa_deals.amazon_sp_api import check_restrictions
-from keepa_deals.db_utils import DB_PATH
+from keepa_deals.db_utils import DB_PATH, get_all_user_credentials
 
 logger = logging.getLogger(__name__)
 
@@ -125,20 +125,26 @@ def check_restriction_for_asins(asins: list[str]):
 
     logger.info(f"Starting restriction check for {len(asins)} new ASINs.")
 
-    # In a real system, you'd have a way to get all users who have connected their accounts.
-    # For this simulation, we'll hardcode the user ID we used in the OAuth flow.
-    connected_user_ids = ['user_123'] # Placeholder
+    # Fetch all connected users and their refresh tokens from the database
+    user_credentials = get_all_user_credentials()
 
-    if not connected_user_ids:
+    if not user_credentials:
         logger.info("No users have connected their SP-API accounts. Skipping restriction check.")
         return "No connected users."
 
-    for user_id in connected_user_ids:
-        try:
-            # In a real app, you'd fetch the specific user's access token
-            access_token = "dummy_access_token"
+    for creds in user_credentials:
+        user_id = creds['user_id']
+        refresh_token = creds['refresh_token']
 
-            results = check_restrictions(asins, access_token)
+        try:
+            # Refresh the access token for the user
+            access_token = _refresh_sp_api_token(refresh_token)
+
+            if not access_token:
+                logger.warning(f"Could not refresh token for user {user_id}. Skipping.")
+                continue
+
+            results = check_restrictions(asins, access_token, user_id)
 
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
@@ -162,4 +168,4 @@ def check_restriction_for_asins(asins: list[str]):
         except Exception as e:
             logger.error(f"An unexpected error occurred in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
 
-    return f"Completed restriction check for {len(asins)} ASINs for {len(connected_user_ids)} users."
+    return f"Completed restriction check for {len(asins)} ASINs for {len(user_credentials)} users."
