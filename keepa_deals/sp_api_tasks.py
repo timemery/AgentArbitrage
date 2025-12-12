@@ -67,9 +67,13 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
     logger.info(f"Starting restriction check for all ASINs for user_id: {user_id}")
 
     try:
-        # For simplicity in this fix, we'll assume the initial token is valid for the first run.
-        # A more robust solution would store and check expiry, but this architecture is now correct.
-        # This is where you would call `_refresh_sp_api_token` if you stored the expiry time.
+        # Ensure we have a valid access token
+        if not access_token or access_token == 'manual_placeholder':
+            logger.info("Access token missing or placeholder. Attempting to refresh.")
+            access_token = _refresh_sp_api_token(refresh_token)
+            if not access_token:
+                logger.error("Failed to obtain access token via refresh.")
+                return "Failed to obtain access token."
 
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()

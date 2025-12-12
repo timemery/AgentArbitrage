@@ -1093,6 +1093,34 @@ def amazon_callback():
 
     return redirect(url_for('settings'))
 
+@app.route('/manual_sp_api_token', methods=['POST'])
+def manual_sp_api_token():
+    """
+    Handles manual submission of Seller ID and Refresh Token.
+    Bypasses the OAuth flow.
+    """
+    seller_id = request.form.get('seller_id')
+    refresh_token = request.form.get('refresh_token')
+
+    if not seller_id or not refresh_token:
+        flash("Please provide both Seller ID and Refresh Token.", "error")
+        return redirect(url_for('settings'))
+
+    # Store in session (mimicking successful OAuth)
+    session['sp_api_connected'] = True
+    session['sp_api_user_id'] = seller_id
+    session['sp_api_refresh_token'] = refresh_token
+    session['sp_api_seller_id'] = seller_id
+
+    app.logger.info(f"Manual SP-API connection for seller_id: {seller_id}")
+
+    # Trigger the background task. Pass a placeholder for access_token so it forces a refresh.
+    task_args = [seller_id, seller_id, 'manual_placeholder', refresh_token]
+    celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=task_args)
+
+    flash("Successfully connected manually! Restriction checks started in background.", "success")
+    return redirect(url_for('settings'))
+
 if __name__ == '__main__':
     create_user_restrictions_table_if_not_exists()
     app.run(debug=True)
