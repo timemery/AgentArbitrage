@@ -19,7 +19,8 @@ from celery_app import celery_app
 from keepa_deals.db_utils import (
     create_user_restrictions_table_if_not_exists,
     create_user_credentials_table_if_not_exists,
-    save_user_credentials
+    save_user_credentials,
+    get_all_user_credentials
 )
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
@@ -634,6 +635,24 @@ def download_file(filename):
 def settings():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
+
+    # --- Session Re-hydration Logic ---
+    # Check if the database has credentials even if the session forgot them.
+    if not session.get('sp_api_connected'):
+        try:
+            creds = get_all_user_credentials()
+            if creds:
+                # We have at least one connected user in the persistent DB.
+                # Since this is a single-tenant app, we'll use the first one.
+                user_record = creds[0]
+                session['sp_api_connected'] = True
+                session['sp_api_user_id'] = user_record['user_id']
+                # We don't necessarily need to put the refresh token in session if background tasks handle it,
+                # but for consistency with the connect flow, we can.
+                session['sp_api_refresh_token'] = user_record['refresh_token']
+                app.logger.info(f"Re-hydrated SP-API session for user: {user_record['user_id']}")
+        except Exception as e:
+            app.logger.error(f"Error checking DB for credentials during settings load: {e}")
 
     if request.method == 'POST':
         try:
