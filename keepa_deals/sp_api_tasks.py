@@ -77,34 +77,47 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
 
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            # Fetch all unique ASINs from the deals table
-            cursor.execute("SELECT DISTINCT ASIN FROM deals")
+            # Fetch all unique ASINs from the deals table.
+            # Order by id DESC (approx newest first) to prioritize recent deals for the user.
+            # We use GROUP BY ASIN to get distinct ASINs while allowing ORDER BY MAX(id).
+            cursor.execute("SELECT ASIN FROM deals GROUP BY ASIN ORDER BY MAX(id) DESC")
             asins = [row[0] for row in cursor.fetchall()]
 
         if not asins:
             logger.warning("No ASINs found in the database to check.")
             return "No ASINs to check."
 
-        # Use the provided access token for the API calls
-        results = check_restrictions(asins, access_token, seller_id)
+        # Process in batches to provide incremental updates to the UI
+        BATCH_SIZE = 5
+        total_processed = 0
 
-        # Save results to the database
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-            for asin, result in results.items():
-                cursor.execute("""
-                    INSERT OR REPLACE INTO user_restrictions
-                    (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
-                    VALUES (?, ?, ?, ?, ?)
-                """, (
-                    user_id,
-                    asin,
-                    1 if result['is_restricted'] else 0,
-                    result['approval_url'],
-                    datetime.utcnow()
-                ))
-            conn.commit()
-        logger.info(f"Successfully saved restriction data for {len(results)} ASINs for user_id: {user_id}")
+        for i in range(0, len(asins), BATCH_SIZE):
+            batch_asins = asins[i : i + BATCH_SIZE]
+
+            # Use the provided access token for the API calls (chunked)
+            results = check_restrictions(batch_asins, access_token, seller_id)
+
+            # Save results to the database immediately
+            with sqlite3.connect(DB_PATH) as conn:
+                cursor = conn.cursor()
+                for asin, result in results.items():
+                    cursor.execute("""
+                        INSERT OR REPLACE INTO user_restrictions
+                        (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, (
+                        user_id,
+                        asin,
+                        1 if result['is_restricted'] else 0,
+                        result['approval_url'],
+                        datetime.utcnow()
+                    ))
+                conn.commit()
+
+            total_processed += len(results)
+            logger.info(f"Progress: Saved restriction data for {total_processed}/{len(asins)} ASINs for user_id: {user_id}")
+
+        logger.info(f"Successfully finished restriction check for all {len(asins)} ASINs for user_id: {user_id}")
 
     except sqlite3.Error as e:
         logger.error(f"Database error in check_all_restrictions_for_user: {e}", exc_info=True)
@@ -144,24 +157,28 @@ def check_restriction_for_asins(asins: list[str]):
                 logger.warning(f"Could not refresh token for user {user_id}. Skipping.")
                 continue
 
-            results = check_restrictions(asins, access_token, user_id)
+            BATCH_SIZE = 5
+            for i in range(0, len(asins), BATCH_SIZE):
+                batch_asins = asins[i : i + BATCH_SIZE]
+                results = check_restrictions(batch_asins, access_token, user_id)
 
-            with sqlite3.connect(DB_PATH) as conn:
-                cursor = conn.cursor()
-                for asin, result in results.items():
-                    cursor.execute("""
-                        INSERT OR REPLACE INTO user_restrictions
-                        (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
-                        VALUES (?, ?, ?, ?, ?)
-                    """, (
-                        user_id,
-                        asin,
-                        1 if result['is_restricted'] else 0,
-                        result['approval_url'],
-                        datetime.utcnow()
-                    ))
-                conn.commit()
-            logger.info(f"Successfully saved restriction data for {len(results)} new ASINs for user_id: {user_id}")
+                with sqlite3.connect(DB_PATH) as conn:
+                    cursor = conn.cursor()
+                    for asin, result in results.items():
+                        cursor.execute("""
+                            INSERT OR REPLACE INTO user_restrictions
+                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, (
+                            user_id,
+                            asin,
+                            1 if result['is_restricted'] else 0,
+                            result['approval_url'],
+                            datetime.utcnow()
+                        ))
+                    conn.commit()
+
+            logger.info(f"Successfully saved restriction data for {len(asins)} new ASINs for user_id: {user_id}")
 
         except sqlite3.Error as e:
             logger.error(f"Database error in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
