@@ -37,6 +37,12 @@ LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days
 STATE_FILE_LEGACY = 'backfill_state.json'
 
+def _convert_keepa_time_to_iso(keepa_minutes):
+    """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
+    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
+    return dt_object.isoformat()
+
 def load_backfill_state():
     """
     Loads the last completed page from the system_state table.
@@ -128,6 +134,13 @@ def backfill_deals(reset=False):
 
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
             logger.info(f"Found {len(deals_on_page)} deals on page {page}.")
+
+            # Update watermark if starting fresh (Page 0), so upserter knows where to pick up
+            if page == 0 and deals_on_page:
+                newest_ts = deals_on_page[0].get('lastUpdate')
+                if newest_ts:
+                    wm_iso = _convert_keepa_time_to_iso(newest_ts)
+                    save_watermark(wm_iso)
 
             for i in range(0, len(deals_on_page), DEALS_PER_CHUNK):
                 chunk_deals = deals_on_page[i:i + DEALS_PER_CHUNK]
