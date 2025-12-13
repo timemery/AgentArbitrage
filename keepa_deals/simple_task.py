@@ -105,8 +105,8 @@ def update_recent_deals():
         
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
-            # Sort by newest first (sortType=0)
-            deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=0)
+            # Sort by newest first (sortType=4: Last Update)
+            deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=4)
             token_manager.update_after_call(tokens_left)
 
             if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:

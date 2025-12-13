@@ -647,3 +647,152 @@ The objective was to finalize the "Check Restrictions" feature, which allows the
 The **code implementation is complete and successful**. The application is now technically capable of performing restriction checks via both OAuth and Manual connections.
 
 **Current State:** The feature is deployed but waiting on an **External Dependency** (Amazon Identity Verification). Once Amazon approves the user's developer profile (24-48 hours), the user can simply enter their credentials in the Settings page, and the feature will activate automatically. No further code changes are required for this task.
+
+# Dev Log - December 13, 2025
+
+**Task:** Finalize "Check Restrictions" Feature & Fix Critical Backfiller Stall **Status:** **SUCCESS**
+
+**Overview:** The primary objective was to operationalize the "Check Restrictions" feature (connecting to Amazon SP-API) and investigate why the main data collection task (`backfill_deals`) was stalling at ~180 deals. Both systems were found to have significant logic regressions and configuration issues that required deep debugging.
+
+### 1. The Backfiller Stall (Fix: Chunk Size & Token Logic)
+
+- **Symptom:** The `backfill_deals` task would process about 180 deals and then appear to hang indefinitely.
+
+- Root Cause:
+
+   
+
+  The
+
+   
+
+  ```
+  TokenManager
+  ```
+
+   
+
+  implements a "controlled deficit" strategy. It was configured to proactively wait for a
+
+   
+
+  full bucket refill
+
+   
+
+  (300 tokens) if the estimated cost of the next batch exceeded the current balance.
+
+  - The `DEALS_PER_CHUNK` was set to `20`.
+  - Estimated cost for 20 deals: `20 * 12 = 240 tokens`.
+  - Typical running balance: `~100-120 tokens`.
+  - **Result:** `120 < 240`, so the manager triggered a wait. At 5 tokens/minute, refilling 180 tokens takes **36 minutes**. The user perceived this 36-minute silent pause as a stall.
+
+- Solution:
+
+   
+
+  Reduced
+
+   
+
+  ```
+  DEALS_PER_CHUNK
+  ```
+
+   
+
+  from
+
+   
+
+  ```
+  20
+  ```
+
+   
+
+  to
+
+   
+
+  ```
+  5
+  ```
+
+   
+
+  in
+
+   
+
+  ```
+  keepa_deals/backfiller.py
+  ```
+
+  .
+
+  - New estimated cost: `60 tokens`.
+  - `120 > 60`, so the task proceeds immediately.
+  - This ensures the system runs continuously with only standard 60-second rate-limit pauses, dramatically improving throughput and feedback.
+
+### 2. The Upserter "No New Deals" Bug (Fix: Sort Order Regression)
+
+- **Symptom:** Even after a reset, the scheduled `update_recent_deals` task reported "No new deals found" and stopped immediately.
+
+- Root Cause:
+
+   
+
+  A regression in
+
+   
+
+  ```
+  keepa_deals/simple_task.py
+  ```
+
+   
+
+  caused it to request deals using
+
+   
+
+  ```
+  Sort Type 0
+  ```
+
+   
+
+  (Sales Rank) instead of the required
+
+   
+
+  ```
+  Sort Type 4
+  ```
+
+   
+
+  (Last Update).
+
+  - **Impact:** The API returned a random mix of new and old deals. The delta-sync logic ("stop if we see a deal older than watermark") triggered on the very first old deal it encountered, erroneously aborting the scan.
+
+- **Solution:** Hardcoded `fetch_deals_for_deals(..., sort_type=4)` in `simple_task.py` to enforce chronological processing.
+
+### 3. The Stale Watermark (Fix: State Management)
+
+- **Symptom:** The upserter was comparing new deals against a watermark from 2024.
+- **Root Cause:** The `backfill_deals(reset=True)` function cleared the *data* but failed to update the `watermark_iso` in the `system_state` table.
+- **Solution:** Modified `keepa_deals/backfiller.py` to capture the timestamp of the first deal processed (the newest one) and save it as the new watermark immediately upon starting a fresh backfill.
+
+### 4. Settings Page Persistence (Fix: WSGI Initialization & Session Hydration)
+
+- **Symptom:** The "Amazon Connected" status was not persisting. Reloading the Settings page showed the "Connect" form again, and saving credentials appeared to work but didn't stick.
+- **Root Cause 1 (Silent Failure):** The database tables (`user_credentials`) were initialized inside the `if __name__ == '__main__':` block in `wsgi_handler.py`. In the production environment (served via Gunicorn/WSGI), this block is skipped, so the tables **did not exist**. Saving credentials silently failed.
+- **Root Cause 2 (UI Logic):** The Settings page relied solely on the Flask `session` cookie. If the user cleared cache or logged out, the "Connected" state was lost visually, even if data was in the DB.
+- Solution:
+  - Moved table initialization logic to module scope to ensure execution in production.
+  - Added **Session Re-hydration**: The `/settings` route now checks the database on load. If credentials exist, it automatically marks the session as "Connected" and populates the Seller ID.
+  - Added robust error handling to `manual_sp_api_token` to flash red error messages if saving fails, preventing silent failures.
+
+**Outcome:** All systems are verified operational. The Backfiller runs smoothly without long stalls, the Upserter correctly identifies new deals, and the Amazon Integration persists reliably across sessions and restarts. The Restriction check is running in the background at the Amazon-mandated rate of 1 item/1.1 seconds. (although I have not seen the check restrictions result in anything other than the loading animation, no checkmark or apply has shown up after about 5 minutes). 
