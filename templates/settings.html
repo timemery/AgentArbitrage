@@ -101,6 +101,13 @@
                     <p>Your Amazon Seller Account is connected. Restriction data will be updated in the background.</p>
                     <hr>
                     <p class="mb-0">Seller ID: {{ session.sp_api_user_id }}</p>
+                    <hr>
+                    <form action="{{ url_for('trigger_restriction_check') }}" method="POST">
+                        <button type="submit" class="btn btn-outline-success">Re-check Restrictions for All Deals</button>
+                        <small class="form-text text-muted d-block mt-1">
+                            Click this if you see loading spinners on the dashboard. This will force a new check for all items in your database.
+                        </small>
+                    </form>
                 </div>
                 <!-- Optionally, add a disconnect button here -->
             {% else %}
