@@ -32,7 +32,7 @@ BACKFILLER_VERSION = "2.9-persistent-state"
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-DEALS_PER_CHUNK = 20
+DEALS_PER_CHUNK = 5
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days
 STATE_FILE_LEGACY = 'backfill_state.json'
