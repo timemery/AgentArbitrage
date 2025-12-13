@@ -1138,18 +1138,24 @@ def manual_sp_api_token():
     session['sp_api_seller_id'] = seller_id
 
     # Persist credentials for background tasks
-    save_user_credentials(seller_id, refresh_token)
+    try:
+        save_user_credentials(seller_id, refresh_token)
+        app.logger.info(f"Manual SP-API connection for seller_id: {seller_id}")
 
-    app.logger.info(f"Manual SP-API connection for seller_id: {seller_id}")
+        # Trigger the background task. Pass a placeholder for access_token so it forces a refresh.
+        task_args = [seller_id, seller_id, 'manual_placeholder', refresh_token]
+        celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=task_args)
 
-    # Trigger the background task. Pass a placeholder for access_token so it forces a refresh.
-    task_args = [seller_id, seller_id, 'manual_placeholder', refresh_token]
-    celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=task_args)
+        flash("Successfully connected manually! Restriction checks started in background.", "success")
+    except Exception as e:
+        app.logger.error(f"Error saving manual credentials: {e}", exc_info=True)
+        flash(f"Error saving credentials to database: {e}", "error")
 
-    flash("Successfully connected manually! Restriction checks started in background.", "success")
     return redirect(url_for('settings'))
 
+# Ensure tables exist on module load (for WSGI environment)
+create_user_restrictions_table_if_not_exists()
+create_user_credentials_table_if_not_exists()
+
 if __name__ == '__main__':
-    create_user_restrictions_table_if_not_exists()
-    create_user_credentials_table_if_not_exists()
     app.run(debug=True)

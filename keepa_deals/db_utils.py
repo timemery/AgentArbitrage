@@ -291,18 +291,16 @@ def create_user_credentials_table_if_not_exists():
 
 def save_user_credentials(user_id: str, refresh_token: str):
     """Saves or updates user SP-API credentials."""
-    try:
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-            updated_at = datetime.now(timezone.utc).isoformat()
-            cursor.execute("""
-                INSERT OR REPLACE INTO user_credentials (user_id, refresh_token, updated_at)
-                VALUES (?, ?, ?)
-            """, (user_id, refresh_token, updated_at))
-            conn.commit()
-            logger.info(f"Saved credentials for user_id: {user_id}")
-    except sqlite3.Error as e:
-        logger.error(f"Error saving user credentials: {e}", exc_info=True)
+    # Let exceptions propagate to the caller for proper UI feedback
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        updated_at = datetime.now(timezone.utc).isoformat()
+        cursor.execute("""
+            INSERT OR REPLACE INTO user_credentials (user_id, refresh_token, updated_at)
+            VALUES (?, ?, ?)
+        """, (user_id, refresh_token, updated_at))
+        conn.commit()
+        logger.info(f"Saved credentials for user_id: {user_id}")
 
 def get_all_user_credentials():
     """Retrieves all user credentials for background processing."""
