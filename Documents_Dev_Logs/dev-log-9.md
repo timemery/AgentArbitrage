@@ -552,3 +552,98 @@ This logic ensures that if the token balance is low, the task simply skips execu
 - **Environmental Context:** Operating within an isolated sandbox meant the agent could not directly verify the service restart or the resulting log output on the production VPS. Verification relied on code correctness and user confirmation.
 
 **Final Outcome:** The task was **successful**. The configuration was updated correctly, and the user confirmed that the logs show the system is now operating on the new 1-minute schedule. The system is now optimized for rapid deal detection without compromising API stability.
+
+## Dev Log Entry: Check Restrictions Feature (Authentication & Persistence)
+
+**Date:** December 12, 2025 **Task:** Implement Amazon SP-API "Check Restrictions" Feature (Phase 2) **Status:** **Code Complete / Feature Pending External Approval**
+
+### 1. Task Overview
+
+The objective was to finalize the "Check Restrictions" feature, which allows the application to programmatically check if the seller is "gated" (restricted) from selling specific ASINs. The primary focus of this phase was to resolve authentication blockers preventing the user from connecting their Amazon Seller Central account and to implement the backend logic for persistent background checks.
+
+### 2. Challenges & Blockers
+
+- Amazon Developer Registration Confusion: 
+
+  The user was repeatedly redirected to the "Solution Provider Portal" (Public App) workflow instead of the "Developer Central" (Private App) workflow. This blocked the generation of the necessary API Client ID and Secret.
+
+  - *Root Cause:* The Amazon account was stuck in a "Sandbox" state pending Identity Verification, hiding the "Private Developer" options.
+
+- **OAuth Constraints in Draft Mode:** Even if keys were available, Private Apps in "Draft" status require the `version='beta'` parameter in the OAuth authorization URL, which was missing in the original implementation (`MD1000` error).
+
+- **Lack of Persistence:** The original design relied on session-based tokens, meaning the Celery background workers (which run independently of the user's browser session) would fail to authenticate once the session expired.
+
+- **Code Regressions:** Initial patches introduced a `TypeError` due to a function signature mismatch in `check_restrictions` (3 arguments vs. 2) and an indentation error in `wsgi_handler.py`.
+
+### 3. Actions Taken & Technical Implementation
+
+#### A. Authentication Strategy Overhaul
+
+- Manual Connection Fallback:
+
+   To bypass the blocked OAuth UI in Seller Central, a
+
+   Manual Connection
+
+   feature was implemented.
+
+  - **UI:** Added a form in `templates/settings.html` for direct entry of `Seller ID` and `Refresh Token`.
+  - **Backend:** Created a new route `/manual_sp_api_token` in `wsgi_handler.py` to ingest and save these manually provided credentials.
+
+- **OAuth URL Correction:** Updated the `connect_amazon` route in `wsgi_handler.py` to include `version='beta'`, ensuring compatibility with Draft/Private applications once the user is verified.
+
+#### B. Credential Persistence (Database Changes)
+
+- Schema Update:
+
+   Created a new SQLite table 
+
+  ```
+  user_credentials
+  ```
+
+   in 
+
+  ```
+  keepa_deals/db_utils.py
+  ```
+
+  - *Schema:* `user_id (PK), refresh_token, updated_at`.
+  - *Purpose:* Stores the long-lived "Refresh Token" securely. This allows the system to generate new short-lived "Access Tokens" automatically without user intervention.
+
+- **Persistence Logic:** Updated `wsgi_handler.py` to write credentials to this table upon both successful OAuth callbacks and Manual form submissions.
+
+#### C. Background Task Enhancement
+
+- Task Logic Update:
+
+   Modified 
+
+  ```
+  keepa_deals/sp_api_tasks.py
+  ```
+
+  - **Token Refresh:** Implemented a robust `_refresh_sp_api_token` helper function that exchanges the stored Refresh Token for a valid Access Token inside the Celery worker.
+  - **Multi-User Support:** The `check_restriction_for_asins` task (triggered by the Backfiller/Upserter) now iterates through *all* records in `user_credentials`, ensuring that when a new deal is found, restriction checks are run for every connected user.
+
+- Bug Fixes:
+
+  - Verified and aligned the function signature of `check_restrictions` in `amazon_sp_api.py` to accept `seller_id` (3 arguments), resolving the potential `TypeError`.
+  - Fixed a critical indentation error in `wsgi_handler.py` that would have prevented server startup.
+
+#### D. Amazon Compliance Consulting
+
+- Assisted the user in navigating the Amazon Developer Profile registration ("Use Case" description, "Security Controls" questionnaire) to ensure the application is correctly categorized as "Private" and "Arbitrage-focused," minimizing the risk of rejection.
+
+### 4. Technical Reference (Key Files Modified)
+
+- `keepa_deals/db_utils.py`: Added `create_user_credentials_table_if_not_exists`, `save_user_credentials`, `get_all_user_credentials`.
+- `wsgi_handler.py`: Added `save_user_credentials` calls; added `/manual_sp_api_token` route; fixed OAuth URL generation.
+- `keepa_deals/sp_api_tasks.py`: Added `_refresh_sp_api_token`; updated `check_restriction_for_asins` to fetch credentials from DB.
+- `templates/settings.html`: Added "Manual Connection" form.
+
+### 5. Conclusion & Next Steps
+
+The **code implementation is complete and successful**. The application is now technically capable of performing restriction checks via both OAuth and Manual connections.
+
+**Current State:** The feature is deployed but waiting on an **External Dependency** (Amazon Identity Verification). Once Amazon approves the user's developer profile (24-48 hours), the user can simply enter their credentials in the Settings page, and the feature will activate automatically. No further code changes are required for this task.

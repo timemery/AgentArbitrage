@@ -16,7 +16,11 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_app import celery_app
-from keepa_deals.db_utils import create_user_restrictions_table_if_not_exists
+from keepa_deals.db_utils import (
+    create_user_restrictions_table_if_not_exists,
+    create_user_credentials_table_if_not_exists,
+    save_user_credentials
+)
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -1013,7 +1017,8 @@ def connect_amazon():
     auth_params = {
         'application_id': SP_API_APP_ID,
         'state': state,
-        'redirect_uri': url_for('amazon_callback', _external=True)
+        'redirect_uri': "https://agentarbitrage.co/amazon_callback",
+        'version': 'beta'
     }
     authorization_url = f"{AMAZON_AUTH_URL}?{urlencode(auth_params)}"
 
@@ -1051,7 +1056,7 @@ def amazon_callback():
     token_payload = {
         'grant_type': 'authorization_code',
         'code': auth_code,
-        'redirect_uri': url_for('amazon_callback', _external=True),
+        'redirect_uri': "https://agentarbitrage.co/amazon_callback",
         'client_id': SP_API_CLIENT_ID,
         'client_secret': SP_API_CLIENT_SECRET
     }
@@ -1064,15 +1069,17 @@ def amazon_callback():
 
         # --- Store Tokens Securely ---
         access_token = token_data['access_token']
+        refresh_token = token_data['refresh_token']
+
         session['sp_api_access_token'] = access_token
-        session['sp_api_refresh_token'] = token_data['refresh_token']
+        session['sp_api_refresh_token'] = refresh_token
         session['sp_api_token_expiry'] = time.time() + token_data['expires_in']
         session['sp_api_seller_id'] = seller_id
         session['sp_api_connected'] = True
         session['sp_api_user_id'] = seller_id # Use the seller_id as the unique user identifier
 
-        refresh_token = token_data['refresh_token']
-        session['sp_api_refresh_token'] = refresh_token
+        # Persist credentials for background tasks
+        save_user_credentials(seller_id, refresh_token)
 
         app.logger.info(f"Successfully obtained SP-API tokens for seller_id: {seller_id}")
 
@@ -1092,6 +1099,38 @@ def amazon_callback():
 
     return redirect(url_for('settings'))
 
+@app.route('/manual_sp_api_token', methods=['POST'])
+def manual_sp_api_token():
+    """
+    Handles manual submission of Seller ID and Refresh Token.
+    Bypasses the OAuth flow.
+    """
+    seller_id = request.form.get('seller_id')
+    refresh_token = request.form.get('refresh_token')
+
+    if not seller_id or not refresh_token:
+        flash("Please provide both Seller ID and Refresh Token.", "error")
+        return redirect(url_for('settings'))
+
+    # Store in session (mimicking successful OAuth)
+    session['sp_api_connected'] = True
+    session['sp_api_user_id'] = seller_id
+    session['sp_api_refresh_token'] = refresh_token
+    session['sp_api_seller_id'] = seller_id
+
+    # Persist credentials for background tasks
+    save_user_credentials(seller_id, refresh_token)
+
+    app.logger.info(f"Manual SP-API connection for seller_id: {seller_id}")
+
+    # Trigger the background task. Pass a placeholder for access_token so it forces a refresh.
+    task_args = [seller_id, seller_id, 'manual_placeholder', refresh_token]
+    celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=task_args)
+
+    flash("Successfully connected manually! Restriction checks started in background.", "success")
+    return redirect(url_for('settings'))
+
 if __name__ == '__main__':
     create_user_restrictions_table_if_not_exists()
+    create_user_credentials_table_if_not_exists()
     app.run(debug=True)

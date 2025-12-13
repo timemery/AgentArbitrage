@@ -263,6 +263,59 @@ def create_user_restrictions_table_if_not_exists():
         logger.error(f"An unexpected error occurred during '{table_name}' table creation: {e}", exc_info=True)
         raise
 
+def create_user_credentials_table_if_not_exists():
+    """
+    Ensures the 'user_credentials' table exists to persist SP-API tokens.
+    Required for background tasks that cannot access Flask session.
+    """
+    table_name = 'user_credentials'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f"""
+                    CREATE TABLE {table_name} (
+                        user_id TEXT PRIMARY KEY,
+                        refresh_token TEXT NOT NULL,
+                        updated_at TIMESTAMP
+                    )
+                """)
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise
+
+def save_user_credentials(user_id: str, refresh_token: str):
+    """Saves or updates user SP-API credentials."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            updated_at = datetime.now(timezone.utc).isoformat()
+            cursor.execute("""
+                INSERT OR REPLACE INTO user_credentials (user_id, refresh_token, updated_at)
+                VALUES (?, ?, ?)
+            """, (user_id, refresh_token, updated_at))
+            conn.commit()
+            logger.info(f"Saved credentials for user_id: {user_id}")
+    except sqlite3.Error as e:
+        logger.error(f"Error saving user credentials: {e}", exc_info=True)
+
+def get_all_user_credentials():
+    """Retrieves all user credentials for background processing."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT user_id, refresh_token FROM user_credentials")
+            return [dict(row) for row in cursor.fetchall()]
+    except sqlite3.Error as e:
+        logger.error(f"Error retrieving user credentials: {e}", exc_info=True)
+        return []
+
 def save_deals_to_db(deals_data):
     """Saves a list of deal dictionaries to the deals.db SQLite database."""
     if not deals_data:
