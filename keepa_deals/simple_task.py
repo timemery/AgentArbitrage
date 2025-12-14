@@ -81,14 +81,18 @@ def update_recent_deals():
             return
 
         token_manager = TokenManager(api_key)
+        # Force an API sync to get the true token balance (avoids "double dipping" with backfiller)
+        token_manager.sync_tokens()
+
         business_settings = business_load_settings()
 
         # --- New Delta Sync Logic ---
         logger.info("Step 1: Initializing Delta Sync...")
 
         # CRITICAL FIX: Add token check before any API calls
-        if not token_manager.has_enough_tokens(5): # 5 tokens is the cost of a single deal page
-            logger.warning("Upserter: Insufficient tokens to check for new deals. Skipping run.")
+        # Increased threshold to 20 to ensure we don't starve the backfiller if tokens are critically low
+        if not token_manager.has_enough_tokens(20):
+            logger.warning(f"Upserter: Low tokens ({token_manager.tokens}). Skipping run to allow refill.")
             return
 
         watermark_iso = load_watermark()
