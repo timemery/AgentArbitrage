@@ -61,6 +61,7 @@ AMAZON_TOKEN_URL = "https://api.amazon.com/auth/o2/token"
 app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded KEEPA_API_KEY: {'*' * len(KEEPA_API_KEY) if KEEPA_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded SP_API_CLIENT_ID: {'*' * len(SP_API_CLIENT_ID) if SP_API_CLIENT_ID else 'Not found'}")
+app.logger.info(f"Loaded SP_API_AWS_REGION: {os.getenv('SP_API_AWS_REGION', 'us-east-1')}")
 
 def query_xai_api(payload):
     if not XAI_API_KEY:
