@@ -77,25 +77,23 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
 
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            # Fetch all unique ASINs from the deals table.
-            # Order by id DESC (approx newest first) to prioritize recent deals for the user.
-            # We use GROUP BY ASIN to get distinct ASINs while allowing ORDER BY MAX(id).
-            cursor.execute("SELECT ASIN FROM deals GROUP BY ASIN ORDER BY MAX(id) DESC")
-            asins = [row[0] for row in cursor.fetchall()]
+            # Fetch ASIN and Condition. Order by id DESC (newest first).
+            cursor.execute("SELECT ASIN, Condition FROM deals ORDER BY id DESC")
+            items = [{'asin': row[0], 'condition': row[1]} for row in cursor.fetchall()]
 
-        if not asins:
-            logger.warning("No ASINs found in the database to check.")
-            return "No ASINs to check."
+        if not items:
+            logger.warning("No deals found in the database to check.")
+            return "No deals to check."
 
         # Process in batches to provide incremental updates to the UI
         BATCH_SIZE = 5
         total_processed = 0
 
-        for i in range(0, len(asins), BATCH_SIZE):
-            batch_asins = asins[i : i + BATCH_SIZE]
+        for i in range(0, len(items), BATCH_SIZE):
+            batch_items = items[i : i + BATCH_SIZE]
 
             # Use the provided access token for the API calls (chunked)
-            results = check_restrictions(batch_asins, access_token, seller_id)
+            results = check_restrictions(batch_items, access_token, seller_id)
 
             # Save results to the database immediately
             with sqlite3.connect(DB_PATH) as conn:
@@ -115,16 +113,16 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                 conn.commit()
 
             total_processed += len(results)
-            logger.info(f"Progress: Saved restriction data for {total_processed}/{len(asins)} ASINs for user_id: {user_id}")
+            logger.info(f"Progress: Saved restriction data for {total_processed}/{len(items)} ASINs for user_id: {user_id}")
 
-        logger.info(f"Successfully finished restriction check for all {len(asins)} ASINs for user_id: {user_id}")
+        logger.info(f"Successfully finished restriction check for all {len(items)} ASINs for user_id: {user_id}")
 
     except sqlite3.Error as e:
         logger.error(f"Database error in check_all_restrictions_for_user: {e}", exc_info=True)
     except Exception as e:
         logger.error(f"An unexpected error occurred in check_all_restrictions_for_user: {e}", exc_info=True)
 
-    return f"Completed restriction check for {len(asins)} ASINs for user {user_id}."
+    return f"Completed restriction check for {len(items)} ASINs for user {user_id}."
 
 
 @celery.task(name='keepa_deals.sp_api_tasks.check_restriction_for_asins')
@@ -157,10 +155,24 @@ def check_restriction_for_asins(asins: list[str]):
                 logger.warning(f"Could not refresh token for user {user_id}. Skipping.")
                 continue
 
+            # Fetch conditions for these ASINs from the database
+            items = []
+            with sqlite3.connect(DB_PATH) as conn:
+                cursor = conn.cursor()
+                placeholders = ', '.join(['?'] * len(asins))
+                cursor.execute(f"SELECT ASIN, Condition FROM deals WHERE ASIN IN ({placeholders})", asins)
+                items = [{'asin': row[0], 'condition': row[1]} for row in cursor.fetchall()]
+
+            # If some ASINs are missing from DB (shouldn't happen), add them with None condition
+            found_asins = {item['asin'] for item in items}
+            for asin in asins:
+                if asin not in found_asins:
+                    items.append({'asin': asin, 'condition': None})
+
             BATCH_SIZE = 5
-            for i in range(0, len(asins), BATCH_SIZE):
-                batch_asins = asins[i : i + BATCH_SIZE]
-                results = check_restrictions(batch_asins, access_token, user_id)
+            for i in range(0, len(items), BATCH_SIZE):
+                batch_items = items[i : i + BATCH_SIZE]
+                results = check_restrictions(batch_items, access_token, user_id)
 
                 with sqlite3.connect(DB_PATH) as conn:
                     cursor = conn.cursor()
