@@ -12,7 +12,7 @@ from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
-from .seller_info import get_all_seller_info
+from .seller_info import get_seller_info_for_single_deal
 from .business_calculations import (
     load_settings as business_load_settings,
     calculate_all_in_cost,
@@ -159,36 +159,7 @@ def update_recent_deals():
                     all_fetched_products[p['asin']] = p
         logger.info(f"Step 3 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
-        logger.info("Step 4: Pre-fetching all seller data...")
-        unique_seller_ids = set()
-        for product in all_fetched_products.values():
-            for offer in product.get('offers', []):
-                if offer.get('sellerId'):
-                    unique_seller_ids.add(offer['sellerId'])
-
-        from .keepa_api import fetch_seller_data
-        seller_data_cache = {}
-        if unique_seller_ids:
-            seller_id_list = list(unique_seller_ids)
-            for i in range(0, len(seller_id_list), 100):
-                batch_ids = seller_id_list[i:i+100]
-                while True:
-                    logger.info(f"Attempting to fetch seller data for {len(batch_ids)} seller IDs.")
-                    # Request permission inside the loop to re-evaluate tokens on each retry
-                    token_manager.request_permission_for_call(estimated_cost=1)
-                    seller_data, _, tokens_consumed, tokens_left = fetch_seller_data(api_key, batch_ids)
-                    token_manager.update_after_call(tokens_left)
-
-                    if seller_data and 'sellers' in seller_data and seller_data['sellers']:
-                        seller_data_cache.update(seller_data['sellers'])
-                        logger.info(f"Successfully fetched seller data for batch. Cache size now: {len(seller_data_cache)}")
-                        break  # Exit loop on success
-                    else:
-                        logger.warning(f"Failed to fetch a batch of seller data or seller data was empty. Tokens left: {tokens_left}. Retrying in 15 seconds.")
-                        time.sleep(15) # Wait before retrying to avoid spamming the API
-        logger.info(f"Step 4 Complete: Fetched data for {len(seller_data_cache)} unique sellers.")
-
-        logger.info("Step 5: Processing deals...")
+        logger.info("Step 4: Processing deals...")
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
 
@@ -200,6 +171,11 @@ def update_recent_deals():
 
             product_data = all_fetched_products[asin]
             product_data.update(deal)
+
+            # --- OPTIMIZATION ---
+            # Fetch seller data for ONLY the lowest-priced 'Used' offer.
+            seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
+            # --- END OPTIMIZATION ---
 
             processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
 
