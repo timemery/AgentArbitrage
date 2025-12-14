@@ -78,11 +78,16 @@ def check_restrictions(asins: list[str], access_token: str, seller_id: str) -> d
 
             approval_url = None
             # Attempt to find a direct approval link from the API response
-            if is_restricted and restrictions[0].get('links', {}).get('actions'):
-                for action in restrictions[0]['links']['actions']:
-                    if action.get('verb') == 'GET' and 'approval' in action.get('uri', ''):
-                        approval_url = action['uri']
-                        break
+            if is_restricted:
+                # Default fallback: Generic Seller Central add product page
+                approval_url = f"https://sellercentral.amazon.com/product-search/search?q={asin}"
+
+                # Try to find a specific deep link if available
+                if restrictions[0].get('links', {}).get('actions'):
+                    for action in restrictions[0]['links']['actions']:
+                        if action.get('verb') == 'GET' and 'approval' in action.get('uri', ''):
+                            approval_url = action['uri']
+                            break
 
             results[asin] = {
                 "is_restricted": is_restricted,
