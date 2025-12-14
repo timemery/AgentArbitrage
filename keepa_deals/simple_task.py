@@ -90,7 +90,7 @@ def update_recent_deals():
         logger.info("Step 1: Initializing Delta Sync...")
 
         # CRITICAL FIX: Add token check before any API calls
-        # Increased threshold to 20 to ensure we don't starve the backfiller if tokens are critically low
+        # DO NOT CHANGE. A buffer of 20 is required to prevent this task from starving the backfiller of tokens.
         if not token_manager.has_enough_tokens(20):
             logger.warning(f"Upserter: Low tokens ({token_manager.tokens}). Skipping run to allow refill.")
             return
@@ -173,7 +173,7 @@ def update_recent_deals():
             product_data.update(deal)
 
             # --- OPTIMIZATION ---
-            # Fetch seller data for ONLY the lowest-priced 'Used' offer.
+            # CRITICAL OPTIMIZATION: Do not revert to fetching 'all' seller IDs. We must ONLY fetch the single seller relevant to the price.
             seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
             # --- END OPTIMIZATION ---
 

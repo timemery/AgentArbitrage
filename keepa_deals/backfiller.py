@@ -32,6 +32,7 @@ BACKFILLER_VERSION = "2.9-persistent-state"
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
+# DO NOT CHANGE. The optimal chunk size is 20, and is required to allow the Token Bucket sufficient time to refill between requests.
 DEALS_PER_CHUNK = 20
 LOCK_KEY = "backfill_deals_lock"
 LOCK_TIMEOUT = 864000 # 10 days

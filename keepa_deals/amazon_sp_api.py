@@ -16,13 +16,52 @@ SP_API_BASE_URL_NA = "https://sellingpartnerapi-na.amazon.com"
 MARKETPLACE_ID_US = "ATVPDKIKX0DER"
 
 
-def check_restrictions(asins: list[str], access_token: str, seller_id: str) -> dict:
+def map_condition_to_sp_api(condition_input: str) -> str | None:
     """
-    Checks the restriction status for a list of ASINs using the real Amazon SP-API.
+    Maps internal condition strings or codes to Amazon SP-API conditionType enum.
+    """
+    if not condition_input:
+        return None
+
+    s = str(condition_input).lower().strip()
+
+    mapping = {
+        # Codes (as strings)
+        "1": "new_new",
+        "2": "used_like_new",
+        "3": "used_very_good",
+        "4": "used_good",
+        "5": "used_acceptable",
+
+        # Full strings (from DB if present)
+        "new": "new_new",
+        "used - like new": "used_like_new",
+        "used - very good": "used_very_good",
+        "used - good": "used_good",
+        "used - acceptable": "used_acceptable",
+
+        # Partial strings (from stable_deals output)
+        "like new": "used_like_new",
+        "very good": "used_very_good",
+        "good": "used_good",
+        "acceptable": "used_acceptable",
+
+        # Collectible mappings just in case
+        "collectible - like new": "collectible_like_new",
+        "collectible - very good": "collectible_very_good",
+        "collectible - good": "collectible_good",
+        "collectible - acceptable": "collectible_acceptable",
+    }
+
+    return mapping.get(s)
+
+def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
+    """
+    Checks the restriction status for a list of items using the real Amazon SP-API.
     Signs the request using AWS SigV4.
 
     Args:
-        asins: A list of ASIN strings to check.
+        items: A list of ASIN strings OR a list of dicts {'asin': str, 'condition': str}.
         access_token: The OAuth access token for the SP-API.
         seller_id: The selling partner ID for the user.
 
@@ -30,7 +69,7 @@ def check_restrictions(asins: list[str], access_token: str, seller_id: str) -> d
         A dictionary where keys are ASINs and values are another dictionary
         with 'is_restricted' (bool) and 'approval_url' (str or None).
     """
-    logger.info(f"Starting real SP-API restriction check for {len(asins)} ASINs for seller {seller_id}.")
+    logger.info(f"Starting real SP-API restriction check for {len(items)} items for seller {seller_id}.")
     results = {}
 
     # --- AWS SigV4 Setup ---
@@ -56,15 +95,30 @@ def check_restrictions(asins: list[str], access_token: str, seller_id: str) -> d
     session.auth = auth
     session.headers.update(headers)
 
-    for asin in asins:
+    for item in items:
         # Respect the official 1 request/second rate limit with a small buffer
         time.sleep(1.1)
+
+        if isinstance(item, dict):
+            asin = item['asin']
+            condition = item.get('condition')
+        else:
+            asin = item
+            condition = None
+
+        condition_type = map_condition_to_sp_api(condition)
 
         params = {
             'asin': asin,
             'sellerId': seller_id,
             'marketplaceIds': MARKETPLACE_ID_US
         }
+
+        if condition_type:
+            params['conditionType'] = condition_type
+            logger.info(f"Checking restriction for ASIN {asin} with conditionType: {condition_type}")
+        else:
+            logger.info(f"Checking restriction for ASIN {asin} (Generic check)")
 
         url = f"{SP_API_BASE_URL_NA}/listings/2021-08-01/restrictions"
 
