@@ -699,7 +699,11 @@ def settings():
             "tax_exempt": False,
             "default_markup": 10
         }
-    return render_template('settings.html', settings=settings_data)
+
+    # Check for critical environment variables for SP-API
+    aws_keys_missing = not (os.getenv("SP_API_AWS_ACCESS_KEY_ID") and os.getenv("SP_API_AWS_SECRET_KEY"))
+
+    return render_template('settings.html', settings=settings_data, aws_keys_missing=aws_keys_missing)
 
 @app.cli.command("fetch-keepa-deals")
 @click.option('--no-cache', is_flag=True, help="Force fresh Keepa API calls.")

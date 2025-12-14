@@ -94,6 +94,16 @@
             <h5 class="mb-0">Amazon SP-API Integration</h5>
         </div>
         <div class="card-body">
+            {% if aws_keys_missing %}
+                <div class="alert alert-danger" role="alert">
+                    <h5 class="alert-heading">Configuration Error: Missing AWS Keys</h5>
+                    <p>The application is missing the <strong>AWS Access Key ID</strong> and <strong>AWS Secret Key</strong> required to sign requests to the Amazon SP-API.</p>
+                    <p>Even if you "Connect" below, requests will fail with a "Missing AWS Credentials" error until these keys are added to your <code>.env</code> file.</p>
+                    <hr>
+                    <p class="mb-0">Please create an IAM User in your AWS Console, create Access Keys for that user, and provide them to the support agent (or add them to .env as <code>SP_API_AWS_ACCESS_KEY_ID</code> and <code>SP_API_AWS_SECRET_KEY</code>).</p>
+                </div>
+            {% endif %}
+
             <!-- Display connection status -->
             {% if session.sp_api_connected %}
                 <div class="alert alert-success" role="alert">
