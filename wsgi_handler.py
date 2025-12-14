@@ -61,6 +61,7 @@ AMAZON_TOKEN_URL = "https://api.amazon.com/auth/o2/token"
 app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded KEEPA_API_KEY: {'*' * len(KEEPA_API_KEY) if KEEPA_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded SP_API_CLIENT_ID: {'*' * len(SP_API_CLIENT_ID) if SP_API_CLIENT_ID else 'Not found'}")
+app.logger.info(f"Loaded SP_API_AWS_REGION: {os.getenv('SP_API_AWS_REGION', 'us-east-1')}")
 
 def query_xai_api(payload):
     if not XAI_API_KEY:
@@ -699,7 +700,11 @@ def settings():
             "tax_exempt": False,
             "default_markup": 10
         }
-    return render_template('settings.html', settings=settings_data)
+
+    # Check for critical environment variables for SP-API
+    aws_keys_missing = not (os.getenv("SP_API_AWS_ACCESS_KEY_ID") and os.getenv("SP_API_AWS_SECRET_KEY"))
+
+    return render_template('settings.html', settings=settings_data, aws_keys_missing=aws_keys_missing)
 
 @app.cli.command("fetch-keepa-deals")
 @click.option('--no-cache', is_flag=True, help="Force fresh Keepa API calls.")
@@ -1116,6 +1121,49 @@ def amazon_callback():
         flash("An unexpected error occurred during token exchange.", "error")
         app.logger.error(f"An unexpected error occurred during token exchange: {e}", exc_info=True)
 
+    return redirect(url_for('settings'))
+
+@app.route('/trigger_restriction_check', methods=['POST'])
+def trigger_restriction_check():
+    """
+    Manually triggers the background restriction check for all deals.
+    Useful if the automatic check didn't catch everything or if the user wants to force an update.
+    """
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+
+    if not session.get('sp_api_connected'):
+        flash("Not connected to Amazon SP-API.", "error")
+        return redirect(url_for('settings'))
+
+    user_id = session.get('sp_api_user_id')
+    refresh_token = session.get('sp_api_refresh_token')
+    seller_id = session.get('sp_api_seller_id') or user_id
+
+    if not user_id or not refresh_token:
+        # Attempt to recover from DB if session is partial
+        try:
+            creds = get_all_user_credentials()
+            for c in creds:
+                if c['user_id'] == user_id:
+                    refresh_token = c['refresh_token']
+                    break
+        except Exception:
+            pass
+
+    if not user_id or not refresh_token:
+        flash("Missing credentials. Please try reconnecting via the manual form below.", "error")
+        # In a real scenario we might want to let them disconnect, but for now just show error.
+        return redirect(url_for('settings'))
+
+    app.logger.info(f"Manually triggering restriction check for user: {user_id}")
+
+    # Trigger task
+    # We pass 'manual_placeholder' for access_token so the task refreshes it.
+    task_args = [user_id, seller_id, 'manual_placeholder', refresh_token]
+    celery_app.send_task('keepa_deals.sp_api_tasks.check_all_restrictions_for_user', args=task_args)
+
+    flash("Restriction check has been queued for all existing deals. Check the Dashboard in a moment.", "success")
     return redirect(url_for('settings'))
 
 @app.route('/manual_sp_api_token', methods=['POST'])
