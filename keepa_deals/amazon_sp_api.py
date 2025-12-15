@@ -166,11 +166,11 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             # Enhanced error logging
             error_body = e.response.text
             logger.error(f"SP-API error for ASIN {asin}: Status {e.response.status_code}, Body: {error_body}")
-            # Default to restricted on error to be safe
-            results[asin] = {"is_restricted": True, "approval_url": None}
+            # Mark as error state
+            results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
         except Exception as e:
             logger.error(f"Unexpected error checking ASIN {asin}: {e}", exc_info=True)
-            results[asin] = {"is_restricted": True, "approval_url": None}
+            results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
 
     logger.info("SP-API restriction check complete.")
     return results

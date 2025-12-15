@@ -95,13 +95,13 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
 
             if auth_failed:
                 # If auth failed, we can't call the API. Manually construct failure results.
-                # Fallback URL is the generic search URL.
+                # We use -1 for is_restricted and "ERROR" for URL to signal the broken state.
                 results = {}
                 for item in batch_items:
                     asin = item['asin']
                     results[asin] = {
-                        'is_restricted': True, # Default to restricted/failed
-                        'approval_url': f"https://sellercentral.amazon.com/product-search/search?q={asin}"
+                        'is_restricted': -1,
+                        'approval_url': "ERROR"
                     }
             else:
                 # Use the provided access token for the API calls (chunked)
@@ -111,6 +111,16 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
                 for asin, result in results.items():
+                    # Determine stored value for is_restricted:
+                    # True -> 1 (Restricted)
+                    # False -> 0 (Not Restricted)
+                    # -1 -> -1 (Error)
+                    is_restricted_val = 0
+                    if result['is_restricted'] is True:
+                        is_restricted_val = 1
+                    elif result['is_restricted'] == -1:
+                        is_restricted_val = -1
+
                     cursor.execute("""
                         INSERT OR REPLACE INTO user_restrictions
                         (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
@@ -118,7 +128,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                     """, (
                         user_id,
                         asin,
-                        1 if result['is_restricted'] else 0,
+                        is_restricted_val,
                         result['approval_url'],
                         datetime.utcnow()
                     ))
@@ -189,6 +199,12 @@ def check_restriction_for_asins(asins: list[str]):
                 with sqlite3.connect(DB_PATH) as conn:
                     cursor = conn.cursor()
                     for asin, result in results.items():
+                        is_restricted_val = 0
+                        if result['is_restricted'] is True:
+                            is_restricted_val = 1
+                        elif result['is_restricted'] == -1:
+                            is_restricted_val = -1
+
                         cursor.execute("""
                             INSERT OR REPLACE INTO user_restrictions
                             (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
@@ -196,7 +212,7 @@ def check_restriction_for_asins(asins: list[str]):
                         """, (
                             user_id,
                             asin,
-                            1 if result['is_restricted'] else 0,
+                            is_restricted_val,
                             result['approval_url'],
                             datetime.utcnow()
                         ))

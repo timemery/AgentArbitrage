@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // New sorting arrows row
         table += '<tr class="sort-arrows-row">';
         columnsToShow.forEach(header => {
-            if (header === 'Gated' || header === 'Buy_Now') {
+            if (header === 'Buy_Now') {
                 table += '<td></td>'; // No arrows for these columns
             } else {
                 const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/UpArrow_on.png' : 'static/UpArrow_off.png';
@@ -407,10 +407,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         let gatedContent = '';
                         switch (deal.restriction_status) {
                             case 'restricted':
-                                gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
+                                if (deal.approval_url && deal.approval_url !== 'ERROR') {
+                                    gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
+                                } else {
+                                    gatedContent = `<span class="restricted-text">Restricted</span>`;
+                                }
                                 break;
                             case 'not_restricted':
                                 gatedContent = '<span class="status-icon checkmark">✓</span>';
+                                break;
+                            case 'error':
+                                gatedContent = '<span class="status-icon error" title="API Error">⚠</span>';
                                 break;
                             case 'pending_check':
                                 gatedContent = '<div class="spinner"></div>';
