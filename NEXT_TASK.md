@@ -1,35 +1,36 @@
-# Next Task: Debug "Spinning Gated Column" & Investigate Rejection Rate
+# Next Task: Fix "Check Restrictions" & Diagnose SP-API Connectivity
 
-## Context
-The previous agent (Jules) implemented condition-aware restriction checks. However, the user reports that the "Gated" column on the dashboard shows a spinning loading indicator indefinitely (2+ hours) for 19 deals. Additionally, a new diagnostic script revealed that 98.5% of fetched deals are being rejected because of "Missing List at" price.
+## Critical Issue: "Spinning Spinner" & Missing Data
+The "Gated" column on the dashboard shows a spinning loading indicator indefinitely for all deals. This persists for hours.
+**Key Observation:** Even the fallback URL (which should be generated purely in code if the API fails) is NOT appearing. This suggests the background task `check_all_restrictions_for_user` is failing *completely* before it can write any result to the database, or it is not running at all.
 
-## Primary Objective: Fix the "Spinning Spinner"
-The "Spinning" status means the frontend believes a restriction check is pending (value is NULL or specific status), but the background task has not updated it.
+## Objectives
 
-### Diagnostic Steps
-1.  **Check Database Status:**
-    - Run: `sqlite3 deals.db "SELECT is_restricted, approval_url FROM user_restrictions LIMIT 10;"`
-    - If empty or NULL, the task is not saving data.
-2.  **Check Celery Worker Logs:**
-    - **CRITICAL:** Do NOT read the full file. Use: `tail -n 100 celery_worker.log`
-    - Look for errors in `check_all_restrictions_for_user`.
-    - Look for "conditionType" related errors (e.g., if Amazon rejected a specific mapped condition).
-3.  **Verify Token Refresh:**
-    - The task attempts to refresh the SP-API token. If this fails, it might exit early. Check logs for "Failed to refresh SP-API token".
+### 1. Verify Task Execution & Failure Point
+- **Step 1:** Check `celery_worker.log` (tail -n 200).
+    - Do you see `Starting real SP-API restriction check`?
+    - Do you see `Missing AWS Credentials` error?
+    - Do you see a crash (Stack Trace)?
+- **Hypothesis:** The task might be crashing due to an unhandled exception (e.g., Auth failure, missing env var) *before* it gets to the fallback logic.
 
-### Potential Fixes
-- **Error Handling:** Ensure `check_restrictions` catches *all* exceptions inside the loop so one bad ASIN/Condition doesn't kill the batch.
-- **Generic Fallback:** If a specific condition check (e.g., `used_very_good`) fails with a 400 error from Amazon, fall back to a generic check (no `conditionType`) automatically.
+### 2. Verify Amazon SP-API & AWS Configuration
+The user suspects the root cause might be upstream (AWS/Seller Central).
+- **Check Environment:** Are `SP_API_AWS_ACCESS_KEY_ID` and `SP_API_AWS_SECRET_KEY` correctly loaded?
+- **IAM User:** Does the IAM User for these keys have an attached Policy that allows `execute-api:Invoke`?
+- **IAM Role:** Is the IAM User ARN correctly added to the App in Seller Central?
+- **App Status:** Is the App in "Draft" state? (Required for "Private" apps).
 
-## Secondary Objective: Investigate High Rejection Rate
-- **Insight:** 98.5% of deals are dropped because `List at` is missing.
-- **Source:** `keepa_deals/processing.py` excludes deals if `row_data.get('List at')` is missing.
-- **Root Cause Analysis:**
-    - Investigate `keepa_deals/stable_calculations.py` -> `get_list_at_price`.
-    - Is the "Peak Season" calculation failing?
-    - Is the AI validation (`_query_xai_for_reasonableness`) rejecting everything?
-    - **Action:** Add detailed logging to `get_list_at_price` to see *why* it returns None.
+### 3. Diagnose "No Data Received"
+- We need to confirm if we have *ever* successfully received a 200 OK from Amazon.
+- **Action:** Run `Diagnostics/diag_test_sp_api.py`.
+    - If this script fails, the issue is Credentials/Config.
+    - If this script succeeds, the issue is in the `sp_api_tasks.py` logic or Celery integration.
 
-## Tools Available
-- `Diagnostics/count_stats.sh`: Run this to see the current rejection stats.
-- `Diagnostics/diag_test_sp_api.py`: Use this to test SP-API connectivity in isolation.
+## Technical Context (from previous task)
+- **Condition Mapping:** The code now maps "Used - Like New" to `used_like_new` and passes it to the API. This was recently added and *could* be a source of new errors if the mapping is invalid (though unit tests passed).
+- **Fallback Logic:** `keepa_deals/amazon_sp_api.py` has logic to set a default URL if `is_restricted` is True. The fact that this isn't showing up implies the code never reaches that line or the DB write fails.
+
+## Files to Investigate
+- `keepa_deals/sp_api_tasks.py`: The orchestrator.
+- `keepa_deals/amazon_sp_api.py`: The API client.
+- `Diagnostics/diag_test_sp_api.py`: The isolation test.
