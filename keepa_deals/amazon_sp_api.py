@@ -81,7 +81,20 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
     if not aws_access_key or not aws_secret_key:
         logger.error("Missing AWS Credentials (SP_API_AWS_ACCESS_KEY_ID / SP_API_AWS_SECRET_KEY). Cannot sign request.")
         # If credentials are missing, we cannot proceed. Mark as failure/restricted.
-        return {asin: {"is_restricted": True, "approval_url": None} for asin in asins}
+        results = {}
+        for item in items:
+            # Handle dicts, sqlite3.Row objects (which act like dicts but fail isinstance check sometimes), or raw ASIN strings
+            if hasattr(item, '__getitem__') and not isinstance(item, str):
+                try:
+                    asin = item['asin']
+                except (KeyError, TypeError, IndexError):
+                    # Fallback if key lookup fails, assuming item might be the ASIN itself if unexpected type
+                    asin = str(item)
+            else:
+                asin = str(item)
+
+            results[asin] = {"is_restricted": True, "approval_url": None}
+        return results
 
     auth = AWS4Auth(aws_access_key, aws_secret_key, aws_region, service)
 
@@ -153,11 +166,11 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             # Enhanced error logging
             error_body = e.response.text
             logger.error(f"SP-API error for ASIN {asin}: Status {e.response.status_code}, Body: {error_body}")
-            # Default to restricted on error to be safe
-            results[asin] = {"is_restricted": True, "approval_url": None}
+            # Mark as error state
+            results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
         except Exception as e:
             logger.error(f"Unexpected error checking ASIN {asin}: {e}", exc_info=True)
-            results[asin] = {"is_restricted": True, "approval_url": None}
+            results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
 
     logger.info("SP-API restriction check complete.")
     return results

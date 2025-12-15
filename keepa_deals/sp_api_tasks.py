@@ -68,12 +68,13 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
 
     try:
         # Ensure we have a valid access token
+        auth_failed = False
         if not access_token or access_token == 'manual_placeholder':
             logger.info("Access token missing or placeholder. Attempting to refresh.")
             access_token = _refresh_sp_api_token(refresh_token)
             if not access_token:
-                logger.error("Failed to obtain access token via refresh.")
-                return "Failed to obtain access token."
+                logger.error("Failed to obtain access token via refresh. Will mark items as restricted/check-failed.")
+                auth_failed = True
 
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
@@ -92,13 +93,34 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
         for i in range(0, len(items), BATCH_SIZE):
             batch_items = items[i : i + BATCH_SIZE]
 
-            # Use the provided access token for the API calls (chunked)
-            results = check_restrictions(batch_items, access_token, seller_id)
+            if auth_failed:
+                # If auth failed, we can't call the API. Manually construct failure results.
+                # We use -1 for is_restricted and "ERROR" for URL to signal the broken state.
+                results = {}
+                for item in batch_items:
+                    asin = item['asin']
+                    results[asin] = {
+                        'is_restricted': -1,
+                        'approval_url': "ERROR"
+                    }
+            else:
+                # Use the provided access token for the API calls (chunked)
+                results = check_restrictions(batch_items, access_token, seller_id)
 
             # Save results to the database immediately
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
                 for asin, result in results.items():
+                    # Determine stored value for is_restricted:
+                    # True -> 1 (Restricted)
+                    # False -> 0 (Not Restricted)
+                    # -1 -> -1 (Error)
+                    is_restricted_val = 0
+                    if result['is_restricted'] is True:
+                        is_restricted_val = 1
+                    elif result['is_restricted'] == -1:
+                        is_restricted_val = -1
+
                     cursor.execute("""
                         INSERT OR REPLACE INTO user_restrictions
                         (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
@@ -106,7 +128,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                     """, (
                         user_id,
                         asin,
-                        1 if result['is_restricted'] else 0,
+                        is_restricted_val,
                         result['approval_url'],
                         datetime.utcnow()
                     ))
@@ -177,6 +199,12 @@ def check_restriction_for_asins(asins: list[str]):
                 with sqlite3.connect(DB_PATH) as conn:
                     cursor = conn.cursor()
                     for asin, result in results.items():
+                        is_restricted_val = 0
+                        if result['is_restricted'] is True:
+                            is_restricted_val = 1
+                        elif result['is_restricted'] == -1:
+                            is_restricted_val = -1
+
                         cursor.execute("""
                             INSERT OR REPLACE INTO user_restrictions
                             (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
@@ -184,7 +212,7 @@ def check_restriction_for_asins(asins: list[str]):
                         """, (
                             user_id,
                             asin,
-                            1 if result['is_restricted'] else 0,
+                            is_restricted_val,
                             result['approval_url'],
                             datetime.utcnow()
                         ))
