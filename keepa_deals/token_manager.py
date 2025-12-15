@@ -14,6 +14,7 @@ class TokenManager:
         # Constants
         self.REFILL_RATE_PER_MINUTE = 5
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
+        self.MIN_TOKEN_THRESHOLD = 50  # Allow calls if tokens > this, even if cost is higher
         
         # State variables
         self.tokens = 100 # Start with a reasonable guess, will be corrected on first response
@@ -57,14 +58,11 @@ class TokenManager:
         Our Strategy:
         1.  **Hard Stop at Zero:** If tokens are <= 0, we must wait until they
             refill to a positive number.
-        2.  **Controlled Deficit:** If a call's `estimated_cost` is greater
-            than the `current_tokens` (but tokens are > 0), we don't proceed
-            immediately. This would risk hitting an unknown maximum deficit limit
-            and is inefficient. Instead, we proactively wait until the token bucket
-            is completely full (`self.max_tokens`).
-        3.  **Proceed:** Once the bucket is full, we allow the expensive call to
-            proceed. This allows it to create a small, predictable, and safe
-            negative balance, which will be recovered during the next wait cycle.
+        2.  **Optimized Controlled Deficit:** If a call's `estimated_cost` is greater
+            than the `current_tokens`, we allow it IF we have a safe buffer
+            (> MIN_TOKEN_THRESHOLD). This avoids long waits for full refills.
+        3.  **Low Token Wait:** If we are below the threshold, we wait until
+            we recover to the threshold, not the max.
         """
         now = time.time()
         time_since_last_call = now - self.last_api_call_timestamp
@@ -78,20 +76,30 @@ class TokenManager:
         wait_time_seconds = 0
         if self.tokens <= 0:
             # Hard stop: Must wait to get back to a positive balance.
-            tokens_needed = 1 - self.tokens  # Need at least 1 token
+            # We wait to reach the threshold to prevent immediate subsequent waiting.
+            tokens_needed = self.MIN_TOKEN_THRESHOLD - self.tokens
             wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
             logger.warning(
                 f"Zero or negative tokens. Have: {self.tokens:.2f}. "
-                f"Waiting for {wait_time_seconds} seconds to ensure a positive balance."
+                f"Waiting for {wait_time_seconds} seconds to refill to threshold ({self.MIN_TOKEN_THRESHOLD})."
             )
         elif self.tokens < estimated_cost:
-            # Controlled deficit: Proactively wait for a full bucket before making an expensive call.
-            tokens_needed = self.max_tokens - self.tokens
-            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-            logger.warning(
-                f"Insufficient tokens for estimated cost. Have: {self.tokens:.2f}, Need: {estimated_cost}. "
-                f"Proactively waiting for {wait_time_seconds} seconds to refill to max ({self.max_tokens}) tokens."
-            )
+            # Check if we are above the aggressive threshold
+            if self.tokens > self.MIN_TOKEN_THRESHOLD:
+                # We have enough buffer to proceed safely
+                logger.info(
+                    f"Tokens ({self.tokens:.2f}) > Threshold ({self.MIN_TOKEN_THRESHOLD}). "
+                    f"Allowing call despite estimated cost ({estimated_cost})."
+                )
+            else:
+                # We are low on tokens. Wait until we reach the threshold + buffer.
+                target_tokens = self.MIN_TOKEN_THRESHOLD + 5
+                tokens_needed = target_tokens - self.tokens
+                wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+                logger.warning(
+                    f"Insufficient tokens (<{self.MIN_TOKEN_THRESHOLD}). Have: {self.tokens:.2f}, Need: {estimated_cost}. "
+                    f"Waiting for {wait_time_seconds} seconds to refill to target ({target_tokens})."
+                )
 
         if wait_time_seconds > 0:
             if self.REFILL_RATE_PER_MINUTE > 0:
