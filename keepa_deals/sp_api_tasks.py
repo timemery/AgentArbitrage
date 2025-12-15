@@ -68,12 +68,13 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
 
     try:
         # Ensure we have a valid access token
+        auth_failed = False
         if not access_token or access_token == 'manual_placeholder':
             logger.info("Access token missing or placeholder. Attempting to refresh.")
             access_token = _refresh_sp_api_token(refresh_token)
             if not access_token:
-                logger.error("Failed to obtain access token via refresh.")
-                return "Failed to obtain access token."
+                logger.error("Failed to obtain access token via refresh. Will mark items as restricted/check-failed.")
+                auth_failed = True
 
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
@@ -92,8 +93,19 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
         for i in range(0, len(items), BATCH_SIZE):
             batch_items = items[i : i + BATCH_SIZE]
 
-            # Use the provided access token for the API calls (chunked)
-            results = check_restrictions(batch_items, access_token, seller_id)
+            if auth_failed:
+                # If auth failed, we can't call the API. Manually construct failure results.
+                # Fallback URL is the generic search URL.
+                results = {}
+                for item in batch_items:
+                    asin = item['asin']
+                    results[asin] = {
+                        'is_restricted': True, # Default to restricted/failed
+                        'approval_url': f"https://sellercentral.amazon.com/product-search/search?q={asin}"
+                    }
+            else:
+                # Use the provided access token for the API calls (chunked)
+                results = check_restrictions(batch_items, access_token, seller_id)
 
             # Save results to the database immediately
             with sqlite3.connect(DB_PATH) as conn:
