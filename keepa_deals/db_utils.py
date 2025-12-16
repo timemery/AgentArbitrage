@@ -263,6 +263,28 @@ def create_user_restrictions_table_if_not_exists():
         logger.error(f"An unexpected error occurred during '{table_name}' table creation: {e}", exc_info=True)
         raise
 
+def recreate_user_restrictions_table():
+    """
+    Destroys and recreates the 'user_restrictions' table.
+    Used during a full system reset.
+    """
+    table_name = 'user_restrictions'
+    logger.info(f"Recreating '{table_name}' table at '{DB_PATH}'. This will delete all existing restriction data.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+            conn.commit()
+            logger.info(f"Dropped existing '{table_name}' table.")
+
+        # Now recreate it
+        create_user_restrictions_table_if_not_exists()
+        logger.info(f"Successfully recreated '{table_name}' table.")
+
+    except sqlite3.Error as e:
+        logger.error(f"Error recreating '{table_name}': {e}", exc_info=True)
+        raise
+
 def create_user_credentials_table_if_not_exists():
     """
     Ensures the 'user_credentials' table exists to persist SP-API tokens.
