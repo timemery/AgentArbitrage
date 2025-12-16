@@ -228,3 +228,99 @@ The underlying 403 error remains (as expected) until the external Amazon Seller 
 - `keepa_deals/amazon_sp_api.py`: Improved type safety and error reporting.
 - `templates/dashboard.html`: Added error icon rendering and column sorting.
 - `Diagnostics/diag_check_aws_identity.py`: (Deleted) Used for AWS verification.
+
+
+
+## Dev Log: Token Manager Optimization & Database Reset Fix
+
+**Date:** December 2025 **Task Type:** Performance Optimization & Bug Fix
+
+### 1. Overview
+
+The primary objective was to resolve a severe bottleneck in the `backfill_deals` process caused by an overly conservative `TokenManager` strategy. The system was pausing for ~18 minutes to refill the token bucket to its maximum (300) whenever the estimated cost of a batch exceeded the current balance, even if the deficit was minor.
+
+A secondary issue was identified where `trigger_backfill_task.py --reset` failed to clear the `user_restrictions` table. This resulted in stale restriction data (linked to old ASINs/Conditions) persisting after a database wipe, causing data inconsistencies in the dashboard.
+
+### 2. Challenges & Analysis
+
+#### A. Token Manager "Starvation"
+
+- **Problem:** The `TokenManager` enforced a "Wait for Max" policy. If the system had 211 tokens but needed 240, it would wait until it reached 300 tokens (approx. 18 minutes).
+- **Impact:** Throughput dropped to ~20 deals/hour.
+- **Insight:** The Keepa API allows the token balance to go negative as long as the starting balance is positive. A strict "no deficit" policy is unnecessary.
+- **Root Cause:** The logic `if tokens < estimated_cost: wait_for_max()` was too rigid.
+
+#### B. Stale Restriction Data
+
+- **Problem:** The `backfill_deals(reset=True)` function only called `recreate_deals_table()`. It ignored `user_restrictions`.
+- **Impact:** When the database was reset, the `deals` table was cleared, but `user_restrictions` remained. When new deals were fetched (potentially with different conditions, e.g., "New" vs "Used"), the dashboard displayed cached restriction statuses from the previous run (e.g., "Used - Good"), leading to incorrect "Restricted" flags.
+- **Root Cause:** Lack of a dedicated cleanup step for the `user_restrictions` sidecar table in the reset workflow.
+
+### 3. Solutions Implemented
+
+#### A. Optimized "Controlled Deficit" Strategy
+
+Modified `keepa_deals/token_manager.py` to implement a more aggressive consumption model:
+
+1. **Threshold Logic:** Introduced `MIN_TOKEN_THRESHOLD = 50`.
+
+2. **Deficit Spending:** If `current_tokens > 50`, the system **allows** the API call to proceed immediately, even if `estimated_cost > current_tokens`. This leverages Keepa's negative balance allowance and eliminates the 18-minute wait for "near-miss" balances.
+
+3. Smart Recovery:
+
+   If
+
+   ```
+   current_tokens < 50
+   ```
+
+   (or negative), the system waits only until the balance recovers to
+
+   ```
+   50 + buffer
+   ```
+
+   (approx. 55 tokens). It no longer waits for
+
+   ```
+   max_tokens
+   ```
+
+   (300).
+
+   - *Result:* Wait times reduced from ~18 minutes to <2 minutes in typical recovery scenarios.
+
+#### B. Comprehensive Database Reset
+
+Modified `keepa_deals/backfiller.py` and `keepa_deals/db_utils.py`:
+
+1. **New Utility:** Added `recreate_user_restrictions_table()` to `db_utils.py`, which executes `DROP TABLE IF EXISTS user_restrictions` followed by a schema recreation.
+
+2. Backfill Logic:
+
+   Updated
+
+   ```
+   backfill_deals
+   ```
+
+   to explicitly call this function when the
+
+   ```
+   reset=True
+   ```
+
+   flag is passed.
+
+   - *Result:* Running `trigger_backfill_task.py --reset` now guarantees a completely fresh state for both deals and restrictions.
+
+#### C. SP-API SigV4 Investigation (Bonus)
+
+- **Finding:** Confirmed via GitHub Discussion #3701 that Amazon SP-API no longer requires AWS SigV4 signing or IAM credentials for private apps registered after Oct 2, 2023.
+- **Recommendation:** Future tasks can remove the `requests-aws4auth` dependency and the strict IAM key checks in `amazon_sp_api.py` to resolve `403 Forbidden` errors for users unable to configure IAM.
+
+### 4. Outcome
+
+- **Success:** The backfill process now runs continuously without long pauses, significantly increasing deal processing throughput.
+- **Success:** Database resets now correctly flush all stale restriction data, ensuring data integrity for new scans.
+- **Documentation:** `TokenManager` code is now heavily commented to explain the "Controlled Deficit" strategy and prevent regression.

@@ -11,7 +11,7 @@ from worker import celery_app as celery
 from .db_utils import (
     sanitize_col_name, save_watermark, DB_PATH,
     get_system_state, set_system_state, recreate_deals_table,
-    create_deals_table_if_not_exists
+    create_deals_table_if_not_exists, recreate_user_restrictions_table
 )
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
@@ -99,7 +99,11 @@ def backfill_deals(reset=False):
 
         # Recreate table (clears data)
         recreate_deals_table()
-        logger.info("Database has been reset.")
+
+        # Also clear user restrictions to ensure fresh checks for new data
+        recreate_user_restrictions_table()
+
+        logger.info("Database has been reset (Deals and User Restrictions cleared).")
 
     redis_client = redis.Redis.from_url(celery.conf.broker_url)
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
