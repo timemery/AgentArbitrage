@@ -7,14 +7,31 @@ logger = logging.getLogger(__name__)
 class TokenManager:
     """
     Manages Keepa API tokens, rate limiting, and refills.
+
+    STRATEGY UPDATE (Dec 2025):
+    This manager implements an "Optimized Controlled Deficit" strategy.
+
+    1.  **Hard Stop at Zero:** We never make a call if the balance is <= 0.
+    2.  **Controlled Deficit:** Keepa allows the balance to go negative as long as the
+        starting balance was positive. We leverage this to avoid long pauses.
+        If we have enough tokens to be above `MIN_TOKEN_THRESHOLD` (e.g., 50),
+        we allow the call to proceed even if `estimated_cost > current_tokens`.
+        This prevents the system from pausing for ~18 minutes to refill to max just
+        because it is slightly short of the estimated cost.
+    3.  **Smart Refill Waits:** When we DO need to wait (because we are below the threshold),
+        we wait only until we reach `MIN_TOKEN_THRESHOLD + buffer`. We do NOT wait
+        for `max_tokens`. This keeps the system running with minimal downtime.
     """
     def __init__(self, api_key):
         self.api_key = api_key
         
         # Constants
         self.REFILL_RATE_PER_MINUTE = 5
+        # 60-second polling interval / rate limit to prevent flooding the API
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
-        self.MIN_TOKEN_THRESHOLD = 50  # Allow calls if tokens > this, even if cost is higher
+        # The safety buffer. If we have more than this, we act aggressively (allow deficit).
+        # If less, we pause to recover to this level.
+        self.MIN_TOKEN_THRESHOLD = 50
         
         # State variables
         self.tokens = 100 # Start with a reasonable guess, will be corrected on first response
@@ -49,23 +66,18 @@ class TokenManager:
 
     def request_permission_for_call(self, estimated_cost):
         """
-        Checks if an API call can be made and waits if necessary. This method
-        implements a "controlled deficit" strategy based on Keepa API behavior.
+        Checks if an API call can be made and waits if necessary.
 
-        Keepa API Rule: A call can be made as long as the token balance is positive.
-        The call is allowed to drive the balance into a negative value.
-
-        Our Strategy:
-        1.  **Hard Stop at Zero:** If tokens are <= 0, we must wait until they
-            refill to a positive number.
-        2.  **Optimized Controlled Deficit:** If a call's `estimated_cost` is greater
-            than the `current_tokens`, we allow it IF we have a safe buffer
-            (> MIN_TOKEN_THRESHOLD). This avoids long waits for full refills.
-        3.  **Low Token Wait:** If we are below the threshold, we wait until
-            we recover to the threshold, not the max.
+        This method handles two types of limits:
+        1. Frequency Limit (60 seconds between calls).
+        2. Token Cost Limit (Keepa API quotas).
         """
         now = time.time()
         time_since_last_call = now - self.last_api_call_timestamp
+
+        # --- FREQUENCY LIMIT CHECK ---
+        # This ensures we don't hit the API too rapidly, regardless of token balance.
+        # This is a fixed 60-second window.
         if time_since_last_call < self.MIN_TIME_BETWEEN_CALLS_SECONDS:
             wait_duration = self.MIN_TIME_BETWEEN_CALLS_SECONDS - time_since_last_call
             logger.info(f"Rate limit: Pausing for {wait_duration:.2f} seconds.")
@@ -74,6 +86,10 @@ class TokenManager:
         self._refill_tokens()
 
         wait_time_seconds = 0
+
+        # --- TOKEN COST LIMIT CHECK ---
+        # Refined Strategy: Avoid "Wait to Max" behavior.
+
         if self.tokens <= 0:
             # Hard stop: Must wait to get back to a positive balance.
             # We wait to reach the threshold to prevent immediate subsequent waiting.
@@ -86,13 +102,18 @@ class TokenManager:
         elif self.tokens < estimated_cost:
             # Check if we are above the aggressive threshold
             if self.tokens > self.MIN_TOKEN_THRESHOLD:
-                # We have enough buffer to proceed safely
+                # OPTIMIZATION: We have enough buffer to proceed safely.
+                # We intentionally allow the balance to dip negative (Deficit Spending).
+                # This avoids the previous behavior of waiting ~18 minutes to refill to 300
+                # just because we were slightly short.
                 logger.info(
                     f"Tokens ({self.tokens:.2f}) > Threshold ({self.MIN_TOKEN_THRESHOLD}). "
                     f"Allowing call despite estimated cost ({estimated_cost})."
                 )
             else:
-                # We are low on tokens. Wait until we reach the threshold + buffer.
+                # We are low on tokens. We need to wait.
+                # REFINEMENT: Instead of waiting for max_tokens (which takes forever),
+                # we only wait until we are back to our "safe operating level" (MIN_TOKEN_THRESHOLD).
                 target_tokens = self.MIN_TOKEN_THRESHOLD + 5
                 tokens_needed = target_tokens - self.tokens
                 wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
