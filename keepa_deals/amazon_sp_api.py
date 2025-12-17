@@ -127,12 +127,24 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             approval_url = None
             # Attempt to find a direct approval link from the API response
             if is_restricted:
-                # Default fallback: Generic Seller Central add product page
-                approval_url = f"https://sellercentral.amazon.com/product-search/search?q={asin}"
+                # Default fallback: Specific approval request page
+                approval_url = f"https://sellercentral.amazon.com/hz/approvalrequest?asin={asin}"
 
                 # Try to find a specific deep link if available
-                if restrictions[0].get('links', {}).get('actions'):
-                    for action in restrictions[0]['links']['actions']:
+                r_links = restrictions[0].get('links')
+
+                # Case A: Standard SP-API (links is a list of objects)
+                if isinstance(r_links, list):
+                    for link_obj in r_links:
+                        # Standard SP-API uses 'resource', some older schemas might use 'uri'
+                        url_candidate = link_obj.get('resource') or link_obj.get('uri') or ''
+                        if link_obj.get('verb') == 'GET' and 'approval' in url_candidate:
+                            approval_url = url_candidate
+                            break
+
+                # Case B: Legacy/Other (links is a dict with 'actions')
+                elif isinstance(r_links, dict) and r_links.get('actions'):
+                    for action in r_links['actions']:
                         if action.get('verb') == 'GET' and 'approval' in action.get('uri', ''):
                             approval_url = action['uri']
                             break
