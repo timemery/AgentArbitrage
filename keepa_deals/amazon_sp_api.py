@@ -8,6 +8,12 @@ import os
 import requests
 from urllib.parse import urlencode
 
+# Attempt to import AWSSigV4 for signing
+try:
+    from requests_auth_aws_sigv4 import AWSSigV4
+except ImportError:
+    AWSSigV4 = None
+
 logger = logging.getLogger(__name__)
 
 # Constants for the SP-API
@@ -58,7 +64,7 @@ def map_condition_to_sp_api(condition_input: str) -> str | None:
 def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
     """
     Checks the restriction status for a list of items using the real Amazon SP-API.
-    Uses only LWA Access Token (no AWS SigV4 required for private apps as of Oct 2023).
+    Uses LWA Access Token AND AWS SigV4 signing (required for Production).
 
     Args:
         items: A list of ASIN strings OR a list of dicts {'asin': str, 'condition': str}.
@@ -81,6 +87,23 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
         'Content-Type': 'application/json',
         'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
     }
+
+    # Prepare AWS SigV4 Auth
+    auth = None
+    if AWSSigV4:
+        aws_access_key = os.getenv("SP_API_AWS_ACCESS_KEY_ID")
+        aws_secret_key = os.getenv("SP_API_AWS_SECRET_KEY")
+        aws_region = os.getenv("SP_API_AWS_REGION", "us-east-1")
+
+        if aws_access_key and aws_secret_key:
+            logger.info("AWS Credentials found. Signing requests with SigV4.")
+            auth = AWSSigV4('execute-api', region=aws_region,
+                           aws_access_key_id=aws_access_key,
+                           aws_secret_access_key=aws_secret_key)
+        else:
+            logger.warning("AWS Credentials (SP_API_AWS_ACCESS_KEY_ID/SECRET) missing. Requests will NOT be signed.")
+    else:
+        logger.warning("requests-auth-aws-sigv4 library not found. Requests will NOT be signed.")
 
     # Use a session for efficiency
     session = requests.Session()
@@ -117,7 +140,8 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
         logger.info(f"Requesting URL: {url} with params: {params}")
 
         try:
-            response = session.get(url, params=params)
+            # Pass 'auth' explicitly. If None, it works like a normal request.
+            response = session.get(url, params=params, auth=auth)
             response.raise_for_status()
             data = response.json()
 
