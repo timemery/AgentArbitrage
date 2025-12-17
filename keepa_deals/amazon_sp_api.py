@@ -71,9 +71,14 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
     logger.info(f"Starting real SP-API restriction check for {len(items)} items for seller {seller_id}.")
     results = {}
 
+    # Log token prefix for debugging
+    token_prefix = access_token[:15] + "..." if access_token else "None"
+    logger.info(f"Using Access Token: {token_prefix}")
+
     headers = {
         'x-amz-access-token': access_token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
     }
 
     # Use a session for efficiency
@@ -106,6 +111,9 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             logger.info(f"Checking restriction for ASIN {asin} (Generic check)")
 
         url = f"{SP_API_BASE_URL_NA}/listings/2021-08-01/restrictions"
+
+        # Log request details (redacting full token)
+        logger.info(f"Requesting URL: {url} with params: {params}")
 
         try:
             response = session.get(url, params=params)
