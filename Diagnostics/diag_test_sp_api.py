@@ -62,20 +62,63 @@ def main():
         return
 
     if not asins:
-        print("ERROR: No deals found in database to check.")
-        return
+        print("WARNING: No deals found in database. Using fallback ASINs for testing.")
+        # Use a real ASIN (Fire TV Stick) and a dummy one
+        asins = ['B075CYMYK6', 'B000000000']
 
     print(f"Testing restriction check for ASINs: {asins}")
 
-    # 5. Call API
-    print("Calling SP-API check_restrictions (this mimics the backend task)...")
+    # 5. Test Basic Connectivity (Marketplace Participations)
+    import requests
+
+    # Clean token just in case
+    access_token = access_token.strip()
+
+    # A. Production
+    print("Testing Basic Connectivity (Production Marketplace Participations)...")
+    try:
+        mp_url = "https://sellingpartnerapi-na.amazon.com/sellers/v1/marketplaceParticipations"
+        headers = {
+            'x-amz-access-token': access_token,
+            'Content-Type': 'application/json',
+            'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
+        }
+        mp_res = requests.get(mp_url, headers=headers)
+        print(f"Production Status: {mp_res.status_code}")
+        if mp_res.status_code == 200:
+            print("SUCCESS: Token is valid for PRODUCTION.")
+        else:
+            print(f"FAILURE (Production): {mp_res.text}")
+    except Exception as e:
+        print(f"ERROR calling Production: {e}")
+
+    # B. Sandbox
+    print("\nTesting Basic Connectivity (SANDBOX Marketplace Participations)...")
+    try:
+        sb_url = "https://sandbox.sellingpartnerapi-na.amazon.com/sellers/v1/marketplaceParticipations"
+        headers = {
+            'x-amz-access-token': access_token,
+            'Content-Type': 'application/json',
+            'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
+        }
+        sb_res = requests.get(sb_url, headers=headers)
+        print(f"Sandbox Status: {sb_res.status_code}")
+        if sb_res.status_code == 200:
+            print("SUCCESS: Token is valid for SANDBOX.")
+        else:
+            print(f"FAILURE (Sandbox): {sb_res.text}")
+    except Exception as e:
+        print(f"ERROR calling Sandbox: {e}")
+
+    # 6. Call API (Restrictions)
+    print("\nCalling SP-API check_restrictions (this mimics the backend task)...")
     try:
         results = check_restrictions(asins, access_token, user_id)
     except Exception as e:
         print(f"ERROR calling check_restrictions: {e}")
         return
 
-    # 6. Report Results
+    # 7. Report Results
     print("\n--- Results ---")
     for asin, res in results.items():
         restricted_status = "RESTRICTED" if res['is_restricted'] else "Allowed"

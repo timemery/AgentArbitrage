@@ -15,7 +15,7 @@ monitor_and_restart() {
     WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
     BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
     MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
-    WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO"
+    WORKER_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app worker --loglevel=INFO --concurrency=4"
     BEAT_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app beat --loglevel=INFO"
     PURGE_COMMAND="$VENV_PYTHON -m celery -A worker.celery_app purge -f"
     ENV_SETUP="set -a && source $APP_DIR/.env && set +a"

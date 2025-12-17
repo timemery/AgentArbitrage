@@ -6,13 +6,13 @@ import time
 import logging
 import os
 import requests
-from requests_aws4auth import AWS4Auth
 from urllib.parse import urlencode
 
 logger = logging.getLogger(__name__)
 
 # Constants for the SP-API
-SP_API_BASE_URL_NA = "https://sellingpartnerapi-na.amazon.com"
+# Default to Sandbox for Private/Draft apps. Override with SP_API_URL env var for Production.
+SP_API_BASE_URL_NA = os.getenv("SP_API_URL", "https://sandbox.sellingpartnerapi-na.amazon.com")
 MARKETPLACE_ID_US = "ATVPDKIKX0DER"
 
 
@@ -58,7 +58,7 @@ def map_condition_to_sp_api(condition_input: str) -> str | None:
 def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
     """
     Checks the restriction status for a list of items using the real Amazon SP-API.
-    Signs the request using AWS SigV4.
+    Uses only LWA Access Token (no AWS SigV4 required for private apps as of Oct 2023).
 
     Args:
         items: A list of ASIN strings OR a list of dicts {'asin': str, 'condition': str}.
@@ -72,40 +72,18 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
     logger.info(f"Starting real SP-API restriction check for {len(items)} items for seller {seller_id}.")
     results = {}
 
-    # --- AWS SigV4 Setup ---
-    aws_access_key = os.getenv("SP_API_AWS_ACCESS_KEY_ID")
-    aws_secret_key = os.getenv("SP_API_AWS_SECRET_KEY")
-    aws_region = os.getenv("SP_API_AWS_REGION", "us-east-1")
-    service = 'execute-api'
-
-    if not aws_access_key or not aws_secret_key:
-        logger.error("Missing AWS Credentials (SP_API_AWS_ACCESS_KEY_ID / SP_API_AWS_SECRET_KEY). Cannot sign request.")
-        # If credentials are missing, we cannot proceed. Mark as failure/restricted.
-        results = {}
-        for item in items:
-            # Handle dicts, sqlite3.Row objects (which act like dicts but fail isinstance check sometimes), or raw ASIN strings
-            if hasattr(item, '__getitem__') and not isinstance(item, str):
-                try:
-                    asin = item['asin']
-                except (KeyError, TypeError, IndexError):
-                    # Fallback if key lookup fails, assuming item might be the ASIN itself if unexpected type
-                    asin = str(item)
-            else:
-                asin = str(item)
-
-            results[asin] = {"is_restricted": True, "approval_url": None}
-        return results
-
-    auth = AWS4Auth(aws_access_key, aws_secret_key, aws_region, service)
+    # Log token prefix for debugging
+    token_prefix = access_token[:15] + "..." if access_token else "None"
+    logger.info(f"Using Access Token: {token_prefix}")
 
     headers = {
         'x-amz-access-token': access_token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
     }
 
-    # Use a session for efficiency and to attach auth
+    # Use a session for efficiency
     session = requests.Session()
-    session.auth = auth
     session.headers.update(headers)
 
     for item in items:
@@ -134,6 +112,9 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             logger.info(f"Checking restriction for ASIN {asin} (Generic check)")
 
         url = f"{SP_API_BASE_URL_NA}/listings/2021-08-01/restrictions"
+
+        # Log request details (redacting full token)
+        logger.info(f"Requesting URL: {url} with params: {params}")
 
         try:
             response = session.get(url, params=params)
