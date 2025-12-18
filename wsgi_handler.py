@@ -182,21 +182,40 @@ def extract_conceptual_ideas(full_text):
     return "Could not extract conceptual ideas. Please check the logs for details."
 
 # Credentials from README.md
-VALID_USERNAME = 'tester'
-VALID_PASSWORD = 'OnceUponaBurgerTree-12monkeys'
+USERS = {
+    'tester': {
+        'password': 'OnceUponaBurgerTree-12monkeys',
+        'role': 'admin'
+    },
+    'AristotleLogic': {
+        'password': 'virtueLiesInGoldenMean',
+        'role': 'user'
+    }
+}
 
 @app.route('/')
 def index():
+    if session.get('logged_in'):
+        if session.get('role') == 'admin':
+            return redirect(url_for('guided_learning'))
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
     password = request.form.get('password')
-    if username == VALID_USERNAME and password == VALID_PASSWORD:
+
+    if username in USERS and USERS[username]['password'] == password:
         session.clear()  # Clear all session data
         session['logged_in'] = True
-        return redirect(url_for('guided_learning'))
+        session['username'] = username
+        session['role'] = USERS[username]['role']
+
+        if session['role'] == 'admin':
+            return redirect(url_for('guided_learning'))
+        else:
+            return redirect(url_for('dashboard'))
     else:
         return 'Invalid credentials', 401
 
@@ -208,16 +227,24 @@ def logout():
 
 @app.route('/guided_learning')
 def guided_learning():
-    if session.get('logged_in'):
-        return render_template('guided_learning.html')
-    else:
+    if not session.get('logged_in'):
         return redirect(url_for('index'))
+
+    if session.get('role') != 'admin':
+        flash("You are not authorized to view this page.", "error")
+        return redirect(url_for('dashboard'))
+
+    return render_template('guided_learning.html')
 
 @app.route('/strategies')
 def strategies():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
     
+    if session.get('role') != 'admin':
+        flash("You are not authorized to view this page.", "error")
+        return redirect(url_for('dashboard'))
+
     strategies_list = []
     app.logger.info(f"Attempting to read strategies from: {STRATEGIES_FILE}")
     if os.path.exists(STRATEGIES_FILE):
@@ -239,6 +266,10 @@ def strategies():
 def agent_brain():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
+
+    if session.get('role') != 'admin':
+        flash("You are not authorized to view this page.", "error")
+        return redirect(url_for('dashboard'))
     
     ideas_list = []
     app.logger.info(f"Attempting to read agent brain from: {AGENT_BRAIN_FILE}")
