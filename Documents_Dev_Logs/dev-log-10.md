@@ -425,3 +425,120 @@ The primary goal was to fix broken "Apply to Sell" links on the dashboard (which
   - `keepa_deals/amazon_sp_api.py` (URL Logic)
   - `tests/test_sp_api_url.py` (Unit Test)
   - `Diagnostics/verify_production_token.py` (Verification Tool)
+
+### **Dev Log Entry: Phase 1 User Roles & Navigation Cleanup**
+
+**Date:** December 18, 2025 **Task:** Implement multi-user authentication with distinct Admin/User roles and restrict navigation/settings accordingly. **Status:** **Success**
+
+#### **1. Task Overview**
+
+The objective was to upgrade the existing single-user authentication system to support two distinct roles:
+
+- **Admin (`tester`):** Full access to all features (Dashboard, Strategies, Agent Brain, Guided Learning, Settings with SP-API controls).
+- **User (`AristotleLogic`):** Limited access (Dashboard, Settings without SP-API controls). Additionally, the "Data Sourcing" page was to be globally removed from the navigation menu for all users.
+
+#### **2. Implementation Details**
+
+**A. Authentication Refactor (`wsgi_handler.py`)**
+
+- **Old Logic:** Verified against single `VALID_USERNAME` / `VALID_PASSWORD` constants.
+
+- New Logic:
+
+   
+
+  Implemented a
+
+   
+
+  ```
+  USERS
+  ```
+
+   
+
+  dictionary storing credentials and roles:
+
+  ```
+  USERS = {
+      'tester': {'password': '...', 'role': 'admin'},
+      'AristotleLogic': {'password': '...', 'role': 'user'}
+  }
+  ```
+
+- **Session Management:** Upon login, the user's `role` is stored in the Flask `session`.
+
+- **Route Protection:** Added logic to restricted routes (`/strategies`, `/agent_brain`, `/guided_learning`) to redirect non-admin users to the Dashboard with a flash error message.
+
+- **Redirect Logic:** Admins are redirected to `guided_learning` upon login; Users are redirected to `dashboard`.
+
+**B. Frontend Navigation (`templates/layout.html`)**
+
+- **Conditional Rendering:** Used Jinja2 `{% if session.role == 'admin' %}` blocks to wrap the links for Strategies, Agent Brain, Guided Learning, and Deals.
+- **Global Removal:** Manually removed the `<a>` tag for "Data Sourcing", effectively hiding it from the menu for all users.
+
+**C. Settings Page Restrictions (`templates/settings.html`)**
+
+- **SP-API Controls:** Wrapped the "Re-check Restrictions" button and the "Manual Token Entry" form in an admin-check block.
+- **Status Visibility:** Retained the "Connected!" success message for all users (if connected) to verify system status without allowing them to trigger expensive backend tasks.
+
+**D. Verification Strategy**
+
+- Automated Testing:
+
+   
+
+  Created
+
+   
+
+  ```
+  tests/test_auth_phase1.py
+  ```
+
+   
+
+  using
+
+   
+
+  ```
+  pytest
+  ```
+
+   
+
+  and Flask's
+
+   
+
+  ```
+  test_client
+  ```
+
+  . This suite verified:
+
+  1. Login redirects for both roles.
+  2. Access control enforcement (User getting 403/Redirect on Admin routes).
+  3. HTML content checks to confirm the presence/absence of specific navigation links and buttons.
+
+- **Visual Verification:** Executed a headless Playwright script (`verify_auth.py`) to generate screenshots of the navigation bar and settings page for both roles, confirming the UI logic works as intended.
+
+#### **3. Challenges & Resolutions**
+
+- **Challenge:** Ensuring `wsgi_handler.py` changes didn't break existing session dependencies for SP-API tasks.
+  - **Resolution:** The `role` was added *alongside* existing session keys (`sp_api_connected`, `sp_api_user_id`). The existing logic for SP-API connection checking remains intact, ensuring background tasks continue to function regardless of the logged-in user's role (as they rely on the system-wide or admin credentials).
+- **Challenge:** Verifying UI changes in a headless sandbox environment.
+  - **Resolution:** Relied on `pytest` for logical verification (checking for the existence of HTML substrings like `href="/strategies"`) and supplemented with Playwright screenshots for final visual confirmation.
+
+#### **4. Files Changed**
+
+- `wsgi_handler.py`: Core auth logic and route protection.
+- `templates/layout.html`: Navigation menu updates.
+- `templates/settings.html`: Conditional display of SP-API controls.
+- `tests/test_auth_phase1.py`: New test suite (added to repo).
+
+#### **5. Deployment Notes**
+
+- **No Database Reset Required:** This update only affected the application layer (Python/HTML). The database schema remains unchanged.
+- **Command:** Standard `python3 trigger_backfill_task.py` is sufficient to resume operations. The `--reset` flag is **not** needed.
