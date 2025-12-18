@@ -379,3 +379,49 @@ Two issues persist which affect the user experience but are not code bugs in the
 2. **Broken Apply Links:** The generated "Apply" links redirect to a generic search page. The link format needs to be updated.
 
 - *See `Documents_Dev_Logs/Task_Improve_Restrictions_UX.md` for details.*
+
+
+
+# Dev Log: Fixing "Apply to Sell" Links & Enforcing Production SP-API Access
+
+**Date:** 2025-12-17 **Status:** Success
+
+### Overview
+
+The primary goal was to fix broken "Apply to Sell" links on the dashboard (which redirected to a generic page) and to resolve a "100% Restricted" data issue caused by the application being stuck in the SP-API "Sandbox" environment.
+
+### Challenges Faced
+
+1. **Broken Deep Links:** The application's fallback logic for "Apply" buttons generated a generic search URL (`/product-search/search?q=ASIN`) which was unhelpful. The specific deep link provided by the API was not being parsed correctly due to schema variations (list vs. dict).
+2. **The "Sandbox Trap":** The user was receiving a 100% restriction rate because the app was connected to the SP-API Sandbox, which returns mock "Restricted" data for most real-world ASINs.
+3. **Missing "Authorize" Button:** The user could not generate a Production token because their Private App was created without selecting specific Roles (Listing, Pricing, Inventory), effectively locking it into "Draft/Sandbox-Only" mode. The UI for this state hides the "Authorize" button, leading to significant confusion.
+4. **SigV4 Misinformation:** Amazon Support incorrectly advised that AWS SigV4 signing was required. Investigation and testing confirmed that for modern Private Apps (Self-Authorized), the LWA Access Token alone is sufficient, and adding SigV4 is unnecessary complexity that risks breaking valid configurations.
+
+### Solutions Implemented
+
+1. Corrected Deep Link Format:
+   - Updated `keepa_deals/amazon_sp_api.py` to use the canonical approval URL: `https://sellercentral.amazon.com/hz/approvalrequest?asin={ASIN}`.
+   - Improved parsing logic to handle the `links` array in the SP-API response, ensuring specific approval actions are captured if available.
+2. Production App Strategy ("Start from Scratch"):
+   - Determined that "upgrading" a Sandbox-only app is undocumented/difficult.
+   - Guided the user to create a **new** Private App ("AgentArbitrage-Prod") with the correct roles: **Product Listing, Pricing, Inventory**.
+   - This successfully exposed the "Authorize" button, allowing the generation of a valid Production Refresh Token.
+3. Verification Tooling:
+   - Created `Diagnostics/verify_production_token.py`. This script bypasses the app's configuration and directly tests a token against the Production SP-API endpoint (`sellingpartnerapi-na.amazon.com`).
+   - **Result:** Confirmed the new token returned `200 OK` from Production, verifying the fix.
+
+### Outcome
+
+- The "Apply" links now direct users to the specific approval workflow.
+- The application is successfully connected to the Production SP-API.
+- The user reports "All Checkmarks" (Approved) on the dashboard, reflecting their actual 4-year seller history rather than mock Sandbox restrictions.
+
+### Technical Reference
+
+- **Critical URL:** `https://sellercentral.amazon.com/hz/approvalrequest?asin={ASIN}`
+- **SP-API Endpoint:** `https://sellingpartnerapi-na.amazon.com` (Production)
+- **Required Roles:** Product Listing, Pricing, Inventory (Select these during App creation to avoid Sandbox lock).
+- Files Changed:
+  - `keepa_deals/amazon_sp_api.py` (URL Logic)
+  - `tests/test_sp_api_url.py` (Unit Test)
+  - `Diagnostics/verify_production_token.py` (Verification Tool)
