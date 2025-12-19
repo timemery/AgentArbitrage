@@ -22,6 +22,7 @@ from keepa_deals.db_utils import (
     save_user_credentials,
     get_all_user_credentials
 )
+from keepa_deals.janitor import _clean_stale_deals_logic
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -923,10 +924,13 @@ def api_deals():
 
         where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
 
-        # Get total count
+        # Get total count (filtered)
         count_query = f"SELECT COUNT(*) {from_clause}{where_sql}"
         total_records = cursor.execute(count_query, query_params).fetchone()[0]
         total_pages = (total_records + limit - 1) // limit if limit > 0 else 1
+
+        # Get absolute total count (unfiltered) for UI notification logic
+        total_db_records = cursor.execute(f"SELECT COUNT(*) FROM {TABLE_NAME}").fetchone()[0]
 
         # Get data for the current page
         query_params.extend([limit, offset])
@@ -969,6 +973,7 @@ def api_deals():
     response = {
         "pagination": {
             "total_records": total_records,
+            "total_db_records": total_db_records,
             "total_pages": total_pages,
             "current_page": page,
             "limit": limit
@@ -1228,6 +1233,40 @@ def manual_sp_api_token():
         flash(f"Error saving credentials to database: {e}", "error")
 
     return redirect(url_for('settings'))
+
+@app.route('/api/run-janitor', methods=['POST'])
+def run_janitor():
+    if not session.get('logged_in'):
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    try:
+        deleted = _clean_stale_deals_logic(grace_period_hours=24)
+        return jsonify({'status': 'success', 'deleted_count': deleted})
+    except Exception as e:
+        app.logger.error(f"Janitor API failed: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/deal-count')
+def deal_count():
+    if not session.get('logged_in'):
+         return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    try:
+        with sqlite3.connect(DATABASE_URL) as conn:
+            cursor = conn.cursor()
+            # Ensure the table exists before querying
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='deals'")
+            if not cursor.fetchone():
+                 return jsonify({'count': 0, 'max_id': 0})
+
+            cursor.execute("SELECT COUNT(*), MAX(id) FROM deals")
+            row = cursor.fetchone()
+            count = row[0] if row else 0
+            max_id = row[1] if row and row[1] else 0
+            return jsonify({'count': count, 'max_id': max_id})
+    except sqlite3.Error as e:
+        app.logger.error(f"Database error in deal_count: {e}")
+        return jsonify({'error': 'Database error', 'message': str(e)}), 500
 
 # Ensure tables exist on module load (for WSGI environment)
 create_user_restrictions_table_if_not_exists()
