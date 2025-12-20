@@ -34,8 +34,14 @@
             </div>
         </form>
     </div>
-    <div class="deal-counter-container">
+    <div class="deal-counter-container" style="display: flex; align-items: center; gap: 15px;">
         <span id="deal-counter"></span>
+        <a href="#" id="refresh-deals-link" style="text-decoration: none; color: #1976d2; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+            </svg>
+            <span id="refresh-text">Refresh Deals</span>
+        </a>
     </div>
     <div class="table-container">
         <div id="deals-table"></div>
@@ -122,6 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const profitMarginValueSpan = document.getElementById('profit-margin-value');
     const hiddenProfitMarginInput = document.getElementById('min_profit_margin');
     const dealCounterSpan = document.getElementById('deal-counter');
+    const refreshDealsLink = document.getElementById('refresh-deals-link');
+    const refreshText = document.getElementById('refresh-text');
 
     // --- New Slider Logic ---
     const salesRankSteps = [
@@ -502,6 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
         paginationContainer.innerHTML = ''; // Clear existing controls
 
         const dealCount = pagination.total_records || 0;
+        currentTotalRecords = pagination.total_db_records || dealCount; // Update global tracker with total DB count
         dealCounterSpan.textContent = `${dealCount.toLocaleString()} Deals Found`;
 
         if (totalPages <= 1) return;
@@ -577,6 +586,48 @@ document.addEventListener('DOMContentLoaded', function() {
         profitMarginValueSpan.textContent = step.label;
         hiddenProfitMarginInput.value = (step.value === Infinity) ? '9999' : step.value;
     });
+
+    // --- Refresh Logic ---
+    let currentTotalRecords = 0;
+
+    refreshDealsLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        refreshText.textContent = 'Refreshing...';
+        refreshDealsLink.style.color = '#1976d2'; // Reset color
+
+        try {
+            // Trigger Janitor first
+            await fetch('/api/run-janitor', { method: 'POST' });
+
+            // Then refresh grid
+            await fetchDeals(currentPage, currentSort.by, currentSort.order);
+
+            refreshText.textContent = 'Refresh Deals';
+        } catch (err) {
+            console.error('Refresh failed:', err);
+            refreshText.textContent = 'Refresh Failed';
+            setTimeout(() => { refreshText.textContent = 'Refresh Deals'; }, 3000);
+        }
+    });
+
+    setInterval(async () => {
+        try {
+            const response = await fetch('/api/deal-count');
+            const data = await response.json();
+            const serverCount = data.count;
+            const diff = serverCount - currentTotalRecords;
+
+            if (diff > 0) {
+                refreshText.textContent = `${diff} New Deals found - Refresh Now`;
+                refreshDealsLink.style.color = '#e65100'; // Dark Orange
+            } else {
+                 refreshText.textContent = 'Refresh Deals';
+                 refreshDealsLink.style.color = '#1976d2';
+            }
+        } catch (e) {
+            console.error("Poll failed", e);
+        }
+    }, 60000); // 60 seconds
 
     // --- Recalculation Status Polling ---
     const recalcIndicator = document.getElementById('recalc-indicator');

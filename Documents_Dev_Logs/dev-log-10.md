@@ -542,3 +542,121 @@ The objective was to upgrade the existing single-user authentication system to s
 
 - **No Database Reset Required:** This update only affected the application layer (Python/HTML). The database schema remains unchanged.
 - **Command:** Standard `python3 trigger_backfill_task.py` is sufficient to resume operations. The `--reset` flag is **not** needed.
+
+## Dev Log: Janitor Task, Manual Refresh & UI Refinements
+
+**Date:** December 19, 2025
+**Task:** Implement Janitor Task, Manual Refresh, and Notification Logic
+**Status:** **Success**
+
+### 1. Overview
+
+The primary goal was to enhance the "freshness" of the dashboard data without forcing disruptive auto-reloads. The solution involved three components:
+
+1. **The Janitor:** A backend task to delete stale deals (older than 24 hours) to prevent "zombie" data from accumulating.
+2. **Manual Refresh:** A user-initiated action to trigger the Janitor and reload the data grid instantly without a full page refresh.
+3. **Passive Notification:** A subtle UI indicator ("X New Deals Found") that alerts the user when the database has grown, prompting them to click refresh.
+
+### 2. Implementation Details
+
+#### A. The Janitor (Backend)
+
+- **File:** `keepa_deals/janitor.py`
+- **Logic:** Created a Celery task `clean_stale_deals` that executes `DELETE FROM deals WHERE last_seen_utc < [cutoff]`.
+- **Schedule:** Configured in `celery_config.py` to run automatically every 4 hours.
+- **Optimization:** exposed the core logic function `_clean_stale_deals_logic` to allow synchronous execution by the API (so the user doesn't have to wait for a background worker queue when clicking "Refresh").
+
+#### B. API Endpoints
+
+- **File:** `wsgi_handler.py`
+
+- **`POST /api/run-janitor`:** Triggers the cleaning logic immediately. Returns the count of deleted items.
+
+- `GET /api/deal-count`:
+
+   
+
+  Returns the
+
+   
+
+  absolute total count
+
+   
+
+  of records in the database (
+
+  ```
+  SELECT COUNT(*) FROM deals
+  ```
+
+  ).
+
+  - *Crucial Detail:* This endpoint ignores filters. This is necessary for accurate "New Deals" detection. If we used the filtered count, applying a filter (e.g., "Sales Rank < 1000") would drop the count from 500 to 10, causing the frontend to think 490 deals were "lost" or miscalculate the diff.
+
+#### C. Dashboard UI & Logic
+
+- **File:** `templates/dashboard.html`
+
+- Refresh Link:
+
+   
+
+  Added a "Refresh Deals" link next to the deal counter.
+
+  - **Visuals:** Replaced the initial text arrow (`⟳`) with a bold, 24px SVG icon (Material Design style) to match the provided mockup.
+  - **Alignment:** Used `display: flex; align-items: center;` on the container to ensure the "Deals Found" text (approx 16-19px height) aligns perfectly with the vertical center of the Refresh Link (24px icon).
+
+- Polling Logic:
+
+  - The frontend polls `/api/deal-count` every 60 seconds.
+  - It compares this server count against `currentTotalRecords` (which is initialized with the unfiltered DB total).
+  - If `server_count > local_count`, the link text updates to: `⟳ [Diff] New Deals found - Refresh Now` in orange/red to attract attention.
+
+- Interaction:
+
+  - Clicking "Refresh" triggers `POST /api/run-janitor` (await), then calls `fetchDeals()` to reload the grid, then resets the text to "Refresh Deals".
+
+### 3. Challenges & Solutions
+
+**Challenge 1: "Phantom" New Deals on Filter**
+
+- **Issue:** Initially, the frontend compared the live DB count against the *currently displayed* record count. When a user applied a filter, the displayed count dropped, causing the math to report thousands of "New Deals" (Total DB - Filtered View).
+- **Solution:** Updated `wsgi_handler.py`'s `/api/deals` endpoint to always return `total_db_records` (unfiltered count) in the pagination metadata. The frontend now uses this stable baseline for comparison, ignoring active filters.
+
+**Challenge 2: Visual Alignment**
+
+- **Issue:** The text "158 Deals Found" appeared lower than the "Refresh Deals" text because of the 24px icon pushing the link's height. Using `align-items: baseline` failed because the link's baseline (as an inline-flex container) behaved unexpectedly relative to the text span.
+- **Solution:** Switched the container to `display: flex; align-items: center;`. This forces the text to be vertically centered within the available height (dictated by the icon), effectively aligning the visual centers of the text and the icon.
+
+**Challenge 3: Broken Verification Scripts**
+
+- **Issue:** I deleted the `verification/` folder too early in the process, requiring me to recreate the Playwright script multiple times to verify visual tweaks.
+- **Learning:** Keep verification artifacts until the *entire* task is signed off, not just the code submission.
+
+### 4. Deployment Instructions
+
+Since this update touches both backend (Celery tasks) and frontend (HTML/API), the deployment sequence is specific:
+
+1. Reset Background Processes:
+
+   ```
+   ./kill_everything_force.sh
+   sudo ./start_celery.sh
+   ```
+
+2. Update Web Server:
+
+   ```
+   touch wsgi.py
+   ```
+
+   (Note: This reloads the Flask app to serve the new `dashboard.html` and register the new `/api` endpoints.)
+
+### 5. Artifacts
+
+- `keepa_deals/janitor.py` (New)
+- `tests/test_janitor.py` (New Regression Test)
+- `celery_config.py` (Modified)
+- `wsgi_handler.py` (Modified)
+- `templates/dashboard.html` (Modified)
