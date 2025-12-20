@@ -880,8 +880,6 @@ def api_deals():
     limit = request.args.get('limit', 50, type=int)
     offset = (page - 1) * limit
     sort_by = request.args.get('sort', 'id')
-    if sort_by not in available_columns:
-        sort_by = 'id'
     order = request.args.get('order', 'asc').lower()
     if order not in ['asc', 'desc']:
         order = 'asc'
@@ -934,7 +932,18 @@ def api_deals():
 
         # Get data for the current page
         query_params.extend([limit, offset])
-        data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY d.\"{sort_by}\" {order} LIMIT ? OFFSET ?"
+
+        if sort_by == 'Gated':
+            if is_sp_api_connected and user_id:
+                sort_clause = 'ur.is_restricted'
+            else:
+                sort_clause = 'd."id"'
+        elif sort_by in available_columns:
+            sort_clause = f'd."{sort_by}"'
+        else:
+            sort_clause = 'd."id"'
+
+        data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY {sort_clause} {order} LIMIT ? OFFSET ?"
         deal_rows = cursor.execute(data_query, query_params).fetchall()
         deals_list = [dict(row) for row in deal_rows]
 
