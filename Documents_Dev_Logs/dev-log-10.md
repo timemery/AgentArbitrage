@@ -660,3 +660,64 @@ Since this update touches both backend (Celery tasks) and frontend (HTML/API), t
 - `celery_config.py` (Modified)
 - `wsgi_handler.py` (Modified)
 - `templates/dashboard.html` (Modified)
+
+
+
+# Dev Log 12: SP-API 403 Authorization Fix & Diagnostics
+
+**Date:** December 20, 2025
+**Task:** Investigate "Unauthorized" and "Access to requested resource is denied" SP-API Errors
+**Status:** **Success**
+
+### 1. Overview
+
+Immediately following the "Janitor" update (Dev Log 11), the Celery worker logs began showing persistent `403 Forbidden` errors for every ASIN during the restriction check process. The error body was:
+
+```
+{ "code": "Unauthorized", "message": "Access to requested resource is denied." }
+```
+
+This indicated that while the system could successfully refresh the Access Token (proving the Client ID/Secret were valid), the API was rejecting the actual request to `getListingsRestrictions`.
+
+### 2. Challenges & Analysis
+
+#### A. Ambiguity of 403 Errors
+
+The generic "Unauthorized" message could stem from multiple causes:
+
+1. **Environment Mismatch:** Using a Sandbox-only token against the Production URL (`sellingpartnerapi-na.amazon.com`).
+2. **Missing Permissions:** The LWA Access Token lacked the specific Scope or Role required for the resource.
+3. **Corrupted Config:** Windows line endings (`\r`) in the `.env` file potentially mangling the URL or Client ID.
+
+#### B. The "Double 403" Diagnosis
+
+To isolate the issue, we implemented a runtime diagnostic in `keepa_deals/amazon_sp_api.py`. When a 403 occurred on Production, the code immediately attempted the same request against the **Sandbox** endpoint.
+
+- **Hypothesis:** If Prod=403 and Sandbox=200, the credentials are for the wrong environment.
+- **Actual Result:** Both endpoints returned **403**.
+- **Conclusion:** The credentials were valid for *authentication* but invalid for *authorization* globally. This pointed directly to missing IAM Roles/Scopes on the App itself.
+
+### 3. Solutions Implemented
+
+#### A. Code & Configuration Hygiene
+
+1. **Diagnostic Tooling:** Modified `keepa_deals/amazon_sp_api.py` to "fail loudly" with specific context. It now probes the Sandbox endpoint upon failure to help future debugging distinguish between environment mismatches and permission errors.
+2. **Sanitization:** Executed `sed -i 's/\r$//' .env` to strip invisible Windows carriage returns from the configuration file, ensuring reliable variable parsing by the Linux shell.
+
+#### B. Permission Fix (Root Cause)
+
+The root cause was identified as the **Amazon SP-API Application** missing the **"Product Listing"** role.
+
+- **Action:** The user updated the App in Seller Central to include "Product Listing", re-authorized the application, and generated a new Refresh Token.
+- **Deployment:** The new Production Refresh Token was manually updated in the `user_credentials` table via the Settings page, and the backfill task was restarted with `--reset`.
+
+### 4. Outcome
+
+- **Verification:** The Celery worker logs now show successful restriction checks (`INFO ... Checking restriction ...`) without any accompanying 403 errors.
+- **System State:** The application is successfully connected to the Production SP-API and is correctly populating the "Gated" column with live data.
+
+### 5. Technical Artifacts
+
+- `keepa_deals/amazon_sp_api.py`: Added `try...except` block with Sandbox fallback probe.
+- `Diagnostics/check_sp_api_auth.py`: Created standalone script for manual credential verification.
+- `.env`: Sanitized to Unix line endings.
