@@ -159,6 +159,30 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             # Enhanced error logging
             error_body = e.response.text
             logger.error(f"SP-API error for ASIN {asin}: Status {e.response.status_code}, Body: {error_body}")
+
+            # --- NEW DIAGNOSTIC CHECK ---
+            # If we get a 403 on Production, check if the token works on Sandbox.
+            # This helps users identify if they are using Sandbox credentials with the Production URL.
+            if e.response.status_code == 403 and "sellingpartnerapi-na.amazon.com" in url and "sandbox" not in url:
+                try:
+                    logger.info("403 Forbidden on Production. Attempting diagnostic check against Sandbox...")
+                    sandbox_url = "https://sandbox.sellingpartnerapi-na.amazon.com/listings/2021-08-01/restrictions"
+                    # Use the same params, but Sandbox might not have the ASIN.
+                    # Actually, Sandbox restriction check is mocked. It usually returns 200 OK (and restricted status).
+                    # If we get 200 OK, it means the TOKEN is valid for Sandbox.
+                    sb_resp = session.get(sandbox_url, params=params)
+
+                    if sb_resp.status_code == 200:
+                        logger.critical("MISCONFIGURATION DETECTED: The SP-API Token is valid for Sandbox but rejected by Production (403). "
+                                        "You are likely using Sandbox Credentials with the Production URL. "
+                                        "Please update SP_API_CLIENT_ID and SP_API_CLIENT_SECRET in .env to your Production App credentials, "
+                                        "and generate a new Refresh Token.")
+                    else:
+                        logger.warning(f"Diagnostic Sandbox check also failed: Status {sb_resp.status_code}")
+                except Exception as dx:
+                    logger.error(f"Diagnostic check failed: {dx}")
+            # -----------------------------
+
             # Mark as error state
             results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
         except Exception as e:
