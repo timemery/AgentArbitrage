@@ -127,8 +127,25 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             approval_url = None
             # Attempt to find a direct approval link from the API response
             if is_restricted:
-                # Default fallback: "Add a Product" search page (Always reliable)
-                approval_url = f"https://sellercentral.amazon.com/product-search/search?q={asin}"
+                # Determine simple condition for the URL (new, used, etc.)
+                simple_cond = None
+                if condition:
+                    c_lower = str(condition).lower()
+                    if 'new' in c_lower:
+                        simple_cond = 'new'
+                    elif 'used' in c_lower:
+                        simple_cond = 'used'
+                    elif 'collectible' in c_lower:
+                        simple_cond = 'collectible'
+                    elif 'refurbished' in c_lower:
+                        simple_cond = 'refurbished'
+
+                if simple_cond:
+                    # Specific deep link (Best UX)
+                    approval_url = f"https://sellercentral.amazon.com/hz/approvalrequest/restrictions/approve?asin={asin}&itemcondition={simple_cond}"
+                else:
+                    # Fallback: "Add a Product" search page
+                    approval_url = f"https://sellercentral.amazon.com/product-search/keywords/search?q={asin}"
 
                 # Try to find a specific deep link if available
                 r_links = restrictions[0].get('links')
