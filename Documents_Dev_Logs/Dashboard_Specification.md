@@ -72,3 +72,10 @@ The columns below are listed in the **exact order** they must appear on the dash
 *   **Template:** `templates/dashboard.html`
 *   **Column Naming Conflict:** The database uses single underscores (e.g., `Sales_Rank_Current`), but legacy parts of the frontend code may refer to them differently. The API endpoint handles this mapping.
 *   **Abbreviation Logic:** The `Condition` and `Binding` abbreviations are applied in the `api_deals` function in `wsgi_handler.py` before the JSON is sent to the frontend.
+
+### 7. Header Controls (Above Grid)
+
+| Control | Functionality | Logic |
+| :--- | :--- | :--- |
+| **Refresh Deals** | Manually triggers the "Janitor" task. | - Link text is dynamic.<br>- Default: **⟳ Refresh Deals**.<br>- Notification: **⟳ [Diff] New Deals found - Refresh Now** (if server count > local count).<br>- Clicking triggers `POST /api/run-janitor`. |
+| **Deal Count** | Displays total records. | - Polls `/api/deal-count` (unfiltered) every 60s.<br>- Used to calculate the [Diff] for the notification. |

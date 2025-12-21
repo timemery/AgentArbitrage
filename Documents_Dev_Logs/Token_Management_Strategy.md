@@ -40,6 +40,11 @@ The XAI API (Grok) incurs a direct financial cost per token generated. To preven
     -   **Hit:** If the key exists, the cached boolean result is returned immediately (0 cost).
     -   **Miss:** If not in cache and quota allows, the API is called, and the result is saved.
 
+### Exception: Guided Learning
+*   **Route:** `/learn`
+*   **Implementation:** `wsgi_handler.py` -> `query_xai_api`
+*   **Note:** This feature calls the xAI API directly (via `httpx`) and **does not** currently utilize the `XaiTokenManager` or the daily quota system. This is acceptable because it is a manual, user-triggered action, not an automated loop.
+
 ---
 
 ## 3. Amazon SP-API: OAuth 2.0 Refresh Flow

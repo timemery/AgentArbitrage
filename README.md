@@ -3,8 +3,16 @@
 An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger VPS (Ubuntu 22.04).
 
 - **Public URL**: https://agentarbitrage.co
-- **Application**: https://agentarbitrage.co/guided_learning
+- **Dashboard**: https://agentarbitrage.co/dashboard
+- **Guided Learning**: https://agentarbitrage.co/guided_learning
 - **Login**: `tester` / `OnceUponaBurgerTree-12monkeys`
+
+## Key Features
+
+- **Deals Dashboard**: Real-time arbitrage opportunities with advanced filtering and "Janitor" cleanup.
+- **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI.
+- **Agent Brain & Strategies**: Repositories of the AI's learned knowledge.
+- **Data Sourcing**: Configurable Keepa scanning engine.
 
 ---
 

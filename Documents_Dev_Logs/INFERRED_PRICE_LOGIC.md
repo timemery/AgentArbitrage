@@ -51,24 +51,35 @@ The function returns a list of these sanitized `sane_sales` events.
 
 ## 3. Stage 2: Seasonality Analysis (Peak & Trough)
 
-This stage is handled by the `analyze_seasonality(product, sale_events)` function in `keepa_deals/stable_calculations.py`.
+This stage is handled by the `analyze_sales_performance(product, sale_events)` function in `keepa_deals/stable_calculations.py`.
 
-### a. Monthly Grouping
+### a. Monthly Grouping & Identification
 
-The function takes the list of sane sale events and groups them by calendar month. For each month, it calculates the `mean`, `median`, and `count` of sales.
+The function groups sane sale events by calendar month.
 
-**Note:** The function requires data from at least two different months to perform a meaningful analysis. If all sales occurred in the same month, it returns a default "Year-Round" result with no price data.
+1.  **Peak Month:** Identified as the month with the **highest median** sale price.
+2.  **Trough Month:** Identified as the month with the **lowest median** sale price.
 
-### b. Peak/Trough Calculation
+**Note:** Requires data from at least 1 sale event.
 
-The core logic for finding the peak and trough prices is as follows:
+### b. Peak Price Calculation ("List at")
 
-1. It identifies the "peak month" by finding the month with the **highest `mean` price**.
-2. It identifies the "trough month" by finding the month with the **lowest `mean` price**.
-3. The final **Peak Price** is the `mean` of all sales that occurred within that peak month.
-4. The final **Trough Price** is the `mean` of all sales that occurred within that trough month.
+Once the Peak Month is identified, the system calculates the "List at" price:
 
-**Key Point:** The system uses the `mean` (average) for the final price calculation, providing a traditional average of prices during the product's high and low seasons.
+1.  **Mode Calculation:** It calculates the **Mode** (most frequent value) of all sale prices in the Peak Month.
+2.  **Fallback:** If no distinct mode exists (all prices are unique), it falls back to the **Median** of the Peak Month prices.
+
+### c. XAI Reasonableness Check
+
+Before finalizing the Peak Price, the system performs an AI verification step:
+
+1.  **Query:** It sends the Title, Category, Peak Season, and Calculated Price to **Grok (xAI)**.
+2.  **Prompt:** "Given the following book details, is a peak selling price of $X.XX reasonable?"
+3.  **Result:**
+    *   **Yes:** The price is accepted.
+    *   **No:** The price is invalidated (`-1`), and the deal is likely excluded.
+
+**Key Point:** The system prioritizes the **Mode** to find the "standard" selling price during peak demand, avoiding skew from outliers, and verifies it with AI to ensure it makes sense for the specific book title/category.
 
 ------
 

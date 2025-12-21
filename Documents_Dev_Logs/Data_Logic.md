@@ -110,6 +110,20 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Logic**: **Mode** (or Median fallback) of inferred sales prices during the **Peak Season**.
     -   **AI Check**: Validated by `grok-4-fast-reasoning`.
 
+### AI Knowledge Extraction (Guided Learning)
+
+-   **`extract_strategies`**:
+    -   **Source**: `wsgi_handler.py`.
+    -   **Prompt**: Extracts specific, actionable rules/numbers.
+    -   **Model**: `grok-4-latest` (Temperature 0.2).
+    -   **Logic**: Parses input text for conditions like "Rank < X" or "Profit > Y".
+
+-   **`extract_conceptual_ideas`**:
+    -   **Source**: `wsgi_handler.py`.
+    -   **Prompt**: Extracts high-level mental models and "why" logic.
+    -   **Model**: `grok-4-latest` (Temperature 0.3).
+    -   **Logic**: Focuses on qualitative insights.
+
 ### Business & Financial Metrics
 
 -   **`All-in Cost`**:
