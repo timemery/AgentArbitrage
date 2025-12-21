@@ -50,6 +50,11 @@ There are three primary background tasks that manage the data lifecycle. Underst
     3.  Updates the rows in place.
     4.  **Note:** It does *not* make new API calls to Keepa. It works strictly with local data.
 
+### D. `clean_stale_deals` (The Janitor)
+*   **Purpose:** Removes "zombie" deals (older than 24h) to ensure dashboard freshness.
+*   **Trigger:** Scheduled (Every 4h) OR Manual (Button: "Refresh Deals").
+*   **Mechanism:** `DELETE FROM deals WHERE last_seen_utc < [24h ago]`.
+
 ---
 
 ## 3. Infrastructure & Resilience
@@ -76,3 +81,12 @@ The background processes are orchestrated to be resilient:
 *   **"Data isn't updating":** Check `celery_beat.log`. Is the scheduler running? Check `system_state` in the DB—is the watermark advancing?
 *   **"The Backfill stalled":** Check `celery_worker.log`. It may be in a "Controlled Deficit" pause, waiting for tokens. This is normal.
 *   **"Dashboard is empty":** Verify `db_utils.py` schema matches `dashboard.html` expectations (e.g., column names).
+
+## 5. Guided Learning Architecture (xAI Integration)
+
+*   **Input:** User submits URL/Text to `/learn`.
+*   **Processing:**
+    1.  **Scraper:** Fetches content (supports YouTube transcripts via BrightData).
+    2.  **LLM Extraction:** Calls xAI (Grok) in parallel to extract "Strategies" and "Mental Models".
+*   **Storage:** Results are reviewed by the user and saved to JSON files (`strategies.json`, `agent_brain.json`).
+*   **Usage:** These JSON files are currently for display but will eventually power the agent's decision-making logic.
