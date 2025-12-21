@@ -30,8 +30,8 @@ class TestSPAPIUrl(unittest.TestCase):
 
         results = check_restrictions(['B123456789'], 'fake_token', 'fake_seller_id')
 
-        # This expects the NEW format
-        expected_url = "https://sellercentral.amazon.com/hz/approvalrequest?asin=B123456789&marketplaceID=ATVPDKIKX0DER"
+        # This expects the "Add a Product" search format
+        expected_url = "https://sellercentral.amazon.com/product-search/search?q=B123456789"
         self.assertEqual(results['B123456789']['approval_url'], expected_url)
 
     @patch('keepa_deals.amazon_sp_api.requests.Session')
