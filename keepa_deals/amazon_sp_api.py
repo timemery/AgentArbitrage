@@ -1,3 +1,4 @@
+# VERIFIED_UPDATE: Condition-aware deep linking
 """
 This module encapsulates all interactions with the Amazon Selling Partner API (SP-API).
 """
