@@ -532,3 +532,12 @@ When encountering `ImportError: cannot import name 'FUNCTION_LIST' from 'field_m
 2.  **Trust the Latest Log:** The latest log is the ground truth. If an error that was supposedly fixed reappears in a new log, it means the fix was not effective. The investigation must restart by re-examining the code for the same error pattern, rather than assuming a new, different cause.
 3.  **Searching is a Key Tool:** Using precise searches to find specific error messages or ASINs in large log files is an essential and effective debugging strategy. When a narrow search returns no results, broaden the search (e.g., to just the ASIN) to confirm if the item was processed at all before concluding the specific error is gone.
 
+### Guided Learning & xAI Integration Notes
+- **Features:** Guided Learning (`/guided_learning`) allows extracting knowledge from text/YouTube.
+- **Storage:** Extracted "Strategies" are saved to `strategies.json`. "Conceptual Ideas" are saved to `agent_brain.json`.
+- **Parallelization:** Extraction tasks run in parallel threads (`ThreadPoolExecutor`) in `wsgi_handler.py` to speed up processing.
+- **Dependencies:** Requires `XAI_TOKEN` and `BRIGHTDATA_` credentials (for YouTube proxying).
+
+### Janitor & Dashboard Freshness
+- **The Janitor:** `keepa_deals/janitor.py` runs every 4 hours (and manually via "Refresh Deals") to delete deals older than 24 hours.
+- **New Deal Detection:** The dashboard compares the *unfiltered* server count (`/api/deal-count`) against the local count to detect new deals. This prevents false positives when filters are active.
