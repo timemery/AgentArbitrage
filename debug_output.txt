@@ -1,0 +1,817 @@
+INFO:keepa_deals.token_manager:TokenManager initialized without a blocking API call.
+INFO:__main__:Fetching 1 page of deals...
+INFO:keepa_deals.keepa_api:Fetching deals. Page: 0, Sort: 4
+INFO:keepa_deals.keepa_api:Using Keepa query from keepa_query.json
+INFO:keepa_deals.keepa_api:Fetched 150 deals. Tokens consumed: 5. Tokens left: 11
+INFO:__main__:Found 150 deals. Processing first 5...
+INFO:__main__:Fetching product data for: ['B0036CEY4W', 'B0038FT2C6', '1850040168', '0443053960', 'B09KN4H71K']
+INFO:keepa_deals.keepa_api:Fetching batch of 5 ASINs: B0036CEY4W,B0038FT2C6,1850040168...
+INFO:keepa_deals.keepa_api:Batch API call successful. Tokens consumed: 30. Tokens left: -19
+INFO:__main__:
+
+--- Processing ASIN: B0036CEY4W ---
+INFO:keepa_deals.seller_info:ASIN B0036CEY4W: Found lowest-priced seller: A18FJX6BS7HBXX. Fetching their data.
+DEBUG:keepa_deals.token_manager:Refilled 1.04 tokens. Current tokens: 101.04
+INFO:keepa_deals.token_manager:Permission granted for API call. Estimated cost: 1. Current tokens: 101.04
+INFO:keepa_deals.keepa_api:Fetching data for batch of 1 sellers
+ERROR:keepa_deals.keepa_api:HTTP fetch failed for seller batch with status 429: 429 Client Error: Too Many Requests for url: https://api.keepa.com/seller?key=bg9037ndr2jrlore45acr8a3gustia0tusdfk5e54g1le917nspnk9jiktp7b08b&domain=1&seller=A18FJX6BS7HBXX
+ERROR:keepa_deals.keepa_api:429 ERROR on seller batch. Keepa reported 0 tokens consumed. Tokens left: -19
+INFO:keepa_deals.token_manager:Token count authoritatively synced from API response. Previous estimate: 101.04, New value: -19.00
+WARNING:keepa_deals.seller_info:ASIN B0036CEY4W: Failed to fetch data for seller A18FJX6BS7HBXX.
+DEBUG:keepa_deals.stable_products:percent_down_90 input: B0036CEY4W
+DEBUG:keepa_deals.stable_products:percent_down_90 result: 100%
+INFO:root:ASIN B0036CEY4W: Percent Down 365 calculated. Current: 0.01, Avg365: 63.69, Diff: 99.98%, Result: 100%
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Checking for shipping included in Used - Current offer.
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: Found buyBoxUsedShipping to be 0, shipping is included.
+DEBUG:keepa_deals.stable_deals:Deal found - raw ts=7875076
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - KEEPA_EPOCH.tzinfo: None
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - dt (naive UTC from Keepa): 2025-12-21T19:16:00
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - utc_dt (aware UTC): 2025-12-21T19:16:00+00:00
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - TORONTO_TZ object: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - toronto_dt (converted to Toronto): 2025-12-21T14:16:00-05:00
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - toronto_dt.tzinfo: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (deal_found) - toronto_dt.utcoffset(): -1 day, 19:00:00
+DEBUG:keepa_deals.stable_products:amz_link result for ASIN B0036CEY4W: {'AMZ link': 'https://www.amazon.com/dp/B0036CEY4W?psc=1&aod=1'}
+DEBUG:keepa_deals.stable_products:keepa_link result for ASIN B0036CEY4W: {'Keepa Link': 'https://keepa.com/#!product/1-B0036CEY4W'}
+DEBUG:keepa_deals.stable_products:get_title result for ASIN B0036CEY4W: The Art of Eating The Collected Gastronomical Work
+WARNING:keepa_deals.processing:ASIN B0036CEY4W: Error extracting last update: last_update() missing 1 required positional argument: 'logger_param'
+INFO:keepa_deals.stable_deals:ASIN: B0036CEY4W - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Checking deal_object.currentSince for used item timestamps using base indices: [2, 19, 20, 21, 22]
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Found deal_object.currentSince timestamp for used index 2: 7875076
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Found deal_object.currentSince timestamp for used index 19: 7700320
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Found deal_object.currentSince timestamp for used index 20: 7874472
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Found deal_object.currentSince timestamp for used index 21: 7874472
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Found deal_object.currentSince timestamp for used index 22: 7874472
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Buy Box is not Used (deal_object.current[14]=2) or current array too short. Skipping Used Buy Box timestamp check.
+INFO:keepa_deals.stable_deals:ASIN: B0036CEY4W - Using deal_object.currentSince for last used price change. Max timestamp: 7875076. All considered: [7875076, 7700320, 7874472, 7874472, 7874472]
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - last used price change - selected raw ts=7875076 from deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box)
+DEBUG:keepa_deals.stable_deals:ASIN: B0036CEY4W - Timezone Debug (last_price_change) - dt (naive UTC): 2025-12-21T19:16:00, utc_dt (aware UTC): 2025-12-21T19:16:00+00:00, toronto_dt: 2025-12-21T14:16:00-05:00
+INFO:keepa_deals.stable_deals:ASIN: B0036CEY4W - last price change (focused on used) result: 2025-12-21 14:16:00 (from ts 7875076 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Attempting to get FBA Pick&Pack Fee. Raw 'fbaFees' dict: {'lastUpdate': 7874472, 'pickAndPackFee': 610}
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: FBA Pick&Pack Fee found: $6.10 (from raw 610)
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Attempting to get Referral Fee Percentage.
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Found precise referralFeePercentage directly: 15.01
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: Referral Fee Percentage found (product_data.referralFeePercentage): 15.01% (from raw 15.01)
+DEBUG:keepa_deals.stable_products:Tracking since - raw ts=5388138
+DEBUG:keepa_deals.stable_products:Tracking since result for ASIN B0036CEY4W: 2021-03-30
+DEBUG:keepa_deals.stable_products:categories_root result for ASIN B0036CEY4W: {'Categories - Root': 'Books'}
+DEBUG:keepa_deals.stable_products:categories_sub result for ASIN B0036CEY4W: {'Categories - Sub': '-'}
+DEBUG:keepa_deals.stable_products:categories_tree result for ASIN B0036CEY4W: {'Categories - Tree': 'Books > Subjects'}
+DEBUG:keepa_deals.stable_products:get_asin result for ASIN B0036CEY4W: {'ASIN': 'B0036CEY4W'}
+DEBUG:keepa_deals.stable_products:manufacturer result for ASIN B0036CEY4W: {'Manufacturer': 'The World Publishing Company'}
+DEBUG:keepa_deals.stable_products:get_brand result for ASIN B0036CEY4W: {'Brand': '-'}
+DEBUG:keepa_deals.stable_products:author result for ASIN B0036CEY4W: {'Author': 'Fisher, M. F. K.'}
+DEBUG:keepa_deals.stable_products:binding result for ASIN B0036CEY4W: {'Binding': 'Hardcover'}
+INFO:keepa_deals.stable_deals:ASIN: B0036CEY4W - Found lowest priced offer at $4.00 with condition: Used, acceptable (5)
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Attempting to get and standardize publication date.
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: Parsed date '1954' to standard format '2000-01-02'.
+DEBUG:keepa_deals.stable_products:Listed since - raw ts=-485228 for ASIN B0036CEY4W
+INFO:keepa_deals.stable_products:No valid listedSince (ts=-485228) for ASIN B0036CEY4W
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, stats[current]=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, value=4929819
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, stats[avg30]=[-1, -1, 7894, 4621670, 600, 4400, -1, -1, -1, -1, -1, -1, 7, -1, 2, -1, 50, 2, -1, 37147, 7897, 7897, 7897, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7897, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, value=4621670
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, stats[avg90]=[-1, -1, 7666, 3759981, 600, 4400, -1, -1, -1, -1, -1, -1, 7, -1, 2, -1, 50, 2, -1, 37147, 7898, 7555, 7481, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7554, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, value=3759981
+DEBUG:keepa_deals.stable_products:Sales Rank - 90 days avg. for ASIN B0036CEY4W: {'Sales Rank - 90 days avg.': '3,759,981'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, stats[avg180]=[-1, -1, 7013, 3927089, 600, 6791, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37274, 7898, 9634, 7481, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 9967, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, value=3927089
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, stats[avg365]=[-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, value=3561181
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days - raw value=0 for ASIN B0036CEY4W
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days result for ASIN B0036CEY4W: 0
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days - raw value=4 for ASIN B0036CEY4W
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days result for ASIN B0036CEY4W: 4
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN B0036CEY4W - Attempting to use 'buyBoxPrice' field. Raw value: -1
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN B0036CEY4W - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN B0036CEY4W - Fallback: buyBoxSellerId='None', buyBoxCondition='1'
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN B0036CEY4W - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN B0036CEY4W - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+WARNING:keepa_deals.stable_products:No valid Amazon - Current price for ASIN B0036CEY4W
+DEBUG:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN B0036CEY4W: Attempting to use stats.avg365[0].
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.avg365[0]: -1
+WARNING:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN B0036CEY4W: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:New - Current - raw value=-1, current array=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'] for ASIN B0036CEY4W
+WARNING:keepa_deals.stable_products:No valid New - Current (value=-1, current_length=34) for ASIN B0036CEY4W
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN B0036CEY4W: Attempting to use stats.current[10]. current_array length: 34
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.current[10]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN B0036CEY4W: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - new_3rd_party_fba_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - new_3rd_party_fba_lowest: stats.min raw: [None, None, [7875076, 1], [6209204, 202467], [6479964, 600], [7244978, 3759], None, None, None, None, None, None, [5561684, 2], None, [5507758, 1], None, [6486328, 50], [6486328, 1], None, [7700320, 37147], [7524716, 4799], [6486328, 749], [6775186, 1824], None, [5507758, 12999], [7244978, 3759], None, None, None, None, None, None, [6486328, 749], None]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - new_3rd_party_fba_lowest: stats.min[10] pair: None
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Lowest for ASIN B0036CEY4W: stats.min[10] is not a valid pair: None
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN B0036CEY4W: Attempting to use stats.current[7]. current_array: [-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.current[7]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN B0036CEY4W: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+INFO:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN B0036CEY4W: Final result: -, Source: stats.current[7] (invalid value)
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - new_3rd_party_fbm_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:Buy Box Used - Current for ASIN B0036CEY4W: Starting process. Relevant stats keys: buyBoxUsedIsFBA, buyBoxUsedPrice, buyBoxUsedShipping.
+INFO:keepa_deals.stable_products:Buy Box Used - Current for ASIN B0036CEY4W: Price found via primary logic. FBM item price: 7895 + shipping: 0 = 7895. Formatted: $78.95
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - buy_box_used_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.avg365[32]: 8647
+INFO:keepa_deals.stable_products:Buy Box Used - 365 days avg. for ASIN B0036CEY4W: Using stats.avg365[32], value: $86.47
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, stats[current]=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, value=1
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, stats[avg365]=[-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, value=6369
+DEBUG:keepa_deals.stable_products:used_365_days_avg result for ASIN B0036CEY4W: {'Used - 365 days avg.': '$63.69'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, stats[current]=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, value=37147
+DEBUG:keepa_deals.stable_products:used_like_new for ASIN B0036CEY4W: stats.current=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1], current_price=$371.47
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - used_like_new_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.avg365[19] for Used, like new: 37667
+INFO:keepa_deals.stable_products:Used, like new - 365 days avg. for ASIN B0036CEY4W: Using stats.avg365[19], value: $376.67
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, stats[current]=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, value=7895
+DEBUG:keepa_deals.stable_products:Used, very good - Current for ASIN B0036CEY4W: Using stats.current[20], result: $78.95
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - used_very_good_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.avg365[20] for Used, very good: 8184
+INFO:keepa_deals.stable_products:Used, very good - 365 days avg. for ASIN B0036CEY4W: Using stats.avg365[20], value: $81.84
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, stats[current]=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, value=7895
+DEBUG:keepa_deals.stable_products:Used, good - Current for ASIN B0036CEY4W: Using stats.current[21], result: $78.95
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - used_good_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.avg365[21] for Used, good: 7980
+INFO:keepa_deals.stable_products:Used, good - 365 days avg. for ASIN B0036CEY4W: Using stats.avg365[21], value: $79.80
+DEBUG:keepa_deals.stable_products:Used, acceptable - Current result for ASIN B0036CEY4W: $78.95
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W - used_acceptable_365_days_avg: stats.avg365 raw: [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Raw value at stats.avg365[22] for Used, acceptable: 7503
+INFO:keepa_deals.stable_products:Used, acceptable - 365 days avg. for ASIN B0036CEY4W: Using stats.avg365[22], value: $75.03
+DEBUG:keepa_deals.stable_products:List Price - Current - raw value=600, current array=[-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'], stats_raw={'atIntervalStart': [-1, -1, 7195, 2491250, 600, 12500, -1, -1, -1, -1, -1, -1, 5, -1, 2, 7, 50, 2, -1, 38049, 7899, -1, 7594, -1, 13099, 4319, -1, -1, -1, -1, -1, -1, 7594, -1], 'avg': [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1], 'avg180': [-1, -1, 7013, 3927089, 600, 6791, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37274, 7898, 9634, 7481, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 9967, -1], 'avg30': [-1, -1, 7894, 4621670, 600, 4400, -1, -1, -1, -1, -1, -1, 7, -1, 2, -1, 50, 2, -1, 37147, 7897, 7897, 7897, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7897, -1], 'avg365': [-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1], 'avg90': [-1, -1, 7666, 3759981, 600, 4400, -1, -1, -1, -1, -1, -1, 7, -1, 2, -1, 50, 2, -1, 37147, 7898, 7555, 7481, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7554, -1], 'buyBoxAvailabilityMessage': None, 'buyBoxCondition': None, 'buyBoxIsAmazon': False, 'buyBoxIsBackorder': None, 'buyBoxIsFBA': False, 'buyBoxIsFreeShippingEligible': None, 'buyBoxIsMAP': False, 'buyBoxIsPreorder': False, 'buyBoxIsPrimeEligible': None, 'buyBoxIsPrimeExclusive': None, 'buyBoxIsPrimePantry': None, 'buyBoxIsShippable': True, 'buyBoxIsUnqualified': False, 'buyBoxIsUsed': True, 'buyBoxIsWarehouseDeal': None, 'buyBoxMaxOrderQuantity': None, 'buyBoxMinOrderQuantity': None, 'buyBoxPrice': -1, 'buyBoxSellerId': None, 'buyBoxShipping': -1, 'buyBoxShippingCountry': None, 'buyBoxUsedCondition': 3, 'buyBoxUsedIsFBA': False, 'buyBoxUsedPrice': 7895, 'buyBoxUsedSellerId': 'A1ZMSWN8P7M5C4', 'buyBoxUsedShipping': 0, 'buyBoxUsedStats': {'APWQGEYHQK7H3': {'avgNewOfferCount': -1, 'avgPrice': 7369, 'avgUsedOfferCount': 5, 'condition': 4, 'isFBA': False, 'lastSeen': 7752400, 'percentageWon': 36.337135}, 'A3T5I6XR2EZCRX': {'avgNewOfferCount': -1, 'avgPrice': 4994, 'avgUsedOfferCount': 6, 'condition': 4, 'isFBA': False, 'lastSeen': 7573238, 'percentageWon': 16.356544}, 'A3HYXX39IME1IR': {'avgNewOfferCount': -1, 'avgPrice': 7594, 'avgUsedOfferCount': 5, 'condition': 5, 'isFBA': False, 'lastSeen': 7398970, 'percentageWon': 9.412862}, 'A1QJ4UH6FW3UH1': {'avgNewOfferCount': -1, 'avgPrice': 7081, 'avgUsedOfferCount': 6, 'condition': 5, 'isFBA': False, 'lastSeen': 7799960, 'percentageWon': 9.048706}, 'A1ZMSWN8P7M5C4': {'avgNewOfferCount': -1, 'avgPrice': 7897, 'avgUsedOfferCount': 8, 'condition': 3, 'isFBA': False, 'lastSeen': 7875096, 'percentageWon': 8.704719}, 'A2QVWT0ESGUXPH': {'avgNewOfferCount': -1, 'avgPrice': 7898, 'avgUsedOfferCount': 6, 'condition': 4, 'isFBA': False, 'lastSeen': 7829344, 'percentageWon': 5.5905633}, 'ANKJ1HIJYFVVM': {'avgNewOfferCount': -1, 'avgPrice': 31488, 'avgUsedOfferCount': 5, 'condition': 4, 'isFBA': False, 'lastSeen': 7649796, 'percentageWon': 4.678843}, 'AH93CDDK0NESB': {'avgNewOfferCount': -1, 'avgPrice': 15544, 'avgUsedOfferCount': 4, 'condition': 3, 'isFBA': False, 'lastSeen': 7442892, 'percentageWon': 4.17656}}, 'current': [-1, -1, 1, 4929819, 600, 4400, -1, -1, -1, -1, -1, -1, 8, -1, 2, 10, 50, 2, -1, 37147, 7895, 7895, 7895, -1, 13099, 4400, -1, -1, -1, -1, -1, -1, 7895, -1], 'deltaPercent90_monthlySold': None, 'isAddonItem': False, 'isLowest': [False, False, True, False, True, False, False, False, False, False, False, False, False, False, False, False, True, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False], 'isLowest90': [False, False, True, False, True, True, False, False, False, False, False, False, False, False, True, False, True, True, False, True, True, False, False, False, True, True, False, False, False, False, False, False, False, False], 'lastBuyBoxUpdate': 7875076, 'lastOffersUpdate': 7875076, 'lightningDealInfo': None, 'max': [None, None, [5561684, 21500], [5561684, 6732539], [6130516, 5000], [5507758, 12500], None, None, None, None, None, None, [6978084, 8], None, [7291808, 4], None, [6486328, 50], [7220976, 2], None, [6166280, 40049], [5507758, 22049], [6804544, 40049], [5739420, 22049], None, [5669912, 13099], [7700320, 4400], None, None, None, None, None, None, [7625204, 31488], None], 'maxInInterval': [None, None, [7357030, 14995], [7768738, 5059032], [7349496, 600], [7349496, 12500], None, None, None, None, None, None, [7814264, 8], None, [7714468, 3], None, [6486328, 50], [7349496, 2], None, [7625204, 38149], [7351076, 15544], [7625204, 31488], [7829344, 7898], None, [7349496, 13099], [7700320, 4400], None, None, None, None, None, None, [7625204, 31488], None], 'min': [None, None, [7875076, 1], [6209204, 202467], [6479964, 600], [7244978, 3759], None, None, None, None, None, None, [5561684, 2], None, [5507758, 1], None, [6486328, 50], [6486328, 1], None, [7700320, 37147], [7524716, 4799], [6486328, 749], [6775186, 1824], None, [5507758, 12999], [7244978, 3759], None, None, None, None, None, None, [6486328, 749], None], 'minInInterval': [None, None, [7875076, 1], [7357900, 281147], [7349496, 600], [7692432, 4400], None, None, None, None, None, None, [7357030, 3], None, [7351076, 1], None, [6486328, 50], [7349496, 2], None, [7700320, 37147], [7524716, 4799], [7442892, 4994], [7752400, 7081], None, [7349496, 13099], [7349496, 4319], None, None, None, None, None, None, [7487268, 4994], None], 'offerCountFBA': 0, 'offerCountFBM': 0, 'outOfStockCountAmazon30': 1, 'outOfStockCountAmazon90': 1, 'outOfStockPercentage180': [100, 100, 0, -1, 6, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 64, -1, 0, 33, -1, -1, -1, -1, -1, -1, 12, -1], 'outOfStockPercentage30': [100, 100, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentage365': [100, 100, 0, -1, 13, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 14, 78, -1, 0, 67, -1, -1, -1, -1, -1, -1, 11, -1], 'outOfStockPercentage90': [100, 100, 0, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 28, -1, 0, 0, -1, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentageInInterval': [100, 100, 0, -1, 13, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 14, 78, -1, 0, 67, -1, -1, -1, -1, -1, -1, 11, -1], 'retrievedOfferCount': -2, 'salesRankDrops180': 1, 'salesRankDrops30': 0, 'salesRankDrops365': 4, 'salesRankDrops90': 1, 'sellerIdsLowestFBA': None, 'sellerIdsLowestFBM': None, 'totalOfferCount': 10, 'tradeInPrice': -1} for ASIN B0036CEY4W
+DEBUG:keepa_deals.stable_products:List Price - Current result for ASIN B0036CEY4W: $6.00
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Calculating New Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: offerCountFBA = 0, offerCountFBM = 0
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, stats[avg365]=[-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, value=-1
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: New Offer Count - 365 days avg. from stats.avg365[11]: -
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: Calculating Used Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN B0036CEY4W: totalOfferCount = 10, offerCountFBA_new = 0, offerCountFBM_new = 0
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: Used Offer Count - Current calculated as 10 (Total: 10, New FBA: 0, New FBM: 0).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, stats[avg365]=[-1, -1, 6369, 3561181, 600, 9684, -1, -1, -1, -1, -1, -1, 6, -1, 1, -1, 50, 2, -1, 37667, 8184, 7980, 7503, -1, 13099, 4399, -1, -1, -1, -1, -1, -1, 8647, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, value=6
+INFO:keepa_deals.stable_products:ASIN B0036CEY4W: Used Offer Count - 365 days avg. from stats.avg365[12]: 6
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 59.87 hours after the 72-hour window for an offer drop at 2025-03-02 08:08:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 33.60 hours after the 72-hour window for an offer drop at 2025-08-08 14:16:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 28.60 hours after the 72-hour window for an offer drop at 2025-12-13 04:36:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Rejected 2 outlier(s) from inferred sales list using symmetrical IQR.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 7 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 59.87 hours after the 72-hour window for an offer drop at 2025-03-02 08:08:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 33.60 hours after the 72-hour window for an offer drop at 2025-08-08 14:16:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 28.60 hours after the 72-hour window for an offer drop at 2025-12-13 04:36:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Rejected 2 outlier(s) from inferred sales list using symmetrical IQR.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: No distinct mode found. Falling back to peak season median price: 75.00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Preparing for XAI check. Title='The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher', Category='Books > Subjects', Peak Season='Oct', Price='$75.00'
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'reasonableness:The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher|Books > Subjects|Oct|75.00'
+INFO:root:XAI Cache HIT for reasonableness. Found 'True' for title 'The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher'.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 59.87 hours after the 72-hour window for an offer drop at 2025-03-02 08:08:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 33.60 hours after the 72-hour window for an offer drop at 2025-08-08 14:16:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 28.60 hours after the 72-hour window for an offer drop at 2025-12-13 04:36:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Rejected 2 outlier(s) from inferred sales list using symmetrical IQR.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.business_calculations:Successfully loaded settings from /app/keepa_deals/../settings.json
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 59.87 hours after the 72-hour window for an offer drop at 2025-03-02 08:08:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 33.60 hours after the 72-hour window for an offer drop at 2025-08-08 14:16:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 28.60 hours after the 72-hour window for an offer drop at 2025-12-13 04:36:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Rejected 2 outlier(s) from inferred sales list using symmetrical IQR.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: No distinct mode found. Falling back to peak season median price: 75.00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Preparing for XAI check. Title='The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher', Category='Books > Subjects', Peak Season='Oct', Price='$75.00'
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'reasonableness:The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher|Books > Subjects|Oct|75.00'
+INFO:root:XAI Cache HIT for reasonableness. Found 'True' for title 'The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher'.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.business_calculations:Referral Fee: List At Price (75.00) * 0.15 = 11.26
+DEBUG:keepa_deals.business_calculations:Total AMZ Fees: Referral Fee (11.26) + FBA Fee (6.10) = 17.36
+INFO:keepa_deals.business_calculations:Cost settings: Prep=$2.75, Tax=5%, Exempt=False, Est. Ship=$3.99
+INFO:keepa_deals.business_calculations:All-in Cost Breakdown: Now Price (4.00) + Tax (0.20) + Prep (2.75) + AMZ Fees (17.36) + Added Ship (3.99) = 28.30
+DEBUG:keepa_deals.business_calculations:Profit/Margin: (Peak 75.00 - Cost 28.30) = Profit 46.70, Margin 62.27%
+INFO:keepa_deals.business_calculations:Min Listing Price Calculation: All-in Cost (28.30) / (1 - Markup 10%) = Min Price (31.44)
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 59.87 hours after the 72-hour window for an offer drop at 2025-03-02 08:08:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 33.60 hours after the 72-hour window for an offer drop at 2025-08-08 14:16:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 28.60 hours after the 72-hour window for an offer drop at 2025-12-13 04:36:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Rejected 2 outlier(s) from inferred sales list using symmetrical IQR.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 7 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 59.87 hours after the 72-hour window for an offer drop at 2025-03-02 08:08:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 33.60 hours after the 72-hour window for an offer drop at 2025-08-08 14:16:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Near Miss - A rank drop occurred 28.60 hours after the 72-hour window for an offer drop at 2025-12-13 04:36:00.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Rejected 2 outlier(s) from inferred sales list using symmetrical IQR.
+INFO:keepa_deals.stable_calculations:ASIN B0036CEY4W: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.seasonality_classifier:Heuristics resulted in 'Year-round' for 'The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher'. Querying XAI with sales data for refinement.
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'seasonality:The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher|Books, Subjects|The World Publishing Company'
+INFO:keepa_deals.seasonality_classifier:XAI Cache HIT for seasonality. Found classification 'Year-round' for title 'The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher'.
+INFO:__main__:SUCCESS: Generated deal for B0036CEY4W
+INFO:__main__:List at: $75.00
+INFO:__main__:
+
+--- Processing ASIN: B0038FT2C6 ---
+INFO:keepa_deals.seller_info:ASIN B0038FT2C6: Found lowest-priced seller: A37VPWQ1MEZEBV. Fetching their data.
+INFO:keepa_deals.token_manager:Rate limit: Pausing for 49.40 seconds.
+DEBUG:keepa_deals.token_manager:Refilled 5.00 tokens. Current tokens: -14.00
+WARNING:keepa_deals.token_manager:Zero or negative tokens. Have: -14.00. Waiting for 180 seconds to ensure a positive balance.
+DEBUG:keepa_deals.token_manager:Refilled 15.00 tokens. Current tokens: 1.00
+INFO:keepa_deals.token_manager:Permission granted for API call. Estimated cost: 1. Current tokens: 1.00
+INFO:keepa_deals.keepa_api:Fetching data for batch of 1 sellers
+INFO:keepa_deals.keepa_api:Seller API call successful. Tokens consumed: 1. Tokens left: 0
+INFO:keepa_deals.token_manager:Token count authoritatively synced from API response. Previous estimate: 1.00, New value: 0.00
+DEBUG:keepa_deals.stable_products:percent_down_90 input: B0038FT2C6
+DEBUG:keepa_deals.stable_products:percent_down_90 result: 90%
+INFO:root:ASIN B0038FT2C6: Percent Down 365 calculated. Current: 0.49, Avg365: 2.24, Diff: 78.12%, Result: 78%
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Checking for shipping included in Used - Current offer.
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: Found buyBoxUsedShipping to be 0, shipping is included.
+DEBUG:keepa_deals.stable_deals:Deal found - raw ts=7875072
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - KEEPA_EPOCH.tzinfo: None
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - dt (naive UTC from Keepa): 2025-12-21T19:12:00
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - utc_dt (aware UTC): 2025-12-21T19:12:00+00:00
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - TORONTO_TZ object: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - toronto_dt (converted to Toronto): 2025-12-21T14:12:00-05:00
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - toronto_dt.tzinfo: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (deal_found) - toronto_dt.utcoffset(): -1 day, 19:00:00
+DEBUG:keepa_deals.stable_products:amz_link result for ASIN B0038FT2C6: {'AMZ link': 'https://www.amazon.com/dp/B0038FT2C6?psc=1&aod=1'}
+DEBUG:keepa_deals.stable_products:keepa_link result for ASIN B0038FT2C6: {'Keepa Link': 'https://keepa.com/#!product/1-B0038FT2C6'}
+DEBUG:keepa_deals.stable_products:get_title result for ASIN B0038FT2C6: Ben-Hur a Tale of the Christ (Copyright NOT STATED
+WARNING:keepa_deals.processing:ASIN B0038FT2C6: Error extracting last update: last_update() missing 1 required positional argument: 'logger_param'
+INFO:keepa_deals.stable_deals:ASIN: B0038FT2C6 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Checking deal_object.currentSince for used item timestamps using base indices: [2, 19, 20, 21, 22]
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Found deal_object.currentSince timestamp for used index 2: 7875072
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Found deal_object.currentSince timestamp for used index 19: 7875072
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Found deal_object.currentSince timestamp for used index 20: 7875072
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Found deal_object.currentSince timestamp for used index 21: 7875072
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Found deal_object.currentSince timestamp for used index 22: 7875072
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Buy Box is not Used (deal_object.current[14]=3) or current array too short. Skipping Used Buy Box timestamp check.
+INFO:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Using deal_object.currentSince for last used price change. Max timestamp: 7875072. All considered: [7875072, 7875072, 7875072, 7875072, 7875072]
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - last used price change - selected raw ts=7875072 from deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box)
+DEBUG:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Timezone Debug (last_price_change) - dt (naive UTC): 2025-12-21T19:12:00, utc_dt (aware UTC): 2025-12-21T19:12:00+00:00, toronto_dt: 2025-12-21T14:12:00-05:00
+INFO:keepa_deals.stable_deals:ASIN: B0038FT2C6 - last price change (focused on used) result: 2025-12-21 14:12:00 (from ts 7875072 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Attempting to get FBA Pick&Pack Fee. Raw 'fbaFees' dict: {'lastUpdate': 7875072, 'pickAndPackFee': 568}
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: FBA Pick&Pack Fee found: $5.68 (from raw 568)
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Attempting to get Referral Fee Percentage.
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Found precise referralFeePercentage directly: 15.0
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+DEBUG:keepa_deals.stable_products:Tracking since - raw ts=3347648
+DEBUG:keepa_deals.stable_products:Tracking since result for ASIN B0038FT2C6: 2017-05-13
+DEBUG:keepa_deals.stable_products:categories_root result for ASIN B0038FT2C6: {'Categories - Root': 'Books'}
+DEBUG:keepa_deals.stable_products:categories_sub result for ASIN B0038FT2C6: {'Categories - Sub': 'Literature & Fiction, Classics'}
+DEBUG:keepa_deals.stable_products:categories_tree result for ASIN B0038FT2C6: {'Categories - Tree': 'Books > Subjects > Literature & Fiction > Classics'}
+DEBUG:keepa_deals.stable_products:get_asin result for ASIN B0038FT2C6: {'ASIN': 'B0038FT2C6'}
+DEBUG:keepa_deals.stable_products:manufacturer result for ASIN B0038FT2C6: {'Manufacturer': "International Collector's Library"}
+DEBUG:keepa_deals.stable_products:get_brand result for ASIN B0038FT2C6: {'Brand': '-'}
+DEBUG:keepa_deals.stable_products:author result for ASIN B0038FT2C6: {'Author': 'Lew Wallace'}
+DEBUG:keepa_deals.stable_products:binding result for ASIN B0038FT2C6: {'Binding': 'hardcover'}
+INFO:keepa_deals.stable_deals:ASIN: B0038FT2C6 - Found lowest priced offer at $13.19 with condition: Used, good (4)
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Attempting to get and standardize publication date.
+WARNING:keepa_deals.stable_products:ASIN B0038FT2C6: Date value '0' (type: <class 'int'>) could not be parsed. Outputting '-'.
+DEBUG:keepa_deals.stable_products:Listed since - raw ts=-462086 for ASIN B0038FT2C6
+INFO:keepa_deals.stable_products:No valid listedSince (ts=-462086) for ASIN B0038FT2C6
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, stats[current]=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, value=5389507
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, stats[avg30]=[-1, 3000, 1129, 5223524, 0, 2200, -1, 3399, -1, -1, -1, 2, 14, -1, 2, -1, 43, 22, 4547, 1994, 1757, 1757, 5085, -1, 3199, 2200, -1, -1, -1, -1, -1, -1, 1757, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, value=5223524
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, stats[avg90]=[-1, 3000, 485, 5067265, 0, 2200, -1, 3399, -1, -1, -1, 2, 13, -1, 1, -1, 43, 21, 4817, 1994, 1915, 1915, 4809, -1, 3199, 2200, -1, -1, -1, -1, -1, -1, 1915, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, value=5067265
+DEBUG:keepa_deals.stable_products:Sales Rank - 90 days avg. for ASIN B0038FT2C6: {'Sales Rank - 90 days avg.': '5,067,265'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, stats[avg180]=[-1, 3000, 403, 4525284, 0, 2476, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 20, 4830, 2459, 1954, 1952, 4792, -1, 3199, 2586, -1, -1, -1, -1, -1, -1, 1953, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, value=4525284
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, stats[avg365]=[-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, value=4368036
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days - raw value=0 for ASIN B0038FT2C6
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days result for ASIN B0038FT2C6: 0
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days - raw value=3 for ASIN B0038FT2C6
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days result for ASIN B0038FT2C6: 3
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN B0038FT2C6 - Attempting to use 'buyBoxPrice' field. Raw value: -1
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN B0038FT2C6 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN B0038FT2C6 - Fallback: buyBoxSellerId='None', buyBoxCondition='1'
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN B0038FT2C6 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN B0038FT2C6 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+WARNING:keepa_deals.stable_products:No valid Amazon - Current price for ASIN B0038FT2C6
+DEBUG:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN B0038FT2C6: Attempting to use stats.avg365[0].
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.avg365[0]: -1
+WARNING:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN B0038FT2C6: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:New - Current - raw value=3000, current array=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxStats', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'] for ASIN B0038FT2C6
+DEBUG:keepa_deals.stable_products:New - Current result for ASIN B0038FT2C6: $30.00
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN B0038FT2C6: Attempting to use stats.current[10]. current_array length: 34
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.current[10]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN B0038FT2C6: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - new_3rd_party_fba_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - new_3rd_party_fba_lowest: stats.min raw: [None, [6157910, 2900], [5985900, 49], [4336264, 137105], [7719388, 0], [4607720, 861], None, [6181200, 3399], None, None, None, [3360000, 1], [3573416, 5], None, [4238260, 1], None, [4567372, 41], [3923468, 1], [6315644, 3299], [4093860, 1587], [4433368, 599], [4319636, 599], [4433368, 548], [4714228, 1375], [4319636, 2894], [6438760, 1417], [4567372, 1764], None, None, None, None, None, [6852474, 1001], None]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - new_3rd_party_fba_lowest: stats.min[10] pair: None
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Lowest for ASIN B0038FT2C6: stats.min[10] is not a valid pair: None
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN B0038FT2C6: Attempting to use stats.current[7]. current_array: [-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.current[7]: 3399
+INFO:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN B0038FT2C6: Using stats.current[7], value: $33.99
+INFO:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN B0038FT2C6: Final result: $33.99, Source: stats.current[7]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - new_3rd_party_fbm_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: New, 3rd Party FBM - 365 days avg. found: $33.99 from stats.avg365[7]
+DEBUG:keepa_deals.stable_products:Buy Box Used - Current for ASIN B0038FT2C6: Starting process. Relevant stats keys: buyBoxUsedIsFBA, buyBoxUsedPrice, buyBoxUsedShipping.
+INFO:keepa_deals.stable_products:Buy Box Used - Current for ASIN B0038FT2C6: Price found via primary logic. FBA item price: 1591. Formatted: $15.91
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - buy_box_used_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.avg365[32]: 1728
+INFO:keepa_deals.stable_products:Buy Box Used - 365 days avg. for ASIN B0038FT2C6: Using stats.avg365[32], value: $17.28
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, stats[current]=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, value=49
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, stats[avg365]=[-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, value=224
+DEBUG:keepa_deals.stable_products:used_365_days_avg result for ASIN B0038FT2C6: {'Used - 365 days avg.': '$2.24'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, stats[current]=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, value=1591
+DEBUG:keepa_deals.stable_products:used_like_new for ASIN B0038FT2C6: stats.current=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1], current_price=$15.91
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - used_like_new_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.avg365[19] for Used, like new: 3530
+INFO:keepa_deals.stable_products:Used, like new - 365 days avg. for ASIN B0038FT2C6: Using stats.avg365[19], value: $35.30
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, stats[current]=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, value=1512
+DEBUG:keepa_deals.stable_products:Used, very good - Current for ASIN B0038FT2C6: Using stats.current[20], result: $15.12
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - used_very_good_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.avg365[20] for Used, very good: 3533
+INFO:keepa_deals.stable_products:Used, very good - 365 days avg. for ASIN B0038FT2C6: Using stats.avg365[20], value: $35.33
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, stats[current]=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, value=1511
+DEBUG:keepa_deals.stable_products:Used, good - Current for ASIN B0038FT2C6: Using stats.current[21], result: $15.11
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - used_good_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.avg365[21] for Used, good: 1728
+INFO:keepa_deals.stable_products:Used, good - 365 days avg. for ASIN B0038FT2C6: Using stats.avg365[21], value: $17.28
+DEBUG:keepa_deals.stable_products:Used, acceptable - Current result for ASIN B0038FT2C6: $53.64
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6 - used_acceptable_365_days_avg: stats.avg365 raw: [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Raw value at stats.avg365[22] for Used, acceptable: 4825
+INFO:keepa_deals.stable_products:Used, acceptable - 365 days avg. for ASIN B0038FT2C6: Using stats.avg365[22], value: $48.25
+DEBUG:keepa_deals.stable_products:List Price - Current - raw value=0, current array=[-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxStats', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'], stats_raw={'atIntervalStart': [-1, 3000, 49, 3421085, -1, 3311, -1, 3399, -1, -1, -1, 2, 14, -1, 2, 21, 45, 28, -1, 3002, 4872, 1348, 1348, -1, 3311, -1, -1, -1, -1, -1, -1, -1, 1348, -1], 'avg': [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1], 'avg180': [-1, 3000, 403, 4525284, 0, 2476, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 20, 4830, 2459, 1954, 1952, 4792, -1, 3199, 2586, -1, -1, -1, -1, -1, -1, 1953, -1], 'avg30': [-1, 3000, 1129, 5223524, 0, 2200, -1, 3399, -1, -1, -1, 2, 14, -1, 2, -1, 43, 22, 4547, 1994, 1757, 1757, 5085, -1, 3199, 2200, -1, -1, -1, -1, -1, -1, 1757, -1], 'avg365': [-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1], 'avg90': [-1, 3000, 485, 5067265, 0, 2200, -1, 3399, -1, -1, -1, 2, 13, -1, 1, -1, 43, 21, 4817, 1994, 1915, 1915, 4809, -1, 3199, 2200, -1, -1, -1, -1, -1, -1, 1915, -1], 'buyBoxAvailabilityMessage': None, 'buyBoxCondition': None, 'buyBoxIsAmazon': False, 'buyBoxIsBackorder': None, 'buyBoxIsFBA': False, 'buyBoxIsFreeShippingEligible': None, 'buyBoxIsMAP': False, 'buyBoxIsPreorder': False, 'buyBoxIsPrimeEligible': None, 'buyBoxIsPrimeExclusive': None, 'buyBoxIsPrimePantry': None, 'buyBoxIsShippable': True, 'buyBoxIsUnqualified': False, 'buyBoxIsUsed': True, 'buyBoxIsWarehouseDeal': None, 'buyBoxMaxOrderQuantity': None, 'buyBoxMinOrderQuantity': None, 'buyBoxPrice': -1, 'buyBoxSellerId': None, 'buyBoxShipping': -1, 'buyBoxShippingCountry': None, 'buyBoxStats': {'ALUB2P7JMP494': {'avgNewOfferCount': 2, 'avgPrice': 4872, 'avgUsedOfferCount': 11, 'isFBA': False, 'lastSeen': 7843952, 'percentageWon': 34.83942}, 'A2HN6B2YQ75EHK': {'avgNewOfferCount': 2, 'avgPrice': 4672, 'avgUsedOfferCount': 10, 'isFBA': False, 'lastSeen': 7621604, 'percentageWon': 0.8835617}, 'A1L78P73MMF7VG': {'avgNewOfferCount': 2, 'avgPrice': 3399, 'avgUsedOfferCount': 15, 'isFBA': False, 'lastSeen': 7856486, 'percentageWon': 0.6472603}}, 'buyBoxUsedCondition': 2, 'buyBoxUsedIsFBA': True, 'buyBoxUsedPrice': 1591, 'buyBoxUsedSellerId': 'APL2ARWUGF8FJ', 'buyBoxUsedShipping': 0, 'buyBoxUsedStats': {'ADA4TVZMALFG4': {'avgNewOfferCount': 2, 'avgPrice': 1759, 'avgUsedOfferCount': 12, 'condition': 3, 'isFBA': False, 'lastSeen': 7875072, 'percentageWon': 59.354645}, 'APL2ARWUGF8FJ': {'avgNewOfferCount': 2, 'avgPrice': 1994, 'avgUsedOfferCount': 12, 'condition': 2, 'isFBA': True, 'lastSeen': 7875096, 'percentageWon': 20.386986}, 'A1QJ4UH6FW3UH1': {'avgNewOfferCount': 2, 'avgPrice': 1348, 'avgUsedOfferCount': 14, 'condition': 4, 'isFBA': False, 'lastSeen': 7418872, 'percentageWon': 13.19939}, 'A37VPWQ1MEZEBV': {'avgNewOfferCount': 2, 'avgPrice': 1319, 'avgUsedOfferCount': 10, 'condition': 4, 'isFBA': False, 'lastSeen': 7527380, 'percentageWon': 5.136225}, 'A1BDCR6K3RX0ED': {'avgNewOfferCount': 2, 'avgPrice': 1656, 'avgUsedOfferCount': 14, 'condition': 3, 'isFBA': False, 'lastSeen': 7857572, 'percentageWon': 1.922755}}, 'current': [-1, 3000, 49, 5389507, 0, 2200, -1, 3399, -1, -1, -1, 2, 15, -1, 3, -19, 43, 24, -1, 1591, 1512, 1511, 5364, -1, 3200, 2200, -1, -1, -1, -1, -1, -1, 1591, -1], 'deltaPercent90_monthlySold': None, 'isAddonItem': False, 'isLowest': [False, False, True, False, True, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False], 'isLowest90': [False, True, True, False, True, True, False, True, False, False, False, True, False, False, False, False, True, False, False, True, True, True, False, False, True, True, False, False, False, False, False, False, True, False], 'lastBuyBoxUpdate': 7875072, 'lastOffersUpdate': 7875072, 'lightningDealInfo': None, 'max': [None, [3360000, 14940], [3783928, 2079], [6950786, 7912444], [7719388, 0], [7543430, 4495], None, [5414888, 5394], None, None, None, [6663696, 5], [4567372, 20], None, [5613844, 4], None, [3923468, 50], [4093860, 2736], [5685096, 5494], [7527380, 6394], [7357312, 5485], [7548428, 1998], [7875072, 5364], [4567372, 2138], [5923606, 4813], [7476356, 4495], [4319636, 2899], None, None, None, None, None, [7548428, 1998], None], 'maxInInterval': [None, [7349496, 3000], [7725488, 1995], [7429276, 5869318], [7719388, 0], [7543430, 4495], None, [7349496, 3399], None, None, None, [7418872, 4], [7418872, 15], None, [7500384, 3], None, [7476356, 46], [7349496, 28], [7557504, 4872], [7527380, 6394], [7357312, 5485], [7548428, 1998], [7875072, 5364], [-1, -1], [7349496, 3311], [7476356, 4495], [-1, -1], None, None, None, None, None, [7548428, 1998], None], 'min': [None, [6157910, 2900], [5985900, 49], [4336264, 137105], [7719388, 0], [4607720, 861], None, [6181200, 3399], None, None, None, [3360000, 1], [3573416, 5], None, [4238260, 1], None, [4567372, 41], [3923468, 1], [6315644, 3299], [4093860, 1587], [4433368, 599], [4319636, 599], [4433368, 548], [4714228, 1375], [4319636, 2894], [6438760, 1417], [4567372, 1764], None, None, None, None, None, [6852474, 1001], None], 'minInInterval': [None, [7349496, 3000], [7349496, 49], [7527380, 823914], [7719388, 0], [7647152, 2200], None, [7349496, 3399], None, None, None, [7349496, 2], [7557504, 9], None, [7418872, 1], None, [7500384, 43], [7527380, 20], [7853084, 3399], [7875072, 1591], [7875072, 1512], [7500384, 1319], [7349496, 1348], [-1, -1], [7847466, 3200], [7659600, 2200], [-1, -1], None, None, None, None, None, [7500384, 1319], None], 'offerCountFBA': 0, 'offerCountFBM': 2, 'outOfStockCountAmazon30': 1, 'outOfStockCountAmazon90': 1, 'outOfStockPercentage180': [100, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 45, 33, 0, 0, 0, 100, 90, 0, 100, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentage30': [100, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 65, 0, 0, 0, 0, 100, 37, 0, 100, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentage365': [100, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 64, 26, 0, 0, 0, 100, 57, 25, 100, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentage90': [100, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 30, 0, 0, 0, 0, 100, 79, 0, 100, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentageInInterval': [100, 0, 0, -1, 0, 0, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 64, 26, 0, 0, 0, 100, 57, 25, 100, -1, -1, -1, -1, -1, 0, -1], 'retrievedOfferCount': -2, 'salesRankDrops180': 1, 'salesRankDrops30': 0, 'salesRankDrops365': 3, 'salesRankDrops90': 0, 'sellerIdsLowestFBA': None, 'sellerIdsLowestFBM': ['A1L78P73MMF7VG'], 'totalOfferCount': 20, 'tradeInPrice': -1} for ASIN B0038FT2C6
+WARNING:keepa_deals.stable_products:No valid List Price - Current (value=0, current_length=34) for ASIN B0038FT2C6
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Calculating New Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: offerCountFBA = 0, offerCountFBM = 2
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: New Offer Count - Current calculated as 2 (FBA: 0, FBM: 2).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, stats[avg365]=[-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, value=2
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: New Offer Count - 365 days avg. from stats.avg365[11]: 2
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: Calculating Used Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN B0038FT2C6: totalOfferCount = 20, offerCountFBA_new = 0, offerCountFBM_new = 2
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: Used Offer Count - Current calculated as 18 (Total: 20, New FBA: 0, New FBM: 2).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, stats[avg365]=[-1, 3000, 224, 4368036, 0, 3057, -1, 3399, -1, -1, -1, 2, 12, -1, 1, -1, 43, 22, 4840, 3530, 3533, 1728, 4825, -1, 3297, 3166, -1, -1, -1, -1, -1, -1, 1728, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, value=12
+INFO:keepa_deals.stable_products:ASIN B0038FT2C6: Used Offer Count - 365 days avg. from stats.avg365[12]: 12
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 16 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 7 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 16 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: No distinct mode found. Falling back to peak season median price: 24.91.
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Preparing for XAI check. Title='Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library', Category='Books > Subjects > Literature & Fiction > Classics', Peak Season='Jun', Price='$24.91'
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'reasonableness:Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library|Books > Subjects > Literature & Fiction > Classics|Jun|24.91'
+INFO:root:XAI Cache HIT for reasonableness. Found 'True' for title 'Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library'.
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 16 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.business_calculations:Successfully loaded settings from /app/keepa_deals/../settings.json
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 16 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: No distinct mode found. Falling back to peak season median price: 24.91.
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Preparing for XAI check. Title='Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library', Category='Books > Subjects > Literature & Fiction > Classics', Peak Season='Jun', Price='$24.91'
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'reasonableness:Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library|Books > Subjects > Literature & Fiction > Classics|Jun|24.91'
+INFO:root:XAI Cache HIT for reasonableness. Found 'True' for title 'Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library'.
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.business_calculations:Referral Fee: List At Price (24.91) * 0.15 = 3.74
+DEBUG:keepa_deals.business_calculations:Total AMZ Fees: Referral Fee (3.74) + FBA Fee (5.68) = 9.42
+INFO:keepa_deals.business_calculations:Cost settings: Prep=$2.75, Tax=5%, Exempt=False, Est. Ship=$3.99
+INFO:keepa_deals.business_calculations:All-in Cost Breakdown: Now Price (13.19) + Tax (0.66) + Prep (2.75) + AMZ Fees (9.42) + Added Ship (3.99) = 30.01
+DEBUG:keepa_deals.business_calculations:Profit/Margin: (Peak 24.91 - Cost 30.01) = Profit -5.10, Margin -20.46%
+INFO:keepa_deals.business_calculations:Min Listing Price Calculation: All-in Cost (30.01) / (1 - Markup 10%) = Min Price (33.34)
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 16 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 7 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 16 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN B0038FT2C6: Found 7 sane sale events after outlier rejection.
+INFO:keepa_deals.seasonality_classifier:Heuristics resulted in 'Year-round' for 'Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library'. Querying XAI with sales data for refinement.
+DEBUG:keepa_deals.xai_cache:XAI Cache MISS for key: 'seasonality:Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library|Books, Subjects, Literature & Fiction, Classics|International Collector's Library'
+INFO:keepa_deals.xai_token_manager:XAI call permitted. Usage today: 56/1000
+INFO:keepa_deals.seasonality_classifier:XAI Seasonality Request for ASIN 'Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library' (Cache MISS):
+INFO:keepa_deals.seasonality_classifier:  - Peak: -, Trough: -
+INFO:httpx:HTTP Request: POST https://api.x.ai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:keepa_deals.seasonality_classifier:LLM classified 'Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library' as: Christmas
+DEBUG:keepa_deals.xai_cache:XAI Cache SET for key: 'seasonality:Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library|Books, Subjects, Literature & Fiction, Classics|International Collector's Library'
+INFO:__main__:SUCCESS: Generated deal for B0038FT2C6
+INFO:__main__:List at: $24.91
+INFO:__main__:
+
+--- Processing ASIN: 1850040168 ---
+INFO:keepa_deals.seller_info:ASIN 1850040168: Found lowest-priced seller: A3KWTGWP1OQ2IH. Fetching their data.
+INFO:keepa_deals.token_manager:Rate limit: Pausing for 45.88 seconds.
+DEBUG:keepa_deals.token_manager:Refilled 5.00 tokens. Current tokens: 5.00
+INFO:keepa_deals.token_manager:Permission granted for API call. Estimated cost: 1. Current tokens: 5.00
+INFO:keepa_deals.keepa_api:Fetching data for batch of 1 sellers
+INFO:keepa_deals.keepa_api:Seller API call successful. Tokens consumed: 1. Tokens left: 4
+INFO:keepa_deals.token_manager:Token count authoritatively synced from API response. Previous estimate: 5.00, New value: 4.00
+DEBUG:keepa_deals.stable_products:percent_down_90 input: 1850040168
+DEBUG:keepa_deals.stable_products:percent_down_90 result: 86%
+INFO:root:ASIN 1850040168: Percent Down 365 calculated. Current: 3.00, Avg365: 7.53, Diff: 60.16%, Result: 60%
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Checking for shipping included in Used - Current offer.
+INFO:keepa_deals.stable_products:ASIN 1850040168: No indication of free shipping found for Used - Current offer.
+DEBUG:keepa_deals.stable_deals:Deal found - raw ts=7874680
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - KEEPA_EPOCH.tzinfo: None
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - dt (naive UTC from Keepa): 2025-12-21T12:40:00
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - utc_dt (aware UTC): 2025-12-21T12:40:00+00:00
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - TORONTO_TZ object: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - toronto_dt (converted to Toronto): 2025-12-21T07:40:00-05:00
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - toronto_dt.tzinfo: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (deal_found) - toronto_dt.utcoffset(): -1 day, 19:00:00
+DEBUG:keepa_deals.stable_products:amz_link result for ASIN 1850040168: {'AMZ link': 'https://www.amazon.com/dp/1850040168?psc=1&aod=1'}
+DEBUG:keepa_deals.stable_products:keepa_link result for ASIN 1850040168: {'Keepa Link': 'https://keepa.com/#!product/1-1850040168'}
+DEBUG:keepa_deals.stable_products:get_title result for ASIN 1850040168: Art of Gentle Gardening
+WARNING:keepa_deals.processing:ASIN 1850040168: Error extracting last update: last_update() missing 1 required positional argument: 'logger_param'
+INFO:keepa_deals.stable_deals:ASIN: 1850040168 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Checking deal_object.currentSince for used item timestamps using base indices: [2, 19, 20, 21, 22]
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Found deal_object.currentSince timestamp for used index 2: 7874680
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Found deal_object.currentSince timestamp for used index 20: 7874680
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Found deal_object.currentSince timestamp for used index 21: 7757158
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Found deal_object.currentSince timestamp for used index 22: 7847604
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Buy Box is not Used (deal_object.current[14]=-1) or current array too short. Skipping Used Buy Box timestamp check.
+INFO:keepa_deals.stable_deals:ASIN: 1850040168 - Using deal_object.currentSince for last used price change. Max timestamp: 7874680. All considered: [7874680, 7874680, 7757158, 7847604]
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - last used price change - selected raw ts=7874680 from deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box)
+DEBUG:keepa_deals.stable_deals:ASIN: 1850040168 - Timezone Debug (last_price_change) - dt (naive UTC): 2025-12-21T12:40:00, utc_dt (aware UTC): 2025-12-21T12:40:00+00:00, toronto_dt: 2025-12-21T07:40:00-05:00
+INFO:keepa_deals.stable_deals:ASIN: 1850040168 - last price change (focused on used) result: 2025-12-21 07:40:00 (from ts 7874680 via deal_object.currentSince (max of 4 used item timestamps including potential Used Buy Box))
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Attempting to get FBA Pick&Pack Fee. Raw 'fbaFees' dict: {'lastUpdate': 7874680, 'pickAndPackFee': 353}
+INFO:keepa_deals.stable_products:ASIN 1850040168: FBA Pick&Pack Fee found: $3.53 (from raw 353)
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Attempting to get Referral Fee Percentage.
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Found precise referralFeePercentage directly: 15.0
+INFO:keepa_deals.stable_products:ASIN 1850040168: Referral Fee Percentage found (product_data.referralFeePercentage): 15.00% (from raw 15.0)
+DEBUG:keepa_deals.stable_products:Tracking since - raw ts=3150010
+DEBUG:keepa_deals.stable_products:Tracking since result for ASIN 1850040168: 2016-12-27
+DEBUG:keepa_deals.stable_products:categories_root result for ASIN 1850040168: {'Categories - Root': 'Books'}
+DEBUG:keepa_deals.stable_products:categories_sub result for ASIN 1850040168: {'Categories - Sub': 'Humor & Entertainment, Humor'}
+DEBUG:keepa_deals.stable_products:categories_tree result for ASIN 1850040168: {'Categories - Tree': 'Books > Subjects > Humor & Entertainment > Humor'}
+DEBUG:keepa_deals.stable_products:get_asin result for ASIN 1850040168: {'ASIN': '1850040168'}
+DEBUG:keepa_deals.stable_products:manufacturer result for ASIN 1850040168: {'Manufacturer': 'Breslich & Foss'}
+DEBUG:keepa_deals.stable_products:get_brand result for ASIN 1850040168: {'Brand': '-'}
+DEBUG:keepa_deals.stable_products:author result for ASIN 1850040168: {'Author': 'Sutherland, Douglas'}
+DEBUG:keepa_deals.stable_products:binding result for ASIN 1850040168: {'Binding': 'Hardcover'}
+INFO:keepa_deals.stable_deals:ASIN: 1850040168 - Found lowest priced offer at $10.99 with condition: Used, acceptable (5)
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Attempting to get and standardize publication date.
+INFO:keepa_deals.stable_products:ASIN 1850040168: Parsed date '1984' to standard format '2000-01-02'.
+DEBUG:keepa_deals.stable_products:Listed since - raw ts=-1476596 for ASIN 1850040168
+INFO:keepa_deals.stable_products:No valid listedSince (ts=-1476596) for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, stats[current]=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, value=8282007
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, stats[avg30]=[-1, -1, 5037, 8069181, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, 40, 1, -1, -1, 5719, -1, 1099, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6476, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, value=8069181
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, stats[avg90]=[-1, -1, 2128, 7868329, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, 40, 1, -1, -1, 2901, 2539, 1098, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4348, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, value=7868329
+DEBUG:keepa_deals.stable_products:Sales Rank - 90 days avg. for ASIN 1850040168: {'Sales Rank - 90 days avg.': '7,868,329'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, stats[avg180]=[-1, -1, 1220, 7345172, 0, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 40, 1, -1, -1, 2266, 1926, 1099, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3753, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, value=7345172
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, stats[avg365]=[-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, value=6546566
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days - raw value=0 for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days result for ASIN 1850040168: 0
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days - raw value=1 for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days result for ASIN 1850040168: 1
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN 1850040168 - Attempting to use 'buyBoxPrice' field. Raw value: -1
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN 1850040168 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN 1850040168 - Fallback: buyBoxSellerId='None', buyBoxCondition='1'
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN 1850040168 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN 1850040168 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+WARNING:keepa_deals.stable_products:No valid Amazon - Current price for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN 1850040168: Attempting to use stats.avg365[0].
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.avg365[0]: -1
+WARNING:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN 1850040168: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:New - Current - raw value=-1, current array=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxStats', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'] for ASIN 1850040168
+WARNING:keepa_deals.stable_products:No valid New - Current (value=-1, current_length=34) for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN 1850040168: Attempting to use stats.current[10]. current_array length: 34
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.current[10]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN 1850040168: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - new_3rd_party_fba_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+INFO:keepa_deals.stable_products:ASIN 1850040168: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - new_3rd_party_fba_lowest: stats.min raw: [None, [3673376, 4923], [3165134, 1], [7344384, 378582], [7715148, 0], [3220604, 995], None, [7353792, 10986], None, None, None, [3673376, 1], [6482394, 1], None, [3220604, 1], None, [7184576, 40], [7184576, 1], [7353792, 10986], None, [5707108, 817], [5707108, 817], [5501788, 839], None, None, None, None, None, None, None, None, None, [6430854, 1133], None]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - new_3rd_party_fba_lowest: stats.min[10] pair: None
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Lowest for ASIN 1850040168: stats.min[10] is not a valid pair: None
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN 1850040168: Attempting to use stats.current[7]. current_array: [-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.current[7]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN 1850040168: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+INFO:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN 1850040168: Final result: -, Source: stats.current[7] (invalid value)
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - new_3rd_party_fbm_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+INFO:keepa_deals.stable_products:ASIN 1850040168: New, 3rd Party FBM - 365 days avg. found: $109.85 from stats.avg365[7]
+DEBUG:keepa_deals.stable_products:Buy Box Used - Current for ASIN 1850040168: Starting process. Relevant stats keys: buyBoxUsedIsFBA, buyBoxUsedPrice, buyBoxUsedShipping.
+INFO:keepa_deals.stable_products:Buy Box Used - Current for ASIN 1850040168: Price found via primary logic. FBM item price: 7099 + shipping: 399 = 7498. Formatted: $74.98
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - buy_box_used_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.avg365[32]: 3891
+INFO:keepa_deals.stable_products:Buy Box Used - 365 days avg. for ASIN 1850040168: Using stats.avg365[32], value: $38.91
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, stats[current]=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, value=300
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, stats[avg365]=[-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, value=753
+DEBUG:keepa_deals.stable_products:used_365_days_avg result for ASIN 1850040168: {'Used - 365 days avg.': '$7.53'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, stats[current]=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, value=-1
+DEBUG:keepa_deals.stable_products:used_like_new for ASIN 1850040168: stats.current=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1], current_price=-
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - used_like_new_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.avg365[19] for Used, like new: -1
+WARNING:keepa_deals.stable_products:Used, like new - 365 days avg. for ASIN 1850040168: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, stats[current]=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, value=7498
+DEBUG:keepa_deals.stable_products:Used, very good - Current for ASIN 1850040168: Using stats.current[20], result: $74.98
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - used_very_good_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.avg365[20] for Used, very good: 1889
+INFO:keepa_deals.stable_products:Used, very good - 365 days avg. for ASIN 1850040168: Using stats.avg365[20], value: $18.89
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, stats[current]=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, value=-1
+DEBUG:keepa_deals.stable_products:Used, good - Current for ASIN 1850040168: Using stats.current[21], result: -
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - used_good_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.avg365[21] for Used, good: 1926
+INFO:keepa_deals.stable_products:Used, good - 365 days avg. for ASIN 1850040168: Using stats.avg365[21], value: $19.26
+WARNING:keepa_deals.stable_products:No valid Used - Acceptable price for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:ASIN 1850040168 - used_acceptable_365_days_avg: stats.avg365 raw: [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Raw value at stats.avg365[22] for Used, acceptable: 1114
+INFO:keepa_deals.stable_products:Used, acceptable - 365 days avg. for ASIN 1850040168: Using stats.avg365[22], value: $11.14
+DEBUG:keepa_deals.stable_products:List Price - Current - raw value=0, current array=[-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxStats', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'], stats_raw={'atIntervalStart': [-1, -1, 300, 1085363, -1, -1, -1, -1, -1, -1, -1, -1, 5, -1, -1, -4, 40, 1, -1, -1, 2614, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], 'avg': [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1], 'avg180': [-1, -1, 1220, 7345172, 0, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 40, 1, -1, -1, 2266, 1926, 1099, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3753, -1], 'avg30': [-1, -1, 5037, 8069181, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, 40, 1, -1, -1, 5719, -1, 1099, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6476, -1], 'avg365': [-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1], 'avg90': [-1, -1, 2128, 7868329, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, 40, 1, -1, -1, 2901, 2539, 1098, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4348, -1], 'buyBoxAvailabilityMessage': None, 'buyBoxCondition': None, 'buyBoxIsAmazon': False, 'buyBoxIsBackorder': None, 'buyBoxIsFBA': False, 'buyBoxIsFreeShippingEligible': None, 'buyBoxIsMAP': False, 'buyBoxIsPreorder': False, 'buyBoxIsPrimeEligible': None, 'buyBoxIsPrimeExclusive': None, 'buyBoxIsPrimePantry': None, 'buyBoxIsShippable': True, 'buyBoxIsUnqualified': False, 'buyBoxIsUsed': True, 'buyBoxIsWarehouseDeal': None, 'buyBoxMaxOrderQuantity': None, 'buyBoxMinOrderQuantity': None, 'buyBoxPrice': -1, 'buyBoxSellerId': None, 'buyBoxShipping': -1, 'buyBoxShippingCountry': None, 'buyBoxStats': {'A2VMKCV4FSTN1U': {'avgNewOfferCount': -1, 'avgPrice': 10986, 'avgUsedOfferCount': 4, 'isFBA': False, 'lastSeen': 7357020, 'percentageWon': 0.61921644}}, 'buyBoxUsedCondition': 3, 'buyBoxUsedIsFBA': False, 'buyBoxUsedPrice': 7099, 'buyBoxUsedSellerId': 'A2H6NH4SQYFZ4M', 'buyBoxUsedShipping': 399, 'buyBoxUsedStats': {'A2H6NH4SQYFZ4M': {'avgNewOfferCount': -1, 'avgPrice': 4119, 'avgUsedOfferCount': 4, 'condition': 3, 'isFBA': False, 'lastSeen': 7875096, 'percentageWon': 100.0}}, 'current': [-1, -1, 300, 8282007, 0, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -2, 40, 1, -1, -1, 7498, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7498, -1], 'deltaPercent90_monthlySold': None, 'isAddonItem': False, 'isLowest': [False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False], 'isLowest90': [False, False, True, False, True, False, False, False, False, False, False, False, True, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False], 'lastBuyBoxUpdate': 7875096, 'lastOffersUpdate': 7875096, 'lightningDealInfo': None, 'max': [None, [3694976, 15834], [7857190, 7899], [5757068, 17625298], [7715148, 0], [3220604, 995], None, [7353792, 10986], None, None, None, [3673376, 1], [4158192, 12], None, [3220604, 1], None, [7184576, 40], [7184576, 1], [7353792, 10986], None, [7857192, 8298], [7715396, 2539], [7111444, 1349], None, None, None, None, None, None, None, None, None, [7579536, 9299], None], 'maxInInterval': [None, [7353792, 10986], [7857190, 7899], [7874680, 8277413], [7715148, 0], [-1, -1], None, [7353792, 10986], None, None, None, [7353792, 1], [7353806, 6], None, [-1, -1], None, [7184576, 40], [7184576, 1], [7353792, 10986], None, [7857192, 8298], [7715396, 2539], [7353792, 1149], None, None, None, None, None, None, None, None, None, [7579536, 9299], None], 'min': [None, [3673376, 4923], [3165134, 1], [7344384, 378582], [7715148, 0], [3220604, 995], None, [7353792, 10986], None, None, None, [3673376, 1], [6482394, 1], None, [3220604, 1], None, [7184576, 40], [7184576, 1], [7353792, 10986], None, [5707108, 817], [5707108, 817], [5501788, 839], None, None, None, None, None, None, None, None, None, [6430854, 1133], None], 'minInInterval': [None, [7353792, 10986], [7349496, 300], [7349496, 1085363], [7715148, 0], [-1, -1], None, [7353792, 10986], None, None, None, [7353792, 1], [7847604, 3], None, [-1, -1], None, [7184576, 40], [7184576, 1], [7353792, 10986], None, [7504448, 1298], [7684482, 1099], [7504448, 1099], None, None, None, None, None, None, None, None, None, [7390494, 2339], None], 'offerCountFBA': 0, 'offerCountFBM': 0, 'outOfStockCountAmazon30': 1, 'outOfStockCountAmazon90': 1, 'outOfStockPercentage180': [100, 100, 0, -1, 0, 100, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1, 0, 72, 27, -1, -1, -1, -1, -1, -1, -1, -1, -1, 17, -1], 'outOfStockPercentage30': [100, 100, 0, -1, 0, 100, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1, 0, 100, 64, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentage365': [100, 100, 0, -1, 0, 100, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1, 0, 87, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, 40, -1], 'outOfStockPercentage90': [100, 100, 0, -1, 0, 100, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1, 0, 92, 31, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentageInInterval': [100, 100, 0, -1, 0, 100, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, -1, 0, 87, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, 40, -1], 'retrievedOfferCount': 2, 'salesRankDrops180': 0, 'salesRankDrops30': 0, 'salesRankDrops365': 1, 'salesRankDrops90': 0, 'sellerIdsLowestFBA': None, 'sellerIdsLowestFBM': None, 'totalOfferCount': 3, 'tradeInPrice': -1} for ASIN 1850040168
+WARNING:keepa_deals.stable_products:No valid List Price - Current (value=0, current_length=34) for ASIN 1850040168
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Calculating New Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: offerCountFBA = 0, offerCountFBM = 0
+INFO:keepa_deals.stable_products:ASIN 1850040168: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, stats[avg365]=[-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, value=0
+INFO:keepa_deals.stable_products:ASIN 1850040168: New Offer Count - 365 days avg. from stats.avg365[11]: 0
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: Calculating Used Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN 1850040168: totalOfferCount = 3, offerCountFBA_new = 0, offerCountFBM_new = 0
+INFO:keepa_deals.stable_products:ASIN 1850040168: Used Offer Count - Current calculated as 3 (Total: 3, New FBA: 0, New FBM: 0).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, stats[avg365]=[-1, 10985, 753, 6546566, 0, -1, -1, 10985, -1, -1, -1, 0, 4, -1, -1, -1, 40, 1, 10985, -1, 1889, 1926, 1114, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3891, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, value=4
+INFO:keepa_deals.stable_products:ASIN 1850040168: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Found 3 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Found 3 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: No distinct mode found. Falling back to peak season median price: 21.40.
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Preparing for XAI check. Title='Art of Gentle Gardening', Category='Books > Subjects > Humor & Entertainment > Humor', Peak Season='Apr', Price='$21.40'
+DEBUG:keepa_deals.xai_cache:XAI Cache MISS for key: 'reasonableness:Art of Gentle Gardening|Books > Subjects > Humor & Entertainment > Humor|Apr|21.40'
+INFO:keepa_deals.xai_token_manager:XAI call permitted. Usage today: 56/1000
+INFO:root:XAI Reasonableness Request for 'Art of Gentle Gardening' (Cache MISS)
+INFO:httpx:HTTP Request: POST https://api.x.ai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:XAI Reasonableness Check for 'Art of Gentle Gardening' at $21.40: AI responded 'yes'
+DEBUG:keepa_deals.xai_cache:XAI Cache SET for key: 'reasonableness:Art of Gentle Gardening|Books > Subjects > Humor & Entertainment > Humor|Apr|21.40'
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Found 3 sane sale events after outlier rejection.
+INFO:keepa_deals.business_calculations:Successfully loaded settings from /app/keepa_deals/../settings.json
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Found 3 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: No distinct mode found. Falling back to peak season median price: 21.40.
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Preparing for XAI check. Title='Art of Gentle Gardening', Category='Books > Subjects > Humor & Entertainment > Humor', Peak Season='Apr', Price='$21.40'
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'reasonableness:Art of Gentle Gardening|Books > Subjects > Humor & Entertainment > Humor|Apr|21.40'
+INFO:root:XAI Cache HIT for reasonableness. Found 'True' for title 'Art of Gentle Gardening'.
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.business_calculations:Referral Fee: List At Price (21.40) * 0.15 = 3.21
+DEBUG:keepa_deals.business_calculations:Total AMZ Fees: Referral Fee (3.21) + FBA Fee (3.53) = 6.74
+INFO:keepa_deals.business_calculations:Cost settings: Prep=$2.75, Tax=5%, Exempt=False, Est. Ship=$3.99
+INFO:keepa_deals.business_calculations:All-in Cost Breakdown: Now Price (10.99) + Tax (0.55) + Prep (2.75) + AMZ Fees (6.74) + Added Ship (3.99) = 25.02
+DEBUG:keepa_deals.business_calculations:Profit/Margin: (Peak 21.40 - Cost 25.02) = Profit -3.62, Margin -16.91%
+INFO:keepa_deals.business_calculations:Min Listing Price Calculation: All-in Cost (25.02) / (1 - Markup 10%) = Min Price (27.80)
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Found 3 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 1850040168: Found 19 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 1850040168: Found 3 sane sale events after outlier rejection.
+INFO:__main__:SUCCESS: Generated deal for 1850040168
+INFO:__main__:List at: $21.40
+INFO:__main__:
+
+--- Processing ASIN: 0443053960 ---
+INFO:keepa_deals.seller_info:ASIN 0443053960: Found lowest-priced seller: AE5BRYIX072IS. Fetching their data.
+INFO:keepa_deals.token_manager:Rate limit: Pausing for 47.02 seconds.
+DEBUG:keepa_deals.token_manager:Refilled 5.00 tokens. Current tokens: 9.00
+INFO:keepa_deals.token_manager:Permission granted for API call. Estimated cost: 1. Current tokens: 9.00
+INFO:keepa_deals.keepa_api:Fetching data for batch of 1 sellers
+INFO:keepa_deals.keepa_api:Seller API call successful. Tokens consumed: 1. Tokens left: 8
+INFO:keepa_deals.token_manager:Token count authoritatively synced from API response. Previous estimate: 9.00, New value: 8.00
+DEBUG:keepa_deals.stable_products:percent_down_90 input: 0443053960
+DEBUG:keepa_deals.stable_products:percent_down_90 result: 95%
+INFO:root:ASIN 0443053960: Percent Down 365 calculated. Current: 3.35, Avg365: 24.75, Diff: 86.46%, Result: 86%
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Checking for shipping included in Used - Current offer.
+INFO:keepa_deals.stable_products:ASIN 0443053960: No indication of free shipping found for Used - Current offer.
+DEBUG:keepa_deals.stable_deals:Deal found - raw ts=7874896
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - KEEPA_EPOCH.tzinfo: None
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - dt (naive UTC from Keepa): 2025-12-21T16:16:00
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - utc_dt (aware UTC): 2025-12-21T16:16:00+00:00
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - TORONTO_TZ object: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - toronto_dt (converted to Toronto): 2025-12-21T11:16:00-05:00
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - toronto_dt.tzinfo: America/Toronto
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (deal_found) - toronto_dt.utcoffset(): -1 day, 19:00:00
+DEBUG:keepa_deals.stable_products:amz_link result for ASIN 0443053960: {'AMZ link': 'https://www.amazon.com/dp/0443053960?psc=1&aod=1'}
+DEBUG:keepa_deals.stable_products:keepa_link result for ASIN 0443053960: {'Keepa Link': 'https://keepa.com/#!product/1-0443053960'}
+DEBUG:keepa_deals.stable_products:get_title result for ASIN 0443053960: Occupational Therapy in Short-Term Psychiatry
+WARNING:keepa_deals.processing:ASIN 0443053960: Error extracting last update: last_update() missing 1 required positional argument: 'logger_param'
+INFO:keepa_deals.stable_deals:ASIN: 0443053960 - No valid used item timestamp from product_data.csv (latest_ts=-1). Falling back to deal_object.currentSince for used items.
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Checking deal_object.currentSince for used item timestamps using base indices: [2, 19, 20, 21, 22]
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Found deal_object.currentSince timestamp for used index 2: 7874896
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Found deal_object.currentSince timestamp for used index 19: 5454088
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Found deal_object.currentSince timestamp for used index 20: 7857892
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Found deal_object.currentSince timestamp for used index 21: 7847780
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Found deal_object.currentSince timestamp for used index 22: 7847780
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Buy Box is not Used (deal_object.current[14]=-1) or current array too short. Skipping Used Buy Box timestamp check.
+INFO:keepa_deals.stable_deals:ASIN: 0443053960 - Using deal_object.currentSince for last used price change. Max timestamp: 7874896. All considered: [7874896, 5454088, 7857892, 7847780, 7847780]
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - last used price change - selected raw ts=7874896 from deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box)
+DEBUG:keepa_deals.stable_deals:ASIN: 0443053960 - Timezone Debug (last_price_change) - dt (naive UTC): 2025-12-21T16:16:00, utc_dt (aware UTC): 2025-12-21T16:16:00+00:00, toronto_dt: 2025-12-21T11:16:00-05:00
+INFO:keepa_deals.stable_deals:ASIN: 0443053960 - last price change (focused on used) result: 2025-12-21 11:16:00 (from ts 7874896 via deal_object.currentSince (max of 5 used item timestamps including potential Used Buy Box))
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Attempting to get FBA Pick&Pack Fee. Raw 'fbaFees' dict: {'lastUpdate': 7875096, 'pickAndPackFee': 484}
+INFO:keepa_deals.stable_products:ASIN 0443053960: FBA Pick&Pack Fee found: $4.84 (from raw 484)
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Attempting to get Referral Fee Percentage.
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Found precise referralFeePercentage directly: 14.99
+INFO:keepa_deals.stable_products:ASIN 0443053960: Referral Fee Percentage found (product_data.referralFeePercentage): 14.99% (from raw 14.99)
+DEBUG:keepa_deals.stable_products:Tracking since - raw ts=3146440
+DEBUG:keepa_deals.stable_products:Tracking since result for ASIN 0443053960: 2016-12-25
+DEBUG:keepa_deals.stable_products:categories_root result for ASIN 0443053960: {'Categories - Root': 'Books'}
+DEBUG:keepa_deals.stable_products:categories_sub result for ASIN 0443053960: {'Categories - Sub': 'Health, Fitness & Dieting, Psychology & Counseling, Psychotherapy, TA & NLP'}
+DEBUG:keepa_deals.stable_products:categories_tree result for ASIN 0443053960: {'Categories - Tree': 'Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Psychotherapy, TA & NLP'}
+DEBUG:keepa_deals.stable_products:get_asin result for ASIN 0443053960: {'ASIN': '0443053960'}
+DEBUG:keepa_deals.stable_products:manufacturer result for ASIN 0443053960: {'Manufacturer': 'Churchill Livingstone'}
+DEBUG:keepa_deals.stable_products:get_brand result for ASIN 0443053960: {'Brand': 'Churchill Livingstone'}
+DEBUG:keepa_deals.stable_products:author result for ASIN 0443053960: {'Author': 'Willson TDipCOT  BA  MSc, Moya'}
+DEBUG:keepa_deals.stable_products:binding result for ASIN 0443053960: {'Binding': 'Paperback'}
+INFO:keepa_deals.stable_deals:ASIN: 0443053960 - Found lowest priced offer at $15.78 with condition: Used, very good (3)
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Attempting to get and standardize publication date.
+INFO:keepa_deals.stable_products:ASIN 0443053960: Parsed date '19960930' to standard format '1996-09-30'.
+DEBUG:keepa_deals.stable_products:Listed since - raw ts=-2908800 for ASIN 0443053960
+INFO:keepa_deals.stable_products:No valid listedSince (ts=-2908800) for ASIN 0443053960
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, stats[current]=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=3, value=6395004
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, stats[avg30]=[-1, -1, 1896, 6240432, 5595, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 50, 1, -1, -1, 9785, 4527, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5259, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg30, index=3, value=6240432
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, stats[avg90]=[-1, -1, 6626, 5990125, 5595, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 50, 1, -1, -1, 9728, 7506, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8036, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg90, index=3, value=5990125
+DEBUG:keepa_deals.stable_products:Sales Rank - 90 days avg. for ASIN 0443053960: {'Sales Rank - 90 days avg.': '5,990,125'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, stats[avg180]=[-1, -1, 4730, 5170992, 5595, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 50, 1, -1, -1, 7268, 5793, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5599, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg180, index=3, value=5170992
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, stats[avg365]=[-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=3, value=6163485
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days - raw value=0 for ASIN 0443053960
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 30 days result for ASIN 0443053960: 0
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days - raw value=2 for ASIN 0443053960
+DEBUG:keepa_deals.stable_products:Sales Rank - Drops last 365 days result for ASIN 0443053960: 2
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN 0443053960 - Attempting to use 'buyBoxPrice' field. Raw value: -1
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN 0443053960 - 'buyBoxPrice' is missing, None, or invalid (-1). Attempting fallback.
+DEBUG:keepa_deals.stable_products:Buy Box - Current - ASIN 0443053960 - Fallback: buyBoxSellerId='None', buyBoxCondition='1'
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN 0443053960 - Fallback: 'buyBoxSellerId' is missing. Cannot perform fallback search.
+WARNING:keepa_deals.stable_products:Buy Box - Current - ASIN 0443053960 - Final decision: No valid Buy Box price found through primary or fallback methods. Returning '-'.
+WARNING:keepa_deals.stable_products:No valid Amazon - Current price for ASIN 0443053960
+DEBUG:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN 0443053960: Attempting to use stats.avg365[0].
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.avg365[0]: -1
+WARNING:keepa_deals.stable_products:Amazon - 365 days avg. for ASIN 0443053960: Invalid or missing price at stats.avg365[0] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:New - Current - raw value=-1, current array=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSavingBasisType', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'] for ASIN 0443053960
+WARNING:keepa_deals.stable_products:No valid New - Current (value=-1, current_length=34) for ASIN 0443053960
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN 0443053960: Attempting to use stats.current[10]. current_array length: 34
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.current[10]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Current for ASIN 0443053960: Invalid or missing price at stats.current[10] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - new_3rd_party_fba_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+INFO:keepa_deals.stable_products:ASIN 0443053960: New, 3rd Party FBA - 365 days avg. not available or invalid (avg365[10]). avg365 array: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - new_3rd_party_fba_lowest: stats.min raw: [None, [3819912, 2500], [4659624, 62], [3943270, 305719], [3146440, 5595], None, None, [3473278, 3704], None, None, None, [4165368, 1], [7680868, 1], None, None, None, [5227244, 29], [4835608, 1], [3859424, 4051], [4479720, 3398], [4835608, 547], [4576896, 548], [3634304, 799], None, None, None, None, None, None, None, None, None, [6673540, 1094], None]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - new_3rd_party_fba_lowest: stats.min[10] pair: None
+WARNING:keepa_deals.stable_products:New, 3rd Party FBA - Lowest for ASIN 0443053960: stats.min[10] is not a valid pair: None
+DEBUG:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN 0443053960: Attempting to use stats.current[7]. current_array: [-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.current[7]: -1
+WARNING:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN 0443053960: Invalid or non-positive price at stats.current[7] (-1). Setting to '-'
+INFO:keepa_deals.stable_products:New, 3rd Party FBM - Current for ASIN 0443053960: Final result: -, Source: stats.current[7] (invalid value)
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - new_3rd_party_fbm_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+INFO:keepa_deals.stable_products:ASIN 0443053960: New, 3rd Party FBM - 365 days avg. not available or invalid (avg365[7]). Value: -1. avg365 array: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:Buy Box Used - Current for ASIN 0443053960: Starting process. Relevant stats keys: buyBoxUsedIsFBA, buyBoxUsedPrice, buyBoxUsedShipping.
+INFO:keepa_deals.stable_products:Buy Box Used - Current for ASIN 0443053960: Price found via primary logic. FBM item price: 3080 + shipping: 399 = 3479. Formatted: $34.79
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - buy_box_used_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.avg365[32]: 3528
+INFO:keepa_deals.stable_products:Buy Box Used - 365 days avg. for ASIN 0443053960: Using stats.avg365[32], value: $35.28
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, stats[current]=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=2, value=335
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, stats[avg365]=[-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=2, value=2475
+DEBUG:keepa_deals.stable_products:used_365_days_avg result for ASIN 0443053960: {'Used - 365 days avg.': '$24.75'}
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, stats[current]=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=19, value=-1
+DEBUG:keepa_deals.stable_products:used_like_new for ASIN 0443053960: stats.current=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1], current_price=-
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - used_like_new_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.avg365[19] for Used, like new: -1
+WARNING:keepa_deals.stable_products:Used, like new - 365 days avg. for ASIN 0443053960: Invalid or non-positive price at stats.avg365[19] (-1). Setting to '-'
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, stats[current]=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=20, value=10057
+DEBUG:keepa_deals.stable_products:Used, very good - Current for ASIN 0443053960: Using stats.current[20], result: $100.57
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - used_very_good_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.avg365[20] for Used, very good: 4042
+INFO:keepa_deals.stable_products:Used, very good - 365 days avg. for ASIN 0443053960: Using stats.avg365[20], value: $40.42
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, stats[current]=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=current, index=21, value=1641
+DEBUG:keepa_deals.stable_products:Used, good - Current for ASIN 0443053960: Using stats.current[21], result: $16.41
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - used_good_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.avg365[21] for Used, good: 3586
+INFO:keepa_deals.stable_products:Used, good - 365 days avg. for ASIN 0443053960: Using stats.avg365[21], value: $35.86
+DEBUG:keepa_deals.stable_products:Used, acceptable - Current result for ASIN 0443053960: $16.42
+DEBUG:keepa_deals.stable_products:ASIN 0443053960 - used_acceptable_365_days_avg: stats.avg365 raw: [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Raw value at stats.avg365[22] for Used, acceptable: 1641
+INFO:keepa_deals.stable_products:Used, acceptable - 365 days avg. for ASIN 0443053960: Using stats.avg365[22], value: $16.41
+DEBUG:keepa_deals.stable_products:List Price - Current - raw value=5595, current array=[-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1], stats_keys=['atIntervalStart', 'avg', 'avg180', 'avg30', 'avg365', 'avg90', 'buyBoxAvailabilityMessage', 'buyBoxCondition', 'buyBoxIsAmazon', 'buyBoxIsBackorder', 'buyBoxIsFBA', 'buyBoxIsFreeShippingEligible', 'buyBoxIsMAP', 'buyBoxIsPreorder', 'buyBoxIsPrimeEligible', 'buyBoxIsPrimeExclusive', 'buyBoxIsPrimePantry', 'buyBoxIsShippable', 'buyBoxIsUnqualified', 'buyBoxIsUsed', 'buyBoxIsWarehouseDeal', 'buyBoxMaxOrderQuantity', 'buyBoxMinOrderQuantity', 'buyBoxPrice', 'buyBoxSavingBasisType', 'buyBoxSellerId', 'buyBoxShipping', 'buyBoxShippingCountry', 'buyBoxUsedCondition', 'buyBoxUsedIsFBA', 'buyBoxUsedPrice', 'buyBoxUsedSellerId', 'buyBoxUsedShipping', 'buyBoxUsedStats', 'current', 'deltaPercent90_monthlySold', 'isAddonItem', 'isLowest', 'isLowest90', 'lastBuyBoxUpdate', 'lastOffersUpdate', 'lightningDealInfo', 'max', 'maxInInterval', 'min', 'minInInterval', 'offerCountFBA', 'offerCountFBM', 'outOfStockCountAmazon30', 'outOfStockCountAmazon90', 'outOfStockPercentage180', 'outOfStockPercentage30', 'outOfStockPercentage365', 'outOfStockPercentage90', 'outOfStockPercentageInInterval', 'retrievedOfferCount', 'salesRankDrops180', 'salesRankDrops30', 'salesRankDrops365', 'salesRankDrops90', 'sellerIdsLowestFBA', 'sellerIdsLowestFBM', 'totalOfferCount', 'tradeInPrice'], stats_raw={'atIntervalStart': [-1, -1, 313, 5802676, 5595, -1, -1, -1, -1, -1, -1, -1, 7, -1, -1, 7, 50, 1, -1, -1, 1658, 1659, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1659, -1], 'avg': [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1], 'avg180': [-1, -1, 4730, 5170992, 5595, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 50, 1, -1, -1, 7268, 5793, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5599, -1], 'avg30': [-1, -1, 1896, 6240432, 5595, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 50, 1, -1, -1, 9785, 4527, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5259, -1], 'avg365': [-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1], 'avg90': [-1, -1, 6626, 5990125, 5595, -1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, 50, 1, -1, -1, 9728, 7506, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8036, -1], 'buyBoxAvailabilityMessage': None, 'buyBoxCondition': None, 'buyBoxIsAmazon': False, 'buyBoxIsBackorder': None, 'buyBoxIsFBA': False, 'buyBoxIsFreeShippingEligible': None, 'buyBoxIsMAP': False, 'buyBoxIsPreorder': False, 'buyBoxIsPrimeEligible': None, 'buyBoxIsPrimeExclusive': None, 'buyBoxIsPrimePantry': None, 'buyBoxIsShippable': True, 'buyBoxIsUnqualified': False, 'buyBoxIsUsed': True, 'buyBoxIsWarehouseDeal': None, 'buyBoxMaxOrderQuantity': None, 'buyBoxMinOrderQuantity': None, 'buyBoxPrice': -1, 'buyBoxSavingBasisType': 'LIST_PRICE', 'buyBoxSellerId': None, 'buyBoxShipping': -1, 'buyBoxShippingCountry': None, 'buyBoxUsedCondition': 4, 'buyBoxUsedIsFBA': False, 'buyBoxUsedPrice': 3080, 'buyBoxUsedSellerId': 'A2H6NH4SQYFZ4M', 'buyBoxUsedShipping': 399, 'buyBoxUsedStats': {'A2NGELW3TL9Y11': {'avgNewOfferCount': -1, 'avgPrice': 1620, 'avgUsedOfferCount': 5, 'condition': 5, 'isFBA': False, 'lastSeen': 7857892, 'percentageWon': 50.128998}, 'A2H6NH4SQYFZ4M': {'avgNewOfferCount': -1, 'avgPrice': 7198, 'avgUsedOfferCount': 2, 'condition': 4, 'isFBA': False, 'lastSeen': 7875096, 'percentageWon': 33.42884}, 'AFPJIFNJLK21E': {'avgNewOfferCount': -1, 'avgPrice': 1616, 'avgUsedOfferCount': 7, 'condition': 4, 'isFBA': False, 'lastSeen': 7409804, 'percentageWon': 6.3592086}, 'AE5BRYIX072IS': {'avgNewOfferCount': -1, 'avgPrice': 1578, 'avgUsedOfferCount': 7, 'condition': 3, 'isFBA': False, 'lastSeen': 7579384, 'percentageWon': 5.958904}, 'ANKJ1HIJYFVVM': {'avgNewOfferCount': -1, 'avgPrice': 1619, 'avgUsedOfferCount': 5, 'condition': 3, 'isFBA': False, 'lastSeen': 7664948, 'percentageWon': 4.1240487}}, 'current': [-1, -1, 335, 6395004, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, 4, 50, 1, -1, -1, 10057, 1641, 1642, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3479, -1], 'deltaPercent90_monthlySold': None, 'isAddonItem': False, 'isLowest': [False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False], 'isLowest90': [False, False, True, False, True, False, False, False, False, False, False, False, False, False, False, False, True, True, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False], 'lastBuyBoxUpdate': 7875096, 'lastOffersUpdate': 7875096, 'lightningDealInfo': None, 'max': [None, [4683160, 56599], [7762904, 9689], [5789676, 12648439], [3146440, 5595], None, None, [3953944, 7082], None, None, None, [3146440, 13], [4424404, 28], None, None, None, [5454088, 50], [5227244, 2], [4576896, 7168], [4174398, 10669], [7755194, 10057], [7774504, 9689], [4113404, 21810], None, None, None, None, None, None, None, None, None, [7755194, 10057], None], 'maxInInterval': [None, [-1, -1], [7762904, 9689], [7559788, 8340796], [7349496, 5595], None, None, [-1, -1], None, None, None, [-1, -1], [7409804, 8], None, None, None, [7349496, 50], [7349496, 1], [-1, -1], [-1, -1], [7755194, 10057], [7774504, 9689], [7847780, 1642], None, None, None, None, None, None, None, None, None, [7755194, 10057], None], 'min': [None, [3819912, 2500], [4659624, 62], [3943270, 305719], [3146440, 5595], None, None, [3473278, 3704], None, None, None, [4165368, 1], [7680868, 1], None, None, None, [5227244, 29], [4835608, 1], [3859424, 4051], [4479720, 3398], [4835608, 547], [4576896, 548], [3634304, 799], None, None, None, None, None, None, None, None, None, [6673540, 1094], None], 'minInInterval': [None, [-1, -1], [7349496, 313], [7680868, 923183], [7349496, 5595], None, None, [-1, -1], None, None, None, [-1, -1], [7680868, 1], None, None, None, [7349496, 50], [7349496, 1], [-1, -1], [-1, -1], [7548064, 1578], [7689282, 1089], [7847780, 1642], None, None, None, None, None, None, None, None, None, [7548064, 1578], None], 'offerCountFBA': 0, 'offerCountFBM': 0, 'outOfStockCountAmazon30': 1, 'outOfStockCountAmazon90': 1, 'outOfStockPercentage180': [100, 100, 2, -1, 2, -1, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, 100, 23, 18, 90, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5, -1], 'outOfStockPercentage30': [100, 100, 0, -1, 0, -1, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, 100, 24, 0, 37, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentage365': [100, 100, 1, -1, 1, -1, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, 100, 12, 13, 95, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1], 'outOfStockPercentage90': [100, 100, 0, -1, 0, -1, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, 100, 8, 0, 79, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1], 'outOfStockPercentageInInterval': [100, 100, 1, -1, 1, -1, -1, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 100, 100, 12, 13, 95, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1], 'retrievedOfferCount': 4, 'salesRankDrops180': 1, 'salesRankDrops30': 0, 'salesRankDrops365': 2, 'salesRankDrops90': 0, 'sellerIdsLowestFBA': None, 'sellerIdsLowestFBM': None, 'totalOfferCount': 4, 'tradeInPrice': -1} for ASIN 0443053960
+DEBUG:keepa_deals.stable_products:List Price - Current result for ASIN 0443053960: $55.95
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Calculating New Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: offerCountFBA = 0, offerCountFBM = 0
+INFO:keepa_deals.stable_products:ASIN 0443053960: New Offer Count - Current calculated as 0 (FBA: 0, FBM: 0).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, stats[avg365]=[-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=11, value=-1
+INFO:keepa_deals.stable_products:ASIN 0443053960: New Offer Count - 365 days avg. from stats.avg365[11]: -
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: Calculating Used Offer Count - Current.
+DEBUG:keepa_deals.stable_products:ASIN 0443053960: totalOfferCount = 4, offerCountFBA_new = 0, offerCountFBM_new = 0
+INFO:keepa_deals.stable_products:ASIN 0443053960: Used Offer Count - Current calculated as 4 (Total: 4, New FBA: 0, New FBM: 0).
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, stats[avg365]=[-1, -1, 2475, 6163485, 5595, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1, 50, 1, -1, -1, 4042, 3586, 1641, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3528, -1]
+DEBUG:keepa_deals.stable_products:get_stat_value: key=avg365, index=12, value=4
+INFO:keepa_deals.stable_products:ASIN 0443053960: Used Offer Count - 365 days avg. from stats.avg365[12]: 4
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Found 15 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 52.00 hours after the 72-hour window for an offer drop at 2025-04-07 10:52:00.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 45.53 hours after the 72-hour window for an offer drop at 2025-07-13 19:52:00.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Ignoring inferred sale at 2025-08-05 21:30:00 because its associated price was invalid (-1).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Found 1 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Found 15 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 52.00 hours after the 72-hour window for an offer drop at 2025-04-07 10:52:00.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 45.53 hours after the 72-hour window for an offer drop at 2025-07-13 19:52:00.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Ignoring inferred sale at 2025-08-05 21:30:00 because its associated price was invalid (-1).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Found 1 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: No distinct mode found. Falling back to peak season median price: 80.92.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Preparing for XAI check. Title='Occupational Therapy in Short-Term Psychiatry', Category='Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Psychotherapy, TA & NLP', Peak Season='Oct', Price='$80.92'
+DEBUG:keepa_deals.xai_cache:XAI Cache MISS for key: 'reasonableness:Occupational Therapy in Short-Term Psychiatry|Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Psychotherapy, TA & NLP|Oct|80.92'
+INFO:keepa_deals.xai_token_manager:XAI call permitted. Usage today: 57/1000
+INFO:root:XAI Reasonableness Request for 'Occupational Therapy in Short-Term Psychiatry' (Cache MISS)
+INFO:httpx:HTTP Request: POST https://api.x.ai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:XAI Reasonableness Check for 'Occupational Therapy in Short-Term Psychiatry' at $80.92: AI responded 'yes'
+DEBUG:keepa_deals.xai_cache:XAI Cache SET for key: 'reasonableness:Occupational Therapy in Short-Term Psychiatry|Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Psychotherapy, TA & NLP|Oct|80.92'
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Found 15 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 52.00 hours after the 72-hour window for an offer drop at 2025-04-07 10:52:00.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 45.53 hours after the 72-hour window for an offer drop at 2025-07-13 19:52:00.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Ignoring inferred sale at 2025-08-05 21:30:00 because its associated price was invalid (-1).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Found 1 sane sale events after outlier rejection.
+INFO:keepa_deals.business_calculations:Successfully loaded settings from /app/keepa_deals/../settings.json
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Found 15 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 52.00 hours after the 72-hour window for an offer drop at 2025-04-07 10:52:00.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 45.53 hours after the 72-hour window for an offer drop at 2025-07-13 19:52:00.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Ignoring inferred sale at 2025-08-05 21:30:00 because its associated price was invalid (-1).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Found 1 sane sale events after outlier rejection.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: No distinct mode found. Falling back to peak season median price: 80.92.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Preparing for XAI check. Title='Occupational Therapy in Short-Term Psychiatry', Category='Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Psychotherapy, TA & NLP', Peak Season='Oct', Price='$80.92'
+DEBUG:keepa_deals.xai_cache:XAI Cache HIT for key: 'reasonableness:Occupational Therapy in Short-Term Psychiatry|Books > Subjects > Health, Fitness & Dieting > Psychology & Counseling > Psychotherapy, TA & NLP|Oct|80.92'
+INFO:root:XAI Cache HIT for reasonableness. Found 'True' for title 'Occupational Therapy in Short-Term Psychiatry'.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: XAI check PASSED. Price is considered reasonable.
+DEBUG:keepa_deals.business_calculations:Referral Fee: List At Price (80.92) * 0.15 = 12.13
+DEBUG:keepa_deals.business_calculations:Total AMZ Fees: Referral Fee (12.13) + FBA Fee (4.84) = 16.97
+INFO:keepa_deals.business_calculations:Cost settings: Prep=$2.75, Tax=5%, Exempt=False, Est. Ship=$3.99
+INFO:keepa_deals.business_calculations:All-in Cost Breakdown: Now Price (15.78) + Tax (0.79) + Prep (2.75) + AMZ Fees (16.97) + Added Ship (3.99) = 40.28
+DEBUG:keepa_deals.business_calculations:Profit/Margin: (Peak 80.92 - Cost 40.28) = Profit 40.64, Margin 50.22%
+INFO:keepa_deals.business_calculations:Min Listing Price Calculation: All-in Cost (40.28) / (1 - Markup 10%) = Min Price (44.75)
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Found 15 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 52.00 hours after the 72-hour window for an offer drop at 2025-04-07 10:52:00.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 45.53 hours after the 72-hour window for an offer drop at 2025-07-13 19:52:00.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Ignoring inferred sale at 2025-08-05 21:30:00 because its associated price was invalid (-1).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Found 1 sane sale events after outlier rejection.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Starting sale event inference with search-window logic (New & Used).
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Found 15 potential sale trigger points (New & Used drops).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 52.00 hours after the 72-hour window for an offer drop at 2025-04-07 10:52:00.
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Near Miss - A rank drop occurred 45.53 hours after the 72-hour window for an offer drop at 2025-07-13 19:52:00.
+DEBUG:keepa_deals.stable_calculations:ASIN 0443053960: Ignoring inferred sale at 2025-08-05 21:30:00 because its associated price was invalid (-1).
+INFO:keepa_deals.stable_calculations:ASIN 0443053960: Found 1 sane sale events after outlier rejection.
+INFO:keepa_deals.seasonality_classifier:Heuristics resulted in 'Year-round' for 'Occupational Therapy in Short-Term Psychiatry'. Querying XAI with sales data for refinement.
+DEBUG:keepa_deals.xai_cache:XAI Cache MISS for key: 'seasonality:Occupational Therapy in Short-Term Psychiatry|Books, Subjects, Health, Fitness & Dieting, Psychology & Counseling, Psychotherapy, TA & NLP|Churchill Livingstone'
+INFO:keepa_deals.xai_token_manager:XAI call permitted. Usage today: 57/1000
+INFO:keepa_deals.seasonality_classifier:XAI Seasonality Request for ASIN 'Occupational Therapy in Short-Term Psychiatry' (Cache MISS):
+INFO:keepa_deals.seasonality_classifier:  - Peak: -, Trough: -
+INFO:httpx:HTTP Request: POST https://api.x.ai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:keepa_deals.seasonality_classifier:LLM classified 'Occupational Therapy in Short-Term Psychiatry' as: Medical School
+DEBUG:keepa_deals.xai_cache:XAI Cache SET for key: 'seasonality:Occupational Therapy in Short-Term Psychiatry|Books, Subjects, Health, Fitness & Dieting, Psychology & Counseling, Psychotherapy, TA & NLP|Churchill Livingstone'
+INFO:__main__:SUCCESS: Generated deal for 0443053960
+INFO:__main__:List at: $80.92
+INFO:__main__:
+
+--- Processing ASIN: B09KN4H71K ---
+INFO:keepa_deals.seller_info:ASIN B09KN4H71K: Found lowest-priced seller: AX2JROIIWRZYD. Fetching their data.
+INFO:keepa_deals.token_manager:Rate limit: Pausing for 38.34 seconds.

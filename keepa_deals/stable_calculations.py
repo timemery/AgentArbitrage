@@ -241,7 +241,7 @@ def infer_sale_events(product):
             if not has_rank_drop and has_near_miss_rank_drop:
                 first_miss_time = near_miss_rank_changes[near_miss_rank_changes['rank_diff'] < 0].iloc[0]['timestamp']
                 hours_missed_by = (first_miss_time - end_time).total_seconds() / 3600
-                logger.info(f"ASIN {asin}: Near Miss - A rank drop occurred {hours_missed_by:.2f} hours after the 72-hour window for an offer drop at {start_time}.")
+                logger.info(f"ASIN {asin}: Near Miss - A rank drop occurred {hours_missed_by:.2f} hours after the 168-hour window for an offer drop at {start_time}.")
 
             if has_rank_drop:
                 price_df_to_use = df_new_price if drop['offer_type'] == 'New' and df_new_price is not None else df_used_price

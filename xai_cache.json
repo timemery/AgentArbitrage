@@ -7504,5 +7504,12 @@
     "seasonality:Hooked on You|Books, Subjects|Lea Coll": "Romance/Valentine's Day",
     "seasonality:Baby Proof by Giffin,Emily. [2007] Paperback|Books, Subjects, Literature & Fiction, Women's Fiction, Contemporary|St.Martins Grifin": "Year-round",
     "seasonality:Wedded Perfection|Books, Subjects|Cincinnati Art Museum": "Romance/Valentine's Day",
-    "seasonality:The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher|Books, Subjects|The World Publishing Company": "Year-round"
+    "seasonality:The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher|Books, Subjects|The World Publishing Company": "Year-round",
+    "reasonableness:The Art of Eating The Collected Gastronomical Works of M. F. K. Fisher|Books > Subjects|Oct|75.00": "True",
+    "reasonableness:Wedded Perfection|Books > Subjects|Sep|13.90": "True",
+    "reasonableness:Baby Proof by Giffin,Emily. [2007] Paperback|Books > Subjects > Literature & Fiction > Women's Fiction > Contemporary|Oct|7.11": "True",
+    "reasonableness:Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library|Books > Subjects > Literature & Fiction > Classics|Jun|24.91": "True",
+    "reasonableness:Pieces for Peace|Books > Subjects|Oct|56.97": "False",
+    "seasonality:Ben-Hur a Tale of the Christ (Copyright NOT STATED) by International Collectors Library|Books, Subjects, Literature & Fiction, Classics|International Collector's Library": "Christmas",
+    "seasonality:Occupational Therapy in Short-Term Psychiatry|Books, Subjects, Health, Fitness & Dieting, Psychology & Counseling, Psychotherapy, TA & NLP|Churchill Livingstone": "Medical School"
 }
