@@ -1,3 +1,4 @@
+# VERIFIED_UPDATE: Condition-aware deep linking
 import unittest
 from unittest.mock import patch, MagicMock
 import sys
@@ -30,8 +31,27 @@ class TestSPAPIUrl(unittest.TestCase):
 
         results = check_restrictions(['B123456789'], 'fake_token', 'fake_seller_id')
 
-        # This expects the NEW format
-        expected_url = "https://sellercentral.amazon.com/hz/approvalrequest?asin=B123456789"
+        # Since we didn't pass a condition in the items list, it defaults to None
+        # Expect fallback search URL
+        expected_url = "https://sellercentral.amazon.com/product-search/keywords/search?q=B123456789"
+        self.assertEqual(results['B123456789']['approval_url'], expected_url)
+
+    @patch('keepa_deals.amazon_sp_api.requests.Session')
+    def test_deep_link_with_condition(self, mock_session_cls):
+        """Test URL generation with known condition."""
+        mock_session = mock_session_cls.return_value
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "restrictions": [{"message": "Restricted", "links": []}]
+        }
+        mock_session.get.return_value = mock_response
+
+        # Pass condition
+        items = [{'asin': 'B123456789', 'condition': 'Used - Good'}]
+        results = check_restrictions(items, 'fake_token', 'fake_seller_id')
+
+        expected_url = "https://sellercentral.amazon.com/hz/approvalrequest/restrictions/approve?asin=B123456789&itemcondition=used"
         self.assertEqual(results['B123456789']['approval_url'], expected_url)
 
     @patch('keepa_deals.amazon_sp_api.requests.Session')
