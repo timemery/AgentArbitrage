@@ -24,7 +24,7 @@ xai_token_manager = XaiTokenManager()
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
 
-def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
+def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A"):
     """
     Queries the XAI API to act as a reasonableness check for a calculated price,
     now with caching and token management.
@@ -33,8 +33,8 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
         logging.warning("XAI_API_KEY not provided. Skipping reasonableness check.")
         return True
 
-    # 1. Create a unique cache key
-    cache_key = f"reasonableness:{title}|{category}|{season}|{price_usd:.2f}"
+    # 1. Create a unique cache key (include new fields to differentiate contexts)
+    cache_key = f"reasonableness:{title}|{category}|{season}|{price_usd:.2f}|{binding}|{rank_info}"
 
     # 2. Check cache first
     cached_result = xai_cache.get(cache_key)
@@ -56,6 +56,10 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key):
     - **Title:** "{title}"
     - **Category:** "{category}"
     - **Identified Peak Season:** "{season}"
+    - **Binding:** "{binding}"
+    - **Page Count:** "{page_count}"
+    - **Sales Rank Info:** "{rank_info}"
+    - **Image URL:** "{image_url}"
     """
     payload = {
         "messages": [{"role": "user", "content": prompt}],
@@ -223,7 +227,7 @@ def infer_sale_events(product):
 
         # --- Search for subsequent signals ---
         confirmed_sales = []
-        search_window = timedelta(hours=168)
+        search_window = timedelta(hours=240) # Expanded to 10 days based on "Near Miss" analysis
         df_rank = df_rank.sort_values('timestamp').reset_index(drop=True)
         df_rank['rank_diff'] = df_rank['rank'].diff()
         
@@ -241,7 +245,7 @@ def infer_sale_events(product):
             if not has_rank_drop and has_near_miss_rank_drop:
                 first_miss_time = near_miss_rank_changes[near_miss_rank_changes['rank_diff'] < 0].iloc[0]['timestamp']
                 hours_missed_by = (first_miss_time - end_time).total_seconds() / 3600
-                logger.info(f"ASIN {asin}: Near Miss - A rank drop occurred {hours_missed_by:.2f} hours after the 72-hour window for an offer drop at {start_time}.")
+                logger.info(f"ASIN {asin}: Near Miss - A rank drop occurred {hours_missed_by:.2f} hours after the 168-hour window for an offer drop at {start_time}.")
 
             if has_rank_drop:
                 price_df_to_use = df_new_price if drop['offer_type'] == 'New' and df_new_price is not None else df_used_price
@@ -337,33 +341,97 @@ def analyze_sales_performance(product, sale_events):
     # --- "List at" Price Calculation (Mode of Peak Season) ---
     peak_season_prices = df[df['month'] == peak_month]['inferred_sale_price_cents'].tolist()
     
-    if not peak_season_prices:
-        logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
-        return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
-
-    # Calculate the mode. Scipy's mode is robust.
-    mode_result = st.mode(peak_season_prices)
-
-    # Check if the mode is valid (count > 1) and handle unimodal vs. multimodal cases
+    # --- High-Velocity / Sparse Data Fallback ---
+    # If we have insufficient inferred sales (e.g. graph too smooth for drops), try using monthlySold + Avg Price
     peak_price_mode_cents = -1
-    if mode_result.count > 1:
-        peak_price_mode_cents = float(mode_result.mode)
-        logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (occurred {mode_result.count} times).")
+
+    if not peak_season_prices:
+        monthly_sold = product.get('monthlySold', -1)
+        # Some items have monthlySold in stats
+        if monthly_sold == -1:
+             monthly_sold = product.get('stats', {}).get('monthlySold', -1)
+
+        logger.info(f"ASIN {asin}: No peak season prices found. Checking monthlySold fallback (val={monthly_sold}).")
+
+        if monthly_sold > 20: # Arbitrary threshold for "high velocity / decent demand"
+             # Fallback to Used - 90 days avg (index 2 in stats.avg90)
+             avg90 = product.get('stats', {}).get('avg90', [])
+             if avg90 and len(avg90) > 2 and avg90[2] > 0:
+                 peak_price_mode_cents = avg90[2]
+                 logger.info(f"ASIN {asin}: Using fallback 'Used - 90 days avg' ({peak_price_mode_cents}) as Peak Price due to high monthlySold ({monthly_sold}).")
+                 # We treat this as the "peak" for now to allow XAI to validate it
+             else:
+                 logger.warning(f"ASIN {asin}: High monthlySold but no valid 'Used - 90 days avg'.")
+                 return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
+        else:
+             logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}) and insufficient monthlySold.")
+             return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
     else:
-        # If no single price is more frequent, fall back to the median of the peak season
-        peak_price_mode_cents = float(np.median(peak_season_prices))
-        logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
+        # Normal calculation
+        # Calculate the mode. Scipy's mode is robust.
+        mode_result = st.mode(peak_season_prices)
+        if mode_result.count > 1:
+            peak_price_mode_cents = float(mode_result.mode)
+            logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (occurred {mode_result.count} times).")
+        else:
+            peak_price_mode_cents = float(np.median(peak_season_prices))
+            logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
+
+    # --- Amazon Ceiling Logic ---
+    stats = product.get('stats', {})
+
+    # Extract Amazon prices (New)
+    amz_current = stats.get('current', [None] * 2)[0] # stats.current[0]
+    amz_180_avg = stats.get('avg180', []) # stats.avg180[0]
+    amz_180 = amz_180_avg[0] if amz_180_avg else None
+    amz_365_avg = stats.get('avg365', []) # stats.avg365[0]
+    amz_365 = amz_365_avg[0] if amz_365_avg else None
+
+    valid_amz_prices = []
+    if amz_current and amz_current > 0: valid_amz_prices.append(amz_current)
+    if amz_180 and amz_180 > 0: valid_amz_prices.append(amz_180)
+    if amz_365 and amz_365 > 0: valid_amz_prices.append(amz_365)
+
+    if valid_amz_prices:
+        min_amz_price = min(valid_amz_prices)
+        ceiling_price_cents = min_amz_price * 0.90 # 90% of lowest Amazon price
+
+        if peak_price_mode_cents > ceiling_price_cents:
+            logger.info(f"ASIN {asin}: Calculated List at (${peak_price_mode_cents/100:.2f}) exceeds Amazon ceiling (${ceiling_price_cents/100:.2f}). Capping price.")
+            peak_price_mode_cents = ceiling_price_cents
+        else:
+            logger.info(f"ASIN {asin}: Calculated List at (${peak_price_mode_cents/100:.2f}) is within Amazon ceiling (${ceiling_price_cents/100:.2f}).")
+    else:
+        logger.debug(f"ASIN {asin}: No valid Amazon prices found for ceiling calculation. Proceeding with un-capped price.")
 
     # --- XAI Verification Step ---
     title = product.get('title', 'N/A')
     category_tree = product.get('categoryTree', [])
     category = ' > '.join(cat['name'] for cat in category_tree) if category_tree else 'N/A'
 
+    # Additional Context
+    binding = product.get('binding', 'N/A')
+    page_count = product.get('numberOfPages', 'N/A')
+    image_url = product.get('imagesCSV', '').split(',')[0] if product.get('imagesCSV') else 'N/A'
+    if image_url != 'N/A':
+        image_url = f"https://images-na.ssl-images-amazon.com/images/I/{image_url}"
+
+    # Sales Rank Stats
+    stats = product.get('stats', {})
+    rank_current = stats.get('current', [None]*4)[3]
+    rank_90 = stats.get('avg90', [None]*4)[3]
+    rank_info = f"Current Rank: {rank_current}, 90-day Avg Rank: {rank_90}"
+
+    # Monthly Sold (inferred from salesRanks or other heuristic if not direct)
+    # Note: Keepa API returns monthlySold directly in some contexts, but often it's calculated.
+    # For now, we will pass the rank info as a proxy for velocity.
+
     # --- Enhanced Logging for Debugging ---
-    logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}'")
+    logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}', Rank='{rank_info}'")
 
     is_reasonable = _query_xai_for_reasonableness(
-        title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key
+        title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key,
+        binding=binding, page_count=page_count, image_url=image_url, rank_info=rank_info
     )
 
     if not is_reasonable:

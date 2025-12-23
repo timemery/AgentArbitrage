@@ -231,7 +231,8 @@ from .stable_products import (
     get_fba_pick_pack_fee, # Added import for FBA Pick&Pack Fee
     get_referral_fee_percent, # Added import for Referral Fee %
     get_shipping_included,
-    profit_margin_percent
+    profit_margin_percent,
+    amazon_180_days_avg
 )
 from .stable_calculations import (
     percent_down_365,               # Percent Down 365
@@ -548,7 +549,7 @@ FUNCTION_LIST = [
     None,                           # Amazon - 30 days avg.
     None,                           # Amazon - 60 days avg.
     None,                           # Amazon - 90 days avg.
-    None,                           # Amazon - 180 days avg.
+    amazon_180_days_avg,            # Amazon - 180 days avg.
     amazon_365_days_avg,            # Amazon - 365 days avg.
     None,                           # Amazon - Lowest
     None,                           # Amazon - Lowest 365 days
