@@ -36,6 +36,20 @@ Reduce the 98.5% rejection rate caused by "Missing List at" by enhancing the "in
 **Goal:** Ensure we don't aggressively filter out valid high prices for textbooks.
 - **Action:** Review `symmetrical` outlier rejection. Ensure it's not removing the *only* valid sales if they happen to be higher than the "lowball" offers.
 
+### 5. Amazon Price Ceiling Logic
+**Goal:** Establish a hard ceiling for inferred Used prices based on Amazon's own "New" pricing, ensuring we never predict a Used sale price higher than what Amazon sells it for New (minus a margin).
+- **Concept:** Amazon's New price acts as a natural cap. A Used book is highly unlikely to sell for more than Amazon's New price. To be conservative, we assume the maximum safe Used price is ~10% below Amazon's New price.
+- **Data Points:**
+    - `Amazon - Current`
+    - `Amazon - 180 days avg.`
+    - `Amazon - 365 days avg.`
+- **Logic:**
+    1.  Collect all valid, positive prices from the three Amazon data points above.
+    2.  Determine the **minimum** of these prices to find the most conservative baseline.
+    3.  Calculate `Ceiling Price = Minimum Amazon Price * 0.90` (representing 10% below).
+    4.  **Capping:** If the calculated `List at` price (derived from Peak Season Mode or Monthly Sold Fallback) exceeds this `Ceiling Price`, cap it at the `Ceiling Price`.
+    5.  This logic is applied *before* the final XAI reasonableness check.
+
 ## Verification Plan
 1.  **Re-run Debug Script:** Use a script similar to `Diagnostics/debug_rejection.py` to test the new logic on the previously rejected ASINs (e.g., `0615307655`).
 2.  **Backfill Test:** Run a small backfill (e.g., 50 items) and check the rejection rate stats using `Diagnostics/count_stats.sh`.
