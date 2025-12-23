@@ -1825,3 +1825,28 @@ def profit_margin_percent(product):
 # Profit Margin % ends
 
 #### END of stable_products.py ####
+def amazon_180_days_avg(product):
+    """
+    Retrieves the 180-day average Amazon (New) price.
+    Corresponds to stats.avg180[0].
+    """
+    asin = product.get('asin', 'unknown')
+    stats = product.get('stats', {})
+    price_str = '-'
+
+    logger.debug(f"Amazon - 180 days avg. for ASIN {asin}: Attempting to use stats.avg180[0].")
+
+    avg180_array = stats.get('avg180', [])
+    if avg180_array and len(avg180_array) > 0:
+        price_cents = avg180_array[0]
+        if price_cents is not None and isinstance(price_cents, (int, float)) and price_cents > 0:
+            try:
+                price_str = f"${price_cents / 100:.2f}"
+            except Exception as e:
+                logger.error(f"Amazon - 180 days avg. for ASIN {asin}: Error formatting price {price_cents}: {e}")
+        else:
+            logger.warning(f"Amazon - 180 days avg. for ASIN {asin}: Invalid or missing price at stats.avg180[0] ({price_cents}).")
+    else:
+        logger.warning(f"Amazon - 180 days avg. for ASIN {asin}: stats.avg180 array is empty or missing.")
+
+    return {'Amazon - 180 days avg.': price_str}
