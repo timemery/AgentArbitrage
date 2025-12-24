@@ -192,6 +192,23 @@ def backfill_deals(reset=False):
                     try:
                         conn = sqlite3.connect(DB_PATH)
                         cursor = conn.cursor()
+
+                        # --- New Logging Logic: Refreshed vs New ---
+                        # We do this check *before* the upsert to see what's already there
+                        asin_list_upsert = [row.get('ASIN') for row in rows_to_upsert if row.get('ASIN')]
+                        if asin_list_upsert:
+                            # Sanitize placeholders
+                            placeholders_check = ', '.join(['?'] * len(asin_list_upsert))
+                            query_check = f"SELECT ASIN FROM {TABLE_NAME} WHERE ASIN IN ({placeholders_check})"
+                            cursor.execute(query_check, asin_list_upsert)
+                            existing_asins = {row[0] for row in cursor.fetchall()}
+
+                            count_refreshed = len(existing_asins)
+                            count_new = len(asin_list_upsert) - count_refreshed
+
+                            logger.info(f"--- Upsert Stats: {count_new} New Deals, {count_refreshed} Refreshed Deals ---")
+                        # -------------------------------------------
+
                         with open(HEADERS_PATH) as f:
                             headers_data = json.load(f)
                         db_columns = [sanitize_col_name(h) for h in headers_data]

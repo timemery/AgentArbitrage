@@ -41,9 +41,9 @@ def _clean_stale_deals_logic(grace_period_hours):
         return 0
 
 @celery.task(name='keepa_deals.janitor.clean_stale_deals')
-def clean_stale_deals(grace_period_hours=24):
+def clean_stale_deals(grace_period_hours=72):
     """
-    Deletes deals that haven't been seen/updated for a specified period (default 24 hours).
+    Deletes deals that haven't been seen/updated for a specified period (default 72 hours).
     This helps keep the database size manageable and removes "dead" deals that are no longer
     appearing in Keepa results.
     """
