@@ -898,8 +898,15 @@ def api_deals():
         where_clauses.append("\"Sales_Rank_Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
     if filters.get("margin_gte") is not None:
-        where_clauses.append("\"Margin\" >= ?")
-        filter_params.append(filters["margin_gte"])
+        val = filters["margin_gte"]
+        # If the filter threshold is 0 or less, we include NULLs (unknown margin)
+        # because users typically expect "All found deals" in this state.
+        # Strict filtering (>0) will exclude NULLs.
+        if val <= 0:
+            where_clauses.append("(\"Margin\" >= ? OR \"Margin\" IS NULL)")
+        else:
+            where_clauses.append("\"Margin\" >= ?")
+        filter_params.append(val)
     if filters.get("keyword"):
         keyword_like = f"%{filters['keyword']}%"
         keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
@@ -1281,8 +1288,12 @@ def deal_count():
                 where_clauses.append("\"Sales_Rank_Current\" <= ?")
                 filter_params.append(filters["sales_rank_current_lte"])
             if filters.get("margin_gte") is not None:
-                where_clauses.append("\"Margin\" >= ?")
-                filter_params.append(filters["margin_gte"])
+                val = filters["margin_gte"]
+                if val <= 0:
+                    where_clauses.append("(\"Margin\" >= ? OR \"Margin\" IS NULL)")
+                else:
+                    where_clauses.append("\"Margin\" >= ?")
+                filter_params.append(val)
             if filters.get("keyword"):
                 keyword_like = f"%{filters['keyword']}%"
                 keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
