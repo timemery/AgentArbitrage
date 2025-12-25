@@ -952,5 +952,4 @@ body.home-background::before {
     margin: 0 5px; /* Overriding the original 0 15px if necessary, ensuring consistency */
     padding: 8px 16px; /* Base padding */
     border-radius: 4px; /* Base radius */
-    transition: background-color 0.2s ease;
 }
