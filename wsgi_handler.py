@@ -1268,7 +1268,30 @@ def deal_count():
             if not cursor.fetchone():
                  return jsonify({'count': 0, 'max_id': 0})
 
-            cursor.execute("SELECT COUNT(*), MAX(id) FROM deals")
+            # Filtering Logic (Same as api_deals)
+            filters = {
+                "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
+                "margin_gte": request.args.get('margin_gte', type=int),
+                "keyword": request.args.get('keyword', type=str)
+            }
+            where_clauses = []
+            filter_params = []
+
+            if filters.get("sales_rank_current_lte") is not None:
+                where_clauses.append("\"Sales_Rank_Current\" <= ?")
+                filter_params.append(filters["sales_rank_current_lte"])
+            if filters.get("margin_gte") is not None:
+                where_clauses.append("\"Margin\" >= ?")
+                filter_params.append(filters["margin_gte"])
+            if filters.get("keyword"):
+                keyword_like = f"%{filters['keyword']}%"
+                keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
+                where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
+                filter_params.extend([keyword_like] * len(keyword_clauses))
+
+            where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
+
+            cursor.execute(f"SELECT COUNT(*), MAX(id) FROM deals {where_sql}", filter_params)
             row = cursor.fetchone()
             count = row[0] if row else 0
             max_id = row[1] if row and row[1] else 0

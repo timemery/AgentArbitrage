@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
         paginationContainer.innerHTML = ''; // Clear existing controls
 
         const dealCount = pagination.total_records || 0;
-        currentTotalRecords = pagination.total_db_records || dealCount; // Update global tracker with total DB count
+        currentTotalRecords = dealCount; // Update global tracker with current FILTERED count
         dealCounterSpan.textContent = `${dealCount.toLocaleString()} Deals Found`;
 
         if (totalPages <= 1) return;
@@ -612,7 +612,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setInterval(async () => {
         try {
-            const response = await fetch('/api/deal-count');
+            // Include current filters in the poll request
+            const filters = getFilters();
+            let query = '';
+            const params = [];
+            for (const key in filters) {
+                if (filters[key]) params.push(`${key}=${encodeURIComponent(filters[key])}`);
+            }
+            if (params.length > 0) query = '?' + params.join('&');
+
+            const response = await fetch(`/api/deal-count${query}`);
             const data = await response.json();
             const serverCount = data.count;
             const diff = serverCount - currentTotalRecords;
