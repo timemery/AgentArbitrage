@@ -2,17 +2,22 @@
 import sqlite3
 import os
 import sys
-from flask import Flask
-from wsgi_handler import app, api_deals
 import json
 
-# Define DB path (adjust if necessary)
-DB_PATH = "deals.db"
+# Ensure we can import modules from the root directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.dirname(current_dir)
+sys.path.append(root_dir)
+
+from flask import Flask
+from wsgi_handler import app, api_deals
+
+# Define DB path
+# We are in Diagnostics/, so ../deals.db or ../data/deals.db
+DB_PATH = os.path.join(root_dir, "deals.db")
 if not os.path.exists(DB_PATH):
-    if os.path.exists("data/deals.db"):
-        DB_PATH = "data/deals.db"
-    elif os.path.exists("../deals.db"):
-        DB_PATH = "../deals.db"
+    if os.path.exists(os.path.join(root_dir, "data/deals.db")):
+        DB_PATH = os.path.join(root_dir, "data/deals.db")
 
 print(f"Using Database: {DB_PATH}")
 
@@ -41,31 +46,13 @@ def verify_api_counts():
     # Let's set it explicitly for the test context
     os.environ["DATABASE_URL"] = DB_PATH
 
-    with app.test_request_context('/api/deals?limit=10000'): # High limit to get all
-        # Mock session if needed, though api_deals doesn't strictly require login
-        # for basic deal fetching (it does for restrictions, but we just want the count)
-        # Looking at code: check logic for session usage.
-        # It uses session.get('sp_api_connected') but doesn't block if not logged in?
-        # WAIT: wsgi_handler.py doesn't have @login_required on api_deals,
-        # but the function body doesn't check 'logged_in' explicitly at the start?
-        # Let's check the code again.
-        # ...
-        # The route definition: @app.route('/api/deals')
-        # Function body:
-        # is_sp_api_connected = session.get('sp_api_connected', False)
-        # user_id = session.get('sp_api_user_id')
-        # ...
-        # It does NOT verify login at the top. So we should be good.
-
+    with app.test_request_context('/api/deals?limit=10000'):
         try:
             response = api_deals()
-            # response is a Flask Response object, or jsonify return
-            # jsonify returns a Response object with .get_json() or .data
 
             if hasattr(response, 'get_json'):
                 data = response.get_json()
             else:
-                # If it's a raw response (unlikely with jsonify)
                 data = json.loads(response.data)
 
             api_total_records = data['pagination']['total_records']
