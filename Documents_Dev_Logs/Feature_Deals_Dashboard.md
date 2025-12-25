@@ -20,8 +20,8 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
     *   *Logic:* Filters are applied client-side (or server-side depending on pagination implementation) to the dataset returned by `/api/deals`.
 *   **Sorting:** Columns like "Profit", "Rank", "Update Time" are sortable.
 *   **Real-time Updates (The "Janitor"):**
-    *   **"Refresh Deals" Button:** Manually triggers the "Janitor" task (`POST /api/run-janitor`) to clean up stale deals (older than 24h) and reload the grid.
-    *   **Passive Notification:** The dashboard polls `/api/deal-count` every 60 seconds. If the server count exceeds the local count, a notification ("X New Deals Found") appears, prompting a refresh.
+    *   **"Refresh Deals" Button:** Manually triggers the "Janitor" task (`POST /api/run-janitor`) to clean up stale deals (older than 72h) and reload the grid.
+    *   **Passive Notification:** The dashboard polls `/api/deal-count` every 60 seconds. This poll includes the current active filters. If the server's filtered count exceeds the local filtered count, a notification ("X New Deals Found") appears, prompting a refresh.
 *   **Recalculation:** A "Recalculate" feature allows updating business metrics (Profit, ROI) based on changed settings (Tax, Prep Fee) without re-fetching data from Keepa.
 
 ---

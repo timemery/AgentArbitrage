@@ -33,6 +33,6 @@ beat_schedule = {
     'janitor-clean-stale-deals': {
         'task': 'keepa_deals.janitor.clean_stale_deals',
         'schedule': crontab(minute=0, hour='*/4'),
-        'kwargs': {'grace_period_hours': 24},
+        'kwargs': {'grace_period_hours': 72},
     },
 }
