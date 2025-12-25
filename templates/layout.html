@@ -19,14 +19,14 @@
             <div class="header-wordmark">AGENT ARBITRAGE</div>
         </div>
         <nav class="main-nav">
-            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a>
             {% if session.role == 'admin' %}
-                <a href="{{ url_for('deals') }}">Deals</a>
-                <a href="{{ url_for('guided_learning') }}">Guided Learning</a>
-                <a href="{{ url_for('strategies') }}">Strategies</a>
-                <a href="{{ url_for('agent_brain') }}">Agent Brain</a>
+                <a href="{{ url_for('deals') }}" class="{% if request.endpoint == 'deals' %}active{% endif %}">Deals</a>
+                <a href="{{ url_for('guided_learning') }}" class="{% if request.endpoint == 'guided_learning' %}active{% endif %}">Guided Learning</a>
+                <a href="{{ url_for('strategies') }}" class="{% if request.endpoint == 'strategies' %}active{% endif %}">Strategies</a>
+                <a href="{{ url_for('agent_brain') }}" class="{% if request.endpoint == 'agent_brain' %}active{% endif %}">Agent Brain</a>
             {% endif %}
-            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a>
         </nav>
         <div class="header-logout">
             <a href="{{ url_for('logout') }}">Logout</a>
