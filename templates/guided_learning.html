@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}Guided Learning - Agent Arbitrage{% endblock %}
 {% block content %}
-    <h1>Guided Learning</h1>
     <form action="{{ url_for('learn') }}" method="post">
         <textarea name="learning_text" placeholder="Paste a URL or enter text-based guidance..."></textarea>
         <div style="display: flex; justify-content: space-between; align-items: center;">

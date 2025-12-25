@@ -927,3 +927,30 @@ body.home-background::before {
     display: inline-flex;
     align-items: center;
 }
+
+/* Navigation Styles - Active and Hover states */
+.main-nav a.active {
+    background-color: #336699;
+    color: white;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 0 5px; /* Adjust margin to tighter spacing for pill shape */
+    text-decoration: none;
+}
+
+.main-nav a:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 0 5px;
+    text-decoration: none;
+}
+
+/* Adjust existing margin to prevent double spacing since we added padding/margin above */
+.main-header nav.main-nav a {
+    margin: 0 5px; /* Overriding the original 0 15px if necessary, ensuring consistency */
+    padding: 8px 16px; /* Base padding */
+    border-radius: 4px; /* Base radius */
+    transition: background-color 0.2s ease;
+}
