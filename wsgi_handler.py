@@ -1249,7 +1249,7 @@ def run_janitor():
         return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
     try:
-        deleted = _clean_stale_deals_logic(grace_period_hours=24)
+        deleted = _clean_stale_deals_logic(grace_period_hours=72)
         return jsonify({'status': 'success', 'deleted_count': deleted})
     except Exception as e:
         app.logger.error(f"Janitor API failed: {e}")
