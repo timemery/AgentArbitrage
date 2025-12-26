@@ -14,6 +14,7 @@ class TokenManager:
         # Constants
         self.REFILL_RATE_PER_MINUTE = 5
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
+        self.MIN_TOKEN_THRESHOLD = 50 # New aggressive threshold
 
         # State variables
         self.tokens = 100 # Start with a reasonable guess, will be corrected on first response
@@ -54,17 +55,15 @@ class TokenManager:
         Keepa API Rule: A call can be made as long as the token balance is positive.
         The call is allowed to drive the balance into a negative value.
 
-        Our Strategy:
+        Our Strategy (Optimized):
         1.  **Hard Stop at Zero:** If tokens are <= 0, we must wait until they
             refill to a positive number.
-        2.  **Controlled Deficit:** If a call's `estimated_cost` is greater
-            than the `current_tokens` (but tokens are > 0), we don't proceed
-            immediately. This would risk hitting an unknown maximum deficit limit
-            and is inefficient. Instead, we proactively wait until the token bucket
-            is completely full (`self.max_tokens`).
-        3.  **Proceed:** Once the bucket is full, we allow the expensive call to
-            proceed. This allows it to create a small, predictable, and safe
-            negative balance, which will be recovered during the next wait cycle.
+        2.  **Aggressive Consumption:** If `current_tokens` > `MIN_TOKEN_THRESHOLD` (50),
+            we allow the call immediately, even if it creates a deficit. We do NOT wait
+            for a full bucket. This prevents "starvation" when an upserter task is
+            simultaneously consuming the refill trickle.
+        3.  **Smart Recovery:** If `current_tokens` drops below the threshold, we wait
+            only until it recovers to (`threshold + buffer`), not `max_tokens`.
         """
         now = time.time()
         time_since_last_call = now - self.last_api_call_timestamp
@@ -76,22 +75,33 @@ class TokenManager:
         self._refill_tokens()
 
         wait_time_seconds = 0
+
+        # Scenario 1: Hard Stop (Zero or Negative)
         if self.tokens <= 0:
-            # Hard stop: Must wait to get back to a positive balance.
-            tokens_needed = 1 - self.tokens  # Need at least 1 token
+            # Must wait to get back to a safe positive balance (e.g., 10 tokens)
+            tokens_needed = 10 - self.tokens
             wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
             logger.warning(
                 f"Zero or negative tokens. Have: {self.tokens:.2f}. "
-                f"Waiting for {wait_time_seconds} seconds to ensure a positive balance."
+                f"Waiting for {wait_time_seconds} seconds to recover to 10 tokens."
             )
-        elif self.tokens < estimated_cost:
-            # Controlled deficit: Proactively wait for a full bucket before making an expensive call.
-            tokens_needed = self.max_tokens - self.tokens
+
+        # Scenario 2: Below Threshold (Recovery Mode)
+        elif self.tokens < self.MIN_TOKEN_THRESHOLD:
+            # Wait until we are back comfortably above the threshold
+            recovery_target = self.MIN_TOKEN_THRESHOLD + 5 # Buffer
+            tokens_needed = recovery_target - self.tokens
             wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
             logger.warning(
-                f"Insufficient tokens for estimated cost. Have: {self.tokens:.2f}, Need: {estimated_cost}. "
-                f"Proactively waiting for {wait_time_seconds} seconds to refill to max ({self.max_tokens}) tokens."
+                f"Low tokens (Below Threshold {self.MIN_TOKEN_THRESHOLD}). Have: {self.tokens:.2f}. "
+                f"Waiting for {wait_time_seconds} seconds to recover to {recovery_target}."
             )
+
+        # Scenario 3: Above Threshold (Proceed, even if deficit spending)
+        else:
+            # We have > 50 tokens. Even if estimated cost is 100, we proceed.
+            # Keepa allows negative balance.
+            pass
 
         if wait_time_seconds > 0:
             if self.REFILL_RATE_PER_MINUTE > 0:
