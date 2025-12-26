@@ -1,6 +1,12 @@
+#!/usr/bin/env python3
+import sys
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 import math
+
+# Ensure root directory is in path so we can import keepa_deals
+sys.path.append(os.getcwd())
 
 from keepa_deals.token_manager import TokenManager
 
