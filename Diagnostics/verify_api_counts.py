@@ -40,41 +40,54 @@ def verify_api_counts():
     db_count = count_db_rows()
     print(f"Raw DB Count: {db_count}")
 
-    # 2. Simulate API Call
-    # We need to set the DATABASE_URL env var or ensure the app uses the correct one
-    # The app code uses: DATABASE_URL = os.getenv("DATABASE_URL", ...)
-    # Let's set it explicitly for the test context
+    # Set DATABASE_URL for the app
     os.environ["DATABASE_URL"] = DB_PATH
 
+    # 2. Simulate API Call (Unfiltered)
+    print("\n[TEST 1] Unfiltered API Call (/api/deals)")
     with app.test_request_context('/api/deals?limit=10000'):
         try:
             response = api_deals()
-
             if hasattr(response, 'get_json'):
                 data = response.get_json()
             else:
                 data = json.loads(response.data)
 
-            api_total_records = data['pagination']['total_records']
             api_total_db_records = data['pagination']['total_db_records']
             api_returned_count = len(data['deals'])
 
-            print(f"API Total Records (Filtered): {api_total_records}")
-            print(f"API Total DB Records (Unfiltered): {api_total_db_records}")
-            print(f"API Returned Items in Response: {api_returned_count}")
+            print(f"API Total DB Records: {api_total_db_records}")
+            print(f"API Returned Items: {api_returned_count}")
 
-            if db_count != api_total_db_records:
-                print("MISMATCH: Raw DB count != API reported total_db_records")
+            if db_count == api_total_db_records:
+                 print("Result: MATCH (DB Count matches API Unfiltered Count)")
             else:
-                print("MATCH: Raw DB count == API reported total_db_records")
-
-            if api_total_records < db_count:
-                print("Warning: API is applying filters (total_records < total_db_records)")
+                 print("Result: MISMATCH")
 
         except Exception as e:
             print(f"Error calling API: {e}")
-            import traceback
-            traceback.print_exc()
+
+    # 3. Simulate API Call (Default Dashboard Filter)
+    print("\n[TEST 2] Default Dashboard Filter (/api/deals?margin_gte=0)")
+    with app.test_request_context('/api/deals?limit=10000&margin_gte=0'):
+        try:
+            response = api_deals()
+            if hasattr(response, 'get_json'):
+                data = response.get_json()
+            else:
+                data = json.loads(response.data)
+
+            filtered_count = data['pagination']['total_records']
+
+            print(f"Dashboard Visible Deals (Margin >= 0%): {filtered_count}")
+            print(f"Hidden Deals (Negative Margin or NULL): {db_count - filtered_count}")
+
+            if filtered_count < db_count:
+                print("Note: The Dashboard applies a default filter of Margin >= 0%.")
+                print("      Deals with negative margins or missing data are hidden by default.")
+
+        except Exception as e:
+             print(f"Error calling API: {e}")
 
 if __name__ == "__main__":
     verify_api_counts()
