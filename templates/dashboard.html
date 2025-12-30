@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Seller
         "Seller", "Seller_Quality_Score",
         // Deal Details & Current Best Price
-        "last_price_change", "1yr_Avg", "Best_Price", "Percent_Down", "Trend",
+        "last_price_change", "1yr_Avg", "Best_Price", "Percent_Down",
         // Profit Estimates & Recommended Listing Price
         "All_in_Cost", "Min_Listing_Price", "List_at", "Profit", "Margin", "Profit_Confidence",
         // Actions
@@ -392,8 +392,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Handle other string values
                             value = `<span>${value}</span>`;
                         }
-                    } else if (col === 'Deal_found' || col === 'last_price_change') {
+                    } else if (col === 'Deal_found') {
                         value = formatTimeAgo(value);
+                    } else if (col === 'last_price_change') {
+                        let timeAgo = formatTimeAgo(value);
+                        let trendArrow = deal.Trend || '';
+                        // Only add spacing if there is an arrow
+                        if (trendArrow) {
+                            value = `<span>${trendArrow} ${timeAgo}</span>`;
+                        } else {
+                            value = timeAgo;
+                        }
                     } else if (!isNaN(numValue)) { // Check if the parsed value is a number
                         if (col === 'Profit_Confidence') {
                             value = `${Math.round(numValue)}%`;
