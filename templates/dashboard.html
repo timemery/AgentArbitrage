@@ -8,10 +8,10 @@
     <div class="filters-container">
         <form id="filter-form">
             <div class="filter-group-left">
-                <div class="filter-item">
+                <!-- <div class="filter-item">
                     <label for="keyword_search">Keyword Search:</label>
                     <input type="text" id="keyword_search" name="keyword" class="styled-text-field">
-                </div>
+                </div> -->
                 <div class="filter-item">
                     <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">∞</span></label>
                     <div class="slider-container">
@@ -24,6 +24,34 @@
                     <div class="slider-container">
                         <input type="range" min="0" max="20" value="0" class="slider" id="min_profit_margin_slider">
                         <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="profit_confidence_slider">Profit Trust: <span id="profit-confidence-value">0%</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="100" value="0" class="slider" id="profit_confidence_slider">
+                        <input type="hidden" id="profit_confidence" name="profit_confidence_gte" value="0">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="seller_trust_slider">Seller Trust: <span id="seller-trust-value">0%</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="100" value="0" class="slider" id="seller_trust_slider">
+                        <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="profit_slider">Min $ Profit: <span id="profit-value">$1</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="100" value="1" class="slider" id="profit_slider">
+                        <input type="hidden" id="profit" name="profit_gte" value="1">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="percent_down_slider">Below Avg. (%): <span id="percent-down-value">0%</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="100" value="0" class="slider" id="percent_down_slider">
+                        <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
                     </div>
                 </div>
             </div>
@@ -126,6 +154,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const profitMarginSlider = document.getElementById('min_profit_margin_slider');
     const profitMarginValueSpan = document.getElementById('profit-margin-value');
     const hiddenProfitMarginInput = document.getElementById('min_profit_margin');
+
+    const profitConfidenceSlider = document.getElementById('profit_confidence_slider');
+    const profitConfidenceValueSpan = document.getElementById('profit-confidence-value');
+    const hiddenProfitConfidenceInput = document.getElementById('profit_confidence');
+
+    const sellerTrustSlider = document.getElementById('seller_trust_slider');
+    const sellerTrustValueSpan = document.getElementById('seller-trust-value');
+    const hiddenSellerTrustInput = document.getElementById('seller_trust');
+
+    const profitSlider = document.getElementById('profit_slider');
+    const profitValueSpan = document.getElementById('profit-value');
+    const hiddenProfitInput = document.getElementById('profit');
+
+    const percentDownSlider = document.getElementById('percent_down_slider');
+    const percentDownValueSpan = document.getElementById('percent-down-value');
+    const hiddenPercentDownInput = document.getElementById('percent_down');
+
     const dealCounterSpan = document.getElementById('deal-counter');
     const refreshDealsLink = document.getElementById('refresh-deals-link');
     const refreshText = document.getElementById('refresh-text');
@@ -295,13 +340,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function getFilters() {
         const filters = {};
         // Manually get values from the form elements, including hidden inputs
-        const keyword = document.getElementById('keyword_search').value;
+        // const keyword = document.getElementById('keyword_search').value; // Removed
         const salesRank = hiddenSalesRankInput.value;
         const profitMargin = hiddenProfitMarginInput.value;
+        const profitConfidence = hiddenProfitConfidenceInput.value;
+        const sellerTrust = hiddenSellerTrustInput.value;
+        const profit = hiddenProfitInput.value;
+        const percentDown = hiddenPercentDownInput.value;
 
-        if (keyword) filters['keyword'] = keyword;
-        if (salesRank) filters['sales_rank_current_lte'] = salesRank;
-        if (profitMargin) filters['margin_gte'] = profitMargin;
+        // if (keyword) filters['keyword'] = keyword; // Removed
+
+        // Only add filters if they deviate from "Show All" default logic
+        if (salesRank && salesRank !== '99999999') filters['sales_rank_current_lte'] = salesRank;
+        if (profitMargin && profitMargin !== '0') filters['margin_gte'] = profitMargin;
+        if (profitConfidence && profitConfidence !== '0') filters['profit_confidence_gte'] = profitConfidence;
+        if (sellerTrust && sellerTrust !== '0') filters['seller_trust_gte'] = sellerTrust;
+        if (profit && profit !== '1') filters['profit_gte'] = profit; // Default is 1, so if > 1 we filter. Or if user wants > 1. But user requested default $1. So we always filter >= 1?
+        // Wait, if slider default is 1, then we ARE filtering >= 1 by default.
+        // If user drags to >1, we update.
+        // If user wants "Any", that implies >= -infinity. But slider min is 1.
+        // "slider ranges between $1 to Any - defaults to $1".
+        // This implies the filter is ALWAYS active at >= 1 unless "Any" means disabling it?
+        // But the prompt says "defaults to $1". So we keep it.
+        if (profit) filters['profit_gte'] = profit;
+
+        if (percentDown && percentDown !== '0') filters['percent_down_gte'] = percentDown;
 
         return filters;
     }
@@ -593,6 +656,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const step = profitMarginSteps[stepIndex];
         profitMarginValueSpan.textContent = step.label;
         hiddenProfitMarginInput.value = (step.value === Infinity) ? '9999' : step.value;
+    });
+
+    profitConfidenceSlider.addEventListener('input', () => {
+        const val = profitConfidenceSlider.value;
+        profitConfidenceValueSpan.textContent = val + '%';
+        hiddenProfitConfidenceInput.value = val;
+    });
+
+    sellerTrustSlider.addEventListener('input', () => {
+        const val = sellerTrustSlider.value;
+        sellerTrustValueSpan.textContent = val + '%';
+        hiddenSellerTrustInput.value = val;
+    });
+
+    profitSlider.addEventListener('input', () => {
+        const val = profitSlider.value;
+        if (val == 100) {
+            profitValueSpan.textContent = '$100+';
+        } else {
+            profitValueSpan.textContent = '$' + val;
+        }
+        hiddenProfitInput.value = val;
+    });
+
+    percentDownSlider.addEventListener('input', () => {
+        const val = percentDownSlider.value;
+        percentDownValueSpan.textContent = val + '%';
+        hiddenPercentDownInput.value = val;
     });
 
     // --- Refresh Logic ---
