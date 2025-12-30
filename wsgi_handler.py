@@ -1295,7 +1295,11 @@ def deal_count():
             filters = {
                 "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
                 "margin_gte": request.args.get('margin_gte', type=int),
-                "keyword": request.args.get('keyword', type=str)
+                "keyword": request.args.get('keyword', type=str),
+                "profit_confidence_gte": request.args.get('profit_confidence_gte', type=int),
+                "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
+                "profit_gte": request.args.get('profit_gte', type=float),
+                "percent_down_gte": request.args.get('percent_down_gte', type=int)
             }
             where_clauses = []
             filter_params = []
@@ -1311,6 +1315,23 @@ def deal_count():
                 keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
                 where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
                 filter_params.extend([keyword_like] * len(keyword_clauses))
+
+            if filters.get("profit_confidence_gte") is not None:
+                where_clauses.append("\"Profit_Confidence\" >= ?")
+                filter_params.append(filters["profit_confidence_gte"])
+
+            if filters.get("seller_trust_gte") is not None:
+                seller_trust_db_value = filters["seller_trust_gte"] / 20.0
+                where_clauses.append("\"Seller_Quality_Score\" >= ?")
+                filter_params.append(seller_trust_db_value)
+
+            if filters.get("profit_gte") is not None:
+                where_clauses.append("\"Profit\" >= ?")
+                filter_params.append(filters["profit_gte"])
+
+            if filters.get("percent_down_gte") is not None:
+                where_clauses.append("\"Percent_Down\" >= ?")
+                filter_params.append(filters["percent_down_gte"])
 
             where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
 
