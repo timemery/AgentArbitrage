@@ -911,21 +911,21 @@ def api_deals():
         filter_params.extend([keyword_like] * len(keyword_clauses))
 
     # New Filters
-    if filters.get("profit_confidence_gte") is not None:
+    if filters.get("profit_confidence_gte") is not None and filters["profit_confidence_gte"] > 0:
         where_clauses.append("\"Profit_Confidence\" >= ?")
         filter_params.append(filters["profit_confidence_gte"])
 
-    if filters.get("seller_trust_gte") is not None:
+    if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
         # User input is 0-100, DB is 0-5. Convert: value / 20.
         seller_trust_db_value = filters["seller_trust_gte"] / 20.0
         where_clauses.append("\"Seller_Quality_Score\" >= ?")
         filter_params.append(seller_trust_db_value)
 
-    if filters.get("profit_gte") is not None:
+    if filters.get("profit_gte") is not None and filters["profit_gte"] > 0:
         where_clauses.append("\"Profit\" >= ?")
         filter_params.append(filters["profit_gte"])
 
-    if filters.get("percent_down_gte") is not None:
+    if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
         where_clauses.append("\"Percent_Down\" >= ?")
         filter_params.append(filters["percent_down_gte"])
 
@@ -1316,20 +1316,21 @@ def deal_count():
                 where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
                 filter_params.extend([keyword_like] * len(keyword_clauses))
 
-            if filters.get("profit_confidence_gte") is not None:
+            if filters.get("profit_confidence_gte") is not None and filters["profit_confidence_gte"] > 0:
                 where_clauses.append("\"Profit_Confidence\" >= ?")
                 filter_params.append(filters["profit_confidence_gte"])
 
-            if filters.get("seller_trust_gte") is not None:
+            if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
+                # User input is 0-100, DB is 0-5. Convert: value / 20.
                 seller_trust_db_value = filters["seller_trust_gte"] / 20.0
                 where_clauses.append("\"Seller_Quality_Score\" >= ?")
                 filter_params.append(seller_trust_db_value)
 
-            if filters.get("profit_gte") is not None:
+            if filters.get("profit_gte") is not None and filters["profit_gte"] > 0:
                 where_clauses.append("\"Profit\" >= ?")
                 filter_params.append(filters["profit_gte"])
 
-            if filters.get("percent_down_gte") is not None:
+            if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
                 where_clauses.append("\"Percent_Down\" >= ?")
                 filter_params.append(filters["percent_down_gte"])
 
