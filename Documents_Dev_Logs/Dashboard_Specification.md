@@ -61,7 +61,7 @@ The columns below are listed in the **exact order** they must appear on the dash
 
 | Header | Data Source (DB Column) | Formatting / Transformation Rules |
 | :--- | :--- | :--- |
-| **Gated** | `Gated` (joined from `user_restrictions`) | **Status Icons:**<br>- Restricted -> **Apply** (Link to Amazon approval)<br>- Not Restricted -> **✓** (Green checkmark)<br>- Pending -> **Spinner** icon |
+| **Gated** | `Gated` (joined from `user_restrictions`) | **Status Icons:**<br>- Pending -> **Spinner** icon<br>- Not Restricted -> **✓** (Green checkmark)<br>- Restricted -> **X Apply** (Red cross, links to Amazon approval)<br>- Error -> **⚠** (Yellow warning, tooltip "API Error") |
 | **Buy** | `Buy_Now` | **►** icon. Links to Amazon product page. |
 
 ---
