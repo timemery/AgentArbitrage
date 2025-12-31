@@ -16,13 +16,20 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
 ### Key Features
 
 *   **Data Grid:** Displays deals in a responsive table. Columns are defined in `Documents_Dev_Logs/Dashboard_Specification.md`.
-*   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, ROI, and Category.
-    *   *Logic:* Filters are applied client-side (or server-side depending on pagination implementation) to the dataset returned by `/api/deals`.
+*   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Profit Confidence (Trust), and Seller Trust.
+    *   *Logic:* Filters are applied server-side by the `/api/deals` endpoint SQL query.
 *   **Sorting:** Columns like "Profit", "Rank", "Update Time" are sortable.
 *   **Real-time Updates (The "Janitor"):**
     *   **"Refresh Deals" Button:** Manually triggers the "Janitor" task (`POST /api/run-janitor`) to clean up stale deals (older than 72h) and reload the grid.
-    *   **Passive Notification:** The dashboard polls `/api/deal-count` every 60 seconds. This poll includes the current active filters. If the server's filtered count exceeds the local filtered count, a notification ("X New Deals Found") appears, prompting a refresh.
+    *   **Passive Notification:** The dashboard polls `/api/deal-count` (unfiltered) every 60 seconds. It compares this total against the local *unfiltered* total record count. If the server count is higher, a notification ("X New Deals Found") appears, prompting a refresh.
 *   **Recalculation:** A "Recalculate" feature allows updating business metrics (Profit, ROI) based on changed settings (Tax, Prep Fee) without re-fetching data from Keepa.
+
+### Gated Column States
+The "Gated" column indicates the user's restriction status on Amazon:
+*   **Spinner:** Check is pending/queued.
+*   **Green Check:** Approved / Not Restricted.
+*   **Red X:** Restricted. (Clicking opens "Apply to Sell").
+*   **Broken Icon (⚠):** API Error (e.g., Timeout, 403 Forbidden). Hovering shows "API Error".
 
 ---
 
@@ -42,23 +49,9 @@ This page acts as a configuration interface for the Keepa API query used during 
 
 ---
 
-## 3. Data Sourcing (Keepa Scan)
+## 3. Data Sourcing (Hidden)
 
-**Route:** `/data_sourcing`
-**Template:** `templates/data_sourcing.html`
-**Backend Script:** `trigger_backfill_task.py` (calls `keepa_deals/backfiller.py`)
-
-### Overview
-This page allows the user to manually trigger a "Backfill" task, which fetches historical or fresh data from Keepa based on the configuration in `keepa_query.json`.
-
-### Features
-*   **Start Scan:** Triggers the `trigger_backfill_task.py` script as a background process.
-*   **Scan Limit (Optional):** Users can specify a maximum number of deals to process. This is useful for testing or small updates.
-*   **Status Tracking:**
-    *   **Progress Bar:** Visual indication of the scan status (Running, Completed, Failed).
-    *   **Real-time Metrics:** Displays "ETR" (Estimated Time Remaining), processed count, and time per deal.
-    *   **Logs:** displays the last few lines of the process output for debugging.
-*   **Download Results:** Upon completion, a link to download the results (often a CSV or log) is provided.
+**Note:** The explicit "Data Sourcing" page has been removed from the navigation menu for all users as of Phase 1 Access Control updates. Backfill operations are now primarily managed via CLI or automatic scheduled tasks, though the endpoints and scripts remain functional in the backend.
 
 ### Architecture Note
-This feature interacts directly with the `system_state` table in the database to track the "Backfill Page" and "Watermark", ensuring that scans can resume if interrupted.
+The backfill process interacts directly with the `system_state` table in the database to track the "Backfill Page" and "Watermark", ensuring that scans can resume if interrupted.

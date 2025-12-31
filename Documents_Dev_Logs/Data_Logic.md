@@ -18,6 +18,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
     *   **Selection:** It finds the "Used" offer (Conditions: Like New, Very Good, Good, Acceptable) with the **lowest total price** (Price + Shipping).
     *   **Exclusion:** If no valid "Used" offer is found, the deal is dropped.
+    *   **Optimization:** Fetches seller details **only** for this single winning seller ID to minimize API calls.
     *   **Output:** `Price Now`, `Seller`, `Seller ID`, `Seller_Quality_Score`.
 
 3.  **Inferred Sales (The Engine)**:
@@ -41,6 +42,12 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/business_calculations.py`.
     *   **Inputs:** `Price Now`, `List at`, Amazon Fees (FBA + Referral), User Settings (Prep, Tax).
     *   **Output:** `All-in Cost`, `Profit`, `Margin`, `Min. Listing Price`.
+
+7.  **Restriction Check (Gating)**:
+    *   **Logic:** `keepa_deals/sp_api_tasks.py` -> `check_all_restrictions_for_user`.
+    *   **Mechanism:** Queries Amazon SP-API `getListingsRestrictions`.
+    *   **Condition-Aware:** Maps the deal's condition (e.g., "Used - Like New") to the specific SP-API enum (`used_like_new`) to check gating for that specific condition.
+    *   **Output:** `is_restricted` (Bool or -1 for error), `approval_url`.
 
 ---
 
@@ -109,6 +116,15 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: **Mode** (or Median fallback) of inferred sales prices during the **Peak Season**.
     -   **AI Check**: Validated by `grok-4-fast-reasoning`.
+
+-   **`Gated` (Restriction Status)**:
+    -   **Source**: `user_restrictions` table (via SP-API).
+    -   **States**:
+        -   `Null/None`: Pending check (Spinner).
+        -   `0 (False)`: Not Restricted (Green Check).
+        -   `1 (True)`: Restricted (Red X).
+        -   `-1`: API Error (Broken Icon).
+    -   **Approval URL Fallback**: If restricted but no specific link is returned, defaults to `https://sellercentral.amazon.com/hz/approvalrequest?asin={ASIN}`.
 
 ### AI Knowledge Extraction (Guided Learning)
 
