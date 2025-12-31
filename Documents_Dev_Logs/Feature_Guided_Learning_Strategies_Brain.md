@@ -2,6 +2,13 @@
 
 This document details the functionality and logic for the AI-driven "Guided Learning" system, which extracts actionable strategies and conceptual ideas from external content and integrates them into the agent's knowledge base.
 
+## Access Control
+
+**Crucial Note:** These features (`/guided_learning`, `/strategies`, `/agent_brain`) are strictly **Admin-Only**.
+*   **Authentication:** The system checks the user's role in the session (`session['role'] == 'admin'`).
+*   **Enforcement:** Non-admin users attempting to access these routes are redirected to the Dashboard with an "Access Denied" error.
+*   **Navigation:** Links to these pages are hidden from the navigation bar for non-admin users.
+
 ---
 
 ## 1. Guided Learning

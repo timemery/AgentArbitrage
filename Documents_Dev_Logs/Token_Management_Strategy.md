@@ -4,20 +4,25 @@ This document consolidates the API token management strategies for the three cor
 
 ---
 
-## 1. Keepa API: "Controlled Deficit"
+## 1. Keepa API: "Controlled Deficit" Optimization
 
-**Strategy:** Allow the token balance to go negative, then wait for a refill.
-**Implementation:** `keepa_deals/token_manager.py` (and logic in `backfiller.py`)
+**Strategy:** Aggressive consumption above a threshold, quick recovery below it.
+**Implementation:** `keepa_deals/token_manager.py` (and logic in `backfiller.py`, `simple_task.py`)
 
 ### The "Why"
-Keepa's API bucket mechanism allows bursts of requests that can drive the token balance into negative figures. Rather than throttling *every* request to stay positive (which is slow), we allow the scraper to consume tokens aggressively until the bucket is empty. When the balance hits 0 (or the estimated cost of the next batch exceeds the balance), the system pauses execution for a calculated duration to allow the bucket to refill to a safe level.
+Keepa's API allows the token balance to go negative (deficit spending) as long as the starting balance is positive. A strict "no deficit" policy (waiting until we have *enough* tokens for a batch) causes massive delays. The "Controlled Deficit" strategy maximizes throughput by leveraging this allowance.
 
-### Key Parameters
--   **Refill Rate:** ~5 tokens / minute.
--   **Cost Estimation:**
-    -   Base cost: 1 token per product (often waived if `offers` parameter is used).
-    -   `offers` parameter: Expensive. Increases cost significantly (e.g., +6-12 tokens) depending on the number of offer pages.
--   **Wait Logic:** If `tokens_available < estimated_cost`, calculate `wait_time = (deficit / refill_rate)`. The process sleeps for this duration.
+### The Algorithm
+1.  **Threshold Check:** Defined `MIN_TOKEN_THRESHOLD` (50 tokens).
+2.  **Aggressive Phase:** If `current_tokens > 50`, the system **allows** the request to proceed immediately, even if the estimated cost exceeds the current balance.
+    *   *Example:* Balance 55, Cost 80 -> **Approved**. (Resulting balance: -25).
+3.  **Recovery Phase:** If `current_tokens < 50` (or negative), the system pauses.
+    *   **Crucial Optimization:** It waits only until the balance recovers to `50 + 5` (approx 55). It does **not** wait for a full refill (300).
+    *   *Benefit:* Wait times reduced from ~18 minutes (full refill) to <2 minutes (recovery).
+
+### Task-Specific Buffers
+*   **Backfiller:** Uses the standard strategy.
+*   **Upserter (`simple_task.py`):** Requires a stricter **20 token buffer** to ensure it doesn't starve the backfiller or trigger a lock-out during critical updates.
 
 ---
 
@@ -43,27 +48,29 @@ The XAI API (Grok) incurs a direct financial cost per token generated. To preven
 ### Exception: Guided Learning
 *   **Route:** `/learn`
 *   **Implementation:** `wsgi_handler.py` -> `query_xai_api`
-*   **Note:** This feature calls the xAI API directly (via `httpx`) and **does not** currently utilize the `XaiTokenManager` or the daily quota system. This is acceptable because it is a manual, user-triggered action, not an automated loop.
+*   **Note:** This feature calls the xAI API directly (via `httpx`) and **does not** currently utilize the `XaiTokenManager` or the daily quota system. This is acceptable because it is a manual, Admin-triggered action, not an automated loop.
 
 ---
 
-## 3. Amazon SP-API: OAuth 2.0 Refresh Flow
+## 3. Amazon SP-API: LWA-Only Authentication
 
-**Strategy:** Persistent, offline access using Refresh Tokens.
-**Implementation:** `keepa_deals/sp_api_tasks.py` and `wsgi_handler.py`
+**Strategy:** Persistent, offline access using Refresh Tokens without AWS IAM complexity.
+**Implementation:** `keepa_deals/amazon_sp_api.py`, `keepa_deals/sp_api_tasks.py`
 
 ### The "Why"
-The Amazon Selling Partner API (SP-API) requires secure OAuth 2.0 authentication. Access tokens are short-lived (1 hour). To allow background tasks (like checking restriction status) to run without user intervention, we must securely store and use the long-lived **Refresh Token** to generate new Access Tokens on demand.
+Modern Private Applications on Amazon SP-API (registered after Oct 2023) generally do not require AWS Signature Version 4 (SigV4) signing with IAM credentials. They rely solely on the **Login with Amazon (LWA)** Access Token. Removing the SigV4 requirement simplifies the architecture and eliminates `403 Forbidden` errors caused by IAM misconfiguration.
 
 ### Workflow
-1.  **Initial Auth (Frontend):**
-    -   User clicks "Connect" -> Redirects to Amazon -> User approves app -> Redirects back with `auth_code`.
-    -   Backend exchanges `auth_code` for `access_token` and `refresh_token`.
+1.  **Initial Auth:**
+    -   User authorizes the app in Seller Central.
+    -   A **Refresh Token** is generated (manually or via OAuth).
 2.  **Storage:**
-    -   The `refresh_token` and `seller_id` are stored (currently in Flask session for the user context, passed as arguments to background tasks).
-3.  **Background Task Execution:**
-    -   When a Celery task runs (e.g., `check_all_restrictions_for_user`), it receives the `refresh_token` as an argument.
-    -   **Refresh Logic:** The task calls `_refresh_sp_api_token(refresh_token)`. This makes a request to Amazon's token endpoint (`api.amazon.com/auth/o2/token`) using the App's Client ID/Secret to get a *new* `access_token`.
-    -   This new token is valid for 1 hour and is used for the subsequent API calls (e.g., checking `get_listings_restrictions`).
+    -   The `refresh_token`, `client_id`, and `client_secret` are stored securely (Env vars or DB).
+3.  **Task Execution (Restriction Check):**
+    -   **Token Refresh:** The system exchanges the Refresh Token for a short-lived `access_token` (valid for 1h).
+    -   **API Call:** The `access_token` is passed in the `x-amz-access-token` HTTP header.
+    -   **No Signing:** No AWS `AccessKey`/`SecretKey` is used or required.
 
-**Security Note:** The Client Secret is never exposed to the frontend. It is stored in the `.env` file on the server.
+### Environment Handling
+*   **Sandbox vs. Production:** The system automatically detects if the token is valid for Sandbox or Production by probing the endpoints.
+*   **Fallback:** If a Production call fails with 403, it logs the error but does not crash the worker.

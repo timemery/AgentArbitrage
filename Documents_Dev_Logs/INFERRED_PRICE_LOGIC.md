@@ -2,184 +2,78 @@
 
 ## 1. Overview
 
-This document details the system used to calculate the **Peak Price**, **Trough Price**, and **1-Year Average Price** for a given product (ASIN). The entire system is predicated on the concept of an "inferred sale," which is a historical moment where data strongly suggests a transaction occurred, rather than just a price listing.
+This document details the system used to calculate the **List at** (Peak), **Trough**, and **1-Year Average** prices for a given product (ASIN). The entire system is predicated on the concept of an "inferred sale," which is a historical moment where data strongly suggests a transaction occurred.
 
-The primary logic is housed in two key files:
-
+The primary logic is housed in:
 - `keepa_deals/stable_calculations.py`
 - `keepa_deals/new_analytics.py`
 
-The process can be broken down into three main stages:
-
-1. Inferring Sale Events
-2. Analyzing Sales for Seasonality (Peak/Trough)
-3. Calculating the 1-Year Average
+The process follows three main stages:
+1.  **Inferring Sale Events** (Finding the data points).
+2.  **Sanitization** (Removing noise).
+3.  **Calculation & AI Validation** (Determining the final prices).
 
 ------
 
 ## 2. Stage 1: Inferring Sale Events
 
-This is the foundational step and is handled by the `infer_sale_events(product)` function in `keepa_deals/stable_calculations.py`.
+This is the foundational step handled by `infer_sale_events(product)` in `keepa_deals/stable_calculations.py`.
 
 ### a. The "Sale" Trigger and Confirmation
+A sale is inferred by correlating two distinct events within a **240-hour** (10-day) window over the last two years:
 
-A sale is inferred by correlating two distinct events within a 72-hour window over the last two years of a product's history:
-
-1. **The Trigger:** A drop in the offer count for either **New** or **Used** listings. The system processes `csv[11]` (New offers) and `csv[12]` (Used offers) from the Keepa product data. It uses `pandas.DataFrame.diff()` to detect negative changes in the offer count time series.
-2. **The Confirmation:** A drop in the product's Sales Rank (`csv[3]`). A rank drop (e.g., from 100,000 to 80,000) is a strong indicator of a recent sale.
-
-If a rank drop occurs within 72 hours *after* an offer count drop, the system flags it as a confirmed sale event.
+1.  **The Trigger:** A drop in the offer count for either **New** or **Used** listings.
+    -   Source: `csv[11]` (New Count) and `csv[12]` (Used Count).
+    -   Mechanism: `diff()` detects negative changes.
+2.  **The Confirmation:** A drop in the product's **Sales Rank** (`csv[3]`).
+    -   Rationale: A rank drop indicates Amazon registered a sale.
+    -   Window: If a rank drop occurs within 240 hours *after* an offer count drop, it is flagged as a confirmed sale.
 
 ### b. Price Association
-
-When a sale is confirmed, the system associates a price with it. It uses `pandas.merge_asof` to find the nearest corresponding price from the `new_price_history` (`csv[1]`) or `used_price_history` (`csv[2]`) at the time of the sale event.
-
-### c. Symmetrical Outlier Rejection
-
-After collecting all inferred sale events from the last two years, the data is sanitized to remove statistical outliers. This is a critical step to prevent anomalous prices from skewing the results.
-
-- The function calculates the first quartile (Q1) and third quartile (Q3) of all inferred sale prices.
-- The Interquartile Range (IQR) is calculated (`IQR = Q3 - Q1`).
-- A `lower_bound` (`Q1 - 1.5 * IQR`) and an `upper_bound` (`Q3 + 1.5 * IQR`) are established.
-- Any sale with a price outside this range is discarded.
-
-**Key Point:** This rejection is **symmetrical**, meaning it removes both unusually high and unusually low prices, leading to a more balanced and representative dataset of "sane" sales.
-
-The function returns a list of these sanitized `sane_sales` events.
+When a sale is confirmed, the system associates a price with it using `pandas.merge_asof`. It finds the nearest listing price from the history (`new_price_history` or `used_price_history`) at the exact time of the sale.
 
 ------
 
-## 3. Stage 2: Seasonality Analysis (Peak & Trough)
+## 3. Stage 2: Data Sanitization
 
-This stage is handled by the `analyze_sales_performance(product, sale_events)` function in `keepa_deals/stable_calculations.py`.
+After collecting raw events, the data is sanitized to remove statistical outliers.
 
-### a. Monthly Grouping & Identification
-
-The function groups sane sale events by calendar month.
-
-1.  **Peak Month:** Identified as the month with the **highest median** sale price.
-2.  **Trough Month:** Identified as the month with the **lowest median** sale price.
-
-**Note:** Requires data from at least 1 sale event.
-
-### b. Peak Price Calculation ("List at")
-
-Once the Peak Month is identified, the system calculates the "List at" price:
-
-1.  **Mode Calculation:** It calculates the **Mode** (most frequent value) of all sale prices in the Peak Month.
-2.  **Fallback:** If no distinct mode exists (all prices are unique), it falls back to the **Median** of the Peak Month prices.
-
-### c. XAI Reasonableness Check
-
-Before finalizing the Peak Price, the system performs an AI verification step:
-
-1.  **Query:** It sends the Title, Category, Peak Season, and Calculated Price to **Grok (xAI)**.
-2.  **Prompt:** "Given the following book details, is a peak selling price of $X.XX reasonable?"
-3.  **Result:**
-    *   **Yes:** The price is accepted.
-    *   **No:** The price is invalidated (`-1`), and the deal is likely excluded.
-
-**Key Point:** The system prioritizes the **Mode** to find the "standard" selling price during peak demand, avoiding skew from outliers, and verifies it with AI to ensure it makes sense for the specific book title/category.
+### Symmetrical Outlier Rejection
+To prevent anomalous prices (e.g., penny books or repricer errors) from skewing the results:
+1.  Calculates **Q1** (25th percentile) and **Q3** (75th percentile) of all inferred prices.
+2.  Calculates **IQR** (Interquartile Range).
+3.  Removes any sale price outside the range `[Q1 - 1.5*IQR, Q3 + 1.5*IQR]`.
+4.  **Result:** A list of "sane" sale events.
 
 ------
 
-## 4. Stage 3: 1-Year Average Calculation
+## 4. Stage 3: Price Calculation
 
-This final piece is handled by the `get_1yr_avg_sale_price(product)` function in `keepa_deals/new_analytics.py` to avoid circular dependencies.
+### A. The "List at" Price (Peak Season)
+This determines the recommended listing price.
 
-### a. Data Filtering
+1.  **Seasonality Identification:** Groups sane sales by month. Identifies the **Peak Month** (highest median price).
+2.  **Price Determination:**
+    -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
+    -   **Fallback:** If no distinct mode exists, uses the **Median**.
+3.  **Ceiling Logic:**
+    -   The price is capped at 90% of the lowest "New" price (comparing Current, 180-day avg, and 365-day avg) to ensure it remains competitive against new copies.
+4.  **AI Reasonableness Check:**
+    -   The calculated price, along with the book's title and category, is sent to **xAI (Grok)**.
+    -   Prompt: "Is a peak price of $X.XX reasonable for [Book Title]?"
+    -   If the AI rejects it (returns "No"), the deal is discarded.
 
-This function also starts by calling `infer_sale_events` to get the list of sane sale events from the last two years. It then filters this list to include only sales that occurred within the **last 365 days**.
+### B. 1-Year Average (`1yr. Avg.`)
+Used for the "Percent Down" and "Trend" calculations.
 
-### b. Mean Calculation
+1.  Filters the sane sales list to include only those from the **last 365 days**.
+2.  Calculates the **Mean** of these prices.
+3.  **Threshold:** Requires at least **1** inferred sale. If 0, returns `None` (Deal excluded).
 
-If there are at least three sale events within the last year, the function calculates the **`mean`** of the `inferred_sale_price_cents` for those sales.
+------
 
-**Key Point:** Like the other calculations, this function uses the `mean`, not the `median`, for its final output, providing a true average sale price over the last year. If there are fewer than three sales, it returns a default `-` value.
+## Key Evolution & "Hard-Won" Lessons
 
----
-
-### **How We FORMERLY Calculated Inferred Prices**
-
-The entire system is built on the concept of an "inferred sale"—we find moments in a book's history that strongly suggest a sale occurred.
-
-**1. Finding a "Sale"**
-
-The system looks for two key signals happening close together over the last **two years**:
-
-- **The Trigger:** The number of listed offers (either New or Used) drops. This suggests a copy was removed from the market.
-- **The Confirmation:** Within **72 hours** after the offer drop, the book's Sales Rank also drops (meaning its rank number gets smaller). A rank drop is a very strong indicator that a sale happened.
-
-If both of these events occur, the system records the listing price at that moment as a single "inferred sale price."
-
-**2. Removing Outliers**
-
-After gathering all the inferred sale prices from the last two years, the system does a statistical check to clean up the data. It identifies and **removes unusually high-priced sales**. The goal is to prevent a single, freakishly expensive sale from artificially inflating the averages.
-
-**Important Note:** The current system only removes *high* outliers. It does **not** remove unusually low ones. This might be a key factor in why some averages appear low.
-
-**3. Calculating the Final Numbers**
-
-Once we have a clean list of inferred sale prices, the three numbers are calculated as follows:
-
-- **Peak Price:** The system groups all sales by month. It finds the month with the highest *median* sale price and then takes the median of all sales in that "peak month." This represents the typical sale price during the book's busiest season over the last two years.
-- **Trough Price:** This is the same as the Peak Price, but it uses the month with the *lowest* median sale price.
-- **1yr. Avg.:** The system takes all the inferred sales from just the **last 365 days** and calculates the **median** of those prices. It only provides an answer if it finds at least three sales in that one-year period.
-
-### **Suggestions for Improvement**
-
-Based on my analysis and your concerns, here are a few ideas for how we could make these calculations even more accurate and transparent. We can implement any or all of these.
-
-**Suggestion 1: Use Symmetrical Outlier Rejection (Addresses "Too Low" Averages)**
-
-- **What:** Right now, we only trim off the unusually high sale prices. I suggest we also trim off the unusually *low* sale prices.
-- **Why:** This would create a more balanced and realistic average. It would prevent the calculations from being skewed downwards by things like penny-books, clearance sales, or copies sold in "Acceptable" condition with missing pages, which might not be representative of a typical sale. This is my top recommendation to address the "negative profit" issue you're seeing.
-
-**Suggestion 2: Use Mean Instead of Median**
-
-- **What:** We are currently using the `median` for all calculations. The `median` is the "middle" value, which is excellent for ignoring outliers. However, since we are already doing a good job of removing outliers (and could do an even better job with Suggestion 1), we might get a more representative price by using the `mean` (the traditional average).
-- **Why:** After cleaning the data, the `mean` might better reflect the book's true average sale price across all its transactions. The logs already show that the `mean` is being calculated alongside the `median`, so switching to it would be a straightforward change.
-
-**Suggestion 3: Make the "1yr. Avg." Time Window Adjustable**
-
-- **What:** You mentioned that Keepa uses a 180-day average. We could make the time window for our "1yr. Avg." calculation a configurable setting.
-- **Why:** This would give you the flexibility to choose between a 90-day, 180-day, or 365-day average. A shorter window would be more responsive to recent price trends, while a longer window provides a more stable, long-term view.
-
-Please let me know your thoughts on these ideas. I'm ready to move forward with whichever approach you think is best.
-
-**My direction based on the last Agent's suggestions.** 
-
-I like the first 2 suggestions, but not sure about the third. Unless perhaps that third choice is an interactive one in the header row, and would resort/refresh the results in that column as well as how it effects other columns down the line like List at (aka Peak sale price), and profit/margin and anything else that uses the List at (Peak) price as part of another calculation. Also, the fact that this is a 1 year average, covers the yearly seasonal fluctuations, where a shorter time frame would not. It is an interesting idea, and I will make a note of it for consideration later on, but let's implement just the first 2 ideas for now.  
-
-**Agent's notes on changes made:**
-
-feat: Improve accuracy of inferred price calculations
-
-This commit improves the accuracy and realism of the inferred sale price calculations (Peak, Trough, and 1yr. Avg.) based on user feedback.
-
-The key changes are:
-
-1.  **Symmetrical Outlier Rejection:** The `infer_sale_events` function in `keepa_deals/stable_calculations.py` now removes both unusually high and unusually low sale prices from the data set before analysis. The previous method only removed high outliers, which could lead to averages being skewed downwards. This change ensures a more balanced and representative set of sale data.
-
-2.  **Switch to Mean from Median:** The `analyze_seasonality` function (for Peak/Trough prices) and the `get_1yr_avg_sale_price` function have been updated to use the `mean` (standard average) instead of the `median`. After cleaning the data with symmetrical outlier rejection, the mean provides a more traditional and representative average of the likely sale prices.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+1.  **Mean vs Median:** We switched from Median to **Mean** for the 1-Year Average to better reflect the true market value across all transactions, after outlier removal proved effective.
+2.  **Mode for Peak:** We use **Mode** for the "List at" price because arbitrage sellers often target a specific "standard" market price that occurs frequently, rather than an average of fluctuations.
+3.  **Strict Validation:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it prefers to reject the deal rather than present a risky one.
