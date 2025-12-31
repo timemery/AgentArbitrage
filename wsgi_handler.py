@@ -983,14 +983,17 @@ def api_deals():
                     deal['restriction_status'] = 'not_restricted'
 
             # (Existing formatting logic for conditions, bindings, etc. remains the same...)
-            binding_map = {"Audio CD": "CD", "Board book": "BB", "Hardcover": "HC", "Paperback": "PB", "Mass Market Paperback": "MMP"}
+            # binding_map removed in favor of automatic formatting
             condition_string_map = {"New": "N", "Used - Like New": "U - LN", "Used - Very Good": "U - VG", "Used - Good": "U - G", "Used - Acceptable": "U - A"}
             condition_code_map = {"1": "New", "2": "Used - Like New", "3": "Used - Very Good", "4": "Used - Good", "5": "Used - Acceptable"}
 
             if 'Condition' in deal and deal['Condition'] and str(deal['Condition']).isdigit():
                 deal['Condition'] = condition_code_map.get(str(deal['Condition']), f"Unknown ({deal['Condition']})")
-            if 'Binding' in deal and deal['Binding'] in binding_map:
-                deal['Binding'] = binding_map[deal['Binding']]
+
+            # Automatic formatting for Binding: remove underscores/hyphens, title case
+            if 'Binding' in deal and deal['Binding']:
+                deal['Binding'] = str(deal['Binding']).replace('_', ' ').replace('-', ' ').title()
+
             if 'Condition' in deal and deal['Condition'] in condition_string_map:
                 deal['Condition'] = condition_string_map[deal['Condition']]
 
