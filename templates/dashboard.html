@@ -471,7 +471,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost') || col === '1yr_Avg') {
                             value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         }
-                    } else if (col === 'Binding' || col === 'Condition') {
+                    } else if (col === 'Binding') {
+                        // Backend formats it, frontend just displays it with truncation class
+                    } else if (col === 'Condition') {
                         value = formatCondition(value);
                     }
 
@@ -516,6 +518,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         table += `<td class="genre-cell"><span>${displayValue}</span></td>`;
                     } else if (col === 'Detailed_Seasonality') {
                         table += `<td class="season-detail-cell"><span>${value}</span></td>`;
+                    } else if (col === 'Binding') {
+                        table += `<td class="binding-cell"><span>${value}</span></td>`;
                     } else if (col === 'Sells') {
                         table += `<td class="sells-cell"><span>${value}</span></td>`;
                     } else if (col === 'Seller') {
