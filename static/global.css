@@ -953,3 +953,25 @@ body.home-background::before {
     padding: 8px 16px; /* Base padding */
     border-radius: 4px; /* Base radius */
 }
+
+/* Binding Cell Styles */
+.binding-cell {
+    max-width: 95px; /* Requested width */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+/* Hover effect (identical to title-cell) */
+.binding-cell:hover {
+    overflow: visible;
+}
+
+.deal-row:hover .binding-cell:hover span {
+    position: relative;
+    background-color: #011b2a;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    padding: 2px 5px;
+    white-space: nowrap; /* Ensure full text doesn't wrap in the popout */
+}
