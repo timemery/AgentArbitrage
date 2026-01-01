@@ -9,19 +9,36 @@ logger = logging.getLogger('ava_advisor')
 logger.setLevel(logging.INFO)
 
 # Load environment variables
-XAI_API_KEY = os.getenv("XAI_TOKEN")
 XAI_API_URL = "https://api.x.ai/v1/chat/completions"
+
+# Path to strategies file
+STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'strategies.json')
+
+def load_strategies():
+    """Loads strategies from strategies.json."""
+    try:
+        if os.path.exists(STRATEGIES_FILE):
+            with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+                strategies = json.load(f)
+                if isinstance(strategies, list):
+                    return "\n".join([f"- {s}" for s in strategies])
+    except Exception as e:
+        logger.error(f"Error loading strategies: {e}")
+    return ""
 
 def query_xai_api(payload):
     """
     Sends a request to the xAI API.
     """
-    if not XAI_API_KEY:
+    # Fetch token lazily to ensure environment variables are loaded
+    xai_api_key = os.getenv("XAI_TOKEN")
+
+    if not xai_api_key:
         logger.error("XAI_TOKEN is not set.")
         return {"error": "XAI_TOKEN is not configured."}
 
     headers = {
-        "Authorization": f"Bearer {XAI_API_KEY}",
+        "Authorization": f"Bearer {xai_api_key}",
         "Content-Type": "application/json"
     }
 
@@ -65,6 +82,15 @@ def generate_ava_advice(deal_data):
     trend = deal_data.get('Trend', '')
     drops_365 = deal_data.get('Sales_Rank_Drops_last_365_days', 0)
 
+    # Load learned strategies
+    strategies_text = load_strategies()
+    strategy_section = ""
+    if strategies_text:
+        strategy_section = f"""
+    **Your Learned Strategies (Use these to inform your advice):**
+    {strategies_text}
+    """
+
     # Construct a detailed prompt
     prompt = f"""
     You are Ava, an expert book arbitrage advisor. Your goal is to give a short, concise, and highly actionable paragraph of advice to a user who is considering buying this book to resell.
@@ -92,6 +118,7 @@ def generate_ava_advice(deal_data):
     *   If the profit is slim, suggest passing unless the volume is high.
     *   Keep it concise (around 50-80 words). No fluff.
     *   Use a conversational tone.
+    {strategy_section}
 
     **Examples of your advice style:**
     *   "Ooo yes good one. At a low price, many recoveries from this low price in the past. Solid demand, no new edition. Nice."
@@ -114,7 +141,7 @@ def generate_ava_advice(deal_data):
                 "content": prompt
             }
         ],
-        "model": "grok-4-latest", # Or "grok-beta" depending on availability
+        "model": "grok-beta", # Using grok-beta for reliable API access
         "stream": False,
         "temperature": 0.4, # Slightly creative but grounded
         "max_tokens": 150
