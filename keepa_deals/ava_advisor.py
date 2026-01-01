@@ -141,7 +141,7 @@ def generate_ava_advice(deal_data):
                 "content": prompt
             }
         ],
-        "model": "grok-beta", # Using grok-beta for reliable API access
+        "model": "grok-4-fast-reasoning", # Using the latest reasoning model for best results
         "stream": False,
         "temperature": 0.4, # Slightly creative but grounded
         "max_tokens": 150

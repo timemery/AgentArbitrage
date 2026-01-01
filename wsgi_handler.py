@@ -115,7 +115,7 @@ def extract_strategies(full_text):
                 "content": prompt
             }
         ],
-        "model": "grok-4-latest",
+        "model": "grok-4-fast-reasoning",
         "stream": False,
         "temperature": 0.2
     }
@@ -166,7 +166,7 @@ def extract_conceptual_ideas(full_text):
                 "content": prompt
             }
         ],
-        "model": "grok-4-latest",
+        "model": "grok-4-fast-reasoning",
         "stream": False,
         "temperature": 0.3
     }
