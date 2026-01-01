@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import sqlite3
 import re
 import json
+import uuid
 from dotenv import load_dotenv
 import tempfile
 import time
@@ -88,16 +89,24 @@ def query_xai_api(payload):
 def extract_strategies(full_text):
     prompt = f"""
     From the following text, extract key strategies, parameters, and "tricks" for online book arbitrage.
-    Present them as a list of clear, actionable rules.
+    Convert them into a structured JSON format.
+
+    **Output Format:**
+    Return ONLY a JSON array of objects. Do not include markdown formatting.
+    Each object must follow this schema:
+    {{
+      "id": "generate a unique string ID",
+      "category": "One of: Buying, Pricing, Risk, Seasonality, General",
+      "trigger": "A short condition description (e.g., 'Sales Rank > 100,000')",
+      "advice": "The actionable advice",
+      "confidence": "High",
+      "source": "The original text snippet"
+    }}
 
     **Instructions:**
-    1.  Focus on specific numbers, ranges, and conditions (e.g., "Sales rank between 100,000 and 500,000").
-    2.  **Pay special attention to inferential strategies.** These are "tricks" or methods to figure out information that isn't directly stated, often by combining two or more data points.
-    3.  Only use the information from the text provided. Do not add any external knowledge.
-    4.  If the text contains no actionable strategies, respond with the single phrase: "No actionable strategies found in the provided text."
-
-    **Example of an Inferential Strategy to capture:**
-    *   "You can infer the actual sale price of a book by watching for a simultaneous drop in the number of used offers and a drop in the sales rank on the Keepa chart. The price at that point is likely the true sale price."
+    1.  Focus on specific numbers, ranges, and conditions.
+    2.  Capture inferential strategies.
+    3.  If no strategies are found, return an empty array [].
 
     **Text to Analyze:**
     {full_text}
@@ -451,13 +460,52 @@ def approve():
             else:
                 strategies = []
             
-            # Add new strategy (or strategies)
-            # Assuming strategies are newline-separated
-            new_strategies = [s.strip() for s in approved_strategies.strip().split('\n') if s.strip()]
+            # Parse the approved strategies from JSON string
+            try:
+                new_strategies = json.loads(approved_strategies)
+                if not isinstance(new_strategies, list):
+                    # Fallback if it's not a list (single object?)
+                    new_strategies = [new_strategies]
+            except json.JSONDecodeError:
+                # Fallback for legacy text format (just in case)
+                app.logger.warning("Failed to parse approved_strategies as JSON. Treating as text.")
+                new_strategies = [{"id": str(uuid.uuid4()), "advice": s.strip(), "trigger": "Manual Entry", "category": "General"}
+                                  for s in approved_strategies.strip().split('\n') if s.strip()]
+
             strategies.extend(new_strategies)
             
-            # Remove duplicates and save
-            unique_strategies = list(dict.fromkeys(strategies))
+            # Deduplicate by ID if present, or advice text
+            seen_ids = set()
+            unique_strategies = []
+
+            # Use a list to iterate and build the unique list
+            # We must handle mixed types (dict and str) in 'strategies'
+
+            for s in strategies:
+                if isinstance(s, dict):
+                    sid = s.get('id')
+                    # Generate ID if missing
+                    if not sid:
+                        sid = str(uuid.uuid4())
+                        s['id'] = sid
+
+                    if sid not in seen_ids:
+                        seen_ids.add(sid)
+                        unique_strategies.append(s)
+                else:
+                     # Convert legacy string to object
+                     # For legacy strings, we don't have IDs. We can check if the text matches any existing advice?
+                     # For simplicity, we'll wrap it and give it a new ID.
+                     # But we should try to avoid exact duplicates of the text itself.
+                     # However, 'seen_ids' tracks IDs.
+                     # Let's just convert and add.
+                     unique_strategies.append({
+                         "id": str(uuid.uuid4()),
+                         "advice": str(s),
+                         "trigger": "Legacy",
+                         "category": "General"
+                     })
+
             with open(STRATEGIES_FILE, 'w', encoding='utf-8') as f:
                 json.dump(unique_strategies, f, indent=4)
             

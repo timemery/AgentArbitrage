@@ -15,14 +15,44 @@ XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 # Path to strategies file
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'strategies.json')
 
-def load_strategies():
-    """Loads strategies from strategies.json."""
+def load_strategies(deal_context=None):
+    """
+    Loads strategies from strategies.json and formats them for the prompt.
+
+    Args:
+        deal_context (dict, optional): Context about the deal (e.g., category, seasonality) to filter strategies.
+    """
     try:
         if os.path.exists(STRATEGIES_FILE):
             with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
                 strategies = json.load(f)
                 if isinstance(strategies, list):
-                    return "\n".join([f"- {s}" for s in strategies])
+                    formatted = []
+
+                    # Determine relevant categories based on deal_context
+                    relevant_categories = set(["General", "Buying", "Risk"]) # Always include these
+
+                    if deal_context:
+                        seasonality = deal_context.get('Detailed_Seasonality', '').lower()
+                        title = deal_context.get('Title', '').lower()
+
+                        if 'textbook' in seasonality or 'textbook' in title:
+                            relevant_categories.add("Seasonality")
+
+                        # Add more logic here as needed, e.g. based on Sales Rank or ROI triggers
+
+                    for s in strategies:
+                        if isinstance(s, dict):
+                            cat = s.get('category', 'General')
+                            # If we have context, try to filter. If cat is in our relevant set, include it.
+                            # If cat is None or empty, treat as General.
+                            if not deal_context or (cat in relevant_categories) or (cat == "General"):
+                                formatted.append(f"- [Category: {cat}] IF {s.get('trigger', 'N/A')} THEN {s.get('advice', 'N/A')}")
+                        else:
+                            # Legacy strings are always included as we can't categorize them easily without processing
+                            formatted.append(f"- {s}")
+
+                    return "\n".join(formatted)
     except Exception as e:
         logger.error(f"Error loading strategies: {e}")
     return ""
@@ -107,8 +137,8 @@ def generate_ava_advice(deal_data, xai_api_key=None):
         trend = deal_data.get('Trend', '')
         drops_365 = deal_data.get('Sales_Rank_Drops_last_365_days', 0)
 
-        # Load learned strategies
-        strategies_text = load_strategies()
+        # Load learned strategies with context
+        strategies_text = load_strategies(deal_context=deal_data)
         strategy_section = ""
         if strategies_text:
             strategy_section = f"""
