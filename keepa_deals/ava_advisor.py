@@ -74,7 +74,14 @@ def query_xai_api(payload, api_key=None):
 def format_currency(value):
     if value is None:
         return "-"
-    return f"${value:,.2f}"
+    try:
+        # Try to convert string to float if necessary
+        if isinstance(value, str):
+            value = float(value.replace('$', '').replace(',', ''))
+        return f"${value:,.2f}"
+    except (ValueError, TypeError):
+        # If conversion fails, return the original string
+        return str(value)
 
 def generate_ava_advice(deal_data, xai_api_key=None):
     """
