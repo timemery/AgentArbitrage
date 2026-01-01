@@ -121,6 +121,16 @@
                     <p><a id="overlay-keepa-link" href="#" target="_blank">View on Keepa</a></p>
                 </div>
             </div>
+
+            <div id="ava-advice-container" class="ava-advice-container" style="margin-top: 20px; padding: 15px; background-color: #f0f7ff; border-left: 4px solid #1976d2; border-radius: 4px;">
+                <h3 style="margin-top: 0; color: #1976d2; display: flex; align-items: center; gap: 10px;">
+                    Advice from Ava
+                    <div id="ava-spinner" class="spinner" style="width: 20px; height: 20px; border-width: 2px; display: none;"></div>
+                </h3>
+                <p id="ava-advice-text" style="font-size: 1.05em; line-height: 1.5; color: #333;">
+                    <!-- Advice will load here -->
+                </p>
+            </div>
         </div>
 
         <div id="prep" class="tab-content">
@@ -824,6 +834,38 @@ document.addEventListener('DOMContentLoaded', function() {
         // External Links
         document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal.ASIN}`;
         document.getElementById('overlay-keepa-link').href = `https://keepa.com/#!product/1-${deal.ASIN}`;
+
+        // Load Ava Advice
+        loadAvaAdvice(deal.ASIN);
+    }
+
+    async function loadAvaAdvice(asin) {
+        const adviceContainer = document.getElementById('ava-advice-text');
+        const spinner = document.getElementById('ava-spinner');
+
+        // Reset state
+        adviceContainer.textContent = '';
+        adviceContainer.style.fontStyle = 'italic';
+        adviceContainer.textContent = 'Analyzing deal data...';
+        spinner.style.display = 'inline-block';
+
+        try {
+            const response = await fetch(`/api/ava-advice/${asin}`);
+            const data = await response.json();
+
+            spinner.style.display = 'none';
+            adviceContainer.style.fontStyle = 'normal';
+
+            if (data.advice) {
+                adviceContainer.textContent = data.advice;
+            } else {
+                adviceContainer.textContent = "Ava is taking a coffee break. Please try again later.";
+            }
+        } catch (error) {
+            console.error('Error fetching Ava advice:', error);
+            spinner.style.display = 'none';
+            adviceContainer.textContent = "Could not reach Ava at the moment.";
+        }
     }
 
     closeOverlayBtn.addEventListener('click', () => {

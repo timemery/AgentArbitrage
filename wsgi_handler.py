@@ -23,6 +23,7 @@ from keepa_deals.db_utils import (
     get_all_user_credentials
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
+from keepa_deals.ava_advisor import generate_ava_advice
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -1347,6 +1348,31 @@ def deal_count():
     except sqlite3.Error as e:
         app.logger.error(f"Database error in deal_count: {e}")
         return jsonify({'error': 'Database error', 'message': str(e)}), 500
+
+@app.route('/api/ava-advice/<string:asin>')
+def get_ava_advice(asin):
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        with sqlite3.connect(DATABASE_URL) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM deals WHERE ASIN = ?", (asin,))
+            row = cursor.fetchone()
+
+            if not row:
+                return jsonify({'error': 'Deal not found'}), 404
+
+            deal_data = dict(row)
+            advice = generate_ava_advice(deal_data)
+
+            return jsonify({'advice': advice})
+
+    except Exception as e:
+        app.logger.error(f"Error in ava advice endpoint: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 # Ensure tables exist on module load (for WSGI environment)
 create_user_restrictions_table_if_not_exists()
