@@ -16,12 +16,13 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
 ### Key Features
 
 *   **Data Grid:** Displays deals in a responsive table. Columns are defined in `Documents_Dev_Logs/Dashboard_Specification.md`.
-*   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Profit Confidence (Trust), and Seller Trust.
+*   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Profit Confidence (Trust), Seller Trust, and Price Drops.
     *   *Logic:* Filters are applied server-side by the `/api/deals` endpoint SQL query.
+    *   **"Any" Logic:** Setting a filter to 0 ("Any") excludes it from the query, ensuring that NULL/Negative values are not hidden by default.
 *   **Sorting:** Columns like "Profit", "Rank", "Update Time" are sortable.
 *   **Real-time Updates (The "Janitor"):**
-    *   **"Refresh Deals" Button:** Manually triggers the "Janitor" task (`POST /api/run-janitor`) to clean up stale deals (older than 72h) and reload the grid.
-    *   **Passive Notification:** The dashboard polls `/api/deal-count` (unfiltered) every 60 seconds. It compares this total against the local *unfiltered* total record count. If the server count is higher, a notification ("X New Deals Found") appears, prompting a refresh.
+    *   **"Refresh Deals" Button:** Manually triggers the "Janitor" task (`POST /api/run-janitor`) to clean up stale deals (older than **72 hours**) and reload the grid.
+    *   **Passive Notification:** The dashboard polls `/api/deal-count` (filtered) every 30 seconds. It compares this count against the local filtered record count. If the server count differs, a notification ("New Deals Available") appears.
 *   **Recalculation:** A "Recalculate" feature allows updating business metrics (Profit, ROI) based on changed settings (Tax, Prep Fee) without re-fetching data from Keepa.
 
 ### Gated Column States
@@ -31,9 +32,15 @@ The "Gated" column indicates the user's restriction status on Amazon:
 *   **Red X:** Restricted. (Clicking opens "Apply to Sell").
 *   **Broken Icon (⚠):** API Error (e.g., Timeout, 403 Forbidden). Hovering shows "API Error".
 
+### Advice from Ava (AI Overlay)
+When expanding a deal's details:
+*   An "Advice from Ava" section appears.
+*   It asynchronously fetches an AI analysis (`/api/ava-advice/<ASIN>`) powered by `grok-4-fast-reasoning`.
+*   Provides 50-80 words of actionable advice based on the deal's specific metrics.
+
 ---
 
-## 2. Deals Query Configuration
+## 2. Deals Query Configuration (Admin Only)
 
 **Route:** `/deals`
 **Template:** `templates/deals.html`

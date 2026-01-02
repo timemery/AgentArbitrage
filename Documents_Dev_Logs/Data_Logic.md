@@ -13,6 +13,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 1.  **Extraction (Raw Data)**:
     *   Basic attributes (ASIN, Title, Category) are pulled from the Keepa `/product` API.
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
+    *   **Amazon Prices**: Extracts `Amazon Current`, `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
 
 2.  **Seller & Price Analysis**:
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
@@ -23,7 +24,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
-    *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed closely by a drop in **Sales Rank** (Amazon registered the sale).
+    *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed by a drop in **Sales Rank** (Amazon registered the sale) within a **240-hour** (10-day) window.
     *   **Output:** A list of `sale_events` used for all downstream analytics.
 
 4.  **Analytics & Seasonality**:
@@ -34,8 +35,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 5.  **AI Price Check ("List at")**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `get_list_at_price`.
-    *   **Calculation:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-    *   **Verification:** Queries AI: "Is a peak price of $X.XX reasonable for this book?"
+    *   **Calculation:**
+        *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
+        *   **Fallback (High Velocity):** If no inferred sales are found but `monthlySold > 20`, uses `Used - 90 days avg`.
+    *   **Ceiling Guardrail:** The price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
+    *   **Verification:** Queries AI (`grok-4-fast-reasoning`): "Is a peak price of $X.XX reasonable for this book?" Context provided includes Binding, Page Count, Image URL, and Rank.
     *   **Exclusion:** If AI says "No" or calculation fails, the deal is dropped.
 
 6.  **Business Math**:
@@ -82,6 +86,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Logic**: Returns the condition of the winning offer (e.g., "Used, very good").
     -   **Transformation**: Converted to numeric code (1-5) for DB storage, then re-mapped to abbreviations (e.g., "U - VG") by the API for display.
 
+-   **`Binding`**:
+    -   **Source**: `keepa_deals/processing.py` -> `clean_binding_text`.
+    -   **Logic**: Replaces underscores and hyphens with spaces, applies Title Case (e.g., `mass_market` -> "Mass Market").
+    -   **Display**: Dashboard truncates to 95px with ellipsis, full text on hover.
+
 ### Advanced Analytics
 
 -   **`1yr. Avg.`**:
@@ -101,6 +110,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         -   `⇧` (Up) if last price > first price of sample.
         -   `⇩` (Down) if last price < first price.
         -   `⇨` (Flat) otherwise.
+    -   **Dashboard**: Merged into "Changed" column (Arrow + Time).
 
 -   **`Profit Confidence` (Profit Trust)**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
@@ -115,7 +125,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`List at`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
-    -   **Logic**: **Mode** (or Median fallback) of inferred sales prices during the **Peak Season**.
+    -   **Logic**: **Mode** of peak season prices (or `Used - 90d avg` fallback if high velocity).
+    -   **Constraint**: Capped at 90% of Amazon New price.
     -   **AI Check**: Validated by `grok-4-fast-reasoning`.
 
 -   **`Gated` (Restriction Status)**:
@@ -127,18 +138,23 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         -   `-1`: API Error (Broken Icon).
     -   **Approval URL Fallback**: If restricted but no specific link is returned, defaults to `https://sellercentral.amazon.com/hz/approvalrequest?asin={ASIN}`.
 
+-   **`Advice` (Overlay Feature)**:
+    -   **Source**: `keepa_deals/ava_advisor.py`.
+    -   **Logic**: Real-time call to `grok-4-fast-reasoning` generating specific, actionable advice (50-80 words).
+    -   **Context**: Uses deal metrics + `strategies.json`.
+
 ### AI Knowledge Extraction (Guided Learning)
 
 -   **`extract_strategies`**:
     -   **Source**: `wsgi_handler.py`.
     -   **Prompt**: Extracts specific, actionable rules/numbers.
-    -   **Model**: `grok-4-latest` (Temperature 0.2).
+    -   **Model**: `grok-4-fast-reasoning` (Temperature 0.2).
     -   **Logic**: Parses input text for conditions like "Rank < X" or "Profit > Y".
 
 -   **`extract_conceptual_ideas`**:
     -   **Source**: `wsgi_handler.py`.
     -   **Prompt**: Extracts high-level mental models and "why" logic.
-    -   **Model**: `grok-4-latest` (Temperature 0.3).
+    -   **Model**: `grok-4-fast-reasoning` (Temperature 0.3).
     -   **Logic**: Focuses on qualitative insights.
 
 ### Business & Financial Metrics
@@ -159,3 +175,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Min. Listing Price`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
     -   **Formula**: `All-in Cost / (1 - Default Markup %)`.
+
+---
+
+## The "Janitor" & Data Freshness
+
+-   **Trigger**: Every 4 hours or Manual "Refresh Deals".
+-   **Logic**: Deletes deals where `last_seen_utc` is older than **72 hours**.
+-   **Purpose**: Prevents stale deals from cluttering the dashboard while giving the backfiller enough time (3 days) to update them.
