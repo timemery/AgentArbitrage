@@ -13,45 +13,45 @@
                     <input type="text" id="keyword_search" name="keyword" class="styled-text-field">
                 </div> -->
                 <div class="filter-item">
-                    <label for="max_sales_rank_slider">Max Sales Rank: <span id="sales-rank-value">∞</span></label>
+                    <label for="percent_down_slider">Min. Below Avg.: <span id="percent-down-value">Any</span></label>
                     <div class="slider-container">
-                        <input type="range" min="0" max="20" value="20" class="slider" id="max_sales_rank_slider">
-                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                        <input type="range" min="0" max="100" value="0" class="slider" id="percent_down_slider">
+                        <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
                     </div>
                 </div>
                 <div class="filter-item">
-                    <label for="min_profit_margin_slider">Min % Margin: <span id="profit-margin-value">0%</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="20" value="0" class="slider" id="min_profit_margin_slider">
-                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="profit_confidence_slider">Profit Trust: <span id="profit-confidence-value">0%</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="0" class="slider" id="profit_confidence_slider">
-                        <input type="hidden" id="profit_confidence" name="profit_confidence_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="seller_trust_slider">Seller Trust: <span id="seller-trust-value">0%</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="0" class="slider" id="seller_trust_slider">
-                        <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="profit_slider">Min $ Profit: <span id="profit-value">Any</span></label>
+                    <label for="profit_slider">Min. Profit: <span id="profit-value">Any</span></label>
                     <div class="slider-container">
                         <input type="range" min="0" max="100" value="0" class="slider" id="profit_slider">
                         <input type="hidden" id="profit" name="profit_gte" value="0">
                     </div>
                 </div>
                 <div class="filter-item">
-                    <label for="percent_down_slider">Below Avg. (%): <span id="percent-down-value">0%</span></label>
+                    <label for="min_profit_margin_slider">Min. Margin: <span id="profit-margin-value">Any</span></label>
                     <div class="slider-container">
-                        <input type="range" min="0" max="100" value="0" class="slider" id="percent_down_slider">
-                        <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
+                        <input type="range" min="0" max="20" value="0" class="slider" id="min_profit_margin_slider">
+                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value">∞</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="20" value="20" class="slider" id="max_sales_rank_slider">
+                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="profit_confidence_slider">Min. Profit Trust: <span id="profit-confidence-value">Any</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="100" value="0" class="slider" id="profit_confidence_slider">
+                        <input type="hidden" id="profit_confidence" name="profit_confidence_gte" value="0">
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value">Any</span></label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="10" value="0" class="slider" id="seller_trust_slider">
+                        <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
                     </div>
                 </div>
             </div>
@@ -193,11 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
         { value: 800000, label: '800k' }, { value: 900000, label: '900k' }, { value: 1000000, label: '1m' },
         { value: 1500000, label: '1.5m' }, { value: 2000000, label: '2m' }, { value: 2500000, label: '2.5m' },
         { value: 3000000, label: '3m' }, { value: 3500000, label: '3.5m' }, { value: 4000000, label: '4m' },
-        { value: 4500000, label: '4.5m' }, { value: 5000000, label: '5m' }, { value: Infinity, label: '∞' }
+        { value: 4500000, label: '4.5m' }, { value: 5000000, label: '5m' }, { value: Infinity, label: 'Any' }
     ];
 
     const profitMarginSteps = [
-        { value: 0, label: '0%' }, { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
+        { value: 0, label: 'Any' }, { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
         { value: 40, label: '40%' }, { value: 50, label: '50%' }, { value: 60, label: '60%' },
         { value: 70, label: '70%' }, { value: 80, label: '80%' }, { value: 90, label: '90%' },
         { value: 100, label: '100%' }, { value: 150, label: '150%' }, { value: 200, label: '200%' },
@@ -651,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset Sliders UI
         const initialSalesRankIndex = salesRankSteps.findIndex(s => s.value === Infinity);
         salesRankSlider.value = initialSalesRankIndex;
-        salesRankValueSpan.textContent = '∞';
+        salesRankValueSpan.textContent = 'Any';
 
         profitMarginSlider.value = 0; // Index 0 is 0%
         profitMarginValueSpan.textContent = 'Any';
@@ -700,13 +700,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     profitConfidenceSlider.addEventListener('input', () => {
         const val = profitConfidenceSlider.value;
-        profitConfidenceValueSpan.textContent = val + '%';
+        if (val == 0) {
+            profitConfidenceValueSpan.textContent = 'Any';
+        } else {
+            profitConfidenceValueSpan.textContent = val + '%';
+        }
         hiddenProfitConfidenceInput.value = val;
     });
 
     sellerTrustSlider.addEventListener('input', () => {
         const val = sellerTrustSlider.value;
-        sellerTrustValueSpan.textContent = val + '%';
+        if (val == 0) {
+            sellerTrustValueSpan.textContent = 'Any';
+        } else {
+            sellerTrustValueSpan.textContent = val + '/10';
+        }
         hiddenSellerTrustInput.value = val;
     });
 
@@ -724,7 +732,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     percentDownSlider.addEventListener('input', () => {
         const val = percentDownSlider.value;
-        percentDownValueSpan.textContent = val + '%';
+        if (val == 0) {
+            percentDownValueSpan.textContent = 'Any';
+        } else {
+            percentDownValueSpan.textContent = val + '%';
+        }
         hiddenPercentDownInput.value = val;
     });
 
