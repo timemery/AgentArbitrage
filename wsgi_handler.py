@@ -965,8 +965,8 @@ def api_deals():
         filter_params.append(filters["profit_confidence_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
-        # User input is 0-10, DB is 0-5. Convert: value / 2.0.
-        seller_trust_db_value = filters["seller_trust_gte"] / 2.0
+        # User input is 0-10, DB is 0-1 (Wilson Score). Convert: value / 10.0.
+        seller_trust_db_value = filters["seller_trust_gte"] / 10.0
         where_clauses.append("\"Seller_Quality_Score\" >= ?")
         filter_params.append(seller_trust_db_value)
 
@@ -1373,8 +1373,8 @@ def deal_count():
                 filter_params.append(filters["profit_confidence_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
-                # User input is 0-10, DB is 0-5. Convert: value / 2.0.
-                seller_trust_db_value = filters["seller_trust_gte"] / 2.0
+                # User input is 0-10, DB is 0-1 (Wilson Score). Convert: value / 10.0.
+                seller_trust_db_value = filters["seller_trust_gte"] / 10.0
                 where_clauses.append("\"Seller_Quality_Score\" >= ?")
                 filter_params.append(seller_trust_db_value)
 
