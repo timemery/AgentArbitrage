@@ -19,9 +19,25 @@ The system follows a standard **Flask + Celery + Redis + SQLite** architecture:
 
 ---
 
-## 2. The Data Lifecycle (Task Workflows)
+## 2. User Roles & Access Control
 
-There are three primary background tasks that manage the data lifecycle. Understanding the distinction between them is critical.
+The system enforces strict role-based access control (RBAC):
+
+*   **Regular User:**
+    *   **Access:** Dashboard (`/dashboard`), Settings (`/settings`).
+    *   **Prohibited:** Deals Configuration, Guided Learning, Strategies, Agent Brain.
+*   **Admin User:**
+    *   **Access:** All areas.
+    *   **Exclusive Features:**
+        *   **Guided Learning (`/learn`):** Teaching the AI new concepts.
+        *   **Strategies / Agent Brain:** Viewing and managing the AI's knowledge base.
+        *   **Deals Configuration:** Editing the `keepa_query.json`.
+
+---
+
+## 3. The Data Lifecycle (Task Workflows)
+
+There are four primary background tasks that manage the data lifecycle.
 
 ### A. `backfill_deals` (The Heavy Lifter)
 *   **Purpose:** Populates the database with historical data or rebuilds it from scratch.
@@ -43,43 +59,45 @@ There are three primary background tasks that manage the data lifecycle. Underst
     5.  **Safety:** Checks the Keepa Token Balance before running. If low (buffer < 20), it skips the run to preserve tokens for high-priority tasks.
 
 ### C. `clean_stale_deals` (The Janitor)
-*   **Purpose:** Removes "zombie" deals (older than 72h by default) to ensure dashboard freshness.
+*   **Purpose:** Removes "zombie" deals to ensure dashboard freshness.
 *   **Trigger:** Scheduled (Every 4h) OR Manual (Button: "Refresh Deals" in Dashboard).
 *   **Mechanism:** `DELETE FROM deals WHERE last_seen_utc < [72h ago]`.
+*   **Grace Period:** **72 Hours**. This extended window allows the backfiller sufficient time to cycle through the database and update records before they are deleted.
 *   **Benefit:** Prevents the database from growing indefinitely and ensures users only see relevant, active deals.
 
 ### D. `check_all_restrictions_for_user` (The Gatekeeper)
 *   **Purpose:** Checks Amazon SP-API for restriction status (Gating) on found deals.
 *   **Trigger:** Manual (Button: "Re-check Restrictions" in Settings).
 *   **Mechanism:**
-    1.  Iterates through all ASINs in the `deals` table.
+    1.  Iterates through all ASINs in the `deals` table (Newest first).
     2.  Queries Amazon SP-API `getListingsRestrictions` endpoint.
     3.  Updates `user_restrictions` table.
     4.  **Error Handling:** If API fails, marks status as `-1` (Error) so UI can display a broken link icon.
 
-### E. `recalculate_deals` (The Logic Refresher)
-*   **Purpose:** Updates calculated business metrics (Profit, Margin, All-in Cost) when the user changes their settings (e.g., Prep Fee, Tax Rate).
-*   **Trigger:** User action ("Save Settings" button).
-*   **Mechanism:**
-    1.  Reads all rows from `deals.db`.
-    2.  Re-runs the logic in `business_calculations.py` using the new settings and the *existing* raw data (Price, Fees).
-    3.  Updates the rows in place.
-    4.  **Note:** It does *not* make new API calls to Keepa. It works strictly with local data.
+---
+
+## 4. AI Components (xAI Integration)
+
+### Guided Learning
+*   **Input:** Admin user submits URL/Text to `/learn`.
+*   **Processing:**
+    1.  **Scraper:** Fetches content (supports YouTube transcripts via BrightData).
+    2.  **LLM Extraction:** Calls xAI (`grok-4-fast-reasoning`) in parallel to extract "Strategies" and "Mental Models".
+*   **Storage:** Results are reviewed by the user and saved to JSON files (`strategies.json`, `agent_brain.json`).
+
+### Advice from Ava
+*   **Route:** `/api/ava-advice/<ASIN>`
+*   **Purpose:** Provides real-time, deal-specific analysis in the dashboard overlay.
+*   **Mechanism:** Queries `grok-4-fast-reasoning` with the deal's metrics and the "Strategies" context to generate a 50-80 word actionable summary.
 
 ---
 
-## 3. Infrastructure & Resilience
+## 5. Infrastructure & Resilience
 
 ### State Persistence (`system_state` Table)
 We do not rely on local files (JSON) for state tracking, as they can be lost during container deployments.
 *   **Key Data:** `backfill_page` (Int), `watermark_iso` (Timestamp).
 *   **Implementation:** `keepa_deals/db_utils.py` handles the `get_system_state` and `set_system_state` logic.
-
-### User Roles & Authentication
-The system supports two distinct user roles:
-*   **Admin (`tester`):** Full access to all features, including SP-API token management, Guided Learning, and Strategy extraction.
-*   **User (`AristotleLogic`):** Restricted access. Can view the Dashboard and basic Settings but cannot access SP-API controls or AI learning features.
-*   **Implementation:** Role is stored in the Flask session upon login. Routes are protected via decorators or conditional checks in `wsgi_handler.py`.
 
 ### Process Management (`start_celery.sh`)
 The background processes are orchestrated to be resilient:
@@ -96,21 +114,3 @@ The background processes are orchestrated to be resilient:
 *   **Authentication:** Uses "Login with Amazon" (LWA) Access Tokens via `x-amz-access-token`.
 *   **No SigV4:** AWS Signature Version 4 (SigV4) signing and IAM credentials are **not required** for this Private App integration.
 *   **Environment:** Supports both Sandbox and Production environments, auto-detecting based on the token validity.
-
----
-
-## 4. Troubleshooting Guide
-
-*   **"Data isn't updating":** Check `celery_beat.log`. Is the scheduler running? Check `system_state` in the DB—is the watermark advancing?
-*   **"The Backfill stalled":** Check `celery_worker.log`. It may be in a "Controlled Deficit" pause, waiting for tokens. This is normal.
-*   **"Dashboard is empty":** Verify `db_utils.py` schema matches `dashboard.html` expectations (e.g., column names).
-*   **"Spinning/Broken Gated Icon":** Indicates an API failure (timeout or 403). Hover over the icon for details.
-
-## 5. Guided Learning Architecture (xAI Integration)
-
-*   **Input:** Admin user submits URL/Text to `/learn`.
-*   **Processing:**
-    1.  **Scraper:** Fetches content (supports YouTube transcripts via BrightData).
-    2.  **LLM Extraction:** Calls xAI (Grok) in parallel to extract "Strategies" and "Mental Models".
-*   **Storage:** Results are reviewed by the user and saved to JSON files (`strategies.json`, `agent_brain.json`).
-*   **Usage:** These JSON files are currently for display but will eventually power the agent's decision-making logic.

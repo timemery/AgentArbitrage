@@ -31,7 +31,8 @@ Guided Learning is the entry point for teaching the agent. The user provides a s
         *   If Web URL: Uses `httpx` and `BeautifulSoup` to scrape visible text, removing scripts/styles.
         *   If Text: Uses raw input.
     *   **AI Extraction (Parallelized):**
-        *   The system sends the cleaned text to the xAI API (Grok-beta/latest) in parallel threads.
+        *   The system sends the cleaned text to the xAI API in parallel threads.
+        *   **Model:** Uses `grok-4-fast-reasoning` (Temperature 0.2-0.3) for high-speed, logical extraction.
         *   **Task A (Strategies):** Extracts actionable rules (numbers, thresholds, specific "if-then" logic).
         *   **Task B (Conceptual Ideas):** Extracts high-level mental models and "why" logic (The "Agent Brain").
 
@@ -59,8 +60,8 @@ Displays the repository of actionable rules the agent has "learned". These are s
 
 ### Logic
 *   Reads the `strategies.json` file from the root directory.
-*   Renders the list of strings.
-*   *Future Scope:* These strategies are intended to be parsed programmatically to influence the `keepa_query.json` or filtering logic in the future.
+*   Renders the list of strings/objects.
+*   **Integration:** These strategies are injected into the context of the **"Advice from Ava"** feature (`ava_advisor.py`) to customize the AI's analysis of specific deals.
 
 ---
 

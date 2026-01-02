@@ -1,81 +1,104 @@
 # Dashboard Specification
 
-This document serves as the **Single Source of Truth** for the dashboard's visual presentation. It defines the exact columns, their data sources, formatting rules, and display order.
+This document defines the visual layout, formatting, and behavior of the main Deals Dashboard. It acts as a contract between the backend data and the frontend presentation.
 
-**Goal:** Separate the *view* logic (this doc) from the *model* logic (`data_logic.md`) to prevent regressions in how data is presented to the user.
-
----
-
-## Column Specification
-
-The columns below are listed in the **exact order** they must appear on the dashboard (from left to right).
-
-### 1. Book Details Group
-
-| Header | Data Source (DB Column) | Formatting / Transformation Rules |
-| :--- | :--- | :--- |
-| **ASIN** | `ASIN` | Displayed as plain text. Clicking the row opens the detail overlay. |
-| **Title** | `Title` | Truncated via CSS (ellipsis) if too long. Full title available on hover/tooltip. |
-| **Genre** | `Categories_Sub` | If value starts with "Subjects", that prefix is removed. If empty or "-", displays "No Subject Listed". |
-| **Binding** | `Binding` | **Abbreviated:**<br>- Audio CD -> **CD**<br>- Board book -> **BB**<br>- Hardcover -> **HC**<br>- Paperback -> **PB**<br>- Mass Market Paperback -> **MMP** |
-| **Condition** | `Condition` | **CRITICAL: Must be Abbreviated**<br>- New -> **N**<br>- Used - Like New -> **U - LN**<br>- Used - Very Good -> **U - VG**<br>- Used - Good -> **U - G**<br>- Used - Acceptable -> **U - A**<br>*(Note: Raw DB values are numeric strings "1"-"5" or full strings. They must be mapped to these codes.)* |
-
-### 2. Sales Rank & Seasonality Group
-
-| Header | Data Source (DB Column) | Formatting / Transformation Rules |
-| :--- | :--- | :--- |
-| **Current** | `Sales_Rank_Current` | Formatted with commas (e.g., `57,828`). |
-| **1yr. Avg** | `Sales_Rank_365_days_avg` | Formatted with commas (e.g., `45,200`). |
-| **Season** | `Detailed_Seasonality` | Plain text (e.g., "High School", "Year-round"). |
-| **Sells** | `Sells` | Plain text (e.g., "Aug - Sep"). |
-
-### 3. Seller Details Group
-
-| Header | Data Source (DB Column) | Formatting / Transformation Rules |
-| :--- | :--- | :--- |
-| **Name** | `Seller` | Plain text. If "New Seller" or unknown, handled gracefully. |
-| **Trust** | `Seller_Quality_Score` | **Score / 10** format.<br>- Value is stored as float 0-5.<br>- Display: `round(Value * 10)` followed by `/ 10`.<br>- Example: `4.9` becomes **49 / 10**.<br>- "New Seller" -> **Unrated**. |
-
-### 4. Deal Details & Current Best Price Group
-
-| Header | Data Source (DB Column) | Formatting / Transformation Rules |
-| :--- | :--- | :--- |
-| **Changed** | `last_price_change` | **Relative Time:**<br>- < 60 mins -> `X mins. ago`<br>- < 24 hrs -> `X hrs. ago`<br>- < 30 days -> `X days ago`<br>- < 12 mos -> `X mos. ago`<br>- > 1 yr -> `X yrs. ago` |
-| **1yr. Avg.** | `1yr_Avg` | Currency format: `$76.77`. |
-| **Now** | `Best_Price` | Currency format: `$25.00`. Clicking links to Amazon offer page. |
-| **% ⇩** | `Percent_Down` | Percentage format: `35%`. |
-| **Trend** | `Trend` | Visual Arrows:<br>- **⇧** (Up)<br>- **⇩** (Down)<br>- **⇨** (Flat) |
-
-### 5. Profit Estimates & Recommended Listing Price Group
-
-| Header | Data Source (DB Column) | Formatting / Transformation Rules |
-| :--- | :--- | :--- |
-| **All_in_Cost** | `All_in_Cost` | Currency format: `$12.50`. |
-| **Min. List** | `Min_Listing_Price` | Currency format: `$35.00`. |
-| **List at** | `List_at` | Currency format: `$75.00`. |
-| **Profit** | `Profit` | Currency format: `$40.00`. |
-| **Margin** | `Margin` | Percentage format: `53.33%`. |
-| **Profit Trust** | `Profit_Confidence` | Percentage format: `85%`. |
-
-### 6. Actions Group
-
-| Header | Data Source (DB Column) | Formatting / Transformation Rules |
-| :--- | :--- | :--- |
-| **Gated** | `Gated` (joined from `user_restrictions`) | **Status Icons:**<br>- Pending -> **Spinner** icon<br>- Not Restricted -> **✓** (Green checkmark)<br>- Restricted -> **X Apply** (Red cross, links to Amazon approval)<br>- Error -> **⚠** (Yellow warning, tooltip "API Error") |
-| **Buy** | `Buy_Now` | **►** icon. Links to Amazon product page. |
+For the underlying data logic, please refer to **`Data_Logic.md`**.
 
 ---
 
-## Technical Implementation Notes
+## Grid Layout & Column Definitions
 
-*   **Endpoint:** `/api/deals` (`wsgi_handler.py`)
-*   **Template:** `templates/dashboard.html`
-*   **Column Naming Conflict:** The database uses single underscores (e.g., `Sales_Rank_Current`), but legacy parts of the frontend code may refer to them differently. The API endpoint handles this mapping.
-*   **Abbreviation Logic:** The `Condition` and `Binding` abbreviations are applied in the `api_deals` function in `wsgi_handler.py` before the JSON is sent to the frontend.
+The dashboard uses a responsive grid layout. Columns are defined in `templates/dashboard.html`.
 
-### 7. Header Controls (Above Grid)
+### 1. Main Data Grid
 
-| Control | Functionality | Logic |
-| :--- | :--- | :--- |
-| **Refresh Deals** | Manually triggers the "Janitor" task. | - Link text is dynamic.<br>- Default: **⟳ Refresh Deals**.<br>- Notification: **⟳ [Diff] New Deals found - Refresh Now** (if server count > local count).<br>- Clicking triggers `POST /api/run-janitor`. |
-| **Deal Count** | Displays total records. | - Polls `/api/deal-count` (unfiltered) every 60s.<br>- Used to calculate the [Diff] for the notification. |
+| Column Header | Data Field (Backend) | Visual Format / Behavior | Width | Sortable? |
+| :--- | :--- | :--- | :--- | :--- |
+| **Image** | `Image` | 60px height. Click expands to full size. | 70px | No |
+| **Title** | `Title` | Truncated (2 lines). Hover shows full title. Hyperlink to Keepa. | Auto | No |
+| **Binding** | `Binding` | **Strict Formatting:** 95px width. Ellipsis truncation. Hover shows full text. <br> **Transformation:** Underscores/Hyphens replaced with spaces. Title Case applied (e.g., `mass_market` -> "Mass Market"). | 95px | Yes |
+| **Rank** | `Sales_Rank_Current` | Integer with commas (e.g., "12,345"). | 90px | Yes |
+| **Details** | `Detailed_Seasonality` | Text. | 110px | No |
+| **Condition** | `Condition` | **Abbreviated Map:** <br> `Used - Like New` -> **U - LN** <br> `Used - Very Good` -> **U - VG** <br> `Used - Good` -> **U - G** <br> `Used - Acceptable` -> **U - A** | 80px | Yes |
+| **Gated** | `is_restricted` (joined) | **Icons:** <br> ✅ (Green Check) = Allowed <br> ❌ (Red X) = Restricted (Click opens Approval URL) <br> ⏳ (Spinner) = Checking... <br> ⚠️ (Broken) = Error (Hover for details) | 60px | Yes |
+| **Seller** | `Seller` | Truncated text. Hover shows full name. | 110px | No |
+| **S. Trust** | `Seller_Quality_Score` | **Scale 0-10:** Raw probability (0.0-1.0) * 10. Rounded to 1 decimal. | 80px | Yes |
+| **Changed** | `last_price_change`, `Trend` | **Composite:** Trend Arrow + " " + Time Ago (e.g., "⇩ 2h ago"). <br> **Arrows:** ⇧ (Up), ⇩ (Down), ⇨ (Flat). | 100px | Yes |
+| **Buy For** | `Best_Price` | Currency ($XX.XX). Bold font. | 90px | Yes |
+| **Avg.** | `1yr_Avg` | Currency ($XX.XX). | 90px | Yes |
+| **% ⇩** | `Percent_Down` | Percentage + "%". Bold if > 50%. | 70px | Yes |
+| **P. Trust** | `Profit_Confidence` | Percentage + "%". | 80px | Yes |
+| **List At** | `List_at` | Currency ($XX.XX). | 90px | No |
+| **Profit** | `Profit` | Currency ($XX.XX). **Color Coded:** <br> Green if > $0. <br> Red if < $0. | 90px | Yes |
+| **Margin** | `Margin` | Percentage + "%". | 80px | Yes |
+
+---
+
+## Filtering Logic (Frontend & Backend)
+
+The dashboard supports complex filtering via the side panel.
+
+### Range Sliders (The "Any" Logic)
+All sliders utilize a standardized "Any" state logic:
+-   **Visual:** Setting a slider to **0** displays the label **"Any"**.
+-   **Backend:** A value of `0` is excluded from the SQL query (treated as no filter), allowing NULLs and negatives to appear.
+-   **Reset:** The "Reset" button explicitly sets all sliders to 0 and reloads the grid.
+
+**Supported Filters:**
+1.  **Min. Below Avg. (%)**: Filter by `Percent_Down`.
+2.  **Min. Profit ($)**: Filter by `Profit`.
+3.  **Min. Margin (%)**: Filter by `Margin`.
+4.  **Max. Sales Rank**: Filter by `Sales_Rank_Current`.
+5.  **Min. Profit Trust**: Filter by `Profit_Confidence`.
+6.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
+
+### Special Filters
+-   **Keyword Search:** (Commented out in HTML but supported in Backend via `keyword` param).
+-   **Deal Count:** The badge in the header shows the total number of deals matching the *current* filters.
+
+---
+
+## Polling & Updates
+
+1.  **Auto-Refresh:** The dashboard polls `/api/deal-count` every 30 seconds.
+2.  **New Deal Notification:**
+    -   Logic: Compares `local_record_count` (JS) vs `total_records` (API).
+    -   Visual: "New Deals Available! Click to Refresh" banner appears if counts differ.
+    -   **Context Aware:** The polling API call explicitly includes the *active filters* (e.g., `?margin_gte=10`) to ensure users are only notified about deals relevant to their current view.
+
+---
+
+## The "Janitor" & Data Freshness
+
+To maintain a high-quality dashboard, the system implements a "Janitor" process.
+
+-   **Trigger:** Runs automatically every 4 hours (Celery) or manually via "Refresh Deals" button.
+-   **Action:** Deletes any deal from the database where `last_seen_utc` is older than **72 hours**.
+-   **Impact on Dashboard:** Users may see the total deal count drop significantly after a refresh. This is expected behavior (garbage collection).
+-   **User Feedback:** The "Refresh Deals" button triggers the Janitor *before* reloading the grid to ensure the user sees a clean state.
+
+---
+
+## Overlay Features: "Advice from Ava"
+
+When a user clicks on a deal row to expand details:
+-   **Profit Tab:** Includes a section for "Advice from Ava".
+-   **Behavior:** Frontend asynchronously fetches advice from `/api/ava-advice/<ASIN>`.
+-   **Display:**
+    -   **Loading:** Spinner.
+    -   **Success:** A concise (50-80 word) AI-generated analysis of the deal.
+    -   **Error:** Specific error message (e.g., "Error: 404 Not Found") in red text.
+
+---
+
+## CSS & Styling Standards
+
+-   **Color Palette:**
+    -   Primary Blue: `#336699` (Headers, Active States)
+    -   Filter Active: `rgba(102, 153, 204, 0.9)`
+    -   Profit Green: `#28a745`
+    -   Loss Red: `#dc3545`
+-   **Latency:**
+    -   Hover effects on navigation must be **instant**.
+    -   CSS transitions on `background-color` are explicitly **disabled**.
+-   **Header:** `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.
