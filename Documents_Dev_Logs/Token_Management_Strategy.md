@@ -26,29 +26,30 @@ Keepa's API allows the token balance to go negative (deficit spending) as long a
 
 ---
 
-## 2. XAI API: Local Cache & Daily Quota
+## 2. XAI API: Quotas & Model Selection
 
-**Strategy:** Strict daily cap with aggressive local caching to minimize costs.
-**Implementation:** `keepa_deals/xai_token_manager.py` and `keepa_deals/xai_cache.py`
+**Strategy:** Strict daily cap with aggressive local caching, utilizing the `grok-4-fast-reasoning` model for high-speed analysis.
+**Implementation:** `keepa_deals/xai_token_manager.py`, `keepa_deals/xai_cache.py`, and `keepa_deals/ava_advisor.py`
 
-### The "Why"
-The XAI API (Grok) incurs a direct financial cost per token generated. To prevent runaway bills, we enforce a strict daily limit on the number of calls. Additionally, many AI judgments (e.g., "Is 'Biology 101' a textbook?") are repetitive. Caching these results prevents redundant calls for the same book/season/price combination.
+### Model Selection
+*   **Primary Model:** `grok-4-fast-reasoning`
+*   **Use Cases:** Seasonality Classification, "List at" Price Reasonableness Check, Strategy Extraction, and "Advice from Ava".
+*   **Why:** Provides the best balance of reasoning capability and speed for real-time and batch processing.
 
-### Mechanism
+### Cost Control Mechanism
 1.  **Daily Quota:**
     -   A JSON state file (`xai_token_state.json`) tracks `calls_today` and `last_reset_date`.
-    -   Before any API call, the manager checks if `calls_today < daily_limit` (default: 1000).
-    -   If the limit is reached, the request is denied, and the system falls back to a default "Safe" assumption (e.g., assuming a price is reasonable).
+    -   Before any automated API call (e.g., price check), the manager checks if `calls_today < daily_limit` (default: 1000).
+    -   If the limit is reached, the request is denied, and the system falls back to a default "Safe" assumption (e.g., assuming a price is reasonable to avoid rejecting valid deals).
 2.  **Caching (`XaiCache`):**
     -   Results are cached in a local dictionary/JSON file.
     -   **Cache Key:** Composite key of `Title | Category | Season | Price`.
     -   **Hit:** If the key exists, the cached boolean result is returned immediately (0 cost).
     -   **Miss:** If not in cache and quota allows, the API is called, and the result is saved.
 
-### Exception: Guided Learning
-*   **Route:** `/learn`
-*   **Implementation:** `wsgi_handler.py` -> `query_xai_api`
-*   **Note:** This feature calls the xAI API directly (via `httpx`) and **does not** currently utilize the `XaiTokenManager` or the daily quota system. This is acceptable because it is a manual, Admin-triggered action, not an automated loop.
+### Exception: Admin Features
+*   **Features:** Guided Learning (`/learn`) and "Advice from Ava" (`/api/ava-advice`).
+*   **Policy:** These features operate on-demand (user-triggered) and currently bypass the strict daily quota limits managed by `XaiTokenManager`, though they still consume the underlying API credit.
 
 ---
 
@@ -65,12 +66,13 @@ Modern Private Applications on Amazon SP-API (registered after Oct 2023) general
     -   User authorizes the app in Seller Central.
     -   A **Refresh Token** is generated (manually or via OAuth).
 2.  **Storage:**
-    -   The `refresh_token`, `client_id`, and `client_secret` are stored securely (Env vars or DB).
+    -   The `refresh_token`, `client_id`, and `client_secret` are stored securely (Env vars or DB `user_credentials` table).
 3.  **Task Execution (Restriction Check):**
     -   **Token Refresh:** The system exchanges the Refresh Token for a short-lived `access_token` (valid for 1h).
     -   **API Call:** The `access_token` is passed in the `x-amz-access-token` HTTP header.
     -   **No Signing:** No AWS `AccessKey`/`SecretKey` is used or required.
+    -   **Restriction Logic:** Calls `getListingsRestrictions` with the specific `conditionType` (e.g., `used_like_new`) to ensure accurate gating status.
 
 ### Environment Handling
 *   **Sandbox vs. Production:** The system automatically detects if the token is valid for Sandbox or Production by probing the endpoints.
-*   **Fallback:** If a Production call fails with 403, it logs the error but does not crash the worker.
+*   **Fallback:** If a Production call fails with 403, it logs the error but does not crash the worker. Items are marked with an error state (-1) in the `user_restrictions` table.

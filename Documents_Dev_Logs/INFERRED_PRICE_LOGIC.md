@@ -55,11 +55,14 @@ This determines the recommended listing price.
 1.  **Seasonality Identification:** Groups sane sales by month. Identifies the **Peak Month** (highest median price).
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
-    -   **Fallback:** If no distinct mode exists, uses the **Median**.
-3.  **Ceiling Logic:**
-    -   The price is capped at 90% of the lowest "New" price (comparing Current, 180-day avg, and 365-day avg) to ensure it remains competitive against new copies.
+    -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
+    -   **Fallback 2 (High Velocity):** If `sane_sales == 0` AND `monthlySold > 20`, uses the **Used - 90 days avg** price.
+3.  **Amazon Ceiling Logic:**
+    -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
+    -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
+    -   If `List at > Ceiling`, it is reduced to the Ceiling value.
 4.  **AI Reasonableness Check:**
-    -   The calculated price, along with the book's title and category, is sent to **xAI (Grok)**.
+    -   The calculated price, along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**, is sent to **xAI (Grok)**.
     -   Prompt: "Is a peak price of $X.XX reasonable for [Book Title]?"
     -   If the AI rejects it (returns "No"), the deal is discarded.
 
@@ -77,3 +80,4 @@ Used for the "Percent Down" and "Trend" calculations.
 1.  **Mean vs Median:** We switched from Median to **Mean** for the 1-Year Average to better reflect the true market value across all transactions, after outlier removal proved effective.
 2.  **Mode for Peak:** We use **Mode** for the "List at" price because arbitrage sellers often target a specific "standard" market price that occurs frequently, rather than an average of fluctuations.
 3.  **Strict Validation:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it prefers to reject the deal rather than present a risky one.
+4.  **240-Hour Window:** Expanding the correlation window from 168h to 240h significantly improved capture rates for "Near Miss" sales events where rank reporting lagged behind offer drops.
