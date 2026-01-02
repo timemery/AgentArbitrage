@@ -74,7 +74,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Seller_Quality_Score` (Trust)**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: **Wilson Score Confidence Interval**. Uses `rating` (0-500) and `ratingCount`.
-    -   **Display**: Dashboard converts this 0.0-5.0 float into a "X / 10" integer format (e.g., 4.9 -> 49 / 10).
+    -   **Range**: 0.0 to 1.0 (Probability).
+    -   **Display**: Dashboard converts this 0.0-1.0 float into a "X / 10" integer format by multiplying by 10 (e.g., 0.95 -> 10 / 10).
 
 -   **`Condition`**:
     -   **Source**: `keepa_deals/stable_deals.py`.

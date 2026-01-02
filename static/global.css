@@ -758,7 +758,7 @@ button:disabled {
     width: 200px;
 }
 
-#sales-rank-value, #profit-margin-value {
+#sales-rank-value, #profit-margin-value, #profit-confidence-value, #seller-trust-value, #profit-value, #percent-down-value {
     padding-left: 20px;
     color: rgba(102, 153, 204, 0.9);
 }

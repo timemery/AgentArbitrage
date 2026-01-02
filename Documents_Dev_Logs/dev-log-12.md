@@ -202,3 +202,122 @@ The task was successfully completed. The system now supports a highly granular a
 - **Safety:** The application is fully backward compatible and safe to deploy even before the data migration script is run.
 
 ------
+
+# Dev Log: Fix Seller Trust Filter & Dashboard UI Tweaks
+
+**Date:** October 12, 2025 **Task:** Fix Seller Trust filter logic issues (0 results at high settings) and implement various dashboard UI refinements (reordering, labeling, styling).
+
+## 1. Task Overview
+
+The user reported that the "Seller Trust" filter was behaving incorrectly: selecting "20%" resulted in 0 deals, while "19%" showed deals with "10/10" trust. This indicated a disconnect between the filter's input range (percent or 0-10) and the underlying database values. Additionally, the user requested specific UI changes:
+
+- Reordering filters (Min. Below Avg., Min. Profit, Min. Margin, Max. Sales Rank, Min. Profit Trust, Min. Seller Trust).
+- Adding "Min." and "Max." qualifiers to labels.
+- Standardizing filter styling (blue values with spacing).
+- Ensuring all filters default to an "Any" state.
+
+## 2. Technical Investigation & Challenges
+
+### The "Seller Trust" Disconnect
+
+- **The Symptom:** The filter failed at high values. Selecting "10/10" returned zero results, despite many deals displaying "10/10".
+
+- The Root Cause:
+
+  - **Frontend Display:** The dashboard displays trust as `X/10`. This is calculated by taking the `Seller_Quality_Score` (a Wilson Score probability between 0.0 and 1.0) and rounding it to the nearest tenth. For example, a score of `0.96` rounds to `1.0` and displays as "10/10".
+  - **Initial Filter Logic:** The original filter treated the input (0-100) as if it mapped to a 0-5 scale (dividing by 20), which was incorrect for the 0-1 data.
+  - **Second Attempt Logic:** We updated it to divide by 10 (e.g., input `10` becomes `1.0`). While better, this created a strict filter `score >= 1.0`. Since Wilson Scores are probabilities, a score is rarely exactly `1.0`. A score of `0.96` (which *looks* like 10/10) failed this check.
+
+- The Solution (Rounding Buckets):
+
+   
+
+  To correctly filter for "10/10 deals", we need to find deals that
+
+   
+
+  round
+
+   
+
+  to 10. The logic needed to calculate the
+
+   
+
+  lower bound
+
+   
+
+  of that rounding bucket.
+
+  - Formula: `(Input_Value - 0.5) / 10.0`.
+  - Example for Input 10: `(10 - 0.5) / 10 = 0.95`. This correctly captures scores >= 0.95 (like 0.96), which display as 10/10.
+
+### UI State Management
+
+- **Challenge:** Ensuring the sliders showed "Any" instead of numeric values ("0%", "∞") when in their default state, and reverting correctly when reset.
+- **Solution:** Updated the Javascript initialization logic and the `steps` arrays for sliders (e.g., `salesRankSteps`) to explicitly use `label: 'Any'` for the default values (`0` or `Infinity`).
+
+## 3. Implementation Details
+
+### Backend (`wsgi_handler.py`)
+
+- `api_deals` & `deal_count`:
+
+   
+
+  Updated the
+
+   
+
+  ```
+  seller_trust_gte
+  ```
+
+   
+
+  filter logic.
+
+  ```
+  # Old: score >= input / 2.0  (Incorrect 0-5 assumption)
+  # New: score >= (input - 0.5) / 10.0 (Correct 0-1 probability with rounding bucket support)
+  if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
+      seller_trust_db_value = (filters["seller_trust_gte"] - 0.5) / 10.0
+      where_clauses.append("\"Seller_Quality_Score\" >= ?")
+  ```
+
+### Frontend (`templates/dashboard.html` & `static/global.css`)
+
+- **HTML Structure:** Reordered the `.filter-item` divs to match the requested layout.
+
+- **Labels:** Updated text to "Min. Below Avg.", "Max. Sales Rank", etc.
+
+- **Sliders:** Changed Seller Trust slider `max` from `100` to `10`.
+
+- JavaScript:
+
+  - Updated `profitMarginSteps` and `salesRankSteps` to use "Any" labels.
+  - Updated event listeners to handle the "Any" state logic for all inputs.
+
+- CSS:
+
+   
+
+  Updated the selector list for filter values to apply the requested styling:
+
+  ```
+  #sales-rank-value, ... #percent-down-value {
+      padding-left: 20px;
+      color: rgba(102, 153, 204, 0.9);
+  }
+  ```
+
+## 4. Verification Results
+
+- **Automated Tests:** A backend verification script (`verify_trust_rounding.py`) confirmed that filtering for "10/10" (Input 10) correctly returned items with scores like `0.96`, which previously failed.
+- **Visual Verification:** A frontend script verified the correct order of elements, correct styling (blue color), and correct label text ("Any").
+- **User Verification:** Confirmed that all filters, including Seller Trust, are working as expected.
+
+## 5. Status
+
+**Task Successful.** The filter logic now accurately reflects the data model and user expectations for rounding, and the UI has been standardized.

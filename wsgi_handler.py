@@ -965,8 +965,10 @@ def api_deals():
         filter_params.append(filters["profit_confidence_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
-        # User input is 0-100, DB is 0-5. Convert: value / 20.
-        seller_trust_db_value = filters["seller_trust_gte"] / 20.0
+        # User input is 0-10, DB is 0-1 (Wilson Score).
+        # Display logic rounds to nearest tenth (0.95 -> 10/10, 0.85 -> 9/10).
+        # We adjust the filter to match the rounding lower bound: (input - 0.5) / 10.0
+        seller_trust_db_value = (filters["seller_trust_gte"] - 0.5) / 10.0
         where_clauses.append("\"Seller_Quality_Score\" >= ?")
         filter_params.append(seller_trust_db_value)
 
@@ -1373,8 +1375,9 @@ def deal_count():
                 filter_params.append(filters["profit_confidence_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
-                # User input is 0-100, DB is 0-5. Convert: value / 20.
-                seller_trust_db_value = filters["seller_trust_gte"] / 20.0
+                # User input is 0-10, DB is 0-1 (Wilson Score).
+                # Match rounding lower bound: (input - 0.5) / 10.0
+                seller_trust_db_value = (filters["seller_trust_gte"] - 0.5) / 10.0
                 where_clauses.append("\"Seller_Quality_Score\" >= ?")
                 filter_params.append(seller_trust_db_value)
 
