@@ -12874,8 +12874,6 @@
     "seasonality:Tomas Saraceno: Particular Matters|Books, Subjects, Arts & Photography, Individual Artists, Monographs|Walther Konig": "Year-round",
     "seasonality:Basic Knife Making: From Raw Steel to a Finished Stub Tang Knife|Books, Subjects, Crafts, Hobbies & Home, Crafts & Hobbies, Metal Work|Schiffer Craft": "Year-round",
     "seasonality:Psychological Therapy in Prisons and Other Settings|Books, Subjects, Health, Fitness & Dieting, Mental Health|Willan": "Textbook (Winter)",
-    "reasonableness:Liturgy of the Hours: Advent and Christmas /No. 401/10|Books > Subjects > Religion & Spirituality > Christian Books & Bibles > Catholicism > Popes & the Vatican|Dec|36.98|Imitation Leather|Current Rank: 672705, 90-day Avg Rank: 238219": "True",
-    "reasonableness:A History of the World's Religions|Books > Subjects > History > World > Religious > General|Nov|125.89|Hardcover|Current Rank: 2886352, 90-day Avg Rank: 2717973": "False",
-    "reasonableness:The Art of Combat - The Aviation & Military Paintings of Richard Taylor|Books > Subjects > Business & Money > Processes & Infrastructure|Feb|46.00|Hardcover|Current Rank: 2451386, 90-day Avg Rank: 2102002": "True",
-    "reasonableness:The Lost Art of Meditation|Books > Subjects > Religion & Spirituality > Christian Books & Bibles > Christian Living|Sep|10.52|paperback|Current Rank: 2115813, 90-day Avg Rank: 2593736": "True"
+    "seasonality:The Art of Combat - The Aviation & Military Paintings of Richard Taylor|Books, Subjects, Business & Money, Processes & Infrastructure|The Military Gallery": "Year-round",
+    "seasonality:The Lost Art of Meditation|Books, Subjects, Religion & Spirituality, Christian Books & Bibles, Christian Living|Scripture Union": "Year-round"
 }
