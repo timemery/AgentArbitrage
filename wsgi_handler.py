@@ -134,6 +134,8 @@ def extract_strategies(full_text):
     if primary_data and 'choices' in primary_data and primary_data['choices']:
         content = primary_data['choices'][0].get('message', {}).get('content')
         if content:
+            # Strip markdown formatting if present
+            content = re.sub(r'^```json\s*|\s*```$', '', content.strip(), flags=re.MULTILINE)
             app.logger.info("Successfully extracted strategies using xAI API.")
             return content
     
@@ -185,6 +187,8 @@ def extract_conceptual_ideas(full_text):
     if response_data and 'choices' in response_data and response_data['choices']:
         content = response_data['choices'][0].get('message', {}).get('content')
         if content:
+            # Strip markdown formatting if present
+            content = re.sub(r'^```json\s*|\s*```$', '', content.strip(), flags=re.MULTILINE)
             app.logger.info("Successfully extracted conceptual ideas using xAI API.")
             return content
     
@@ -462,15 +466,22 @@ def approve():
             
             # Parse the approved strategies from JSON string
             try:
-                new_strategies = json.loads(approved_strategies)
+                # Ensure no markdown formatting lingers
+                clean_strategies_json = re.sub(r'^```json\s*|\s*```$', '', approved_strategies.strip(), flags=re.MULTILINE)
+                new_strategies = json.loads(clean_strategies_json)
                 if not isinstance(new_strategies, list):
                     # Fallback if it's not a list (single object?)
                     new_strategies = [new_strategies]
             except json.JSONDecodeError:
                 # Fallback for legacy text format (just in case)
                 app.logger.warning("Failed to parse approved_strategies as JSON. Treating as text.")
-                new_strategies = [{"id": str(uuid.uuid4()), "advice": s.strip(), "trigger": "Manual Entry", "category": "General"}
-                                  for s in approved_strategies.strip().split('\n') if s.strip()]
+                # If JSON parsing fails, we assume it's a newline-separated list of strings.
+                # We need to be careful not to create garbage from markdown artifacts if the regex failed or wasn't enough.
+                lines = approved_strategies.strip().split('\n')
+                clean_lines = [line.strip() for line in lines if line.strip() and not line.strip().startswith('```')]
+
+                new_strategies = [{"id": str(uuid.uuid4()), "advice": s, "trigger": "Manual Entry", "category": "General"}
+                                  for s in clean_lines]
 
             strategies.extend(new_strategies)
             

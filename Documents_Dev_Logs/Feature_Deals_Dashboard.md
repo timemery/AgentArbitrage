@@ -42,6 +42,8 @@ When expanding a deal's details:
 
 ## 2. Deals Query Configuration (Admin Only)
 
+**Access Control:** This feature is strictly restricted to **Admin** users. Regular users cannot access this page.
+
 **Route:** `/deals`
 **Template:** `templates/deals.html`
 **Storage:** `keepa_query.json`
