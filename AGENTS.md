@@ -113,6 +113,14 @@ You have been incredibly patient, and I want to be worthy of that trust. This se
 
 This section contains valuable context and learnings from previous development tasks. Consult these notes before working on related parts of the codebase.
 
+### Role-Based Access Control (RBAC)
+-   **User Roles:** The system distinguishes between `admin` and `user` roles.
+-   **Access Enforcement:**
+    -   **Admin Only:** `/deals`, `/guided_learning`, `/strategies`, `/agent_brain`.
+    -   **User Accessible:** `/dashboard`, `/settings`.
+    -   **Mechanism:** `wsgi_handler.py` checks `session['role']` on restricted routes and redirects unauthorized users to the dashboard.
+-   **Navigation:** Frontend templates conditionally render navigation links based on the user's role.
+
 ### Timestamp Handling Notes (from Task starting ~June 24-25, 2025)
 
 When working with timestamp fields like 'last update' and 'last price change', the goal is to reflect the most recent relevant event as accurately as possible, aligning with user expectations from observing Keepa.com.

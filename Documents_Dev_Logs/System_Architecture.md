@@ -24,12 +24,12 @@ The system follows a standard **Flask + Celery + Redis + SQLite** architecture:
 The system enforces strict role-based access control (RBAC):
 
 *   **Regular User:**
-    *   **Access:** Dashboard (`/dashboard`), Settings (`/settings`).
-    *   **Prohibited:** Deals Configuration, Guided Learning, Strategies, Agent Brain.
+    *   **Access:** Dashboard (`/dashboard`) and Settings (`/settings`) ONLY.
+    *   **Prohibited:** Deals Configuration (`/deals`), Guided Learning (`/guided_learning`), Strategies (`/strategies`), Agent Brain (`/agent_brain`).
 *   **Admin User:**
     *   **Access:** All areas.
     *   **Exclusive Features:**
-        *   **Guided Learning (`/learn`):** Teaching the AI new concepts.
+        *   **Guided Learning:** Teaching the AI new concepts.
         *   **Strategies / Agent Brain:** Viewing and managing the AI's knowledge base.
         *   **Deals Configuration:** Editing the `keepa_query.json`.
 
