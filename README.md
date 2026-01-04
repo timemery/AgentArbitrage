@@ -15,6 +15,13 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
 - **Agent Brain & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
 - **Data Sourcing / Deals Config**: Configurable Keepa scanning engine. (Admin Only)
 
+## User Roles & Access Control
+
+The application uses a role-based permission system:
+
+*   **User Role**: Restricted to the **Dashboard** and **Settings** only. Focused on finding and analyzing deals.
+*   **Admin Role**: Full access to all features, including **Strategies**, **Guided Learning**, **Agent Brain**, and **Deals Configuration**.
+
 ---
 
 ## CRITICAL WARNINGS FOR AGENTS
