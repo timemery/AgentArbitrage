@@ -29,9 +29,13 @@
 *   **Season:** `Detailed_Seasonality` (No change).
 
 ### Group 3: Deal Details (Renamed)
-*   **1yr Avg:** `Sales_Rank_365_days_avg` (Rank? No, Price. `1yr_Avg` field).
+*   **1yr Avg:**
+    *   **Source:** `Recent_Inferred_Sale_Price` (or `1yr_Avg` if explicitly populated).
+    *   *Note:* User identified this as "yearly average inferred sale price" (not Rank).
 *   **Now:** `Best_Price` (or `Price_Now`).
-*   **% ⇩:** `Percent_Down`.
+*   **% ⇩:**
+    *   **Source:** `Percent_Down`.
+    *   *Note:* Represents percent below current "best" price from inferred sale price.
 *   **Ago:**
     *   **Header:** Rename "Changed" -> "Ago".
     *   **Logic:** Keep existing `formatTimeAgo` + `Trend` arrow.
@@ -56,7 +60,7 @@
 
 ## 3. Backend Support (`wsgi_handler.py`)
 1.  **Route:** Add `@app.route('/dashboard-test')`.
-2.  **API:** Ensure `api_deals` returns `Sales_Rank_Drops_last_30_days`, `Amazon_Current`, `Used_Offer_Count_Current`, `Used_Offer_Count_365_days_avg`.
+2.  **API:** Ensure `api_deals` returns `Sales_Rank_Drops_last_30_days`, `Amazon_Current`, `Used_Offer_Count_Current`, `Used_Offer_Count_365_days_avg`, `Recent_Inferred_Sale_Price`.
 
 ## 4. Verification Steps
 1.  Access `/dashboard-test`.
