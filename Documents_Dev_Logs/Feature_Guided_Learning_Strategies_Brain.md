@@ -1,4 +1,4 @@
-# Feature Documentation: Guided Learning, Strategies & Agent Brain (Admin Only)
+# Feature Documentation: Guided Learning, Strategies & Agent Brain
 
 This document details the functionality and logic for the AI-driven "Guided Learning" system, which extracts actionable strategies and conceptual ideas from external content and integrates them into the agent's knowledge base.
 
