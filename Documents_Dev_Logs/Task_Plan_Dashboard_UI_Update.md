@@ -1,110 +1,67 @@
-# Task Plan: Dashboard UI Overhaul (Supply & Demand Focus)
+# Task Plan: Dashboard UI Overhaul (Safe Parallel Dev)
 
-**Objective:** Redesign the Deals Dashboard (`templates/dashboard.html`) to reduce information overload and focus on "Supply & Demand" metrics, strictly adhering to the user-provided Excel specification (image.png).
+**Objective:** Implement the "Supply & Demand" focused dashboard design using a parallel test file (`dashboard_test.html`) to ensure zero disruption to the live application.
 
-## 1. Grid Layout & Column Changes
+## 1. Safety & Isolation Strategy
+*   **Parallel File:** Create `templates/dashboard_test.html` (copy of `dashboard.html`).
+*   **Test Route:** Add `/dashboard-test` route in `wsgi_handler.py` accessible only to admins (or dev environment).
+*   **No Database Reset:** Changes will rely on existing data where possible. New fields (`Drops`, `Offer Trend`) will be implemented in the UI but may show placeholder/fallback data until the Updater naturally populates them over time.
 
-The dashboard grid must be reorganized into the following groups and columns. Columns marked with "x Removed" in the spec must be deleted.
+## 2. UI Implementation (`dashboard_test.html`)
 
 ### Group 1: Book Details
-*   **ASIN:** Standard display.
-*   **Title:** Standard truncation.
-*   **Condition:**
-    *   **Rename:** Rename column header to **Condition**.
-    *   **Data Transformation:** Map raw string codes to abbreviations:
-        *   "Used - Very Good" -> "**U - Very Good**" (was "UG", now explicitly full word) - *Correction:* User spec says "U - Very Good", "U - Good", "U - Like New", "U - Acceptable".
-        *   Wait, spec says: "U - Very Good", "C - Like New" etc.
-        *   *Spec Note:* "modify Condition Labels: - New (no change), - U - Like New, - U - Very Good, ... - C - Like New...".
-        *   *Implementation:* Update `api_deals` in `wsgi_handler.py` (or frontend JS) to apply this mapping.
+*   **Columns:** ASIN, Title, Condition.
+*   **Changes:**
+    *   **Condition:** Use existing "U - Very Good" string (backend mapping already applied).
+    *   **Removed:** Genre, Binding (Verify "Binding" removal, user said "Removed" in spec).
 
-### Group 2: Supply & Demand (New Header)
+### Group 2: Supply & Demand (New)
 *   **Rank:**
-    *   **Format:** Condensed notation (e.g., "**4.5M**", "120k").
-    *   *Implementation:* JavaScript formatter.
+    *   **Formatter:** JS function `formatRank(num)` -> "4.5M", "150k".
+    *   *Source:* `Sales_Rank_Current`.
 *   **Drops:**
-    *   **Data:** **New Field.** "30-day Sales Rank Drops".
-    *   *Source:* `Sales_Rank___Drops_last_30_days` (sanitized DB column).
-    *   *Display:* Raw integer (e.g., "15").
+    *   **Data:** `Sales_Rank_Drops_last_30_days`.
+    *   *Note:* If missing, display "-".
 *   **Offers:**
-    *   **Data:** **New Field.** "Count + Trend Arrow".
-    *   *Source:* `Used Offer Count - Current`.
-    *   *Trend Logic:* Compare `Used Offer Count - Current` vs `Used Offer Count - 30 days avg.` (derived from `keepa_deals/new_analytics.py` logic or calculated in SQL/Python).
-    *   *Formatting:* "12 ↘".
-    *   *Color Coding:*
-        *   **Rising (Current > Avg):** Red (Bad).
-        *   **Falling (Current < Avg):** Green (Good).
-*   **Season:** No change.
+    *   **Data:** `Used_Offer_Count_Current` + Trend.
+    *   *Logic:* Compare `Used_Offer_Count_Current` vs `Used_Offer_Count_365_days_avg` (as 30d avg is missing).
+    *   *Visual:* "12 ↘" (Green if falling, Red if rising).
+*   **Season:** `Detailed_Seasonality` (No change).
 
-### Group 3: Deal Details (Renamed/Reorganized)
-*   **1yr Avg:** (Price). No change.
-*   **Now:** (Price). No change.
-*   **% ⇩:** No change.
+### Group 3: Deal Details (Renamed)
+*   **1yr Avg:** `Sales_Rank_365_days_avg` (Rank? No, Price. `1yr_Avg` field).
+*   **Now:** `Best_Price` (or `Price_Now`).
+*   **% ⇩:** `Percent_Down`.
 *   **Ago:**
-    *   **Format:** "Trend Arrow + Time" (e.g., "⇧ 4d").
-    *   *Change:* Ensure Trend Arrow is part of this cell, not separate.
+    *   **Header:** Rename "Changed" -> "Ago".
+    *   **Logic:** Keep existing `formatTimeAgo` + `Trend` arrow.
 *   **AMZ:**
-    *   **Data:** **New Field.** "Amazon Presence".
-    *   *Source:* Check `Amazon - Current` (DB column `Amazon___Current`).
-    *   *Logic:* If `Amazon - Current` > 0 (and not -1/None), display Warning Icon (⚠️). Else Blank.
-*   **Gated:** Standard Check/Spinner.
+    *   **New Column.**
+    *   **Logic:** `if (deal.Amazon_Current > 0) return '⚠️'; else return '';`
+*   **Gated:** Existing logic.
 
 ### Group 4: Trust Ratings
-*   **Seller:** (Renamed from "Trust"? No, "Seller Details" -> "Trust Ratings").
-    *   **Data:** `Seller_Quality_Score`.
-    *   **Format:** "**8 / 10**". (Likely needs scaling from 0-1 or 0-100).
-*   **Estimate:** (Renamed from "Profit Confidence").
-    *   **Data:** `Profit Confidence`.
-    *   **Format:** Percentage (e.g., "**64%**").
+*   **Seller:** `Seller_Quality_Score`.
+    *   **Format:** "8 / 10" (No change to logic/scaling per user instruction).
+*   **Estimate:** `Profit_Confidence`.
+    *   **Format:** "64%".
 
 ### Group 5: Profit Estimates
-*   **All in:** No change.
-*   **Profit:** No change.
-*   **Margin:** No change.
-*   **Buy >:** (Replaces "Actions").
-    *   **Content:** Button labeled "**Buy >**".
-    *   **Style:** Orange/Action color (similar to "Apply").
-    *   **Link:** `https://www.amazon.com/dp/{ASIN}`.
+*   **All in:** `All_in_Cost`.
+*   **Profit:** `Profit`.
+*   **Margin:** `Margin`.
+*   **Buy >:**
+    *   **Move:** Move "Buy" button from "Actions" group to here.
+    *   **Style:** Orange button, text "Buy >".
 
-## 2. Technical Implementation Steps
+## 3. Backend Support (`wsgi_handler.py`)
+1.  **Route:** Add `@app.route('/dashboard-test')`.
+2.  **API:** Ensure `api_deals` returns `Sales_Rank_Drops_last_30_days`, `Amazon_Current`, `Used_Offer_Count_Current`, `Used_Offer_Count_365_days_avg`.
 
-### Backend (`wsgi_handler.py` / `keepa_deals`)
-1.  **API Response (`/api/deals`):**
-    *   Ensure `Sales_Rank___Drops_last_30_days` is included in the JSON response.
-    *   Ensure `Used Offer Count - 30 days avg.` is included (for trend calculation) OR calculate `offer_trend` serverside and send as a field. *Recommendation:* Send `offer_trend` (-1, 0, 1) to simplify frontend logic.
-    *   Ensure `Amazon___Current` is included.
-    *   **Condition Mapping:** Implement the "U - Very Good" mapping logic in `api_deals` so the frontend receives the clean string, OR send raw string and map in JS. *Decision:* Map in Python `api_deals` using `condition_string_map`.
-
-### Frontend (`templates/dashboard.html`)
-1.  **Grid Reconfiguration:**
-    *   Rewrite the `<thead>` to match the 5 Groups structure.
-    *   Update `columns` definition in the DataTables/Grid initialization.
-2.  **Formatters:**
-    *   **Rank:** Write `formatRank(number)` function (e.g., `num / 1000000 + 'M'`).
-    *   **Offers:** Write `formatOffers(count, trend)` function (Arrow logic + Color class).
-    *   **Ago:** Combine `last_price_change` (Trend) and `last_update` (Time).
-    *   **AMZ:** logic: `if (row.amz_price > 0) return '⚠️'; else return '';`
-    *   **Buy Button:** Render `<a href="..." class="btn-buy">Buy ></a>`.
-3.  **CSS:**
-    *   Add `.btn-buy` style (Orange, compact).
-    *   Adjust column widths to fit new layout.
-
-## 3. Data Notes & Logic Verification
-*   **Condition Mapping:**
-    *   "Used - Like New" -> "U - Like New"
-    *   "Used - Very Good" -> "U - Very Good"
-    *   "Used - Good" -> "U - Good"
-    *   "Used - Acceptable" -> "U - Acceptable"
-    *   "Collectible - Like New" -> "C - Like New" (etc.)
-    *   *Fallback:* If pattern is "Condition - Subcondition", map to "C - Subcondition" (first letter).
-*   **Trend Logic:**
-    *   **Price Trend:** (Existing) Rising = Green (Good for selling?), Falling = Red? *Wait*, usually Price Rising is Good for value, but "Trend" arrow usually indicates *change*.
-    *   **Offer Trend:** (New) Rising = Red (Bad competition), Falling = Green (Good competition). **Crucial distinction.**
-
-## 4. Verification Plan
-*   Load Dashboard.
-*   Verify all Removed columns are gone.
-*   Verify "Supply & Demand" group exists.
-*   Check "Rank" formatting (e.g., 4.5M).
-*   Check "Offers" arrow colors (Find an item with rising offers -> Red).
-*   Check "AMZ" warning (Find an item with Amazon price -> Warning).
-*   Check "Condition" strings ("U - Very Good").
+## 4. Verification Steps
+1.  Access `/dashboard-test`.
+2.  Verify column order and grouping match Excel spec exactly.
+3.  Verify "Rank" is condensed (e.g., 4.5M).
+4.  Verify "AMZ" warning appears for Amazon listings.
+5.  Verify "Buy >" button position.
+6.  Verify "Ago" column has trend arrow + time.
