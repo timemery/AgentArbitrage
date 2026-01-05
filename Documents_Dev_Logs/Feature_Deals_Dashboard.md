@@ -4,7 +4,7 @@ This document details the functionality, logic, and specifications for the Deals
 
 ---
 
-## 1. Deals Dashboard (User & Admin Access)
+## 1. Deals Dashboard
 
 **Route:** `/dashboard`
 **Template:** `templates/dashboard.html`
