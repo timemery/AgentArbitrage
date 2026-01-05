@@ -1,73 +1,110 @@
 # Task Plan: Dashboard UI Overhaul (Supply & Demand Focus)
 
-**Objective:** Redesign the Deals Dashboard (`templates/dashboard.html`) to reduce information overload and focus on "Supply & Demand" metrics, implementing the specific design agreed upon in the "Dashboard and Deal Detail Overlay advice" session.
+**Objective:** Redesign the Deals Dashboard (`templates/dashboard.html`) to reduce information overload and focus on "Supply & Demand" metrics, strictly adhering to the user-provided Excel specification (image.png).
 
 ## 1. Grid Layout & Column Changes
 
-The dashboard grid should be reorganized into the following groups and columns.
+The dashboard grid must be reorganized into the following groups and columns. Columns marked with "x Removed" in the spec must be deleted.
 
-### Group 1: Book Details (Yellow Header)
-*   **ASIN:** Standard display. *Recommendation: Hyperlink this to Amazon Product Page to replace the removed "Actions" column.*
-*   **Title:** Standard truncation (hover for full).
-*   **Condition:** Keep existing "U - VG" style abbreviations.
+### Group 1: Book Details
+*   **ASIN:** Standard display.
+*   **Title:** Standard truncation.
+*   **Condition:**
+    *   **Rename:** Rename column header to **Condition**.
+    *   **Data Transformation:** Map raw string codes to abbreviations:
+        *   "Used - Very Good" -> "**U - Very Good**" (was "UG", now explicitly full word) - *Correction:* User spec says "U - Very Good", "U - Good", "U - Like New", "U - Acceptable".
+        *   Wait, spec says: "U - Very Good", "C - Like New" etc.
+        *   *Spec Note:* "modify Condition Labels: - New (no change), - U - Like New, - U - Very Good, ... - C - Like New...".
+        *   *Implementation:* Update `api_deals` in `wsgi_handler.py` (or frontend JS) to apply this mapping.
 
-### Group 2: Supply & Demand (New Header!)
+### Group 2: Supply & Demand (New Header)
 *   **Rank:**
-    *   **Format:** Condensed notation (e.g., "3.4M", "150k") instead of raw numbers ("3,494,423").
-    *   *Implementation:* Requires a JS formatter in `dashboard.html`.
-*   **Drops (30d):**
-    *   **Data:** Need to expose "30-day Sales Rank Drops" to the frontend.
-    *   *Check:* Verify if `sale_events` count is available in the API response or if a new field `drops_30d` needs to be added to `processing.py`/`new_analytics.py`.
+    *   **Format:** Condensed notation (e.g., "**4.5M**", "120k").
+    *   *Implementation:* JavaScript formatter.
+*   **Drops:**
+    *   **Data:** **New Field.** "30-day Sales Rank Drops".
+    *   *Source:* `Sales_Rank___Drops_last_30_days` (sanitized DB column).
+    *   *Display:* Raw integer (e.g., "15").
 *   **Offers:**
-    *   **Format:** "Count + Trend Arrow" (e.g., "12 ↘" or "15 ↗").
-    *   *Intricacy:* The strategies emphasize that *rising* offers are bad and *falling* offers are good.
-    *   *Backend Work:* Verify if an "Offer Count Trend" is calculated. If not, implement logic in `keepa_deals/new_analytics.py` similar to the Price Trend logic, comparing current offer count to a moving average or previous value.
-*   **Season:** Standard Seasonality text (e.g., "Textbook (Winter)").
+    *   **Data:** **New Field.** "Count + Trend Arrow".
+    *   *Source:* `Used Offer Count - Current`.
+    *   *Trend Logic:* Compare `Used Offer Count - Current` vs `Used Offer Count - 30 days avg.` (derived from `keepa_deals/new_analytics.py` logic or calculated in SQL/Python).
+    *   *Formatting:* "12 ↘".
+    *   *Color Coding:*
+        *   **Rising (Current > Avg):** Red (Bad).
+        *   **Falling (Current < Avg):** Green (Good).
+*   **Season:** No change.
 
-### Group 3: Trust Ratings (Yellow Header)
-*   **Seller:** "8 / 10" format.
-*   **Estimate:** (Renamed from "Profit Confidence" / "Profit Trust").
-    *   **Data:** `Profit_Confidence` field.
-    *   **Label:** Display as "**Estimate**" in the header.
-
-### Group 4: Deal Details (Yellow Header)
-*   **1yr Avg:** Currency.
-*   **Now:** Currency (`Price Now`).
-*   **% ⇩:** Percent Down.
+### Group 3: Deal Details (Renamed/Reorganized)
+*   **1yr Avg:** (Price). No change.
+*   **Now:** (Price). No change.
+*   **% ⇩:** No change.
 *   **Ago:**
-    *   **Critical Detail:** Must include the **Price Trend Arrow**.
-    *   **Format:** "Trend + Time" (e.g., "⇩ 4d", "⇧ 2h").
-    *   *Note:* The trend arrow was previously in its own column; it must be merged here.
-*   **AMZ:** (New Column)
-    *   **Logic:** Listed vs. Not Listed.
-    *   **Display:**
-        *   If Amazon is on the listing: Display **Warning Icon (⚠️)** or similar alert.
-        *   If Amazon is NOT on the listing: Leave **Blank** (or minimal dash).
-        *   *Goal:* Management by exception.
-*   **Gated:** Standard Check/X/Spinner icons.
+    *   **Format:** "Trend Arrow + Time" (e.g., "⇧ 4d").
+    *   *Change:* Ensure Trend Arrow is part of this cell, not separate.
+*   **AMZ:**
+    *   **Data:** **New Field.** "Amazon Presence".
+    *   *Source:* Check `Amazon - Current` (DB column `Amazon___Current`).
+    *   *Logic:* If `Amazon - Current` > 0 (and not -1/None), display Warning Icon (⚠️). Else Blank.
+*   **Gated:** Standard Check/Spinner.
 
-### Group 5: Profit Estimates (Yellow Header)
-*   **All in:** (Renamed from "All in Cost").
-*   **Profit:** Currency (Green/Red).
-*   **Margin:** Percentage.
-*   **Action Button:**
-    *   **Header:** Empty (No text).
-    *   **Cell Content:** A button labeled **"Buy >"**.
-    *   **Style:** Similar to the "Apply" button style (Orange/Action color).
-    *   **Behavior:** Links to Amazon (or opens the Deal Overlay, based on user workflow preference—likely Overlay first for safety).
+### Group 4: Trust Ratings
+*   **Seller:** (Renamed from "Trust"? No, "Seller Details" -> "Trust Ratings").
+    *   **Data:** `Seller_Quality_Score`.
+    *   **Format:** "**8 / 10**". (Likely needs scaling from 0-1 or 0-100).
+*   **Estimate:** (Renamed from "Profit Confidence").
+    *   **Data:** `Profit Confidence`.
+    *   **Format:** Percentage (e.g., "**64%**").
 
-## 2. Technical Requirements
+### Group 5: Profit Estimates
+*   **All in:** No change.
+*   **Profit:** No change.
+*   **Margin:** No change.
+*   **Buy >:** (Replaces "Actions").
+    *   **Content:** Button labeled "**Buy >**".
+    *   **Style:** Orange/Action color (similar to "Apply").
+    *   **Link:** `https://www.amazon.com/dp/{ASIN}`.
+
+## 2. Technical Implementation Steps
 
 ### Backend (`wsgi_handler.py` / `keepa_deals`)
-1.  **Offer Trend:** Implement logic to calculate `Offer_Count_Trend` (Up/Down/Flat) if not present.
-2.  **30d Drops:** Ensure the count of sales rank drops in the last 30 days is available in the API response.
-3.  **Amazon Presence:** Ensure a boolean or flag for `is_amazon_selling` is available to drive the "AMZ" column icon.
+1.  **API Response (`/api/deals`):**
+    *   Ensure `Sales_Rank___Drops_last_30_days` is included in the JSON response.
+    *   Ensure `Used Offer Count - 30 days avg.` is included (for trend calculation) OR calculate `offer_trend` serverside and send as a field. *Recommendation:* Send `offer_trend` (-1, 0, 1) to simplify frontend logic.
+    *   Ensure `Amazon___Current` is included.
+    *   **Condition Mapping:** Implement the "U - Very Good" mapping logic in `api_deals` so the frontend receives the clean string, OR send raw string and map in JS. *Decision:* Map in Python `api_deals` using `condition_string_map`.
 
 ### Frontend (`templates/dashboard.html`)
-1.  **Header Removal:** Remove the old blue headers and replace with the new Yellow grouping headers as shown in the design.
-2.  **Column Config:** Update `renderTable` to match the new column order and formatting rules (especially the "3.4M" rank and merged "Ago" column).
-3.  **CSS:** Update `static/global.css` to support the new "Buy >" button and column widths.
+1.  **Grid Reconfiguration:**
+    *   Rewrite the `<thead>` to match the 5 Groups structure.
+    *   Update `columns` definition in the DataTables/Grid initialization.
+2.  **Formatters:**
+    *   **Rank:** Write `formatRank(number)` function (e.g., `num / 1000000 + 'M'`).
+    *   **Offers:** Write `formatOffers(count, trend)` function (Arrow logic + Color class).
+    *   **Ago:** Combine `last_price_change` (Trend) and `last_update` (Time).
+    *   **AMZ:** logic: `if (row.amz_price > 0) return '⚠️'; else return '';`
+    *   **Buy Button:** Render `<a href="..." class="btn-buy">Buy ></a>`.
+3.  **CSS:**
+    *   Add `.btn-buy` style (Orange, compact).
+    *   Adjust column widths to fit new layout.
 
-## 3. Pre-flight Check
-*   Verify that "Estimate" refers to *Profit Confidence* (the probability of the profit being real) and not a dollar value.
-*   Confirm the logic for the "Offers" arrow (Up = Bad/More Competition, Down = Good/Less Competition) to consider color-coding if necessary (Red up / Green down?).
+## 3. Data Notes & Logic Verification
+*   **Condition Mapping:**
+    *   "Used - Like New" -> "U - Like New"
+    *   "Used - Very Good" -> "U - Very Good"
+    *   "Used - Good" -> "U - Good"
+    *   "Used - Acceptable" -> "U - Acceptable"
+    *   "Collectible - Like New" -> "C - Like New" (etc.)
+    *   *Fallback:* If pattern is "Condition - Subcondition", map to "C - Subcondition" (first letter).
+*   **Trend Logic:**
+    *   **Price Trend:** (Existing) Rising = Green (Good for selling?), Falling = Red? *Wait*, usually Price Rising is Good for value, but "Trend" arrow usually indicates *change*.
+    *   **Offer Trend:** (New) Rising = Red (Bad competition), Falling = Green (Good competition). **Crucial distinction.**
+
+## 4. Verification Plan
+*   Load Dashboard.
+*   Verify all Removed columns are gone.
+*   Verify "Supply & Demand" group exists.
+*   Check "Rank" formatting (e.g., 4.5M).
+*   Check "Offers" arrow colors (Find an item with rising offers -> Red).
+*   Check "AMZ" warning (Find an item with Amazon price -> Warning).
+*   Check "Condition" strings ("U - Very Good").

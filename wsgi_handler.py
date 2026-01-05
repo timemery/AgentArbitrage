@@ -1046,18 +1046,50 @@ def api_deals():
 
             # (Existing formatting logic for conditions, bindings, etc. remains the same...)
             # binding_map removed in favor of automatic formatting
-            condition_string_map = {"New": "N", "Used - Like New": "U - LN", "Used - Very Good": "U - VG", "Used - Good": "U - G", "Used - Acceptable": "U - A"}
-            condition_code_map = {"1": "New", "2": "Used - Like New", "3": "Used - Very Good", "4": "Used - Good", "5": "Used - Acceptable"}
+            # Updated Condition Mapping per user request
+            condition_string_map = {
+                "New": "New",
+                "Used - Like New": "U - Like New",
+                "Used - Very Good": "U - Very Good",
+                "Used - Good": "U - Good",
+                "Used - Acceptable": "U - Acceptable",
+                "Collectible - Like New": "C - Like New",
+                "Collectible - Very Good": "C - Very Good",
+                "Collectible - Good": "C - Good",
+                "Collectible - Acceptable": "C - Acceptable"
+            }
+            condition_code_map = {
+                "1": "New",
+                "2": "Used - Like New",
+                "3": "Used - Very Good",
+                "4": "Used - Good",
+                "5": "Used - Acceptable",
+                "6": "Collectible - Like New",
+                "7": "Collectible - Very Good",
+                "8": "Collectible - Good",
+                "9": "Collectible - Acceptable"
+            }
 
-            if 'Condition' in deal and deal['Condition'] and str(deal['Condition']).isdigit():
-                deal['Condition'] = condition_code_map.get(str(deal['Condition']), f"Unknown ({deal['Condition']})")
+            if 'Condition' in deal and deal['Condition']:
+                raw_cond = str(deal['Condition'])
+                # Decode code first if digits
+                if raw_cond.isdigit():
+                    raw_cond = condition_code_map.get(raw_cond, raw_cond)
+
+                # Apply string mapping
+                deal['Condition'] = condition_string_map.get(raw_cond, raw_cond)
+
+                # Fallback formatter: if we still have a hyphenated string not in map, try to abbreviate first word
+                # e.g., "Refurbished - Good" -> "R - Good" (Just in case)
+                if ' - ' in str(deal['Condition']) and deal['Condition'] not in condition_string_map.values():
+                    parts = str(deal['Condition']).split(' - ', 1)
+                    if len(parts) == 2:
+                        prefix = parts[0][0].upper()
+                        deal['Condition'] = f"{prefix} - {parts[1]}"
 
             # Automatic formatting for Binding: remove underscores/hyphens, title case
             if 'Binding' in deal and deal['Binding']:
                 deal['Binding'] = str(deal['Binding']).replace('_', ' ').replace('-', ' ').title()
-
-            if 'Condition' in deal and deal['Condition'] in condition_string_map:
-                deal['Condition'] = condition_string_map[deal['Condition']]
 
     except sqlite3.Error as e:
         app.logger.error(f"Database query error: {e}")
