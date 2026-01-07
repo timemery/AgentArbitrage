@@ -5,10 +5,11 @@ from .business_calculations import (
     calculate_min_listing_price,
     load_settings as business_load_settings,
 )
-from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends
+from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends, get_offer_count_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
 from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score
+from .stable_products import sales_rank_drops_last_30_days, amazon_current
 from .field_mappings import FUNCTION_LIST
 import json
 import os
@@ -199,6 +200,29 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
 
+    # New Columns: Drops, Offers, AMZ
+    try:
+        # Drops
+        drops_data = sales_rank_drops_last_30_days(product_data)
+        if drops_data:
+            row_data.update({'Drops': drops_data.get('Sales Rank - Drops last 30 days', '-')})
+
+        # Offers
+        offers_data = get_offer_count_trend(product_data)
+        if offers_data:
+            row_data.update(offers_data)
+
+        # AMZ
+        amz_data = amazon_current(product_data)
+        amz_val = amz_data.get('Amazon - Current') if amz_data else '-'
+        if amz_val and amz_val != '-' and amz_val != 'N/A':
+            row_data['AMZ'] = '⚠️'
+        else:
+            row_data['AMZ'] = ''
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed new columns extraction: {e}", exc_info=True)
+
     return row_data
 
 def clean_numeric_values(row_data):
@@ -219,3 +243,4 @@ def clean_numeric_values(row_data):
             try: row_data[key] = float(cleaned_value)
             except (ValueError, TypeError): row_data[key] = None
     return row_data
+# Refreshed

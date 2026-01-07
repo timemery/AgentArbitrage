@@ -1447,6 +1447,16 @@ def used_offer_count_current(product):
     return {'Used Offer Count - Current': str(calculated_used_offers)}
 # Used Offer Count - Current ends
 
+# Used Offer Count - 30 days avg. starts
+def used_offer_count_30_days_avg(product):
+    stats = product.get('stats', {})
+    asin = product.get('asin', 'unknown')
+    # Index 12 for average COUNT_USED in stats.avg30 array
+    count = get_stat_value(stats, 'avg30', 12, is_price=False)
+    logger.info(f"ASIN {asin}: Used Offer Count - 30 days avg. from stats.avg30[12]: {count}")
+    return {'Used Offer Count - 30 days avg.': count}
+# Used Offer Count - 30 days avg. ends
+
 # Used Offer Count - 365 days avg. starts
 def used_offer_count_365_days_avg(product):
     stats = product.get('stats', {})
@@ -1850,3 +1860,4 @@ def amazon_180_days_avg(product):
         logger.warning(f"Amazon - 180 days avg. for ASIN {asin}: stats.avg180 array is empty or missing.")
 
     return {'Amazon - 180 days avg.': price_str}
+# Refreshed

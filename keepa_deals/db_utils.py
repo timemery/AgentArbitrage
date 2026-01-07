@@ -129,6 +129,19 @@ def create_deals_table_if_not_exists():
                 logger.info("Adding 'source' column.")
                 cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN source TEXT')
 
+            # Add new dashboard columns if missing (Added 2025-06-25)
+            if 'Drops' not in existing_columns:
+                logger.info("Adding 'Drops' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN Drops INTEGER')
+
+            if 'Offers' not in existing_columns:
+                logger.info("Adding 'Offers' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN Offers TEXT')
+
+            if 'AMZ' not in existing_columns:
+                logger.info("Adding 'AMZ' column.")
+                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN AMZ TEXT')
+
             if not has_unique_index_on_asin(cursor, TABLE_NAME):
                 logger.warning("No unique index found on ASIN column. This should have been created with the table.")
 
@@ -382,3 +395,4 @@ def clear_deals_table():
     conn.commit()
     conn.close()
     logging.info("Deals table cleared.")
+# Refreshed

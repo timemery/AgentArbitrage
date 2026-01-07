@@ -232,11 +232,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Book Details
         "ASIN", "Title", "Categories_Sub", "Binding", "Condition",
         // Sales Rank
-        "Sales_Rank_Current", "Sales_Rank_365_days_avg", "Detailed_Seasonality", "Sells",
+        "Sales_Rank_Current", "Drops", "Offers", "Sales_Rank_365_days_avg", "Detailed_Seasonality", "Sells",
         // Seller
         "Seller", "Seller_Quality_Score",
         // Deal Details & Current Best Price
-        "last_price_change", "1yr_Avg", "Best_Price", "Percent_Down",
+        "last_price_change", "AMZ", "1yr_Avg", "Best_Price", "Percent_Down",
         // Profit Estimates & Recommended Listing Price
         "All_in_Cost", "Min_Listing_Price", "List_at", "Profit", "Margin", "Profit_Confidence",
         // Actions
@@ -253,11 +253,14 @@ document.addEventListener('DOMContentLoaded', function() {
         "Percent_Down": "% ⇩",
         "Seller_Quality_Score": "Trust",
         "Sales_Rank_Current": "Current",
+        "Drops": "Drops",
+        "Offers": "Offers",
         "Sales_Rank_365_days_avg": "1yr. Avg",
         "Binding": "Binding",
         "Condition": "Condition",
         "Sells": "Sells",
         "Detailed_Seasonality": "Season",
+        "AMZ": "AMZ",
         "List_at": "List at",
         "Profit_Confidence": "Profit Trust",
         "Deal_found": "Found",
@@ -403,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add the new group header row
         table += '<tr class="group-header">';
         table += '<th colspan="5">Book Details</th>';
-        table += '<th colspan="4">Sales Rank & Seasonality</th>';
+        table += '<th colspan="6">Sales Rank & Seasonality</th>';
         table += '<th colspan="2">Seller Details</th>';
         table += '<th colspan="5">Deal Details & Current Best Price</th>';
         table += '<th colspan="6">Profit Estimates & Recommended Listing Price</th>';
@@ -538,8 +541,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         table += `<td>${cleanAsin}</td>`;
                     } else if (col === 'Best_Price' && cleanAsin) {
                         table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
-                    }
-                    else {
+                    } else if (col === 'Offers') {
+                        // Style the trend arrow
+                        if (value && typeof value === 'string') {
+                            if (value.includes('↘')) {
+                                value = value.replace('↘', '<span style="color: green; font-weight: bold;">↘</span>');
+                            } else if (value.includes('↗')) {
+                                value = value.replace('↗', '<span style="color: red; font-weight: bold;">↗</span>');
+                            }
+                        }
+                        table += `<td>${value}</td>`;
+                    } else if (col === 'AMZ') {
+                        if (value === '⚠️') {
+                            table += `<td style="font-size: 1.2em; text-align: center;">${value}</td>`;
+                        } else {
+                            table += `<td></td>`;
+                        }
+                    } else {
                         table += `<td>${value}</td>`;
                     }
                 });
@@ -904,4 +922,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-{% endblock %}
+{% endblock %}<!-- Refreshed -->

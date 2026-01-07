@@ -162,3 +162,51 @@ def analyze_sales_rank_trends(product):
     # Simple average of the two trends for a single metric
     # A more sophisticated model could be used here.
     return {"Sales Rank Trend %": thirty_day_trend}
+
+def get_offer_count_trend(product, logger=None):
+    """
+    Calculates the trend for Used Offer Count.
+    Returns: "Count ↘", "Count ↗", "Count ⇨", or "-"
+    """
+    if not logger:
+        logger = logging.getLogger(__name__)
+
+    try:
+        stats = product.get('stats', {})
+
+        # Current Used Offer Count logic (mirrors used_offer_count_current in stable_products.py)
+        offer_count_fba_new = stats.get('offerCountFBA')
+        offer_count_fbm_new = stats.get('offerCountFBM')
+        total_offer_count = stats.get('totalOfferCount')
+
+        if total_offer_count is None or not isinstance(total_offer_count, int) or total_offer_count < 0:
+            return {'Offers': '-'}
+
+        val_fba_new = offer_count_fba_new if isinstance(offer_count_fba_new, int) and offer_count_fba_new >= 0 else 0
+        val_fbm_new = offer_count_fbm_new if isinstance(offer_count_fbm_new, int) and offer_count_fbm_new >= 0 else 0
+        current_new_total = val_fba_new + val_fbm_new
+
+        current_used_count = total_offer_count - current_new_total
+        if current_used_count < 0: current_used_count = 0
+
+        # 30-day Avg Used Offer Count logic (mirrors used_offer_count_30_days_avg in stable_products.py)
+        avg30_array = stats.get('avg30', [])
+        avg_used_count = -1
+        if avg30_array and len(avg30_array) > 12:
+            avg_used_count = avg30_array[12]
+
+        if avg_used_count == -1 or avg_used_count is None:
+             return {'Offers': str(current_used_count)}
+
+        arrow = "⇨"
+        if current_used_count > avg_used_count:
+            arrow = "↗" # Rising (Bad)
+        elif current_used_count < avg_used_count:
+            arrow = "↘" # Falling (Good)
+
+        return {'Offers': f"{current_used_count} {arrow}"}
+
+    except Exception as e:
+        logger.error(f"Error calculating Offer Count Trend: {e}", exc_info=True)
+        return {'Offers': '-'}
+# Refreshed
