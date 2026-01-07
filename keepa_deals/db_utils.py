@@ -395,3 +395,4 @@ def clear_deals_table():
     conn.commit()
     conn.close()
     logging.info("Deals table cleared.")
+# Refreshed

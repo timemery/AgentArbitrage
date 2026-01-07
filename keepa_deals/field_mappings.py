@@ -696,6 +696,9 @@ FUNCTION_LIST = [
     None,                           # Seasonality Type
     None,                           # Detailed_Seasonality
     None,                           # Sells
+    None,                           # Drops
+    None,                           # Offers
+    None,                           # AMZ
     get_peak_season,                # Peak Season
     get_list_at_price,              # List at
     get_trough_season,              # Trough Season
@@ -711,4 +714,4 @@ FUNCTION_LIST = [
 ]
 # Chunk 2 ends
 
-#### END of field_mappings.py ####
+#### END of field_mappings.py ##### Refreshed
