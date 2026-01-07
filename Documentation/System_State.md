@@ -34,7 +34,7 @@
 - **Columns:**
   - **Drops:** Sales Rank drops in last 30 days.
   - **Offers:** Trend arrows (↘/↗) vs 30-day average.
-  - **AMZ:** Warning icon (⚠️) if Amazon is on the listing.
+  - **AMZ:** Warning icon (⚠️) if Amazon is currently selling the item.
   - **Binding:** Auto-formatted to Title Case (e.g., "Mass Market"), max width 95px.
 - **Ava Advice:** Overlay feature using `grok-4-fast-reasoning` to provide actionable analysis.
 
@@ -46,4 +46,4 @@
 ## 6. Known Constraints & Hard Rules
 - **Formatting:** `format_currency` handles string inputs defensively.
 - **Logs:** Do not read full `celery.log`.
-- **Context:** `dev-log-*.md` files are historical archives. This file is the current reference.
+- **Context:** `Dev_Logs/Archive/*.md` files are historical archives. This file is the current reference.

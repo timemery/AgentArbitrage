@@ -30,8 +30,8 @@ To ensure the stability and performance of the development environment, the foll
 
    *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
    *   Use `ls -RF` or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files and subdirectories.
-   *   **READ** `README.md`, this `AGENTS.md` file, and `Documents_Dev_Logs/System_State.md` in full.
-   *   **DO NOT** read old `dev-log-*.md` files unless specifically investigating a regression related to that time period. `System_State.md` is your source of truth.
+   *   **READ** `README.md`, this `AGENTS.md` file, and `Documentation/System_State.md` in full.
+   *   **DO NOT** read old logs in `Dev_Logs/Archive/` unless specifically investigating a regression related to that time period. `Documentation/System_State.md` is your source of truth.
    *   This initial exploration provides essential context, helps locate relevant code modules, and prevents unnecessary file reading later in the task. Adhering to this practice is mandatory for efficient and stable operation.
 
 3. ### Environment and Verification Protocol (EVP)
@@ -59,7 +59,7 @@ To prevent regressions and ensure that "hard-won" code remains stable, I will ad
 
 *   Before modifying any existing code, I must first understand its history and purpose.
 *   I will use `git log -p <filepath>` to review the recent history of the file to understand why it is in its current state.
-*   I will consult the `Documents_Dev_Logs/Archive/Log_Entries` directory ONLY if I need to trace the origin of a specific feature.
+*   I will consult the `Dev_Logs/Archive/` directory ONLY if I need to trace the origin of a specific feature.
 *   My goal is to understand the *intent* behind the existing code before I propose a change.
 
 **3. Strict Separation of Code and Configuration:**
