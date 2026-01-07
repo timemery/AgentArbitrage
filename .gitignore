@@ -28,3 +28,12 @@ xai_token_state.json
 db_backups/data_quality_filters.patch
 task_description.md
 migrate_db.py
+
+# Large Files & Backups
+db_backups/*.bak
+*.mp4
+*.jpg
+*.png
+xai_cache.json
+AgentArbitrage_BeforeGateCheckFeature2/
+temp-*.rdb
