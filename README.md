@@ -90,7 +90,7 @@ KEEPA_API_KEY="your_keepa_api_key"
 ## Architectural Notes
 
 - **Primary Application File:** The main Flask application logic is in `wsgi_handler.py`. The `wsgi.py` file is the entry point for the Apache/mod_wsgi server.
-- **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documents_Dev_Logs` folder.
+- **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
 *Last Updated: October 12, 2025*
