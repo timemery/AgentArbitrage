@@ -45,8 +45,11 @@ There are four primary background tasks that manage the data lifecycle.
 *   **Mechanism:**
     1.  Reads the user's query from `keepa_query.json`.
     2.  Iterates through Keepa's result pages (Chunked processing).
-    3.  **Resiliency:** Persists its progress (page number) to the `system_state` table. If the server crashes, it resumes from the last checkpoint.
-    4.  **Optimized Fetching:** Fetches seller details *only* for the specific seller winning the Buy Box/Lowest Used price to save tokens.
+    3.  **Constraints:**
+        *   **Chunk Size:** Hardcoded to **20** (`DEALS_PER_CHUNK`). Increasing this causes token starvation (bucket empties faster than refill) and must not be changed.
+        *   **Locking:** Protected by a Redis Lock (`backfill_deals_lock`) with a **10-day timeout**. This prevents concurrent backfills (which would crash the token manager) while ensuring the lock persists through long-running jobs.
+    4.  **Resiliency:** Persists its progress (page number) to the `system_state` table. If the server crashes, it resumes from the last checkpoint.
+    5.  **Optimized Fetching:** Fetches seller details *only* for the specific seller winning the Buy Box/Lowest Used price to save tokens.
 
 ### B. `update_recent_deals` (The Delta Sync)
 *   **Purpose:** Keeps the database up-to-date with live market changes without re-scanning the entire catalog.
@@ -70,9 +73,10 @@ There are four primary background tasks that manage the data lifecycle.
 *   **Trigger:** Manual (Button: "Re-check Restrictions" in Settings).
 *   **Mechanism:**
     1.  Iterates through all ASINs in the `deals` table (Newest first).
-    2.  Queries Amazon SP-API `getListingsRestrictions` endpoint.
-    3.  Updates `user_restrictions` table.
-    4.  **Error Handling:** If API fails, marks status as `-1` (Error) so UI can display a broken link icon.
+    2.  **Batch Processing:** Processes ASINs in batches of **5** to provide incremental UI updates and manage API throughput.
+    3.  Queries Amazon SP-API `getListingsRestrictions` endpoint.
+    4.  Updates `user_restrictions` table.
+    5.  **Error Handling:** If API fails, marks status as `-1` (Error) so UI can display a broken link icon.
 
 ---
 
