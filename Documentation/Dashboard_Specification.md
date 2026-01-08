@@ -10,25 +10,25 @@ For the underlying data logic, please refer to **`Data_Logic.md`**.
 
 The dashboard uses a responsive grid layout. Columns are defined in `templates/dashboard.html`.
 
+**Note:** Several columns (Genre, Binding, Name, Min. List, List at) have been removed from the visual dashboard as of Jan 2026, but their underlying logic and data extraction remain active in the backend for future use.
+
 ### 1. Main Data Grid
 
 | Column Header | Data Field (Backend) | Visual Format / Behavior | Width | Sortable? |
 | :--- | :--- | :--- | :--- | :--- |
 | **Image** | `Image` | 60px height. Click expands to full size. | 70px | No |
 | **Title** | `Title` | Truncated (2 lines). Hover shows full title. Hyperlink to Keepa. | Auto | No |
-| **Binding** | `Binding` | **Strict Formatting:** 95px width. Ellipsis truncation. Hover shows full text. <br> **Transformation:** Underscores/Hyphens replaced with spaces. Title Case applied (e.g., `mass_market` -> "Mass Market"). | 95px | Yes |
+| **Condition** | `Condition` | **Abbreviated Map:** <br> `Used - Like New` -> **U - LN** <br> `Used - Very Good` -> **U - VG** <br> `Used - Good` -> **U - G** <br> `Used - Acceptable` -> **U - A** | 80px | Yes |
 | **Rank** | `Sales_Rank_Current` | Integer with commas (e.g., "12,345"). | 90px | Yes |
 | **Details** | `Detailed_Seasonality` | Text. | 110px | No |
-| **Condition** | `Condition` | **Abbreviated Map:** <br> `Used - Like New` -> **U - LN** <br> `Used - Very Good` -> **U - VG** <br> `Used - Good` -> **U - G** <br> `Used - Acceptable` -> **U - A** | 80px | Yes |
-| **Gated** | `is_restricted` (joined) | **Icons:** <br> ✅ (Green Check) = Allowed <br> ❌ (Red X) = Restricted (Click opens Approval URL) <br> ⏳ (Spinner) = Checking... <br> ⚠️ (Broken) = Error (Hover for details) | 60px | Yes |
-| **Seller** | `Seller` | Truncated text. Hover shows full name. | 110px | No |
 | **S. Trust** | `Seller_Quality_Score` | **Scale 0-10:** Raw probability (0.0-1.0) * 10. Rounded to 1 decimal. | 80px | Yes |
 | **Changed** | `last_price_change`, `Trend` | **Composite:** Trend Arrow + " " + Time Ago (e.g., "⇩ 2h ago"). <br> **Arrows:** ⇧ (Up), ⇩ (Down), ⇨ (Flat). | 100px | Yes |
 | **Buy For** | `Best_Price` | Currency ($XX.XX). Bold font. | 90px | Yes |
 | **Avg.** | `1yr_Avg` | Currency ($XX.XX). | 90px | Yes |
 | **% ⇩** | `Percent_Down` | Percentage + "%". Bold if > 50%. | 70px | Yes |
 | **P. Trust** | `Profit_Confidence` | Percentage + "%". | 80px | Yes |
-| **List At** | `List_at` | Currency ($XX.XX). | 90px | No |
+| **Gated** | `is_restricted` (joined) | **Icons:** <br> ✅ (Green Check) = Allowed <br> ❌ (Red X) = Restricted (Click opens Approval URL) <br> ⏳ (Spinner) = Checking... <br> ⚠️ (Broken) = Error (Hover for details) | 60px | Yes |
+| **Buy** | `Buy_Now` | Link to Amazon Product Page. | 60px | No |
 | **Profit** | `Profit` | Currency ($XX.XX). **Color Coded:** <br> Green if > $0. <br> Red if < $0. | 90px | Yes |
 | **Margin** | `Margin` | Percentage + "%". | 80px | Yes |
 
