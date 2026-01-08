@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let prefix = '';
         let suffix = '';
 
-        if (lower.startsWith('new')) prefix = 'New';
+        if (lower === 'n' || lower.startsWith('new')) prefix = 'New';
         else if (lower.startsWith('used') || lower.startsWith('u -') || lower.startsWith('u-')) prefix = 'U';
         else if (lower.startsWith('collectible') || lower.startsWith('c -') || lower.startsWith('c-')) prefix = 'C';
 
