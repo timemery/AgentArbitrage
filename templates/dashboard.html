@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function formatTimeAgo(dateString) {
-        if (!dateString || dateString === '-') return '-';
+        if (!dateString || dateString === '-' || dateString === '') return '-';
 
         let date;
         // Handle "MM/DD/YY HH:MM" format specifically
@@ -298,38 +298,78 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = Math.round(seconds / 60);
 
         if (minutes < 60) {
-            if (minutes <= 1) return `1 <span class="time-suffix">min. ago</span>`;
-            return `${minutes} <span class="time-suffix">mins. ago</span>`;
+            if (minutes <= 1) return `1m`;
+            return `${minutes}m`;
         }
 
         const hours = Math.round(minutes / 60);
         if (hours < 24) {
-            if (hours === 1) return `1 <span class="time-suffix">hr. ago</span>`;
-            return `${hours} <span class="time-suffix">hrs. ago</span>`;
+            return `${hours}h`;
         }
 
         const days = Math.round(hours / 24);
         if (days < 30) {
-            if (days === 1) return `1 <span class="time-suffix">day ago</span>`;
-            return `${days} <span class="time-suffix">days ago</span>`;
+            return `${days}d`;
         }
 
         const months = Math.round(days / 30);
         if (months < 12) {
-            if (months === 1) return `1 <span class="time-suffix">mo. ago</span>`;
-            return `${months} <span class="time-suffix">mos. ago</span>`;
+            return `${months}mo`;
         }
 
         const years = Math.round(days / 365);
-        if (years === 1) return `1<span class="time-suffix">yr. ago</span>`;
-        return `${years}<span class="time-suffix">yrs. ago</span>`;
+        return `${years}y`;
+    }
+
+    function formatSalesRank(num) {
+        if (num === null || num === undefined || num === '') return '-';
+        if (typeof num === 'string') {
+            num = parseFloat(num.replace(/,/g, ''));
+        }
+        if (isNaN(num)) return '-';
+
+        if (num >= 1000000) {
+            // 4.5M
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        } else if (num >= 1000) {
+            // 120k
+            return Math.round(num / 1000) + 'k';
+        } else {
+            return num.toString();
+        }
     }
 
     function formatCondition(value) {
-        if (!value || typeof value !== 'string' || value.trim() === '-') return '-';
+        if (!value || typeof value !== 'string' || value.trim() === '-' || value.trim() === '') return '-';
 
+        let clean = value.trim();
+        const lower = clean.toLowerCase();
+
+        let prefix = '';
+        let suffix = '';
+
+        if (lower.startsWith('new')) prefix = 'New';
+        else if (lower.startsWith('used') || lower.startsWith('u -') || lower.startsWith('u-')) prefix = 'U';
+        else if (lower.startsWith('collectible') || lower.startsWith('c -') || lower.startsWith('c-')) prefix = 'C';
+
+        // Extract suffix by checking presence
+        if (lower.includes('like new') || lower.includes('likenew')) suffix = 'Like New';
+        else if (lower.includes('very good') || lower.includes('verygood')) suffix = 'Very Good';
+        else if (lower.includes('good')) suffix = 'Good';
+        else if (lower.includes('acceptable')) suffix = 'Acceptable';
+        else if (lower.includes('open box') || lower.includes('openbox')) suffix = 'Open Box';
+
+        if (prefix === 'New') {
+            if (suffix === 'Open Box') return 'New - Open Box';
+            return 'New';
+        }
+
+        if (prefix && suffix) {
+            return `${prefix} - ${suffix}`;
+        }
+
+        // Fallback/Legacy map
         const cleanedValue = value.toLowerCase().replace(/[\s_-]/g, '');
-
         const mapping = {
             'spiralbound': 'SB',
             'boardbook': 'BB',
@@ -340,10 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
             'audiocd': 'Audio',
             'looseleaf': 'LL',
             'leatherbound': 'LB',
-            'likenew': 'LN',
-            'verygood': 'VG',
-            'good': 'G',
-            'acceptable': 'A'
+            'likenew': 'U - Like New',
+            'verygood': 'U - Very Good',
+            'good': 'U - Good',
+            'acceptable': 'U - Acceptable'
         };
 
         return mapping[cleanedValue] || value;
@@ -476,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         } else if (col === 'Percent_Down') {
                             value = `${Math.round(numValue)}%`;
                         } else if (col === 'Sales_Rank_Current' || col === 'Sales_Rank_365_days_avg') {
-                            value = numValue.toLocaleString('en-US');
+                            value = formatSalesRank(numValue);
                         } else if (col === 'Margin') {
                             value = `${numValue.toFixed(2)}%`;
                         } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost') || col === '1yr_Avg') {
