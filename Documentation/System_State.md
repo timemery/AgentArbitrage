@@ -47,3 +47,6 @@
 - **Formatting:** `format_currency` handles string inputs defensively.
 - **Logs:** Do not read full `celery.log`.
 - **Context:** `Dev_Logs/Archive/*.md` files are historical archives. This file is the current reference.
+- **Backfill Chunk Size:** Must remain **20** (`DEALS_PER_CHUNK`). Increasing causes Token Starvation.
+- **Redis Lock:** `backfill_deals_lock` has a **10-day timeout** to support long-running tasks.
+- **Janitor Grace Period:** **72 Hours**. Do not lower (causes data loss).
