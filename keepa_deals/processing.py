@@ -9,7 +9,7 @@ from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_tre
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
 from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score, get_expected_trough_price
-from .stable_products import sales_rank_drops_last_30_days, sales_rank_drops_last_180_days, amazon_current
+from .stable_products import sales_rank_drops_last_30_days, sales_rank_drops_last_180_days, sales_rank_drops_last_365_days, amazon_current
 from .field_mappings import FUNCTION_LIST
 import json
 import os
@@ -208,10 +208,20 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
 
     # New Columns: Drops, Offers, AMZ, Drops 180, Offers 180, Offers 365
     try:
-        # Drops
+        # Drops (30 days)
         drops_data = sales_rank_drops_last_30_days(product_data)
         if drops_data:
             row_data.update({'Drops': drops_data.get('Sales Rank - Drops last 30 days', '-')})
+
+        # Drops 180
+        drops_data_180 = sales_rank_drops_last_180_days(product_data)
+        if drops_data_180:
+             row_data.update(drops_data_180)
+
+        # Drops 365
+        drops_data_365 = sales_rank_drops_last_365_days(product_data)
+        if drops_data_365:
+             row_data.update(drops_data_365)
 
         # Offers
         offers_data = get_offer_count_trend(product_data)

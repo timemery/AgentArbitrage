@@ -698,6 +698,8 @@ FUNCTION_LIST = [
     None,                           # Sells
     None,                           # Drops
     None,                           # Offers
+    None,                           # Offers 180
+    None,                           # Offers 365
     None,                           # AMZ
     get_peak_season,                # Peak Season
     get_list_at_price,              # List at
