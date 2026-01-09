@@ -499,7 +499,24 @@ def sales_rank_drops_last_30_days(product):
 
 # Sales Rank - Drops last 60 days
 # Sales Rank - Drops last 90 days
-# Sales Rank - Drops last 180 days
+
+# Sales Rank - Drops last 180 days starts
+def sales_rank_drops_last_180_days(product):
+    asin = product.get('asin', 'unknown')
+    stats = product.get('stats', {})
+    value = stats.get('salesRankDrops180', -1)
+    logger.debug(f"Sales Rank - Drops last 180 days - raw value={value} for ASIN {asin}")
+    if value < 0:
+        logger.info(f"No valid Sales Rank - Drops last 180 days (value={value}) for ASIN {asin}")
+        return {'Sales Rank - Drops last 180 days': '-'}
+    try:
+        formatted = str(value)
+        logger.debug(f"Sales Rank - Drops last 180 days result for ASIN {asin}: {formatted}")
+        return {'Sales Rank - Drops last 180 days': formatted}
+    except Exception as e:
+        logger.error(f"sales_rank_drops_last_180_days failed for ASIN {asin}: {str(e)}")
+        return {'Sales Rank - Drops last 180 days': '-'}
+# Sales Rank - Drops last 180 days ends
 
 # Sales Rank - Drops last 365 days starts
 def sales_rank_drops_last_365_days(product):
@@ -1456,6 +1473,16 @@ def used_offer_count_30_days_avg(product):
     logger.info(f"ASIN {asin}: Used Offer Count - 30 days avg. from stats.avg30[12]: {count}")
     return {'Used Offer Count - 30 days avg.': count}
 # Used Offer Count - 30 days avg. ends
+
+# Used Offer Count - 180 days avg. starts
+def used_offer_count_180_days_avg(product):
+    stats = product.get('stats', {})
+    asin = product.get('asin', 'unknown')
+    # Index 12 for average COUNT_USED in stats.avg180 array
+    count = get_stat_value(stats, 'avg180', 12, is_price=False)
+    logger.info(f"ASIN {asin}: Used Offer Count - 180 days avg. from stats.avg180[12]: {count}")
+    return {'Used Offer Count - 180 days avg.': count}
+# Used Offer Count - 180 days avg. ends
 
 # Used Offer Count - 365 days avg. starts
 def used_offer_count_365_days_avg(product):

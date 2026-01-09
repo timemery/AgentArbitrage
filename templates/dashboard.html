@@ -79,68 +79,225 @@
 </div>
 <div id="custom-tooltip" class="custom-tooltip"></div>
 
+<style>
+    /* Overlay Styles */
+    .deal-overlay-content {
+        max-width: 1000px; /* Increased width for 4 columns */
+        width: 95%;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        position: relative;
+    }
+
+    .overlay-action-bar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        margin-top: -10px; /* Pull up closer to top */
+    }
+
+    .overlay-buy-btn {
+        padding: 6px 20px;
+        background-color: #fff;
+        border: 2px solid #333;
+        color: #000;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background-color 0.2s;
+    }
+    .overlay-buy-btn:hover {
+        background-color: #f0f0f0;
+    }
+
+    .gated-status {
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .ava-advice-container {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #fff;
+    }
+    .ava-advice-container h3 {
+        margin-top: 0;
+        font-size: 1em;
+        margin-bottom: 5px;
+        color: #000;
+    }
+    .ava-advice-container p {
+        margin: 0;
+        font-size: 0.95em;
+        line-height: 1.4;
+    }
+
+    .overlay-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border: 2px solid #000;
+        font-size: 0.85em;
+    }
+
+    .grid-group {
+        border-right: 2px solid #000;
+        display: flex;
+        flex-direction: column;
+    }
+    .grid-group:last-child {
+        border-right: none;
+    }
+
+    .group-header {
+        background-color: #fff;
+        font-weight: bold;
+        padding: 8px;
+        border-bottom: 2px solid #000;
+        font-size: 1.1em;
+    }
+
+    .sub-header {
+        background-color: #f9f9f9; /* Slightly distinct if needed, or white */
+        font-weight: bold;
+        padding: 5px 10px;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        margin-top: 5px; /* Spacing */
+    }
+
+    /* Make sub-header look more like separator in image */
+    .sub-header {
+        border-top: 2px solid #000;
+        border-bottom: 1px solid #ccc;
+        background-color: #fff;
+        margin-top: 0;
+    }
+
+    .group-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 10px;
+        border-bottom: 1px solid #eee;
+        align-items: center;
+        min-height: 24px;
+    }
+    .group-row:last-child {
+        border-bottom: none;
+    }
+
+    .group-row .label {
+        font-weight: bold;
+        color: #333;
+    }
+    .group-row .value {
+        text-align: right;
+        color: #000;
+    }
+
+    .truncated {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 110px;
+        display: inline-block;
+        vertical-align: bottom;
+        cursor: help;
+    }
+    .truncated:hover {
+        /* Simple browser tooltip via title attribute is safest,
+           but CSS hover can expand text if absolutely positioned */
+    }
+
+    .trend-up { color: red; font-weight: bold; }
+    .trend-down { color: green; font-weight: bold; }
+    .trend-flat { color: #666; }
+
+</style>
+
 <div id="deal-overlay" class="deal-overlay">
     <div class="deal-overlay-content">
         <span class="close-overlay">&times;</span>
-        <div class="deal-header">
-            <h1 id="overlay-title"></h1>
-            <p>ASIN: <span id="overlay-asin"></span></p>
+
+        <div id="ava-advice-container" class="ava-advice-container">
+            <h3>Advice from Ava:
+                <div id="ava-spinner" class="spinner" style="width: 15px; height: 15px; border-width: 2px; display: none;"></div>
+            </h3>
+            <p id="ava-advice-text">Analyzing...</p>
         </div>
 
-        <div class="tab-nav">
-            <button class="tab-link active" data-tab="profit">Profit Analysis</button>
-            <button class="tab-link" data-tab="prep">Prep & Listing</button>
-            <button class="tab-link" data-tab="sales">Sales Tracking</button>
+        <div class="overlay-action-bar">
+            <div class="gated-status" id="overlay-gated-status">Gated: <span>-</span></div>
+            <a href="#" id="overlay-buy-btn" class="overlay-buy-btn" target="_blank">Buy Now</a>
         </div>
 
-        <div id="profit" class="tab-content active">
-            <h2>Profit Analysis</h2>
-            <div class="grid-container">
-                <div class="grid-item">
-                    <h3>Pricing & Seasonality</h3>
-                    <p><span>Seasonality Type:</span> <strong id="overlay-seasonality-type"></strong></p>
-                    <p><span>Expected Trough Price:</span> <strong id="overlay-expected-trough-price"></strong></p>
-                    <p><span>Expected Peak Price:</span> <strong id="overlay-expected-peak-price"></strong></p>
-                    <p><span>Profit Confidence:</span> <strong id="overlay-profit-confidence"></strong></p>
-                </div>
-                <div class="grid-item">
-                    <h3>Profit Calculation</h3>
-                    <p><span>All-in Cost:</span> <strong id="overlay-all-in-cost"></strong></p>
-                    <p><span>Profit:</span> <strong id="overlay-profit"></strong></p>
-                    <p><span>Margin:</span> <strong id="overlay-margin"></strong></p>
-                    <p><span>Min. Listing Price:</span> <strong id="overlay-min-listing-price"></strong></p>
-                </div>
-                <div class="grid-item">
-                    <h3>Sales Rank</h3>
-                    <p><span>Current:</span> <strong id="overlay-sales-rank-current"></strong></p>
-                    <p><span>Drops (365d):</span> <strong id="overlay-sales-rank-drops"></strong></p>
-                </div>
-                <div class="grid-item">
-                    <h3>External Links</h3>
-                    <p><a id="overlay-amz-link" href="#" target="_blank">View on Amazon</a></p>
-                    <p><a id="overlay-keepa-link" href="#" target="_blank">View on Keepa</a></p>
-                </div>
+        <div class="overlay-grid">
+            <!-- Group 1: Book Details -->
+            <div class="grid-group">
+                <div class="group-header">Book Details</div>
+                <div class="group-row"><span class="label">ASIN</span><span class="value" id="overlay-asin"></span></div>
+                <div class="group-row"><span class="label">Title</span><span class="value truncated" id="overlay-title" title=""></span></div>
+                <div class="group-row"><span class="label">Genre</span><span class="value truncated" id="overlay-genre" title=""></span></div>
+                <div class="group-row"><span class="label">Binding</span><span class="value" id="overlay-binding"></span></div>
+                <div class="group-row"><span class="label">Condition</span><span class="value" id="overlay-condition"></span></div>
+                <div class="group-row"><span class="label">Publisher</span><span class="value truncated" id="overlay-publisher" title=""></span></div>
+                <div class="group-row"><span class="label">Published</span><span class="value" id="overlay-published"></span></div>
+                <div class="sub-header">Seller Details</div>
+                <div class="group-row"><span class="label">Name</span><span class="value truncated" id="overlay-seller-name" title=""></span></div>
+                <div class="group-row"><span class="label">Trust</span><span class="value" id="overlay-seller-trust"></span></div>
             </div>
 
-            <div id="ava-advice-container" class="ava-advice-container" style="margin-top: 20px; padding: 15px; background-color: #f0f7ff; border-left: 4px solid #1976d2; border-radius: 4px;">
-                <h3 style="margin-top: 0; color: #1976d2; display: flex; align-items: center; gap: 10px;">
-                    Advice from Ava
-                    <div id="ava-spinner" class="spinner" style="width: 20px; height: 20px; border-width: 2px; display: none;"></div>
-                </h3>
-                <p id="ava-advice-text" style="font-size: 1.05em; line-height: 1.5; color: #333;">
-                    <!-- Advice will load here -->
-                </p>
+            <!-- Group 2: Sales Rank -->
+            <div class="grid-group">
+                <div class="group-header">Sales Rank</div>
+                <div class="group-row"><span class="label">Current</span><span class="value" id="overlay-rank-current"></span></div>
+                <div class="group-row"><span class="label">180 Days Avg</span><span class="value" id="overlay-rank-180"></span></div>
+                <div class="group-row"><span class="label">365 Days Avg</span><span class="value" id="overlay-rank-365"></span></div>
+                <div class="sub-header">Rank Drops</div>
+                <div class="group-row"><span class="label">Last 180 Days</span><span class="value" id="overlay-drops-180"></span></div>
+                <div class="group-row"><span class="label">Last 365 Days</span><span class="value" id="overlay-drops-365"></span></div>
+                <div class="sub-header">Used Offer Counts</div>
+                <div class="group-row"><span class="label">Current</span><span class="value" id="overlay-offers-current"></span></div>
+                <div class="group-row"><span class="label">Last 180 Days</span><span class="value" id="overlay-offers-180"></span></div>
+                <div class="group-row"><span class="label">Last 365 Days</span><span class="value" id="overlay-offers-365"></span></div>
             </div>
-        </div>
 
-        <div id="prep" class="tab-content">
-            <h2>Prep & Listing</h2>
-            <p>(Prep and listing tracking form will go here.)</p>
-        </div>
+            <!-- Group 3: Deal & Price Benchmarks -->
+            <div class="grid-group">
+                <div class="group-header">Deal & Price Benchmarks</div>
+                <div class="group-row"><span class="label">Now</span><span class="value" id="overlay-price-now"></span></div>
+                <div class="group-row"><span class="label">Shipping Included</span><span class="value" id="overlay-shipping"></span></div>
+                <div class="group-row"><span class="label">1yr Avg</span><span class="value" id="overlay-price-1yr"></span></div>
+                <div class="group-row"><span class="label">% ⇩ Avg</span><span class="value" id="overlay-percent-down"></span></div>
+                <div class="group-row"><span class="label">Price Trending</span><span class="value" id="overlay-trend"></span></div>
+                <div class="group-row"><span class="label">Updated</span><span class="value" id="overlay-updated"></span></div>
+                <div class="group-row"><span class="label">Amazon - Current</span><span class="value" id="overlay-amz-current"></span></div>
+                <div class="group-row"><span class="label">Amazon - 1yr Avg</span><span class="value" id="overlay-amz-1yr"></span></div>
+                <div class="group-row"><span class="label">Buy Box Used - Current</span><span class="value" id="overlay-bb-current"></span></div>
+                <div class="group-row"><span class="label">Buy Box Used - 1yr Avg</span><span class="value" id="overlay-bb-1yr"></span></div>
+            </div>
 
-        <div id="sales" class="tab-content">
-            <h2>Sales Tracking</h2>
-            <p>(Sales tracking form will go here.)</p>
+            <!-- Group 4: Listing & Profit Estimates -->
+            <div class="grid-group">
+                <div class="group-header">Listing & Profit Estimates</div>
+                <div class="group-row"><span class="label">Estimate Trust</span><span class="value" id="overlay-trust"></span></div>
+                <div class="group-row"><span class="label">Profit:</span><span class="value" id="overlay-profit-val"></span></div>
+                <div class="group-row"><span class="label">Margin:</span><span class="value" id="overlay-margin-val"></span></div>
+                <div class="group-row"><span class="label">Max. List at:</span><span class="value" id="overlay-max-list"></span></div>
+                <div class="group-row"><span class="label">Min. List at:</span><span class="value" id="overlay-min-list"></span></div>
+                <div class="sub-header">Seasonality</div>
+                <div class="group-row"><span class="label">Selling Season</span><span class="value" id="overlay-season"></span></div>
+                <div class="group-row"><span class="label">Est. Sell Date</span><span class="value" id="overlay-sell-date"></span></div>
+                <div class="group-row"><span class="label">Est. Buy Date</span><span class="value" id="overlay-buy-date"></span></div>
+                <div class="group-row"><span class="label">Est. Buy Price</span><span class="value" id="overlay-buy-price"></span></div>
+            </div>
         </div>
     </div>
 </div>
@@ -880,28 +1037,136 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchDeals();
 
     function populateOverlay(deal) {
-        document.getElementById('overlay-title').textContent = deal.Title || 'N/A';
-        document.getElementById('overlay-asin').textContent = deal.ASIN || 'N/A';
+        // --- Book Details ---
+        document.getElementById('overlay-asin').textContent = deal.ASIN || '-';
 
-        // Pricing & Seasonality
-        document.getElementById('overlay-seasonality-type').textContent = deal.Seasonality_Type || 'N/A';
-        document.getElementById('overlay-expected-trough-price').textContent = deal.Expected_Trough_Price ? `$${deal.Expected_Trough_Price.toFixed(2)}` : '-';
-        document.getElementById('overlay-expected-peak-price').textContent = deal.Expected_Peak_Price ? `$${deal.Expected_Peak_Price.toFixed(2)}` : '-';
-        document.getElementById('overlay-profit-confidence').textContent = deal.Profit_Confidence ? `${deal.Profit_Confidence.toFixed(0)}%` : '-';
+        const title = deal.Title || '-';
+        document.getElementById('overlay-title').textContent = title;
+        document.getElementById('overlay-title').title = title; // For hover tooltip
 
-        // Profit Calculation
-        document.getElementById('overlay-all-in-cost').textContent = deal.All_in_Cost ? `$${deal.All_in_Cost.toFixed(2)}` : '-';
-        document.getElementById('overlay-profit').textContent = deal.Profit ? `$${deal.Profit.toFixed(2)}` : '-';
-        document.getElementById('overlay-margin').textContent = deal.Margin ? `${deal.Margin.toFixed(2)}%` : '-';
-        document.getElementById('overlay-min-listing-price').textContent = deal.Min_Listing_Price ? `$${deal.Min_Listing_Price.toFixed(2)}` : '-';
+        const genre = deal.Categories_Sub || '-';
+        document.getElementById('overlay-genre').textContent = genre;
+        document.getElementById('overlay-genre').title = genre;
 
-        // Sales Rank
-        document.getElementById('overlay-sales-rank-current').textContent = deal.Sales_Rank_Current ? deal.Sales_Rank_Current.toLocaleString() : '-';
-        document.getElementById('overlay-sales-rank-drops').textContent = deal.Sales_Rank_Drops_last_365_days || '-';
+        document.getElementById('overlay-binding').textContent = deal.Binding || '-';
+        document.getElementById('overlay-condition').textContent = formatCondition(deal.Condition) || '-';
 
-        // External Links
-        document.getElementById('overlay-amz-link').href = `https://www.amazon.com/dp/${deal.ASIN}`;
-        document.getElementById('overlay-keepa-link').href = `https://keepa.com/#!product/1-${deal.ASIN}`;
+        const publisher = deal.Manufacturer || '-';
+        document.getElementById('overlay-publisher').textContent = publisher;
+        document.getElementById('overlay-publisher').title = publisher;
+
+        document.getElementById('overlay-published').textContent = deal.Publication_Date || '-';
+
+        const seller = deal.Seller || '-';
+        document.getElementById('overlay-seller-name').textContent = seller;
+        document.getElementById('overlay-seller-name').title = seller;
+
+        let sellerTrust = deal.Seller_Quality_Score;
+        if (sellerTrust != null && !isNaN(parseFloat(sellerTrust))) {
+             sellerTrust = Math.round(parseFloat(sellerTrust) * 10) + ' / 10';
+        } else {
+             sellerTrust = '-';
+        }
+        document.getElementById('overlay-seller-trust').textContent = sellerTrust;
+
+        // --- Sales Rank ---
+        document.getElementById('overlay-rank-current').textContent = formatSalesRank(deal.Sales_Rank_Current);
+        document.getElementById('overlay-rank-180').textContent = formatSalesRank(deal['Sales Rank - 180 days avg.']);
+        document.getElementById('overlay-rank-365').textContent = formatSalesRank(deal['Sales Rank - 365 days avg.']);
+
+        document.getElementById('overlay-drops-180').textContent = deal['Sales Rank - Drops last 180 days'] || '-';
+        document.getElementById('overlay-drops-365').textContent = deal['Sales Rank - Drops last 365 days'] || '-';
+
+        // Format Offer Counts with arrows
+        function formatOffers(val) {
+             if (!val || val === '-') return '-';
+             let text = val;
+             if (text.includes('↘')) return text.replace('↘', ' ↘'); // Add space if needed
+             if (text.includes('↗')) return text.replace('↗', ' ↗');
+             return text;
+        }
+
+        document.getElementById('overlay-offers-current').textContent = formatOffers(deal.Offers);
+        document.getElementById('overlay-offers-180').textContent = formatOffers(deal['Offers 180']);
+        document.getElementById('overlay-offers-365').textContent = formatOffers(deal['Offers 365']);
+
+        // --- Deal & Price Benchmarks ---
+        document.getElementById('overlay-price-now').textContent = deal.Best_Price ? `$${parseFloat(deal.Best_Price).toFixed(2)}` : '-';
+
+        // Shipping Included logic (assuming backend sends 'yes'/'no' or we infer)
+        let shipping = deal['Shipping Included'] || '-';
+        if (shipping.toLowerCase() === 'yes') shipping = 'Yes';
+        else if (shipping.toLowerCase() === 'no') shipping = 'No';
+        document.getElementById('overlay-shipping').textContent = shipping;
+
+        document.getElementById('overlay-price-1yr').textContent = deal['1yr. Avg.'] ? `$${parseFloat(deal['1yr. Avg.']).toFixed(2)}` : '-';
+
+        let pctDown = deal['% Down'] || deal['Percent_Down'];
+        if (pctDown != null && !isNaN(parseFloat(pctDown))) {
+            document.getElementById('overlay-percent-down').textContent = Math.round(parseFloat(pctDown)) + '%';
+        } else {
+            document.getElementById('overlay-percent-down').textContent = '-';
+        }
+
+        document.getElementById('overlay-trend').textContent = deal.Trend || '-';
+        document.getElementById('overlay-updated').textContent = formatTimeAgo(deal.last_price_change);
+
+        document.getElementById('overlay-amz-current').textContent = deal['Amazon - Current'] || '';
+        document.getElementById('overlay-amz-1yr').textContent = deal['Amazon - 365 days avg.'] || '';
+        document.getElementById('overlay-bb-current').textContent = deal['Buy Box Used - Current'] || '';
+        document.getElementById('overlay-bb-1yr').textContent = deal['Buy Box Used - 365 days avg.'] || '';
+
+        // --- Listing & Profit Estimates ---
+        let trust = deal.Profit_Confidence;
+        if (trust != null && !isNaN(parseFloat(trust))) {
+            document.getElementById('overlay-trust').textContent = Math.round(parseFloat(trust)) + '%';
+        } else {
+            document.getElementById('overlay-trust').textContent = '-';
+        }
+
+        document.getElementById('overlay-profit-val').textContent = deal.Profit ? `$${parseFloat(deal.Profit).toFixed(2)}` : '-';
+        document.getElementById('overlay-margin-val').textContent = deal.Margin ? `${parseFloat(deal.Margin).toFixed(2)}%` : '-';
+
+        // Max List at (List at)
+        let listAt = deal['List at'];
+        // Remove $ if present to parse
+        if (listAt && typeof listAt === 'string') listAt = listAt.replace('$','');
+        document.getElementById('overlay-max-list').textContent = listAt ? `$${parseFloat(listAt).toFixed(2)}` : '-';
+
+        // Min List at
+        let minList = deal['Min. Listing Price'] || deal.Min_Listing_Price;
+        document.getElementById('overlay-min-list').textContent = minList ? `$${parseFloat(minList).toFixed(2)}` : '-';
+
+        // Seasonality
+        document.getElementById('overlay-season').textContent = deal.Detailed_Seasonality || '-';
+        document.getElementById('overlay-sell-date').textContent = deal.Sells || '-';
+        document.getElementById('overlay-buy-date').textContent = deal['Trough Season'] || '-';
+        document.getElementById('overlay-buy-price').textContent = deal['Expected Trough Price'] || '-';
+
+        // --- Action Bar ---
+        const gatedStatusDiv = document.getElementById('overlay-gated-status');
+        let gatedHtml = 'Gated: ';
+        if (deal.restriction_status === 'not_restricted') {
+            gatedHtml += '<span style="color: green; font-weight: bold;">✓</span>';
+        } else if (deal.restriction_status === 'restricted') {
+             if (deal.approval_url && deal.approval_url !== 'ERROR') {
+                 gatedHtml += `<a href="${deal.approval_url}" target="_blank" style="color: red; text-decoration: underline;">Apply</a>`;
+             } else {
+                 gatedHtml += `<span style="color: red;">Restricted</span>`;
+             }
+        } else if (deal.restriction_status === 'pending_check') {
+            gatedHtml += `<span class="spinner" style="display:inline-block; width:10px; height:10px;"></span>`;
+        } else {
+            gatedHtml += `<span>-</span>`;
+        }
+        gatedStatusDiv.innerHTML = gatedHtml;
+
+        const buyBtn = document.getElementById('overlay-buy-btn');
+        if (deal.ASIN) {
+            buyBtn.href = `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1`;
+        } else {
+            buyBtn.href = '#';
+        }
 
         // Load Ava Advice
         loadAvaAdvice(deal.ASIN);
@@ -946,18 +1211,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const tabs = document.querySelectorAll('.tab-link');
-    const contents = document.querySelectorAll('.tab-content');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(item => item.classList.remove('active'));
-            contents.forEach(content => content.classList.remove('active'));
-
-            tab.classList.add('active');
-            document.getElementById(tab.dataset.tab).classList.add('active');
-        });
-    });
 });
 </script>
 {% endblock %}
