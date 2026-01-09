@@ -18,18 +18,23 @@ To ensure the stability and performance of the development environment, the foll
 
 1. **Handling Large Files (especially logs):**
 
-   *   **NEVER** read an entire file if it is known or suspected to be large (e.g., > 10 MB). Log files in this project can exceed 100 MB and reading them whole will cause critical system instability.
+   *   **NEVER** read an entire file if it is known or suspected to be large (e.g., > 500 KB). Large JSON or log files will immediately flood the context window and cause instability.
    *   **ALWAYS** use targeted commands to inspect large files.
        *   To view the end of a file: `tail -n 100 <filepath>`
        *   To view the beginning of a file: `head -n 100 <filepath>`
        *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
    *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
-   *   I have pruned `celery.log`. It contains the startup logs and the most recent errors. It is safe to read.
+   *   **NEVER** assume a log file (like `celery.log`) is safe to read. Always check its size with `ls -lh` first.
 
 2. **Initial Codebase Exploration ("Filesystem Tour"):**
 
    *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
-   *   Use `ls -RF` or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files and subdirectories.
+   *   Use `ls -F` (non-recursive) or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files. **AVOID** `ls -R` as it generates excessive output.
+   *   **DO NOT READ** the following large system state files:
+       - `xai_cache.json`
+       - `strategies.json`
+       - `agent_brain.json`
+       - `strategies_structured.json`
    *   **READ** `README.md`, this `AGENTS.md` file, and `Documentation/System_State.md` in full.
    *   **READ** the 3-5 most recent logs in `Dev_Logs/` to understand the latest changes.
    *   **DO NOT** read old logs in `Dev_Logs/Archive/` unless specifically investigating a regression related to that time period. `Documentation/System_State.md` is your primary source of truth.
