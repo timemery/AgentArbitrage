@@ -9,7 +9,7 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
 
 ## Key Features
 
-- **Deals Dashboard**: Real-time arbitrage opportunities with advanced filtering and "Janitor" cleanup. (User Access)
+- **Deals Dashboard**: Real-time arbitrage opportunities with advanced filtering, "Janitor" cleanup, and extended historical analytics (180/365-day trends). (User Access)
 - **Settings**: Configure business costs, fees, and API credentials. (User Access)
 - **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI. (Admin Only)
 - **Agent Brain & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
@@ -93,4 +93,4 @@ KEEPA_API_KEY="your_keepa_api_key"
 - **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
-*Last Updated: October 12, 2025*
+*Last Updated: January 11, 2026*
