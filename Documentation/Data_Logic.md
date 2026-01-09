@@ -33,12 +33,14 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped.
     *   **Seasonality:** AI (`grok-4-fast-reasoning`) classifies the book (e.g., "Fall Semester") based on title, category, and historical peak sales months.
 
-5.  **AI Price Check ("List at")**:
-    *   **Logic:** `keepa_deals/stable_calculations.py` -> `get_list_at_price`.
-    *   **Calculation:**
+5.  **Price Benchmarks ("List at" & "Trough")**:
+    *   **Logic:** `keepa_deals/stable_calculations.py`.
+    *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
         *   **Fallback (High Velocity):** If no inferred sales are found but `monthlySold > 20`, uses `Used - 90 days avg`.
-    *   **Ceiling Guardrail:** The price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
+    *   **Expected Trough Price:**
+        *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
+    *   **Ceiling Guardrail:** The "List at" price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
     *   **Verification:** Queries AI (`grok-4-fast-reasoning`): "Is a peak price of $X.XX reasonable for this book?" Context provided includes Binding, Page Count, Image URL, and Rank.
     *   **Exclusion:** If AI says "No" or calculation fails, the deal is dropped.
 
@@ -91,7 +93,25 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Logic**: Replaces underscores and hyphens with spaces, applies Title Case (e.g., `mass_market` -> "Mass Market").
     -   **Display**: Dashboard truncates to 95px with ellipsis, full text on hover.
 
-### Advanced Analytics
+### Advanced Analytics (Rank & Offers)
+
+-   **`Sales Rank - Drops` (30/180/365)**:
+    -   **Source**: `keepa_deals/stable_products.py`.
+    -   **Logic**: The integer count of drops in Sales Rank over the respective period.
+    -   **Periods**: 30 days (`Drops` on dashboard), 180 days, and 365 days.
+
+-   **`Used Offer Count - Avg` (180/365)**:
+    -   **Source**: `keepa_deals/stable_products.py`.
+    -   **Logic**: The average number of used offers over the last 180 and 365 days.
+
+-   **`Offers` Trend**:
+    -   **Source**: `keepa_deals/new_analytics.py`.
+    -   **Current**: Compares Current Count vs 30-day Avg.
+    -   **180 Days**: Compares 90-day Avg vs 180-day Avg.
+    -   **365 Days**: Compares 180-day Avg vs 365-day Avg.
+    -   **Output**: Count + Arrow (e.g., "12 ↘"). Green ↘ (Falling) is good; Red ↗ (Rising) is bad.
+
+### Price Analytics
 
 -   **`1yr. Avg.`**:
     -   **Source**: `keepa_deals/new_analytics.py`.
@@ -128,6 +148,10 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Logic**: **Mode** of peak season prices (or `Used - 90d avg` fallback if high velocity).
     -   **Constraint**: Capped at 90% of Amazon New price.
     -   **AI Check**: Validated by `grok-4-fast-reasoning`.
+
+-   **`Expected Trough Price`**:
+    -   **Source**: `keepa_deals/stable_calculations.py`.
+    -   **Logic**: **Median** of inferred sale prices during the identified Trough Month.
 
 -   **`Gated` (Restriction Status)**:
     -   **Source**: `user_restrictions` table (via SP-API).

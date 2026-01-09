@@ -34,7 +34,7 @@ The "Gated" column indicates the user's restriction status on Amazon:
 
 ### Advice from Ava (AI Overlay)
 When expanding a deal's details:
-*   An "Advice from Ava" section appears.
+*   An "Advice from Ava" section appears prominently at the top of the overlay.
 *   It asynchronously fetches an AI analysis (`/api/ava-advice/<ASIN>`) powered by `grok-4-fast-reasoning`.
 *   Provides 50-80 words of actionable advice based on the deal's specific metrics.
 
