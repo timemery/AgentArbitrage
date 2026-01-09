@@ -79,15 +79,77 @@ To maintain a high-quality dashboard, the system implements a "Janitor" process.
 
 ---
 
-## Overlay Features: "Advice from Ava"
+## Deal Details Overlay
 
-When a user clicks on a deal row to expand details:
--   **Profit Tab:** Includes a section for "Advice from Ava".
--   **Behavior:** Frontend asynchronously fetches advice from `/api/ava-advice/<ASIN>`.
--   **Display:**
-    -   **Loading:** Spinner.
-    -   **Success:** A concise (50-80 word) AI-generated analysis of the deal.
-    -   **Error:** Specific error message (e.g., "Error: 404 Not Found") in red text.
+The "Deal Details" overlay replaces the standard modal with a high-density, 4-column grid layout designed for rapid decision-making.
+
+### 1. Layout & Structure
+-   **Header:** The standard modal title is removed. Context is provided by the grid content.
+-   **Ava Advice:** Positioned at the very top, spanning the full width, providing immediate AI analysis.
+-   **Action Bar:** Top-right corner containing the "Gated" status and primary action button (Buy/Apply).
+
+### 2. Data Grid (4 Columns)
+The grid is divided into four logical groups:
+
+#### Group 1: Book Details
+-   **ASIN**: The product identifier.
+-   **Title**: Truncated with ellipsis (Hover for full).
+-   **Genre**: `Categories - Sub` (Truncated).
+-   **Binding**: e.g., "Paperback".
+-   **Condition**: e.g., "U - Like New".
+-   **Publisher**: Manufacturer name.
+-   **Published**: Publication Date.
+-   **Seller Name**: Winning seller's name.
+-   **Seller Trust**: Quality Score (X / 10).
+
+#### Group 2: Sales Rank (Supply & Demand)
+-   **Current**: Current Sales Rank.
+-   **180 Days Avg**: Average rank over 6 months.
+-   **365 Days Avg**: Average rank over 1 year.
+-   **Rank Drops**:
+    -   **Last 180 Days**: Count of drops.
+    -   **Last 365 Days**: Count of drops.
+-   **Used Offer Counts**:
+    -   **Current**: Count + Trend Arrow (e.g., "15 ↘").
+    -   **Last 180 Days**: Avg Count + Trend Arrow.
+    -   **Last 365 Days**: Avg Count + Trend Arrow.
+
+#### Group 3: Deal & Price Benchmarks
+-   **Now**: `Price Now` (Best Price).
+-   **Shipping Included**: Yes/No.
+-   **1yr Avg**: Inferred average sale price.
+-   **% ⇩ Avg**: Discount percentage relative to 1yr Avg.
+-   **Price Trending**: Directional arrow.
+-   **Updated**: Time since last price change.
+-   **Amazon / Buy Box**:
+    -   **Amazon - Current**: Amazon New Price (if available).
+    -   **Amazon - 1yr Avg**: Long-term Amazon price.
+    -   **Buy Box Used - Current**: Current Buy Box price.
+    -   **Buy Box Used - 1yr Avg**: Long-term Buy Box price.
+
+#### Group 4: Listing & Profit Estimates
+-   **Estimate Trust**: `Profit Confidence` %.
+-   **Profit**: Calculated Profit ($).
+-   **Margin**: Calculated Margin (%).
+-   **Max. List at**: The calculated "List at" (Peak) price.
+-   **Min. List at**: The calculated floor price based on costs.
+-   **Seasonality**:
+    -   **Selling Season**: AI classification (e.g., "Fall Semester").
+    -   **Est. Sell Date**: Predicted peak sales period.
+    -   **Est. Buy Date**: Predicted trough month.
+    -   **Est. Buy Price**: `Expected Trough Price`.
+
+### 3. Action Bar Logic
+The action bar adapts based on the user's restriction status:
+
+-   **Restricted:**
+    -   **Message:** "You are **Not Approved** to sell this title" (Red text).
+    -   **Button:** "Apply Now" (Orange, links to Seller Central approval page).
+-   **Approved:**
+    -   **Message:** "You are **Approved** to sell this title" (White text).
+    -   **Button:** "Buy Now" (Orange, links to Amazon product page).
+-   **Pending:** Shows a spinner while checking status.
+-   **Error:** Shows a warning icon if the API check failed.
 
 ---
 

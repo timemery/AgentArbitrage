@@ -16,9 +16,11 @@
 ## 3. Data Pipeline & Logic
 ### Pricing & Inferred Sales
 - **"List at" Price:** Derived from Peak Season history or `monthlySold` fallback.
+- **"Expected Trough" Price:** Median price of the identified trough month.
 - **Safety Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d, 365d).
 - **Validation:** Prices checked by xAI (`ava_advisor.py`) for reasonableness (Page Count, Binding, etc.).
 - **Sales Inference:** Search window is **240 hours (10 days)** to capture "Near Miss" sales events.
+- **Extended Metrics:** 180-day and 365-day trend analysis for Offer Counts and Sales Rank drops.
 
 ### Backfill & Maintenance
 - **Backfiller:** Runs continuous delta-sync. Uses "Mark and Sweep" to update `last_seen_utc`.
