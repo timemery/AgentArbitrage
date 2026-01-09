@@ -82,13 +82,15 @@
 <style>
     /* Overlay Styles */
     .deal-overlay-content {
-        max-width: 1000px; /* Increased width for 4 columns */
+        max-width: 1200px;
         width: 95%;
         padding: 20px;
-        background: white;
+        background-color: #003852; /* Match global theme */
+        border: 1px solid rgba(102, 153, 204, 0.5);
         border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         position: relative;
+        color: #ffffff;
     }
 
     .overlay-action-bar {
@@ -97,22 +99,23 @@
         align-items: center;
         gap: 15px;
         margin-bottom: 15px;
-        margin-top: -10px; /* Pull up closer to top */
+        margin-top: -10px;
     }
 
     .overlay-buy-btn {
+        background-color: transparent;
+        color: white;
+        border: 1px solid white;
         padding: 6px 20px;
-        background-color: #fff;
-        border: 2px solid #333;
-        color: #000;
         text-decoration: none;
         font-weight: bold;
         cursor: pointer;
         font-size: 0.9em;
-        transition: background-color 0.2s;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
     }
     .overlay-buy-btn:hover {
-        background-color: #f0f0f0;
+        background-color: rgba(255, 255, 255, 0.1);
     }
 
     .gated-status {
@@ -120,35 +123,39 @@
         display: flex;
         align-items: center;
         gap: 5px;
+        color: white;
     }
 
     .ava-advice-container {
-        border: 1px solid #ccc;
+        border: 1px solid rgba(102, 153, 204, 0.5);
         padding: 15px;
         margin-bottom: 20px;
-        background-color: #fff;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
     }
     .ava-advice-container h3 {
         margin-top: 0;
         font-size: 1em;
         margin-bottom: 5px;
-        color: #000;
+        color: #75afd1;
     }
     .ava-advice-container p {
         margin: 0;
         font-size: 0.95em;
         line-height: 1.4;
+        color: #ffffff;
     }
 
     .overlay-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        border: 2px solid #000;
+        border: 1px solid rgba(102, 153, 204, 0.4);
         font-size: 0.85em;
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
     .grid-group {
-        border-right: 2px solid #000;
+        border-right: 1px solid rgba(102, 153, 204, 0.4);
         display: flex;
         flex-direction: column;
     }
@@ -157,35 +164,29 @@
     }
 
     .group-header {
-        background-color: #fff;
+        background-color: #26567e;
+        color: #75afd1;
         font-weight: bold;
         padding: 8px;
-        border-bottom: 2px solid #000;
+        border-bottom: 1px solid #6194c3;
         font-size: 1.1em;
     }
 
     .sub-header {
-        background-color: #f9f9f9; /* Slightly distinct if needed, or white */
+        background-color: #011b2a;
         font-weight: bold;
         padding: 5px 10px;
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        margin-top: 5px; /* Spacing */
-    }
-
-    /* Make sub-header look more like separator in image */
-    .sub-header {
-        border-top: 2px solid #000;
-        border-bottom: 1px solid #ccc;
-        background-color: #fff;
+        border-top: 1px solid rgba(102, 153, 204, 0.4);
+        border-bottom: 1px solid rgba(102, 153, 204, 0.4);
         margin-top: 0;
+        color: rgba(102, 153, 204, 0.9);
     }
 
     .group-row {
         display: flex;
         justify-content: space-between;
-        padding: 4px 10px;
-        border-bottom: 1px solid #eee;
+        padding: 6px 10px;
+        border-bottom: 1px solid rgba(102, 153, 204, 0.2);
         align-items: center;
         min-height: 24px;
     }
@@ -194,19 +195,20 @@
     }
 
     .group-row .label {
-        font-weight: bold;
-        color: #333;
+        font-weight: normal;
+        color: rgba(255, 255, 255, 0.7);
     }
     .group-row .value {
         text-align: right;
-        color: #000;
+        color: #ffffff;
+        font-weight: 300;
     }
 
     .truncated {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 110px;
+        max-width: 130px;
         display: inline-block;
         vertical-align: bottom;
         cursor: help;
@@ -216,9 +218,9 @@
            but CSS hover can expand text if absolutely positioned */
     }
 
-    .trend-up { color: red; font-weight: bold; }
-    .trend-down { color: green; font-weight: bold; }
-    .trend-flat { color: #666; }
+    .trend-up { color: #ff4d4d; font-weight: bold; }
+    .trend-down { color: #2ecc71; font-weight: bold; }
+    .trend-flat { color: #aaa; }
 
 </style>
 
