@@ -132,18 +132,40 @@
         margin-bottom: 20px;
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 5px;
+        clear: both; /* Ensure it sits below the close button */
+        margin-top: 35px; /* Add space for the close button above */
     }
     .ava-advice-container h3 {
         margin-top: 0;
-        font-size: 1em;
+        font-size: 1.3em; /* Increased size */
         margin-bottom: 5px;
         color: #75afd1;
+        text-align: left; /* Left align */
     }
     .ava-advice-container p {
         margin: 0;
-        font-size: 0.95em;
+        font-size: 1.1em; /* Increased size */
         line-height: 1.4;
         color: #ffffff;
+    }
+
+    .yellow-action-btn {
+        display: inline-block;
+        padding: 6px 20px;
+        background-color: #e67e22;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 1em;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .yellow-action-btn:hover {
+        background-color: #d35400;
+        text-decoration: none;
+        color: white;
     }
 
     .overlay-grid {
@@ -164,12 +186,13 @@
     }
 
     .group-header {
-        background-color: #26567e;
-        color: #75afd1;
+        background-color: #011b2a;
         font-weight: bold;
-        padding: 8px;
-        border-bottom: 1px solid #6194c3;
-        font-size: 1.1em;
+        padding: 5px 10px;
+        border-top: 1px solid rgba(102, 153, 204, 0.4);
+        border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+        margin-top: 0;
+        color: rgba(102, 153, 204, 0.9);
     }
 
     .sub-header {
@@ -1082,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Format Offer Counts with arrows
         function formatOffers(val) {
              if (!val || val === '-') return '-';
-             let text = val;
+             let text = String(val);
              if (text.includes('↘')) return text.replace('↘', ' ↘'); // Add space if needed
              if (text.includes('↗')) return text.replace('↗', ' ↗');
              return text;
@@ -1146,29 +1169,31 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('overlay-buy-price').textContent = deal['Expected Trough Price'] || '-';
 
         // --- Action Bar ---
-        const gatedStatusDiv = document.getElementById('overlay-gated-status');
-        let gatedHtml = 'Gated: ';
-        if (deal.restriction_status === 'not_restricted') {
-            gatedHtml += '<span style="color: green; font-weight: bold;">✓</span>';
-        } else if (deal.restriction_status === 'restricted') {
-             if (deal.approval_url && deal.approval_url !== 'ERROR') {
-                 gatedHtml += `<a href="${deal.approval_url}" target="_blank" style="color: red; text-decoration: underline;">Apply</a>`;
-             } else {
-                 gatedHtml += `<span style="color: red;">Restricted</span>`;
-             }
-        } else if (deal.restriction_status === 'pending_check') {
-            gatedHtml += `<span class="spinner" style="display:inline-block; width:10px; height:10px;"></span>`;
-        } else {
-            gatedHtml += `<span>-</span>`;
-        }
-        gatedStatusDiv.innerHTML = gatedHtml;
+        const actionBar = document.querySelector('.overlay-action-bar');
 
-        const buyBtn = document.getElementById('overlay-buy-btn');
-        if (deal.ASIN) {
-            buyBtn.href = `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1`;
+        let messageHtml = '';
+        let buttonHtml = '';
+
+        if (deal.restriction_status === 'restricted') {
+            // Gated
+            messageHtml = 'You are <strong style="color: #ff4d4d;">Not Approved</strong> to sell this title: ';
+            const applyUrl = (deal.approval_url && deal.approval_url !== 'ERROR') ? deal.approval_url : 'https://sellercentral.amazon.com/hz/approvalrequest?asin=' + deal.ASIN;
+            buttonHtml = `<a href="${applyUrl}" target="_blank" class="yellow-action-btn">Apply Now</a>`;
+        } else if (deal.restriction_status === 'not_restricted') {
+            // Approved
+            messageHtml = 'You are <strong style="color: white;">Approved</strong> to sell this title: ';
+            const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
+            buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn">Buy Now</a>`;
+        } else if (deal.restriction_status === 'pending_check') {
+             messageHtml = 'Checking approval status... <span class="spinner" style="display:inline-block; width:12px; height:12px; margin-left: 5px;"></span>';
         } else {
-            buyBtn.href = '#';
+             // Default / Error / Unknown
+             messageHtml = 'Approval status unknown: ';
+             const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
+             buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn" style="opacity:0.7;">View on Amazon</a>`;
         }
+
+        actionBar.innerHTML = `<span style="font-size: 1.1em; margin-right: 10px; color: white;">${messageHtml}</span> ${buttonHtml}`;
 
         // Load Ava Advice
         loadAvaAdvice(deal.ASIN);
