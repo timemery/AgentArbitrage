@@ -5,11 +5,11 @@ from .business_calculations import (
     calculate_min_listing_price,
     load_settings as business_load_settings,
 )
-from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends, get_offer_count_trend
+from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends, get_offer_count_trend, get_offer_count_trend_180, get_offer_count_trend_365
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
-from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score
-from .stable_products import sales_rank_drops_last_30_days, amazon_current
+from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score, get_expected_trough_price
+from .stable_products import sales_rank_drops_last_30_days, sales_rank_drops_last_180_days, amazon_current
 from .field_mappings import FUNCTION_LIST
 import json
 import os
@@ -131,6 +131,12 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             return None
         row_data.update(sales_perf)
 
+        # Ensure Expected Trough Price is formatted if not already
+        if 'expected_trough_price_cents' in sales_perf and sales_perf['expected_trough_price_cents'] > 0:
+             row_data['Expected Trough Price'] = f"${sales_perf['expected_trough_price_cents']/100:.2f}"
+        else:
+             row_data['Expected Trough Price'] = None
+
         list_at_price = _parse_price(row_data.get('List at', '0'))
         now_price = row_data.get('Price Now', 0.0)
         fba_fee = product_data.get('fbaFees', {}).get('pickAndPackFee', 0) / 100.0
@@ -200,7 +206,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed seasonality classification: {e}", exc_info=True)
 
-    # New Columns: Drops, Offers, AMZ
+    # New Columns: Drops, Offers, AMZ, Drops 180, Offers 180, Offers 365
     try:
         # Drops
         drops_data = sales_rank_drops_last_30_days(product_data)
@@ -211,6 +217,16 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         offers_data = get_offer_count_trend(product_data)
         if offers_data:
             row_data.update(offers_data)
+
+        # Offers 180
+        offers_data_180 = get_offer_count_trend_180(product_data)
+        if offers_data_180:
+             row_data.update(offers_data_180)
+
+        # Offers 365
+        offers_data_365 = get_offer_count_trend_365(product_data)
+        if offers_data_365:
+             row_data.update(offers_data_365)
 
         # AMZ
         amz_data = amazon_current(product_data)

@@ -209,4 +209,89 @@ def get_offer_count_trend(product, logger=None):
     except Exception as e:
         logger.error(f"Error calculating Offer Count Trend: {e}", exc_info=True)
         return {'Offers': '-'}
+
+def get_offer_count_trend_180(product, logger=None):
+    """
+    Calculates the trend for Used Offer Count (180 days).
+    Compares 90-day avg to 180-day avg.
+    Returns: "Count ↘", "Count ↗", "Count ⇨", or "-"
+    """
+    if not logger:
+        logger = logging.getLogger(__name__)
+
+    try:
+        stats = product.get('stats', {})
+
+        # 180-day Avg Used Offer Count (index 12)
+        avg180_array = stats.get('avg180', [])
+        avg180_count = -1
+        if avg180_array and len(avg180_array) > 12:
+            avg180_count = avg180_array[12]
+
+        if avg180_count == -1 or avg180_count is None:
+             return {'Offers 180': '-'}
+
+        # 90-day Avg Used Offer Count (index 12)
+        avg90_array = stats.get('avg90', [])
+        avg90_count = -1
+        if avg90_array and len(avg90_array) > 12:
+            avg90_count = avg90_array[12]
+
+        # If we can't get 90-day avg, we can't determine trend
+        if avg90_count == -1 or avg90_count is None:
+            return {'Offers 180': str(avg180_count)}
+
+        arrow = "⇨"
+        if avg90_count > avg180_count:
+            arrow = "↗" # Rising
+        elif avg90_count < avg180_count:
+            arrow = "↘" # Falling
+
+        return {'Offers 180': f"{avg180_count} {arrow}"}
+
+    except Exception as e:
+        logger.error(f"Error calculating Offer Count Trend 180: {e}", exc_info=True)
+        return {'Offers 180': '-'}
+
+def get_offer_count_trend_365(product, logger=None):
+    """
+    Calculates the trend for Used Offer Count (365 days).
+    Compares 180-day avg to 365-day avg.
+    Returns: "Count ↘", "Count ↗", "Count ⇨", or "-"
+    """
+    if not logger:
+        logger = logging.getLogger(__name__)
+
+    try:
+        stats = product.get('stats', {})
+
+        # 365-day Avg Used Offer Count (index 12)
+        avg365_array = stats.get('avg365', [])
+        avg365_count = -1
+        if avg365_array and len(avg365_array) > 12:
+            avg365_count = avg365_array[12]
+
+        if avg365_count == -1 or avg365_count is None:
+             return {'Offers 365': '-'}
+
+        # 180-day Avg Used Offer Count (index 12)
+        avg180_array = stats.get('avg180', [])
+        avg180_count = -1
+        if avg180_array and len(avg180_array) > 12:
+            avg180_count = avg180_array[12]
+
+        if avg180_count == -1 or avg180_count is None:
+            return {'Offers 365': str(avg365_count)}
+
+        arrow = "⇨"
+        if avg180_count > avg365_count:
+            arrow = "↗" # Rising
+        elif avg180_count < avg365_count:
+            arrow = "↘" # Falling
+
+        return {'Offers 365': f"{avg365_count} {arrow}"}
+
+    except Exception as e:
+        logger.error(f"Error calculating Offer Count Trend 365: {e}", exc_info=True)
+        return {'Offers 365': '-'}
 # Refreshed
