@@ -341,6 +341,15 @@ def analyze_sales_performance(product, sale_events):
     # --- "List at" Price Calculation (Mode of Peak Season) ---
     peak_season_prices = df[df['month'] == peak_month]['inferred_sale_price_cents'].tolist()
     
+    # --- Expected Trough Price Calculation (Median of Trough Season) ---
+    trough_season_prices = df[df['month'] == trough_month]['inferred_sale_price_cents'].tolist()
+    expected_trough_price_cents = -1
+    if trough_season_prices:
+        expected_trough_price_cents = float(np.median(trough_season_prices))
+        logger.info(f"ASIN {asin}: Calculated expected trough price: {expected_trough_price_cents/100:.2f} (Median of trough month {trough_month}).")
+    else:
+        logger.warning(f"ASIN {asin}: No prices found for trough month {trough_month}.")
+
     # --- High-Velocity / Sparse Data Fallback ---
     # If we have insufficient inferred sales (e.g. graph too smooth for drops), try using monthlySold + Avg Price
     peak_price_mode_cents = -1
@@ -446,6 +455,7 @@ def analyze_sales_performance(product, sale_events):
         'peak_price_mode_cents': peak_price_mode_cents,
         'peak_season': peak_season_str,
         'trough_season': trough_season_str,
+        'expected_trough_price_cents': expected_trough_price_cents,
     }
 
 # --- Memoization cache for analysis results ---
@@ -497,6 +507,17 @@ def get_trough_season(product):
     """Wrapper to get the Trough Season from the new analysis."""
     analysis = _get_analysis(product)
     return {'Trough Season': analysis.get('trough_season', '-')}
+
+def get_expected_trough_price(product):
+    """
+    Wrapper to get the 'Expected Trough Price', which is the median of trough season prices.
+    Returns None if the price is invalid.
+    """
+    analysis = _get_analysis(product)
+    price_cents = analysis.get('expected_trough_price_cents', -1)
+    if price_cents and price_cents > 0:
+        return {'Expected Trough Price': f"${price_cents / 100:.2f}"}
+    return {'Expected Trough Price': None}
 
 def profit_confidence(product):
     """Calculates a confidence score based on how many offer drops correlate with a rank drop."""
