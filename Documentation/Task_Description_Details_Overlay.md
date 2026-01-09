@@ -73,8 +73,8 @@ The main content is a 4-column grid. Use a CSS Grid or Table layout to achieve a
     *   *(Separator / Sub-header)*: **Seasonality**
     *   **Selling Season**: `Detailed_Seasonality` (e.g., "Law School").
     *   **Est. Sell Date**: `Sells` column (e.g., "Nov - Jan").
-    *   **Est. Buy Date**: **NEW FIELD** (See Backend Requirements).
-    *   **Est. Buy Price**: `Expected Trough Price`.
+    *   **Est. Buy Date**: **Mapped from `Trough Season`**.
+    *   **Est. Buy Price**: `Expected Trough Price` (Note: Ensure this column is mapped/extracted).
 
 ### Styling Notes
 *   **Truncation:** Title, Genre, Publisher, and Seller Name must have a fixed max-width (approx 110px) and use `text-overflow: ellipsis`.
@@ -82,18 +82,12 @@ The main content is a 4-column grid. Use a CSS Grid or Table layout to achieve a
 *   **Formatting:** Follow the specific currency ($) and number formats (k/M) shown in the image.
 
 ## 2. Backend & Data Requirements
-To support the new layout, the following backend updates are required:
 
-### A. Seasonality Logic (`keepa_deals/seasonality_classifier.py`)
-1.  **Implement `get_buy_period(detailed_season)`:**
-    *   Create a function that returns the "Best Buy Date" (off-season) corresponding to each `detailed_season`.
-    *   *Logic:* Roughly 3-6 months prior to the `get_sells_period` start, or the seasonal trough.
-    *   *Map:*
-        *   "Textbook (Summer)" -> "Apr - May"
-        *   "Textbook (Winter)" -> "Nov - Dec"
-        *   "Law School" -> "Jun - Jul"
-        *   (Define logical buy periods for all keys in `SEASON_CLASSIFICATIONS`).
-2.  **Expose Data:** Ensure this value is calculated during processing and stored/returned for the frontend (either in a new DB column or computed on the fly in the API response).
+### A. Seasonality & "Est. Buy Date"
+The system already calculates a "Trough Season" (derived from `stable_calculations.py` -> `analyze_sales_performance`), which represents the optimal buying period.
+1.  **Map Data:** Ensure the frontend correctly receives this data as "Est. Buy Date".
+    *   **Investigation:** In `keepa_deals/processing.py`, there is a potential key name mismatch. The code currently attempts to read `row_data.get('Trough Sales Month')` for seasonality classification, but the data might be stored under the key `Trough Season` (from `headers.json`) or `trough_season` (from the analysis dict).
+    *   **Action:** Verify the correct key and ensure it is passed to the frontend JSON as `Est_Buy_Date` (or similar).
 
 ### B. Data Availability (`keepa_deals/processing.py` / `stable_products.py`)
 1.  **Verify/Add Columns:** Ensure the following fields are accurately calculated and populated in the database:
@@ -101,19 +95,14 @@ To support the new layout, the following backend updates are required:
     *   `Sales Rank - Drops last 365 days`
     *   `Used Offer Count - 180 days avg.`
     *   `Used Offer Count - 365 days avg.`
-2.  **Trend Calculation:** Ensure trend arrows (↗, ↘, →) can be derived for the 180-day and 365-day Offer Counts (comparing them to... potentially the current count or a longer/shorter average). *Clarification:* If no historical trend data exists for these specific windows, display the value only or a logical comparison vs Current.
+2.  **Trend Calculation:** Ensure trend arrows (↗, ↘, →) can be derived for the 180-day and 365-day Offer Counts.
 
 ## 3. Implementation Steps
-1.  **Backend:** Update `seasonality_classifier.py` with `get_buy_period`.
-2.  **Backend:** Verify `180 days` metrics in `processing.py`.
+1.  **Backend:** Fix the key mismatch for "Trough Season" in `processing.py`.
+2.  **Backend:** Verify `180 days` metrics in `processing.py` and `stable_products.py`.
 3.  **Frontend:** Edit `dashboard.html`.
-    *   Locate the "Details" modal/overlay code.
-    *   Replace the existing HTML structure with the new 4-column grid.
-    *   Update the JavaScript that populates the modal (`openDealDetails` or similar) to map the new JSON fields to the new HTML elements.
-    *   Apply CSS for the grid layout, truncation, and "Advice" positioning.
+    *   Replace the existing modal structure with the 4-column grid.
+    *   Map the new JSON fields to the HTML.
 4.  **Verification:**
-    *   Load the dashboard.
-    *   Click a deal to open the overlay.
-    *   Verify all 4 columns are populated.
-    *   Verify hover tooltips on Title/Genre/Publisher.
-    *   Verify "Advice from Ava" is at the top.
+    *   Verify the overlay matches the design.
+    *   Confirm "Est. Buy Date" displays the Trough Season.
