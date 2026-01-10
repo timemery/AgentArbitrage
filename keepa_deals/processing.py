@@ -144,7 +144,9 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         fba_fees_obj = product_data.get('fbaFees') or {}
         pick_and_pack = fba_fees_obj.get('pickAndPackFee')
         if pick_and_pack is None:
-            pick_and_pack = 0
+            # If fee is missing (e.g., no dimension data), assume a safe default for a Book/Textbook.
+            # Standard FBA fee for a ~1.5lb book is approx $5.50 (550 cents).
+            pick_and_pack = 550
         fba_fee = pick_and_pack / 100.0
 
         # Safety: Handle None value in referralFeePercentage
