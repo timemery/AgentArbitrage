@@ -66,50 +66,32 @@ Adding multi-vendor sourcing introduces significant complexity ("Large" T-Shirt 
     *   **Impact:** A backfill that takes 2 hours could take 10+ hours if we wait 1-2 seconds for an external API response per item.
     *   **Mitigation:** Asynchronous fetching or "On-Demand" fetching (only check external prices when a user clicks a deal).
 
-### Integration Roadmap
+### Feasibility of On-Demand 'All Sources' Feature
 
-#### A. Data Model Updates
-We need to store the "External Source" data alongside the Keepa (Amazon) data.
-*   **New Columns:** `External_Price`, `External_Shipping`, `External_Seller`, `External_Link`, `External_Platform` (e.g., 'eBay').
+The user proposed adding an "All Sources" button to the Deal Details Overlay to fetch prices on-demand, rather than scanning all 10,000 ASINs.
 
-#### B. Logic Updates (`keepa_deals/processing.py`)
+**This is the optimal solution.** It resolves the two biggest risks identified above: **Latency** and **Cost**.
 
-Currently, `_process_single_deal` calls `seller_info.get_used_product_info` which only looks at Amazon. We would inject a new step:
+#### Why this works:
+1.  **Zero Impact on Backfill:** The heavy scraping only happens when a user is interested in a specific item. The backfill process remains fast and focused on Amazon data.
+2.  **Cost Efficiency:** Even using paid APIs (SerpApi at $0.60/1k), the cost becomes negligible because users will likely only check 10-50 items per day, rather than scanning 10,000.
+3.  **Real-Time Accuracy:** Prices are fetched at the exact moment of decision, ensuring they are not stale (unlike a 4-hour old backfill).
 
-```python
-# Pseudo-code for future implementation
-def _process_single_deal(product_data, ...):
-    # 1. Existing Amazon Logic
-    amazon_price, amazon_seller, ... = get_used_product_info(product_data)
-
-    # 2. NEW: External Sourcing (e.g., eBay API)
-    # WARNING: This adds latency. Consider doing this only for high-margin potentials.
-    external_deal = external_sourcing_service.find_best_price(asin)
-
-    # 3. Compare and Pick Winner
-    if external_deal and external_deal['total_price'] < amazon_price:
-        row_data['Price Now'] = external_deal['total_price']
-        row_data['Best Price'] = external_deal['total_price']
-        row_data['Seller'] = f"{external_deal['platform']} - {external_deal['seller']}"
-        row_data['Buy Now URL'] = external_deal['link']
-        row_data['Is_External'] = True
-    else:
-        # Keep existing Amazon data
-        ...
-```
-
-#### C. Profit Calculation Updates (`keepa_deals/business_calculations.py`)
-
-The `calculate_all_in_cost` function needs to handle external purchases where Amazon fees might not apply *at the point of purchase*, but still apply *at the point of sale* (if doing Arbitrage).
-
-*   **Acquisition Cost:** The `Price Now` would be the external price (e.g., eBay price + shipping).
-*   **Fees:**
-    *   If **Online Arbitrage (OA):** We buy on eBay (Pay eBay Price + Ship) -> Send to Amazon (Pay Inbound Ship) -> Sell on Amazon (Pay Referral + FBA).
-    *   **Logic Change:** The calculation remains largely the same (`Price Now` is your Cost of Goods), but we might need to adjust `estimated_shipping` if the external source charges specific shipping that we already captured in `Price Now`.
+#### Technical Architecture for Implementation (Phase 2)
+1.  **Frontend (`dashboard.html`):**
+    *   Add a button **"Check All Sources"** to the "Deal & Price Benchmarks" section of the overlay.
+    *   On click, show a loader and call the new API endpoint.
+2.  **Backend (`wsgi_handler.py`):**
+    *   Create endpoint `GET /api/external-prices/<asin>`.
+    *   This endpoint calls `keepa_deals.external_sourcing.fetch_all_sources(asin)`.
+3.  **Service Layer (`keepa_deals/external_sourcing.py`):**
+    *   Implements the logic to query **eBay Finding API** (Free) and potentially **SerpApi** (Google Shopping).
+    *   Parses results, filters by ISBN/Condition, and returns a JSON list of offers.
+4.  **UI Update:**
+    *   The frontend receives the JSON and dynamically inserts a new table row or modal section: "Found: eBay ($12.50), AbeBooks ($11.00)".
 
 ## Conclusion
 
 **Do not use ChatGPT Instant Checkout.** It is a dead end for this specific use case.
 
-**Proceed with Caution on Multi-Vendor Sourcing.** While technically feasible via eBay API (Free) or SerpApi (Paid), it significantly increases system complexity and latency.
-*   **Recommendation:** Start with a "Pilot" integration of the **eBay Finding API** (due to zero cost) on a "Check Price" button click, rather than integrating it into the main Backfill loop. This minimizes risk and latency.
+**Proceed with the "On-Demand" Strategy.** Implementing a "Check All Sources" button that queries **eBay (Free)** and/or **Google Shopping (via Paid API)** is the lowest-risk, highest-value approach. It avoids slowing down the system while giving the user exactly what they need at the moment of purchase.
