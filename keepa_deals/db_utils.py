@@ -349,6 +349,20 @@ def get_all_user_credentials():
         logger.error(f"Error retrieving user credentials: {e}", exc_info=True)
         return []
 
+def get_deal_count():
+    """Returns the total number of rows in the deals table."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT COUNT(*) FROM {TABLE_NAME}")
+            row = cursor.fetchone()
+            if row:
+                return row[0]
+            return 0
+    except sqlite3.Error as e:
+        logger.error(f"Error counting deals: {e}", exc_info=True)
+        return 0
+
 def save_deals_to_db(deals_data):
     """Saves a list of deal dictionaries to the deals.db SQLite database."""
     if not deals_data:

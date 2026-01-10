@@ -8,8 +8,30 @@
         Use this page to set the Keepa deals query. The query must be a valid JSON object.
     </p>
 
+    <div class="settings-card" style="margin-bottom: 2rem; border-color: #336699;">
+        <h2 style="color: #336699;">Backfill Limiter</h2>
+        <p class="settings-description">
+            Artificially stop the backfiller after a specific number of deals. This allows testing the Refiller's behavior when the database is "full".
+        </p>
+        <form action="{{ url_for('deals') }}" method="post" class="settings-form">
+            <input type="hidden" name="action" value="update_limit">
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="backfill_limit_enabled" name="backfill_limit_enabled" {% if backfill_limit_enabled %}checked{% endif %}>
+                <label for="backfill_limit_enabled" style="margin-bottom: 0;">Enable Artificial Limit</label>
+            </div>
+            <div class="form-group">
+                <label for="backfill_limit_count">Max Deals Count</label>
+                <input type="number" id="backfill_limit_count" name="backfill_limit_count" class="styled-text-field" value="{{ backfill_limit_count }}" min="1">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="styled-button">Update Limit</button>
+            </div>
+        </form>
+    </div>
+
     <div class="settings-card">
         <form action="{{ url_for('deals') }}" method="post" class="settings-form">
+            <input type="hidden" name="action" value="update_query">
             <div class="form-group">
                 <label for="keepa_query">Keepa API Query</label>
                 <textarea id="keepa_query" name="keepa_query" class="styled-text-field large-textarea" rows="20">{{ keepa_query }}</textarea>
