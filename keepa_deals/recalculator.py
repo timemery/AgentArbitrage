@@ -103,6 +103,9 @@ def recalculate_deals():
                             fba_fee = 5.50
                         else:
                             fba_fee = float(str(fba_fee_raw).replace(',', ''))
+
+                        if fba_fee < 0:
+                            fba_fee = 5.50
                     except (ValueError, TypeError):
                         fba_fee = 5.50
 
@@ -113,6 +116,9 @@ def recalculate_deals():
                             ref_fee = 15.0
                         else:
                             ref_fee = float(str(ref_fee_raw).replace('%', ''))
+
+                        if ref_fee < 0:
+                            ref_fee = 15.0
                     except (ValueError, TypeError):
                         ref_fee = 15.0
 
