@@ -95,8 +95,26 @@ def recalculate_deals():
                 now_price = float(str(deal_data.get('Now', '0')).replace('$', '').replace(',', ''))
 
                 if list_at_price > 0 and now_price > 0:
-                    fba_fee = float(str(deal_data.get('FBA_PickPack_Fee', '0')).replace(',', ''))
-                    ref_fee = float(str(deal_data.get('Referral_Fee_Percent', '0')).replace('%', ''))
+                    # Handle missing or invalid fee data using safe defaults
+                    fba_fee_raw = deal_data.get('FBA_PickPack_Fee')
+                    try:
+                        if fba_fee_raw in (None, 'None', '', 0, '0', '0.0'):
+                            # Default to $5.50 if missing (DB stores dollars, processing converts cents->dollars)
+                            fba_fee = 5.50
+                        else:
+                            fba_fee = float(str(fba_fee_raw).replace(',', ''))
+                    except (ValueError, TypeError):
+                        fba_fee = 5.50
+
+                    ref_fee_raw = deal_data.get('Referral_Fee_Percent')
+                    try:
+                        if ref_fee_raw in (None, 'None', '', 0, '0', '0.0'):
+                            # Default to 15.0% if missing
+                            ref_fee = 15.0
+                        else:
+                            ref_fee = float(str(ref_fee_raw).replace('%', ''))
+                    except (ValueError, TypeError):
+                        ref_fee = 15.0
 
                     shipping_included = str(deal_data.get('Shipping_Included', 'no')).lower() == 'yes'
                     all_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, ref_fee, business_settings, shipping_included)
