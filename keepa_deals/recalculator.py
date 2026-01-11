@@ -71,15 +71,9 @@ def recalculate_deals():
             raise ValueError("ASIN column not found in deals table, cannot proceed.")
 
         query = f"SELECT {', '.join(select_clauses)} FROM deals"
-        print(f"DEBUG: Executing query: {query}")
         cursor.execute(query)
         deals_to_refresh = [dict(row) for row in cursor.fetchall()]
         conn.close()
-
-        print(f"DEBUG: Found {len(deals_to_refresh)} deals.")
-        if deals_to_refresh:
-            print(f"DEBUG: First deal keys: {deals_to_refresh[0].keys()}")
-            print(f"DEBUG: First deal values: {deals_to_refresh[0]}")
 
         if not deals_to_refresh:
             set_recalc_status({"status": "Completed", "message": "No deals to recalculate."})
@@ -99,8 +93,6 @@ def recalculate_deals():
             try:
                 list_at_price = float(str(deal_data.get('List_at', '0')).replace('$', '').replace(',', ''))
                 now_price = float(str(deal_data.get('Now', '0')).replace('$', '').replace(',', ''))
-
-                print(f"DEBUG: Processing ASIN {deal_data['ASIN']}. List at: {list_at_price}, Now: {now_price}")
 
                 if list_at_price > 0 and now_price > 0:
                     # Handle missing or invalid fee data using safe defaults
