@@ -10893,5 +10893,173 @@
         "advice": "Pass on bulk purchase despite high potential profit (e.g., >$18 per item) if demand indicators are weak",
         "confidence": "High",
         "source": "Currently, the sales rank is 215,544. ... The ROI is incredible. ... The deal breakers: With so few recent reviews, this item doesn\u2019t look like it sells often enough. With the Keepa graph only showing around five sales in the past 365 days, I don\u2019t want to put my capital in this item that might not sell very often."
+    },
+    {
+        "id": "oa-009",
+        "category": "Risk",
+        "trigger": "Dropshipping in arbitrage",
+        "advice": "Avoid relying on dropshipping from unreliable sources like Walmart due to cancellation risks; ensure reliable fulfillment to maintain customer service levels",
+        "confidence": "High",
+        "source": "Unfortunately, Walmart actually decided to just cancel all my orders and didn't bother telling me about it, so I didn't know until people started complaining that their orders hadn't shown up \u2026 When it comes to selling on Amazon, people expect (and Amazon enforces) a certain level of service. You need to make your customers happy, all the time. Playing games with dropshipping means that your success is based on someone else's performance, and that rarely ends well"
+    },
+    {
+        "id": "oa-010",
+        "category": "General",
+        "trigger": "Scaling online arbitrage business",
+        "advice": "Systematize processes, automate, and outsource to multiply earnings; avoid doing every job yourself to maximize potential up to hundreds of thousands per year",
+        "confidence": "High",
+        "source": "Online arbitrage is not hard nor is it a get rich quick scheme. It requires stacking a bunch of little wins over and over. If you systematize the process it can multiply quite handsomely Running a multimillion dollar a year OA business is achievable and you could earn hundreds of thousands of dollars per year doing it. One of the mistakes many sellers make is they try to do every job when it comes time to running an AL business. That limits your earnings as you can only do so much. You have to be willing to automate processes, outsource some of the work to really earn the maximum"
+    },
+    {
+        "id": "salesrank1",
+        "category": "Buying",
+        "trigger": "Lower sales ranks in category",
+        "advice": "Prioritize products with lower sales ranks to indicate higher demand and better sales potential.",
+        "confidence": "High",
+        "source": "Sales Rank: Consider products with a reasonable sales rank in their category. Lower sales ranks generally indicate higher demand."
+    },
+    {
+        "id": "profitmargin1",
+        "category": "Pricing",
+        "trigger": "Profit margin of at least 25%",
+        "advice": "Target products where profit margin, after subtracting fees and costs, is 25% or higher for healthy returns.",
+        "confidence": "High",
+        "source": "Profit Margin = (($80 \u2013 $60) / $80) x 100 = 25% This means you have a 25% profit margin on each sale of the headphones, which is a healthy margin for an online arbitrage product."
+    },
+    {
+        "id": "seasonality1",
+        "category": "Seasonality",
+        "trigger": "Products with seasonal demand peaks",
+        "advice": "Account for seasonality by sourcing items with higher demand during specific periods, such as holidays for toys and games.",
+        "confidence": "High",
+        "source": "Seasonality: Be mindful of the seasonality of products; some items may have higher demand during specific times of the year."
+    },
+    {
+        "id": "competition1",
+        "category": "Risk",
+        "trigger": "High number of sellers or aggressive pricing",
+        "advice": "Assess competition levels to avoid niches with many sellers that could lead to price wars and reduced profits.",
+        "confidence": "High",
+        "source": "Competition: Assess the number of sellers and their pricing strategies. High competition may lead to price wars and reduced profits."
+    },
+    {
+        "id": "reviews1",
+        "category": "Buying",
+        "trigger": "Products with positive reviews and ratings",
+        "advice": "Select products that have positive reviews and high ratings to improve sales performance on Amazon.",
+        "confidence": "High",
+        "source": "Reviews and ratings: Products with positive reviews and ratings tend to perform better on Amazon."
+    },
+    {
+        "id": "booksourcing1",
+        "category": "Buying",
+        "trigger": "New and used books from reliable sources",
+        "advice": "Source new and used books from online retailers, clearance sales, or wholesalers for profitable resale on Amazon.",
+        "confidence": "Medium",
+        "source": "Books and media: New and used books, DVDs, and video games can be profitable when sourced correctly."
+    },
+    {
+        "id": "coupon1",
+        "category": "Buying",
+        "trigger": "Availability of coupon codes on retailer sites",
+        "advice": "Apply coupon codes during checkout to reduce purchase prices, combine with sales, stack where possible, and use for bulk buys to increase margins.",
+        "confidence": "High",
+        "source": "Using coupon codes to lower item prices... Look for coupon codes that you can use in conjunction with existing sales or promotions. This combination can lead to substantial discounts... Stacking coupons: Some retailers allow you to stack multiple coupons for a single purchase."
+    },
+    {
+        "id": "cashback1",
+        "category": "Pricing",
+        "trigger": "Purchases through cashback sites like Rakuten",
+        "advice": "Activate cashback offers before shopping to earn rebates as a percentage of purchase amount, enhancing overall profit margins.",
+        "confidence": "High",
+        "source": "Using cashback sites to earn rebates when shopping online... the cashback site will track your transaction and credit your account with a percentage of the purchase amount as a rebate."
+    },
+    {
+        "id": "salesrankfilter1",
+        "category": "Buying",
+        "trigger": "Sales rank in automation tool filters",
+        "advice": "Set minimum sales rank thresholds in tools like Tactical Arbitrage to filter for high-demand products during sourcing.",
+        "confidence": "High",
+        "source": "Set filters: Define your sourcing criteria, including desired categories, minimum profit margin, and sales rank."
+    },
+    {
+        "id": "amazon-seller-check",
+        "category": "Risk",
+        "trigger": "Amazon offers the product and dominates Buy Box or stopped selling less than 2 months ago",
+        "advice": "Avoid sourcing the product as it is nearly impossible to compete with Amazon",
+        "confidence": "High",
+        "source": "If Amazon sells a product and dominates a Buy Box, or stopped selling on the listing less than 2 months ago, the product is not suitable for selling because it is almost impossible to compete with them"
+    },
+    {
+        "id": "listing-age-minimum",
+        "category": "General",
+        "trigger": "Product listing age less than half a year",
+        "advice": "Skip the product due to insufficient data to estimate BSR, Buy Box, and price changes reliably",
+        "confidence": "High",
+        "source": "The \u00abgood\u00bb listing age is half a year or more. If the product history starts less than half a year ago, there will not be enough data to estimate the BSR, Buy Box and price changes"
+    },
+    {
+        "id": "buy-box-competition",
+        "category": "Risk",
+        "trigger": "Different sellers win the Buy Box at different times",
+        "advice": "Consider the listing as viable for competition and potential Buy Box wins",
+        "confidence": "High",
+        "source": "If different sellers are in the Buy Box at different times, that is a \u00abgood\u00bb listing because it\u2019s possible to compete on it"
+    },
+    {
+        "id": "high-competition-sellers",
+        "category": "Risk",
+        "trigger": "More than 15 sellers fighting for the Buy Box with fluctuating prices",
+        "advice": "Avoid the product due to high competition, price wars, and potential low margins from dumping",
+        "confidence": "High",
+        "source": "A large number of sellers (more than 15) fighting for the Buy Box and the Buy Box price drops show the high level of competition. If the Buy Box price goes up and down too much, that means the sellers engage in a price war"
+    },
+    {
+        "id": "bsr-trend-analysis",
+        "category": "General",
+        "trigger": "BSR shows an average number and trend over at least half a year",
+        "advice": "Source the product if BSR trend is downward (improving sales); avoid if upward (declining sales)",
+        "confidence": "High",
+        "source": "The lower the BSR, the better the product sells. Because BSR changes, you must analyze its average number and the trend \u2014 upwards or downwards \u2014 to see if product sales increase or decrease"
+    },
+    {
+        "id": "seasonal-bsr-drop",
+        "category": "Seasonality",
+        "trigger": "BSR drops to zero during specific periods and rises afterward",
+        "advice": "Identify as seasonal product and source only if timing aligns with high season demand",
+        "confidence": "High",
+        "source": "If you see on the chart that during specific periods a product's BSR goes down to zero, that may indicate a seasonal product. An additional indicator of a seasonal product is if its BSR goes down to zero in the high season and after seasonal sales start to increase"
+    },
+    {
+        "id": "private-label-detection",
+        "category": "Risk",
+        "trigger": "One seller dominates offers for a long period (e.g., 195 days)",
+        "advice": "Avoid the product as it is likely a private label listing that non-brand owners cannot sell",
+        "confidence": "High",
+        "source": "If the item is sold by one seller during a long period (for example, 195 days), that is likely a private label product and it\u2019s not good for selling"
+    },
+    {
+        "id": "reviews-rating-check",
+        "category": "General",
+        "trigger": "No reviews or average rating below 4 stars with many negative reviews",
+        "advice": "Skip the product due to low demand, poor quality perception, or high return risk",
+        "confidence": "High",
+        "source": "A \u00abgood\u00bb product must have reviews. The average rating must be 4-5 stars, and it must not have many negative reviews. If it has bad reviews, it will generate many returns"
+    },
+    {
+        "id": "new-offer-price-guidance",
+        "category": "Pricing",
+        "trigger": "Purple line shows lowest new offer price from 3rd-party sellers",
+        "advice": "Use this as a benchmark to set competitive pricing above the minimum to ensure margins",
+        "confidence": "High",
+        "source": "The new offer price (that is a purple line on a chart) shows the lowest product offer in the New condition from a 3rd-party seller at any given time... It gives the picture of the minimum current price level and helps set a price"
+    },
+    {
+        "id": "variations-selection",
+        "category": "Buying",
+        "trigger": "Not all variations sell equally well on the listing",
+        "advice": "Research and source only the best-selling variations using Keepa\u2019s Variations section for offers and price history",
+        "confidence": "High",
+        "source": "Not all variations sell equally well, which means you must select the ones that sell the best. Keepa has a \u00abVariations\u00bb section where you can see current offers and price history of all product variations"
     }
 ]

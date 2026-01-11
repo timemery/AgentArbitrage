@@ -49,7 +49,7 @@ def recalculate_deals():
         required_columns_map = {
             "ASIN": "ASIN",
             "List at": "List_at",
-            "Best Price": "Best_Price",
+            "Best Price": "Now",
             "FBA Pick&Pack Fee": "FBA_PickPack_Fee",
             "Referral Fee %": "Referral_Fee_Percent",
             "Shipping Included": "Shipping_Included",
