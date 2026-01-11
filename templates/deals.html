@@ -8,10 +8,6 @@
         Use this page to set the Keepa deals query. The query must be a valid JSON object.
     </p>
 
-    <div id="recalc-indicator" style="display: none; text-align: center; padding: 10px; background-color: rgba(25, 118, 210, 0.2); border: 1px solid #1976d2; border-radius: 5px; margin-bottom: 20px;">
-        Recalculating deals with new settings... The task status will update below.
-    </div>
-
     <div class="settings-card">
         <form action="{{ url_for('deals') }}" method="post" class="settings-form">
             <div class="form-group">
@@ -23,15 +19,6 @@
                 <button type="submit" class="styled-button">Save Query</button>
             </div>
         </form>
-    </div>
-
-    <div class="settings-card" style="margin-top: 2rem;">
-        <h2>Manual Data Refresh</h2>
-        <p>
-            Recalculate Profit, Margin, and All-in Cost for all deals in the database using the latest business settings.
-            This does not call external APIs (Keepa/SP-API) but refreshes internal logic.
-        </p>
-        <button id="refresh-all-data" class="styled-button" style="background-color: #17a2b8; color: white;">Refresh All Data</button>
     </div>
 
     <div class="settings-card" style="margin-top: 2rem; border-color: #ff4d4d;">
@@ -47,8 +34,6 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // --- Reset Database Logic ---
     document.getElementById('reset-db-btn').addEventListener('click', function() {
         if (confirm('Are you ABSOLUTELY SURE you want to delete all data and restart the backfill? This process will take hours.')) {
             fetch('/api/reset-database', { method: 'POST' })
@@ -62,59 +47,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }
     });
-
-    // --- Recalculation Logic ---
-    const recalcIndicator = document.getElementById('recalc-indicator');
-    const refreshButton = document.getElementById('refresh-all-data');
-    let pollInterval;
-
-    async function checkRecalcStatus() {
-        try {
-            const response = await fetch('/api/recalc-status');
-            const data = await response.json();
-            if (data.status === 'Running') {
-                recalcIndicator.style.display = 'block';
-                recalcIndicator.textContent = data.message || 'Recalculating...';
-            } else {
-                recalcIndicator.style.display = 'none';
-                if (pollInterval) clearInterval(pollInterval);
-            }
-        } catch (error) {
-            console.error('Error polling recalc status:', error);
-            recalcIndicator.style.display = 'none';
-            if (pollInterval) clearInterval(pollInterval);
-        }
-    }
-
-    refreshButton.addEventListener('click', async () => {
-        const userConfirmed = confirm("Are you sure? This will update business calculations for all deals currently in the database. It may take a few minutes.");
-        if (!userConfirmed) {
-            return;
-        }
-
-        try {
-            refreshButton.disabled = true;
-            refreshButton.textContent = 'Refreshing...';
-            const response = await fetch('/api/refresh-all-deals', { method: 'POST' });
-            const data = await response.json();
-            if (response.ok) {
-                checkRecalcStatus(); // Immediately show indicator
-                pollInterval = setInterval(checkRecalcStatus, 3000);
-            } else {
-                alert(`Error: ${data.message || 'Could not start refresh.'}`);
-            }
-        } catch (error) {
-            alert('An error occurred while trying to start the refresh.');
-        } finally {
-            setTimeout(() => {
-                refreshButton.disabled = false;
-                refreshButton.textContent = 'Refresh All Data';
-            }, 3000);
-        }
-    });
-
-    // Initial check in case a job is already running
-    checkRecalcStatus();
-});
 </script>
 {% endblock %}

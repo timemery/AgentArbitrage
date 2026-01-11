@@ -1103,9 +1103,6 @@ def refresh_all_deals():
     if not session.get('logged_in'):
         return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
-    if session.get('role') != 'admin':
-        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
-
     # Optional: Check if a task is already running
     # status = get_scan_status()
     # if status.get('status') == 'Running':
