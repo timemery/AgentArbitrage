@@ -72,10 +72,11 @@ All sliders utilize a standardized "Any" state logic:
 
 To maintain a high-quality dashboard, the system implements a "Janitor" process.
 
--   **Trigger:** Runs automatically every 4 hours (Celery) or manually via "Refresh Deals" button.
+-   **Trigger:** Runs automatically every 4 hours (Celery).
+-   **Note:** The manual trigger via the "Refresh Deals" button was removed in Jan 2026.
 -   **Action:** Deletes any deal from the database where `last_seen_utc` is older than **72 hours**.
 -   **Impact on Dashboard:** Users may see the total deal count drop significantly after a refresh. This is expected behavior (garbage collection).
--   **User Feedback:** The "Refresh Deals" button triggers the Janitor *before* reloading the grid to ensure the user sees a clean state.
+-   **User Feedback:** The "Refresh Deals" button now only reloads the grid without triggering the cleanup process, relying on the background schedule for maintenance.
 
 ---
 

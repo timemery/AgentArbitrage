@@ -39,6 +39,7 @@
   - **AMZ:** Warning icon (⚠️) if Amazon is currently selling the item.
   - **Binding:** Auto-formatted to Title Case (e.g., "Mass Market"), max width 95px.
 - **Ava Advice:** Overlay feature using `grok-4-fast-reasoning` to provide actionable analysis.
+- **Refresh Logic:** Manual "Refresh Deals" button only reloads the grid; it no longer triggers the "Janitor" cleanup process (as of Jan 2026).
 
 ## 5. Strategy Database
 - **Format:** Structured JSON (`id`, `category`, `trigger`, `advice`, `confidence`).

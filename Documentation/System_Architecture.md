@@ -63,7 +63,7 @@ There are four primary background tasks that manage the data lifecycle.
 
 ### C. `clean_stale_deals` (The Janitor)
 *   **Purpose:** Removes "zombie" deals to ensure dashboard freshness.
-*   **Trigger:** Scheduled (Every 4h) OR Manual (Button: "Refresh Deals" in Dashboard).
+*   **Trigger:** Scheduled (Every 4h). (Manual trigger via "Refresh Deals" button was removed in Jan 2026 to prevent accidental data loss).
 *   **Mechanism:** `DELETE FROM deals WHERE last_seen_utc < [72h ago]`.
 *   **Grace Period:** **72 Hours**. This extended window allows the backfiller sufficient time to cycle through the database and update records before they are deleted.
 *   **Benefit:** Prevents the database from growing indefinitely and ensures users only see relevant, active deals.
