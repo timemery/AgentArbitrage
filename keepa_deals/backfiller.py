@@ -11,7 +11,8 @@ from worker import celery_app as celery
 from .db_utils import (
     sanitize_col_name, save_watermark, DB_PATH,
     get_system_state, set_system_state, recreate_deals_table,
-    create_deals_table_if_not_exists, recreate_user_restrictions_table
+    create_deals_table_if_not_exists, recreate_user_restrictions_table,
+    get_deal_count
 )
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
@@ -128,6 +129,16 @@ def backfill_deals(reset=False):
         logger.info(f"--- Resuming backfill from page {page} ---")
 
         while True:
+            # Check for artificial limit
+            if get_system_state('backfill_limit_enabled') == 'true':
+                limit_count = int(get_system_state('backfill_limit_count', 3000))
+                current_count = get_deal_count()
+
+                if current_count >= limit_count:
+                    logger.info(f"--- Artificial backfill limit reached ({current_count} >= {limit_count}). Stopping backfill. ---")
+                    # We break the loop, effectively ending the task.
+                    break
+
             logger.info(f"Fetching page {page} of deals...")
             token_manager.request_permission_for_call(estimated_cost=5)
             deal_response, _, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True)
