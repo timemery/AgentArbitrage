@@ -10549,5 +10549,349 @@
         "advice": "Target books with recent improvements in offers or buy box; capitalize on newfound demand for arbitrage before competition increases",
         "confidence": "High",
         "source": "A low BSR 30-day average and a high 180-day average may imply the ASIN didn\u2019t historically sell well for a variety of reasons like no reasonable offers (or no offers at all) until recently, historical buy box suppression that was just released, PPC, or any combination of these."
+    },
+    {
+        "id": "gen-1",
+        "category": "General",
+        "trigger": "Starting Amazon bookselling business",
+        "advice": "Invest in a paid scanning app as the very first fixed expense before listing tools or repricers.",
+        "confidence": "High",
+        "source": "A paid app is the very first fixed expense I recommend any seller invest in. First a scanning app, then a listing tool, then a repricer."
+    },
+    {
+        "id": "buy-1",
+        "category": "Buying",
+        "trigger": "New to scanning apps",
+        "advice": "Base 90% of purchasing decisions on average sales rank, merchant fulfilled prices, FBA prices, and restriction status.",
+        "confidence": "High",
+        "source": "90% of purchasing decisions can be made with these four data points only: Average sales rank Merchant fulfilled prices FBA prices Restriction status"
+    },
+    {
+        "id": "buy-2",
+        "category": "Buying",
+        "trigger": "Book scanned with restriction status",
+        "advice": "Avoid purchasing books that are restricted by Amazon to prevent investment in unsellable inventory.",
+        "confidence": "High",
+        "source": "Restriction status: You want to know if Amazon will allow you to sell a book before you invest in it."
+    },
+    {
+        "id": "buy-3",
+        "category": "Buying",
+        "trigger": "Book has no barcode",
+        "advice": "Use Optical Character Recognition (OCR) to look up the value of books without barcodes, as they can be highly valuable.",
+        "confidence": "High",
+        "source": "OCR is the technology that reads text based on your phone\u2019s camera, allowing you look up the value of books with no barcode. These can be some of the most valuable books"
+    },
+    {
+        "id": "buy-4",
+        "category": "Buying",
+        "trigger": "Average sales rank indicates low demand (e.g., selling twice a year)",
+        "advice": "Require a payout higher than $3 for books with very low demand to ensure profitability.",
+        "confidence": "High",
+        "source": "It\u2019s not worth it to invest in a book with a $3 payout when it\u2019s only selling twice a year, for example."
+    },
+    {
+        "id": "buy-5",
+        "category": "Buying",
+        "trigger": "Sourcing in areas with poor or no cell signal",
+        "advice": "Choose scanning apps with database download option to enable scanning without internet connection and prolong battery life.",
+        "confidence": "High",
+        "source": "With database download apps, you can scan anywhere, no matter your signal strength... encourage the use of apps with a download option."
+    },
+    {
+        "id": "price-1",
+        "category": "Pricing",
+        "trigger": "Reviewing scan data for any book",
+        "advice": "Start by examining the lowest five merchant fulfilled prices; if high enough, skip checking FBA prices.",
+        "confidence": "High",
+        "source": "Step #1: Look at Merchant fulfilled prices This is the column showing (usually) the lowest five prices for the book. Even as an FBA seller, you\u2019ll want this column to be your first stop... FBM prices are high enough that you don\u2019t even have to look at FBA prices."
+    },
+    {
+        "id": "price-2",
+        "category": "Pricing",
+        "trigger": "FBA seller reviewing scan data",
+        "advice": "Focus primarily on FBA prices for competition, except for very low demand items where compete with all offers.",
+        "confidence": "High",
+        "source": "If you\u2019re an FBA seller, for most books you are only competing with other FBA sellers. So you need to focus specifically on FBA prices. Very low demand items are an exception, and you will want to compete with all offers for some books."
+    },
+    {
+        "id": "price-3",
+        "category": "Pricing",
+        "trigger": "No FBA sellers and item not ranked incredibly well",
+        "advice": "Base selling price on non-FBA (merchant fulfilled) sellers if no FBA competition and poor sales rank.",
+        "confidence": "High",
+        "source": "Even as an FBA seller, if there are no other FBA sellers offering your product, and the item is not ranked incredibly well, you\u2019ll want to consider prices set by non-FBA sellers when setting your price."
+    },
+    {
+        "id": "price-4",
+        "category": "Pricing",
+        "trigger": "Setting selling price for any book",
+        "advice": "Ensure planned selling price is lower than Amazon\u2019s price, as you cannot price above it.",
+        "confidence": "High",
+        "source": "You need to confirm that the price you plan to sell it for is less than Amazon\u2019s price (you can\u2019t price higher than Amazon)."
+    },
+    {
+        "id": "risk-1",
+        "category": "Risk",
+        "trigger": "Interpreting sales rank without category context",
+        "advice": "Adjust sales rank evaluation by product category, as a rank of 100,000 in Books indicates different demand than in Tools.",
+        "confidence": "High",
+        "source": "Product category: Because a 100,000 rank in Books means something entirely different than in Tools."
+    },
+    {
+        "id": "risk-2",
+        "category": "Risk",
+        "trigger": "Using free apps for sourcing",
+        "advice": "Avoid free apps long-term as they limit inventory finding and lead to bad decisions; any paid app pays for itself in one day.",
+        "confidence": "High",
+        "source": "It is always more expensive to source without a paid app than with one... any paid app will pay for itself in literally one day. There is no defense for using on a free app unless you are genuinely destitute."
+    },
+    {
+        "id": "sr_consistent",
+        "category": "Buying",
+        "trigger": "Sales rank consistent or improving over time",
+        "advice": "Source products with sales ranks that get better or are consistent over time to ensure better sell-through and quicker sales",
+        "confidence": "High",
+        "source": "We look for products that tend to have sales ranks that get better or are consistent over time so that they sell through more product. We don\u2019t tend to get excited about increasing sales ranks over time \u2013 the one exception is when the sales rank is getting worse because the product is out of stock."
+    },
+    {
+        "id": "sr_worsening",
+        "category": "Risk",
+        "trigger": "Sales rank increasing (worsening) over time",
+        "advice": "Avoid sourcing unless the worsening is due to the product being out of stock, as it indicates declining demand",
+        "confidence": "High",
+        "source": "We don\u2019t tend to get excited about increasing sales ranks over time \u2013 the one exception is when the sales rank is getting worse because the product is out of stock."
+    },
+    {
+        "id": "price_stability",
+        "category": "Pricing",
+        "trigger": "Prices rise when other sellers run out of stock and product is seasonal",
+        "advice": "Maintain a high asking price and wait for price rebound instead of slashing prices",
+        "confidence": "High",
+        "source": "If prices tend to rise when other sellers run out of stock and we\u2019re looking at a seasonal product, then this could be an item we would want to maintain a high asking price on and wait for the price to rebound."
+    },
+    {
+        "id": "price_too_high",
+        "category": "Pricing",
+        "trigger": "Current price much higher than historical prices when sales rank was better",
+        "advice": "Decrease the price to align with past performance and improve sales velocity, assuming ROI still viable",
+        "confidence": "High",
+        "source": "We could also examine a pricing graph and realize an item may be priced way too high compared to the past when the sales rank was better. Assuming the ROI still makes sense, decreasing the price could be a change that we would want to make in hopes of increasing our sales \u2013 knowing that it would most likely sell for a lower price anyways."
+    },
+    {
+        "id": "offers_competition",
+        "category": "Risk",
+        "trigger": "High number of offers (sellers) on the listing",
+        "advice": "Evaluate competition level and potential pricing aggressiveness; use to assess selling environment and price stability before sourcing",
+        "confidence": "High",
+        "source": "This represents how many sellers are on the listing at any given time and allows you to easily reference the pricing chart directly above to see the corresponding changes in price. This is powerful information because it helps you understand the competition for this product and how aggressively the competition may be pricing the product when numerous other sellers are on the same listing."
+    },
+    {
+        "id": "search_filter",
+        "category": "Buying",
+        "trigger": "Sales rank 0-100,000 and new price $20-$50 in target category",
+        "advice": "Use these filters in Keepa Product Finder to discover sourcing opportunities for retail arbitrage, online arbitrage, or wholesale in new or existing categories",
+        "confidence": "High",
+        "source": "I chose to search for products from 0 \u2013 100,000 sales rank with a new price between $20-$50 and in the category of \u201cToys & Games\u201d. Using these filters allows you to really narrow down your search to new products or products related to the ones you\u2019re already selling."
+    },
+    {
+        "id": "sr_category_books",
+        "category": "General",
+        "trigger": "Sales rank of 100,000 in Books category",
+        "advice": "Consider it a strong performer as it places in the top 1% of products in the category; adjust expectations based on category size when evaluating ranks",
+        "confidence": "High",
+        "source": "In Books, a sales rank of 100,000 is in the top 1%!"
+    },
+    {
+        "id": "sr_category_appliances",
+        "category": "General",
+        "trigger": "Sales rank of 100,000 in Appliances category (326,732 total products)",
+        "advice": "View it as outside the top 30% (calculate as rank divided by total products); use category size to contextualize sales rank viability for sourcing",
+        "confidence": "High",
+        "source": "A product with a sales rank of 100,000 in Appliances falls outside the top 30% of products in the category (100,000 divided by 326,732 is 30.6%)."
+    },
+    {
+        "id": "seasonality_factor",
+        "category": "Seasonality",
+        "trigger": "Current sales rank/price affected by seasonality, supply issues, or high Q4 demand",
+        "advice": "Rely on historical data over current snapshots to predict future performance and avoid sourcing based on temporary fluctuations",
+        "confidence": "High",
+        "source": "While the current sales rank and price MAY accurately reflect the normal selling conditions of an item, there are many things that can make current data a poor reflection of future selling conditions. These include: Seasonality, A temporary lack of supply, A temporary supply surplus, Changes in supply to competing products, High demand in Q4, Current events."
+    },
+    {
+        "id": "keepa-quota-reuse",
+        "category": "General",
+        "trigger": "Requesting same data within 1 hour",
+        "advice": "Reuse data requests without quota deduction to efficiently analyze book prices and ranks",
+        "confidence": "High",
+        "source": "requesting the same data within an hour will not affect your quota"
+    },
+    {
+        "id": "keepa-graphs-free",
+        "category": "General",
+        "trigger": "Viewing interactive price and Sales Rank graphs",
+        "advice": "Freely view graphs for book sales rank and pricing history without impacting quota",
+        "confidence": "High",
+        "source": "viewing our interactive price and Sales Rank graphs does not impact your quota"
+    },
+    {
+        "id": "keepa-quota-refill",
+        "category": "General",
+        "trigger": "Depleted quota on subscription plan",
+        "advice": "Allow quota to refill at 5% every hour to resume data access for arbitrage scouting",
+        "confidence": "High",
+        "source": "Quota refill rate - 5% every hour"
+    },
+    {
+        "id": "keepa-product-finder-limit",
+        "category": "Buying",
+        "trigger": "Searching for book ASINs with subscription",
+        "advice": "Scan up to 10,000 ASINs per search in Product Finder to identify arbitrage opportunities",
+        "confidence": "High",
+        "source": "Product Finder max. ASINs per search - 10,000*"
+    },
+    {
+        "id": "keepa-best-seller-limit",
+        "category": "Buying",
+        "trigger": "Accessing Best Seller lists with subscription",
+        "advice": "Pull up to 5,000 ASINs per Best Seller list to source high-demand books for arbitrage",
+        "confidence": "High",
+        "source": "Best Seller max. ASINs per list - 5,000*"
+    },
+    {
+        "id": "keepa-top-seller-limit",
+        "category": "Risk",
+        "trigger": "Analyzing top sellers with subscription",
+        "advice": "Review up to 100,000 sellers per Top Seller list to assess competition in book categories",
+        "confidence": "High",
+        "source": "Top Seller max. sellers per list - 100,000*"
+    },
+    {
+        "id": "keepa-storefront-limit",
+        "category": "Pricing",
+        "trigger": "Analyzing seller storefronts with subscription",
+        "advice": "Examine up to 5,000 ASINs per storefront to compare book pricing and inventory",
+        "confidence": "High",
+        "source": "Storefront max. ASINs per list - 5,000*"
+    },
+    {
+        "id": "keepa-offer-list-limit",
+        "category": "Pricing",
+        "trigger": "Accessing offers per book ASIN with subscription",
+        "advice": "Review top 60 offers per ASIN to determine buy/sell pricing for arbitrage flips",
+        "confidence": "High",
+        "source": "Offer list max. offers per ASIN - Top 60 offers"
+    },
+    {
+        "id": "keepa-api-rate",
+        "category": "General",
+        "trigger": "Using Keepa API with subscription",
+        "advice": "Limit API calls to 1 token per minute for automated book data retrieval in arbitrage tools",
+        "confidence": "High",
+        "source": "Keepa API access - 1 token/min"
+    },
+    {
+        "id": "keepa-price-alerts",
+        "category": "Pricing",
+        "trigger": "Setting up alerts with subscription",
+        "advice": "Configure price increase alerts to time book sales for maximum arbitrage profit",
+        "confidence": "High",
+        "source": "Set up price increase alerts - \u2713"
+    },
+    {
+        "id": "seasonality-001",
+        "category": "Seasonality",
+        "trigger": "Textbook sales cycles",
+        "advice": "Prepare inventory for two peak periods per year, including Christmas, to capitalize on predictable sales.",
+        "confidence": "High",
+        "source": "Predicable sales cycles with textbooks (Christmas is twice a year for book sellers)"
+    },
+    {
+        "id": "general-001",
+        "category": "General",
+        "trigger": "New to online book arbitrage",
+        "advice": "Build inventory through a couple of textbook seasons to gain experience and increase engagement.",
+        "confidence": "High",
+        "source": "As a new online book flipper, it does not take long to get hooked on books once you\u2019ve gone through a couple of textbook seasons with a decent amount of inventory."
+    },
+    {
+        "id": "buying-001",
+        "category": "Buying",
+        "trigger": "Sourcing books online",
+        "advice": "Implement a custom process for online sourcing to improve efficiency, reduce time, and increase profits and ROI.",
+        "confidence": "High",
+        "source": "Our Online Book Arbitrage business really began to take off once we implemented our own process to source books online. We drastically improved our sourcing time and, perhaps more importantly, improved our results (i.e., higher profits & ROI)."
+    },
+    {
+        "id": "rule-001",
+        "category": "Buying",
+        "trigger": "Sales Rank < 1,000",
+        "advice": "Consider purchasing as it indicates strong sales potential, but verify if the rank is for the full category or subcategory",
+        "confidence": "High",
+        "source": "A rank under 1,000 is usually amazing, except that many times when scouting apps return a Consumer Electronic sales rank, it is actually returning a sub-sales rank. Be sure you know if the rank you are seeing is the rank for the full category or the sub-category."
+    },
+    {
+        "id": "rule-002",
+        "category": "General",
+        "trigger": "Using scanning app like Profit Bandit or Scoutify",
+        "advice": "Scan the item to evaluate FBA competition, current sales rank, and potential profit by matching lowest FBA price",
+        "confidence": "High",
+        "source": "Scan the item with your preferred seller scanning app (I use Profit Bandit). Look at the FBA competition and the current sales rank or Amazon BSR. ... I scanned the item with Scoutify. The item is ranked 215,544, and the lowest FBA seller is Amazon selling it at $29.96. The app does the math for me and states that if I match the lowest FBA price, then I\u2019d make a profit of over $18 per item."
+    },
+    {
+        "id": "rule-003",
+        "category": "Buying",
+        "trigger": "High number of customer reviews (e.g., >1,700)",
+        "advice": "Assume the item has sold at least as many times as reviews, indicating past demand for electronics",
+        "confidence": "High",
+        "source": "Currently, this Stylus Pen has over 1,700 reviews. If over 1700 people left a review for this item, then it\u2019s safe to say that it\u2019s at least sold 1,700 times, and most likely more."
+    },
+    {
+        "id": "rule-004",
+        "category": "Buying",
+        "trigger": "Few recent customer reviews (e.g., only 2 in current year)",
+        "advice": "Pass on purchase if recent reviews are low, as it signals inconsistent current demand",
+        "confidence": "High",
+        "source": "It looks like there were only two reviews this year so far. Most of the bulk of the reviews were from years ago. ... With so few recent reviews, this item doesn\u2019t look like it sells often enough."
+    },
+    {
+        "id": "rule-005",
+        "category": "Risk",
+        "trigger": "Presence of bad or one-star reviews",
+        "advice": "Ignore the number of negative reviews when deciding to buy, as people are more likely to leave negative feedback",
+        "confidence": "High",
+        "source": "I never look at how many one-star reviews an item gets when making a buying decision. ... There are occasional bad reviews, but plenty of positive reviews. If I sell all 20 of this item, then maybe one will be returned. I\u2019m okay with that one return."
+    },
+    {
+        "id": "rule-006",
+        "category": "Pricing",
+        "trigger": "Amazon is a competing seller",
+        "advice": "Decide whether to match Amazon's price (may require waiting for stock depletion) or price lower (reduces ROI); check Amazon's stock levels",
+        "confidence": "High",
+        "source": "If Amazon is a seller of an item I\u2019m sourcing, then I need to ask myself, \u201cDo I match Amazon\u2019s sales price or price the item lower?\u201d If I price to match Amazon\u2019s price, then I\u2019ll have to wait for them to sell out before I get the sales... Amazon has not been in stock for a long time, so this is nothing to worry about now."
+    },
+    {
+        "id": "rule-007",
+        "category": "Risk",
+        "trigger": "Clearance item available at multiple stores (e.g., 20 units at one Target)",
+        "advice": "Account for potential future competition from other resellers sourcing the same item; limit quantity if sales velocity is low",
+        "confidence": "High",
+        "source": "There are 20 of these stylus pens on clearance at Target. The good news is that it might be possible that you could go to more Targets and find even more. The bad news is that if this item is on clearance at every Target, then many other resellers will also find these and join you in selling. ... Personally, I would not buy them all."
+    },
+    {
+        "id": "rule-008",
+        "category": "General",
+        "trigger": "Keepa shows low sales (e.g., 4-5 sales in past 365 days)",
+        "advice": "Avoid investing capital in items with low historical sales velocity, even if ROI is high",
+        "confidence": "High",
+        "source": "I looked at Keepa and it looks like in the past year there have only been about 4-5 sales. ... With the Keepa graph only showing around five sales in the past 365 days, I don\u2019t want to put my capital in this item that might not sell very often."
+    },
+    {
+        "id": "rule-009",
+        "category": "Buying",
+        "trigger": "Sales Rank > 200,000 (e.g., 215,544) combined with low recent sales",
+        "advice": "Pass on bulk purchase despite high potential profit (e.g., >$18 per item) if demand indicators are weak",
+        "confidence": "High",
+        "source": "Currently, the sales rank is 215,544. ... The ROI is incredible. ... The deal breakers: With so few recent reviews, this item doesn\u2019t look like it sells often enough. With the Keepa graph only showing around five sales in the past 365 days, I don\u2019t want to put my capital in this item that might not sell very often."
     }
 ]
