@@ -21,7 +21,10 @@ from keepa_deals.db_utils import (
     create_user_restrictions_table_if_not_exists,
     create_user_credentials_table_if_not_exists,
     save_user_credentials,
-    get_all_user_credentials
+    get_all_user_credentials,
+    get_system_state,
+    set_system_state,
+    create_system_state_table_if_not_exists
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice
@@ -883,16 +886,35 @@ def deals():
     KEEPA_QUERY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'keepa_query.json')
 
     if request.method == 'POST':
-        keepa_query = request.form.get('keepa_query')
-        try:
-            json.loads(keepa_query)
-            with open(KEEPA_QUERY_FILE, 'w') as f:
-                f.write(keepa_query)
-            flash('Keepa query saved successfully!', 'success')
-        except json.JSONDecodeError:
-            flash('Invalid JSON. Please check the syntax.', 'error')
-        except Exception as e:
-            flash(f'Error saving Keepa query: {e}', 'error')
+        action = request.form.get('action')
+
+        if action == 'update_query':
+            keepa_query = request.form.get('keepa_query')
+            try:
+                json.loads(keepa_query)
+                with open(KEEPA_QUERY_FILE, 'w') as f:
+                    f.write(keepa_query)
+                flash('Keepa query saved successfully!', 'success')
+            except json.JSONDecodeError:
+                flash('Invalid JSON. Please check the syntax.', 'error')
+            except Exception as e:
+                flash(f'Error saving Keepa query: {e}', 'error')
+
+        elif action == 'update_limit':
+            try:
+                enabled = request.form.get('backfill_limit_enabled')
+                count = request.form.get('backfill_limit_count')
+
+                # Ensure system state table exists
+                create_system_state_table_if_not_exists()
+
+                set_system_state('backfill_limit_enabled', 'true' if enabled else 'false')
+                set_system_state('backfill_limit_count', str(count))
+                flash('Backfill limiter settings updated!', 'success')
+            except Exception as e:
+                app.logger.error(f"Error updating backfill limit: {e}")
+                flash(f'Error updating limit: {e}', 'error')
+
         return redirect(url_for('deals'))
 
     # GET request
@@ -902,7 +924,15 @@ def deals():
     except (FileNotFoundError, json.JSONDecodeError):
         keepa_query = ''
 
-    return render_template('deals.html', keepa_query=keepa_query)
+    # Get Limit State
+    try:
+        limit_enabled = get_system_state('backfill_limit_enabled') == 'true'
+        limit_count = get_system_state('backfill_limit_count', '3000')
+    except Exception:
+        limit_enabled = False
+        limit_count = '3000'
+
+    return render_template('deals.html', keepa_query=keepa_query, limit_enabled=limit_enabled, limit_count=limit_count)
 
 @app.route('/api/deals')
 def api_deals():
