@@ -1,5 +1,5 @@
 from worker import celery_app as celery
-from .db_utils import DB_PATH, get_system_state, get_deal_count
+from .db_utils import DB_PATH
 import sqlite3
 import logging
 from datetime import datetime, timedelta, timezone
@@ -10,17 +10,6 @@ def _clean_stale_deals_logic(grace_period_hours):
     """
     Core logic for cleaning stale deals.
     """
-    # --- Check for Artificial Backfill Limit ---
-    # If the user has set a limit to "Test the Refiller", we must pause garbage collection
-    # to prevent the static deals from decaying while the Backfiller is stopped.
-    if get_system_state('backfill_limit_enabled') == 'true':
-        limit_count = int(get_system_state('backfill_limit_count', 3000))
-        current_count = get_deal_count()
-        if current_count >= limit_count:
-            logger.warning(f"Janitor skipped: Artificial Backfill Limit is active and reached ({current_count} >= {limit_count}). Preserving DB state.")
-            return 0
-    # -------------------------------------------
-
     cutoff_time = (datetime.now(timezone.utc) - timedelta(hours=grace_period_hours)).isoformat()
     logger.info(f"Janitor: Starting cleanup. Deleting deals older than {cutoff_time}...")
 
