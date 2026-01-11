@@ -363,6 +363,25 @@ def get_deal_count():
         logger.error(f"Error counting deals: {e}", exc_info=True)
         return 0
 
+def filter_existing_asins(asin_list):
+    """
+    Given a list of ASIN strings, returns a set containing only the ones
+    that already exist in the deals table.
+    """
+    if not asin_list:
+        return set()
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            placeholders = ', '.join(['?'] * len(asin_list))
+            query = f"SELECT ASIN FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})"
+            cursor.execute(query, asin_list)
+            return {row[0] for row in cursor.fetchall()}
+    except sqlite3.Error as e:
+        logger.error(f"Error checking existing ASINs: {e}", exc_info=True)
+        return set()
+
 def save_deals_to_db(deals_data):
     """Saves a list of deal dictionaries to the deals.db SQLite database."""
     if not deals_data:
