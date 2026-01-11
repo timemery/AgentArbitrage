@@ -12,7 +12,7 @@ from .db_utils import (
     sanitize_col_name, save_watermark, DB_PATH,
     get_system_state, set_system_state, recreate_deals_table,
     create_deals_table_if_not_exists, recreate_user_restrictions_table,
-    get_deal_count, filter_existing_asins
+    get_deal_count
 )
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
 from .token_manager import TokenManager
@@ -129,15 +129,15 @@ def backfill_deals(reset=False):
         logger.info(f"--- Resuming backfill from page {page} ---")
 
         while True:
-            # Check for artificial limit status
-            is_limit_reached = False
+            # Check for artificial limit
             if get_system_state('backfill_limit_enabled') == 'true':
                 limit_count = int(get_system_state('backfill_limit_count', 3000))
                 current_count = get_deal_count()
 
                 if current_count >= limit_count:
-                    is_limit_reached = True
-                    logger.info(f"--- Artificial backfill limit reached ({current_count} >= {limit_count}). Switching to Maintenance Mode (Updating existing deals only). ---")
+                    logger.info(f"--- Artificial backfill limit reached ({current_count} >= {limit_count}). Stopping backfill. ---")
+                    # We break the loop, effectively ending the task.
+                    break
 
             logger.info(f"Fetching page {page} of deals...")
             token_manager.request_permission_for_call(estimated_cost=5)
@@ -161,25 +161,6 @@ def backfill_deals(reset=False):
             for i in range(0, len(deals_on_page), DEALS_PER_CHUNK):
                 chunk_deals = deals_on_page[i:i + DEALS_PER_CHUNK]
                 if not chunk_deals: continue
-
-                # --- Maintenance Mode Logic ---
-                # Before fetching product details (costly), filter out new deals if we are over the limit.
-
-                if is_limit_reached:
-                    asin_list_raw = [d['asin'] for d in chunk_deals]
-                    existing_asins = filter_existing_asins(asin_list_raw)
-
-                    # Filter: Keep only existing deals
-                    original_count = len(chunk_deals)
-                    chunk_deals = [d for d in chunk_deals if d['asin'] in existing_asins]
-                    filtered_count = len(chunk_deals)
-
-                    if filtered_count < original_count:
-                        logger.info(f"Maintenance Mode: Skipped {original_count - filtered_count} new deals. Processing {filtered_count} existing deals.")
-
-                    if not chunk_deals:
-                        logger.info("Skipping chunk: No existing deals found in this batch (Limit Reached).")
-                        continue
 
                 logger.info(f"--- Processing chunk {i//DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + DEALS_PER_CHUNK - 1)//DEALS_PER_CHUNK} on page {page} ---")
 
