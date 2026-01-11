@@ -60,10 +60,10 @@ def update_recent_deals():
 
     # --- Backfiller Lock Check ---
     # Check if the main backfill task is running. If it is, exit immediately.
-    backfill_lock = redis_client.lock("backfill_deals_lock")
-    if backfill_lock.locked():
-        logger.warning("Backfill task is running. Skipping update_recent_deals to prevent interference.")
-        return
+    # backfill_lock = redis_client.lock("backfill_deals_lock")
+    # if backfill_lock.locked():
+    #     logger.warning("Backfill task is running. Skipping update_recent_deals to prevent interference.")
+    #     return
 
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
     if not lock.acquire(blocking=False):
