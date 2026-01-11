@@ -14,6 +14,7 @@
 
     <div class="settings-card">
         <form action="{{ url_for('deals') }}" method="post" class="settings-form">
+            <input type="hidden" name="action" value="update_query">
             <div class="form-group">
                 <label for="keepa_query">Keepa API Query</label>
                 <textarea id="keepa_query" name="keepa_query" class="styled-text-field large-textarea" rows="20">{{ keepa_query }}</textarea>
@@ -21,6 +22,32 @@
 
             <div class="form-actions">
                 <button type="submit" class="styled-button">Save Query</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Artificial Backfill Limiter -->
+    <div class="settings-card" style="margin-top: 2rem; border-left: 5px solid #ffc107;">
+        <h2>Artificial Backfill Limiter</h2>
+        <p>
+            Automatically stop the backfill process when the total deal count reaches a specific number.
+            Useful for controlling costs during testing or maintaining a small database.
+        </p>
+        <form action="{{ url_for('deals') }}" method="post" class="settings-form">
+            <input type="hidden" name="action" value="update_limit">
+
+            <div class="form-group" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                <input type="checkbox" id="backfill_limit_enabled" name="backfill_limit_enabled" style="margin-right: 10px;" {% if limit_enabled %}checked{% endif %}>
+                <label for="backfill_limit_enabled" style="margin-bottom: 0; font-weight: bold;">Enable Limit</label>
+            </div>
+
+            <div class="form-group">
+                <label for="backfill_limit_count">Stop when Deal Count reaches:</label>
+                <input type="number" id="backfill_limit_count" name="backfill_limit_count" value="{{ limit_count }}" class="styled-text-field" style="max-width: 200px;">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="styled-button" style="background-color: #ffc107; color: #333;">Update Limit</button>
             </div>
         </form>
     </div>

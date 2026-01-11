@@ -410,3 +410,4 @@ def clear_deals_table():
     conn.close()
     logging.info("Deals table cleared.")
 # Refreshed
+# Refreshed
