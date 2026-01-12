@@ -3,7 +3,7 @@
 {% block content %}
     <form action="{{ url_for('learn') }}" method="post">
         <textarea name="learning_text" placeholder="Paste a URL or enter text-based guidance..."></textarea>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="learning-controls">
             <button type="button" class="clear-session" onclick="window.location.href='/clear_session'">Clear Session</button>
             <div id="progress" class="progress-container">
                 <div class="spinner"></div>
