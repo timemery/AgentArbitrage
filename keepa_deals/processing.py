@@ -57,7 +57,6 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         price_now, seller_id, is_fba, condition_code = used_product_info
 
         row_data['Price Now'] = price_now / 100.0
-        row_data['Best Price'] = row_data['Price Now'] # Ensure Best Price is populated
         row_data['Seller'] = seller_id # Default to ID
         row_data['FBA'] = is_fba
         row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')

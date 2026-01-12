@@ -691,13 +691,14 @@ FUNCTION_LIST = [
     used_offer_count_365_days_avg,  # Used Offer Count - 365 days avg.
     None,                           # Seller Rank (handled in decoupled loop)
     None,                           # Seller_Quality_Score (handled in decoupled loop)
-    None,                           # Best Price (handled in decoupled loop)
     recent_inferred_sale_price,     # Recent Inferred Sale Price
     None,                           # Seasonality Type
     None,                           # Detailed_Seasonality
     None,                           # Sells
     None,                           # Drops
     None,                           # Offers
+    None,                           # Offers 180
+    None,                           # Offers 365
     None,                           # AMZ
     get_peak_season,                # Peak Season
     get_list_at_price,              # List at

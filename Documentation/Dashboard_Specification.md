@@ -23,7 +23,7 @@ The dashboard uses a responsive grid layout. Columns are defined in `templates/d
 | **Details** | `Detailed_Seasonality` | Text. | 110px | No |
 | **S. Trust** | `Seller_Quality_Score` | **Scale 0-10:** Raw probability (0.0-1.0) * 10. Rounded to 1 decimal. | 80px | Yes |
 | **Changed** | `last_price_change`, `Trend` | **Composite:** Trend Arrow + " " + Time Ago (e.g., "⇩ 2h ago"). <br> **Arrows:** ⇧ (Up), ⇩ (Down), ⇨ (Flat). | 100px | Yes |
-| **Buy For** | `Best_Price` | Currency ($XX.XX). Bold font. | 90px | Yes |
+| **Buy For** | `Price_Now` | Currency ($XX.XX). Bold font. | 90px | Yes |
 | **Avg.** | `1yr_Avg` | Currency ($XX.XX). | 90px | Yes |
 | **% ⇩** | `Percent_Down` | Percentage + "%". Bold if > 50%. | 70px | Yes |
 | **P. Trust** | `Profit_Confidence` | Percentage + "%". | 80px | Yes |
