@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Deals Dashboard - Agent Arbitrage{% endblock %}
 {% block content %}
-<div id="recalc-indicator" style="display: none; text-align: center; padding: 10px; background-color: rgba(25, 118, 210, 0.2); border: 1px solid #1976d2; border-radius: 5px; margin-bottom: 20px;">
+<div id="recalc-indicator" class="recalc-indicator">
     Recalculating deals with new settings... The table will refresh automatically when complete.
 </div>
 <div class="dashboard-content-wrapper">
@@ -61,10 +61,10 @@
             </div>
         </form>
     </div>
-    <div class="deal-counter-container" style="display: flex; align-items: center; gap: 15px;">
+    <div class="deal-counter-wrapper">
         <span id="deal-counter"></span>
-        <a href="#" id="refresh-deals-link" style="text-decoration: none; color: #1976d2; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+        <a href="#" id="refresh-deals-link" class="refresh-link">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="refresh-icon">
                 <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
             </svg>
             <span id="refresh-text">Refresh Deals</span>
@@ -79,181 +79,13 @@
 </div>
 <div id="custom-tooltip" class="custom-tooltip"></div>
 
-<style>
-    /* Overlay Styles */
-    .deal-overlay-content {
-        max-width: 1200px;
-        width: 95%;
-        padding: 20px;
-        background-color: #003852; /* Match global theme */
-        border: 1px solid rgba(102, 153, 204, 0.5);
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        position: relative;
-        color: #ffffff;
-    }
-
-    .overlay-action-bar {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 15px;
-        margin-top: -10px;
-    }
-
-    .overlay-buy-btn {
-        background-color: transparent;
-        color: white;
-        border: 1px solid white;
-        padding: 6px 20px;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 0.9em;
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
-    }
-    .overlay-buy-btn:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .gated-status {
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        color: white;
-    }
-
-    .ava-advice-container {
-        border: 1px solid rgba(102, 153, 204, 0.5);
-        padding: 15px;
-        margin-bottom: 20px;
-        background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        clear: both; /* Ensure it sits below the close button */
-        margin-top: 35px; /* Add space for the close button above */
-    }
-    .ava-advice-container h3 {
-        margin-top: 0;
-        font-size: 1.3em; /* Increased size */
-        margin-bottom: 5px;
-        color: #75afd1;
-        text-align: left; /* Left align */
-    }
-    .ava-advice-container p {
-        margin: 0;
-        font-size: 1.1em; /* Increased size */
-        line-height: 1.4;
-        color: #ffffff;
-    }
-
-    .yellow-action-btn {
-        display: inline-block;
-        padding: 6px 20px;
-        background-color: #e67e22;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 1em;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    .yellow-action-btn:hover {
-        background-color: #d35400;
-        text-decoration: none;
-        color: white;
-    }
-
-    .overlay-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        border: 1px solid rgba(102, 153, 204, 0.4);
-        font-size: 0.85em;
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    .grid-group {
-        border-right: 1px solid rgba(102, 153, 204, 0.4);
-        display: flex;
-        flex-direction: column;
-    }
-    .grid-group:last-child {
-        border-right: none;
-    }
-
-    .group-header {
-        background-color: #011b2a;
-        font-weight: bold;
-        padding: 5px 10px;
-        border-top: 1px solid rgba(102, 153, 204, 0.4);
-        border-bottom: 1px solid rgba(102, 153, 204, 0.4);
-        margin-top: 0;
-        color: rgba(102, 153, 204, 0.9);
-    }
-
-    .sub-header {
-        background-color: #011b2a;
-        font-weight: bold;
-        padding: 5px 10px;
-        border-top: 1px solid rgba(102, 153, 204, 0.4);
-        border-bottom: 1px solid rgba(102, 153, 204, 0.4);
-        margin-top: 0;
-        color: rgba(102, 153, 204, 0.9);
-    }
-
-    .group-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 6px 10px;
-        border-bottom: 1px solid rgba(102, 153, 204, 0.2);
-        align-items: center;
-        min-height: 24px;
-    }
-    .group-row:last-child {
-        border-bottom: none;
-    }
-
-    .group-row .label {
-        font-weight: normal;
-        color: rgba(255, 255, 255, 0.7);
-    }
-    .group-row .value {
-        text-align: right;
-        color: #ffffff;
-        font-weight: 300;
-    }
-
-    .truncated {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 130px;
-        display: inline-block;
-        vertical-align: bottom;
-        cursor: help;
-    }
-    .truncated:hover {
-        /* Simple browser tooltip via title attribute is safest,
-           but CSS hover can expand text if absolutely positioned */
-    }
-
-    .trend-up { color: #ff4d4d; font-weight: bold; }
-    .trend-down { color: #2ecc71; font-weight: bold; }
-    .trend-flat { color: #aaa; }
-
-</style>
-
 <div id="deal-overlay" class="deal-overlay">
     <div class="deal-overlay-content">
         <span class="close-overlay">&times;</span>
 
         <div id="ava-advice-container" class="ava-advice-container">
             <h3>Advice from Ava:
-                <div id="ava-spinner" class="spinner" style="width: 15px; height: 15px; border-width: 2px; display: none;"></div>
+                <div id="ava-spinner" class="spinner-inline"></div>
             </h3>
             <p id="ava-advice-text">Analyzing...</p>
         </div>
@@ -329,11 +161,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const container = document.querySelector('.container');
-    if (container) {
-        container.classList.remove('container');
-        container.classList.add('container-full-width');
-    }
+    /* Container logic removed as per instructions to remove layout container */
 
     const tableContainer = document.getElementById('deals-table');
     const filterForm = document.getElementById('filter-form');
@@ -765,15 +593,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Style the trend arrow
                         if (value && typeof value === 'string') {
                             if (value.includes('↘')) {
-                                value = value.replace('↘', '<span style="color: green; font-weight: bold;">↘</span>');
+                                value = value.replace('↘', '<span class="trend-falling-green">↘</span>');
                             } else if (value.includes('↗')) {
-                                value = value.replace('↗', '<span style="color: red; font-weight: bold;">↗</span>');
+                                value = value.replace('↗', '<span class="trend-rising-red">↗</span>');
                             }
                         }
                         table += `<td>${value}</td>`;
                     } else if (col === 'AMZ') {
                         if (value === '⚠️') {
-                            table += `<td style="font-size: 1.2em; text-align: center;">${value}</td>`;
+                            table += `<td class="amz-warning-cell">${value}</td>`;
                         } else {
                             table += `<td></td>`;
                         }
@@ -784,11 +612,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 table += '</tr>';
             });
         } else {
-            table += `<tr><td colspan="${columnsToShow.length}" style="text-align: center; padding: 20px;">No deals found matching the criteria.</td></tr>`;
+            table += `<tr><td colspan="${columnsToShow.length}" class="no-deals-message">No deals found matching the criteria.</td></tr>`;
         }
 
-        table += '</tbody></table>';
-        tableContainer.innerHTML = table;
+        tableContainer.innerHTML = table + '</tbody></table>';
         
         // Add event listeners for navigation and sorting
         addEventListeners();
@@ -1182,24 +1009,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (deal.restriction_status === 'restricted') {
             // Gated
-            messageHtml = 'You are <strong style="color: #ff4d4d;">Not Approved</strong> to sell this title: ';
+            messageHtml = 'You are <strong class="action-strong-red">Not Approved</strong> to sell this title: ';
             const applyUrl = (deal.approval_url && deal.approval_url !== 'ERROR') ? deal.approval_url : 'https://sellercentral.amazon.com/hz/approvalrequest?asin=' + deal.ASIN;
             buttonHtml = `<a href="${applyUrl}" target="_blank" class="yellow-action-btn">Apply Now</a>`;
         } else if (deal.restriction_status === 'not_restricted') {
             // Approved
-            messageHtml = 'You are <strong style="color: white;">Approved</strong> to sell this title: ';
+            messageHtml = 'You are <strong class="action-strong-white">Approved</strong> to sell this title: ';
             const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
             buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn">Buy Now</a>`;
         } else if (deal.restriction_status === 'pending_check') {
-             messageHtml = 'Checking approval status... <span class="spinner" style="display:inline-block; width:12px; height:12px; margin-left: 5px;"></span>';
+             messageHtml = 'Checking approval status... <span class="spinner-small"></span>';
         } else {
              // Default / Error / Unknown
              messageHtml = 'Approval status unknown: ';
              const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
-             buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn" style="opacity:0.7;">View on Amazon</a>`;
+             buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn view-amazon-btn">View on Amazon</a>`;
         }
 
-        actionBar.innerHTML = `<span style="font-size: 1.1em; margin-right: 10px; color: white;">${messageHtml}</span> ${buttonHtml}`;
+        actionBar.innerHTML = `<span class="action-message">${messageHtml}</span> ${buttonHtml}`;
 
         // Load Ava Advice
         loadAvaAdvice(deal.ASIN);

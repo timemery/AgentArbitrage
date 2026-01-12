@@ -3,37 +3,17 @@
 {% block title %}Keepa Deals Query{% endblock %}
 
 {% block content %}
-<style>
-    .settings-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 40px 20px;
-    }
-
-    .settings-card {
-        background-color: rgba(0, 0, 0, 0.2);
-        padding: 25px;
-        border-radius: 8px;
-        margin-top: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .settings-description {
-        margin-bottom: 2rem;
-        color: #ccc;
-    }
-</style>
 
 <div class="settings-container">
     <p class="settings-description">
         Use this page to set the Keepa deals query. The query must be a valid JSON object.
     </p>
 
-    <div id="recalc-indicator" style="display: none; text-align: center; padding: 10px; background-color: rgba(25, 118, 210, 0.2); border: 1px solid #1976d2; border-radius: 5px; margin-bottom: 20px;">
+    <div id="recalc-indicator" class="recalc-indicator">
         Recalculating deals with new settings... The task status will update below.
     </div>
 
-    <div class="settings-card" style="margin-top: 0;">
+    <div class="settings-card card-no-margin">
         <form action="{{ url_for('deals') }}" method="post" class="settings-form">
             <input type="hidden" name="action" value="update_query">
             <div class="form-group">
@@ -48,7 +28,7 @@
     </div>
 
     <!-- Artificial Backfill Limiter -->
-    <div class="settings-card" style="border-left: 5px solid #ffc107;">
+    <div class="settings-card card-warning">
         <h2>Artificial Backfill Limiter</h2>
         <p>
             Automatically stop the backfill process when the total deal count reaches a specific number.
@@ -57,18 +37,18 @@
         <form action="{{ url_for('deals') }}" method="post" class="settings-form">
             <input type="hidden" name="action" value="update_limit">
 
-            <div class="form-group" style="display: flex; align-items: center; margin-bottom: 1rem;">
-                <input type="checkbox" id="backfill_limit_enabled" name="backfill_limit_enabled" style="margin-right: 10px;" {% if limit_enabled %}checked{% endif %}>
-                <label for="backfill_limit_enabled" style="margin-bottom: 0; font-weight: bold;">Enable Limit</label>
+            <div class="form-group form-group-checkbox">
+                <input type="checkbox" id="backfill_limit_enabled" name="backfill_limit_enabled" class="checkbox-margin" {% if limit_enabled %}checked{% endif %}>
+                <label for="backfill_limit_enabled" class="label-bold">Enable Limit</label>
             </div>
 
             <div class="form-group">
                 <label for="backfill_limit_count">Stop when Deal Count reaches:</label>
-                <input type="number" id="backfill_limit_count" name="backfill_limit_count" value="{{ limit_count }}" class="styled-text-field" style="max-width: 200px;">
+                <input type="number" id="backfill_limit_count" name="backfill_limit_count" value="{{ limit_count }}" class="styled-text-field input-limit">
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="styled-button" style="background-color: #ffc107; color: #333;">Update Limit</button>
+                <button type="submit" class="styled-button btn-warning-style">Update Limit</button>
             </div>
         </form>
     </div>
@@ -79,16 +59,16 @@
             Recalculate Profit, Margin, and All-in Cost for all deals in the database using the latest business settings.
             This does not call external APIs (Keepa/SP-API) but refreshes internal logic.
         </p>
-        <button id="refresh-all-data" class="styled-button" style="background-color: #17a2b8; color: white;">Refresh All Data</button>
+        <button id="refresh-all-data" class="styled-button btn-info-style">Refresh All Data</button>
     </div>
 
-    <div class="settings-card" style="border-color: #ff4d4d;">
-        <h2 style="color: #ff4d4d;">Danger Zone</h2>
+    <div class="settings-card card-danger">
+        <h2 class="danger-text">Danger Zone</h2>
         <p>
             Resetting the database will clear all existing deals and restart the backfill process from scratch.
             This action cannot be undone.
         </p>
-        <button id="reset-db-btn" class="styled-button" style="background-color: #ff4d4d; color: white;">
+        <button id="reset-db-btn" class="styled-button btn-danger-style">
             Reset Database & Restart Backfill
         </button>
     </div>

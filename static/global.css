@@ -15,6 +15,7 @@ body {
   overflow-x: hidden; /* Prevent horizontal scrollbar from gradient animation */
   position: relative; /* Needed for z-indexing context */
   letter-spacing: -0.02em;
+  background-color: #003852; /* Default background for pages without gradient */
 }
 
 /* Animated Gradient Background - apply to body */
@@ -450,11 +451,12 @@ button:disabled {
     color: #ffffff;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+    border: 1px solid rgba(102, 153, 204, 0.5); /* Updated from #888 to match theme */
+    width: 95%; /* Updated from 80% to match dashboard */
     max-width: 1200px;
-    border-radius: 10px;
+    border-radius: 8px; /* Updated from 10px */
     position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Added box shadow */
 }
 .deal-overlay-content h1, .deal-overlay-content h2, .deal-overlay-content h3 {
     color: #ffffff;
@@ -975,3 +977,373 @@ body.home-background::before {
     padding: 2px 5px;
     white-space: nowrap; /* Ensure full text doesn't wrap in the popout */
 }
+
+/* -------------------------------------------------------------------------- */
+/* NEW STYLES FROM REFACTORING (Moving Inline to Global)                      */
+/* -------------------------------------------------------------------------- */
+
+/* Common Components */
+.recalc-indicator {
+    display: none;
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(25, 118, 210, 0.2);
+    border: 1px solid #1976d2;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.deal-counter-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.refresh-link {
+    text-decoration: none;
+    color: #1976d2;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.refresh-icon {
+    height: 24px;
+    width: 24px;
+    fill: currentColor;
+}
+
+.no-deals-message {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Dashboard Generated HTML Classes */
+.trend-falling-green { color: green; font-weight: bold; }
+.trend-rising-red { color: red; font-weight: bold; }
+
+.amz-warning-cell { font-size: 1.2em; text-align: center; }
+.spinner-inline { width: 15px; height: 15px; border-width: 2px; display: none; }
+.spinner-small { display: inline-block; width: 12px; height: 12px; margin-left: 5px; }
+.action-message { font-size: 1.1em; margin-right: 10px; color: white; }
+.action-strong-red { color: #ff4d4d; }
+.action-strong-white { color: white; }
+.view-amazon-btn { opacity: 0.7; }
+
+/* Overlay Styles (Merged from Dashboard) */
+.overlay-action-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    margin-top: -10px;
+}
+
+.overlay-buy-btn {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 6px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9em;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+.overlay-buy-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.gated-status {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+}
+
+.ava-advice-container {
+    border: 1px solid rgba(102, 153, 204, 0.5);
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    clear: both; /* Ensure it sits below the close button */
+    margin-top: 35px; /* Add space for the close button above */
+}
+.ava-advice-container h3 {
+    margin-top: 0;
+    font-size: 1.3em; /* Increased size */
+    margin-bottom: 5px;
+    color: #75afd1;
+    text-align: left; /* Left align */
+}
+.ava-advice-container p {
+    margin: 0;
+    font-size: 1.1em; /* Increased size */
+    line-height: 1.4;
+    color: #ffffff;
+}
+
+.yellow-action-btn {
+    display: inline-block;
+    padding: 6px 20px;
+    background-color: #e67e22;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.yellow-action-btn:hover {
+    background-color: #d35400;
+    text-decoration: none;
+    color: white;
+}
+
+.overlay-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid rgba(102, 153, 204, 0.4);
+    font-size: 0.85em;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.grid-group {
+    border-right: 1px solid rgba(102, 153, 204, 0.4);
+    display: flex;
+    flex-direction: column;
+}
+.grid-group:last-child {
+    border-right: none;
+}
+
+.group-header {
+    background-color: #011b2a;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-top: 1px solid rgba(102, 153, 204, 0.4);
+    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    margin-top: 0;
+    color: rgba(102, 153, 204, 0.9);
+}
+
+.sub-header {
+    background-color: #011b2a;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-top: 1px solid rgba(102, 153, 204, 0.4);
+    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    margin-top: 0;
+    color: rgba(102, 153, 204, 0.9);
+}
+
+.group-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(102, 153, 204, 0.2);
+    align-items: center;
+    min-height: 24px;
+}
+.group-row:last-child {
+    border-bottom: none;
+}
+
+.group-row .label {
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.7);
+}
+.group-row .value {
+    text-align: right;
+    color: #ffffff;
+    font-weight: 300;
+}
+
+.truncated {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    display: inline-block;
+    vertical-align: bottom;
+    cursor: help;
+}
+
+.trend-up { color: #ff4d4d; font-weight: bold; }
+.trend-down { color: #2ecc71; font-weight: bold; }
+.trend-flat { color: #aaa; }
+
+
+/* Deals / Settings Cards */
+.settings-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.settings-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-description {
+    margin-bottom: 2rem;
+    color: #ccc;
+}
+
+.card-no-margin { margin-top: 0; }
+.card-warning { border-left: 5px solid #ffc107; }
+.card-danger { border-color: #ff4d4d; }
+.danger-text { color: #ff4d4d; }
+
+.btn-warning-style { background-color: #ffc107; color: #333; }
+.btn-info-style { background-color: #17a2b8; color: white; }
+.btn-danger-style { background-color: #ff4d4d; color: white; }
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.checkbox-margin { margin-right: 10px; }
+.label-bold { margin-bottom: 0; font-weight: bold; }
+.input-limit { max-width: 200px; }
+
+/* Settings Form Grid */
+.settings-form-grid {
+    display: grid;
+    grid-template-columns: auto; /* Single column for rows */
+    gap: 15px; /* Space between setting rows */
+    max-width: 500px; /* Or adjust as needed */
+}
+.setting-row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between elements in a row */
+}
+.setting-symbol {
+    font-size: 1.2em;
+    width: 20px; /* Fixed width for alignment */
+    text-align: center;
+}
+.setting-input {
+    width: 120px; /* Smaller width for the input boxes */
+}
+.setting-label {
+    font-size: 1em;
+    margin-bottom: 0; /* Override default label margins if any */
+}
+.tax-exempt-row {
+    justify-content: flex-start; /* Align checkbox to the left */
+    padding-left: 30px; /* Indent to align with input boxes */
+}
+
+/* Strategies Table */
+.strategies-table { width: 100%; border-collapse: collapse; }
+.strategies-header { background-color: #26567e; color: white; text-align: left; }
+.strategies-header th { padding: 10px; border: 1px solid #ddd; }
+.strategies-cell { padding: 10px; border: 1px solid #ddd; }
+
+/* Guided Learning */
+.learning-controls { display: flex; justify-content: space-between; align-items: center; }
+
+/* Results */
+.approve-btn-container { text-align: right; margin-top: 10px; }
+
+/* Settings Page Specifics */
+.settings-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.settings-page-intro {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.btn-edit {
+    padding: 8px 16px;
+}
+/* Reusing btn-primary if exists or defining styles */
+.btn-primary-custom {
+    background-color: transparent; /* Default style */
+    color: white;
+    border: 1px solid white;
+}
+.btn-success-style {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+.alert-success-custom {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+.hr-custom {
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+.btn-outline-success-custom {
+    border: 1px solid #28a745;
+    color: #28a745;
+    background: transparent;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.text-muted-custom {
+    display: block;
+    margin-top: 0.5rem;
+    color: #ccc;
+}
+.btn-connect-amazon {
+    background-color: #ffc107;
+    color: #333;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.btn-secondary-custom {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.settings-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+.form-group-mb {
+    margin-bottom: 15px;
+}
+.label-block {
+    display: block;
+    margin-bottom: 5px;
+}
+.input-full-width {
+    width: 100%;
+}
+.mb-0 { margin-bottom: 0; }
+.card-margin-top { margin-top: 20px; }
