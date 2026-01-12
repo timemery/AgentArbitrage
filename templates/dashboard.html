@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Supply & Demand
         "Sales_Rank_Current", "Drops", "Offers", "Detailed_Seasonality",
         // Deal Details
-        "1yr_Avg", "Best_Price", "Percent_Down", "last_price_change", "AMZ", "Gated",
+        "1yr_Avg", "Price_Now", "Percent_Down", "last_price_change", "AMZ", "Gated",
         // Trust Ratings
         "Seller_Quality_Score", "Profit_Confidence",
         // Profit Estimates
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "All_in_Cost": "All in",
         "Deal_found": "Found",
         "Buy_Now": "Buy",
-        "Best_Price": "Now"
+        "Price_Now": "Now"
     };
 
     function formatTimeAgo(dateString) {
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         table += `<td class="seller-cell"><span>${value}</span></td>`;
                     } else if (col === 'ASIN') {
                         table += `<td>${cleanAsin}</td>`;
-                    } else if (col === 'Best_Price' && cleanAsin) {
+                    } else if (col === 'Price_Now' && cleanAsin) {
                         table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
                     } else if (col === 'Offers') {
                         // Style the trend arrow
@@ -1122,7 +1122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('overlay-offers-365').textContent = formatOffers(deal['Offers 365']);
 
         // --- Deal & Price Benchmarks ---
-        document.getElementById('overlay-price-now').textContent = deal.Best_Price ? `$${parseFloat(deal.Best_Price).toFixed(2)}` : '-';
+        document.getElementById('overlay-price-now').textContent = deal.Price_Now ? `$${parseFloat(deal.Price_Now).toFixed(2)}` : '-';
 
         // Shipping Included logic (assuming backend sends 'yes'/'no' or we infer)
         let shipping = deal['Shipping Included'] || '-';

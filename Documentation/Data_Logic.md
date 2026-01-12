@@ -68,10 +68,9 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 ### Seller and Offer Information
 
--   **`Price Now` / `Best Price`**:
+-   **`Price Now`**:
     -   **Source**: `keepa_deals/seller_info.py`.
     -   **Logic**: Lowest total price (Item + Shipping) of the best "Used" offer.
-    -   **Note**: `Best Price` is a duplicate of `Price Now` required for the dashboard.
 
 -   **`Seller`**:
     -   **Source**: `keepa_deals/processing.py` (via `seller_info`).

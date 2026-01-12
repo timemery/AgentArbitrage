@@ -11733,5 +11733,205 @@
         "advice": "Implies lack of viable offers historically; enter as first competitive offer to gain buy box exposure and bootstrap sales in arbitrage",
         "confidence": "High",
         "source": "The 30-day average is high, but the 180-day is low, which may imply no viable offers on this listing. There might be an opportunity to get in on this listing and be granted exposure with the buy box because yours is the only offer the Amazon algorithms consider reasonable."
+    },
+    {
+        "id": "arb1",
+        "category": "Buying",
+        "trigger": "Sales Rank < 200,000",
+        "advice": "Aim for books with sales rank under 200,000 for consistent sales",
+        "confidence": "High",
+        "source": "sales rank (aim for under 200,000 for consistent sales)"
+    },
+    {
+        "id": "arb2",
+        "category": "Pricing",
+        "trigger": "ROI target 30-50%",
+        "advice": "Target 30\u201350% ROI when calculating profits",
+        "confidence": "High",
+        "source": "ROI (target 30\u201350%)"
+    },
+    {
+        "id": "arb3",
+        "category": "Risk",
+        "trigger": "Returns 10-20%",
+        "advice": "Hedge against returns up to 10\u201320% by verifying book conditions to minimize losses",
+        "confidence": "High",
+        "source": "hedge against risks like returns (up to 10\u201320%)"
+    },
+    {
+        "id": "arb4",
+        "category": "Risk",
+        "trigger": "Fees 15-40% of sale price",
+        "advice": "Account for Amazon fees of 15\u201340% of sale price in profit calculations",
+        "confidence": "High",
+        "source": "fees (15\u201340% of sale price)"
+    },
+    {
+        "id": "arb5",
+        "category": "Buying",
+        "trigger": "Sales rank drops >10 in 90 days",
+        "advice": "Use filters for sales rank drops of 10+ in 90 days to spot opportunities",
+        "confidence": "High",
+        "source": "filters like \"sales rank drops\" (aim for 10+ in 90 days)"
+    },
+    {
+        "id": "arb6",
+        "category": "Buying",
+        "trigger": "Offer count <10 FBA sellers",
+        "advice": "Target books with under 10 FBA sellers for low competition",
+        "confidence": "High",
+        "source": "offer count\" (under 10 FBA sellers)"
+    },
+    {
+        "id": "arb7",
+        "category": "General",
+        "trigger": "Initial investment $100-500",
+        "advice": "Test with small batches of $100\u2013500 investment to validate profitability",
+        "confidence": "High",
+        "source": "Test with small batches ($100\u2013500 investment)"
+    },
+    {
+        "id": "arb8",
+        "category": "Risk",
+        "trigger": "Market saturation in textbooks",
+        "advice": "Diversify niches and avoid oversaturated areas like textbooks",
+        "confidence": "High",
+        "source": "diversify niches (e.g., avoid oversaturated textbooks; try collectibles)"
+    },
+    {
+        "id": "arb9",
+        "category": "Buying",
+        "trigger": "BSR <100,000",
+        "advice": "Select books with BSR under 100,000 for 10\u201320 monthly sales",
+        "confidence": "High",
+        "source": "Sales Rank (BSR): Under 100,000 indicates 10\u201320 monthly sales"
+    },
+    {
+        "id": "arb10",
+        "category": "Buying",
+        "trigger": "BSR 100,000-500,000",
+        "advice": "Consider books with BSR 100,000\u2013500,000 for 5\u201310 sales per month",
+        "confidence": "High",
+        "source": "100,000\u2013500,000 means 5\u201310 sales"
+    },
+    {
+        "id": "arb11",
+        "category": "Buying",
+        "trigger": "BSR >1,000,000",
+        "advice": "Avoid books over 1 million BSR unless seasonal demand exists",
+        "confidence": "High",
+        "source": "Avoid over 1 million unless seasonal"
+    },
+    {
+        "id": "arb12",
+        "category": "Pricing",
+        "trigger": "Buy $5-10, sell $20-50",
+        "advice": "Buy low at $5\u2013$10 from MF sellers and sell high at $20\u2013$50 via FBA",
+        "confidence": "High",
+        "source": "buy low (e.g., $5\u2013$10 from MF sellers) and sell high ($20\u2013$50 via FBA)"
+    },
+    {
+        "id": "arb13",
+        "category": "Buying",
+        "trigger": "Offer count <5-10 FBA sellers",
+        "advice": "Look for fewer than 5\u201310 FBA sellers to indicate low competition",
+        "confidence": "High",
+        "source": "Offer Count: Fewer than 5\u201310 FBA sellers suggests low competition"
+    },
+    {
+        "id": "arb14",
+        "category": "Buying",
+        "trigger": "BSR Avg 90 days <200,000",
+        "advice": "Filter for books with BSR average under 200,000 over 90 days",
+        "confidence": "High",
+        "source": "BSR Avg. 90 days < 200,000"
+    },
+    {
+        "id": "arb15",
+        "category": "Buying",
+        "trigger": "New Offer Count <5",
+        "advice": "Filter for new offer count under 5 to find undervalued items",
+        "confidence": "High",
+        "source": "New Offer Count < 5"
+    },
+    {
+        "id": "arb16",
+        "category": "Buying",
+        "trigger": "Sales Rank Drops 90 days >10",
+        "advice": "Filter for more than 10 sales rank drops in 90 days for reliable velocity",
+        "confidence": "High",
+        "source": "Sales Rank Drops 90 days > 10"
+    },
+    {
+        "id": "arb17",
+        "category": "Pricing",
+        "trigger": "Buy $5, sell $25",
+        "advice": "Target buys at $5 and sells at $25 for net $10 after fees, aiming for 30\u201350% ROI",
+        "confidence": "High",
+        "source": "If buy at $5, sell at $25, net $10 after fees"
+    },
+    {
+        "id": "arb18",
+        "category": "Risk",
+        "trigger": "Textbooks returns >10%",
+        "advice": "Avoid textbooks with high return rates over 10%",
+        "confidence": "High",
+        "source": "Avoid ... those with high returns (e.g., textbooks >10%)"
+    },
+    {
+        "id": "arb19",
+        "category": "Seasonality",
+        "trigger": "Textbooks peak in August/January",
+        "advice": "Track seasonal trends for textbooks peaking in August and January",
+        "confidence": "High",
+        "source": "seasonal trends (e.g., textbooks peak in August/January)"
+    },
+    {
+        "id": "arb20",
+        "category": "Risk",
+        "trigger": "Storage fees ~$0.50/month per cubic foot",
+        "advice": "Monitor FBA storage fees of about $0.50 per month per cubic foot",
+        "confidence": "High",
+        "source": "storage fees (~$0.50/month per cubic foot)"
+    },
+    {
+        "id": "arb21",
+        "category": "Risk",
+        "trigger": "Returns 5-15%",
+        "advice": "Prepare for typical book returns of 5\u201315% and verify conditions to minimize",
+        "confidence": "High",
+        "source": "returns (5\u201315% typical for books)"
+    },
+    {
+        "id": "arb22",
+        "category": "Risk",
+        "trigger": "Amazon fees ~$3-5/book",
+        "advice": "Factor in Amazon FBA fees of $3\u2013$5 per book in calculations",
+        "confidence": "High",
+        "source": "Amazon fees (~$3\u2013$5/book for FBA)"
+    },
+    {
+        "id": "arb23",
+        "category": "General",
+        "trigger": "50-100 flips/month",
+        "advice": "Scale to 50\u2013100 flips per month once proficient",
+        "confidence": "High",
+        "source": "aim for 50\u2013100 flips/month"
+    },
+    {
+        "id": "arb24",
+        "category": "Risk",
+        "trigger": "<10% returns",
+        "advice": "Aim for return rates under 10% through ethical sourcing and condition checks",
+        "confidence": "High",
+        "source": "Aim for <10% returns"
+    },
+    {
+        "id": "arb25",
+        "category": "General",
+        "trigger": "20-30 day turnover",
+        "advice": "Track for 20\u201330 day inventory turnover to ensure efficiency",
+        "confidence": "High",
+        "source": "20\u201330 day turnover"
     }
 ]
