@@ -11061,5 +11061,677 @@
         "advice": "Research and source only the best-selling variations using Keepa\u2019s Variations section for offers and price history",
         "confidence": "High",
         "source": "Not all variations sell equally well, which means you must select the ones that sell the best. Keepa has a \u00abVariations\u00bb section where you can see current offers and price history of all product variations"
+    },
+    {
+        "id": "keepa-008",
+        "category": "Buying",
+        "trigger": "Using Keepa product finder filters",
+        "advice": "Apply filters for sales rank, Amazon out of stock, buy box price, categories, and brands to narrow down to high-potential deals before manual supplier search",
+        "confidence": "High",
+        "source": "In that section, you will see the sales rank, Amazon, which allows you to filter out products where Amazon is out of stock, buy box, categories, and brands that you prefer (if any). ... You don\u2019t have to fill it all out. You can simply input only the important ones"
+    },
+    {
+        "id": "book-strat-6",
+        "category": "General",
+        "trigger": "Optimizing buying decisions for multiple books",
+        "advice": "Apply customized search settings and inventory analysis in ScoutIQ to filter and optimize selections based on preferences like profit thresholds",
+        "confidence": "High",
+        "source": "Customised search settings according to your preferences; Inventory analysis tool to optimise buying decisions"
+    },
+    {
+        "id": "keepa-1",
+        "category": "Buying",
+        "trigger": "Amazon is currently selling the item (yellow/orange line present)",
+        "advice": "Do not purchase the item to avoid competing with Amazon for sales and buy box, ensuring quicker inventory flips",
+        "confidence": "High",
+        "source": "It is my personal preference to not sell an item if Amazon is also selling it because I want to flip my inventory quickly and don\u2019t want to fight Amazon for the sale. They are also less likely to give me the buy box."
+    },
+    {
+        "id": "keepa-2",
+        "category": "Risk",
+        "trigger": "Amazon recently sold out of the item",
+        "advice": "Check duration of sell-out; avoid purchase if temporary (likely restock and price drop), but buy if sold out for weeks or months (potential price jump)",
+        "confidence": "High",
+        "source": "I will also check if Amazon was selling it and it is now sold out. This scenario will trigger a price jump on FBA. If it appears to be temporarily sold out, I will not make the purchase. Amazon will likely restock the item and drive the price down. However, if it appears to be sold out for a few weeks or months, it will likely not come back into stock soon, so I will make the purchase."
+    },
+    {
+        "id": "keepa-3",
+        "category": "Pricing",
+        "trigger": "Scanned price appears to be a short-term jump (unstable 3rd party FBA/FBM lines)",
+        "advice": "Do not purchase; verify price stability over time to avoid buying at inflated temporary prices",
+        "confidence": "High",
+        "source": "I am looking to see if the price is stable. If I seem to have scanned during a short-term price jump, I probably will not purchase the item."
+    },
+    {
+        "id": "keepa-4",
+        "category": "Seasonality",
+        "trigger": "Scanning a seasonal item outside peak season (e.g., Halloween item in August)",
+        "advice": "Check historical pricing from previous peak season to assess expected selling price and profitability",
+        "confidence": "High",
+        "source": "This is also a good way to check the pricing on seasonal items. If I scan a Halloween item in August, I can see what that product sold for during autumn of the previous year."
+    },
+    {
+        "id": "keepa-5",
+        "category": "Buying",
+        "trigger": "Profit margin from scan seems too good to be true",
+        "advice": "Check historical sales rank for consistency before purchasing to confirm ongoing demand",
+        "confidence": "High",
+        "source": "If a scan seems too good to be true, you\u2019ll want to check the historical sales rank. Sales rank changes constantly, so you will want to see if it is consistent before you make the purchase."
+    },
+    {
+        "id": "keepa-6",
+        "category": "General",
+        "trigger": "Scanning products in store",
+        "advice": "Use Keepa to evaluate approximately 20% of scanned items, prioritizing those with suspiciously high profit potential",
+        "confidence": "High",
+        "source": "I use Keepa for about 20% of the products I scan. If I scan an item and the profit seems too good to be true, that is a scenario when I will double check the pricing history on Keepa."
+    },
+    {
+        "id": "keepa-7",
+        "category": "Risk",
+        "trigger": "Only one new offer in offer count graph",
+        "advice": "Be cautious of potential IP issues; prefer products with multiple offers for safety",
+        "confidence": "High",
+        "source": "New offer count (purple): This is helpful if you\u2019re checking for possible IP issues. If there is only one offer, that indicates there may be IP issues with the product. If there\u2019s multiple you\u2019re probably safe."
+    },
+    {
+        "id": "keepa-8",
+        "category": "Pricing",
+        "trigger": "Reviewing product statistics in Keepa",
+        "advice": "Examine high, low, current, and average prices, plus number of price drops per month to gauge stability (avoid items with frequent drops)",
+        "confidence": "High",
+        "source": "Hover over the \u201cstatistics\u201d button below the graphs to see the high, low, current, and average prices. It will also show the number of price or rank drops per month. Remember a drop could indicate a price drop (not good), not necessarily a rank drop (which would be good)."
+    },
+    {
+        "id": "keepa-9",
+        "category": "General",
+        "trigger": "Evaluating sales rank history",
+        "advice": "Focus solely on the main category sales rank; disregard subcategory ranks as they are irrelevant",
+        "confidence": "High",
+        "source": "The second graph shows the sales rank over time. We only care about the rank of the main category. The rank of the subcategory is not relevant."
+    },
+    {
+        "id": "keepa-10",
+        "category": "Seasonality",
+        "trigger": "Identifying seasonal products",
+        "advice": "Always check Keepa for last season's pricing and identify the most profitable time periods to time purchases effectively",
+        "confidence": "High",
+        "source": "I always use Keepa for seasonal items. These products are great buys, but the price is always fluctuating. Keepa will tell me the price last season, and the time period when the product is most profitable."
+    },
+    {
+        "id": "ba-tip1",
+        "category": "Buying",
+        "trigger": "recent sharp decrease in price on Keepa graph",
+        "advice": "Buy the book as it is likely due to repricer error or battle; use Keepa Alerts to find them",
+        "confidence": "High",
+        "source": "The best books to buy are the books with a significant and recent plummet in the Keepa price graph. These artificial drops are almost always the result of a repricer error or repricer battle between two sellers with aggressive repricers and low minimum prices."
+    },
+    {
+        "id": "ba-tip2",
+        "category": "Buying",
+        "trigger": "sourcing from non-Amazon websites",
+        "advice": "Source from eBay, AbeBooks, Powell\u2019s Books, Alibris, Paperbackswap, non-U.S. Amazon; use Tactical Arbitrage for passive scanning while using Zen for Amazon",
+        "confidence": "High",
+        "source": "While Amazon is going to be where you source the majority of your inventory, it\u2019s not the only place to find profitable flips. eBay AbeBooks Powell\u2019s Books Alibris Paperbackswap Non-U.S. Amazon markets"
+    },
+    {
+        "id": "ba-tip3",
+        "category": "Seasonality",
+        "trigger": "couple of months before textbook season",
+        "advice": "Stock up on textbooks to take advantage of profits; avoid sourcing earlier if limited funds to prevent tying up money for 5 months",
+        "confidence": "High",
+        "source": "If you don\u2019t have a lot of money to spend on inventory, avoid sourcing textbooks until a couple of months before the next textbook season. That way you can still take advantage of ridiculous textbook profits, but you don\u2019t tie up your money in inventory that isn\u2019t going to move for half a year."
+    },
+    {
+        "id": "ba-tip4",
+        "category": "Buying",
+        "trigger": "newsworthy A-list celebrity death",
+        "advice": "Buy out-of-print autobiographies written by the celebrity; set Google Alerts or subscribe to TMZ RSS for early news",
+        "confidence": "High",
+        "source": "The autobiographies and personal memoirs of recently deceased celebrities are a literal gold mine if you can buy up the cheap copies before other people hear about the death. ... It\u2019s out of print. It was written by the celebrity themselves. The celebrity is an A-list superstar"
+    },
+    {
+        "id": "ba-tip5",
+        "category": "General",
+        "trigger": "performing online book arbitrage",
+        "advice": "Subscribe to Keepa ($17/month) to access sales rank data and price history charts",
+        "confidence": "High",
+        "source": "Using the Keepa charts to gauge book demand and price history is a downright necessity. ... Unfortunately, Keepa recently locked their sales rank data behind a $17/month subscription."
+    },
+    {
+        "id": "ba-tip6",
+        "category": "Buying",
+        "trigger": "promising book not at low price",
+        "advice": "Set price alerts on Keepa (up to 5,000) or Zen Arbitrage for notifications via feed, Messenger, or email when price drops below threshold",
+        "confidence": "High",
+        "source": "While you\u2019re sourcing, you should be setting price alerts for every promising book that crosses your path. ... Keepa maxes out at 5,000 alerts per account. When you inevitably hit this mark, you\u2019ll need another way to set alerts \u2012 this is where Zen Arbitrage comes in handy."
+    },
+    {
+        "id": "ba-tip7",
+        "category": "Risk",
+        "trigger": "seller description mentions 'used stickers' or multiple stickers",
+        "advice": "Avoid buying as likely unsellable international or teacher\u2019s editions",
+        "confidence": "High",
+        "source": "Some merchant-fulfilled sellers will mention in their descriptions that a textbook has \u201cused book stickers\u201d or \u201cmultiple stickers\u201d or some similar phrase ... These copies are likely unsellable international or teacher\u2019s editions. Don\u2019t buy them."
+    },
+    {
+        "id": "ba-tip8",
+        "category": "Buying",
+        "trigger": "choice between Acceptable and Good+ at same price",
+        "advice": "Buy Good+ or better; maximum $1 premium for better condition",
+        "confidence": "High",
+        "source": "If you have the choice between an Acceptable offer and a Good+ offer at the same price, go with the Good+ offer. ... My maximum jump is $1 for a copy in better condition."
+    },
+    {
+        "id": "ba-tip9",
+        "category": "Buying",
+        "trigger": "Acceptable condition offers available",
+        "advice": "Buy Acceptable copies and price 1 cent lower than Good+ to win Buy Box; they often sell well and may be in better condition",
+        "confidence": "High",
+        "source": "If your Acceptable offer is even one cent lower than the next offer, you\u2019re going to get the Buy Box. ... Acceptable copies are often actually in Good+ condition."
+    },
+    {
+        "id": "ba-tip10",
+        "category": "Risk",
+        "trigger": "multiple copies of a book at low price",
+        "advice": "Limit purchases to avoid risk of value drop; exceptions if nearing textbook season or ridiculously low prices",
+        "confidence": "High",
+        "source": "I don\u2019t suggest putting too much money into a single book. ... If you find one of these situations, rolling the dice on multiple copies might let you score big-time: If you\u2019re nearing textbook season If there are multiple copies on sale for a ridiculously low price"
+    },
+    {
+        "id": "ba-tip11",
+        "category": "Seasonality",
+        "trigger": "before holidays like Easter, Christmas, Hanukkah, Thanksgiving",
+        "advice": "Stock up on holiday-themed books for price spikes; for Christmas gifts, buy New copies in early December as demand increases",
+        "confidence": "High",
+        "source": "Holiday-themed books often spike in price during the holiday they\u2019re related to. ... Many non-Christmas-related books are given as Christmas gifts, and demand for these books can spike in the early weeks of December. Buyers typically buy New copies"
+    },
+    {
+        "id": "ba-tip12",
+        "category": "Risk",
+        "trigger": "mega sellers like Amazon Warehouse or Apex Media on listing",
+        "advice": "Check inventory count; avoid if dozens or hundreds of copies as they use aggressive repricers",
+        "confidence": "High",
+        "source": "If a mega seller has dozens or hundreds of copies of a book in stock, it can completely ruin any chance of you selling your copy ... In particular, be on the lookout for Amazon Warehouse and Apex Media. ... always check their inventory count before buying a book."
+    },
+    {
+        "id": "ba-tip13",
+        "category": "Buying",
+        "trigger": "limited funds and encountering double-your-money flips",
+        "advice": "Be picky; wait for at least triple profit flips or choose better conditions and sales ranks for doubles",
+        "confidence": "High",
+        "source": "If you have a limited stack of cash, I suggest waiting until you find profits that are at least triple your initial investment before pulling the trigger. If you\u2019re only encountering double-your-money flips, I still advise being picky by choosing offers with better conditions and sales ranks."
+    },
+    {
+        "id": "ba-tip14",
+        "category": "General",
+        "trigger": "expensive books (e.g., $50 cost)",
+        "advice": "Use expedited shipping for faster turnaround; avoid for cheap books (e.g., $8 cost) as $4 extra impacts profit significantly",
+        "confidence": "High",
+        "source": "Only get expedited shipping on expensive books. ... What\u2019s $4 extra for faster shipping if the book costs $50? But it didn\u2019t work as well for the cheaper books \u2012 the ones I was paying $8 for and selling for $30. That extra $4 was a significant portion"
+    },
+    {
+        "id": "ba-tip15",
+        "category": "General",
+        "trigger": "processing online book purchases with available funds",
+        "advice": "Use an FBA book prep service from list of 12 to save time; trust them for grading as they are meticulous",
+        "confidence": "High",
+        "source": "If you\u2019d like to use an FBA book prep service, contact one of the services on this list of 12 FBA book prep services. ... unless you have severely limited funds, it\u2019s not worth your time to process your online book purchases when you can pay someone else to do it"
+    },
+    {
+        "id": "ba-tip16",
+        "category": "Risk",
+        "trigger": "law textbooks with past price rises",
+        "advice": "Be careful and don't buy too many copies as they can become outdated quickly due to changing laws",
+        "confidence": "High",
+        "source": "law textbooks are a particularly hazardous subject. Because laws change so often, textbooks can suddenly become out-of-date and unusable within a year. ... don\u2019t buy too many copies of any particular book."
+    },
+    {
+        "id": "ba-tip17",
+        "category": "Pricing",
+        "trigger": "calculating profit for a flip",
+        "advice": "Account for all costs: shipping, prep fees, FBA fees, boxes, poly-bags, tape, referral/storage fees; use Zen Arbitrage calculator",
+        "confidence": "High",
+        "source": "Take prep, shipping, and FBA costs into account. There are many hidden costs ... It has a calculator specifically designed to take in your book cost and return your expected net profit"
+    },
+    {
+        "id": "ba-tip18",
+        "category": "General",
+        "trigger": "Amazon Prime member with experience in arbitrage",
+        "advice": "Use Amazon Prime Rewards credit card for 5% cash back on Amazon purchases; pay off balance monthly to avoid interest",
+        "confidence": "High",
+        "source": "If you have Amazon Prime, you can get a credit card that gives you 5% cash back on every purchase you make on Amazon. ... Just make sure you pay off the balance each month"
+    },
+    {
+        "id": "oa_roi_filter",
+        "category": "Pricing",
+        "trigger": "Filters set to 100% ROI or higher",
+        "advice": "Adjust filters to target lower ROI items, as OA sourcing typically involves lower ROI compared to thrifting or retail arbitrage",
+        "confidence": "High",
+        "source": "Many sellers who are just starting out in OA get frustrated with a seeming lack of results from using a program to scan entire pages of online stores. Many sellers will say, \u201cI scanned thousands of items and didn\u2019t find anything to resell. These programs aren\u2019t worth it.\u201d Almost without fail, these sellers have their filters set to only find items with 100% ROI or higher. OA is different from thrifting and garage saling (and even RA to an extent) in that you need to be looking for items with a lower ROI."
+    },
+    {
+        "id": "oa_capital_requirement",
+        "category": "Risk",
+        "trigger": "Limited financial capital for sourcing",
+        "advice": "Build sufficient financial capital before investing in OA tools, as they target lower ROI items requiring higher volume or upfront investment",
+        "confidence": "High",
+        "source": "If your business isn\u2019t at a point where you have the financial capital to source items with a lower ROI, it probably isn\u2019t the time yet for you to invest in these OA tools."
+    },
+    {
+        "id": "ta_bulk_scans",
+        "category": "General",
+        "trigger": "Sourcing from multiple websites or categories",
+        "advice": "Set up bulk scans of multiple pages and websites simultaneously to generate hundreds or thousands of potential buys efficiently",
+        "confidence": "High",
+        "source": "Tactical Arbitrage allows you to set up bulk scans of multiple pages and multiple websites to scan at one time... You can also upload a bulk list of categories from multiple websites to run in one scan, producing hundreds or thousands of potential buys at a time."
+    },
+    {
+        "id": "ta_scan_time",
+        "category": "General",
+        "trigger": "Large category or bulk list scan",
+        "advice": "Initiate scans and return after completion, which may take 30 minutes to overnight, to analyze results without constant monitoring",
+        "confidence": "High",
+        "source": "The time you can save using Tactical Arbitrage adds up to hours per day... That might be a half hour later or the next morning, depending on how much you included in your scan."
+    },
+    {
+        "id": "ta_learning_prep",
+        "category": "General",
+        "trigger": "Starting Tactical Arbitrage trial",
+        "advice": "Dedicate several hours during the trial to watch tutorials and practice scanning to identify profitable items and justify subscription cost",
+        "confidence": "High",
+        "source": "If you do decide to do a trial of Tactical Arbitrage, I highly encourage you to make sure you are prepared to spend a significant amount of time during that trial learning the software and scanning websites... Make sure you can spend several hours going through tutorial videos and practicing what you are learning. If you dedicate the time to learning the software during the trial, you should be able to find enough items to resell that you can pay for at least a month of subscription for the service."
+    },
+    {
+        "id": "ta_va_usage",
+        "category": "General",
+        "trigger": "High volume OA sourcing",
+        "advice": "Hire a virtual assistant to handle scanning tasks to save additional time",
+        "confidence": "Medium",
+        "source": "Can you use with a virtual assistant (VA)? Yes; you can save even more time in your OA sourcing by hiring a VA to do your scanning for you."
+    },
+    {
+        "id": "ta_user_level",
+        "category": "General",
+        "trigger": "Beginner in OA",
+        "advice": "Avoid starting with Tactical Arbitrage due to steep learning curve and overwhelming results; use after gaining experience in OA",
+        "confidence": "High",
+        "source": "I recommend Tactical Arbitrage as a more advanced tool for OA sourcing. The learning curve is steep, and the results can be overwhelming. I personally would not have wanted to use Tactical Arbitrage when I first got started in OA (in fact, I might have given up on OA if I started out with it), but I love it at this point in my OA journey."
+    },
+    {
+        "id": "s19",
+        "category": "Pricing",
+        "trigger": "Pricing FBA inventory",
+        "advice": "Price only against other FBA offers, not merchant fulfilled, to achieve premium prices since 90% of customers prefer FBA",
+        "confidence": "High",
+        "source": "Remember that if you are selling an item FBA it has many advantages over a merchant fulfilled item, so you shouldn\u2019t be pricing against merchant offers. They are not your competition. ... \u201c90% of Amazon customers have never purchased anything that wasnt fulfilled by Amazon\u201d."
+    },
+    {
+        "id": "s20",
+        "category": "Pricing",
+        "trigger": "Low merchant offers present",
+        "advice": "Buy out low-priced merchant offers to position your higher FBA price lower in search results and increase sales price",
+        "confidence": "High",
+        "source": "buying out merchant offers so my higher price could be lower in the search results. ... using that to buy more copies, in conjunction with buying out other peoples offers to raise the price of the lowest offer."
+    },
+    {
+        "id": "s21",
+        "category": "General",
+        "trigger": "Repeatable sale identified",
+        "advice": "Recognize sales that are repeatable from your own data and buy more copies to capitalize",
+        "confidence": "High",
+        "source": "recognizing when you\u2019ve made a sale that is repeatable and using that to buy more copies"
+    },
+    {
+        "id": "buy-low1",
+        "category": "Buying",
+        "trigger": "Books available for less than $1",
+        "advice": "Purchase used or discounted books from thrift stores, sales, or online retailers for resale on platforms like Amazon to capitalize on low acquisition costs.",
+        "confidence": "High",
+        "source": "the market is flooded with cheap (usually used or discounted) books that you can buy at very low prices (even for less than $1) and then resell with a profit."
+    },
+    {
+        "id": "initial-buy1",
+        "category": "Buying",
+        "trigger": "Starting out in book arbitrage",
+        "advice": "Buy cheap used books for $1-$4, aiming for minimal profits of $0.5 per book initially while developing sourcing strategies.",
+        "confidence": "High",
+        "source": "Initially, you are most likely to be buying cheap used books for $1-$4 and selling them with a minimal profit (sometimes even $0.5 for a book)."
+    },
+    {
+        "id": "sell-platform1",
+        "category": "Pricing",
+        "trigger": "Aiming for higher profits",
+        "advice": "List books on Amazon for bigger gains, or sell to third-party vendors via tools like BookScouter for quicker but lower payments.",
+        "confidence": "High",
+        "source": "If you are aiming for bigger gains, Amazon is the place to go. But sometimes, it is better to sell to a third-party vendor and get paid less but right away."
+    },
+    {
+        "id": "fba-scale1",
+        "category": "General",
+        "trigger": "Operating on a large scale",
+        "advice": "Use Amazon FBA for handling storage, shipping, and customer service, at a cost of $39.99 per month plus 8%-15% referral fees per sale.",
+        "confidence": "High",
+        "source": "Amazon\u2019s Professional selling plan costs $39.99 per month plus referral fees (8%\u201315% on every sale)."
+    },
+    {
+        "id": "scan-profit1",
+        "category": "Buying",
+        "trigger": "Evaluating a potential book purchase",
+        "advice": "Scan the book's ISBN using apps like Amazon Seller App to check potential sell price on Amazon, current sales rank, and average sale price before buying.",
+        "confidence": "High",
+        "source": "if you enter a book\u2019s ISBN, you will see the potential price you can sell it on Amazon, current sales rank online, and an average sale price."
+    },
+    {
+        "id": "bookscouter1",
+        "category": "Pricing",
+        "trigger": "Sourcing books for quick resale",
+        "advice": "Use BookScouter to compare buyback prices from over 30 vendors by scanning ISBN, selecting the highest offer for immediate payout.",
+        "confidence": "High",
+        "source": "BookScouter is a tool you can use to compare prices on books from over 30 book buyback vendors. ... You simply scan the book\u2019s ISBN and place your order with the most suitable vendor."
+    },
+    {
+        "id": "keepa-history1",
+        "category": "Pricing",
+        "trigger": "Scaling business and predicting profitability",
+        "advice": "Analyze historical price and sales data using Keepa charts; subscribe for \u20ac19/month to access full data features for informed buying decisions.",
+        "confidence": "High",
+        "source": "Keepa is another tool for Amazon resellers, highly praised for its price and sales data chart extension. ... To be able to make predictions about the profitability of a product, you will need to look at its historical data. ... a monthly subscription of \u20ac19/month is required."
+    },
+    {
+        "id": "online-source1",
+        "category": "Buying",
+        "trigger": "Preferring online sourcing",
+        "advice": "Manually check clearance and discounted sections on websites like Walmart, Target, and other retailers for books to buy low and resell on Amazon, accounting for shipping costs.",
+        "confidence": "High",
+        "source": "We recommend going through the list of the abovementioned stores and checking their websites. You\u2019ll have to do it manually and spend some time, but there is a good chance you\u2019ll find something that will be worth listing on Amazon. Even if you have to pay for shipment, you can find something on clearance in Walmart that will sell well on Amazon later"
+    },
+    {
+        "id": "legal-books1",
+        "category": "Risk",
+        "trigger": "Reselling used books",
+        "advice": "Freely resell legitimately purchased used books under the First Sale Doctrine without permissions or fees, but avoid copying or selling counterfeits.",
+        "confidence": "High",
+        "source": "When it comes to books, the same First Sale Doctrine gives the owner of a book a right to sell, lend, or share their copies without acquiring any permissions and paying fees. What the owner cannot do is make copies and sell them. Reselling, however, is a totally different thing. So, you can freely sell used and second-hand books."
+    },
+    {
+        "id": "earnings-timeline1",
+        "category": "General",
+        "trigger": "New to book arbitrage",
+        "advice": "Expect earnings of $100-$500/month in first 3 months, $500-$2000/month in 3-9 months, and $2000+/month after a year, investing time in learning and sourcing.",
+        "confidence": "High",
+        "source": "Here is a rough timeline for you to understand what to expect: First 3 months: $100\u2013$500/mo 3\u20139 months: $500\u2013$2000/mo After a year: $2000+/mo"
+    },
+    {
+        "id": "inv1",
+        "category": "General",
+        "trigger": "Amazon inventory limits per shipment",
+        "advice": "Send 30-60 days worth of sales for products to FBA warehouses to maintain high IPI score and minimize fees/restrictions",
+        "confidence": "High",
+        "source": "Amazon limits the amount of inventory you can send to an FBA warehouse at any given time. While no one knows the exact formula they use, it comes out to Amazon recommending you send roughly 30-60 days worth of sales for your products. Sending this amount is recommended, as it helps keep your Amazon IPI (Inventory Performance Index) score high, which minimizes fees from Amazon and keeps you away from potential restrictions Amazon can place on your account if you\u2019re not moving product fast enough."
+    },
+    {
+        "id": "inv2",
+        "category": "Seasonality",
+        "trigger": "Entering Q4 (October-December) holiday season",
+        "advice": "Adjust inventory shipments to account for higher storage fees in Q4 and increased demand during Christmas; avoid overstocking to prevent steep fee increases",
+        "confidence": "High",
+        "source": "The strongest selling season is usually Christmas time at the end of the year, and because of this Amazon charges more for holding inventory during the last quarter of each year. Here you can see Oct-Dec steep increased storage rates. Most estimators for sending stock (including Amazon\u2019s) don't always give good estimates for how much product you should send if you\u2019re entering your biggest season (or leaving it). If you send too much, you'll get hit with higher storage fees. Send too little, and you'll risk going out of stock."
+    },
+    {
+        "id": "inv3",
+        "category": "General",
+        "trigger": "Increased lead times due to pandemic/supply chain delays",
+        "advice": "Order restocks from suppliers as early as possible to account for longer production, shipping, and FBA intake times; consider eCommerce funding options if capital is limited",
+        "confidence": "High",
+        "source": "Order product from your supplier as early as possible. This one is tricky, but absolutely required in today\u2019s climate. Due to the pandemic, lead times for getting products made has increased (and cost more), sea freight is more expensive and full of delays, shipping products to warehouses takes longer, getting products into FBA warehouses takes longer than before. ... As a result, sellers have to order restocks for their products earlier than ever before, but since everything is more expensive and takes longer than ever, they may not have the capital to reorder from their suppliers in time. This is where funding companies for eCommerce sellers comes in."
+    },
+    {
+        "id": "inv4",
+        "category": "Pricing",
+        "trigger": "Low inventory levels risking out of stock",
+        "advice": "Gradually raise product prices to lower conversion rate and slow daily sales; avoid drastic increases to prevent losing the buy box",
+        "confidence": "High",
+        "source": "Slow the rate of sales for products that might go out of stock. ... Raise the price of your product. ... When you raise your prices, it will likely lower your conversion rate, and this is good if you risk going out of stock. On Amazon, going from 100 sales per day to 70 per day, to 50, and so on is much better than going from 100 one day then 0 the next. ... Be warned, however, if you raise your prices too fast and too high, there\u2019s a chance Amazon will make you lose the buy box (making customers unable to purchase your product) because they believe you might be price gouging."
+    },
+    {
+        "id": "inv5",
+        "category": "Pricing",
+        "trigger": "Low inventory levels risking out of stock",
+        "advice": "Slow down or turn off PPC campaigns to reduce visibility and slow daily sales rate, buying time until restock arrives",
+        "confidence": "High",
+        "source": "Slow the rate of sales for products that might go out of stock. ... Slow down (or turn off) any PPC campaigns for your product that you have running. ... Toning down PPC ads will have a similar effect. Fewer people seeing your listing will help slow your rate of sales down. These two actions could buy you enough time for your products to get back in stock at Amazon warehouses where you can then resume normal pricing and ads."
+    },
+    {
+        "id": "inv6",
+        "category": "Risk",
+        "trigger": "Inventory stored in FBA warehouses for over 365 days",
+        "advice": "Avoid long-term storage fees by selling off aged stock via deals, returning to your warehouse, paying Amazon to destroy, or liquidating through Amazon auction",
+        "confidence": "High",
+        "source": "Avoid long-term storage fees. ... There are two times Amazon charges more than their usual storage fees: the last quarter of the year (due to the Holiday season), and if your products have been in an Amazon warehouse for more than 365 days, called Long Term Storage Fees. Long term storage fees are completely avoidable, and there are many strategies to get rid of stock that is approaching 365 days. With products that have been in a warehouse too long, you can create deals to sell them off, you can send them back to your warehouse so they\u2019re out of Amazon\u2019s, you can pay Amazon to destroy the products, or you can even liquidate your product and Amazon will auction it off for you."
+    },
+    {
+        "id": "inv7",
+        "category": "General",
+        "trigger": "Need to track days until out of stock across SKUs",
+        "advice": "Use Amazon's Restock Report or third-party software like Helium 10, Jungle Scout, Ecomshft, Skubana, or eComEngine for inventory alerts and management, especially with growth or multi-marketplace sales",
+        "confidence": "High",
+        "source": "Utilize software to help manage inventory. A sort of 'software' that will help you manage your inventory is Amazon's Restock Report. This will tell you how many days each of your products have until they eventually go out of stock. ... As your business grows and the number of SKUs increase and if you decide to start selling on multiple marketplaces, it might be a good idea to invest in software that can alert you when products need to be sent to an Amazon warehouse (or other warehouses). Some popular software solutions that include inventory management capabilities: Helium 10 Inventory Manager, Jungle Scout Inventory Manager, Ecomshft, Skubana, eComEngine."
+    },
+    {
+        "id": "keepa-sales-rank-drop",
+        "category": "Buying",
+        "trigger": "Significant drop in sales rank from higher to lower number",
+        "advice": "Indicates at least one sale has occurred; multiple sales lead to better (lower) rank, signaling demand for sourcing decisions",
+        "confidence": "High",
+        "source": "BIG TIP: Any time the sales rank number significantly moves from a larger number to a smaller number indicates at least one sale has occurred. Sometimes the improvement in sales rank means multiple sales. There is not a way to know for sure the algorithm for how Amazon sales impact the item\u2019s sales rank, but the more sales the item gets over a recent time period, the better (lower) the sales rank number gets."
+    },
+    {
+        "id": "keepa-amazon-stock-gaps",
+        "category": "Buying",
+        "trigger": "White gaps in orange shading on Amazon line",
+        "advice": "Amazon is out of stock; change date ranges to assess frequency of stockouts for identifying sourcing opportunities when Amazon restocks infrequently",
+        "confidence": "High",
+        "source": "If the area is orange, Amazon is in stock. Wherever you see white gaps on the graph, Amazon is out of stock. If you click on the different date ranges you can have Keepa display how often Amazon is in or out of stock on the item."
+    },
+    {
+        "id": "keepa-hover-analysis",
+        "category": "General",
+        "trigger": "Cursor moved over graph",
+        "advice": "Displays exact Amazon price, Marketplace New/Used prices, sales rank, and date; slide cursor to track changes over time for trend analysis in sourcing and pricing",
+        "confidence": "High",
+        "source": "If you move your cursor over the graph, you\u2019ll see small boxes that pops up near the cursor to tell you all of the data (that you have activated on the Keepa key) at that particular point in time. Around the cursor, you can see Amazon\u2019s price, the Marketplace New price, the Marketplace Used price, and the Sales Rank. At the bottom, there will be a box that shows you the date that the data is from. As you slide your cursor across the graph, you can see where the price and sales rank goes down or up over time."
+    },
+    {
+        "id": "keepa-date-ranges",
+        "category": "General",
+        "trigger": "Selecting date ranges: day, week, month, 3 months, year, or all",
+        "advice": "Choose appropriate range to view historical pricing and sales rank trends for smarter sourcing and pricing decisions in online arbitrage",
+        "confidence": "High",
+        "source": "Below this key, there\u2019s a list of date ranges where you can select the period of time you wish to look at: day, week, month, 3 months, a year, or all the data Keepa has ever tracked on this item."
+    },
+    {
+        "id": "keepa-pricing-history",
+        "category": "Pricing",
+        "trigger": "Viewing blue (Marketplace New) and black (Marketplace Used) lines",
+        "advice": "Analyze historical price fluctuations alongside sales rank to set competitive prices and predict demand for faster inventory turnover",
+        "confidence": "High",
+        "source": "We use Keepa throughout each day as we work on our Amazon FBA business, whether it\u2019s out sourcing retail arbitrage, at home doing online arbitrage or wholesale research, or in repricing our inventory... Keepa is 100% Vital to Success on Amazon... the pricing history for Keepa is free, but the sales rank (and some other vital data, like buy box history) is included in a minimal paid subscription."
+    },
+    {
+        "id": "keepa-general-1",
+        "category": "General",
+        "trigger": "Relying only on current sales rank and price",
+        "advice": "Use Keepa's historical sales rank and price charts to assess normal selling conditions, as current data may be affected by temporary factors like seasonality or supply changes.",
+        "confidence": "High",
+        "source": "The short answer is that an item\u2019s current sales rank and price only tells a very small piece of the story. While the current sales rank and price MAY accurately reflect the normal selling conditions of an item, there are many things that can make current data a poor reflection of future selling conditions."
+    },
+    {
+        "id": "seasonality-1",
+        "category": "Seasonality",
+        "trigger": "High demand in Q4 or current events",
+        "advice": "Examine historical data to determine if sales rank improvements are seasonal or event-driven, and adjust sourcing expectations accordingly.",
+        "confidence": "High",
+        "source": "These include: Seasonality A temporary lack of supply A temporary supply surplus Changes in supply to competing products High demand in Q4 Current events These are just a few of the things that we\u2019ve seen cause a short-term change to sales rank and price."
+    },
+    {
+        "id": "buying-1",
+        "category": "Buying",
+        "trigger": "Sales rank history shows consistency or improvement over time, especially in recent days, weeks, and months",
+        "advice": "Prioritize sourcing products with stable or improving sales ranks across multiple time periods (e.g., toggle to 3 months view) to ensure quicker sell-through.",
+        "confidence": "High",
+        "source": "We look for products that tend to have sales ranks that get better or are consistent over time so that they sell through more product. ... When we evaluate product we want to see how the sales rank has behaved across many time periods, with more emphasis put on recent days, weeks, and months. It is important to toggle the time period to factor into your sourcing decisions."
+    },
+    {
+        "id": "pricing-1",
+        "category": "Pricing",
+        "trigger": "Historical prices rise when other sellers run out of stock, especially for seasonal products",
+        "advice": "Maintain a high asking price and wait for price rebound rather than slashing prices.",
+        "confidence": "High",
+        "source": "If prices tend to rise when other sellers run out of stock and we\u2019re looking at a seasonal product, then this could be an item we would want to maintain a high asking price on and wait for the price to rebound."
+    },
+    {
+        "id": "pricing-2",
+        "category": "Pricing",
+        "trigger": "Current price is significantly higher than historical averages when sales rank was better",
+        "advice": "Decrease the price to align with past performance and improve sales velocity, assuming ROI still justifies it.",
+        "confidence": "High",
+        "source": "In another example, we could also examine a pricing graph and realize an item may be priced way too high compared to the past when the sales rank was better. Assuming the ROI still makes sense, decreasing the price could be a change that we would want to make in hopes of increasing our sales."
+    },
+    {
+        "id": "buying-2",
+        "category": "Buying",
+        "trigger": "Using Product Finder with sales rank 0-100,000 and new price $20-$50 in a specific category like Toys & Games",
+        "advice": "Apply filters in Keepa's Product Finder to identify sourcing opportunities for retail arbitrage, online arbitrage, or wholesale in new or related categories.",
+        "confidence": "High",
+        "source": "I chose to search for products from 0 \u2013 100,000 sales rank with a new price between $20-$50 and in the category of \u201cToys & Games\u201d. Using these filters allows you to really narrow down your search to new products or products related to the ones you\u2019re already selling."
+    },
+    {
+        "id": "book_amazon_always_stocked",
+        "category": "Buying",
+        "trigger": "No gaps in orange-shaded area (Amazon always in stock)",
+        "advice": "Avoid buying new books; consider used but price competitively against Amazon warehouse deals.",
+        "confidence": "High",
+        "source": "The example below is of a Nursing textbook. It is something Amazon has always had in stock. There are no gaps in the orange-shaded area, which means that Amazon was never out of stock on this product. It doesn\u2019t appear to be a good buying decision. Now, let\u2019s say that you found this product as a Used item and wanted to capitalize on that. What you need to be aware of is the warehouse deals (purple Xs in chart 3 below) that Amazon offers from time to time, and make sure that you price accordingly."
+    },
+    {
+        "id": "textbook_end_school_year",
+        "category": "Seasonality",
+        "trigger": "End of school year (April or May), Sales Rank around 232,000",
+        "advice": "Buy used textbooks at low prices (around $20) when demand is low and Sales Rank is high.",
+        "confidence": "High",
+        "source": "In April or May, at the end of the school year, when Amazon runs out of it from time to time, the Sales Rank jumps up pretty high. So, if you were looking at this book, out scanning in the field, you might think that it\u2019s not a great Sales Rank, on April 26, the Sales Rank was 232,382, with the New Price being $70 and the Used Price being around $20."
+    },
+    {
+        "id": "textbook_start_school_year",
+        "category": "Seasonality",
+        "trigger": "Near school year (July and August), Sales Rank drops to around 2,858",
+        "advice": "Sell textbooks at higher prices (Used around $73) when demand increases and Sales Rank improves.",
+        "confidence": "High",
+        "source": "But as you get closer to the new school year, in July and August, you can see the Sales Rank go way down to 2,858; see Chart 6 below. When the Sales Rank goes down, the demand goes up, and the price gets a little bit better. You can see the New Price was $106, and the Used Price was $73 on July 29."
+    },
+    {
+        "id": "textbook_seasonal_trend",
+        "category": "Seasonality",
+        "trigger": "Textbooks with seasonal demand fluctuations visible in historical Sales Rank",
+        "advice": "Use historical data to predict demand cycles and time buys at end of school year for sales at start.",
+        "confidence": "High",
+        "source": "Back in May, the Used Price was around $18, people were just trying to push them out because it was the end of the school year. This shows you the power of looking back at the historical data to see where the item is moving and where the demand is. So, the trend line can be pretty important for some products."
+    },
+    {
+        "id": "bsr-demand-1",
+        "category": "Buying",
+        "trigger": "BSR drops significantly (e.g., from 28,000 to 19,000)",
+        "advice": "Interpret as sales events indicating potential demand; larger drops suggest more units sold, use to assess if product moves quickly before purchasing inventory",
+        "confidence": "High",
+        "source": "The green dots on the chart represent downward rank movements or significant drops in the BSR. In other words, at these points, the BSR made big swings (ex: from 28,000 to 19,000). Looking back at the two knowns about an ASIN\u2019s sales rank, we can see this chart and the prominent sales events at those points."
+    },
+    {
+        "id": "bsr-popular-2",
+        "category": "Buying",
+        "trigger": "BSR in low ranges (e.g., around 500 or double digits like 19 to 18)",
+        "advice": "For highly popular items, small BSR fluctuations indicate high consistent sales volume (potentially hundreds of units daily); prioritize these for steady turnover in arbitrage",
+        "confidence": "High",
+        "source": "As a product\u2019s BSR climbs toward the top of the best-seller list... an ASIN with a high sales rank position of 500, for example, may move in smaller, more persistent waves. ... A change from sales rank 19 to 18 could mean a swing of hundreds of units sold daily, but 19,000 to 18,999 may be just 2 per day."
+    },
+    {
+        "id": "bsr-slow-3",
+        "category": "Risk",
+        "trigger": "BSR in millions (e.g., over 5,000,000 dropping to 380,000)",
+        "advice": "Avoid or deprioritize items with infrequent sales as shown by large rank jumps on rare sales; high risk of excess inventory that doesn't move",
+        "confidence": "High",
+        "source": "This is a sample of a sales rank chart for an item that, on the worst end, ranked over 5,000,000 in its category, and when a sale took place, rocketed up to the 380,000 level. Because this item sold so infrequently, any sales event has a massive effect on its sales rank."
+    },
+    {
+        "id": "amazon-compete-4",
+        "category": "Risk",
+        "trigger": "Orange shading present on Keepa chart",
+        "advice": "Treat as a red flag for competition from Amazon; research further or avoid purchase if Amazon's price undercuts potential margins in arbitrage",
+        "confidence": "High",
+        "source": "Knowing if Amazon is on the listing and their price can be a red flag for some sellers. Seeing right away if Amazon may be a competitor (they\u2019re a vicious one) can decide on a seller without doing any research. If that orange shading appears, it\u2019s a ??. Some sellers don\u2019t mind this and can even take the Amazon price data as a sign of potential room for competition."
+    },
+    {
+        "id": "buybox-stable-5",
+        "category": "Pricing",
+        "trigger": "Consistent buy box level (magenta diamonds stable)",
+        "advice": "Indicates strong price support; target these listings for arbitrage where you can price competitively to win buy box without price erosion",
+        "confidence": "High",
+        "source": "A consistent buy box level indicates strong price support. A penny war could occur if you see gradual and steady decreases that do not recover over time."
+    },
+    {
+        "id": "penny-war-6",
+        "category": "Risk",
+        "trigger": "Gradual steady decreases in buy box (magenta diamonds declining without recovery)",
+        "advice": "Avoid entering penny wars ('race to the bottom') as they erode margins; monitor for toxic environments and exit or avoid listings showing this pattern",
+        "confidence": "High",
+        "source": "A penny war, or \u201crace to the bottom,\u201d is a scenario where multiple sellers have set their repricers to undercut the current buy box price by $0.01. ... This often results in a steady decline in price, margins, and profits, creating a toxic and hostile selling environment."
+    },
+    {
+        "id": "fba-noncomp-7",
+        "category": "Pricing",
+        "trigger": "New 3rd Party FBA offer (orange triangle) positioned above buy box",
+        "advice": "Indicates non-competitive pricing; opportunity to enter with lower price to capture buy box in arbitrage flips",
+        "confidence": "High",
+        "source": "Sometimes, you might see an FBA offer positioned well above the buy box. This means the offer is out of the money and not competitively priced (to Amazon\u2019s liking)."
+    },
+    {
+        "id": "fbm-opportunity-8",
+        "category": "Buying",
+        "trigger": "New 3rd Party FBM offer (blue square) priced below FBA/buy box",
+        "advice": "Look for arbitrage flips, especially booksellers; buy from low FBM sources and resell via FBA for profit margin",
+        "confidence": "High",
+        "source": "Sometimes we see FBM sellers offering up products well below the FBA/Buy Box price, leaving money on the table and an opportunity for profits. Booksellers would do well to pay attention to this one if they\u2019re doing any flipping like this."
+    },
+    {
+        "id": "avg-bsr-consistent-9",
+        "category": "General",
+        "trigger": "Low average BSR across 30-day, 90-day, 180-day periods",
+        "advice": "Indicates year-round sales viability and high volume; prioritize for long-term arbitrage inventory to avoid stale stock",
+        "confidence": "High",
+        "source": "having an average sales rank for each of the consistent averages implies this ASIN sells well all year round and has a moderately high sales volume. While these averages aren\u2019t bulletproof representations of sure-fire hits, it\u2019s a massive start."
+    },
+    {
+        "id": "avg-bsr-recent-improve-10",
+        "category": "Buying",
+        "trigger": "Low 30-day average BSR but high 180-day average",
+        "advice": "Suggests recent improvement (e.g., new offers or PPC); investigate for emerging opportunities in arbitrage before competition increases",
+        "confidence": "High",
+        "source": "A low BSR 30-day average and a high 180-day average may imply the ASIN didn\u2019t historically sell well for a variety of reasons like no reasonable offers (or no offers at all) until recently, historical buy box suppression that was just released, PPC, or any combination of these."
+    },
+    {
+        "id": "avg-bsr-recent-sale-11",
+        "category": "Risk",
+        "trigger": "Current low BSR but high averages that climb with longer periods",
+        "advice": "Likely a one-off recent sale, not consistent demand; high risk of slow future sales, avoid large inventory buys",
+        "confidence": "High",
+        "source": "A current BSR that\u2019s low but averages are high (and climb steadily as the average range grows) may be an item that doesn\u2019t sell but a few units over a significant period, and one of those sales just happened."
+    },
+    {
+        "id": "avg-bsr-no-offers-12",
+        "category": "Buying",
+        "trigger": "High 30-day average BSR but low 180-day average",
+        "advice": "Implies lack of viable offers historically; enter as first competitive offer to gain buy box exposure and bootstrap sales in arbitrage",
+        "confidence": "High",
+        "source": "The 30-day average is high, but the 180-day is low, which may imply no viable offers on this listing. There might be an opportunity to get in on this listing and be granted exposure with the buy box because yours is the only offer the Amazon algorithms consider reasonable."
     }
 ]

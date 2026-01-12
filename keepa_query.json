@@ -8,23 +8,19 @@
     "priceTypes": [
         2
     ],
-    "deltaRange": [
-        0,
-        10000
-    ],
     "deltaPercentRange": [
-        10,
+        20,
         2147483647
     ],
     "salesRankRange": [
-        10000,
-        10000000
+        100000,
+        5000000
     ],
     "currentRange": [
-        0,
-        2147483647
+        2000,
+        23500
     ],
-    "minRating": 10,
+    "minRating": 50,
     "isLowest": false,
     "isLowest90": false,
     "isLowestOffer": false,
@@ -47,7 +43,7 @@
         5
     ],
     "deltaLastRange": [
-        500,
-        2147483647
+        0,
+        10000
     ]
 }

@@ -987,8 +987,14 @@ document.addEventListener('DOMContentLoaded', function() {
         refreshDealsLink.style.color = '#1976d2'; // Reset color
 
         try {
+            /*
+            REMOVED (Jan 2026): Manual Janitor trigger was removed to prevent users from manually deleting "stale" deals.
+            We now rely solely on the automatic scheduled Janitor task (every 4h).
+            The logic remains in the backend (/api/run-janitor) if needed for debugging.
+
             // Trigger Janitor first
             await fetch('/api/run-janitor', { method: 'POST' });
+            */
 
             // Then refresh grid
             await fetchDeals(currentPage, currentSort.by, currentSort.order);
