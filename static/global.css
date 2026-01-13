@@ -266,6 +266,24 @@ a:hover {
     animation: spin 1s linear infinite;
     margin: auto;
 }
+.spinner-inline {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+.spinner-small {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -544,13 +562,10 @@ button:disabled {
 }
 
 #deals-table .group-header th {
-    background-color: #26567e;
+    background-color: transparent;
     color: #75afd1;
     font-size: 110%;
-    border-top: 1px solid #6194c3;
-    border-left: 1px solid #6194c3;
-    border-right: 1px solid #6194c3;
-    border-bottom: 1px solid #6194c3;
+    border: none;
     height: 44px !important;
     padding: 0 8px !important;
     box-sizing: border-box !important;
@@ -559,6 +574,10 @@ button:disabled {
 #deals-table td {
     font-size: 14px;
     font-weight: 300;
+}
+
+.deal-row {
+    height: 55px;
 }
 
 .deal-row:hover td {
@@ -1025,8 +1044,8 @@ body.home-background::before {
 .trend-rising-red { color: red; font-weight: bold; }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
-.spinner-inline { width: 15px; height: 15px; border-width: 2px; display: none; }
-.spinner-small { display: inline-block; width: 12px; height: 12px; margin-left: 5px; }
+.spinner-inline { width: 15px; height: 15px; border-width: 2px; display: none; margin: 0; vertical-align: middle; }
+.spinner-small { width: 12px; height: 12px; margin-left: 5px; border-width: 2px; vertical-align: middle; }
 .action-message { font-size: 1.1em; margin-right: 10px; color: white; }
 .action-strong-red { color: #ff4d4d; }
 .action-strong-white { color: white; }
