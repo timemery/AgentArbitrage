@@ -244,16 +244,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Supply & Demand
         "Sales_Rank_Current", "Drops", "Offers", "Detailed_Seasonality",
         // Deal Details
-        "1yr_Avg", "Price_Now", "Percent_Down", "last_price_change", "AMZ", "Gated",
+        "1yr_Avg", "Price_Now", "Percent_Down", "last_price_change", "AMZ",
         // Trust Ratings
         "Seller_Quality_Score", "Profit_Confidence",
         // Profit Estimates
-        "All_in_Cost", "Profit", "Margin", "Buy_Now"
+        "All_in_Cost", "Profit", "Margin", "Gated"
     ];
 
     const headerTitleMap = {
         "Categories_Sub": "Genre",
-        "Gated": "Gated",
+        "Gated": "Action",
         "last_price_change": "Ago",
         "Seller": "Name",
         "Min_Listing_Price": "Min. List",
@@ -545,11 +545,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if (deal.approval_url && deal.approval_url !== 'ERROR') {
                                     gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
                                 } else {
-                                    gatedContent = `<span class="restricted-text">Restricted</span>`;
+                                    gatedContent = `<span class="restricted-text" style="color: #ff4d4d; font-weight: bold;">Restricted</span>`;
                                 }
                                 break;
                             case 'not_restricted':
-                                gatedContent = '<span class="status-icon checkmark">✓</span>';
+                                // Show Buy button (Greenish)
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #28a745;" onclick="event.stopPropagation()">Buy</a>`;
                                 break;
                             case 'error':
                                 gatedContent = '<span class="status-icon error" title="API Error">⚠</span>';
@@ -558,11 +559,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 gatedContent = '<div class="spinner"></div>';
                                 break;
                             default:
-                                gatedContent = '-'; // Not connected or no data
+                                // Fallback to "View" if status unknown
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #6c757d;" onclick="event.stopPropagation()">View</a>`;
                         }
                         table += `<td>${gatedContent}</td>`;
-                    } else if (col === 'Buy_Now') {
-                        table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" onclick="event.stopPropagation()" class="buy-now-link">►</a></td>`;
                     } else if (col === 'Title') {
                         const fullTitle = deal[col] || '';
                         table += `<td class="title-cell" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
