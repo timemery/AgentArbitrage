@@ -5,30 +5,30 @@
         <h2>Strategy Database</h2>
         <div class="content">
             {% if strategies %}
-                <table style="width:100%; border-collapse: collapse;">
+                <table class="strategies-table">
                     <thead>
-                        <tr style="background-color: #26567e; color: white; text-align: left;">
-                            <th style="padding: 10px; border: 1px solid #ddd;">Category</th>
-                            <th style="padding: 10px; border: 1px solid #ddd;">Trigger</th>
-                            <th style="padding: 10px; border: 1px solid #ddd;">Advice</th>
-                            <th style="padding: 10px; border: 1px solid #ddd;">Confidence</th>
+                        <tr class="strategies-header">
+                            <th>Category</th>
+                            <th>Trigger</th>
+                            <th>Advice</th>
+                            <th>Confidence</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for strategy in strategies %}
                         {% if strategy is mapping %}
                             <tr>
-                                <td style="padding: 10px; border: 1px solid #ddd;">{{ strategy.category }}</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">{{ strategy.trigger }}</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">{{ strategy.advice }}</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">{{ strategy.confidence }}</td>
+                                <td class="strategies-cell">{{ strategy.category }}</td>
+                                <td class="strategies-cell">{{ strategy.trigger }}</td>
+                                <td class="strategies-cell">{{ strategy.advice }}</td>
+                                <td class="strategies-cell">{{ strategy.confidence }}</td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Legacy/General</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">N/A</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">{{ strategy }}</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">N/A</td>
+                                <td class="strategies-cell">Legacy/General</td>
+                                <td class="strategies-cell">N/A</td>
+                                <td class="strategies-cell">{{ strategy }}</td>
+                                <td class="strategies-cell">N/A</td>
                             </tr>
                         {% endif %}
                     {% endfor %}

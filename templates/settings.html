@@ -3,128 +3,100 @@
 {% block title %}Settings{% endblock %}
 
 {% block content %}
-<div class="container">
-    <p>Manage your API keys and business costs here.</p>
-<style>
-    .settings-form-grid {
-        display: grid;
-        grid-template-columns: auto; /* Single column for rows */
-        gap: 15px; /* Space between setting rows */
-        max-width: 500px; /* Or adjust as needed */
-    }
-    .setting-row {
-        display: flex;
-        align-items: center;
-        gap: 10px; /* Space between elements in a row */
-    }
-    .setting-symbol {
-        font-size: 1.2em;
-        width: 20px; /* Fixed width for alignment */
-        text-align: center;
-    }
-    .setting-input {
-        width: 120px; /* Smaller width for the input boxes */
-    }
-    .setting-label {
-        font-size: 1em;
-        margin-bottom: 0; /* Override default label margins if any */
-    }
-    .tax-exempt-row {
-        justify-content: flex-start; /* Align checkbox to the left */
-        padding-left: 30px; /* Indent to align with input boxes */
-    }
-</style>
+<!-- Use wrapper class for centering instead of inline style -->
+<div class="settings-wrapper">
+    <p class="settings-page-intro">Manage your API keys and business costs here.</p>
 
-    <div class="card my-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Business Costs</h5>
-        <div>
-            <button id="editButton" class="btn btn-primary">Edit</button>
+    <div class="settings-card">
+        <div class="card-header-flex">
+            <h5 class="mb-0">Business Costs</h5>
+            <div>
+                <!-- Removed inline style for padding, handled by btn-edit class or default button styles -->
+                <button id="editButton" class="btn-edit">Edit</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id="settingsForm" method="POST" action="{{ url_for('settings') }}">
+                <fieldset id="settingsFieldset" disabled class="settings-fieldset">
+                    <div class="settings-form-grid">
+                        <!-- Prep Fee -->
+                        <div class="setting-row">
+                            <span class="setting-symbol">$</span>
+                            <input type="number" class="styled-text-field setting-input" id="prep_fee_per_book" name="prep_fee_per_book" step="0.01" value="{{ settings.prep_fee_per_book }}">
+                            <label for="prep_fee_per_book" class="setting-label">Prep Fee Per Book</label>
+                        </div>
+                        <!-- Estimated Shipping -->
+                        <div class="setting-row">
+                            <span class="setting-symbol">$</span>
+                            <input type="number" class="styled-text-field setting-input" id="estimated_shipping_per_book" name="estimated_shipping_per_book" step="0.01" value="{{ settings.estimated_shipping_per_book }}">
+                            <label for="estimated_shipping_per_book" class="setting-label">Estimated Shipping Per Book</label>
+                        </div>
+                        <!-- Default Markup -->
+                        <div class="setting-row">
+                            <span class="setting-symbol">%</span>
+                            <input type="number" class="styled-text-field setting-input" id="default_markup" name="default_markup" step="1" value="{{ settings.default_markup }}">
+                            <label for="default_markup" class="setting-label">Default Markup</label>
+                        </div>
+                        <!-- Estimated Tax -->
+                        <div class="setting-row">
+                            <span class="setting-symbol">%</span>
+                            <input type="number" class="styled-text-field setting-input" id="estimated_tax_per_book" name="estimated_tax_per_book" step="1" value="{{ settings.estimated_tax_per_book }}">
+                            <label for="estimated_tax_per_book" class="setting-label">Estimated Tax Per Book</label>
+                        </div>
+                        <!-- Tax Exempt -->
+                        <div class="setting-row tax-exempt-row">
+                            <input class="form-check-input" type="checkbox" id="tax_exempt" name="tax_exempt" {% if settings.tax_exempt %}checked{% endif %}>
+                            <label class="form-check-label setting-label" for="tax_exempt">Tax Exempt</label>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </form>
         </div>
     </div>
-    <div class="card-body">
-        <form id="settingsForm" method="POST" action="{{ url_for('settings') }}">
-            <fieldset id="settingsFieldset" disabled>
-                <div class="settings-form-grid">
-                    <!-- Prep Fee -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">$</span>
-                        <input type="number" class="styled-text-field setting-input" id="prep_fee_per_book" name="prep_fee_per_book" step="0.01" value="{{ settings.prep_fee_per_book }}">
-                        <label for="prep_fee_per_book" class="setting-label">Prep Fee Per Book</label>
-                    </div>
-                    <!-- Estimated Shipping -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">$</span>
-                        <input type="number" class="styled-text-field setting-input" id="estimated_shipping_per_book" name="estimated_shipping_per_book" step="0.01" value="{{ settings.estimated_shipping_per_book }}">
-                        <label for="estimated_shipping_per_book" class="setting-label">Estimated Shipping Per Book</label>
-                    </div>
-                    <!-- Default Markup -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">%</span>
-                        <input type="number" class="styled-text-field setting-input" id="default_markup" name="default_markup" step="1" value="{{ settings.default_markup }}">
-                        <label for="default_markup" class="setting-label">Default Markup</label>
-                    </div>
-                    <!-- Estimated Tax -->
-                    <div class="setting-row">
-                        <span class="setting-symbol">%</span>
-                        <input type="number" class="styled-text-field setting-input" id="estimated_tax_per_book" name="estimated_tax_per_book" step="1" value="{{ settings.estimated_tax_per_book }}">
-                        <label for="estimated_tax_per_book" class="setting-label">Estimated Tax Per Book</label>
-                    </div>
-                    <!-- Tax Exempt -->
-                    <div class="setting-row tax-exempt-row">
-                        <input class="form-check-input" type="checkbox" id="tax_exempt" name="tax_exempt" {% if settings.tax_exempt %}checked{% endif %}>
-                        <label class="form-check-label setting-label" for="tax_exempt">Tax Exempt</label>
-                    </div>
-                </div>
-
-            </fieldset>
-        </form>
-    </div>
-</div>
 
     <!-- Amazon SP-API Integration -->
-    <div class="card my-4">
-        <div class="card-header">
+    <div class="settings-card card-margin-top">
+        <div class="card-header-flex">
             <h5 class="mb-0">Amazon SP-API Integration</h5>
         </div>
         <div class="card-body">
 
             <!-- Display connection status -->
             {% if session.sp_api_connected %}
-                <div class="alert alert-success" role="alert">
-                    <h5 class="alert-heading">Connected!</h5>
+                <div class="alert-success-custom" role="alert">
+                    <h5 class="alert-heading mt-0">Connected!</h5>
                     <p>Your Amazon Seller Account is connected. Restriction data will be updated in the background.</p>
                     {% if session.role == 'admin' %}
-                        <hr>
+                        <hr class="hr-custom">
                         <p class="mb-0">Seller ID: {{ session.sp_api_user_id }}</p>
-                        <hr>
+                        <hr class="hr-custom">
                         <form action="{{ url_for('trigger_restriction_check') }}" method="POST">
-                            <button type="submit" class="btn btn-outline-success">Re-check Restrictions for All Deals</button>
-                            <small class="form-text text-muted d-block mt-1">
+                            <button type="submit" class="btn-outline-success-custom">Re-check Restrictions for All Deals</button>
+                            <small class="text-muted-custom">
                                 Click this if you see loading spinners on the dashboard. This will force a new check for all items in your database.
                             </small>
                         </form>
                     {% endif %}
                 </div>
-                <!-- Optionally, add a disconnect button here -->
             {% else %}
                 {% if session.role == 'admin' %}
                     <p>Connect your Amazon Seller Central account to check for product restrictions.</p>
-                    <a href="{{ url_for('connect_amazon') }}" class="btn btn-warning mb-3">Connect Your Amazon Account</a>
+                    <a href="{{ url_for('connect_amazon') }}" class="btn-connect-amazon">Connect Your Amazon Account</a>
 
-                    <hr>
-                    <h6>Alternative: Manual Connection</h6>
-                    <p class="small text-muted">If the button above fails (e.g. MD9100 error), you can manually authorize the app in Seller Central and paste the credentials here.</p>
+                    <hr class="hr-custom">
+                    <h6 class="mt-0 font-bold">Alternative: Manual Connection</h6>
+                    <p class="small text-muted-custom">If the button above fails (e.g. MD9100 error), you can manually authorize the app in Seller Central and paste the credentials here.</p>
                     <form action="{{ url_for('manual_sp_api_token') }}" method="POST">
-                        <div class="form-group mb-2">
-                            <label for="manual_seller_id">Seller ID</label>
-                            <input type="text" class="form-control" id="manual_seller_id" name="seller_id" placeholder="Your Seller ID (e.g., A1...)" required>
+                        <div class="form-group-mb">
+                            <label for="manual_seller_id" class="label-block">Seller ID</label>
+                            <input type="text" class="styled-text-field input-full-width" id="manual_seller_id" name="seller_id" placeholder="Your Seller ID (e.g., A1...)" required>
                         </div>
-                        <div class="form-group mb-2">
-                            <label for="manual_refresh_token">Refresh Token</label>
-                            <input type="text" class="form-control" id="manual_refresh_token" name="refresh_token" placeholder="Your Refresh Token (starts with Atzr|...)" required>
+                        <div class="form-group-mb">
+                            <label for="manual_refresh_token" class="label-block">Refresh Token</label>
+                            <input type="text" class="styled-text-field input-full-width" id="manual_refresh_token" name="refresh_token" placeholder="Your Refresh Token (starts with Atzr|...)" required>
                         </div>
-                        <button type="submit" class="btn btn-secondary">Connect Manually</button>
+                        <button type="submit" class="btn-secondary-custom">Connect Manually</button>
                     </form>
                 {% else %}
                     <p>Amazon SP-API Integration is not connected.</p>
@@ -153,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (settingsFieldset.disabled) {
             settingsFieldset.disabled = false;
             editButton.textContent = 'Save Changes';
-            editButton.classList.remove('btn-primary');
-            editButton.classList.add('btn-success');
+            editButton.classList.add('btn-success-style');
+
             toggleTaxInput(); // Re-evaluate tax input state on edit
         } else {
             settingsForm.submit();
