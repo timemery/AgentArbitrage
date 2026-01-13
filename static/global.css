@@ -267,22 +267,26 @@ a:hover {
     margin: auto;
 }
 .spinner-inline {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 15px;
+    height: 15px;
     animation: spin 1s linear infinite;
-    display: inline-block;
+    display: none;
+    margin: 0;
+    vertical-align: middle;
 }
 .spinner-small {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 12px;
+    height: 12px;
     animation: spin 1s linear infinite;
     display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
 }
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -562,10 +566,10 @@ button:disabled {
 }
 
 #deals-table .group-header th {
-    background-color: transparent;
+    background-color: transparent !important;
     color: #75afd1;
     font-size: 110%;
-    border: none;
+    border: none !important;
     height: 44px !important;
     padding: 0 8px !important;
     box-sizing: border-box !important;
@@ -1044,8 +1048,6 @@ body.home-background::before {
 .trend-rising-red { color: red; font-weight: bold; }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
-.spinner-inline { width: 15px; height: 15px; border-width: 2px; display: none; margin: 0; vertical-align: middle; }
-.spinner-small { width: 12px; height: 12px; margin-left: 5px; border-width: 2px; vertical-align: middle; }
 .action-message { font-size: 1.1em; margin-right: 10px; color: white; }
 .action-strong-red { color: #ff4d4d; }
 .action-strong-white { color: white; }
