@@ -32,6 +32,14 @@ body.gradient-background {
   100% { background-position: 0% 50%; }
 }
 
+/* New Site Background Gradient (matches Background.png) */
+body.site-background {
+  background: linear-gradient(180deg, #000000 0%, #0e1420 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
 /* Home page specific background image */
 body.home-background::before {
     content: '';
