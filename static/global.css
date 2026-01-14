@@ -34,7 +34,7 @@ body.gradient-background {
 
 /* New Site Background Gradient (matches Background.png) */
 body.site-background {
-  background: linear-gradient(180deg, #000000 0%, #0e1420 100%);
+  background: linear-gradient(to bottom, #000000 0px, #162232 600px, #162232 100%);
   background-attachment: fixed;
   background-repeat: no-repeat;
   min-height: 100vh;
