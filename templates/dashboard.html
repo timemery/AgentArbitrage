@@ -5,9 +5,25 @@
     Recalculating deals with new settings... The table will refresh automatically when complete.
 </div>
 <div class="dashboard-content-wrapper">
-    <div class="filters-container">
+    <div class="filter-toggle-row">
+        <button id="filter-toggle-btn" class="filter-toggle-btn">
+            <img src="{{ url_for('static', filename='filter.svg') }}" class="filter-icon">
+            <span>Filters</span>
+        </button>
+    </div>
+    <div id="filter-panel" class="filter-panel">
         <form id="filter-form">
             <div class="filter-group-left">
+                <!-- Toggles (Stubs) -->
+                <div class="filter-item toggle-stub">
+                    <label>Hide Gated</label>
+                    <div class="toggle-switch-ui"></div>
+                </div>
+                <div class="filter-item toggle-stub">
+                    <label>Hide AMZ</label>
+                    <div class="toggle-switch-ui"></div>
+                </div>
+
                 <!-- <div class="filter-item">
                     <label for="keyword_search">Keyword Search:</label>
                     <input type="text" id="keyword_search" name="keyword" class="styled-text-field">
@@ -64,9 +80,7 @@
     <div class="deal-counter-wrapper">
         <span id="deal-counter"></span>
         <a href="#" id="refresh-deals-link" class="refresh-link">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="refresh-icon">
-                <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
-            </svg>
+            <img src="{{ url_for('static', filename='refresh.svg') }}" alt="Refresh" class="refresh-icon">
             <span id="refresh-text">Refresh Deals</span>
         </a>
     </div>
@@ -194,6 +208,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const dealCounterSpan = document.getElementById('deal-counter');
     const refreshDealsLink = document.getElementById('refresh-deals-link');
     const refreshText = document.getElementById('refresh-text');
+
+    // Filter Panel Toggle
+    const filterToggleBtn = document.getElementById('filter-toggle-btn');
+    const filterPanel = document.getElementById('filter-panel');
+
+    if (filterToggleBtn && filterPanel) {
+        filterToggleBtn.addEventListener('click', () => {
+            filterPanel.classList.toggle('expanded');
+        });
+    }
 
     // --- New Slider Logic ---
     const salesRankSteps = [
@@ -514,9 +538,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'last_price_change') {
                         let timeAgo = formatTimeAgo(value);
                         let trendArrow = deal.Trend || '';
-                        // Only add spacing if there is an arrow
-                        if (trendArrow) {
-                            value = `<span>${trendArrow} ${timeAgo}</span>`;
+
+                        let arrowHtml = '';
+                        if (trendArrow.includes('⇩') || trendArrow.includes('⬇')) {
+                            arrowHtml = '<span class="trend-arrow-down">⬇</span>';
+                        } else if (trendArrow.includes('⇧') || trendArrow.includes('⬆')) {
+                            arrowHtml = '<span class="trend-arrow-up">⬆</span>';
+                        } else if (trendArrow.includes('⇨') || trendArrow.includes('➡') || trendArrow.includes('->')) {
+                             arrowHtml = '<span class="trend-arrow-right">➡</span>';
+                        } else {
+                            arrowHtml = trendArrow;
+                        }
+
+                        if (arrowHtml) {
+                            value = `<span>${arrowHtml} ${timeAgo}</span>`;
                         } else {
                             value = timeAgo;
                         }
@@ -543,24 +578,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         switch (deal.restriction_status) {
                             case 'restricted':
                                 if (deal.approval_url && deal.approval_url !== 'ERROR') {
-                                    gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
+                                    gatedContent = `<a href="${deal.approval_url}" target="_blank" class="action-btn-pill btn-gated" onclick="event.stopPropagation()">Apply</a>`;
                                 } else {
-                                    gatedContent = `<span class="restricted-text" style="color: #ff4d4d; font-weight: bold;">Restricted</span>`;
+                                    gatedContent = `<span class="action-btn-pill btn-restricted">Restr.</span>`;
                                 }
                                 break;
                             case 'not_restricted':
-                                // Show Buy button (Greenish)
-                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #28a745;" onclick="event.stopPropagation()">Buy</a>`;
+                                // Show Buy button (Green)
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="action-btn-pill btn-buy" onclick="event.stopPropagation()">Buy</a>`;
                                 break;
                             case 'error':
-                                gatedContent = '<span class="status-icon error" title="API Error">⚠</span>';
+                                gatedContent = '<span class="icon-warning" title="API Error">⚠</span>';
                                 break;
                             case 'pending_check':
                                 gatedContent = '<div class="spinner"></div>';
                                 break;
                             default:
                                 // Fallback to "View" if status unknown
-                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #6c757d;" onclick="event.stopPropagation()">View</a>`;
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="action-btn-pill" style="background-color: #6c757d; border: 1px solid #6c757d;" onclick="event.stopPropagation()">View</a>`;
                         }
                         table += `<td>${gatedContent}</td>`;
                     } else if (col === 'Title') {
@@ -592,16 +627,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'Offers') {
                         // Style the trend arrow
                         if (value && typeof value === 'string') {
-                            if (value.includes('↘')) {
-                                value = value.replace('↘', '<span class="trend-falling-green">↘</span>');
-                            } else if (value.includes('↗')) {
-                                value = value.replace('↗', '<span class="trend-rising-red">↗</span>');
+                            if (value.includes('↘') || value.includes('⬇')) {
+                                value = value.replace(/↘|⬇/g, '<span class="trend-arrow-down">↘</span>');
+                            } else if (value.includes('↗') || value.includes('⬆')) {
+                                value = value.replace(/↗|⬆/g, '<span class="trend-arrow-up">↗</span>');
                             }
                         }
                         table += `<td>${value}</td>`;
                     } else if (col === 'AMZ') {
                         if (value === '⚠️') {
-                            table += `<td class="amz-warning-cell">${value}</td>`;
+                            table += `<td class="amz-warning-cell"><span class="icon-warning">⚠️</span></td>`;
                         } else {
                             table += `<td></td>`;
                         }
