@@ -1,6 +1,28 @@
 /* Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+:root {
+  /* Color System - Based on Interface_AA_COLOR-SPECS.png (Display P3) */
+  --color-primary-fill: #566e9e;
+  --color-primary-outline: #7397c2;
+
+  --color-success-fill: #034106;
+  --color-success-outline: #06610b;
+
+  --color-warning-fill: #8a3c04;
+  --color-warning-outline: #a54805;
+
+  --color-muted-text: #a3aec0;
+
+  --color-bg-dark-1: #1f293c;
+  --color-bg-dark-2: #304163;
+
+  /* Status Arrows */
+  --color-arrow-red: #ff0000;
+  --color-arrow-orange: #de880d;
+  --color-arrow-green: #00c309;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -103,9 +125,9 @@ h1, h2, h3 {
 }
 
 button, .button, input[type="submit"] {
-  background-color: transparent;
+  background-color: var(--color-primary-fill);
   color: white;
-  border: 1px solid white;
+  border: 1px solid var(--color-primary-outline); /* Or none if preferred, but outline defined in spec */
   padding: 12px 24px;
   font-size: 1.1em;
   border-radius: 8px;
@@ -116,7 +138,7 @@ button, .button, input[type="submit"] {
 }
 
 button:hover:not(:disabled), .button:hover, input[type="submit"]:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  filter: brightness(1.1);
 }
 
 /* Styles from guided_learning.html & results.html */
@@ -1072,19 +1094,19 @@ body.home-background::before {
 }
 
 .overlay-buy-btn {
-    background-color: transparent;
+    background-color: var(--color-success-fill);
     color: white;
-    border: 1px solid white;
+    border: 1px solid var(--color-success-outline);
     padding: 6px 20px;
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
     font-size: 0.9em;
     border-radius: 8px;
-    transition: background-color 0.3s ease;
+    transition: filter 0.3s ease;
 }
 .overlay-buy-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    filter: brightness(1.1);
 }
 
 .gated-status {
@@ -1121,18 +1143,18 @@ body.home-background::before {
 .yellow-action-btn {
     display: inline-block;
     padding: 6px 20px;
-    background-color: #e67e22;
+    background-color: var(--color-warning-fill);
     color: white;
     text-decoration: none;
     border-radius: 4px;
     font-size: 1em;
     font-weight: bold;
-    border: none;
+    border: 1px solid var(--color-warning-outline);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: filter 0.2s;
 }
 .yellow-action-btn:hover {
-    background-color: #d35400;
+    filter: brightness(1.1);
     text-decoration: none;
     color: white;
 }
@@ -1340,24 +1362,38 @@ body.home-background::before {
 .text-muted-custom {
     display: block;
     margin-top: 0.5rem;
-    color: #ccc;
+    color: var(--color-muted-text);
 }
 .btn-connect-amazon {
-    background-color: #ffc107;
-    color: #333;
+    background-color: var(--color-warning-fill);
+    color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
     display: inline-block;
     margin-bottom: 20px;
+    border: 1px solid var(--color-warning-outline);
+    transition: filter 0.2s;
 }
+
+.btn-connect-amazon:hover {
+    filter: brightness(1.1);
+    color: white;
+    text-decoration: none;
+}
+
 .btn-secondary-custom {
-    background-color: #6c757d;
+    background-color: var(--color-primary-fill);
     color: white;
     padding: 8px 16px;
-    border: none;
+    border: 1px solid var(--color-primary-outline);
     border-radius: 4px;
     cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn-secondary-custom:hover {
+    filter: brightness(1.1);
 }
 .settings-fieldset {
     border: none;
