@@ -1,5 +1,5 @@
 /* Global Styles */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;700&display=swap');
 
 body {
   margin: 0;
@@ -1376,3 +1376,229 @@ body.home-background::before {
 }
 .mb-0 { margin-bottom: 0; }
 .card-margin-top { margin-top: 20px; }
+
+/* -------------------------------------------------------------------------- */
+/* NEW FILTER PANEL STYLES (Collapsible)                                      */
+/* -------------------------------------------------------------------------- */
+
+.filter-panel {
+    width: 1333px;
+    background-color: #1f293c;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    margin: 0 auto 20px auto; /* Centered horizontally */
+    box-sizing: border-box;
+    transition: height 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    margin-top: 15px; /* Approx 135px from top given header height ~120px */
+    font-family: 'Open Sans', sans-serif;
+}
+
+.filter-panel-closed {
+    height: 42px;
+}
+
+.filter-panel-open {
+    height: 92px;
+}
+
+/* Common Flex Layouts */
+.panel-content-closed, .panel-content-open {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.panel-content-closed {
+    padding: 0 18px 0 15px;
+}
+
+.panel-content-open {
+    padding: 0 23px 0 15px; /* 23px from right edge */
+}
+
+/* Hide content based on state */
+.filter-panel-closed .panel-content-open {
+    display: none;
+}
+.filter-panel-open .panel-content-closed {
+    display: none;
+}
+
+/* Left Side: Icon & Text */
+.panel-left {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.filter-icon-toggle {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-right: 0;
+}
+
+/* Open state padding adjustment */
+.filter-panel-open .filter-icon-toggle {
+    margin-right: 45px; /* Padding of 45px between the filter icon and the first slider */
+}
+.filter-panel-closed .filter-icon-toggle {
+    margin-right: 18px; /* Padding of 18px between the filter icon and the text */
+}
+
+/* Closed State Text */
+.deals-found-text {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #ffffff;
+    vertical-align: middle;
+}
+
+.panel-right {
+    display: flex;
+    align-items: center;
+    gap: 18px; /* 18px separation */
+}
+
+.new-deals-text {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    color: #a3aec0;
+}
+
+.refresh-link-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.refresh-link-panel img {
+    width: 16px;
+    height: 16px;
+}
+
+.refresh-text-white {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: #ffffff;
+}
+
+/* Open State Content */
+.sliders-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Padding of 30px between each slider */
+    height: 100%;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Left aligned */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.filter-item label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: #ffffff;
+    white-space: nowrap;
+    margin-bottom: 20px; /* Padding of 20px between it and the slider */
+    height: auto;
+    line-height: 1;
+}
+
+.slider-value-readout {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    color: #a3aec0;
+    margin-left: 4px;
+}
+
+.slider-container-new {
+    width: 132px; /* Shortened to 132px */
+    height: 18px; /* Height to contain thumb */
+    display: flex;
+    align-items: center;
+}
+
+/* Custom Range Slider */
+.custom-slider {
+    -webkit-appearance: none;
+    width: 132px; /* Shortened to 132px */
+    height: 10px; /* Track Height */
+    background: #304163; /* Track Color */
+    border-radius: 5px; /* Assumed radius for track */
+    outline: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; /* Thumb Size */
+    height: 18px;
+    border-radius: 50%; /* Rounded 50% */
+    background: #566e9e; /* Thumb Color */
+    border: 1px solid #7397c2; /* Thumb Border */
+    cursor: pointer;
+    box-shadow: none;
+    margin-top: 0; /* Center on track? Default behavior usually centers. */
+}
+
+.custom-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #566e9e;
+    border: 1px solid #7397c2;
+    cursor: pointer;
+    border: none;
+}
+
+/* Buttons */
+.panel-right-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px; /* 5px padding separating the two buttons */
+    height: 100%;
+}
+
+.filter-btn {
+    width: 52px;
+    height: 28px;
+    background-color: #566e9e;
+    border: 2px solid #7397c2; /* 2px border */
+    border-radius: 4px; /* Standard radius */
+    color: #ffffff;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.filter-btn:hover {
+    opacity: 0.9;
+}
