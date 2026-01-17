@@ -74,6 +74,18 @@
                             <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
                         </div>
                     </div>
+
+                     <!-- New Checkboxes -->
+                     <div class="checkboxes-wrapper">
+                         <div class="checkbox-item">
+                             <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
+                             <label for="hide_gated">Hide Gated</label>
+                         </div>
+                         <div class="checkbox-item">
+                             <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
+                             <label for="hide_amz">Hide AMZ Offers</label>
+                         </div>
+                     </div>
                  </form>
             </div>
             <div class="panel-right-buttons">
@@ -207,6 +219,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const percentDownSlider = document.getElementById('percent_down_slider');
     const percentDownValueSpan = document.getElementById('percent-down-value');
     const hiddenPercentDownInput = document.getElementById('percent_down');
+
+    const hideGatedInput = document.getElementById('hide_gated');
+    const hideAmzInput = document.getElementById('hide_amz');
 
     const dealCounterClosed = document.getElementById('deal-counter-closed');
     const refreshLinkClosed = document.getElementById('refresh-link-closed');
@@ -437,6 +452,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sellerTrust && sellerTrust !== '0') filters['seller_trust_gte'] = sellerTrust;
         if (profit && profit !== '0') filters['profit_gte'] = profit;
         if (percentDown && percentDown !== '0') filters['percent_down_gte'] = percentDown;
+
+        if (hideGatedInput.checked) filters['hide_gated'] = 1;
+        if (hideAmzInput.checked) filters['hide_amz'] = 1;
 
         return filters;
     }
@@ -771,6 +789,10 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenSellerTrustInput.value = '0';
         hiddenProfitInput.value = '0';
         hiddenPercentDownInput.value = '0';
+
+        // Reset Checkboxes
+        hideGatedInput.checked = false;
+        hideAmzInput.checked = false;
 
         // Reset State
         currentPage = 1;
