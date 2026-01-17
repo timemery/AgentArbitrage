@@ -1530,7 +1530,7 @@ body.home-background::before {
 
 .slider-value-readout {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
+    font-weight: 700;
     color: #a3aec0 !important; /* Force color per critique */
     margin-left: 8px; /* Changed from 4px to 8px per request */
 }
@@ -1590,8 +1590,8 @@ body.home-background::before {
 }
 
 .filter-btn {
-    width: 52px;
-    height: 28px;
+    width: 56px;
+    height: 32px;
     background-color: #566e9e;
     border: 2px solid #7397c2; /* 2px border */
     border-radius: 8px; /* Increased radius per critique */
@@ -1650,7 +1650,7 @@ body.home-background::before {
     width: 18px;
     height: 18px;
     background-color: transparent; /* Default background */
-    border: 1px solid #7397c2;
+    border: 2px solid #7397c2;
     border-radius: 2px; /* Standard small radius */
     cursor: pointer;
     position: relative;
