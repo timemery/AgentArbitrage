@@ -1602,3 +1602,9 @@ body.home-background::before {
 .filter-btn:hover {
     opacity: 0.9;
 }
+
+.filter-icon-toggle {
+    min-width: 24px;
+    min-height: 24px;
+    flex-shrink: 0;
+}
