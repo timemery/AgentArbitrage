@@ -1393,6 +1393,8 @@ body.home-background::before {
     position: relative;
     margin-top: 15px; /* Approx 135px from top given header height ~120px */
     font-family: 'Open Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .filter-panel-closed {
@@ -1516,7 +1518,7 @@ body.home-background::before {
     font-size: 12px;
     color: #ffffff;
     white-space: nowrap;
-    margin-bottom: 20px; /* Padding of 20px between it and the slider */
+    margin-bottom: 8px; /* Padding reduced to 8px per critique */
     height: auto;
     line-height: 1;
 }
@@ -1524,7 +1526,7 @@ body.home-background::before {
 .slider-value-readout {
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
-    color: #a3aec0;
+    color: #a3aec0 !important; /* Force color per critique */
     margin-left: 4px;
 }
 
@@ -1585,7 +1587,7 @@ body.home-background::before {
     height: 28px;
     background-color: #566e9e;
     border: 2px solid #7397c2; /* 2px border */
-    border-radius: 4px; /* Standard radius */
+    border-radius: 8px; /* Increased radius per critique */
     color: #ffffff;
     font-family: 'Open Sans', sans-serif;
     font-weight: 700;

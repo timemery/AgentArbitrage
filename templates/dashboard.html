@@ -872,8 +872,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (diff > 0) {
                 newDealsText.textContent = `${diff} New Deals found`;
+                newDealsText.style.display = 'inline';
             } else {
                  newDealsText.textContent = '0 New Deals found';
+                 newDealsText.style.display = 'none';
             }
         } catch (e) {
             console.error("Poll failed", e);
