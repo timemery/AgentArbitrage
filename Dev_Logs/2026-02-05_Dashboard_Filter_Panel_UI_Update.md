@@ -13,12 +13,14 @@ Implemented a comprehensive UI overhaul for the Dashboard Filter Panel based on 
   - `.filter-panel`: Base container styling (Background `#1f293c`, Border `#000000`, Radius 8px).
   - `.filter-panel-closed` / `.filter-panel-open`: Manage height transitions.
   - `.panel-content-closed` / `.panel-content-open`: Toggle visibility of internal content.
+- **Typography:** Explicitly enabled font smoothing (`-webkit-font-smoothing: antialiased`) for cleaner text rendering.
 
 ### 2. Custom Slider Controls
-- Implemented standard `<input type='range'>` elements with custom webkit styling to match the mockup.
+- Implemented standard `<input type='range'>` elements with custom webkit styling.
 - **Track:** 132px width, 10px height, color `#304163`.
-- **Thumb:** 18px circle, color `#566e9e`, 1px border `#7397c2`.
-- **Labels:** Open Sans Bold 12px, White. Readout values forced to `#a3aec0`.
+- **Thumb:** 18px circle, color `#566e9e`.
+- **Thumb Border:** Implemented as a **2px inner border** using `box-shadow: inset 0 0 0 2px #7397c2` to increase visual weight without affecting element dimensions.
+- **Labels:** Open Sans Bold 12px, White. Readout values `#a3aec0` with exactly **8px spacing** from the header text.
 
 ### 3. Action Logic (Apply vs. Reset)
 - **Apply Button:**
@@ -37,10 +39,11 @@ Implemented a comprehensive UI overhaul for the Dashboard Filter Panel based on 
   - To **Close**: Click `#filter-icon-open`.
 - **Assets:**
   - `filter.svg`: 24x24px, utilized for the main toggle.
-  - `refresh.svg`: Updated to a clean 24x24 viewBox but sized to **16x16px** via CSS (`.refresh-link-panel img`) as per specific user request.
+  - `refresh.svg`: Updated to a clean 24x24 viewBox but sized to **16x16px** via CSS (`.refresh-link-panel img`).
+- **Refresh Link:** explicitly removed hover underline (`text-decoration: none`).
 
 ### 5. "New Deals" Notification
-- Logic updated to strictly hide the "New Deals found" text (`display: none`) when the count is 0, reducing clutter in the closed state.
+- Logic updated to strictly hide the "New Deals found" text (`display: none`) when the count is 0, both on initial load and when manually refreshing via the link.
 
 ## Reference Code Snippets
 
@@ -68,5 +71,5 @@ filterIconOpen.addEventListener('click', () => toggleFilterPanel(false));
 ```
 
 ## Verification
-- Validated via Playwright script (`verify_ui.py`) capturing screenshots of both Open and Closed states.
+- Validated via Playwright script (`verify_final.py`) capturing screenshots of both Open and Closed states.
 - Confirmed correct rendering of stacked "Apply"/"Reset" buttons (28x52px).

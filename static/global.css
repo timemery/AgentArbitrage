@@ -792,7 +792,8 @@ button:disabled {
 }
 
 #sales-rank-value, #profit-margin-value, #profit-confidence-value, #seller-trust-value, #profit-value, #percent-down-value {
-    padding-left: 20px;
+    /* Padding removed to fix spacing issue */
+    padding-left: 0;
     color: rgba(102, 153, 204, 0.9);
 }
 
@@ -1482,6 +1483,10 @@ body.home-background::before {
     color: #ffffff;
 }
 
+.refresh-link-panel:hover {
+    text-decoration: none;
+}
+
 .refresh-link-panel img {
     width: 16px;
     height: 16px;
@@ -1527,7 +1532,7 @@ body.home-background::before {
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     color: #a3aec0 !important; /* Force color per critique */
-    margin-left: 4px;
+    margin-left: 8px; /* Changed from 4px to 8px per request */
 }
 
 .slider-container-new {
@@ -1557,9 +1562,10 @@ body.home-background::before {
     height: 18px;
     border-radius: 50%; /* Rounded 50% */
     background: #566e9e; /* Thumb Color */
-    border: 1px solid #7397c2; /* Thumb Border */
+    border: none;
+    /* 2px inner border using box-shadow per request */
+    box-shadow: inset 0 0 0 2px #7397c2;
     cursor: pointer;
-    box-shadow: none;
     margin-top: 0; /* Center on track? Default behavior usually centers. */
 }
 
@@ -1568,9 +1574,10 @@ body.home-background::before {
     height: 18px;
     border-radius: 50%;
     background: #566e9e;
-    border: 1px solid #7397c2;
-    cursor: pointer;
     border: none;
+    /* 2px inner border using box-shadow per request */
+    box-shadow: inset 0 0 0 2px #7397c2;
+    cursor: pointer;
 }
 
 /* Buttons */

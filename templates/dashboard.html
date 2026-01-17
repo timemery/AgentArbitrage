@@ -13,7 +13,7 @@
                 <span class="deals-found-text" id="deal-counter-closed">0 Deals Found</span>
             </div>
             <div class="panel-right">
-                <span class="new-deals-text" id="new-deals-text">0 New Deals found</span>
+                <span class="new-deals-text" id="new-deals-text" style="display: none;">0 New Deals found</span>
                 <a href="#" class="refresh-link-panel" id="refresh-link-closed">
                     <img src="{{ url_for('static', filename='refresh.svg') }}" alt="Refresh">
                     <span class="refresh-text-white" id="refresh-text-closed">Refresh Now</span>
@@ -847,6 +847,7 @@ document.addEventListener('DOMContentLoaded', function() {
             await fetchDeals(currentPage, currentSort.by, currentSort.order);
             refreshTextClosed.textContent = 'Refresh Now';
             newDealsText.textContent = '0 New Deals found'; // Reset new count
+            newDealsText.style.display = 'none'; // Hide it
         } catch (err) {
             console.error('Refresh failed:', err);
             refreshTextClosed.textContent = 'Refresh Failed';
