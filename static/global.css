@@ -1617,3 +1617,66 @@ body.home-background::before {
     min-height: 24px;
     flex-shrink: 0;
 }
+
+/* Checkbox Styling */
+.checkboxes-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px; /* Guessing gap based on mockup */
+    margin-left: 30px; /* "Spacing between check boxes & sliders: 30px" */
+    height: 100%;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Spacing between box and text */
+}
+
+.checkbox-item label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: #ffffff;
+    cursor: pointer;
+    margin-bottom: 0; /* Override default label margin */
+    line-height: 1; /* Align with checkbox */
+}
+
+.custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: transparent; /* Default background */
+    border: 1px solid #7397c2;
+    border-radius: 2px; /* Standard small radius */
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-checkbox:checked {
+    background-color: #566e9e; /* "Check Box Color: #566e9e" */
+    /* Checkmark in white */
+}
+
+.custom-checkbox:checked::after {
+    content: '';
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 1px;
+}
+
+/* Hover effect */
+.custom-checkbox:hover {
+    border-color: #a3aec0;
+}

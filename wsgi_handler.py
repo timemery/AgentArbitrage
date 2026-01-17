@@ -982,7 +982,9 @@ def api_deals():
         "profit_confidence_gte": request.args.get('profit_confidence_gte', type=int),
         "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
         "profit_gte": request.args.get('profit_gte', type=float),
-        "percent_down_gte": request.args.get('percent_down_gte', type=int)
+        "percent_down_gte": request.args.get('percent_down_gte', type=int),
+        "hide_gated": request.args.get('hide_gated', type=int),
+        "hide_amz": request.args.get('hide_amz', type=int)
     }
     where_clauses = []
     filter_params = []
@@ -1020,6 +1022,15 @@ def api_deals():
     if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
         where_clauses.append("\"Percent_Down\" >= ?")
         filter_params.append(filters["percent_down_gte"])
+
+    if filters.get("hide_gated") == 1:
+        # Exclude restricted items (is_restricted = 1).
+        # Include NULL (Pending), 0 (Not Restricted), -1 (Error).
+        where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+
+    if filters.get("hide_amz") == 1:
+        # Exclude items where Amazon is selling (AMZ column has warning icon '⚠️').
+        where_clauses.append("(d.\"AMZ\" IS NULL OR d.\"AMZ\" != '⚠️')")
 
 
     # --- Build and Execute Query ---
@@ -1397,10 +1408,31 @@ def deal_count():
                 "profit_confidence_gte": request.args.get('profit_confidence_gte', type=int),
                 "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
                 "profit_gte": request.args.get('profit_gte', type=float),
-                "percent_down_gte": request.args.get('percent_down_gte', type=int)
+                "percent_down_gte": request.args.get('percent_down_gte', type=int),
+                "hide_gated": request.args.get('hide_gated', type=int),
+                "hide_amz": request.args.get('hide_amz', type=int)
             }
             where_clauses = []
             filter_params = []
+
+            # Determine connection status for Gated check
+            # We need to join user_restrictions for the count if hide_gated is used.
+            is_sp_api_connected = session.get('sp_api_connected', False)
+            user_id = session.get('sp_api_user_id')
+
+            join_clause = ""
+            if filters.get("hide_gated") == 1 and is_sp_api_connected and user_id:
+                join_clause = f" LEFT JOIN user_restrictions AS ur ON deals.ASIN = ur.asin AND ur.user_id = ?"
+                # We need to inject user_id into params *before* filter params if we use it in JOIN
+                # But sqlite parameter order matters.
+                # Actually, filtering is in WHERE clause.
+                # If we put user_id in JOIN condition, it needs to be passed.
+                # Let's handle params order carefully.
+
+            # Param Handling for Join
+            params = []
+            if filters.get("hide_gated") == 1 and is_sp_api_connected and user_id:
+                params.append(user_id)
 
             if filters.get("sales_rank_current_lte") is not None:
                 where_clauses.append("\"Sales_Rank_Current\" <= ?")
@@ -1433,9 +1465,19 @@ def deal_count():
                 where_clauses.append("\"Percent_Down\" >= ?")
                 filter_params.append(filters["percent_down_gte"])
 
+            if filters.get("hide_gated") == 1 and is_sp_api_connected and user_id:
+                # Same logic as api_deals
+                where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+
+            if filters.get("hide_amz") == 1:
+                where_clauses.append("(deals.\"AMZ\" IS NULL OR deals.\"AMZ\" != '⚠️')")
+
             where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
 
-            cursor.execute(f"SELECT COUNT(*), MAX(id) FROM deals {where_sql}", filter_params)
+            # Add filter params to the main params list
+            params.extend(filter_params)
+
+            cursor.execute(f"SELECT COUNT(*), MAX(deals.id) FROM deals {join_clause} {where_sql}", params)
             row = cursor.fetchone()
             count = row[0] if row else 0
             max_id = row[1] if row and row[1] else 0
