@@ -5,70 +5,82 @@
     Recalculating deals with new settings... The table will refresh automatically when complete.
 </div>
 <div class="dashboard-content-wrapper">
-    <div class="filters-container">
-        <form id="filter-form">
-            <div class="filter-group-left">
-                <!-- <div class="filter-item">
-                    <label for="keyword_search">Keyword Search:</label>
-                    <input type="text" id="keyword_search" name="keyword" class="styled-text-field">
-                </div> -->
-                <div class="filter-item">
-                    <label for="percent_down_slider">Min. Below Avg.: <span id="percent-down-value">Any</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="0" class="slider" id="percent_down_slider">
-                        <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="profit_slider">Min. Profit: <span id="profit-value">Any</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="0" class="slider" id="profit_slider">
-                        <input type="hidden" id="profit" name="profit_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="min_profit_margin_slider">Min. Margin: <span id="profit-margin-value">Any</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="20" value="0" class="slider" id="min_profit_margin_slider">
-                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value">∞</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="20" value="20" class="slider" id="max_sales_rank_slider">
-                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="profit_confidence_slider">Min. Profit Trust: <span id="profit-confidence-value">Any</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="0" class="slider" id="profit_confidence_slider">
-                        <input type="hidden" id="profit_confidence" name="profit_confidence_gte" value="0">
-                    </div>
-                </div>
-                <div class="filter-item">
-                    <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value">Any</span></label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="10" value="0" class="slider" id="seller_trust_slider">
-                        <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
-                    </div>
-                </div>
+    <div class="filter-panel filter-panel-closed" id="filter-panel">
+        <!-- CLOSED STATE -->
+        <div class="panel-content-closed" id="panel-closed">
+            <div class="panel-left">
+                <img src="{{ url_for('static', filename='filter.svg') }}" class="filter-icon-toggle" id="filter-icon-closed" alt="Filter">
+                <span class="deals-found-text" id="deal-counter-closed">0 Deals Found</span>
             </div>
-            <div class="filter-buttons">
-                <button type="submit">Apply Filters</button>
-                <button type="reset" id="reset-filters">Reset</button>
+            <div class="panel-right">
+                <span class="new-deals-text" id="new-deals-text">0 New Deals found</span>
+                <a href="#" class="refresh-link-panel" id="refresh-link-closed">
+                    <img src="{{ url_for('static', filename='refresh.svg') }}" alt="Refresh">
+                    <span class="refresh-text-white" id="refresh-text-closed">Refresh Now</span>
+                </a>
             </div>
-        </form>
-    </div>
-    <div class="deal-counter-wrapper">
-        <span id="deal-counter"></span>
-        <a href="#" id="refresh-deals-link" class="refresh-link">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="refresh-icon">
-                <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
-            </svg>
-            <span id="refresh-text">Refresh Deals</span>
-        </a>
+        </div>
+
+        <!-- OPEN STATE -->
+        <div class="panel-content-open" id="panel-open">
+            <div class="panel-left">
+                 <img src="{{ url_for('static', filename='filter.svg') }}" class="filter-icon-toggle" id="filter-icon-open" alt="Filter">
+                 <form id="filter-form-new" class="sliders-wrapper">
+                     <!-- Min. Below Avg. -->
+                     <div class="filter-item">
+                        <label for="percent_down_slider">Min. Below Avg.: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
+                        <div class="slider-container-new">
+                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
+                            <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
+                        </div>
+                    </div>
+                    <!-- Min. Profit -->
+                    <div class="filter-item">
+                        <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
+                        <div class="slider-container-new">
+                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
+                            <input type="hidden" id="profit" name="profit_gte" value="0">
+                        </div>
+                    </div>
+                    <!-- Min. Margin -->
+                    <div class="filter-item">
+                        <label for="min_profit_margin_slider">Min. Margin: <span id="profit-margin-value" class="slider-value-readout">Any</span></label>
+                        <div class="slider-container-new">
+                            <input type="range" min="0" max="20" value="0" class="custom-slider" id="min_profit_margin_slider">
+                            <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
+                        </div>
+                    </div>
+                    <!-- Max. Sales Rank -->
+                    <div class="filter-item">
+                        <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
+                        <div class="slider-container-new">
+                            <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
+                            <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                        </div>
+                    </div>
+                    <!-- Min. Profit Trust -->
+                    <div class="filter-item">
+                        <label for="profit_confidence_slider">Min. Profit Trust: <span id="profit-confidence-value" class="slider-value-readout">Any</span></label>
+                        <div class="slider-container-new">
+                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_confidence_slider">
+                            <input type="hidden" id="profit_confidence" name="profit_confidence_gte" value="0">
+                        </div>
+                    </div>
+                    <!-- Min. Seller Trust -->
+                    <div class="filter-item">
+                        <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
+                        <div class="slider-container-new">
+                            <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
+                            <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
+                        </div>
+                    </div>
+                 </form>
+            </div>
+            <div class="panel-right-buttons">
+                <button type="button" class="filter-btn" id="btn-apply">Apply</button>
+                <button type="button" class="filter-btn" id="btn-reset">Reset</button>
+            </div>
+        </div>
     </div>
     <div class="table-container">
         <div id="deals-table"></div>
@@ -164,9 +176,14 @@ document.addEventListener('DOMContentLoaded', function() {
     /* Container logic removed as per instructions to remove layout container */
 
     const tableContainer = document.getElementById('deals-table');
-    const filterForm = document.getElementById('filter-form');
-    const resetBtn = document.getElementById('reset-filters');
+    // const filterForm = document.getElementById('filter-form'); // Removed
+    const btnApply = document.getElementById('btn-apply');
+    const btnReset = document.getElementById('btn-reset');
+    const filterPanel = document.getElementById('filter-panel');
+    const filterIconClosed = document.getElementById('filter-icon-closed');
+    const filterIconOpen = document.getElementById('filter-icon-open');
     const tooltip = document.getElementById('custom-tooltip');
+
     const salesRankSlider = document.getElementById('max_sales_rank_slider');
     const salesRankValueSpan = document.getElementById('sales-rank-value');
     const hiddenSalesRankInput = document.getElementById('max_sales_rank');
@@ -191,9 +208,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const percentDownValueSpan = document.getElementById('percent-down-value');
     const hiddenPercentDownInput = document.getElementById('percent_down');
 
-    const dealCounterSpan = document.getElementById('deal-counter');
-    const refreshDealsLink = document.getElementById('refresh-deals-link');
-    const refreshText = document.getElementById('refresh-text');
+    const dealCounterClosed = document.getElementById('deal-counter-closed');
+    const refreshLinkClosed = document.getElementById('refresh-link-closed');
+    const refreshTextClosed = document.getElementById('refresh-text-closed');
+    const newDealsText = document.getElementById('new-deals-text');
 
     // --- New Slider Logic ---
     const salesRankSteps = [
@@ -654,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const dealCount = pagination.total_records || 0;
         currentTotalRecords = dealCount; // Update global tracker with current FILTERED count
-        dealCounterSpan.textContent = `${dealCount.toLocaleString()} Deals Found`;
+        dealCounterClosed.textContent = `${dealCount.toLocaleString()} Deals Found`;
 
         if (totalPages <= 1) return;
 
@@ -703,13 +721,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    filterForm.addEventListener('submit', e => {
-        e.preventDefault();
+    function toggleFilterPanel(open) {
+        if (open) {
+            filterPanel.classList.remove('filter-panel-closed');
+            filterPanel.classList.add('filter-panel-open');
+        } else {
+            filterPanel.classList.remove('filter-panel-open');
+            filterPanel.classList.add('filter-panel-closed');
+        }
+    }
+
+    filterIconClosed.addEventListener('click', () => toggleFilterPanel(true));
+    filterIconOpen.addEventListener('click', () => toggleFilterPanel(false));
+
+    btnApply.addEventListener('click', () => {
         currentPage = 1;
         fetchDeals(currentPage, currentSort.by, currentSort.order);
+        toggleFilterPanel(false);
     });
 
-    resetBtn.addEventListener('click', (e) => {
+    btnReset.addEventListener('click', (e) => {
         // Prevent default form reset to handle it manually for better control
         e.preventDefault();
 
@@ -745,8 +776,8 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPage = 1;
         currentSort = { by: 'id', order: 'asc' };
 
-        // Fetch
-        fetchDeals(currentPage, currentSort.by, currentSort.order);
+        // Do NOT fetch immediately on reset as per requirements
+        // "reset them to default 'Any' and then clicks the 'Apply' button"
     });
 
     salesRankSlider.addEventListener('input', () => {
@@ -808,29 +839,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Refresh Logic ---
     let currentTotalRecords = 0;
 
-    refreshDealsLink.addEventListener('click', async (e) => {
+    refreshLinkClosed.addEventListener('click', async (e) => {
         e.preventDefault();
-        refreshText.textContent = 'Refreshing...';
-        refreshDealsLink.style.color = '#1976d2'; // Reset color
+        refreshTextClosed.textContent = 'Refreshing...';
 
         try {
-            /*
-            REMOVED (Jan 2026): Manual Janitor trigger was removed to prevent users from manually deleting "stale" deals.
-            We now rely solely on the automatic scheduled Janitor task (every 4h).
-            The logic remains in the backend (/api/run-janitor) if needed for debugging.
-
-            // Trigger Janitor first
-            await fetch('/api/run-janitor', { method: 'POST' });
-            */
-
-            // Then refresh grid
             await fetchDeals(currentPage, currentSort.by, currentSort.order);
-
-            refreshText.textContent = 'Refresh Deals';
+            refreshTextClosed.textContent = 'Refresh Now';
+            newDealsText.textContent = '0 New Deals found'; // Reset new count
         } catch (err) {
             console.error('Refresh failed:', err);
-            refreshText.textContent = 'Refresh Failed';
-            setTimeout(() => { refreshText.textContent = 'Refresh Deals'; }, 3000);
+            refreshTextClosed.textContent = 'Refresh Failed';
+            setTimeout(() => { refreshTextClosed.textContent = 'Refresh Now'; }, 3000);
         }
     });
 
@@ -851,11 +871,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const diff = serverCount - currentTotalRecords;
 
             if (diff > 0) {
-                refreshText.textContent = `${diff} New Deals found - Refresh Now`;
-                refreshDealsLink.style.color = '#e65100'; // Dark Orange
+                newDealsText.textContent = `${diff} New Deals found`;
             } else {
-                 refreshText.textContent = 'Refresh Deals';
-                 refreshDealsLink.style.color = '#1976d2';
+                 newDealsText.textContent = '0 New Deals found';
             }
         } catch (e) {
             console.error("Poll failed", e);
