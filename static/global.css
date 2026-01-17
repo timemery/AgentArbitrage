@@ -1,9 +1,5 @@
 /* Global Styles */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
-
-:root {
-    color-scheme: dark;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
   margin: 0;
@@ -14,7 +10,7 @@ body {
   flex-direction: column;
   justify-content: flex-start; /* Aligns content to the top */
   align-items: center;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   color: #ffffff;
   overflow-x: hidden; /* Prevent horizontal scrollbar from gradient animation */
   position: relative; /* Needed for z-indexing context */
@@ -196,10 +192,9 @@ a:hover {
     padding: 10px;
     font-size: 1em;
     margin-right: 10px;
-    border: 1px solid rgba(102, 153, 204, 0.5);
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
-    color: white;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 .show-form .login-button {
@@ -543,89 +538,103 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 100%;
-    border-spacing: 0 8px; /* Vertical gutter for floating rows */
-    border-collapse: separate;
-    font-family: 'Open Sans', sans-serif;
+    border-spacing: 0; /* Set spacing to 0 */
+    border-collapse: separate; /* Use separate model for manual control */
+    font-family: 'Roboto', sans-serif;
 }
 
 #deals-table th, #deals-table td {
-    padding: 0 12px;
+    padding: 8px;
     text-align: left;
-    white-space: nowrap;
+    /* Set border on bottom and right of each cell */
+    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    border-right: 1px solid rgba(102, 153, 204, 0.4);
+    border-top: 0;
+    border-left: 0;
+    white-space: nowrap; /* Prevent wrapping on all columns */
 }
 
-/* Header Cells */
+/* Add top border to all header cells */
 #deals-table th {
-    background-color: #15192b; /* Sticky background */
+    border-top: 1px solid rgba(102, 153, 204, 0.4);
+}
+
+/* Add left border to the first cell of each row */
+#deals-table tr > th:first-child,
+#deals-table tr > td:first-child {
+    border-left: 1px solid rgba(102, 153, 204, 0.4);
+}
+
+#deals-table th {
+    background-color: rgba(0, 0, 0, 0.2);
     color: white;
-    height: 32px;
-    border: none;
-    vertical-align: bottom;
-    padding-bottom: 8px;
-    cursor: default;
-    font-size: 12px;
-    font-weight: 700;
-    position: sticky;
-    z-index: 20;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-/* Group Header (Row 1) */
 #deals-table .group-header th {
-    background-color: #15192b !important;
-    height: 56px !important;
+    background-color: transparent !important;
     color: #75afd1;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 110%;
     border: none !important;
-    vertical-align: bottom;
-    padding-bottom: 4px !important;
+    height: 44px !important;
+    padding: 0 8px !important;
     box-sizing: border-box !important;
-    top: 0;
-    z-index: 22; /* Topmost */
 }
 
-/* Column Header (Row 2) */
-#deals-table thead tr:nth-child(2) th {
-    top: 56px;
-    z-index: 21;
+#deals-table td {
+    font-size: 14px;
+    font-weight: 300;
 }
 
-/* Data Rows (Floating) */
-.deal-row td {
-    background-color: #1f293c;
-    color: #ffffff;
-    height: 47px; /* EXACTLY 47px per spec */
-    border-top: 1px solid #000000;
-    border-bottom: 1px solid #000000;
-    font-size: 12px;
-    font-weight: 400;
-    vertical-align: middle;
-}
-
-.deal-row td:first-child {
-    border-left: 1px solid #000000;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-
-.deal-row td:last-child {
-    border-right: 1px solid #000000;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+.deal-row {
+    height: 55px;
 }
 
 .deal-row:hover td {
-    background-color: #304163 !important;
+    background-color: rgba(102, 153, 204, 0.15);
 }
 
-/* Sort Arrows integrated in TH - style for image */
-.th-sort-arrow {
+#deals-table th {
+    cursor: default; /* Remove pointer cursor from headers */
+}
+
+#deals-table .sort-arrows-row {
+    height: 18px;
+    max-height: 18px;
+}
+
+#deals-table .sort-arrows-row td {
+    background-color: #011b2a;
+    height: 18px !important;
+    max-height: 18px !important;
+    padding: 0 8px !important;
+    line-height: 18px;
+    border-right: none !important;
+    border-left: none !important;
+    /* The bottom border is inherited from the default td style, which is correct */
+}
+
+/* Add ONLY the outer borders back to the row */
+#deals-table .sort-arrows-row > td:first-child {
+    border-left: 1px solid rgba(102, 153, 204, 0.4) !important;
+}
+#deals-table .sort-arrows-row > td:last-child {
+    border-right: 1px solid rgba(102, 153, 204, 0.4) !important;
+}
+
+.sort-arrows-container {
+    display: flex;
+    align-items: center;
+    height: 18px;
+}
+
+.sort-arrow {
     width: 24px;
     height: 13px;
     cursor: pointer;
-    vertical-align: middle;
-    margin-left: 5px;
-    display: inline-block;
+    margin-right: 2px;
 }
 
 .buy-now-link {
@@ -719,117 +728,32 @@ button:disabled {
 }
 
 /* New Filter Styles */
-.filter-toggle-row {
+.filters-container {
     width: 100%;
+    margin-bottom: 40px; /* Padding between filters and table */
     display: flex;
-    justify-content: flex-start; /* Align left */
-    padding: 10px 0;
-    max-width: 1800px;
-}
-
-.filter-toggle-btn {
-    background-color: transparent;
-    border: 1px solid #7397c2;
-    color: #7397c2;
-    padding: 6px 12px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
-}
-
-.filter-toggle-btn:hover {
-    background-color: rgba(115, 151, 194, 0.1);
-    color: white;
-    border-color: white;
-}
-
-.filter-icon {
-    width: 16px;
-    height: 16px;
-}
-
-.filter-panel {
-    width: 100%;
-    max-width: 1800px;
-    background-color: #1f293c;
-    border: 1px solid #7397c2;
-    border-radius: 8px;
-    overflow: hidden;
-    height: 0;
-    opacity: 0;
-    transition: height 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
-    margin-bottom: 0;
-    box-sizing: border-box;
-}
-
-.filter-panel.expanded {
-    height: 92px; /* EXACTLY 92px per spec */
-    opacity: 1;
-    margin-bottom: 20px;
-    padding: 0 10px;
+    justify-content: center; /* Center the filter form */
 }
 
 #filter-form {
-    height: 100%;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-end;
     width: 100%;
+    max-width: 1800px; /* Match a reasonable max table width */
+    gap: 20px;
 }
 
 .filter-group-left {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 20px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    height: 100%;
-    width: 100%;
+    flex-wrap: wrap;
 }
 
 .filter-item {
     display: flex;
     flex-direction: column;
-    min-width: max-content;
-}
-
-.toggle-stub {
-    align-items: center;
-    margin-right: 10px;
-}
-
-.toggle-switch-ui {
-    width: 36px;
-    height: 18px;
-    background-color: #15192b;
-    border-radius: 9px;
-    position: relative;
-    border: 1px solid #555;
-    margin-top: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.toggle-switch-ui::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 12px;
-    height: 12px;
-    background-color: #555;
-    border-radius: 50%;
-    transition: left 0.2s ease, background-color 0.2s ease;
-}
-.toggle-switch-ui.active {
-    background-color: #336699;
-    border-color: #336699;
-}
-.toggle-switch-ui.active::after {
-    left: 18px;
-    background-color: #ffffff;
 }
 
 .filter-item label {
@@ -872,8 +796,7 @@ button:disabled {
     color: rgba(102, 153, 204, 0.9);
 }
 
-/* SCOPED Slider Styles for Dashboard Filter Panel */
-.filter-panel .slider {
+.slider {
   -webkit-appearance: none;
   width: 100%;
   height: 8px;
@@ -885,11 +808,11 @@ button:disabled {
   border: 1px solid rgba(102, 153, 204, 0.5);
 }
 
-.filter-panel .slider:hover {
+.slider:hover {
   opacity: 1;
 }
 
-.filter-panel .slider::-webkit-slider-thumb {
+.slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 18px;
@@ -900,7 +823,7 @@ button:disabled {
   border: 1px solid #003366;
 }
 
-.filter-panel .slider::-moz-range-thumb {
+.slider::-moz-range-thumb {
   width: 18px;
   height: 18px;
   background: #336699;
@@ -908,53 +831,6 @@ button:disabled {
   border-radius: 50%;
   border: 1px solid #003366;
 }
-
-/* Secondary Text */
-.trust-suffix, .time-suffix, .label {
-    color: #a3aec0;
-}
-
-/* Action Buttons (Pills) */
-.action-btn-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 28px;
-    width: 52px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    color: white;
-    transition: filter 0.2s;
-}
-
-.action-btn-pill:hover {
-    filter: brightness(1.2);
-    text-decoration: none;
-    color: white;
-}
-
-.btn-buy {
-    background-color: #034106;
-    border: 1px solid #06610b;
-}
-
-.btn-gated {
-    background-color: #8a3c04;
-    border: 1px solid #a54805;
-}
-
-.btn-restricted {
-    background-color: #8a0404;
-    border: 1px solid #a50505;
-}
-
-/* Trend Colors */
-.trend-arrow-right { color: #dc870d; font-weight: bold; }
-.trend-arrow-up { color: #dd080a; font-weight: bold; }
-.trend-arrow-down { color: #01be0a; font-weight: bold; }
-.icon-warning { color: #dc870d; font-size: 14px; }
 
 .filter-buttons {
     display: flex;
