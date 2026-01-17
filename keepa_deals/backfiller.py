@@ -235,8 +235,9 @@ def backfill_deals(reset=False):
 
                         from worker import celery_app
                         new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
-                        if new_asins:
-                            celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                        # Disabled temporarily due to Amazon permission issues
+                        # if new_asins:
+                        #     celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
                         celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
                         logger.info(f"--- Triggered downstream tasks for {len(new_asins)} ASINs. ---")
                     except sqlite3.Error as e:
