@@ -11933,5 +11933,1468 @@
         "advice": "Track for 20\u201330 day inventory turnover to ensure efficiency",
         "confidence": "High",
         "source": "20\u201330 day turnover"
+    },
+    {
+        "id": "oa011",
+        "category": "General",
+        "trigger": "Weekly sourcing routine",
+        "advice": "Select 3-5 retailers like Walmart/Target, pull clearance ads, run through Tactical Arbitrage with ROI/BSR filters, validate with Keepa and SellerAmp",
+        "confidence": "High",
+        "source": "Start by picking 3-5 reliable retailers. Walmart, Target, and office supply chains are a safe place to start. Pull their clearance and weekly ads. Run those through Tactical Arbitrage with filters set to your ROI and sales rank rules."
+    },
+    {
+        "id": "oa012",
+        "category": "Pricing",
+        "trigger": "Buy price $10, Amazon price $28 for small item",
+        "advice": "Calculate full fees (15% referral $4.20, FBA $5.50, inbound $0.35, storage/pre $0.50, low-inventory $0.40) for net profit $7.55 and 75% ROI",
+        "confidence": "High",
+        "source": "Say you buy a small kitchen item for $10. It sells on Amazon for $28... After subtracting all of those, your net is closer to $7.55 profit per unit. That\u2019s a 75% ROI on the $10 buy cost."
+    },
+    {
+        "id": "oa013",
+        "category": "Risk",
+        "trigger": "Authenticity checks",
+        "advice": "Use invoices within 365 days showing business name, supplier details, UPC/ASIN, and exact quantity; avoid retail receipts",
+        "confidence": "High",
+        "source": "The gold standard is an invoice issued within the last 365 days from an authorized distributor or manufacturer. It needs to show the following: Your business name, Supplier details, Product identifiers (UPC/ASIN), The exact quantity you purchased."
+    },
+    {
+        "id": "oa014",
+        "category": "General",
+        "trigger": "Scaling with VAs and prep centers",
+        "advice": "Create SOPs for lead vetting, purchase approval, shipments, restocking; track KPIs like 72% sell-through, 34% average ROI, 85% Buy Box",
+        "confidence": "High",
+        "source": "Start by writing simple SOPs: How leads are vetted, The rules for approving purchases... Include the following in your dashboard: Sell-through rate, Average ROI, Buy Box percentage."
+    },
+    {
+        "id": "sean1",
+        "category": "Buying",
+        "trigger": "Daily budget <= $70",
+        "advice": "Aim to purchase books equaling at least $150 profit to hedge risk and estimate $100/day income",
+        "confidence": "High",
+        "source": "I spend no more than $70 daily and aim to purchase books that equal at least $150 profit. My logic is that if I source books worth $150 profit I will sell 70% of those books in two months or less. This gives me an estimated $100/day ($36k annually). I use this estimation to hedge risk."
+    },
+    {
+        "id": "sean2",
+        "category": "Buying",
+        "trigger": "Sales rank < 1,000,000",
+        "advice": "Target books to flip as fast as possible",
+        "confidence": "High",
+        "source": "I target books with a sales rank of <1 million because I want to flip them as fast as possible."
+    },
+    {
+        "id": "sean3",
+        "category": "Buying",
+        "trigger": "Sales rank > 2,000,000 for beginners",
+        "advice": "Avoid high ranks; recommend <=2M for quicker results and validation",
+        "confidence": "High",
+        "source": "For beginners I recommend a sales rank of 2M or less (less is always better). That way you can see results quicker and validate the business for yourself."
+    },
+    {
+        "id": "sean4",
+        "category": "General",
+        "trigger": "Profitable eBay search found",
+        "advice": "Copy and paste the search URL into a document for quick reuse to save time",
+        "confidence": "High",
+        "source": "If you find a profitable book using specific filter criteria on eBay, copy and paste the URL of that search and put it in a document somewhere. That way when you source again you can just paste the URL into the web browser and it will take you directly to that search."
+    },
+    {
+        "id": "sean5",
+        "category": "Buying",
+        "trigger": "Previous sales in Amazon Seller Central",
+        "advice": "Analyze orders and buy more copies of books that have already sold for proven profitability",
+        "confidence": "High",
+        "source": "Analyze your previous orders in Amazon Seller Central and see if you can buy more of those books you\u2019ve already sold. This is great because it\u2019s already proven that the books will sell."
+    },
+    {
+        "id": "mike1",
+        "category": "Buying",
+        "trigger": "Markup around 5x buy price",
+        "advice": "Target huge markups when not buying large quantities",
+        "confidence": "High",
+        "source": "I like to have huge markups \u2013 somewhere around 5x my buying price."
+    },
+    {
+        "id": "mike2",
+        "category": "Buying",
+        "trigger": "Sales rank 100,000-300,000",
+        "advice": "Prefer this range but go higher if markup is good; less concern due to seasonal rank improvements",
+        "confidence": "High",
+        "source": "As far as sales rank \u2013 I love to be in the 100K-300K range but I\u2019ll go higher if the markup is good. I\u2019m not too concerned with sales rank because I figure if a book is ranked 750K in the off season, it\u2019s going to climb way up during peak seasons."
+    },
+    {
+        "id": "mike3",
+        "category": "Risk",
+        "trigger": "Starting out",
+        "advice": "Start slow and develop a system before investing large amounts",
+        "confidence": "High",
+        "source": "I would definitely advise to start off slow and develop a system before you pour a ton of cash into it."
+    },
+    {
+        "id": "jason1",
+        "category": "Buying",
+        "trigger": "Sales rank < 150,000 and >=50% ROI",
+        "advice": "Target for faster return and guaranteed flip",
+        "confidence": "High",
+        "source": "For me it\u2019s books less than 150,000 when it comes to online arbitrage and I want to make at least a 50% return. This is because I\u2019m looking for a faster return and guaranteed flip."
+    },
+    {
+        "id": "jason2",
+        "category": "Buying",
+        "trigger": "High ROI opportunity (e.g., 50% return)",
+        "advice": "Willing to pay more (up to $70) treating books as products, not limited by 'book' mindset",
+        "confidence": "High",
+        "source": "Some books are worth paying more for. It\u2019s a product not a book. There\u2019s a mindset that we shouldn\u2019t pay much for books but I\u2019ll pay $70 for a 50% return on clothing. Why not similar thinking for a book?"
+    },
+    {
+        "id": "jason3",
+        "category": "General",
+        "trigger": "To scale business",
+        "advice": "Outsource cleaning, listing, and shipping to a trusted employee with limited Seller Central access to double profitability",
+        "confidence": "High",
+        "source": "I pay a trusted employee to clean, list, and ship my books. ... You\u2019ll easily double your profitability if you do this and what many people don\u2019t know is that you can give an employee access to the account but limit what they can see using settings found in seller central."
+    },
+    {
+        "id": "michael1",
+        "category": "Buying",
+        "trigger": "Sales rank < 250,000 preferred",
+        "advice": "Examine individually; avoid closer to 1M unless confident sell within 6 months",
+        "confidence": "High",
+        "source": "I try not to invest too much into items with ranks closer to a million. I prefer to stay under 250K rank, but I examine each situation individually."
+    },
+    {
+        "id": "michael2",
+        "category": "Buying",
+        "trigger": "Profitable title found",
+        "advice": "Buy no more than 10 copies usually, up to 20 from poor pricers",
+        "confidence": "High",
+        "source": "I usually don\u2019t buy more than 10 copies of a title at a time, however I have purchased as many as 20 from a single seller with poor pricing mechanics."
+    },
+    {
+        "id": "michael3",
+        "category": "Buying",
+        "trigger": "Daily sales over $20",
+        "advice": "Check merchant price and buy copies (sometimes lots) if profitable for MFN to FBA flips",
+        "confidence": "High",
+        "source": "I started checking my sales daily (over 100-200 sales a day at this point) and I would look at sales over $20 and check what the merchant price was. If it was profitable I would buy copies. Sometimes lots of copies."
+    },
+    {
+        "id": "michael4",
+        "category": "Pricing",
+        "trigger": "Low merchant fulfilled offers",
+        "advice": "Buy out offers to raise the lowest price and increase your FBA sales price",
+        "confidence": "High",
+        "source": "This would lead me to buying out merchant offers so my higher price could be lower in the search results. ... Probably recognizing when you\u2019ve made a sale that is repeatable and using that to buy more copies, in conjunction with buying out other peoples offers to raise the price of the lowest offer."
+    },
+    {
+        "id": "michael5",
+        "category": "Seasonality",
+        "trigger": "Off-season for textbooks",
+        "advice": "Buy low (pennies) and sell high during peak seasons JUL-AUG or DEC-JAN",
+        "confidence": "High",
+        "source": "buying textbooks in the off season at very low prices, and then pricing them quite high and slow selling them during textbook season. ... Also, buying textbooks in the off season for pennies and selling them in JUL-AUG or DEC-JAN."
+    },
+    {
+        "id": "michael6",
+        "category": "Pricing",
+        "trigger": "Setting FBA prices",
+        "advice": "Do not price against merchant fulfilled offers; FBA has advantages and 90% of customers prefer it",
+        "confidence": "High",
+        "source": "Remember that if you are selling an item FBA it has many advantages over a merchant fulfilled item, so you shouldn\u2019t be pricing against merchant offers. They are not your competition. I forget where I read it, but I once read a statement that said something like \u201c90% of Amazon customers have never purchased anything that wasnt fulfilled by Amazon\u201d."
+    },
+    {
+        "id": "michael7",
+        "category": "General",
+        "trigger": "Before investing",
+        "advice": "Use CamelCamelCamel and Keepa to check sales history and rank behavior; invest more than $25 on winners",
+        "confidence": "High",
+        "source": "I use CamelCamelCamel and Keepa to see the sales history of an item. ... When I first started doing this, I didn;t know what I know now about rank and how it behaves. I didn\u2019t know about CamelCamelCamel or Keepa. On top of that I was scared to invest more than $25 into a book. Dont be scared to invest when you find winners, and know all the tools you have available to you and use them wisely."
+    },
+    {
+        "id": "ta-library-search",
+        "category": "Buying",
+        "trigger": "Sourcing media products like books",
+        "advice": "Use Library Search in Tactical Arbitrage to locate profitable books from Amazon and specialty sellers",
+        "confidence": "High",
+        "source": "Library Search: Locate profitable media products (books, CDs, DVDs) from Amazon and specialty sellers"
+    },
+    {
+        "id": "manual-vs-automated",
+        "category": "General",
+        "trigger": "Manual product analysis",
+        "advice": "Avoid manual sourcing limited to 50 products per hour with 2-3 profitable opportunities; use tools to evaluate 1,000+ products per hour",
+        "confidence": "High",
+        "source": "A dedicated person might analyze 50 products per hour and find maybe 2-3 profitable opportunities. ... The same person using tools can evaluate 1,000+ products per hour"
+    },
+    {
+        "id": "time-efficiency",
+        "category": "General",
+        "trigger": "High manual effort",
+        "advice": "Reduce weekly sourcing time from 40+ hours to 5-10 hours by using automated tools",
+        "confidence": "High",
+        "source": "Manual sourcing requires 40+ hours weekly for a modest income. Tools compress this to 5-10 hours"
+    },
+    {
+        "id": "beginner-quick-picks",
+        "category": "Buying",
+        "trigger": "New sellers with learning curve",
+        "advice": "Use Quick Picks in Tactical Arbitrage to browse thousands of pre-analyzed profitable opportunities without complex searches",
+        "confidence": "High",
+        "source": "For beginners, the platform\u2019s Quick Picks feature shows thousands of pre-analyzed profitable opportunities. ... This removes the learning curve"
+    },
+    {
+        "id": "volume-tool-selection",
+        "category": "General",
+        "trigger": "Low-volume sellers (under 50 products monthly)",
+        "advice": "Use simpler, cheaper tools for under 50 products monthly; scale to batch processing for 50-500 products",
+        "confidence": "High",
+        "source": "Low-volume sellers (under 50 products monthly) can use simpler, cheaper tools. Medium-volume sellers (50-500 products monthly) need batch processing capabilities"
+    },
+    {
+        "id": "budget-consideration",
+        "category": "General",
+        "trigger": "Multiple tool subscriptions",
+        "advice": "Bundle tools like Seller 365 for $69/month instead of $300+ on separate tools to save costs",
+        "confidence": "High",
+        "source": "Most sellers spend $300+ monthly on separate sourcing, prep, repricing, and analytics tools. Seller 365 provides everything for $69/month"
+    },
+    {
+        "id": "bsr-limit",
+        "category": "Buying",
+        "trigger": "BSR > 100,000",
+        "advice": "Avoid purchasing or listing books with Best Seller Rank exceeding 100,000, as they sell slower; target BSR under 100,000 for faster sales.",
+        "confidence": "High",
+        "source": "the BSR of the book you want to sell on Amazon shouldn\u2019t exceed the 100.000 mark."
+    },
+    {
+        "id": "profit-threshold",
+        "category": "Pricing",
+        "trigger": "Net profit < 3 USD after costs and fees",
+        "advice": "Ensure each book yields at least 3 USD net profit after deducting costs and Amazon fees; aim for 4 USD or more for better margins.",
+        "confidence": "High",
+        "source": "After deducting all costs and Amazon fees, the net profit should be at least 3 USD for books \u2013 4 USD is better."
+    },
+    {
+        "id": "seller-account-type",
+        "category": "General",
+        "trigger": "Expected sales > 40 per month",
+        "advice": "Switch to Professional Seller Account ($39.95/month) if selling more than 40 books per month to avoid per-sale fees; start with Individual ($0.99 per sale) if lower volume.",
+        "confidence": "High",
+        "source": "if you sell more than 40 products per month, a Professional Seller Account is totally worth it."
+    },
+    {
+        "id": "book-condition-honesty",
+        "category": "Risk",
+        "trigger": "Book condition misrepresented",
+        "advice": "Accurately describe book condition (e.g., new, like new, good, acceptable, used) to avoid negative reviews and maintain seller rating.",
+        "confidence": "High",
+        "source": "You need to state the condition of the book correctly. If you describe your book as being in good conditon when it is really in poor condition, then you may get bad reviews."
+    },
+    {
+        "id": "pricing-strategy",
+        "category": "Pricing",
+        "trigger": "Price set too high",
+        "advice": "Set competitive prices, as the lowest price usually wins the Buy Box; monitor margins to ensure profitability.",
+        "confidence": "High",
+        "source": "Don\u2019t set the price too high. The lowest price usually wins the buy box."
+    },
+    {
+        "id": "avoid-fiction",
+        "category": "Buying",
+        "trigger": "Fiction books",
+        "advice": "Avoid fiction books as they have larger print runs, are less rare, and sell slower than non-fiction; focus on non-fiction for better sales.",
+        "confidence": "High",
+        "source": "Fiction: As stated earlier, fiction books tend to not do as well as non-fiction books on Amazon."
+    },
+    {
+        "id": "avoid-childrens-books",
+        "category": "Buying",
+        "trigger": "Children\u2019s books",
+        "advice": "Steer clear of children\u2019s books due to quick outgrowing, low resale value, and lower pricing leading to minimal profits.",
+        "confidence": "High",
+        "source": "Children\u2019s Books: Children\u2019s books are difficult to sell because of their lack of staying power. Children outgrow their books quickly so they are not worth much to buyers."
+    },
+    {
+        "id": "avoid-popular-new-books",
+        "category": "Buying",
+        "trigger": "Popular new books",
+        "advice": "Do not source popular new books, especially hardcovers or non-fiction, as Amazon's pricing makes it hard to compete profitably.",
+        "confidence": "High",
+        "source": "Popular New Books: Popular new books won\u2019t do as well older rare books. Sellers will even have trouble pushing new hardcover and non-fiction books."
+    },
+    {
+        "id": "prefer-hardcovers",
+        "category": "Buying",
+        "advice": "Prioritize hardcovers over paperbacks as they are more durable, can be priced higher, and yield better profits.",
+        "confidence": "High",
+        "source": "Hardcovers: People tend to prefer hardcovers because they are a durable choice. Sellers can also price hardcovers higher and hopefully turn more of a profit."
+    },
+    {
+        "id": "niche-collectibles",
+        "category": "Buying",
+        "trigger": "Niche, comic, or collectible books (e.g., first editions, autographed, limited runs)",
+        "advice": "Target niche books, comics with first appearances/limited runs, and collectibles like first editions or autographed books for higher demand and rarity value; verify Amazon selling permissions.",
+        "confidence": "High",
+        "source": "Niche Books: Niche books have low print runs that make them rare and therefore, in demand. ... Comic Books: Comic books sell well on Amazon. You will do especially well if you have comic books with first appearances and limited runs. ... Collectible Books: First editions, autographed books, and other rarities may qualify as collectibles."
+    },
+    {
+        "id": "wholesale-caution",
+        "category": "Risk",
+        "trigger": "Buying wholesale or bulk unsorted books",
+        "advice": "When purchasing wholesale, ensure books are unsorted and unscanned to avoid unprofitable inventory; store efficiently to prevent damage or theft.",
+        "confidence": "High",
+        "source": "If you choose this option, ensure that you purchase books that haven\u2019t been sorted or scanned. Otherwise, you might end up buying books that other Amazon sellers have discarded as unprofitable. Keep in mind that buying wholesale may mean having to store large quantities of books, so make sure it\u2019s done efficiently and securely to avoid damage or theft"
+    },
+    {
+        "id": "use-scanning-apps",
+        "category": "General",
+        "trigger": "Sourcing at thrift shops or library sales",
+        "advice": "Use book scanning apps like Amazon Seller App, ScanPower Mobile, or Profit Bandit at thrift shops and library sales to check BSR, fees, profit, and competition before buying.",
+        "confidence": "High",
+        "source": "Bring your book scanner to these sales so you can find books that will get a big payout on Amazon. The scanner will help you identify books that will bring a profit. ... Amazon Seller App: This app is free for all Amazon sellers. It tells you things like product category, FBA fees, approximate profit, best sellers rank, and the number of competing sellers."
+    },
+    {
+        "id": "fba-switch",
+        "category": "General",
+        "trigger": "Scaling up sales volume",
+        "advice": "Start with FBM for low volume but switch to FBA when selling more to let Amazon handle storage, packing, and shipping, enabling Prime eligibility and more focus on sourcing.",
+        "confidence": "High",
+        "source": "When you begin selling on Amazon, you can opt for Amazon FBM and handle the packing and shipping of products yourself. But when you start selling more products, I recommend switching to Amazon FBA."
+    },
+    {
+        "id": "profit-tools",
+        "category": "General",
+        "trigger": "Need to track costs and profits",
+        "advice": "Use tools like Helium 10 Profitability Calculator or Jungle Scout Sales Analytics to calculate net profits, track sales, and optimize inventory.",
+        "confidence": "High",
+        "source": "You can easily calculate the net profit with Helium 10\u2019s Profitability Calculator. ... I recommend using a tool to analyze the costs and profits of your bookselling business. Here are my recommendations: Jungle Scout Sales Analytics ... Helium 10 Profits"
+    },
+    {
+        "id": "sales-rank-filter",
+        "category": "Buying",
+        "trigger": "Searching for products in a specific category or brand",
+        "advice": "Use the Sales Rank filter to select products based on sales rank to identify potential purchasing opportunities",
+        "confidence": "High",
+        "source": "Sales Rank \u2013 This is the filter which allows you to choose the sales rank for a specific category or brand."
+    },
+    {
+        "id": "new-price-min-max",
+        "category": "Pricing",
+        "trigger": "Filtering product search results",
+        "advice": "Set a high minimum current sell price and maximum to avoid results that are too cheap and non-profitable",
+        "confidence": "High",
+        "source": "New Price \u2013 You can select the Minimum and Maximum current sell price. It\u2019s always advisable to set a high minimum price, to avoid any results that are too cheap & non-profitable."
+    },
+    {
+        "id": "title-brand-search",
+        "category": "Buying",
+        "trigger": "Drilling down into specific categories",
+        "advice": "Search by title and brand, including options to exclude results, to target specific subcategories",
+        "confidence": "High",
+        "source": "Title & Brand \u2013 This is the section that allows you to drill through specific categories and subcategories. In a recent update there\u2019s been the option to search the title, in addition to being able to exclude results too."
+    },
+    {
+        "id": "offer-counts-filter",
+        "category": "Risk",
+        "trigger": "Assessing competition on a product",
+        "advice": "Filter by offer counts to choose products with low competition from other sellers",
+        "confidence": "High",
+        "source": "Offer Counts \u2013 You can choose how many people are competing on a specific offer."
+    },
+    {
+        "id": "buy-box-seller",
+        "category": "Pricing",
+        "trigger": "Evaluating Buy Box ownership",
+        "advice": "Filter to see if Amazon or third parties hold the Buy Box to assess pricing and profitability",
+        "confidence": "High",
+        "source": "Buy Box Seller \u2013 You can choose whether you want to see Amazon, or 3rd Parties on the Buy Box"
+    },
+    {
+        "id": "additional-filters",
+        "category": "General",
+        "trigger": "Refining search results",
+        "advice": "Remove digital products, variations, and set preferred Amazon Out of Stock percentage to focus on physical, competitive items",
+        "confidence": "High",
+        "source": "Additional \u2013 You can remove digital products & other variations from results, in addition to setting your preferred Amazon Out of Stock percentage."
+    },
+    {
+        "id": "moving-averages",
+        "category": "Seasonality",
+        "trigger": "Analyzing sales trends",
+        "advice": "Use 30-day to 180-day moving averages in Best Sellers to identify full trends and seasonal patterns",
+        "confidence": "High",
+        "source": "You can also filter this for moving averages, 30 day average up to 180 day average (so you can get a full idea of moving trends)."
+    },
+    {
+        "id": "category-tree-exploration",
+        "category": "Buying",
+        "trigger": "Exhausted typical sourcing categories",
+        "advice": "Browse the Category Tree to discover subcategories, including product counts, to target new areas for scaling",
+        "confidence": "High",
+        "source": "This Category tree even shows you how many products are for sale in each sub-category, to help you target your next one to attack."
+    },
+    {
+        "id": "paid-vs-free",
+        "category": "General",
+        "trigger": "Considering Keepa subscription",
+        "advice": "Opt for the paid version at \u20ac19 per month or \u20ac189 annually instead of free, as it provides full sales rank data",
+        "confidence": "High",
+        "source": "I don\u2019t recommend the free version as the Keepa Chart is limited, I\u2019d definitely stick with the paid version to gain all the sales ranking at your fingertips."
+    },
+    {
+        "id": "bsr-drop-sales-event",
+        "category": "Buying",
+        "trigger": "Significant drop in BSR (e.g., from 28,000 to 19,000)",
+        "advice": "Indicates a sales event with potential high volume sold; assess for ongoing demand before purchasing inventory.",
+        "confidence": "High",
+        "source": "The green dots on the chart represent downward rank movements or significant drops in the BSR. In other words, at these points, the BSR made big swings (ex: from 28,000 to 19,000). Looking back at the two knowns about an ASIN\u2019s sales rank, we can see this chart and the prominent sales events at those points."
+    },
+    {
+        "id": "amazon-orange-shading",
+        "category": "Risk",
+        "trigger": "Orange shading present on chart (Amazon selling)",
+        "advice": "Treat as a red flag for strong competition; evaluate if there's room to compete or avoid the listing.",
+        "confidence": "High",
+        "source": "Knowing if Amazon is on the listing and their price can be a red flag for some sellers. Seeing right away if Amazon may be a competitor (they\u2019re a vicious one) can decide on a seller without doing any research. If that orange shading appears, it\u2019s a ??. Some sellers don\u2019t mind this and can even take the Amazon price data as a sign of potential room for competition."
+    },
+    {
+        "id": "buy-box-decline",
+        "category": "Pricing",
+        "trigger": "Gradual and steady decreases in buy box price without recovery",
+        "advice": "Signals a penny war or race to the bottom; configure repricer to avoid further deflation or steer clear to protect margins.",
+        "confidence": "High",
+        "source": "A penny war, or \u201crace to the bottom,\u201d is a scenario where multiple sellers have set their repricers to undercut the current buy box price by $0.01. ... This often results in a steady decline in price, margins, and profits... A better repricer configuration will follow that trend, allowing maximum competition potential without deflating the price and value of an item."
+    },
+    {
+        "id": "fbm-low-price",
+        "category": "Buying",
+        "trigger": "New 3rd Party FBM offers priced well below FBA/Buy Box",
+        "advice": "Identify opportunities for Amazon-Amazon flips; booksellers should monitor for profitable arbitrage.",
+        "confidence": "High",
+        "source": "Sometimes we see FBM sellers offering up products well below the FBA/Buy Box price, leaving money on the table and an opportunity for profits. Booksellers would do well to pay attention to this one if they\u2019re doing any flipping like this."
+    },
+    {
+        "id": "low-bsr-high-volume",
+        "category": "General",
+        "trigger": "BSR in low range (e.g., under 500) with small persistent waves",
+        "advice": "Indicates high and consistent sales volume; prioritize for quick turnover in arbitrage.",
+        "confidence": "High",
+        "source": "As a product\u2019s BSR climbs toward the top of the best-seller list... an ASIN with a high sales rank position of 500, for example, may move in smaller, more persistent waves. ... A change from sales rank 19 to 18 could mean a swing of hundreds of units sold daily."
+    },
+    {
+        "id": "high-bsr-low-volume",
+        "category": "Risk",
+        "trigger": "BSR over 5,000,000 with infrequent drops (e.g., to 380,000)",
+        "advice": "Suggests infrequent sales; avoid for arbitrage due to risk of excess inventory.",
+        "confidence": "High",
+        "source": "This is a sample of a sales rank chart for an item that, on the worst end, ranked over 5,000,000 in its category, and when a sale took place, rocketed up to the 380,000 level. Because this item sold so infrequently, any sales event has a massive effect on its sales rank."
+    },
+    {
+        "id": "consistent-averages",
+        "category": "Seasonality",
+        "trigger": "Consistent low average BSR across 30-day, 90-day, and 180-day periods",
+        "advice": "Implies year-round sales with low seasonality risk; suitable for steady arbitrage sourcing.",
+        "confidence": "High",
+        "source": "having an average sales rank for each of the consistent averages implies this ASIN sells well all year round and has a moderately high sales volume."
+    },
+    {
+        "id": "low-30-high-180-avg",
+        "category": "Buying",
+        "trigger": "Low 30-day BSR average but high 180-day average",
+        "advice": "May indicate recent sales improvement due to better offers or exposure; investigate for entry opportunity.",
+        "confidence": "High",
+        "source": "A low BSR 30-day average and a high 180-day average may imply the ASIN didn\u2019t historically sell well for a variety of reasons like no reasonable offers (or no offers at all) until recently, historical buy box suppression that was just released, PPC, or any combination of these."
+    },
+    {
+        "id": "high-30-low-180-avg",
+        "category": "Risk",
+        "trigger": "High 30-day BSR average but low 180-day average",
+        "advice": "Suggests recent lack of viable offers; potential buy box opportunity if you can provide competitive pricing, but verify demand.",
+        "confidence": "High",
+        "source": "The 30-day average is high, but the 180-day is low, which may imply no viable offers on this listing. There might be an opportunity to get in on this listing and be granted exposure with the buy box because yours is the only offer the Amazon algorithms consider reasonable."
+    },
+    {
+        "id": "strat-1",
+        "category": "Buying",
+        "trigger": "Book cost < $1",
+        "advice": "Purchase used or discounted books at very low prices and resell them on platforms like Amazon or BookScouter for profit.",
+        "confidence": "High",
+        "source": "the market is flooded with cheap (usually used or discounted) books that you can buy at very low prices (even for less than $1) and then resell with a profit."
+    },
+    {
+        "id": "strat-2",
+        "category": "Buying",
+        "trigger": "Initial sourcing phase",
+        "advice": "Buy cheap used books for $1-$4 and sell them with minimal profit (as low as $0.5 per book) to build experience.",
+        "confidence": "High",
+        "source": "Initially, you are most likely to be buying cheap used books for $1-$4 and selling them with a minimal profit (sometimes even $0.5 for a book)."
+    },
+    {
+        "id": "strat-3",
+        "category": "Pricing",
+        "trigger": "Scan book's ISBN",
+        "advice": "Use scanning apps to check potential sell price on Amazon, current sales rank, and average sale price to determine profitability.",
+        "confidence": "High",
+        "source": "if you enter a book\u2019s ISBN, you will see the potential price you can sell it on Amazon, current sales rank online, and an average sale price."
+    },
+    {
+        "id": "strat-4",
+        "category": "Pricing",
+        "trigger": "Compare across 30+ vendors",
+        "advice": "Use BookScouter to compare prices from over 30 book buyback vendors and sell to the highest bidder for immediate payment.",
+        "confidence": "High",
+        "source": "BookScouter is a tool you can use to compare prices on books from over 30 book buyback vendors."
+    },
+    {
+        "id": "strat-5",
+        "category": "Buying",
+        "trigger": "Online clearance sales",
+        "advice": "Check websites of stores like Walmart for clearance items, even if shipping costs apply, to find books that sell well on Amazon.",
+        "confidence": "High",
+        "source": "Even if you have to pay for shipment, you can find something on clearance in Walmart that will sell well on Amazon later and bring you good money."
+    },
+    {
+        "id": "strat-6",
+        "category": "Pricing",
+        "trigger": "Amazon referral fees 8%-15%",
+        "advice": "Calculate profits by subtracting Amazon's referral fees of 8%-15% on every sale from the selling price.",
+        "confidence": "High",
+        "source": "Amazon\u2019s Professional selling plan costs $39.99 per month plus referral fees (8%\u201315% on every sale)."
+    },
+    {
+        "id": "strat-7",
+        "category": "Risk",
+        "trigger": "Selling branded or controversial products",
+        "advice": "Avoid reselling products from brands that restrict to authorized sellers; list items as New and keep purchase receipts to mitigate issues.",
+        "confidence": "High",
+        "source": "avoid selling something that may cause controversy (e.g., a product of a well-known brand), and make sure you list it as New. Always check whether the brand is adamant about allowing their products to be sold through authorized resellers only... keep the receipts of the things you\u2019ve bought if possible"
+    },
+    {
+        "id": "strat-8",
+        "category": "General",
+        "trigger": "Large scale book arbitrage",
+        "advice": "Use Amazon FBA for handling storage, packing, shipping, and customer service to scale operations efficiently.",
+        "confidence": "High",
+        "source": "FBA The most popular option among people who do retail arbitrage on a large scale, as for a fee, you can list, sell, and ship as many products as you want. Amazon will handle everything"
+    },
+    {
+        "id": "strat-9",
+        "category": "Pricing",
+        "trigger": "Historical price and sales data",
+        "advice": "Use Keepa to analyze price history and sales rank trends to predict profitability before purchasing.",
+        "confidence": "High",
+        "source": "Keepa is another tool for Amazon resellers, highly praised for its price and sales data chart extension... To be able to make predictions about the profitability of a product, you will need to look at its historical data."
+    },
+    {
+        "id": "strat-10",
+        "category": "General",
+        "trigger": "Offline scanning needed",
+        "advice": "Choose apps like ScoutIQ or Scoutly that provide offline access to Amazon's database for scanning books in areas without internet.",
+        "confidence": "High",
+        "source": "ScoutIQ... gives offline access to Amazon\u2019s product database: you can download it and scan books anywhere... The app also allows downloading the Amazon database and accessing it offline"
+    },
+    {
+        "id": "ra-margin-01",
+        "category": "General",
+        "trigger": "Typical retail arbitrage deals",
+        "advice": "Expect profit margins of 20-50%, with rare spikes above 100% on fast-moving items",
+        "confidence": "High",
+        "source": "Retail arbitrage typically yields 20\u201350% profit margins, with occasional spikes above 100% on fast-moving items \u2013 though that\u2019s rare."
+    },
+    {
+        "id": "ra-entry-01",
+        "category": "General",
+        "trigger": "Starting a retail arbitrage business",
+        "advice": "Begin with low entry barriers: no brand needed, minimal inventory investment, start tomorrow using a barcode scanner and a few hours at local stores",
+        "confidence": "High",
+        "source": "You don\u2019t need a brand. You don\u2019t need to invest thousands in inventory. You can easily start tomorrow with a barcode scanner and a few hours at your local store."
+    },
+    {
+        "id": "ra-sourcing-online-01",
+        "category": "Buying",
+        "trigger": "Sourcing products online",
+        "advice": "Check platforms like eBay for competitive pricing, Alibaba/AliExpress for bulk or small quantity deals, Walmart for clearance sales, Amazon for Amazon-to-Amazon arbitrage on discounted items, Etsy for unique items, and deal sites like Groupon or Slickdeals for flash deals",
+        "confidence": "High",
+        "source": "eBay: ... Third-party sellers often push prices down... Alibaba & AliExpress: ... bulk deals... Walmart: ... lower prices than Amazon, especially during clearance... Amazon: ... \u201cAmazon-to-Amazon\u201d arbitrage... Etsy: ... unique or handmade items... Deal websites: ... discount codes and flash deals..."
+    },
+    {
+        "id": "ra-sourcing-physical-01",
+        "category": "Buying",
+        "trigger": "Sourcing products in brick-and-mortar stores",
+        "advice": "Focus on discount retailers like TJ Maxx for branded discounts, supermarkets and drugstores like Walmart for promotions and clearance, liquidation stores for overstock/closeouts, and outlet stores for discounted branded goods",
+        "confidence": "High",
+        "source": "Discount retailers: Stores like TJ Maxx... Supermarkets and drugstores: Big box retailers like Walmart... Liquidation stores: ... overstock, closeouts... Outlet stores: ... branded goods at a discount..."
+    },
+    {
+        "id": "ra-tools-comparison-01",
+        "category": "Buying",
+        "trigger": "Identifying price differences",
+        "advice": "Use price comparison tools like Google Shopping, Keepa, or CamelCamelCamel to spot profitable gaps across stores",
+        "confidence": "High",
+        "source": "Platforms like Google Shopping, Keepa, or CamelCamelCamel can help you quickly compare prices across multiple stores."
+    },
+    {
+        "id": "ra-scan-tools-01",
+        "category": "Buying",
+        "trigger": "On-the-go product evaluation",
+        "advice": "Use scanning tools like Scoutify, SellerAmp, or Amazon Seller App to check sales rank, price, and eligibility while sourcing",
+        "confidence": "High",
+        "source": "Scanning tools like Scoutify, SellerAmp or Amazon Seller App help you check rank, price and eligibility on the go"
+    },
+    {
+        "id": "ra-profit-calc-01",
+        "category": "Pricing",
+        "trigger": "Evaluating potential purchases",
+        "advice": "Always use a profit calculator to account for Amazon fees, shipping, and taxes to determine net profit",
+        "confidence": "High",
+        "source": "Always run the numbers through a profit calculator to see how much you\u2019ll actually make after Amazon\u2019s fees, shipping and taxes."
+    },
+    {
+        "id": "ra-buy-analysis-01",
+        "category": "Buying",
+        "trigger": "Before buying products",
+        "advice": "Analyze sales rank, Buy Box ownership, and competition levels in the category beyond just price",
+        "confidence": "High",
+        "source": "Buy Smart: Analyze Sales Rank, Buy Box, Stock Levels... check the sales rank, who has the Buy Box and how much competition"
+    },
+    {
+        "id": "ra-repricing-01",
+        "category": "Pricing",
+        "trigger": "After listing products",
+        "advice": "Use AI-driven repricers to stay competitive, monitor sales, and optimize for Buy Box with dynamic pricing strategies",
+        "confidence": "High",
+        "source": "Track Sales & Use Repricers... use an AI-driven Repricer if needed to stay competitive... The SELLERLOGIC Repricer... Buy Box-first strategy"
+    },
+    {
+        "id": "ra-tactical-arb-01",
+        "category": "Buying",
+        "trigger": "Automated sourcing",
+        "advice": "Use Tactical Arbitrage software to scan shops/websites, compare prices with Amazon, and identify replenishables for recurring deals",
+        "confidence": "High",
+        "source": "Tactical Arbitrage... scan shops and websites and automatically compares product prices with those on Amazon... covers so-called replenishables"
+    },
+    {
+        "id": "ra-restricted-01",
+        "category": "Risk",
+        "trigger": "Product selection",
+        "advice": "Avoid gated and restricted categories to prevent account bans; research what's allowed before sourcing",
+        "confidence": "High",
+        "source": "Know What\u2019s Allowed: Restricted & Gated Categories... not adhering to these restrictions will get you banned from Amazon very quickly."
+    },
+    {
+        "id": "ra-legal-risk-01",
+        "category": "Risk",
+        "trigger": "Sourcing from unauthorized suppliers",
+        "advice": "Steer clear of grey market or unauthorized sourcing to avoid legal risks and account suspension",
+        "confidence": "High",
+        "source": "Legal risks: Unauthorized or grey market sourcing may lead to account suspension... potential legal risks, especially when using gray market suppliers"
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "More than 10 sellers offering the same product",
+        "advice": "Avoid the product due to intense competition",
+        "confidence": "High",
+        "source": "Number of competitors: If there are more than 10 sellers offering the same product, the competition might be too intense."
+    },
+    {
+        "id": "risk-002",
+        "category": "Risk",
+        "trigger": "Amazon is a seller for the product",
+        "advice": "Steer clear as it is challenging to compete with Amazon",
+        "confidence": "High",
+        "source": "Amazon's involvement: Steer clear of products where Amazon is also a seller, as it can be challenging to compete with their presence."
+    },
+    {
+        "id": "pricing-001",
+        "category": "Pricing",
+        "trigger": "Competing for Buy Box on shared Amazon listing",
+        "advice": "Price competitively while maintaining profit margins, use repricer software for automatic adjustments",
+        "confidence": "High",
+        "source": "Price your products as competitively as possible. Lower prices increase your chances of winning the Buy Box, but you also need to maintain healthy profit margins, so your pricing should remain both attractive and profitable. Use repricer software to automatically change your price based on certain factors."
+    },
+    {
+        "id": "general-002",
+        "category": "General",
+        "trigger": "Product in gated category, private label, HAZMAT, or trademarked",
+        "advice": "Check for restrictions and obtain necessary approvals or avoid the product to comply with Amazon rules",
+        "confidence": "High",
+        "source": "Check for selling restrictions... Gated category... Private label... HAZMAT warning... Trademark check..."
+    },
+    {
+        "id": "buying-002",
+        "category": "Buying",
+        "trigger": "Product ideas from social media, bestseller lists, or Google Trends",
+        "advice": "Generate and validate ideas using these sources before sourcing",
+        "confidence": "High",
+        "source": "Social media: Explore platforms like TikTok and Instagram... Bestseller lists: Take a look at the top-selling products... Google Trends: Use Google to spot global demand patterns."
+    },
+    {
+        "id": "oa-011",
+        "category": "Risk",
+        "trigger": "Hazmat or heavy weight products",
+        "advice": "Avoid Hazmat products and heavy weight products to minimize complications",
+        "confidence": "High",
+        "source": "Avoid Hazmat products, heavy weight products, etc."
+    },
+    {
+        "id": "oa-012",
+        "category": "Pricing",
+        "trigger": "3X rule for purchase and sale price",
+        "advice": "Apply the 3X rule: if purchasing for $10, aim to sell for $30; some items can be profitable at 2X",
+        "confidence": "High",
+        "source": "The 3X rule still largely applies. This rule says that if you can purchase for $10 and sell for $30 (3X the purchase price) you will have a profitable item. Some items can sell for as low as 2X your purchase prices and make enough profit to be worth selling on AZ."
+    },
+    {
+        "id": "oa-013",
+        "category": "Buying",
+        "trigger": "Clearanced or heavily marked down items",
+        "advice": "Search for clearanced or heavily marked down items on major legitimate store websites to ensure profitability after fees",
+        "confidence": "High",
+        "source": "You will be searching for items that clearanced or heavily marked down at major legitimate store websites. These items must sell for enough on Amazon to make up for the fees and expense you will have to pay Amazon to receive, market and ship the items for you."
+    },
+    {
+        "id": "oa-014",
+        "category": "Buying",
+        "trigger": "Opportunity to buy multiple units",
+        "advice": "Buy several units of the same item from store websites to reduce sourcing time and maximize profits",
+        "confidence": "High",
+        "source": "Buying quantity is where OA really shines. Since its a store website you often can buy several of the same unit which allows you to reduce your sourcing time and maximize your profits"
+    },
+    {
+        "id": "oa-015",
+        "category": "Buying",
+        "trigger": "Planning to sell books",
+        "advice": "Scan the book's ISBN number using the Amazon Seller App to get price, BSR, FBA fees, and estimated profits",
+        "confidence": "High",
+        "source": "If you plan to sell books, you can check its ISBN number and run it through the app to get the information."
+    },
+    {
+        "id": "oa-016",
+        "category": "Risk",
+        "trigger": "Potential selling restrictions",
+        "advice": "Click the \u2018sell on Amazon\u2019 button below the Buy Box to verify if you can sell the product without restrictions",
+        "confidence": "High",
+        "source": "Once you have analyzed this information, make sure you can sell the product on Amazon without any restrictions. Just click the \u2018sell on Amazon\u2019 button below the Buy Box to check whether you can sell it!"
+    },
+    {
+        "id": "oa-017",
+        "category": "Seasonality",
+        "trigger": "Assessing demand and price trends",
+        "advice": "Use SellerApp\u2019s Product Intelligence to track sales trends and historical data to determine if demand and price are seasonal",
+        "confidence": "High",
+        "source": "You can use SellerApp\u2019s Product Intelligence features to track and monitor a product\u2019s sales trends. It is important to gauge whether demand and price is seasonal, so this step is crucial. It will help you discover whether you can actually sell the product for a profit across the year. Prices also fluctuate, so it is important to get historical data to check the average price."
+    },
+    {
+        "id": "rank_threshold_1m",
+        "category": "Buying",
+        "trigger": "Average Sales Rank > 1,000,000",
+        "advice": "Exclude these books from search results as they take too long to sell and are not worth flipping.",
+        "confidence": "High",
+        "source": "Books with high sales rank (over 1,000,000) are of zero interest to you. They generally take too long to sell to be worth flip attempt, and this parameter allows you to weed those books out of the search results."
+    },
+    {
+        "id": "low_offer_count",
+        "category": "Buying",
+        "trigger": "Low used or new offer count",
+        "advice": "Limit search to books with low offer counts to identify opportunities to buy out lowball offers and increase the selling price.",
+        "confidence": "High",
+        "source": "Searching for books with low used or new offer counts can lead to profitable flips because there is a greater chance you can buy out a few lowball offers and send the lowest price skyrocketing."
+    },
+    {
+        "id": "price_diff_mf_fba",
+        "category": "Pricing",
+        "trigger": "Large differential between lowest merchant-fulfilled offer and lowest FBA offer",
+        "advice": "Prioritize books showing significant price gaps between merchant-fulfilled and FBA offers for higher profit potential.",
+        "confidence": "High",
+        "source": "you\u2019re looking for books with large price differentials between the lowest merchant-fulfilled offer and the lowest FBA offer."
+    },
+    {
+        "id": "trade_in_less_than_buy",
+        "category": "Buying",
+        "trigger": "Merchant-fulfilled price < Trade-In Value",
+        "advice": "Buy the book if the purchase price is below Amazon's trade-in value, as it indicates strong resale viability.",
+        "confidence": "High",
+        "source": "If you find a merchant-fulfilled book for sale for less than this amount, there\u2019s a good chance the book will be worth buying."
+    },
+    {
+        "id": "low_rank_low_offers",
+        "category": "Buying",
+        "trigger": "Low average sales rank AND low number of offers",
+        "advice": "Target these books for purchase to buy out lower offers and drive up the market price.",
+        "confidence": "High",
+        "source": "A book with a low average sales rank and a low number of offers is often worth buying. This is because you can buy out the lower offers and send the price soaring."
+    },
+    {
+        "id": "focus_used_books",
+        "category": "General",
+        "trigger": "Searching for new books, especially textbooks",
+        "advice": "Prioritize used books over new ones due to Amazon restrictions on selling new textbooks.",
+        "confidence": "High",
+        "source": "I almost exclusively search for used books. This is because Amazon restricts the ability of sellers to sell new copies of many kinds of textbooks, and I\u2019ve too often wasted my time finding a profitable new book only to find myself unable to sell it."
+    },
+    {
+        "id": "sort_by_used_price",
+        "category": "General",
+        "trigger": "Default search sorting",
+        "advice": "Sort results by Used Price to focus on used book opportunities.",
+        "confidence": "High",
+        "source": "I almost always leave this on \u201cUsed Price.\u201d"
+    },
+    {
+        "id": "results_per_page_max",
+        "category": "General",
+        "trigger": "Setting results per page",
+        "advice": "Set to 250, the maximum, to load more results efficiently unless internet or computer is slow.",
+        "confidence": "High",
+        "source": "I recommend leaving this on 250, which is the maximum value. Unless you have incredibly slow internet or a particularly sluggish computer, there is no reason to load less results than the maximum possible."
+    },
+    {
+        "id": "check_selling_restrictions",
+        "category": "Risk",
+        "trigger": "Before purchasing any book",
+        "advice": "Use the Check Restriction button to verify if your Amazon Seller account can list and sell the book.",
+        "confidence": "High",
+        "source": "It lets you see if your Amazon Seller account is allowed to sell a particular book. This can save you quite a few headaches by letting you avoid buying books that you won\u2019t be able to sell."
+    },
+    {
+        "id": "use_bookfinder",
+        "category": "Buying",
+        "trigger": "Evaluating a book's sourcing options",
+        "advice": "Check Bookfinder.com for prices on other marketplaces to find lower offers outside Amazon.",
+        "confidence": "High",
+        "source": "Bookfinder.com will find what the book is selling for on marketplaces other than Amazon. There can be a significant price differential between the lowest offer on Amazon and the lowest offers on other sites, and BookFinder.com widens your sourcing net to include these offers."
+    },
+    {
+        "id": "profit_calculator_use",
+        "category": "Pricing",
+        "trigger": "Before finalizing a buy decision",
+        "advice": "Use the Profit Calculator to estimate net profit and ensure the flip is worthwhile.",
+        "confidence": "High",
+        "source": "This allows you to check what you\u2019ll make on a given book on the fly, enabling more secure buy decisions and a more efficient sourcing workflow."
+    },
+    {
+        "id": "keepa-sales-drop-1",
+        "category": "Buying",
+        "trigger": "Sales rank number moves from larger to smaller",
+        "advice": "Indicates at least one sale has occurred, possibly multiple",
+        "confidence": "High",
+        "source": "BIG TIP: Any time the sales rank number significantly moves from a larger number to a smaller number indicates at least one sale has occurred. Sometimes the improvement in sales rank means multiple sales."
+    },
+    {
+        "id": "keepa-top1percent-1",
+        "category": "Buying",
+        "trigger": "Item sales rank in top 1% of category",
+        "advice": "Movement from higher to lower sales rank means multiple sales",
+        "confidence": "High",
+        "source": "If the item is in the top 1% in regards to sales rank, then it becomes a whole different way of reading the data. The movement from a higher sales rank to a lower sales rank means multiple sales."
+    },
+    {
+        "id": "keepa-average-rank-1",
+        "category": "Buying",
+        "trigger": "Evaluating product tier for sourcing",
+        "advice": "Compare average sales rank over last 6 months or year with sales rank chart",
+        "confidence": "Medium",
+        "source": "I compare the average sales rank with my free sales rank chart."
+    },
+    {
+        "id": "keepa-drops-stat-1",
+        "category": "General",
+        "trigger": "Drops value in sales rank statistics",
+        "advice": "Represents number of changes to lower sales rank, indicating at least one sale per drop but not exact",
+        "confidence": "High",
+        "source": "A drop in sales rank does not equal 1 sale... It\u2019s a helpful number but nothing exact."
+    },
+    {
+        "id": "keepa-consistent-rank-1",
+        "category": "Buying",
+        "trigger": "Green sales rank line is level but not completely flat",
+        "advice": "Indicates consistent sales velocity, not low sales",
+        "confidence": "High",
+        "source": "No, the sales rank line staying around 500 here just means that the sales were very consistent. No increase or decrease of sales velocity."
+    },
+    {
+        "id": "keepa-no-green-line-1",
+        "category": "Risk",
+        "trigger": "No sales rank data (green line) on Keepa graph but product has sales rank",
+        "advice": "Keepa has not started tracking yet or ensure green circle is activated",
+        "confidence": "High",
+        "source": "Usually that means that Keepa has not started tracking that item yet... Also, be sure the green circle of sales rank is turned on to show on the graph."
+    },
+    {
+        "id": "keepa-zoom-tip-1",
+        "category": "General",
+        "trigger": "Need to examine specific time period on graph",
+        "advice": "Click and drag mouse over date range to zoom in for clearer view",
+        "confidence": "Medium",
+        "source": "on keepa graph you can choose any time-period that you want to make zoom-in on it and see it biger and clearer."
+    },
+    {
+        "id": "keepa-amazon-stock-1",
+        "category": "Buying",
+        "trigger": "Orange shading on graph",
+        "advice": "Amazon is in stock; white gaps mean out of stock",
+        "confidence": "High",
+        "source": "If the area is orange, Amazon is in stock. Wherever you see white gaps on the graph, Amazon is out of stock."
+    },
+    {
+        "id": "rule-11",
+        "category": "Buying",
+        "trigger": "Merchant-fulfilled items on Amazon",
+        "advice": "Purchase and resell as FBA for higher visibility and faster sales, as in $15 buy to $56 sell yielding $28 profit in 10 days",
+        "confidence": "High",
+        "source": "In the past, I\u2019ve even purchased products on Amazon that are merchant fulfilled ... to resell as a FBA product ... the first thing I ever flipped on Amazon was a Macroeconomics textbook that I purchased for $15 from a merchant seller and resold for $56 FBA. It sold in less than 10 days. After subtracting Amazon\u2019s fees and the cost of the book, I made $28 in gross profit."
+    },
+    {
+        "id": "oa1",
+        "category": "Buying",
+        "trigger": "Discounted products on Walmart clearance, Target clearance, BULQ, Direct Liquidation, seasonal sales, Black Friday, manufacturer closeouts",
+        "advice": "Hunt for deals online to buy products at discounted prices for resale on Amazon",
+        "confidence": "High",
+        "source": "Hunt for deals on Walmart clearance sections, Target clearance (online and in-store), retail liquidation sites like BULQ and Direct Liquidation, seasonal sales and Black Friday events, and manufacturer closeouts."
+    },
+    {
+        "id": "oa2",
+        "category": "Buying",
+        "trigger": "Sales rank indicating fast sales (lower numbers)",
+        "advice": "Use Keepa to track price history and sales rank, Amazon Seller App to check current prices, and FBA Calculator to determine fees and net profit before buying",
+        "confidence": "High",
+        "source": "Use tools like Keepa to track price history and sales rank, the Amazon Seller App to scan barcodes checking current prices, and the FBA Calculator to determine Amazon fees and net profit."
+    },
+    {
+        "id": "oa3",
+        "category": "Pricing",
+        "trigger": "Net Profit = Sell Price - (Cost + Amazon Fees + Shipping) > acceptable margin (20-40%)",
+        "advice": "Calculate profitability and only buy products with 20-40% profit margins after all costs",
+        "confidence": "High",
+        "source": "Calculate: (Sell Price) minus (Cost plus Amazon Fees plus Shipping) equals Net Profit. Only buy products with acceptable profit margins. Profit margins typically range from 20% to 40% per item after all Amazon fees."
+    },
+    {
+        "id": "oa4",
+        "category": "General",
+        "trigger": "Profitable products identified",
+        "advice": "Ship to Amazon FBA for faster fulfillment and list competitively to win Buy Box more frequently",
+        "confidence": "High",
+        "source": "Buy profitable products, ship to Amazon FBA for faster fulfillment, and list competitively. FBA products win the Buy Box more frequently and convert better due to Prime eligibility."
+    },
+    {
+        "id": "oa5",
+        "category": "General",
+        "trigger": "Consistent profitable products found",
+        "advice": "Scale by buying in larger quantities and building relationships with liquidation wholesalers for better pricing",
+        "confidence": "High",
+        "source": "As you identify consistently profitable products, buy in larger quantities. Build relationships with liquidation wholesalers for more reliable inventory access and better pricing."
+    },
+    {
+        "id": "ra1",
+        "category": "Buying",
+        "trigger": "Undervalued books at library book sales, thrift stores, garage sales, clearance sections",
+        "advice": "Source books and other items from thrift stores like Goodwill and Salvation Army, garage sales and estate sales, liquidation stores, Facebook Marketplace and Craigslist, and library book sales",
+        "confidence": "High",
+        "source": "Hunt for deals at thrift stores like Goodwill and Salvation Army, garage sales and estate sales, liquidation stores, Facebook Marketplace and Craigslist, and library book sales. Best items include electronics, vintage clothing, collectibles, branded goods, and books."
+    },
+    {
+        "id": "ra2",
+        "category": "Buying",
+        "trigger": "Sales rank low (indicating faster sales), profitable after fees",
+        "advice": "Scan barcodes with Amazon Seller App to check current Amazon price, sales rank (lower numbers mean faster sales), number of competing sellers, estimated fees, and profit before purchasing",
+        "confidence": "High",
+        "source": "Scan barcodes with the Amazon Seller App before purchasing. Check current Amazon price, sales rank (lower numbers mean faster sales), number of competing sellers, and estimated fees and profit."
+    },
+    {
+        "id": "ra3",
+        "category": "General",
+        "trigger": "Pre-owned books acquired",
+        "advice": "Clean and refurbish items like books to sell at premium prices and present professionally in listings",
+        "confidence": "High",
+        "source": "Clean and Refurbish Items. Many items just need cleaning or minor repairs to sell at premium prices. Test electronics thoroughly, fix minor defects, and present items professionally in your listings."
+    },
+    {
+        "id": "buy-001",
+        "category": "Buying",
+        "trigger": "Need bulk used books supply",
+        "advice": "Source books in bulk from donation-based nonprofits like Goodwill, Salvation Army, Savers; build long-lasting relationships with sources",
+        "confidence": "High",
+        "source": "Sourcing From donation-based NGOs and nonprofits (e.g., Goodwill Salvation, Army Savers, other local chains). The goal is to build a long-lasting relationship with the sources."
+    },
+    {
+        "id": "buy-002",
+        "category": "Buying",
+        "trigger": "Large volume purchases",
+        "advice": "Purchase over 30,000 unique titles in each shipment via truckloads",
+        "confidence": "High",
+        "source": "Purchase volume Over 30,000 unique titles in each shipment; truckloads"
+    },
+    {
+        "id": "buy-003",
+        "category": "Buying",
+        "trigger": "Books purchased by weight",
+        "advice": "Buy books by weight at average a couple of cents per pound, range from 1 cent per pound to $1",
+        "confidence": "High",
+        "source": "Purchase prices Books are purchased by weight. Average buying price: a couple of cents Buying price range: from 1 cent per pound to $1."
+    },
+    {
+        "id": "proc-001",
+        "category": "General",
+        "trigger": "Processing bulk inventory",
+        "advice": "Use a belt conveyor system to process books, compare payouts based on past prices, sales rank, and sales velocity to decide sales channel: Amazon FBA/FBM, wholesaler, or recycling",
+        "confidence": "High",
+        "source": "Processing Uses a belt conveyor system, compares payouts, and makes decisions based on various signals such as past prices, sales rank, etc. when choosing a sales channel: Amazon via FBA or FBM, a wholesaler, or a recycling company."
+    },
+    {
+        "id": "proc-002",
+        "category": "Pricing",
+        "trigger": "Payout comparison",
+        "advice": "Base decisions on lowest FBM and FBA offers, offers from buyback companies, and correlation between sales rank and sales velocity",
+        "confidence": "High",
+        "source": "Payout comparison and decision making Rules are based on the lowest offers and the correlation between sales rank and sales velocity. Decisions are based on the lowest FBM and FBA offers and offers from buyback companies."
+    },
+    {
+        "id": "proc-003",
+        "category": "General",
+        "trigger": "Antiquarian items (rare collectibles, first editions, signed books)",
+        "advice": "Use manual listing procedure for antiquarian items",
+        "confidence": "High",
+        "source": "A different procedure (manual listing) for antiquarian items (e.g., rare collectibles, first editions, or books signed by the author)."
+    },
+    {
+        "id": "proc-004",
+        "category": "General",
+        "trigger": "Bulk processing outcomes",
+        "advice": "Allocate 17% of books to retail (FBA or FBM), 10\u201315% to wholesale or buyback companies, rest to recycling",
+        "confidence": "High",
+        "source": "Processing stats 17% goes to retail (FBA or FBM) 10\u201315%\u2014to wholesale or buyback companies The rest\u2014to recycling companies"
+    },
+    {
+        "id": "prof-001",
+        "category": "General",
+        "trigger": "Bulk buying model profitability",
+        "advice": "Aim for payout ~44% of gross sales, gross profit margin ~25%, net profit margin ~10%",
+        "confidence": "High",
+        "source": "Profitability Payout: ~44% of the gross sales Gross profit margin: ~25% Net profit margin: ~10%"
+    },
+    {
+        "id": "risk-003",
+        "category": "Pricing",
+        "trigger": "Competing for buy box",
+        "advice": "Employ pricing adjustment algorithms to win the buy box and track percentage of buy box ownership",
+        "confidence": "High",
+        "source": "You should also be able to employ pricing adjustment algorithms in order to win the buy box, as well as know what percentage of the buy box you are currently in so that you don\u2019t have to compete with others."
+    },
+    {
+        "id": "risk-004",
+        "category": "Risk",
+        "trigger": "Sourcing variability",
+        "advice": "Constantly find new inventory sources due to varying donations at nonprofits",
+        "confidence": "High",
+        "source": "You must constantly find new inventory sources, as the availability of books can vary depending on the donations received by non-profit organizations."
+    },
+    {
+        "id": "risk-005",
+        "category": "Risk",
+        "trigger": "Large inventory volumes",
+        "advice": "Invest in storage space and logistics to manage large quantities of inventory",
+        "confidence": "High",
+        "source": "Additionally, you must invest in storage space and logistics to manage the large quantities of inventory received in each shipment."
+    },
+    {
+        "id": "prof-002",
+        "category": "General",
+        "trigger": "Online arbitrage example",
+        "advice": "Purchase book for $5 on Amazon, resell on eBay for $15, expect gross margin 66.67%, net margin 36.67% after fees and shipping",
+        "confidence": "High",
+        "source": "For example, you purchase a book for$5 on Amazon and then resell it on eBay for $15. Here\u2018re your numbers: Gross profit margin: $15 (selling price) \u2013 $5 (buying price) / $15 x 100% = 66.67% ... Net profit margin: $5.50 (net profit) / $15 (selling price) x 100% = 36.67%"
+    },
+    {
+        "id": "prof-003",
+        "category": "General",
+        "trigger": "Retail arbitrage example",
+        "advice": "Purchase book for $2 at thrift store, resell on Amazon for $10, expect gross margin 80%, net margin 45% after fees and costs",
+        "confidence": "High",
+        "source": "If you purchase a book for $2 at a thrift store and then resell it on Amazon for $10, you\u2019ll have: Gross profit margin: $10 (selling price) \u2013 $2 (buying price) / $10 x 100% = 80% ... Net profit margin: $4.50 (net profit) / $10 (selling price) x 100% = 45%"
+    },
+    {
+        "id": "prof-004",
+        "category": "General",
+        "trigger": "Ideal profitability targets",
+        "advice": "Target gross profit margin around 50% or higher, net profit margin around 20% or higher",
+        "confidence": "High",
+        "source": "Ideally, you would expect something like this: Gross profit margin around 50% or higher Net profit margin around 20% or higher"
+    },
+    {
+        "id": "prof-005",
+        "category": "General",
+        "trigger": "Amazon sellers benchmarks",
+        "advice": "Expect average profit margin of 15%\u201320%; 52% of sellers achieve >10%, 27% >20%",
+        "confidence": "High",
+        "source": "Most Amazon sellers get a profit margin of 15%\u201320%, depending on their category (according to Sellerapp). Half of the sellers (52%) see profit margins higher than 10%; 27% see profit margins above 20% (according to JungleScout)."
+    },
+    {
+        "id": "tool-001",
+        "category": "General",
+        "trigger": "Payout comparison process",
+        "advice": "Use BookScouter for real-time buyback prices to identify best sales channel",
+        "confidence": "High",
+        "source": "BookScouter gives access to real-time buyback prices, which is a huge advantage. Having such information as a part of the payout comparison process helps identify the most suitable sales channel for a book when it\u2019s being processed."
+    },
+    {
+        "id": "oa-1",
+        "category": "Buying",
+        "trigger": "Product price on source site < 50% of Amazon selling price",
+        "advice": "Purchase the product to ensure enough margin to cover Amazon referral fees, storage, and fulfillment fees while retaining profit",
+        "confidence": "High",
+        "source": "When looking for items to sell, you ideally want to find something that\u2019s being offered at less than half of what it\u2019s selling for on Amazon. This is because Amazon takes a referral fee every time you make a sale on their platform. There are also storage and fulfillment fees if you\u2019re using the Fulfillment by Amazon (FBA) program."
+    },
+    {
+        "id": "oa-2",
+        "category": "Risk",
+        "trigger": "Gated category indicated",
+        "advice": "Avoid selling or obtain Amazon's approval by submitting a reseller certificate before purchasing",
+        "confidence": "High",
+        "source": "Gated category: The tool will show you if the item belongs to a restricted category that requires Amazon\u2019s approval (for example, a branded product that requires you to submit a reseller certificate before you can sell it)."
+    },
+    {
+        "id": "oa-3",
+        "category": "Risk",
+        "trigger": "Private label product",
+        "advice": "Check if the product is exclusive to one brand; avoid if not available for resale by multiple sellers",
+        "confidence": "High",
+        "source": "Private label: It will reveal whether the product is exclusive to one brand or available for resale by multiple sellers."
+    },
+    {
+        "id": "oa-4",
+        "category": "Risk",
+        "trigger": "HAZMAT warning present",
+        "advice": "Avoid or ensure special handling and certification are in place before buying",
+        "confidence": "High",
+        "source": "HAZMAT warning: The extension will alert you if the product contains hazardous materials, which could involve special handling or certification."
+    },
+    {
+        "id": "oa-5",
+        "category": "Risk",
+        "trigger": "Trademark icon (\u2122) present",
+        "advice": "Obtain permission from the brand to resell before purchasing",
+        "confidence": "High",
+        "source": "Trademark check: Use the \u2122 icon to see if the product is trademarked. If it is, you may need to obtain permission from the brand to resell it."
+    },
+    {
+        "id": "oa-6",
+        "category": "Risk",
+        "trigger": "Number of competitors > 10",
+        "advice": "Avoid the product as competition may be too intense to achieve profitability",
+        "confidence": "High",
+        "source": "Number of competitors: If there are more than 10 sellers offering the same product, the competition might be too intense."
+    },
+    {
+        "id": "oa-7",
+        "category": "Risk",
+        "trigger": "Amazon is a seller for the product",
+        "advice": "Steer clear of the product as competing with Amazon is challenging",
+        "confidence": "High",
+        "source": "Amazon's involvement: Steer clear of products where Amazon is also a seller, as it can be challenging to compete with their presence."
+    },
+    {
+        "id": "oa-8",
+        "category": "General",
+        "trigger": "Niche Score > 7",
+        "advice": "Pursue the niche as it indicates high demand, manageable competition, and solid profit margins",
+        "confidence": "High",
+        "source": "A score above 7 indicates a strong mix of high demand, manageable competition, and solid profit margins."
+    },
+    {
+        "id": "oa-9",
+        "category": "Pricing",
+        "trigger": "To win the Buy Box",
+        "advice": "Price products competitively to increase chances of winning, while maintaining healthy profit margins; use repricer software for automatic adjustments",
+        "confidence": "High",
+        "source": "Price your products as competitively as possible. Lower prices increase your chances of winning the Buy Box, but you also need to maintain healthy profit margins, so your pricing should remain both attractive and profitable. Use repricer software to automatically change your price based on certain factors."
+    },
+    {
+        "id": "oa-10",
+        "category": "General",
+        "trigger": "Using FBA for fulfillment",
+        "advice": "Opt for FBA to improve Buy Box win rate, as Amazon favors FBA sellers, despite additional fees",
+        "confidence": "High",
+        "source": "Amazon favors sellers who use FBA, so fulfilling your orders this way will help you win the Buy Box more often."
+    },
+    {
+        "id": "oa-11",
+        "category": "Seasonality",
+        "trigger": "Niche History shows growing or stable sales trend vs. declining or seasonal spikes",
+        "advice": "Evaluate demand consistency; prefer growing/stable trends for year-round viability or plan for seasonal spikes if applicable",
+        "confidence": "High",
+        "source": "Click on Niche History to check whether the sales trend is growing, stable, or declining. Viewing this data over time helps you determine if demand is consistent year-round or driven by seasonal spikes."
+    },
+    {
+        "id": "oa-12",
+        "category": "Buying",
+        "trigger": "Products on sale at source sites",
+        "advice": "Check marketplaces like eBay, Walmart.com, Etsy, Craigslist, Facebook Marketplace, OfferUp, Let Go daily to catch deals before they sell out",
+        "confidence": "High",
+        "source": "If a product goes on sale it could sell out fast, so make sure you\u2019re checking these and other marketplaces daily so you don\u2019t miss out on any opportunities. ... The best sites are: eBay, Walmart.com, Etsy, Craigslist, Facebook Marketplace, OfferUp, Let Go."
+    },
+    {
+        "id": "oa-13",
+        "category": "General",
+        "trigger": "Profit calculator shows profit covers all expenses",
+        "advice": "Only buy if the calculated profit allows for scaling; skip if little or no profit after fees",
+        "confidence": "High",
+        "source": "Use the built-in profit calculator to confirm that your profit not only covers all expenses but also leaves room for scaling your business. ... If the tool indicates that you can make a nice profit, go ahead and buy it. However, if it shows that you\u2019ll make little or no money, you can confidently move on."
+    },
+    {
+        "id": "account-individual",
+        "category": "General",
+        "trigger": "Sell less than 40 books per month",
+        "advice": "Use Individual Seller Account to avoid monthly fees, pay $0.99 per item sold plus additional fees",
+        "confidence": "High",
+        "source": "If you are someone who sells less than 40 books a month, this type of account can work out really well for you."
+    },
+    {
+        "id": "account-professional",
+        "category": "General",
+        "trigger": "Larger inventory or more than 40 books per month",
+        "advice": "Use Professional Seller Account for $39.99 per month to access advanced tools without per-item fees",
+        "confidence": "High",
+        "source": "If you work with a larger inventory of books, this is the better option for you. With a Professional Seller account, you don\u2019t need to pay fees for individual items sold, just one flat monthly fee."
+    },
+    {
+        "id": "target-price-ebay",
+        "category": "Buying",
+        "trigger": "Books that sell for at least $25 or more",
+        "advice": "Target textbooks, first editions on eBay and Craigslist for profitable deals",
+        "confidence": "High",
+        "source": "once you\u2019ve set up a system for rooting out good deals on eBay and Craigslist, you will find it easier to find awesome books, particularly if you target books that sell for at least $25 or more, such as textbooks, first editions, etc."
+    },
+    {
+        "id": "bsr-check-local",
+        "category": "Buying",
+        "trigger": "Low Best Seller Rank (BSR)",
+        "advice": "Check BSR before buying locally sourced books to ensure they are likely to sell on Amazon",
+        "confidence": "High",
+        "source": "So don\u2019t grab just any book you find locally, check the Best Seller Rank to determine how likely it is to sell. The lower the BSR, the more often the book sells on Amazon."
+    },
+    {
+        "id": "book-sale-early",
+        "category": "Buying",
+        "trigger": "Attending book sales",
+        "advice": "Arrive at least one hour before book sales start to secure best deals, potentially increasing profits from $500 to $1,500",
+        "confidence": "High",
+        "source": "getting to book sales at least an hour before the sale begins is a great way to snap up the best deals before anyone else has the chance to. Securing a spot at the front of the line is usually the difference between making $500 and $1,500."
+    },
+    {
+        "id": "hidden-textbooks-keepa",
+        "category": "Buying",
+        "trigger": "Noticeable dip in sales on Keepa graph during January and August/early September",
+        "advice": "Identify hidden textbooks and hold them until textbook season for price spike",
+        "confidence": "High",
+        "source": "One way to tell if you found the hidden textbook is make sure to check the Keepa graph to see if there is a noticeable dip in sales during January and August/early September. These are the textbook seasons and if you find a hidden textbook, you might consider holding onto it until the textbook season price spike comes around so you can sell it for the best price."
+    },
+    {
+        "id": "sku-prefix-textbooks",
+        "category": "Pricing",
+        "trigger": "Selling textbooks during repricing",
+        "advice": "Use unique SKU prefix for textbooks to prevent automated repricers from lowering prices during textbook season",
+        "confidence": "High",
+        "source": "adding a unique SKU prefix really comes in handy. It will allow you to tell your repricer not to reprice any books with an SKU that starts with specific characters so you don\u2019t accidentally sell your textbooks for less than you intended."
+    },
+    {
+        "id": "textbook-season-hold",
+        "category": "Seasonality",
+        "trigger": "Textbooks identified before college semester",
+        "advice": "Hold textbooks until just before college semester starts for price spikes",
+        "confidence": "High",
+        "source": "For example, just before the college semester starts, when students begin buying their textbooks."
+    },
+    {
+        "id": "seasonality-november",
+        "category": "Seasonality",
+        "trigger": "November month",
+        "advice": "Increase listed books and time promotions for upsurge in demand during November",
+        "confidence": "High",
+        "source": "sellers often see an upsurge in the months of November, and this is something you should take advantage of by making sure you have plenty of listed books and timing your promotions well."
+    },
+    {
+        "id": "profit-calculator",
+        "category": "Pricing",
+        "trigger": "Before publishing a listing",
+        "advice": "Use Amazon\u2019s calculator to figure out potential profit and ensure pricing wins the Buy Box",
+        "confidence": "High",
+        "source": "But you should always figure out your potential profit using Amazon\u2019s calculator before hitting the \u201cPublish\u201d button. Play around with the cost calculator so you will know what works best for you. ... if you can price your books right, you stand a chance to win the Buy Box"
+    },
+    {
+        "id": "oa6",
+        "category": "Buying",
+        "trigger": "Scanning retail websites for deals",
+        "advice": "Use OAXray Chrome extension to scan one page at a time for matches in Amazon catalog, showing profit, ROI, and sales rank; suitable for beginners with low learning curve",
+        "confidence": "High",
+        "source": "OAXray is a Google Chrome extension that allows you to go to an online store\u2019s website and scan a page of items... Learning curve? Relatively low."
+    },
+    {
+        "id": "oa7",
+        "category": "Buying",
+        "trigger": "Advanced scanning of entire categories",
+        "advice": "Employ Tactical Arbitrage for bulk scans of multiple pages and websites, including library search for books; set up scans to run in background and filter results for ROI and sales rank",
+        "confidence": "High",
+        "source": "Tactical Arbitrage allows you to set up bulk scans of multiple pages and multiple websites... library search for books... adjusting your settings (and with software as powerful as TA, adjusting your settings can be more complicated"
+    },
+    {
+        "id": "oa8",
+        "category": "Pricing",
+        "trigger": "Comparing prices across sites",
+        "advice": "Use PriceBlink extension on Amazon or retail pages to find lower prices on the item from other websites before buying",
+        "confidence": "High",
+        "source": "PriceBlink will attempt to find a better price on the item you\u2019re looking at. It\u2019s a good practice to always glance at PriceBlink"
+    },
+    {
+        "id": "oa9",
+        "category": "Risk",
+        "trigger": "Filters set too strictly in scanning tools",
+        "advice": "Avoid setting ROI filters at 100% or higher for OA; target lower ROI items if capital allows, as OA margins differ from retail arbitrage",
+        "confidence": "High",
+        "source": "Many sellers will say, 'I scanned thousands of items and didn\u2019t find anything to resell'... Almost without fail, these sellers have their filters set to only find items with 100% ROI or higher. OA is different... you need to be looking for items with a lower ROI"
+    },
+    {
+        "id": "oa10",
+        "category": "General",
+        "trigger": "Daily OA routine",
+        "advice": "Schedule specific time each day to review deal lists or run scans immediately after release to build consistency and sourcing discipline",
+        "confidence": "High",
+        "source": "Set aside a specific time each day to work through your list... Be consistent and you will develop a habit of doing solid OA each day. Most lists are released at around the same time each day"
+    },
+    {
+        "id": "sean-1",
+        "category": "Buying",
+        "trigger": "eBay textbooks priced $5 or less with free shipping",
+        "advice": "Use eBay's search filters to target books quickly and automatically filter out unwanted items before checking profitability on Amazon",
+        "confidence": "High",
+        "source": "you can go to the eBay textbook section and limit the price of the books to $5 or less with free shipping. That way you can automatically filter through anything you don\u2019t want and only pick the books that meet your criteria."
+    },
+    {
+        "id": "sean-2",
+        "category": "Risk",
+        "trigger": "Daily spending limit of $70",
+        "advice": "Aim to purchase books that equal at least $150 profit to hedge risk, estimating 70% sell in two months for $100/day income",
+        "confidence": "High",
+        "source": "I spend no more than $70 daily and aim to purchase books that equal at least $150 profit. My logic is that if I source books worth $150 profit I will sell 70% of those books in two months or less. This gives me an estimated $100/day ($36k annually). I use this estimation to hedge risk."
+    },
+    {
+        "id": "sean-3",
+        "category": "Buying",
+        "trigger": "Sales rank <1,000,000",
+        "advice": "Target books with sales rank under 1 million to flip them as fast as possible; for beginners, use <2,000,000 to see quicker results",
+        "confidence": "High",
+        "source": "I target books with a sales rank of <1 million because I want to flip them as fast as possible. ... For beginners I recommend a sales rank of 2M or less (less is always better)."
+    },
+    {
+        "id": "sean-4",
+        "category": "General",
+        "trigger": "Found a profitable eBay search",
+        "advice": "Copy and paste the URL of the search into a document to reuse it later, saving time and increasing chances of finding profitable books",
+        "confidence": "High",
+        "source": "If you find a profitable book using specific filter criteria on eBay, copy and paste the URL of that search and put it in a document somewhere. That way when you source again you can just paste the URL into the web browser and it will take you directly to that search."
+    },
+    {
+        "id": "sean-5",
+        "category": "Buying",
+        "trigger": "Books previously sold in Amazon Seller Central",
+        "advice": "Analyze previous orders and buy more copies of books that have already sold, as they are proven to sell",
+        "confidence": "High",
+        "source": "Analyze your previous orders in Amazon Seller Central and see if you can buy more of those books you\u2019ve already sold. This is great because it\u2019s already proven that the books will sell."
+    },
+    {
+        "id": "mike-1",
+        "category": "Buying",
+        "trigger": "Markup around 5x buying price",
+        "advice": "Target huge markups of about 5x the buying price, especially when not buying large quantities",
+        "confidence": "High",
+        "source": "I like to have huge markups \u2013 somewhere around 5x my buying price."
+    },
+    {
+        "id": "mike-2",
+        "category": "Buying",
+        "trigger": "Sales rank 100,000-300,000",
+        "advice": "Prefer sales rank in the 100K-300K range but consider higher if the markup is good; less concern for rank due to potential climb in peak seasons",
+        "confidence": "High",
+        "source": "As far as sales rank \u2013 I love to be in the 100K-300K range but I\u2019ll go higher if the markup is good. I\u2019m not too concerned with sales rank because I figure if a book is ranked 750K in the off season, it\u2019s going to climb way up during peak seasons."
+    },
+    {
+        "id": "mike-3",
+        "category": "Risk",
+        "trigger": "Starting out in online book arbitrage",
+        "advice": "Start off slow and develop a system before investing a lot of cash",
+        "confidence": "High",
+        "source": "I would definitely advise to start off slow and develop a system before you pour a ton of cash into it."
+    },
+    {
+        "id": "jason-1",
+        "category": "Buying",
+        "trigger": "Sales rank <150,000 and at least 50% return",
+        "advice": "Target books with sales rank under 150,000 for at least 50% ROI to ensure faster returns and guaranteed flips",
+        "confidence": "High",
+        "source": "For me it\u2019s books less than 150,000 when it comes to online arbitrage and I want to make at least a 50% return. This is because I\u2019m looking for a faster return and guaranteed flip."
+    },
+    {
+        "id": "jason-2",
+        "category": "Risk",
+        "trigger": "Potential for 50% return on higher priced books",
+        "advice": "Treat books as products, not just books; be willing to pay more (e.g., up to $70) if it yields at least 50% return, similar to other products like clothing",
+        "confidence": "High",
+        "source": "Some books are worth paying more for. It\u2019s a product not a book. There\u2019s a mindset that we shouldn\u2019t pay much for books but I\u2019ll pay $70 for a 50% return on clothing. Why not similar thinking for a book?"
+    },
+    {
+        "id": "jason-3",
+        "category": "General",
+        "trigger": "Time-consuming listing process",
+        "advice": "Outsource cleaning, listing, and shipping to a trusted employee with limited access in Seller Central to double profitability and focus on sourcing",
+        "confidence": "High",
+        "source": "I pay a trusted employee to clean, list, and ship my books. ... You\u2019ll easily double your profitability if you do this and what many people don\u2019t know is that you can give an employee access to the account but limit what they can see using settings found in seller central."
+    },
+    {
+        "id": "michael-1",
+        "category": "General",
+        "trigger": "Before purchasing books",
+        "advice": "Use CamelCamelCamel and Keepa to examine sales history and rank behavior to make informed buying decisions",
+        "confidence": "High",
+        "source": "I use CamelCamelCamel and Keepa to see the sales history of an item. ... I didn\u2019t know about CamelCamelCamel or Keepa."
+    },
+    {
+        "id": "michael-2",
+        "category": "Buying",
+        "trigger": "Sales rank <250,000 and confident sell within 6 months",
+        "advice": "Prefer sales rank under 250K but evaluate individually; avoid investing heavily in ranks near 1 million; buy up to 10 copies usually, or 20 from poor pricers if quick sell expected",
+        "confidence": "High",
+        "source": "I try not to invest too much into items with ranks closer to a million. I prefer to stay under 250K rank, but I examine each situation individually. I usually don\u2019t buy more than 10 copies of a title at a time, however I have purchased as many as 20 from a single seller with poor pricing mechanics. If im confident that the copies will sell fairly quick (within 6 months), I will buy as many as I think I can sell."
+    },
+    {
+        "id": "michael-3",
+        "category": "Pricing",
+        "trigger": "Low merchant fulfilled offers on profitable items",
+        "advice": "Buy out merchant offers to raise the lowest price and increase your own sales price, especially for FBA items",
+        "confidence": "High",
+        "source": "buying out merchant offers so my higher price could be lower in the search results. ... using that to buy more copies, in conjunction with buying out other peoples offers to raise the price of the lowest offer."
+    },
+    {
+        "id": "michael-4",
+        "category": "Buying",
+        "trigger": "Daily sales over $20 that are profitable",
+        "advice": "Check daily sales over $20 and buy copies (sometimes lots) if merchant prices make it profitable, focusing on MFN to FBA flips",
+        "confidence": "High",
+        "source": "I would look at sales over $20 and check what the merchant price was. If it was profitable I would buy copies. Sometimes lots of copies. Our sales, are still one of the main ways we locate these MFN->FBA flips."
+    },
+    {
+        "id": "michael-5",
+        "category": "Seasonality",
+        "trigger": "Textbooks in off-season (non-JUL-AUG or DEC-JAN)",
+        "advice": "Buy textbooks at very low prices in the off-season and sell at high markups during peak seasons (JUL-AUG or DEC-JAN) via FBA",
+        "confidence": "High",
+        "source": "buying textbooks in the off season at very low prices, and then pricing them quite high and slow selling them during textbook season. ... buying textbooks in the off season for pennies and selling them in JUL-AUG or DEC-JAN."
+    },
+    {
+        "id": "michael-6",
+        "category": "Pricing",
+        "trigger": "Pricing FBA items",
+        "advice": "Do not price against merchant fulfilled offers; only compete with other FBA offers, as FBA has advantages and most customers prefer it",
+        "confidence": "High",
+        "source": "if you are selling an item FBA it has many advantages over a merchant fulfilled item, so you shouldn\u2019t be pricing against merchant offers. They are not your competition. I forget where I read it, but I once read a statement that said something like \u201c90% of Amazon customers have never purchased anything that wasnt fulfilled by Amazon\u201d."
     }
 ]
