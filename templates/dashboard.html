@@ -219,6 +219,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Toggle Stub Interactivity
+    document.querySelectorAll('.toggle-switch-ui').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+        });
+    });
+
     // --- New Slider Logic ---
     const salesRankSteps = [
         { value: 10000, label: '10k' }, { value: 50000, label: '50k' }, { value: 100000, label: '100k' },
@@ -485,30 +492,26 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '<th colspan="4">Profit Estimates</th>';
         table += '</tr>';
 
-        // Main header row
+        // Main header row (Integrated Arrows)
         table += '<tr>';
         columnsToShow.forEach(header => {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
-            table += `<th data-sort="${header}">${headerText}</th>`;
-        });
-        table += '</tr>';
 
-        // New sorting arrows row
-        table += '<tr class="sort-arrows-row">';
-        columnsToShow.forEach(header => {
-            if (header === 'Buy_Now') {
-                table += '<td></td>'; // No arrows for these columns
-            } else {
-                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/UpArrow_on.png' : 'static/UpArrow_off.png';
-                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DownArrow_on.png' : 'static/DownArrow_off.png';
-                table += `
-                    <td>
-                        <div class="sort-arrows-container">
-                            <img src="${upArrowSrc}" class="sort-arrow" data-order="asc" data-column="${header}">
-                            <img src="${downArrowSrc}" class="sort-arrow" data-order="desc" data-column="${header}">
-                        </div>
-                    </td>`;
+            // Add sort arrows inline
+            let arrowHtml = '';
+            if (header !== 'Buy_Now') { // No sort for Buy Now
+                 const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/UpArrow_on.png' : 'static/UpArrow_off.png';
+                 const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DownArrow_on.png' : 'static/DownArrow_off.png';
+
+                 arrowHtml = `
+                    <span class="sort-arrows-inline" style="display:inline-block; vertical-align:middle; margin-left:4px;">
+                        <img src="${upArrowSrc}" class="sort-arrow" data-order="asc" data-column="${header}" style="display:block; width:10px; height:6px; margin-bottom:2px;">
+                        <img src="${downArrowSrc}" class="sort-arrow" data-order="desc" data-column="${header}" style="display:block; width:10px; height:6px;">
+                    </span>
+                 `;
             }
+
+            table += `<th data-sort="${header}" style="cursor: pointer;">${headerText}${arrowHtml}</th>`;
         });
         table += '</tr></thead><tbody>';
 

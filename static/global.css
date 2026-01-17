@@ -589,7 +589,7 @@ button:disabled {
 .deal-row td {
     background-color: #1f293c;
     color: #ffffff;
-    height: 48px;
+    height: 47px; /* EXACTLY 47px per spec */
     border-top: 1px solid #000000;
     border-bottom: 1px solid #000000;
     font-size: 12px;
@@ -613,33 +613,14 @@ button:disabled {
     background-color: #304163 !important;
 }
 
-#deals-table .sort-arrows-row {
-    height: 18px;
-    max-height: 18px;
-}
-
-#deals-table .sort-arrows-row td {
-    background-color: #15192b !important;
-    border: none !important;
-    height: 18px !important;
-    padding: 0 12px !important;
-    line-height: 18px;
-    position: sticky;
-    top: 88px; /* 56 + 32 */
-    z-index: 20;
-}
-
-.sort-arrows-container {
-    display: flex;
-    align-items: center;
-    height: 18px;
-}
-
-.sort-arrow {
+/* Sort Arrows integrated in TH - style for image */
+.th-sort-arrow {
     width: 24px;
     height: 13px;
     cursor: pointer;
-    margin-right: 2px;
+    vertical-align: middle;
+    margin-left: 5px;
+    display: inline-block;
 }
 
 .buy-now-link {
@@ -777,10 +758,11 @@ button:disabled {
     opacity: 0;
     transition: height 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
     margin-bottom: 0;
+    box-sizing: border-box;
 }
 
 .filter-panel.expanded {
-    height: 92px;
+    height: 92px; /* EXACTLY 92px per spec */
     opacity: 1;
     margin-bottom: 20px;
     padding: 0 10px;
@@ -822,6 +804,8 @@ button:disabled {
     position: relative;
     border: 1px solid #555;
     margin-top: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 .toggle-switch-ui::after {
     content: '';
@@ -832,6 +816,15 @@ button:disabled {
     height: 12px;
     background-color: #555;
     border-radius: 50%;
+    transition: left 0.2s ease, background-color 0.2s ease;
+}
+.toggle-switch-ui.active {
+    background-color: #336699;
+    border-color: #336699;
+}
+.toggle-switch-ui.active::after {
+    left: 18px;
+    background-color: #ffffff;
 }
 
 .filter-item label {
