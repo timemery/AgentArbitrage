@@ -1,6 +1,10 @@
 /* Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
+:root {
+    color-scheme: dark;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -192,9 +196,10 @@ a:hover {
     padding: 10px;
     font-size: 1em;
     margin-right: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(102, 153, 204, 0.5);
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
 }
 
 .show-form .login-button {
@@ -867,7 +872,8 @@ button:disabled {
     color: rgba(102, 153, 204, 0.9);
 }
 
-.slider {
+/* SCOPED Slider Styles for Dashboard Filter Panel */
+.filter-panel .slider {
   -webkit-appearance: none;
   width: 100%;
   height: 8px;
@@ -879,11 +885,11 @@ button:disabled {
   border: 1px solid rgba(102, 153, 204, 0.5);
 }
 
-.slider:hover {
+.filter-panel .slider:hover {
   opacity: 1;
 }
 
-.slider::-webkit-slider-thumb {
+.filter-panel .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 18px;
@@ -894,7 +900,7 @@ button:disabled {
   border: 1px solid #003366;
 }
 
-.slider::-moz-range-thumb {
+.filter-panel .slider::-moz-range-thumb {
   width: 18px;
   height: 18px;
   background: #336699;
