@@ -451,19 +451,36 @@ button:disabled {
 }
 
 .approval-link {
-    display: inline-block;
-    padding: 3px 8px;
-    background-color: #e67e22; /* Orange color for apply button */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 28px;
+    padding: 0;
+    background-color: #e67e22; /* Default Orange */
     color: white;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.9em;
-    font-weight: 500;
+    font-weight: 700;
+    box-sizing: border-box;
+    line-height: 1;
 }
 
 .approval-link:hover {
-    background-color: #d35400;
     text-decoration: none;
+    color: white;
+    opacity: 0.9;
+}
+
+.btn-buy {
+    background-color: #034106 !important;
+    border: 2px solid #06610b;
+}
+
+.btn-gated {
+    background-color: #8a3c04 !important;
+    border: 2px solid #a54805;
 }
 
 .settings-form .large-textarea {
@@ -576,6 +593,8 @@ button:disabled {
     border-right: 1px solid #000000;
     border-left: none; /* Default no left border */
     cursor: default;
+    height: 32px;
+    vertical-align: middle;
 }
 
 /* Add left border to the first header cell */
@@ -617,7 +636,7 @@ button:disabled {
 
 
 /* Hover Effects */
-.deal-row:hover td {
+#deals-table .deal-row:hover td {
     background-color: #304163; /* Hover Data Row Color */
     color: #ffffff; /* Hover Font Color */
 }
