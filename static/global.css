@@ -1110,6 +1110,19 @@ body.home-background::before {
 .trend-falling-green { color: green; font-weight: bold; }
 .trend-rising-red { color: red; font-weight: bold; }
 
+.amzn-icon {
+    height: 10px;
+    width: auto;
+    display: block;
+}
+
+.offers-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
 .action-message { font-size: 1.1em; margin-right: 10px; color: white; }
 .action-strong-red { color: #ff4d4d; }

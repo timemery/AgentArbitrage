@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Supply & Demand
         "Sales_Rank_Current", "Drops", "Offers", "Detailed_Seasonality",
         // Deal Details
-        "1yr_Avg", "Price_Now", "Percent_Down", "last_price_change", "AMZ",
+        "1yr_Avg", "Price_Now", "Percent_Down", "last_price_change",
         // Trust Ratings
         "Seller_Quality_Score", "Profit_Confidence",
         // Profit Estimates
@@ -646,6 +646,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Style the trend arrow - Offers arrows are placed BEFORE the number?
                         // "Arrows should be placed before data in all cases, not after."
                         // Currently format is "15 ↘" or "15 ↗" or "15 ⇨"
+                        let cellContent = '';
                         if (value && typeof value === 'string') {
                             // Split value and arrow if possible, or just replace
                             // Assuming format "Count Arrow"
@@ -670,20 +671,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             if (arrow) {
                                 // Place arrow before data
-                                table += `<td>${arrow} ${count}</td>`;
+                                cellContent = `${arrow} ${count}`;
                             } else {
-                                table += `<td>${value}</td>`;
+                                cellContent = `${value}`;
                             }
                         } else {
-                            table += `<td>${value}</td>`;
+                            cellContent = `${value}`;
                         }
-                    } else if (col === 'AMZ') {
-                        if (value === '⚠️') {
-                            // Use Warning Entity with Orange Color
-                            table += `<td class="amz-warning-cell"><span style="color: #dc870d; font-size: 1.2em;">&#x26A0;</span></td>`;
-                        } else {
-                            table += `<td></td>`;
+
+                        let wrapperStart = '<div class="offers-wrapper"><span class="offers-text">';
+                        let wrapperEnd = '</span>';
+
+                        // Add AMZN icon if needed
+                        if (deal.AMZ === '⚠️') {
+                             wrapperEnd += `<img src="/static/AMZN.svg" class="amzn-icon" alt="AMZ">`;
                         }
+                        wrapperEnd += '</div>';
+
+                        table += `<td>${wrapperStart}${cellContent}${wrapperEnd}</td>`;
+
                     } else {
                         table += `<td>${value}</td>`;
                     }

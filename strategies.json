@@ -14980,5 +14980,69 @@
         "advice": "Use the TAA (Tactical Arbitrage) A2A tool to find seasonal flips for books that performed well last year, as Keepa lacks the right parameters.",
         "confidence": "Medium",
         "source": "if you already have tattoo Arbitrage there's an a2a scanner there I think that's the only tool that I know of that helps you find seasonal flips keepa alone can't do it for you because it doesn't have exactly the right parameters in their built-in toolbox which is kind of annoying but the Ted barbershops one does so if you want to find things that did really well last year and sell them again this year"
+    },
+    {
+        "id": "keepa-deals-drop",
+        "category": "Buying",
+        "trigger": "Price drop of 30% or more and at least $25 within last 24 hours",
+        "advice": "Use Keepa Deals in table view for used books, set current price $0-$33, sales rank up to 2.5 million, sort by newest first, hover to check graphs for historical value above current drop",
+        "confidence": "High",
+        "source": "drop interval of a day... drop percentage range... 30 to 100... drop by at least we'll say 25... price range... zero to thirty three dollars... sales rank... up to 2.5 million"
+    },
+    {
+        "id": "keepa-graph-hover",
+        "category": "Buying",
+        "trigger": "Hover over Amazon product shows Keepa graph overlay",
+        "advice": "Enable 'show price history graphs as overlays when hovering Amazon products' in Keepa settings, scan graphs in 1 second each looking for flat used price line followed by sharp drop off a cliff",
+        "confidence": "High",
+        "source": "come up here to the top where your profile name is... select this settings option... click this Cog... scroll down to where this says show price history graphs... you're looking for a used price that is like this kind of flat and then I'm seeing I want to look at a book that has seen a drop off a clip like that"
+    },
+    {
+        "id": "product-tracking",
+        "category": "Buying",
+        "trigger": "Book periodically drops below $10 used price including shipping",
+        "advice": "Track products in Keepa by clicking 'track product' button on graph, set alert for used price under $10 including shipping, condition good/very good/like new (exclude acceptable), track for 1-10 years, use dedicated email with phone app notifications for immediate purchase upon alert",
+        "confidence": "High",
+        "source": "come up here to the top of the keeper graph and click this little button called track product... when the use price is ten dollars include shipping costs... good very good like new or Warehouse... track it for at least a year maybe up to 10 years... make an email address just for this... turn on notifications in the Gmail app... purchase immediately"
+    },
+    {
+        "id": "immediate-buy-risk",
+        "category": "Risk",
+        "trigger": "Keepa notification for tracked book price drop",
+        "advice": "Buy within 10 minutes of notification as deals sell out fast due to competing resellers and robots, expect heart-pounding urgency",
+        "confidence": "High",
+        "source": "when you get that buzz notification purchase immediately guys... my heart would be pounding when I would like go to order because like they have robots out there ordering these books... it's either somebody texting you calling you or it's a book that you have to go purchase like in 10 minutes or someone else is going to purchase it"
+    },
+    {
+        "id": "product-finder-filter",
+        "category": "Buying",
+        "trigger": "Average sales rank <=2.5 million over 180 days, Amazon out of stock, current used price $0-$8, historical used price $30-$45 over last 30/90/180 days",
+        "advice": "Use Keepa Product Finder in books category, apply filters for sales rank, out of stock, current vs historical prices, scan results quickly (1 second each) for sales rank drops indicating value above current price",
+        "confidence": "High",
+        "source": "select the book category... average sales rank of two and a half million or below... over the last 180 days... Amazon's out of stock... current we'll say zero to eight... over the last 30 90s and 180 days... between 30 to we'll say forty five dollars... literally it should take about a second for you to see"
+    },
+    {
+        "id": "sales-rank-tolerance",
+        "category": "General",
+        "trigger": "Sales rank >1 million, up to 2.5 million",
+        "advice": "Target books with sales rank up to 2.5 million as they sell, especially high-value ones; average sold book has 1.4 million rank and $70 sales price",
+        "confidence": "High",
+        "source": "contrary to popular belief you know a million sales rank... above a million sellers running those books definitely do sell... up to 2.5 million... the average book that I sell has a sales rank of like 1.4 million... my average sales price is seventy dollars"
+    },
+    {
+        "id": "ungating-dvds",
+        "category": "General",
+        "trigger": "Gated in DVDs/CDs/small book brands",
+        "advice": "Buy 10 units of cheapest unsellable DVD ($3-5) from christianbook.com, ship to Amazon account address, upload receipt (not invoice) to get ungated; works for brands like Lego, Warner",
+        "confidence": "High",
+        "source": "go to christianbook.com... find the cheapest DVD... find one for three to five bucks order 10 units... make sure you order 10... upload that receipt you'll upload a receipt not an invoice... this works for any brand too... Lego... Warner"
+    },
+    {
+        "id": "ungating-mcgraw",
+        "category": "General",
+        "trigger": "Gated in McGraw-Hill textbooks",
+        "advice": "Order 10 units of $5-10 book from mcgrawhill.com, ship to Amazon address, submit receipt to Amazon for approval; alternatively use restrictedinventory.com service splitting 50% profits after shipping/prep",
+        "confidence": "High",
+        "source": "for McGraw-Hill books... go to mcgrawhill.com... order a five to ten dollar book order 10 of them... you must order 10 units... submit that uh to Amazon... if you can't sell textbooks you can go to restricted inventory.com... we split shipping charges with you 50 50... pay you 50 of the profits"
     }
 ]
