@@ -547,7 +547,7 @@ button:disabled {
 
 /* Deals Dashboard Table Styles */
 #deals-table {
-    width: 1333px; /* Exact match to filter panel */
+    width: 1300px; /* Exact match to filter panel */
     margin: 22px auto 0 auto; /* Centered with 22px top separation */
     border-spacing: 0; /* Set spacing to 0 */
     border-collapse: separate; /* Use separate model for manual control */
@@ -592,6 +592,10 @@ button:disabled {
     box-sizing: border-box !important;
 }
 
+#deals-table tr.group-header {
+    background-color: transparent !important;
+}
+
 /* Data Cell Styles */
 #deals-table td {
     font-family: 'Open Sans', sans-serif;
@@ -605,6 +609,11 @@ button:disabled {
 .deal-row {
     height: 48px; /* Adjusted target height */
     background-color: #283143; /* Normal Data Row Color */
+}
+
+/* Specific Style for Now Price Column to override bold */
+.price-now-cell {
+    font-weight: 400 !important;
 }
 
 /* Hover Effects */
@@ -1409,7 +1418,7 @@ body.home-background::before {
 /* -------------------------------------------------------------------------- */
 
 .filter-panel {
-    width: 1333px;
+    width: 1300px;
     background-color: #1f293c;
     border: 1px solid #000000;
     border-radius: 8px;
