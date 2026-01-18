@@ -645,19 +645,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'Offers') {
                         // Style the trend arrow - Offers arrows are placed BEFORE the number?
                         // "Arrows should be placed before data in all cases, not after."
-                        // Currently format is "15 ↘" or "15 ↗"
+                        // Currently format is "15 ↘" or "15 ↗" or "15 ⇨"
                         if (value && typeof value === 'string') {
                             // Split value and arrow if possible, or just replace
                             // Assuming format "Count Arrow"
                             let arrow = '';
                             let count = value;
 
+                            // Check for Diagonal Down (Falling/Good) -> Map to Vertical Down
                             if (value.includes('↘')) {
                                 arrow = '<span class="trend-falling-green" style="color: #01be0a;">&#x2193;</span>'; // Green Down
                                 count = value.replace('↘', '').trim();
-                            } else if (value.includes('↗')) {
+                            }
+                            // Check for Diagonal Up (Rising/Bad) -> Map to Vertical Up
+                            else if (value.includes('↗')) {
                                 arrow = '<span class="trend-rising-red" style="color: #dd080a;">&#x2191;</span>'; // Red Up
                                 count = value.replace('↗', '').trim();
+                            }
+                            // Check for Flat Arrow (Right Hollow) -> Map to Solid Right Arrow
+                            else if (value.includes('⇨')) {
+                                arrow = '<span style="color: #dc870d; font-weight: bold;">&rightarrow;</span>'; // Orange Right
+                                count = value.replace('⇨', '').trim();
                             }
 
                             if (arrow) {
