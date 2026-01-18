@@ -14692,5 +14692,277 @@
         "advice": "Price based on historical data (e.g., $60-80) rather than current lowest price, as prices may rebound after offers sell out",
         "confidence": "High",
         "source": "there's no way that I'd be pricing it at the lowest price I would actually be probably pricing it between $60 and $80 because I know long-term historically that's what it generally sells at ... we've been at used offer accounts much higher than this and the book has has come back it has performed well ... looking at offer counts is really important generally when offer counts get much higher you should expect the used prices on the listing to go lower ... a lot of people aren't really looking at keep in their pricing books they're kind of just pricing books based upon live data rather than historical data"
+    },
+    {
+        "id": "newtp1",
+        "category": "Pricing",
+        "trigger": "Gaps in blue new third-party price line over past year",
+        "advice": "Gaps indicate out-of-stock periods; predict future new prices unlikely below historical lows (e.g., not under $30 if not in last year).",
+        "confidence": "High",
+        "source": "in the last year, nobody has sold it for less than $30... it's probably very unlikely that in the future somebody will be selling this book new for less than $30."
+    },
+    {
+        "id": "newtp2",
+        "category": "Pricing",
+        "trigger": "New third-party price above $50 historically",
+        "advice": "Expect future new prices to stay above $50 based on graph trends; use for profitability assessment.",
+        "confidence": "High",
+        "source": "based upon what I'm seeing on the graph is it generally looks like this book's new price is probably going to be above $50."
+    },
+    {
+        "id": "used1",
+        "category": "Pricing",
+        "trigger": "Average used price $50 or more",
+        "advice": "Target high-value books ($50+) to cover fees (Amazon, shipping, etc.); avoid low-value ($1-5).",
+        "confidence": "High",
+        "source": "high value books which are like I would say $50 or more... very low value books which are like you know one to $5... stay in the high value books."
+    },
+    {
+        "id": "used2",
+        "category": "Pricing",
+        "trigger": "Used price $10-20 average",
+        "advice": "Consider moderate value; viable if purchase cost low, but prioritize higher for better margins after fees.",
+        "confidence": "High",
+        "source": "this is not a high value book because it's $10 to $20, but that doesn't mean it has no value. It just means that it has less value or moderate amount of value."
+    },
+    {
+        "id": "used3",
+        "category": "Pricing",
+        "trigger": "Amazon out of stock (no yellow in recent history)",
+        "advice": "Used prices likely higher without Amazon's new price ceiling; e.g., prices rose after Amazon stopped selling.",
+        "confidence": "High",
+        "source": "when Amazon goes out of stock... Prices kind of go a little bit higher... the reason why the prices were lower back here is because Amazon sold it for a... pretty cheap price."
+    },
+    {
+        "id": "keepa-filter-drop-percent",
+        "category": "Buying",
+        "trigger": "Drop percent range >= 30%",
+        "advice": "Set Keepa Deals filter to identify books with at least 30% price drop for potential arbitrage opportunities.",
+        "confidence": "High",
+        "source": "Your drop percent range to be 30% or more."
+    },
+    {
+        "id": "keepa-filter-drop-range",
+        "category": "Buying",
+        "trigger": "Drop range >= $10",
+        "advice": "Use Keepa Deals to filter books with a price drop of $10 or more over the interval.",
+        "confidence": "High",
+        "source": "Your drop range to be $10 or more."
+    },
+    {
+        "id": "keepa-filter-price-range",
+        "category": "Buying",
+        "trigger": "Book price between $0 and $14",
+        "advice": "Filter for books priced under $14 in Keepa Deals to start with lower entry costs for beginners.",
+        "confidence": "High",
+        "source": "picking out books anywhere between 0 and $14"
+    },
+    {
+        "id": "keepa-filter-sales-rank",
+        "category": "Buying",
+        "trigger": "Max sales rank <= 1,000,000",
+        "advice": "Limit to books with sales rank under 1 million in Keepa to ensure they have some demand.",
+        "confidence": "High",
+        "source": "with a max sales rank of 1 million."
+    },
+    {
+        "id": "keepa-filter-no-amazon-offer",
+        "category": "Buying",
+        "trigger": "No Amazon offer present",
+        "advice": "Filter for books without Amazon's own offers in Keepa Deals to avoid competition from Amazon.",
+        "confidence": "High",
+        "source": "Have this checked for no Amazon offer."
+    },
+    {
+        "id": "sales-rank-drops-analysis",
+        "category": "Buying",
+        "trigger": "Drops in green sales rank line on Keepa chart",
+        "advice": "Count sales rank drops on Keepa graph to estimate sales frequency; look for consistent drops indicating regular sales.",
+        "confidence": "High",
+        "source": "every time you see the sales rank or this green line drop, it indicates that the book has actually sold... you can actually count on this keeper graph the number of sales rank drops"
+    },
+    {
+        "id": "historical-used-price-check",
+        "category": "Buying",
+        "trigger": "Current price significantly below historical lowest used price (black line on Keepa)",
+        "advice": "Verify on Keepa that the current buy price is an anomaly below historical used prices (e.g., $40-50) for high ROI potential.",
+        "confidence": "High",
+        "source": "what we're going to use this black line which indicates the lowest use price of that book on Amazon over time... this book has hovered right around 40 to 50... All of a sudden today, there's been a massive drop in price."
+    },
+    {
+        "id": "roi-target-buying",
+        "category": "Buying",
+        "trigger": "Potential ROI > 100%",
+        "advice": "Buy books where all-in cost (price + shipping) allows for over 100% ROI based on historical sales prices.",
+        "confidence": "High",
+        "source": "Flipping for 40 to 50 bucks and that's going to make you over 100% ROI."
+    },
+    {
+        "id": "seasonal-textbook-buying",
+        "category": "Seasonality",
+        "trigger": "Cluster of sales rank drops in June-July-August for school books",
+        "advice": "Buy seasonal textbooks like middle school math books off-season when cheap (e.g., $6), hold and sell in summer for 200-300% ROI.",
+        "confidence": "High",
+        "source": "there are plenty of sales rank drops in June July and August... cluster of sales right around July... buy a couple copies of and pricing them to sell in June or July and easily a book that you can make a 200 300% RO ROI"
+    },
+    {
+        "id": "inventory-limit-buying",
+        "category": "Risk",
+        "trigger": "Limited stock available (e.g., 14 in stock) and uncertain demand",
+        "advice": "Buy limited copies (2-3) of seasonal or uncertain books to mitigate risk of unsold inventory.",
+        "confidence": "High",
+        "source": "I definitely want to buy all 14 because I don't know if this book would sell 14 times... But this is something I'd buy a couple copies of, maybe two, maybe three copies of"
+    },
+    {
+        "id": "min-max-pricing-setup",
+        "category": "Pricing",
+        "trigger": "After purchase, add min and max prices based on historical data",
+        "advice": "Track purchases in Google Sheets and set min/max prices (e.g., based on $35-55 historical) for repricer upload to automate pricing.",
+        "confidence": "High",
+        "source": "put in, let's say, miners price. And you can come over here and put max price... sync up your minimax price and your purchase price with AR"
+    },
+    {
+        "id": "inventory-tracking-tool",
+        "category": "General",
+        "trigger": "Need to track all book purchases and costs",
+        "advice": "Use free Amazon Order History Reporter Chrome extension to export orders to CSV, upload to Google Sheets for cost and pricing tracking.",
+        "confidence": "High",
+        "source": "go over to Google Chrome web store and type in Amazon order history reporter... have a spreadsheet of all the books that you bought by title, by as by cost"
+    },
+    {
+        "id": "tip1a",
+        "category": "Buying",
+        "trigger": "Sales rank drops frequently but lowest used price < $5 + shipping",
+        "advice": "Reject the book as it is low value and not worth sourcing due to high Amazon fees.",
+        "confidence": "High",
+        "source": "this first book we looked at sold a lot but it was basically worthless because it was always like two dollars but this is a book that sells less often but its lowest use price is always between 25 and 30 bucks"
+    },
+    {
+        "id": "tip1b",
+        "category": "Buying",
+        "trigger": "Fewer sales rank drops but lowest used price $20-30",
+        "advice": "Consider sourcing if acquisition cost allows profit after fees; indicates moderate value with less competition.",
+        "confidence": "High",
+        "source": "this is a book that sells less often but its lowest use price is always between 25 and 30 bucks okay now let's keep going here's a book that has even more value than the other one"
+    },
+    {
+        "id": "tip1c",
+        "category": "Buying",
+        "trigger": "Consistent sales rank drops and lowest used price $40-70 or higher",
+        "advice": "Prioritize sourcing high-value books like these for better margins despite fees.",
+        "confidence": "High",
+        "source": "this book appears to have more salesman drops than the previous one and can you see the the lowest use price of this book Avery what does this book look like it's worth um 70 to 40. yeah so maybe as low as 40 but up to 70"
+    },
+    {
+        "id": "tip2",
+        "category": "General",
+        "trigger": "E-score low (e.g., 2) or no e-score on scan",
+        "advice": "Check Keepa for historical sales consistency over years to confirm long-term sellability.",
+        "confidence": "High",
+        "source": "I always look at keepa like if the e-score is two or something or the e-score doesn't exist I look at keepa and one thing I like to see is if over the years if it has consistent sales I know eventually one day I'll probably sell it"
+    },
+    {
+        "id": "tip3",
+        "category": "Buying",
+        "trigger": "Current price temporarily low (e.g., $30 vs historical $100)",
+        "advice": "Zoom into Keepagraph for short periods (e.g., 4-hour increments) to identify arbitrage opportunities from price dips.",
+        "confidence": "High",
+        "source": "zooming in on the keepograph to see specific periods of time so for those who don't know online book Arbitrage is a really simple concept it's just try to find a book on Amazon that holds historical selling value at let's say a hundred dollars but momentarily for whatever reason it's thirty dollars on Amazon right now"
+    },
+    {
+        "id": "tip4a",
+        "category": "Pricing",
+        "trigger": "Used offer count decreases (e.g., from 7 to 5)",
+        "advice": "Expect price to rise due to reduced supply; buy low when count is high and sell when low.",
+        "confidence": "High",
+        "source": "you can actually see that once that book got down to that price what happened to the offer account here Avery yeah it went down seven to six to five right so someone picked it up somebody sold out"
+    },
+    {
+        "id": "tip4b",
+        "category": "Seasonality",
+        "trigger": "Seasonal book (e.g., Christmas) with offer count dropping in December",
+        "advice": "Buy off-season when supply high and price low (~$10), sell in-season for ~$40 when demand peaks.",
+        "confidence": "High",
+        "source": "this is a book that you you could basically buy year-round for about 10 bucks I mean you can flip it for about 40 bucks"
+    },
+    {
+        "id": "tip4c",
+        "category": "Risk",
+        "trigger": "Sudden offer count drop (e.g., from 100 to 10 due to event like author death)",
+        "advice": "Monitor for spikes from events; price higher during low supply periods as value can jump (e.g., $1 to $35).",
+        "confidence": "High",
+        "source": "the offer count literally that same day starts jumping down because why you know people all of a sudden like they remember who this guy was like yeah somebody's buy his book right and so you actually see how what happens Avery to the used price when the offer count it literally goes from 100 down to like 10 overnight skyrockets it goes up so literally a book that was worth nothing is now selling for 35 bucks"
+    },
+    {
+        "id": "tip4d",
+        "category": "Seasonality",
+        "trigger": "Textbook season (July/August) with offer count low",
+        "advice": "Source textbooks off-season cheap; avoid if offer count remains high post-season as price stays low (~$4-5).",
+        "confidence": "High",
+        "source": "July which is when textbook season for high school books pops you can see how basically the used off account gets really low and you can see how the used price you know starts to go up a little bit"
+    },
+    {
+        "id": "tip5",
+        "category": "General",
+        "trigger": "Sales rank 500,000 but varying drop frequency on Keepa",
+        "advice": "Don't rely solely on current sales rank; use Keepa to assess true selling frequency as rank is dynamic and can mislead.",
+        "confidence": "High",
+        "source": "sales rank is dynamic and that sales rank is often very very misleading so what we're gonna do is go to keepa and go to keep a product finder... these are books that are wildly different um yeah I have the same sales ring so here we go"
+    },
+    {
+        "id": "tip6",
+        "category": "Pricing",
+        "trigger": "Amazon selling new (e.g., $16.30) but used price below (e.g., under new) and offer count fluctuating",
+        "advice": "Sell used below new price; win buy box when Amazon out of stock, as used gets more visibility.",
+        "confidence": "High",
+        "source": "just because Amazon is selling the book new on the listing does not mean that you cannot sell... the use price of this book is well below the new price and a logical consumer is willing to save a few dollars"
+    },
+    {
+        "id": "tip7a",
+        "category": "Seasonality",
+        "trigger": "Halloween-themed book scanned outside Sep-Oct with low rank/price ($1)",
+        "advice": "Don't ignore; check Keepa for seasonal inflation up to $38 a month before Halloween; buy off-season.",
+        "confidence": "High",
+        "source": "don't ignore seasonal books you might come across a book that has pumpkin on it or it might have Halloween or Christmas on it... this is clearly a book that inflates in price during Halloween because it's for Halloween and so if you were scanning this book literally anytime during the year outside of uh September October this book is worth literally a dollar"
+    },
+    {
+        "id": "tip7b",
+        "category": "Seasonality",
+        "trigger": "Christmas book with 2M rank and $1.74 price off-season",
+        "advice": "Source for seasonal flip; inflates to $30 during holidays.",
+        "confidence": "High",
+        "source": "here's another book that if you were standing at a thrift store it's a dollar with a sales rank of like if you scanned it on this day it has a 2 million sales rank it's a dollar seventy four that's a hard no hard pass but... this is something that every year inflation price up to you know 30 bucks"
+    },
+    {
+        "id": "tip8",
+        "category": "Pricing",
+        "trigger": "No FBA offers on listing",
+        "advice": "Price 15-25% above lowest used or double/triple if history supports; can significantly increase profit (e.g., $10 to $30+).",
+        "confidence": "High",
+        "source": "if there's no FB offers on that listing that you can get a significant but maybe 15 25 like you don't have to fit like there's even some times where you can sell a book for double or even triple"
+    },
+    {
+        "id": "tip9",
+        "category": "Pricing",
+        "trigger": "Zero offers total (no merchant or FBA)",
+        "advice": "Check Keepa history for past buy box prices; price greedily but realistically (e.g., $50-100 if historical high) to capture full value.",
+        "confidence": "High",
+        "source": "books that have zero offers mean there's no Merchant offer and there's no FBA offer... if there's no offers at all what's gonna happen with Scout IQ or scoutly what's it what's it going to show you... nothing you guys and so somebody's gonna pass on that book immediately this is worthless when in reality that book could have sold for a hundred dollars every time it was in stock"
+    },
+    {
+        "id": "tip10",
+        "category": "Pricing",
+        "trigger": "Used buy box price (purple dots) > lowest used price",
+        "advice": "Target buy box price for listing; indicates actual selling price often higher than lowest offer.",
+        "confidence": "High",
+        "source": "these purple triangles here they're basically are pink I don't know purple pink they're going to tell you what the recorded used buy box price was... a lot of the times that use buy box prices above what that lowest uh used price is on Amazon"
+    },
+    {
+        "id": "tip11",
+        "category": "Pricing",
+        "trigger": "Listing with no/low FBA and minimum desired price (e.g., $35)",
+        "advice": "Use repricer with minimum price settings to protect profits and avoid selling below historical average.",
+        "confidence": "High",
+        "source": "you can set minimum prices so you could set I do not want to sell this book for less than 35 dollars because you looked at the keepa and you saw that on average all year it sells for about 35 bucks"
     }
 ]
