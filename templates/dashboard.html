@@ -596,14 +596,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         switch (deal.restriction_status) {
                             case 'restricted':
                                 if (deal.approval_url && deal.approval_url !== 'ERROR') {
-                                    gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link" onclick="event.stopPropagation()">Apply</a>`;
+                                    gatedContent = `<a href="${deal.approval_url}" target="_blank" class="approval-link btn-gated" onclick="event.stopPropagation()">Apply</a>`;
                                 } else {
                                     gatedContent = `<span class="restricted-text" style="color: #ff4d4d; font-weight: bold;">Restricted</span>`;
                                 }
                                 break;
                             case 'not_restricted':
                                 // Show Buy button (Greenish)
-                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #28a745;" onclick="event.stopPropagation()">Buy</a>`;
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link btn-buy" onclick="event.stopPropagation()">Buy</a>`;
                                 break;
                             case 'error':
                                 gatedContent = '<span class="status-icon error" title="API Error">⚠</span>';
@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 break;
                             default:
                                 // Fallback to "View" if status unknown
-                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #6c757d;" onclick="event.stopPropagation()">View</a>`;
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #6c757d; border: 2px solid #5a6268;" onclick="event.stopPropagation()">View</a>`;
                         }
                         table += `<td>${gatedContent}</td>`;
                     } else if (col === 'Title') {
