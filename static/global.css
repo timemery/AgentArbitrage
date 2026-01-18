@@ -389,6 +389,14 @@ button:disabled {
     z-index: 10;
 }
 
+.header-logout a {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #ffffff;
+    text-decoration: none;
+}
+
 
 .header-logo img {
     width: 266px;
