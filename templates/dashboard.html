@@ -511,20 +511,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (header === 'Buy_Now') {
                 table += '<td></td>'; // No arrows for these columns
             } else {
-                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/AscendingON.png' : 'static/AscendingOff.png';
-                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DescendingON.png' : 'static/DescendingOff.png';
+                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? '/static/AscendingON.png' : '/static/AscendingOff.png';
+                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? '/static/DescendingON.png' : '/static/DescendingOff.png';
                 table += `
                     <td>
                         <div class="sort-arrows-container">
                             <img src="${upArrowSrc}" class="sort-arrow"
                                  data-order="asc"
                                  data-column="${header}"
-                                 onmouseover="this.src='static/AscendingON.png'"
+                                 onmouseover="this.src='/static/AscendingON.png'"
                                  onmouseout="this.src='${upArrowSrc}'">
                             <img src="${downArrowSrc}" class="sort-arrow"
                                  data-order="desc"
                                  data-column="${header}"
-                                 onmouseover="this.src='static/DescendingON.png'"
+                                 onmouseover="this.src='/static/DescendingON.png'"
                                  onmouseout="this.src='${downArrowSrc}'">
                         </div>
                     </td>`;

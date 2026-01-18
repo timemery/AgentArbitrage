@@ -615,10 +615,6 @@ button:disabled {
     background-color: #283143; /* Normal Data Row Color */
 }
 
-/* Specific Style for Now Price Column to override bold */
-.price-now-cell {
-    font-weight: 400 !important;
-}
 
 /* Hover Effects */
 .deal-row:hover td {
