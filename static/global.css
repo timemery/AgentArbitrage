@@ -547,104 +547,109 @@ button:disabled {
 
 /* Deals Dashboard Table Styles */
 #deals-table {
-    width: 100%;
+    width: 1333px; /* Exact match to filter panel */
+    margin: 22px auto 0 auto; /* Centered with 22px top separation */
     border-spacing: 0; /* Set spacing to 0 */
     border-collapse: separate; /* Use separate model for manual control */
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
 #deals-table th, #deals-table td {
     padding: 8px;
     text-align: left;
-    /* Set border on bottom and right of each cell */
-    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
-    border-right: 1px solid rgba(102, 153, 204, 0.4);
-    border-top: 0;
-    border-left: 0;
     white-space: nowrap; /* Prevent wrapping on all columns */
 }
 
-/* Add top border to all header cells */
+/* Column Header Styles */
 #deals-table th {
-    border-top: 1px solid rgba(102, 153, 204, 0.4);
+    background-color: #1f293c;
+    color: #a3aec0;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-left: none; /* Default no left border */
+    cursor: default;
 }
 
-/* Add left border to the first cell of each row */
-#deals-table tr > th:first-child,
-#deals-table tr > td:first-child {
-    border-left: 1px solid rgba(102, 153, 204, 0.4);
+/* Add left border to the first header cell */
+#deals-table tr > th:first-child {
+    border-left: 1px solid #000000;
 }
 
-#deals-table th {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-}
-
+/* Group Header Styles */
 #deals-table .group-header th {
-    background-color: transparent !important;
-    color: #75afd1;
-    font-size: 110%;
-    border: none !important;
+    background-color: transparent !important; /* NONE */
+    color: #ffffff;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 15px;
+    border: none !important; /* NONE */
     height: 44px !important;
     padding: 0 8px !important;
     box-sizing: border-box !important;
 }
 
+#deals-table tr.group-header {
+    background-color: transparent !important;
+}
+
+/* Data Cell Styles */
 #deals-table td {
-    font-size: 14px;
-    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    color: #a3aec0;
+    border: none; /* Reset default borders if any */
 }
 
+/* Row Styles */
 .deal-row {
-    height: 55px;
+    height: 48px; /* Adjusted target height */
+    background-color: #283143; /* Normal Data Row Color */
 }
 
+/* Specific Style for Now Price Column to override bold */
+.price-now-cell {
+    font-weight: 400 !important;
+}
+
+/* Hover Effects */
 .deal-row:hover td {
-    background-color: rgba(102, 153, 204, 0.15);
+    background-color: #304163; /* Hover Data Row Color */
+    color: #ffffff; /* Hover Font Color */
 }
 
-#deals-table th {
-    cursor: default; /* Remove pointer cursor from headers */
-}
-
+/* Sort Arrows Row Styles */
 #deals-table .sort-arrows-row {
-    height: 18px;
-    max-height: 18px;
+    height: 25px;
+    max-height: 25px;
 }
 
 #deals-table .sort-arrows-row td {
-    background-color: #011b2a;
-    height: 18px !important;
-    max-height: 18px !important;
+    background-color: transparent; /* Ascending/Descending Row color - NONE */
+    height: 25px !important;
+    max-height: 25px !important;
     padding: 0 8px !important;
-    line-height: 18px;
-    border-right: none !important;
-    border-left: none !important;
-    /* The bottom border is inherited from the default td style, which is correct */
-}
-
-/* Add ONLY the outer borders back to the row */
-#deals-table .sort-arrows-row > td:first-child {
-    border-left: 1px solid rgba(102, 153, 204, 0.4) !important;
-}
-#deals-table .sort-arrows-row > td:last-child {
-    border-right: 1px solid rgba(102, 153, 204, 0.4) !important;
+    line-height: 25px;
+    border: none !important; /* Ascending/Descending Row Border - NONE */
 }
 
 .sort-arrows-container {
     display: flex;
     align-items: center;
-    height: 18px;
+    justify-content: flex-start; /* Left aligned */
+    height: 25px;
 }
 
 .sort-arrow {
-    width: 24px;
-    height: 13px;
+    width: 17px;
+    height: 25px;
     cursor: pointer;
-    margin-right: 2px;
+    margin-right: 0;
+    padding: 0;
 }
 
 .buy-now-link {
@@ -677,14 +682,20 @@ button:disabled {
 
 /* Base style for truncated cells */
 .title-cell, .seller-cell, .genre-cell, .season-detail-cell {
-    max-width: 120px; /* Standardized width */
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative; /* Needed for hover effect */
 }
 
-/* Specific width for season detail to match title */
+.title-cell {
+    max-width: 125px; /* Set to 125px */
+}
+
 .season-detail-cell {
+    max-width: 105px; /* Set to 105px */
+}
+
+.seller-cell, .genre-cell {
     max-width: 120px;
 }
 

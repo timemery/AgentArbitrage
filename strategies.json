@@ -13548,5 +13548,789 @@
         "advice": "Use Keepa to identify price drops, historical sales, and track products for arbitrage opportunities",
         "confidence": "High",
         "source": "how I actually came across this book and I did that using a Chrome extension called keepa which has a number of really cool features... zoom in on the keepa chart... historical data to show that it sold for over 50 bucks"
+    },
+    {
+        "id": "baseline1",
+        "category": "Pricing",
+        "trigger": "Sales rank drops coinciding with lowest used price between 7-10 dollars over 1 year",
+        "advice": "Identify baseline value as 7-10 dollars for consistent sales; avoid buying at inflated 50 dollars",
+        "confidence": "High",
+        "source": "this book has been between seven to ten dollars that's the Baseline value... this book here is worth right around eight to ten bucks now notice on Amazon that there's actually four offers listed for 50 bucks"
+    },
+    {
+        "id": "baseline2",
+        "category": "Pricing",
+        "trigger": "Sales rank drops at lowest used price around 34.99 dollars",
+        "advice": "Set baseline value higher at 22-35 dollars for books with elevated historical pricing during sales",
+        "confidence": "High",
+        "source": "it's actually 34.99 it's 22 is back up to 34... sales rank drop here at 35 salesman drop 35 sales and drop 2025 and this is a book that has a baseline value a little bit higher"
+    },
+    {
+        "id": "baseline3",
+        "category": "Pricing",
+        "trigger": "Sales rank drops at lowest used price around 75 dollars over the year",
+        "advice": "Establish baseline at 75 dollars for higher value books; monitor for temporary price drops indicating popularity surge",
+        "confidence": "High",
+        "source": "the lowest she's priced here over pretty much the entire year has been right around 76 75 dollars and again we see that that sales rank is actually dropping when the lowest use Price is Right Around 75"
+    },
+    {
+        "id": "baseline4",
+        "category": "Pricing",
+        "trigger": "Sales rank drops at lowest used price around 150 dollars",
+        "advice": "Determine baseline at 150 dollars for premium books; buy only if significantly below this during sales",
+        "confidence": "High",
+        "source": "this is a book that's actually very expensive buy box price is 150 bucks... the lowest use price right around 150 dollars and we see that's when this sales rank is dropping"
+    },
+    {
+        "id": "baseline5",
+        "category": "Pricing",
+        "trigger": "Sales rank drops at lowest used price in 330-350 dollar range",
+        "advice": "Set baseline at 330-350 dollars for high-end books with strong sales history; prioritize during price dips",
+        "confidence": "High",
+        "source": "it's right around the 3 30 to 350 range plenty of sales rank drops so this book is becoming way more popular and in the cheapest price in Amazon's over 300"
+    },
+    {
+        "id": "zoom1",
+        "category": "General",
+        "trigger": "Need precise price at specific sales rank drop",
+        "advice": "Left click and drag on Keepa chart to zoom in for exact price like 10.21 dollars at sales drop; double click to zoom out",
+        "confidence": "High",
+        "source": "left click with my cursor then I'm going to drag... the price here is 10.21 cents that's when the sales might drop there... double left click brings us back"
+    },
+    {
+        "id": "historical1",
+        "category": "General",
+        "trigger": "Current price seems low compared to recent baseline",
+        "advice": "Expand to full historical data (e.g., 3600 days) to spot anomalies like 5 cents in 2020 when baseline 40-70 dollars",
+        "confidence": "High",
+        "source": "expand the entire historical selling history... this book specifically has been tracked by 3 600 days... May 24th of 2020 this book got down to five sets... selling for over 40 even over 70 dollars"
+    },
+    {
+        "id": "historical2",
+        "category": "Pricing",
+        "trigger": "Recent price higher than historical norm",
+        "advice": "Review long-term data to assess if current 190 dollars is inflated vs normal 70-80 dollars range",
+        "confidence": "High",
+        "source": "is the book inflated in price right now or is it normally this expensive... the use price while it does sometimes get up there it's about you know 190 normally it's right around like the 70 to 80 range"
+    },
+    {
+        "id": "supplydemand1",
+        "category": "Seasonality",
+        "trigger": "Christmas book with U-shaped sales rank in Nov-Dec and decreasing offer count",
+        "advice": "Buy off-season at 15 dollars, sell in-season at 40-50 dollars based on historical supply/demand patterns",
+        "confidence": "High",
+        "source": "this is a Christmas book... buy it for 15 bucks in the off season and pretty reliably sell it for 40 to 50 bucks"
+    },
+    {
+        "id": "supplydemand2",
+        "category": "Risk",
+        "trigger": "Author death on Oct 14 2019 causing offer count drop from 114 to 17",
+        "advice": "Monitor for event-driven spikes; baseline 2-3 dollars, but sell during temporary 35 dollar surge with low supply",
+        "confidence": "High",
+        "source": "Harold Bloom died on October 14 2019... offer count started decreasing a lot... from basically 114 offers... down to 17... got all the way up to about 35 dollars when normally it's Baseline value is right around two dollars"
+    },
+    {
+        "id": "supplydemand3",
+        "category": "Seasonality",
+        "trigger": "High school book with price inflation in July-Aug-Sep and sales rank improvement",
+        "advice": "Acquire off-season at 15-20 dollars (e.g., 23 dollars), sell in-season at 50-60 dollars or more",
+        "confidence": "High",
+        "source": "this is a high school book... in the off season... pick up for 15 to 20 bucks... sell this for you know 50 60 or even more... price got up to 60 when just a couple months earlier you could have bought it for right around 23"
+    },
+    {
+        "id": "supplydemand4",
+        "category": "Risk",
+        "trigger": "Textbook with increasing offer count to 60 despite seasonal sales rank drops",
+        "advice": "Avoid buying during low price (4-5 dollars) if upward offer trend indicates future competition and price drop below 175 dollars",
+        "confidence": "High",
+        "source": "this is a book that looks like it had some great season out... could have bought this book for four or five bucks then... inflated in January up to 175 dollars... that used off account didn't really decrease instead it has only started going up... up to 60 offers"
+    },
+    {
+        "id": "supplydemand5",
+        "category": "Seasonality",
+        "trigger": "Avatar book with offer count drop and price spike to 200 dollars around Dec 16 2022 movie release",
+        "advice": "Buy long-term low at 1-3 dollars, sell during event hype when supply low; expect post-event drop to 2 dollars with 60-70 offers",
+        "confidence": "High",
+        "source": "the second avatar movie came out here on December 16 2022... price inflated... selling at 200... Baseline value of this book was right around a dollar to three dollars for basically 10 years... now come back down that was about 46 dollars... gonna be worth probably around two dollars again"
+    },
+    {
+        "id": "salesrank2",
+        "category": "Risk",
+        "trigger": "Same current sales rank 300,000 but few historical drops",
+        "advice": "De-prioritize books with infrequent sales rank drops, as they sell less often despite similar current rank",
+        "confidence": "High",
+        "source": "sales rank is three hundred thousand and five... this book has way way way fewer sales ring drops so this book actually sells much much less often"
+    },
+    {
+        "id": "salesrank3",
+        "category": "Buying",
+        "trigger": "Sales rank fluctuates from 2.7 million to 160,000 daily",
+        "advice": "Scan timing matters; check historical chart for drop frequency to avoid missing fast-selling books",
+        "confidence": "High",
+        "source": "if let's say you came to this listing on this date here which was right before the sales ring drop... 2.7 million... the next day... drops all the way down here... 160 000"
+    },
+    {
+        "id": "amazon3",
+        "category": "Buying",
+        "trigger": "Amazon new at 142 dollars, sold used at 70.46 dollars",
+        "advice": "Target savings of 70+ dollars vs Amazon new for textbooks; used moves if offer count ebbs and flows",
+        "confidence": "High",
+        "source": "this comparative Anatomy book sold for seventy dollars and 46 cents... Amazon is on this listing for 142... save seventy dollars by buying a news condition... the used off account here also goes up and down"
+    },
+    {
+        "id": "seasonal1",
+        "category": "Seasonality",
+        "trigger": "Halloween book current 5 dollars, sales rank 1 million off-season",
+        "advice": "Buy seasonal books low off-season (2 dollars) if historical data shows 30+ dollar spikes in Sep-Oct with sales rank drops",
+        "confidence": "High",
+        "source": "if you were to scan this in March May July you would notice that this book's right around five bucks has a sales rank at times up to 1 million... this used price during a specific time of year always happens to go up... up to about thirty dollars"
+    },
+    {
+        "id": "seasonal2",
+        "category": "Seasonality",
+        "trigger": "Passover book current 1.77 dollars, historical spikes in Mar-Apr",
+        "advice": "Acquire religious seasonal books at 1-2 dollars off-season; sell at 50 dollars during peak (Mar-Apr) with sales rank drops",
+        "confidence": "High",
+        "source": "this book is 1.77 right now... super super cheap during sometimes the years and then super expensive during sometimes years... increasing right around March April... selling with sales raindrops at 49.99... bought for like one to two dollars"
+    },
+    {
+        "id": "seasonal3",
+        "category": "Seasonality",
+        "trigger": "Christmas book current 2 dollars, offer count dives Nov-Dec historically",
+        "advice": "Don't pass on low-value seasonal books; check for annual Nov-Dec inflation if offer count decreases and price rises",
+        "confidence": "High",
+        "source": "this book is worth two dollars would automatically pass it... every single year offer count... takes a nose dive during November December because it's a Christmas book"
+    },
+    {
+        "id": "keepa-filter-amazon-out",
+        "category": "General",
+        "trigger": "Amazon in stock",
+        "advice": "Always select Amazon out of stock to avoid competing with Amazon; there are 688 million such products to narrow down.",
+        "confidence": "High",
+        "source": "you're always no matter what going to want to pick Amazon out of stock you don't want to compete with Amazon of course there are scenarios where you can compete with Amazon no problem but if you're using hea product finder you might as well just not use Amazon on any of the listings right and one cool thing is you have here your current filter matches right so now we can see once you put Amazon out of stock there is 688 million products on Amazon that has no Amazon on the Lis thing"
+    },
+    {
+        "id": "keepa-narrow-matches",
+        "category": "General",
+        "trigger": "Current filter matches > 3000",
+        "advice": "Narrow filters to get matches down to 2-3000, preferably sub-1000 or <500 for easier searching.",
+        "confidence": "High",
+        "source": "the goal with keepo product finder is to essentially get this matches down to around 2 to 3,000 really preferably sub a th000 even better like less than 500 the lower the better because there's less product to search through"
+    },
+    {
+        "id": "sales-rank-under-100k",
+        "category": "Pricing",
+        "trigger": "Sales rank > 100,000",
+        "advice": "Filter sales rank under 100,000 for products that sell relatively quickly.",
+        "confidence": "High",
+        "source": "sales rank ideally under 100,000 sales rank that means it will sell relatively quickly right"
+    },
+    {
+        "id": "buy-box-min-20",
+        "category": "Pricing",
+        "trigger": "Buy box price < $20",
+        "advice": "Set minimum buy box price at $20 since most products are bought for $10+ and need to sell for at least $20 for adequate margin.",
+        "confidence": "High",
+        "source": "when doing Amazon online Arbitrage typically most products you're going to buy online they're not going to be cheaper than $10 okay typically if you're buying anything for under $10 it's probably going to be wholesale not always the case just 99% of the case okay so since if you're buying things for $10 plus you're going to have to be selling it for at least $20 to make adequate margin so for this case I'm going to put minimum buy box price at $20"
+    },
+    {
+        "id": "offer-count-min-5",
+        "category": "General",
+        "trigger": "Offer count < 5",
+        "advice": "Set offer count to at least 5 to ensure it's not a brand-only listing and is arbitrage friendly; prefer 10 for highly friendly products.",
+        "confidence": "High",
+        "source": "in the offer count section at the bottom you want to make sure here that you put like a number that means the product is relatively online Arbitrage friendly which I like to put at least five so if there's at least five sellers on the listing chances are it's one it's 100% not a brand only listing and two it's probably Arbitrage friendly if there's at least five sellers but if you want a really Arbitrage friendly product I like to put 10"
+    },
+    {
+        "id": "lower-rank-if-high-matches",
+        "category": "General",
+        "trigger": "Matches still above a few thousand",
+        "advice": "Lower sales rank to below 75,000 to reduce matches further for better selling products.",
+        "confidence": "High",
+        "source": "if this thing is still above a few thousand I'll just lower the sales rank say it's like below 75,000 sales rank that mean it's even better selling products all right now we're at 2500 products"
+    },
+    {
+        "id": "sort-90day-drop",
+        "category": "Pricing",
+        "trigger": "To find price increases",
+        "advice": "Sort by 90-day drop percentage (pink numbers) ascending to prioritize products with the highest price increases over 90 days, indicating potential profitability.",
+        "confidence": "High",
+        "source": "the best way to sort this is to come over here to buy box the pink the pink numbers over here where it says 90day drop percentage click it once and what it will do it will sort at the top the products that have increased in price the most over the last 90 days for example you can here you can see the 90day average on this product is $12 51 meanwhile the current sales price is $226 this means the prod has gone up 62% in the last 90 days which generally means it'll be a good product for us to sell"
+    },
+    {
+        "id": "brand-search-gap",
+        "category": "Buying",
+        "trigger": "Gated in brands like Gap",
+        "advice": "Search by brand in Keepa (e.g., 'Gap') to find products; buy 10 units from brand website to get ungated if needed.",
+        "confidence": "High",
+        "source": "you're probably gated in a lot of Brands right you're gated in Nike you're gated in Adidas you're gated in Puma you're gated in so many different brands right but you can get ungated in a lot of Brands pretty easily by buying just 10 units of the item from the Brand's website right some brands are restricted like Nike but there's a lot of brands that you can get on get in easily like Nautica Calvin Klein Tommy Hilfiger Gap um Lego and so many other brands you can get it in pretty easily"
+    },
+    {
+        "id": "brand-sales-rank-200k",
+        "category": "Pricing",
+        "trigger": "Searching specific brand",
+        "advice": "For brand-specific searches, allow sales rank up to 200,000 as it's more targeted and even slower movers can be profitable (e.g., $300/month profit per SKU).",
+        "confidence": "High",
+        "source": "if you're sourcing a brand I typically will let the sales rank go a little higher so I'll typically go like 200,000 and below for sales rate just because you're sourcing a one specific brand you're not sourcing a whole category so you might as well give yourself a little more wiggle Rin products and a 2,000 sales 200,000 sales r is not necessarily bad right you may only sell 30 of them per month but say you're selling $10 profit sell 30 a month you know $300 in profit per skew"
+    },
+    {
+        "id": "brand-buy-box-min-10",
+        "category": "Pricing",
+        "trigger": "Brand-specific search",
+        "advice": "Set minimum buy box price to $10+ for brand searches, typically $20+.",
+        "confidence": "High",
+        "source": "you're going to want your buy box price to be you know at least $10 typically it's probably going to be like $20 plus but just for the sake of this I'm going to put it at 10 plus we already got us to 450 products"
+    },
+    {
+        "id": "brand-offer-count-min-3",
+        "category": "General",
+        "trigger": "Brand-specific search",
+        "advice": "Set offer count to at least 3 for brand searches to ensure multiple sellers and profitability.",
+        "confidence": "High",
+        "source": "the next and last thing you're going to want to do is go to offer count I'm going to put at least three offers that means it's probably not like a out of thought product there's a few sellers on the listing people are getting it profitably and this brings us down to 229 products"
+    },
+    {
+        "id": "walmart-sold-by-check",
+        "category": "Risk",
+        "trigger": "Sourcing from Walmart",
+        "advice": "Ensure items are 'sold and shipped by Walmart' to avoid fakes from third-party sellers; use invoice from Walmart for authenticity proof.",
+        "confidence": "High",
+        "source": "you got to keep be very careful when sourcing on Walmart guys because you see how right here it says sold and shipped by Steals and Deals you want it to say sold and shipped by Walmart if it says sold and shipped by anything else that means a third party seller and seller could be selling a fake product and if they're selling a fake product and you get caught selling it on Amazon with even if you didn't know it was fake the invoice that you have won't work to prove that it's authentic you need to make sure it's sold by Walmart if you're buying anything from Walmart"
+    },
+    {
+        "id": "coupon-giftcard-stack",
+        "category": "Buying",
+        "trigger": "Products on brand sites with coupons",
+        "advice": "Stack coupons (e.g., 20% off signup code) with discounted gift cards (e.g., 18% off via Cardbear) to achieve profitable margins (e.g., 18-21%).",
+        "confidence": "High",
+        "source": "Gab has a signup code on their website which let's see if we can see it down here scroll on to the bot get 20% off for every sale so you can take 20% off that 1749 and like I mentioned in a previous video we have cardbear and cardbear is a great website to buy discounted gift cards and let's see cardbear has 18% off Gap gift cards right now so based off the look at this we going to take 20% off for the coupon 18% off for the gift card so let's see if that gets us in the profitable range"
+    },
+    {
+        "id": "check-variations",
+        "category": "Buying",
+        "trigger": "Found a profitable product",
+        "advice": "Always check other variations like sizes, colors for additional profitable opportunities.",
+        "confidence": "High",
+        "source": "that's why you always got to check the other variations you even check black white like white extra large is at 42 like this is a pretty good product and like it's on sale here 18 bucks it's a steal so definitely a product to keep in mind"
+    },
+    {
+        "id": "amazon-sharing-buybox",
+        "category": "Risk",
+        "trigger": "Amazon in stock on listing",
+        "advice": "If Amazon is sharing the buy box (check buy box statistics), it's still viable; sell FBM and let it sell over time.",
+        "confidence": "High",
+        "source": "one thing to note you go to the buybox statistics here and see is Amazon sharing the bu box right is Amazon sharing the buy box let's see once this loads typically let's see Amazon is sharing the buy box see just now this guy who's fbm had the buy box and this person had the buy box 17 hours ago see yes Amazon is sharing the buyx so it's not a bad deal"
+    },
+    {
+        "id": "ungate-with-invoice",
+        "category": "Risk",
+        "trigger": "Gated in brand",
+        "advice": "Get ungated by purchasing from the brand's website and using the invoice as proof.",
+        "confidence": "High",
+        "source": "you can buy 10 units of something from the Gap website get the invoice and get ungated because you can always get ungated with the invoice from the Brand's website"
+    },
+    {
+        "id": "keepa-core-use",
+        "category": "General",
+        "trigger": "Analyzing any book listing",
+        "advice": "Use Keepa primarily for pricing history and sales rank history; ignore everything else to avoid overwhelm.",
+        "confidence": "High",
+        "source": "my answer is usually just use it for pricing history and for sales rank history and ignore everything else"
+    },
+    {
+        "id": "golden-rule-ignore",
+        "category": "General",
+        "trigger": "Feeling overwhelmed by Keepa data",
+        "advice": "Ignore 90 to 98% of Keepa's features and data; focus only on essential elements to preserve sanity and efficiency.",
+        "confidence": "High",
+        "source": "the golden rule the golden sanity preservation rule are you ready ignore 90 to 98 of what's going on in kippah"
+    },
+    {
+        "id": "three-step-checklist",
+        "category": "Buying",
+        "trigger": "Inspecting a book on Amazon",
+        "advice": "Follow a three-step Keepa checklist: 1. Check sales rank history for next 90 days trends. 2. Verify pricing history to ensure buying below average. 3. Assess price prediction for sharp changes based on last year.",
+        "confidence": "High",
+        "source": "here's the super super basic three step keep a checklist so when i'm clicking over to amazon to inspect the book here's basically what i do... sales rank history... pricing history... price prediction"
+    },
+    {
+        "id": "sales-rank-90days",
+        "category": "Buying",
+        "trigger": "12-month average sales rank in Zen",
+        "advice": "Use Keepa's 90-day sales rank history to predict demand for the next 90 days, as online arbitrage focuses on quick turnover, not long-term.",
+        "confidence": "High",
+        "source": "we're really not interested in the long game right like we're not we're not trying to sell a book six months from now we're trying to sell that book in the next 90 days... i'm more interested in what the sales rank is historically is going to look like for the next 90 days"
+    },
+    {
+        "id": "seasonal-demand-spikes",
+        "category": "Seasonality",
+        "trigger": "Unusual sales rank improvements in specific months",
+        "advice": "Examine sales rank history for anomalous spikes (e.g., October for test guides or Halloween books) to identify seasonal demand patterns.",
+        "confidence": "High",
+        "source": "is there some weird reason the demand for this book is spikes during october which could happen if it's like i don't know like a test guide or i don't know a book about halloween"
+    },
+    {
+        "id": "textbook-season-demand",
+        "category": "Seasonality",
+        "trigger": "Books with slow demand outside textbook season",
+        "advice": "Avoid books with very low demand outside textbook season (e.g., peaks in January, lows in March); disparity in demand is less than thought but still significant for some titles.",
+        "confidence": "High",
+        "source": "there are some books that really have a very slow demand outside of textbook season and then their demand goes way up during... all demand for textbooks goes up during textbook season but the disparity tends to not be as great as people think it is"
+    },
+    {
+        "id": "buy-below-average",
+        "category": "Pricing",
+        "trigger": "Current price vs. 90-day average",
+        "advice": "Preferably buy books below their 90-day average price (e.g., current $25 vs. average $40: buy; current $25 vs. average $18: hold off and set alert).",
+        "confidence": "High",
+        "source": "i want to buy a book below its average price if at all possible... if the book is currently 25 and the average price is usually 40 then it's game on... if the average price is usually 18 well i'm actually not doing so well and i might want to hold off"
+    },
+    {
+        "id": "90day-pricing-metric",
+        "category": "Pricing",
+        "trigger": "Evaluating purchase price",
+        "advice": "Use 90-day average price as the primary metric over 12-month; compare current offer to this for recent market value.",
+        "confidence": "High",
+        "source": "the 90-day average which is what i recommend i think that's the most useful the 90-day average just tend to you know what i think is the most relevant metric to look at"
+    },
+    {
+        "id": "sharp-price-spikes",
+        "category": "Pricing",
+        "trigger": "Sharp price increases in historical data",
+        "advice": "Look for sharp price spikes (e.g., doubling) in pricing history, indicating non-accidental market forces like textbook season; increase urgency to buy if upcoming.",
+        "confidence": "High",
+        "source": "price prediction so this is basically looking back at last year is the price about to go sharply up or down... usually if there's a sharp spike in price that is not an accident right like a book doesn't go up doesn't double in price by accident"
+    },
+    {
+        "id": "textbook-season-august",
+        "category": "Seasonality",
+        "trigger": "Mid-summer timing",
+        "advice": "Anticipate price increases starting second week in August due to textbook season demand surge.",
+        "confidence": "High",
+        "source": "textbook season like you know second week in august demand the price goes way up okay that's pretty obvious what's happening there"
+    },
+    {
+        "id": "post-textbook-dump",
+        "category": "Seasonality",
+        "trigger": "September timing after textbook season",
+        "advice": "Buy in September when prices are low due to mega sellers dumping inventory post-textbook season; expect increases in October-November.",
+        "confidence": "High",
+        "source": "right now this is a this is a great time to buy in books because prices you know a lot of mega sellers are dumping their inventory after textbook season right so you'll see a lot of times prices are really really low in september and they go way way up in october and november"
+    },
+    {
+        "id": "sales-rank-not-literal",
+        "category": "Risk",
+        "trigger": "Interpreting sales rank drops in Keepa charts",
+        "advice": "Do not interpret every sales rank drop as a sale; charts have gaps and inconsistencies (e.g., flat lines, stair steps, partial drops to 400k instead of 200k).",
+        "confidence": "High",
+        "source": "do not interpret the sales rank chart literally in keepa this is a huge huge mistake... a sales rank drop does not mean the product was sold"
+    },
+    {
+        "id": "amazon-pricing-history",
+        "category": "Pricing",
+        "trigger": "No third-party FBA offers, only Amazon competition",
+        "advice": "Check Amazon's historical pricing (via Keepa 'Amazon' option) to ensure current price isn't unusually high (e.g., $50 now vs. average $35: adjust expectations or avoid).",
+        "confidence": "High",
+        "source": "you want to look at amazon's pricing history... is that 50 amazon price... unusually high and historically speaking the average price might be you know 35"
+    },
+    {
+        "id": "ignore-outliers",
+        "category": "Pricing",
+        "trigger": "Reviewing lowest/highest prices in statistics",
+        "advice": "Ignore overall lowest and highest prices as outliers; focus on 90-day and 180-day averages for reliable trends.",
+        "confidence": "High",
+        "source": "the lowest and highest offers are really just what you would call outliers these are just offers that are the extreme high and low end"
+    },
+    {
+        "id": "price-drops-alerts",
+        "category": "Buying",
+        "trigger": "Book priced above average",
+        "advice": "Set up Keepa price drop alerts for books above average to buy when they reach target price; more dynamic than Zen's alerts.",
+        "confidence": "High",
+        "source": "maybe set up a price alert and come back when that book actually settles down to its average... keepa offers a much more dynamic version a much more um you just get a lot more options with their price drop alerts"
+    },
+    {
+        "id": "daily-deals-function",
+        "category": "Buying",
+        "trigger": "Searching for undervalued books",
+        "advice": "Use Keepa's daily deals to find books 99% below average price by sorting books by percentage deviation from average; filter for high potential despite clunkiness.",
+        "confidence": "High",
+        "source": "you can go in keepa and you can say okay show me any price for which the um any book for which the current use price is like dramatically less than the the average price... you'll just usually see a lot of books that haven't are 99 below their average value"
+    },
+    {
+        "id": "buy1",
+        "category": "Buying",
+        "trigger": "Potential deal but current price too high (e.g., $57.91 for book selling ~$60-90)",
+        "advice": "Set a price tracker for $22 or lower on eBay, track for 3 years, and monitor used offer count",
+        "confidence": "High",
+        "source": "what I would do though is set a tracker for this so I could get notified for example if this ever got to 21 again in the used offer account wasn't you know super high like let's say it was still at a consistent level where it could sell this month and what I would say is I might pick it up so what I'm going to do is track this so come over here go to the track product feature and I would go ahead and put let's just say uh 22 dollars there"
+    },
+    {
+        "id": "buy2",
+        "category": "Buying",
+        "trigger": "Smaller eBay seller with potential undervaluation",
+        "advice": "Send a local offer for $25-30 to negotiate lower than listed price",
+        "confidence": "High",
+        "source": "also one thing that you we could do is if this is this is not a smaller seller but if this was not a large seller we could also think about setting an offer maybe we could send a local offer for like 25 30 bucks and then maybe it actually might be actually might be worth it"
+    },
+    {
+        "id": "buy3",
+        "category": "Buying",
+        "trigger": "Historical sales $37-55, recent $309 outlier, low supply periods",
+        "advice": "Buy if total cost <$10 for $40 sell target (100% ROI); evidence of quick sales when supply low",
+        "confidence": "High",
+        "source": "my thought process here you'd probably easily be able to sell this for about forty dollars that's my that'd be my guess so if we went over here into the sales price on celeram we just type in 40 bucks like this then we can go ahead and figure out what we would want to pay and what we're comfortable with Roi basically if we think we can sell for 40 we'd probably want to be into it for ten dollars which would leave us with 11 non-profit so that'd be like 100 Roi"
+    },
+    {
+        "id": "buy4",
+        "category": "Buying",
+        "trigger": "Acceptable condition with minor damage (peeling, bending), no detailed description",
+        "advice": "Send $40 offer + shipping (total $45.50) for $125 sell; inspect spine, water damage, highlighting upon receipt",
+        "confidence": "High",
+        "source": "this would still easily sell on Amazon as an acceptable condition book what I'm worried about is I just want to make sure that the spine is intact that there isn't any water damage and that the pages are generally pretty clean like there's a whole bunch of highlighting and underlying like not an excessive amount um this is something I still want to send an offer on though because 124.95 even though they're strong historical data to show that you could probably sell it for that um I think we could probably get this seller to sell it for a little bit less and so what I'd probably do is send them like a 40 offer"
+    },
+    {
+        "id": "pricing2",
+        "category": "Pricing",
+        "trigger": "Inflated buy box ($260) but historical $7-10",
+        "advice": "Ignore Flipmine inferred price; realistic buy box $19.99 max; avoid if eBay > historical low",
+        "confidence": "High",
+        "source": "if we take a look at the keeper chart one thing that you'll notice is that this book basically sells for right around seven to ten dollars throughout the year in other words this there's no way that anyone's gonna buy this it'd be I'd be shocked if anyone were to buy it at this price just due to the fact that um there's been ample supply of this book around 10 bucks and there have been people buying it at that so I'd see a more realistic buy box is probably something down here which is like 30 you can see that there were a couple days where that was what the buy box is at but even that is honestly a little bit of inflated I'd say probably a better buy box would be like 19.99"
+    },
+    {
+        "id": "risk4",
+        "category": "Risk",
+        "trigger": "Newer edition available (e.g., 6th ed out 174 days)",
+        "advice": "Avoid older editions (5th); value tanks quickly post-new release; check edition match",
+        "confidence": "High",
+        "source": "the thing you have to be really careful about these sort of books is what their Edition is you can see that this is the fifth edition we want to make sure that the addition over here on Amazon is also the fifth edition so it looks like that is true... what I would bet is going to happen with this book is it's probably going to bottom out and the reason why is because it looks like there is a newer Edition available and what I've personally found by trying to sell these case books is that whenever there's a new edition of this book out usually the older edition is flat out tanks"
+    },
+    {
+        "id": "buy5",
+        "category": "Buying",
+        "trigger": "eBay price higher than recent Amazon low (e.g., $27 vs $10)",
+        "advice": "Track for $7-8 free shipping; target $30 sell for $10 profit if used offers low",
+        "confidence": "High",
+        "source": "you're not getting a great deal the way that I think my thought process behind getting a good deal on eBay is that whatever you buy the book for on eBay is cheaper than what you could have bought it for on Amazon for a considerable amount of time... one thing that we could do is we could track it you can see that back in November of 2021 it was as low as two dollars and I would say you could definitely probably um make money if you could pick this up for like seven or eight bucks free shipping"
+    },
+    {
+        "id": "general2",
+        "category": "General",
+        "trigger": "Loose leaf or ring-bound edition with access card",
+        "advice": "Search for separate listings (e.g., without card); compare sales rank across formats (hardcover > loose leaf)",
+        "confidence": "High",
+        "source": "this is a loose leaf that's what ring bound mean Ring bound means it means it's a loose leaf it's a student value Edition those are all sort of synonyms... what I'm going to do is just type in Investments I'm going to also type in the Edition which is the 10th edition and then I'm going to type in the name of the author so I'm going to go Investments 10 voting let's see what pops up okay so you can see that there is a hard cover here so this is a hard cover looks like we have a paperback and a loose leaf"
+    },
+    {
+        "id": "pricing3",
+        "category": "Pricing",
+        "trigger": "New price ceiling (e.g., $64 new, used $45-50 historical)",
+        "advice": "Undercut new by $5+ for used buy box; target $50 sell, buy <$15 for 50% margin ($30 profit)",
+        "confidence": "High",
+        "source": "you want to think of the new price generally has the ceiling for us how high you can charge for a book especially if it's Amazon selling it it's Amazon selling then the new price is by far going to be the or it's definitely going to be the price ceiling... if you say You're Gonna sell it for let's just say fifty dollars and if you were to pick this up for free your profit would be 30 bucks after fee so again let's reverse engineer well if you wanted a 50 margin then basically just take half of this amount which would basically would be like 15 bucks and that would be what you'd want to pay for this book"
+    },
+    {
+        "id": "buy6",
+        "category": "Buying",
+        "trigger": "Good photos but high eBay price ($35 total)",
+        "advice": "Send $10 offer + shipping (total $15.50) for $50 sell; accept counter up to $20 only if ROI >20%",
+        "confidence": "High",
+        "source": "something you could do is send an offer like you could send a 10 offer because then you'd be into this for 15.50 with shipping and I think that would be a great I think that would be a great pickup based upon the historical data here so um let's see if this my bed is that the cylinder probably would say no like nine out of ten times they might even automatically reject it but you never know they could send you a counter offer and maybe they send your account offer for like 20"
+    },
+    {
+        "id": "season2",
+        "category": "Seasonality",
+        "trigger": "Textbook off-season (e.g., January, used offers 13-22)",
+        "advice": "Buy low in off-season (June-August) if <$40; hold for August peak when offers drop to 4, prices to $170",
+        "confidence": "High",
+        "source": "this is definitely a book that you'd want to pick up probably in June July August if it was cheap enough to send it in for the August textbook season and more historical data to show that is that if you look at 2021 August same thing we see this massive cliff dive you can use the offer count and price of this book became super inflated... in January the used Opera count doesn't really go down very significantly it looks like it goes from at the highest point 22 down to the lowest point of like 13... if you look at what happened in August and September these off account was basically 39 and went all the way down to about four"
+    },
+    {
+        "id": "risk5",
+        "category": "Risk",
+        "trigger": "Annual edition book (e.g., 2021 edition, new year out)",
+        "advice": "Avoid if used offers high (>10); value tanks with new edition; monitor for 2020/2019 editions holding $40-60",
+        "confidence": "High",
+        "source": "the reason why I started tracking in July is I just kind of wanted to see how the price of this book would change over time my hunch about this book was it was going to lose value very very quickly and the price was not going to go back up and the reason I say that is because generally books that have a year in them like 2021 generally those books will have a new addition every year and therefore older editions are going to become basically obsolete when the newer Edition comes out"
+    },
+    {
+        "id": "general3",
+        "category": "General",
+        "trigger": "Used offer count increasing",
+        "advice": "Expect price to decrease (mirroring); track for low offer count periods to buy when price rebounds",
+        "confidence": "High",
+        "source": "remember I told you that used offer account and price is in your image this is the same exact example you can see that the use of accounts going up and that the prices book is going down so basically these are mirroring each other... generally what should happen is if the used offer count goes down then the price should go up and if the use of account goes up then the price of the book should go down"
+    },
+    {
+        "id": "pricing4",
+        "category": "Pricing",
+        "trigger": "Low sales volume (1 sale at $46), Amazon in stock historically at $15",
+        "advice": "Target $46 sell max but expect long hold; skip if Amazon restocks, as price drops to $15",
+        "confidence": "High",
+        "source": "when this book was Priced Right Around 46 dollars which is what I'd probably want to sell it for it looks like there was only one sale and there isn't much data elsewhere to suggest that um like for example this book was listed in new condition for about for basically this whole month at 49 and no one bought it... one of the bad things about this book is Amazon was in stock back in 2020 and you know back in let's see anywhere from 2012 to 2019 so if Amazon comes back on the listing they're going to sell this copy for right around 15 and you would definitely lose money"
+    },
+    {
+        "id": "keepa-price-extremes",
+        "category": "Pricing",
+        "trigger": "Highest price $300, lowest $257",
+        "advice": "Buy near low prices (e.g., $250-$257) and sell at highs (e.g., $300) for profit",
+        "confidence": "High",
+        "source": "Amazon's price looks like it was as high as $300 and as low as $257 pretty interesting uh there's some opportunity there you could potentially have bought it at 250 and sold it for 300"
+    },
+    {
+        "id": "keepa-sales-chart",
+        "category": "Buying",
+        "trigger": "Drops in sales rank chart",
+        "advice": "Each drop indicates a sale; look for jagged lines showing frequent sales to gauge demand",
+        "confidence": "High",
+        "source": "how often it's selling so each one of these drops tends to indicate a sale and it gets really Jagged to where just it's selling so many copies"
+    },
+    {
+        "id": "sales-rank-avg",
+        "category": "General",
+        "trigger": "90-day average sales rank available",
+        "advice": "Prefer 6-month average sales rank in Zen Arbitrage for a better long-term view over 90-day",
+        "confidence": "High",
+        "source": "you can see a 90-day average sales rank which we actually in Zen Arbitrage SE a six-month average sales rank which is a little bit better view"
+    },
+    {
+        "id": "rank-statistics",
+        "category": "Risk",
+        "trigger": "Best rank 3700, current 62000, worst 587589",
+        "advice": "Evaluate historical ranks; good best rank (e.g., under 5000) indicates potential, avoid if worst rank exceeds 500000",
+        "confidence": "High",
+        "source": "the best rank was 3700 the current rank is 62,000 the worst it's been is 587,589"
+    },
+    {
+        "id": "used-price-history",
+        "category": "Pricing",
+        "trigger": "Used price fluctuations (e.g., $100 to $70, now ~$60)",
+        "advice": "Monitor used price drops to buy low and anticipate rebounds for resale",
+        "confidence": "High",
+        "source": "it was you know $100 and then it dropped all the way down to 70 and then went back up to 100 and and uh on and on and now it's you know the use price has dropped now what below whatever that is um you know looks like around $60"
+    },
+    {
+        "id": "price-monitoring-tool",
+        "category": "Buying",
+        "trigger": "Book price drops below user-set threshold",
+        "advice": "Set up email alerts in Zen Arbitrage to quickly source books at low prices",
+        "confidence": "High",
+        "source": "we offer a price monitoring tool so that when books drop below a certain price you get an email"
+    },
+    {
+        "id": "tradein-refresh",
+        "category": "General",
+        "trigger": "Trade-in value updates needed",
+        "advice": "Rely on Zen Arbitrage's 10 daily refreshes for current trade-in credit values to maximize profits",
+        "confidence": "High",
+        "source": "we refresh our tradein credit um value offers 10 times a day so it's it's super current"
+    },
+    {
+        "id": "curated-database",
+        "category": "Risk",
+        "trigger": "Sourcing from unfiltered databases",
+        "advice": "Use Zen Arbitrage's curated database to filter out low-quality leads and focus on profitable opportunities",
+        "confidence": "High",
+        "source": "we offer a curated database we don't show you garbage like those other guys do we actually make sure we only show you the best stuff"
+    },
+    {
+        "id": "keepa1",
+        "category": "General",
+        "trigger": "Beginner using Keepa for product research",
+        "advice": "Focus on 3-month data to assess how an item has been selling over time",
+        "confidence": "High",
+        "source": "typically when you're a beginner though you want to focus on the three-month data right here so we can see how this item has been selling over time"
+    },
+    {
+        "id": "keepa2",
+        "category": "General",
+        "trigger": "Setting up Keepa charts",
+        "advice": "Select sales rank (green line), buy box (pink line), Amazon in stock, new (lowest price), and 3rd party FBA (orange triangles); remove sub ranks and avoid tier for lowest 3rd party FBM",
+        "confidence": "High",
+        "source": "to start out you do want to have the sales rank selected right here the green line right so the sales rank is how fast a product sells and the lower the sales rank the better ... you also want to have the buy box selected right here which is this pink line ... I would also recommend having when Amazon's in stock selected ... having this new selected right here ... I also like having the thirdparty FBA selected right here as well ... I don't recommend having that on I just recommend coping these right here"
+    },
+    {
+        "id": "keepa3",
+        "category": "Buying",
+        "trigger": "Sales rank evaluation for beginners",
+        "advice": "Look for items with sales rank below 200k",
+        "confidence": "High",
+        "source": "when you're a beginner you primarily want to look for items below a 200k rank right"
+    },
+    {
+        "id": "keepa4",
+        "category": "General",
+        "trigger": "Bottom chart setup in Keepa",
+        "advice": "Click new offer count to show competition over time; optionally select ratings or reviews but prioritize sales rank",
+        "confidence": "High",
+        "source": "the bottom chart I'd recommend going ahead and clicking the new offer count right here and then not really worrying about ratings or reviews although it doesn't hurt to have that selected ... the sales rank is much more important here"
+    },
+    {
+        "id": "keepa5",
+        "category": "Buying",
+        "trigger": "Assessing product viability on Keepa chart",
+        "advice": "Ensure competition is stable or decreasing, sales rank has been good over time, and price is stable or increasing",
+        "confidence": "High",
+        "source": "we want to make sure that the competition's either stable or going down this case really stable and we want to make sure the price is either stable or going up which we can see in this case it's pretty stable ... the sales rank's been good over time"
+    },
+    {
+        "id": "keepa6",
+        "category": "Seasonality",
+        "trigger": "Products with apparent seasonality like hoodies",
+        "advice": "Note that items are typically less seasonal than thought; rely on data showing consistent sales even off-season if sales rank is good",
+        "confidence": "High",
+        "source": "as a newer seller it's really important to note that items are typically a lot less seasonal than you think they are right ... the sales rank is good and data doesn't lie guys"
+    },
+    {
+        "id": "keepa7",
+        "category": "Buying",
+        "trigger": "Tracking products for future profitability",
+        "advice": "Set up email notifications in Keepa track product section for when buy box price reaches profitable threshold (e.g., $45+), Amazon out of stock, or lowest price changes",
+        "confidence": "High",
+        "source": "say I want to get notified via email when this item goes to 45 plus right here or when Amazon goes out of stock or when the lowest price is different right tily you'd want to do it based on buybox price I could just go here and hit start tracking"
+    },
+    {
+        "id": "keepa8",
+        "category": "General",
+        "trigger": "Evaluating product averages in Keepa data tab",
+        "advice": "Look at 90-day averages for sales rank, review count, and buy box price; pursue if profitable >50% of past 90 days and majority of past 30 days",
+        "confidence": "High",
+        "source": "what you primarily want to look at on this page guys is going to be the averages on like a 90day basis for the sales rank as well as the review count as well as the buy box price especially right because if you're you know Prof full 50% plus of the past 90 days and profit full good majority of the past 30 days that's probably a good product"
+    },
+    {
+        "id": "keepa9",
+        "category": "Risk",
+        "trigger": "Assessing seller longevity on offers tab",
+        "advice": "Check how long sellers have been on the listing; validate product if sellers have been present 6+ months",
+        "confidence": "High",
+        "source": "the only times I would take a look at the offers tab right here is to just see when people were first seen on a listing to see like how long they've been on it ... that helps validate a product especially when there's sellers that have been on it you know six plus months"
+    },
+    {
+        "id": "keepa10",
+        "category": "Pricing",
+        "trigger": "Using buy box statistics",
+        "advice": "Organize columns to view 90-day basis: filter top to bottom for who wins BB most, highest prices, most recently; price competitively based on recent winners (e.g., $4 extra profit possible)",
+        "confidence": "High",
+        "source": "what the bybox statistics allows us to do is it allows us to see over a 30 or 90 ... you primarily want to look at a 90-day basis right who's getting the buy box the most who's getting it at the highest prices and who's getting it the most recently ... this is getting like $4 extra in profit per sale right here"
+    },
+    {
+        "id": "keepa11",
+        "category": "Pricing",
+        "trigger": "Considering merchant fulfilled (FBM) vs FBA",
+        "advice": "Check buy box stats for FBM share; if 20%+ BB share to FBM sellers, price higher if using FBA",
+        "confidence": "High",
+        "source": "if there's sellers in the buybox statistics that are getting buybox share merch filled which basically means sellers that do not have this FBA check mark ... as a good rule of thumb you want to make sure that that that their sellers getting 20% plus total of the buy Box share going to fbm sellers"
+    },
+    {
+        "id": "keepa12",
+        "category": "Buying",
+        "trigger": "Evaluating variations tab",
+        "advice": "Organize columns by buy box, reviews, lowest price; select variations with good offer count movement; don't avoid no buy box if movement is good; ignore low review count if movement indicates sales",
+        "confidence": "High",
+        "source": "the way you're going to do that guys is you have to make sure you organize your com similar to mine ... what you're looking for to make sure something selling quick on a variation listing is going to be primarily based on the offer count movement ... do not automatically avoid listings that don't have a buy box ... do not worry about review count take a look at the offer count here"
+    },
+    {
+        "id": "keepa13",
+        "category": "Seasonality",
+        "trigger": "Seasonal products like footballs",
+        "advice": "Check year-long data to see demand peaks (e.g., August-September for footballs, rank drops to 9-10k); stable price despite seasonality indicates replenishable",
+        "confidence": "High",
+        "source": "the cool thing is this item's literally been around for like 10 years ... if we take a look at the yearlong on this product we can see ... in you know July August September it goes down to like a N9 or 10K rank right so that shows the natural seasonality of different products"
+    },
+    {
+        "id": "keepa14",
+        "category": "Seasonality",
+        "trigger": "Products affected by world events",
+        "advice": "Review all-time history for demand spikes (e.g., pool prices from $300 to $2000 in 2020 summer); focus on current data but note potential for repeats in seasonal periods",
+        "confidence": "High",
+        "source": "if we go and take a look at the all-time history on this product there were some pretty crazy world events in 2020 ... look at pretty quickly how in March 2020 it goes from 280 300 bucks to Summer of 2020 literally selling for almost $2,000 right ... every year during the summer the sales rank plummets aka the Demand skyrockets"
+    },
+    {
+        "id": "keepa15",
+        "category": "Risk",
+        "trigger": "Competing with Amazon",
+        "advice": "Compete if offer count movement is good even when Amazon in stock (indicating BB share); avoid if offer count is blocky/straight when Amazon in stock; validate with BB stats (e.g., Amazon <56% share over year)",
+        "confidence": "High",
+        "source": "you should only compete with Amazon if you can see other people getting sales on that listing which comes from the offer count movement right ... if you see a listing that has that orange Amazon in stock and the offer count is super blocky and straight that shows that Amazon isn't sharing the buy box ... the past 90 days Amazon's only gotten 7% of the buybox share right over the past year Amazon's gotten 56% of it"
+    },
+    {
+        "id": "keepa16",
+        "category": "Risk",
+        "trigger": "IP complaints on Keepa chart",
+        "advice": "Avoid listings where offer count plummets suddenly (e.g., from 24 to 0 sellers in days); check all-time or past years data, not just 90 days",
+        "confidence": "High",
+        "source": "major red flag you need to avoid ... is when you can see an IP complaint ... if we scroll in on the last year here we can see it was nicely humming along back in March and April and then it randomly plummeted right it went from 24 sellers on April 8th to zero sellers on April 12th right ... you have to be looking holistically at the past couple years or even the all time"
+    },
+    {
+        "id": "keepa17",
+        "category": "Risk",
+        "trigger": "Price tanking on Keepa",
+        "advice": "Avoid if offer count increasing (e.g., 19 to 29 sellers) and price decreasing (e.g., $33 to $25); exception for known temporary sales if highly profitable",
+        "confidence": "High",
+        "source": "next type of item you want to avoid guys is going to be list things where there is price tanking where the competition is shooting up and the price is shooting down ... back in October November there were like 192 sellers then it shot up to like you know 27 to 29 sellers right here and the buy box price went from 33 all the way down to like 25 right ... if the offer count shooting up on a prodct and the price is shooting down you definitely want to go ahead and avoid that item"
+    },
+    {
+        "id": "keepa18",
+        "category": "Buying",
+        "trigger": "Great trend on Keepa chart",
+        "advice": "Pursue if competition decreasing (e.g., 15 to 2 sellers) and price increasing (e.g., $31 to $49); price conservatively based on recent stable levels (e.g., $34-35)",
+        "confidence": "High",
+        "source": "an example of an excellent looking keepo chart would be this right ... is going for around like 31 in November and early December and they're like 15 to 13 Sellers and now there's only two Sellers and it's all the way up at 49 right now ... I could realistically go ahead and price it based off 34 35 like it's been for several weeks here right ... the competition's also trending down"
+    },
+    {
+        "id": "keepa19",
+        "category": "Buying",
+        "trigger": "Products that popped off in past (e.g., price from $50 to $90, competition plummets)",
+        "advice": "Use buy box stats (365-day) to identify top sellers, open their storefronts, and use SellerAmp to storefront stalk for other fast-selling products and brands",
+        "confidence": "High",
+        "source": "ninja sourcing method ... whenever you take a look at a keep chart and see that the products totally popped off in the past you can go ahead and actually take a look inside the storefronts of these sellers ... use the buy box stats to storefront stock these sellers that sold this product or other products that have popped off at the peak and find their other good winning prodcts guys right"
+    },
+    {
+        "id": "deal1",
+        "category": "Buying",
+        "trigger": "Used books dropped over last week by at least 50% for dollar amount of at least $30, current Amazon price $0-$32, sales rank up to 2 million",
+        "advice": "Sort by drop percentage and buy books showing sharp price declines, especially from mispricing, errors, or repricing wars between sellers like Goodwill or Thrift Books",
+        "confidence": "High",
+        "source": "I'm looking for used books that have dropped over the last week by at least 50 for a dollar amount of at least thirty dollars and currently right now are on Amazon for between zero and thirty two dollars I've gotten up to a 2 million rank in books which is quite high but I like to look at books that are high sales rank and you can see that I'm also sorting by the drop percentage"
+    },
+    {
+        "id": "deal2",
+        "category": "Buying",
+        "trigger": "Sharp price decline over 1-2 days from $70+ to under $30",
+        "advice": "Purchase immediately during the one-time drop and flip for previous high prices, as seen in examples like dictionaries and encyclopedias selling for $150-$300 after buying at $11-$20",
+        "confidence": "High",
+        "source": "this book saw a very sharp decline in price over a one day period it basically went from seventy dollars all the way down to eleven dollars and Seventeen cents and that's when I picked up this book and then you can clearly see that I turned around and flipped it for some pretty good money"
+    },
+    {
+        "id": "deal3",
+        "category": "Pricing",
+        "trigger": "Recent repricing war dropping used price to $25 from historical $50-$80 sales",
+        "advice": "Buy 1-2 copies at the low end ($25) and hold for recovery or textbook season to sell at $70+",
+        "confidence": "High",
+        "source": "there's been a repricing war you can see the book has come down to right around 25 bucks and I'd say that's probably a solid pickup right there and when I opened this book up on Amazon you can actually see that if we look at some of the offers we got one here at 25 another one at 25 then 29 then it goes up to 42 and 88 and then 96. so the idea here would be by maybe one or two of those lower copies and then wait for textbook season to come back around"
+    },
+    {
+        "id": "finder2",
+        "category": "Buying",
+        "trigger": "Used price drops to $3-$13 during repricing from historical $50-$100+",
+        "advice": "Buy multiple copies (up to 4) when price hits low during war, as it recovers quickly; flip for $50-$100",
+        "confidence": "High",
+        "source": "April 27th was right about the time when this book went from about 27 all the way down to about three dollars and nine cents you can see the price quickly recovered right after that and again I was able to sell all four copies over 50 bucks"
+    },
+    {
+        "id": "finder3",
+        "category": "Pricing",
+        "trigger": "Historical sales at $50-$60, recent drop to $10-$11 after December dip",
+        "advice": "Expand data to 3000 days to confirm value holding; buy at $10-$11 and flip for $50-$60",
+        "confidence": "High",
+        "source": "this book has actually been moving pretty well about 50 to 60 dollars and then back here recently in December actually went down to about 11. when backup and price sold a couple times right around 60 and then it's come back all the way down to right around 10 or 11 bucks so I feel like this is completely undervalued you could probably pick up a copy and probably flip it for about 50 bucks now just to be a little bit more sure we can actually expand the data all the way to 3000 days and this clearly is a book that holds some pretty good die"
+    },
+    {
+        "id": "track2",
+        "category": "Buying",
+        "trigger": "Price hits tracker threshold under $30 from $100+ historical",
+        "advice": "Buy multiple copies (2+) when alerted, as price rebounds instantly; track new or third-party conditions for advanced use",
+        "confidence": "High",
+        "source": "hit my tracker right under 30 bucks I was notified picked up both those copies and I picked up those two copies because basically upon the previous history I saw this book was moving for well over 100 bucks and then if we go to current day clearly you're able to see the price rebounded all the way back up to 70 pretty much instantly then went up to 169 I was actually able to sell both copies for almost 200 bucks"
     }
 ]

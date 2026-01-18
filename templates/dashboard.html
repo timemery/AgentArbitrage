@@ -511,13 +511,21 @@ document.addEventListener('DOMContentLoaded', function() {
             if (header === 'Buy_Now') {
                 table += '<td></td>'; // No arrows for these columns
             } else {
-                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/UpArrow_on.png' : 'static/UpArrow_off.png';
-                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DownArrow_on.png' : 'static/DownArrow_off.png';
+                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/AscendingON.png' : 'static/AscendingOff.png';
+                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DescendingON.png' : 'static/DescendingOff.png';
                 table += `
                     <td>
                         <div class="sort-arrows-container">
-                            <img src="${upArrowSrc}" class="sort-arrow" data-order="asc" data-column="${header}">
-                            <img src="${downArrowSrc}" class="sort-arrow" data-order="desc" data-column="${header}">
+                            <img src="${upArrowSrc}" class="sort-arrow"
+                                 data-order="asc"
+                                 data-column="${header}"
+                                 onmouseover="this.src='static/AscendingON.png'"
+                                 onmouseout="this.src='${upArrowSrc}'">
+                            <img src="${downArrowSrc}" class="sort-arrow"
+                                 data-order="desc"
+                                 data-column="${header}"
+                                 onmouseover="this.src='static/DescendingON.png'"
+                                 onmouseout="this.src='${downArrowSrc}'">
                         </div>
                     </td>`;
             }
@@ -550,6 +558,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'last_price_change') {
                         let timeAgo = formatTimeAgo(value);
                         let trendArrow = deal.Trend || '';
+                        // Map arrows to HTML entities and colors
+                        if (trendArrow === '⇧') {
+                             trendArrow = '<span style="color: #dd080a; font-weight: bold;">&#x2191;</span>';
+                        } else if (trendArrow === '⇩') {
+                             trendArrow = '<span style="color: #01be0a; font-weight: bold;">&#x2193;</span>';
+                        } else if (trendArrow === '⇨') {
+                             trendArrow = '<span style="color: #dc870d; font-weight: bold;">&rightarrow;</span>';
+                        }
+
                         // Only add spacing if there is an arrow
                         if (trendArrow) {
                             value = `<span>${trendArrow} ${timeAgo}</span>`;
@@ -623,21 +640,39 @@ document.addEventListener('DOMContentLoaded', function() {
                         table += `<td class="seller-cell"><span>${value}</span></td>`;
                     } else if (col === 'ASIN') {
                         table += `<td>${cleanAsin}</td>`;
-                    } else if (col === 'Price_Now' && cleanAsin) {
-                        table += `<td><a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="best-price-link">${value}</a></td>`;
+                    } else if (col === 'Price_Now') {
+                        table += `<td class="price-now-cell">${value}</td>`;
                     } else if (col === 'Offers') {
-                        // Style the trend arrow
+                        // Style the trend arrow - Offers arrows are placed BEFORE the number?
+                        // "Arrows should be placed before data in all cases, not after."
+                        // Currently format is "15 ↘" or "15 ↗"
                         if (value && typeof value === 'string') {
+                            // Split value and arrow if possible, or just replace
+                            // Assuming format "Count Arrow"
+                            let arrow = '';
+                            let count = value;
+
                             if (value.includes('↘')) {
-                                value = value.replace('↘', '<span class="trend-falling-green">↘</span>');
+                                arrow = '<span class="trend-falling-green" style="color: #01be0a;">&#x2193;</span>'; // Green Down
+                                count = value.replace('↘', '').trim();
                             } else if (value.includes('↗')) {
-                                value = value.replace('↗', '<span class="trend-rising-red">↗</span>');
+                                arrow = '<span class="trend-rising-red" style="color: #dd080a;">&#x2191;</span>'; // Red Up
+                                count = value.replace('↗', '').trim();
                             }
+
+                            if (arrow) {
+                                // Place arrow before data
+                                table += `<td>${arrow} ${count}</td>`;
+                            } else {
+                                table += `<td>${value}</td>`;
+                            }
+                        } else {
+                            table += `<td>${value}</td>`;
                         }
-                        table += `<td>${value}</td>`;
                     } else if (col === 'AMZ') {
                         if (value === '⚠️') {
-                            table += `<td class="amz-warning-cell">${value}</td>`;
+                            // Use Warning Entity with Orange Color
+                            table += `<td class="amz-warning-cell"><span style="color: #dc870d; font-size: 1.2em;">&#x26A0;</span></td>`;
                         } else {
                             table += `<td></td>`;
                         }
