@@ -554,6 +554,10 @@ button:disabled {
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
+.deal-table {
+    width: 100%;
+}
+
 #deals-table th, #deals-table td {
     padding: 8px;
     text-align: left;
