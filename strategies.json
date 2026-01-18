@@ -14964,5 +14964,21 @@
         "advice": "Use repricer with minimum price settings to protect profits and avoid selling below historical average.",
         "confidence": "High",
         "source": "you can set minimum prices so you could set I do not want to sell this book for less than 35 dollars because you looked at the keepa and you saw that on average all year it sells for about 35 bucks"
+    },
+    {
+        "id": "book-keepa-avoid-1",
+        "category": "Buying",
+        "trigger": "Using Keepa for category searches",
+        "advice": "Avoid using Keepa for books and CDs; instead, rely on dedicated book tools as Keepa is not ideal for them.",
+        "confidence": "High",
+        "source": "so for the most part though I would say yeah CDs books I don't do as much of through keepa there's another tool and I also linked it into whatever we can maybe try on YouTube"
+    },
+    {
+        "id": "seasonal-books-1",
+        "category": "Seasonality",
+        "trigger": "Finding seasonal book flips",
+        "advice": "Use the TAA (Tactical Arbitrage) A2A tool to find seasonal flips for books that performed well last year, as Keepa lacks the right parameters.",
+        "confidence": "Medium",
+        "source": "if you already have tattoo Arbitrage there's an a2a scanner there I think that's the only tool that I know of that helps you find seasonal flips keepa alone can't do it for you because it doesn't have exactly the right parameters in their built-in toolbox which is kind of annoying but the Ted barbershops one does so if you want to find things that did really well last year and sell them again this year"
     }
 ]
