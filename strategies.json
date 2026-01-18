@@ -13396,5 +13396,157 @@
         "advice": "Do not price against merchant fulfilled offers; only compete with other FBA offers, as FBA has advantages and most customers prefer it",
         "confidence": "High",
         "source": "if you are selling an item FBA it has many advantages over a merchant fulfilled item, so you shouldn\u2019t be pricing against merchant offers. They are not your competition. I forget where I read it, but I once read a statement that said something like \u201c90% of Amazon customers have never purchased anything that wasnt fulfilled by Amazon\u201d."
+    },
+    {
+        "id": "keepa-data-tab-buybox",
+        "category": "General",
+        "trigger": "Need historical buy box holders over 30-180 days",
+        "advice": "Use Keepa Data Tab > Buy Box Used to view FBA sellers, average prices, and feedback counts; expand date range to 180 days for 6 months of data",
+        "confidence": "High",
+        "source": "So, this is only showing the last 30 days. So, if you want to expand that, we can go, let's do 180. So, this is the past 6 months. And you can see who the uh FBA uh sellers were."
+    },
+    {
+        "id": "offers-tab-filters",
+        "category": "General",
+        "trigger": "Analyzing seller offers and price history",
+        "advice": "In Offers Tab, filter to Prime (FBA only), include historical offers, exclude new condition, collectibles, and potential scam offers; set timeframe to 90-365 days",
+        "confidence": "High",
+        "source": "We're going to take off the new condition. We're not concerned with new. We're going to click on prime. We're going to remove collectibles. and we're going to click on include historical offers. We're not going to include show potential scam offers."
+    },
+    {
+        "id": "infer-sale-price-drop",
+        "category": "Pricing",
+        "trigger": "Seller's price history shows sudden drop or stock disappearance",
+        "advice": "Infer sale occurred at last listed price (e.g., $59 on June 4th); confirm by checking if seller is absent from current Amazon listing",
+        "confidence": "High",
+        "source": "it looks like they probably sold the book on or about on June 4th. And that should coincide with what we see over here. This is June 4th. That's the last time we've seen them. and then the buy box switched to somebody else at $40. Okay, so probably a high confidence level that this seller sold the book at 59."
+    },
+    {
+        "id": "fba-competition-check",
+        "category": "Risk",
+        "trigger": "16+ used offers but 0 FBA offers on listing",
+        "advice": "Positive buying signal: Low FBA competition increases buy box win chance; consider pricing at $28-39 for 150%+ ROI on cheap books",
+        "confidence": "High",
+        "source": "there's 16 used offers and there are zero FBA as we speak. ... So, what does that mean? If you were to sell this book or list it as FBA, um, and put yourself in the shoes of a customer, do you want to spend $40 for a book, $39.49 and new, or maybe I can get it in good condition and spend $28. ... you can probably make 150% ROI or even more."
+    },
+    {
+        "id": "detect-repricer",
+        "category": "Pricing",
+        "trigger": "Seller price constantly fluctuating in Offers Tab",
+        "advice": "Competitor likely using repricer; advantage if you use automatic repricer as static pricers (unchanged for long periods) lose buy box easily",
+        "confidence": "High",
+        "source": "if you see the see them constantly, this guy's probably using a repricer right here. ... If I see that, that's a benefit to me because I use a repricer, an automatic repricer, and you are more likely to get the buy box, etc."
+    },
+    {
+        "id": "repricing-range-purchase",
+        "category": "Pricing",
+        "trigger": "Fast-selling book with tight historical range ($39-$46)",
+        "advice": "At purchase, set automatic repricer min $38, max $46; use future repric date mid-April to avoid manual adjustments",
+        "confidence": "High",
+        "source": "set up a max price of let's say $46. Um and then a minimum price. ... let's say a little bit below 39. Let's just put $38. ... I'm going to wait till like the middle of April. So, you would set up um you'd set up a date for the middle of April, April 15th"
+    },
+    {
+        "id": "textbook-season-reprice",
+        "category": "Seasonality",
+        "trigger": "Textbook approaching season (end August - September)",
+        "advice": "Set future repric date to end of August; avoid aggressive repricing pre-season to prevent racing to bottom",
+        "confidence": "High",
+        "source": "put a future repric date, you know, towards the end of August. ... You don't want to be aggressively repricing your textbooks right before textbook season."
+    },
+    {
+        "id": "higher-max-price-oos",
+        "category": "Pricing",
+        "trigger": "Historical spikes when Amazon out of stock (e.g., $130)",
+        "advice": "Set repricer max higher than expected (e.g., $78-130) to capture upside; min based on usual range, allowing auto-adjust between",
+        "confidence": "High",
+        "source": "instead of pricing this book, maybe you think it would price, you know, a top out at $79 or 78. Price it a little bit higher. ... there are sellers that apparently ... did these people really sell this book at $130 or whatever."
+    },
+    {
+        "id": "crossborder-buy-uk",
+        "category": "Buying",
+        "trigger": "Keepa shows UK price lower (e.g., $37 vs $69 US)",
+        "advice": "Buy from Amazon UK using US account; checkout converts to USD including shipping (e.g., $37.78 total); check Keepa UK chart for recent drops",
+        "confidence": "High",
+        "source": "the lowest price is $69 for this book and this is $2512. ... I could buy this book for $3778 US. This is after the postage and exchange rate fee or whatever."
+    },
+    {
+        "id": "feedback-loop-review",
+        "category": "General",
+        "trigger": "2-4 weeks after purchase of 30+ books",
+        "advice": "Randomly review Keepa/Amazon for 80-90% of books where current price > purchase price; confirm sales rank drops and buy box wins post-sale",
+        "confidence": "High",
+        "source": "go back and look at a book and see um did you make a good purchase? ... you really should be way over 50%. Okay? Um, even over 80, 85, even 90% of the books you buy ... Every two weeks, we go in, we look at the books"
+    },
+    {
+        "id": "buy-drop-1",
+        "category": "Buying",
+        "trigger": "Price drops from $36.45 to $0.92",
+        "advice": "Purchase the book immediately if historical data shows consistent sales over $50, especially during textbook season",
+        "confidence": "High",
+        "source": "on December 23rd the price of this book went from 36.45 as the lowest used Merchant fulfilled offer and went all the way down to 92 cents and that's when I bought the book and if you take a look at this book a little bit further back into history you can see that it definitely has historical data to show that it sold for over 50 bucks pretty consistently"
+    },
+    {
+        "id": "season-textbook-1",
+        "category": "Seasonality",
+        "trigger": "Beginning of January (textbook season)",
+        "advice": "Prioritize listing and selling textbooks quickly as demand increases for winter semester",
+        "confidence": "High",
+        "source": "right now it's textbook season the beginning of January if you don't know that's when textbooks start flying off the shelf because that is basically the winter semester for college students"
+    },
+    {
+        "id": "fulfill-merchant-1",
+        "category": "General",
+        "trigger": "Textbook season with high demand and limited time for FBA processing",
+        "advice": "Opt for Merchant Fulfilled to list and sell ASAP instead of sending to FBA",
+        "confidence": "High",
+        "source": "I decided not to send an Amazon FBA for a couple of reasons the main reason why I decided not to send it into Amazon FBA is because right now it's textbook season... I really wanted to get this listed as soon as possible and I didn't think I would have enough time if I sent it in to an Amazon FBA Warehouse so I decided instead to merge and fulfill it"
+    },
+    {
+        "id": "comp-low-1",
+        "category": "Pricing",
+        "trigger": "Only one other seller on the listing",
+        "advice": "List at a high price ($149.99) when competition is low and historical precedent exists for high sales ($146)",
+        "confidence": "High",
+        "source": "there was only one other seller on the listing at the time... by the time I actually received the book there actually was only one other offer available so when I came on the listing I thought to myself hey there's one copy left... why don't I just shoot for the moon on this book"
+    },
+    {
+        "id": "risk-low-1",
+        "category": "Risk",
+        "trigger": "Low purchase cost ($1) and low competition",
+        "advice": "Take high pricing risks with minimal downside, as reward potential is high during peak season",
+        "confidence": "High",
+        "source": "I only really paid a dollar my risk in this is very very low but the reward could be potentially very high"
+    },
+    {
+        "id": "price-incremental-1",
+        "category": "Pricing",
+        "trigger": "No sale in first 7 days of textbook season",
+        "advice": "Lower price incrementally: from $149.99 to $119.99 for next 7 days, then to $80, then send to FBA at $50-60",
+        "confidence": "High",
+        "source": "my pricing strategy here was for maybe the first seven days out of the textbook season I was gonna list it at the Moon 149.99... if it didn't sell off the first seven days then on January 8th let's go ahead and lower it down to about 119.99... if it didn't sell after that then maybe come down to about eighty dollars and if it didn't sell during the first January... send it into FBA at that point and then just try to list it for probably 50 or 60 bucks"
+    },
+    {
+        "id": "hist-highsales-1",
+        "category": "Pricing",
+        "trigger": "Historical sales at $146, $90, over $125 in previous seasons",
+        "advice": "Base high listing prices on past high-sale precedents during textbook seasons (January and September)",
+        "confidence": "High",
+        "source": "if we actually do take a look at past historical data especially back in the previous January there actually was one cell at 146 dollars which means this book has precedent for selling for that much money there's also a sell here for about 90 bucks and if I look at this September textbook season I also see that there were a few cells over 125 actually more than just a couple"
+    },
+    {
+        "id": "salesrank-ok-1",
+        "category": "Buying",
+        "trigger": "Sales rank not amazing but with January sales history",
+        "advice": "Buy books with moderate sales rank if they show increased sales frequency during textbook season",
+        "confidence": "High",
+        "source": "this is a book that doesn't have an amazing sales rank but it definitely is a book that sells and at a dollar this was a crazy pickup... you actually noticed that there were quite a few class of cells during January and what that indicates is that again this is a textbook season book meaning it sells a little bit more frequently during the textbook season in January"
+    },
+    {
+        "id": "tool-keepa-1",
+        "category": "General",
+        "trigger": "Using Keepa Chrome extension for deals and historical analysis",
+        "advice": "Use Keepa to identify price drops, historical sales, and track products for arbitrage opportunities",
+        "confidence": "High",
+        "source": "how I actually came across this book and I did that using a Chrome extension called keepa which has a number of really cool features... zoom in on the keepa chart... historical data to show that it sold for over 50 bucks"
     }
 ]

@@ -14,9 +14,8 @@
     <header class="main-header">
         <div class="header-brand">
             <a href="{{ url_for('guided_learning') }}" class="header-logo">
-                <img src="{{ url_for('static', filename='AgentArbitrage.png') }}" alt="Agent Arbitrage Logo">
+                <img src="{{ url_for('static', filename='AA_Logo.svg') }}" alt="Agent Arbitrage Logo">
             </a>
-            <div class="header-wordmark">AGENT ARBITRAGE</div>
         </div>
         <nav class="main-nav">
             <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a>
