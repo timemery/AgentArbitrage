@@ -6,8 +6,8 @@ Refined the Deals Dashboard table UI based on specific visual critiques followin
 ## Key Changes
 
 ### 1. Dimensions & Alignment
-- **Table Width:** Updated `#deals-table` to `1300px` to precisely match the user-specified Filter Panel width.
-- **Filter Panel Width:** Updated `.filter-panel` to `1300px` to ensure perfect vertical alignment.
+- **Table Width:** Updated `#deals-table` to `1333px` to precisely match the user-specified Filter Panel width.
+- **Filter Panel Width:** Updated `.filter-panel` to `1333px` to ensure perfect vertical alignment.
 - **Centering:** Maintained `margin: 22px auto 0 auto` for consistent spacing.
 
 ### 2. Typography & Column Styles
