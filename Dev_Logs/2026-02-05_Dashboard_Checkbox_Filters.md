@@ -1,7 +1,7 @@
-# Dev Log: Dashboard Checkbox Filters & Styling
+# Dev Log: Dashboard Checkbox Filters & Styling Refinement
 
 ## Task Description
-Implemented "Hide Gated" and "Hide AMZ Offers" checkbox filters in the Dashboard Filter Panel and refined the UI styling based on user feedback.
+Implemented "Hide Gated" and "Hide AMZ Offers" checkbox filters in the Dashboard Filter Panel and refined the UI styling based on feedback regarding button sizes, font weights, and panel dimensions.
 
 ## Changes Implemented
 
@@ -24,12 +24,14 @@ Implemented "Hide Gated" and "Hide AMZ Offers" checkbox filters in the Dashboard
     -   Styled with `.custom-checkbox`.
     -   Size: 18x18px.
     -   Border: 2px solid `#7397c2`.
-    -   Checked Background: `#566e9e` (matches slider thumb).
+    -   Background: `#566e9e` (filled in both checked and unchecked states).
     -   Checkmark: CSS pseudo-element (`::after`) creating a white checkmark.
 -   **Slider Readouts**:
     -   Updated `.slider-value-readout` to use font-weight `700` (Bold).
 -   **Action Buttons**:
-    -   Updated `.filter-btn` dimensions to `56px` width and `32px` height to account for the border-box model while preserving the requested visual size.
+    -   Updated `.filter-btn` dimensions to `56px` width and `32px` height to account for the 2px border (inner content 52x28).
+-   **Filter Panel Height**:
+    -   Increased `.filter-panel-open` height to `102px` to accommodate the stacked buttons and provide sufficient vertical padding.
 
 ## Verification
 -   **Backend**: Verified via regression test script (`verify_regression.py`) that `deal_count` handles disconnected state gracefully without crashing.

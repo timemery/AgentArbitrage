@@ -1403,7 +1403,7 @@ body.home-background::before {
 }
 
 .filter-panel-open {
-    height: 92px;
+    height: 102px;
 }
 
 /* Common Flex Layouts */
@@ -1649,7 +1649,7 @@ body.home-background::before {
     -webkit-appearance: none;
     width: 18px;
     height: 18px;
-    background-color: transparent; /* Default background */
+    background-color: #566e9e; /* Filled background always */
     border: 2px solid #7397c2;
     border-radius: 2px; /* Standard small radius */
     cursor: pointer;
