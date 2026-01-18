@@ -679,12 +679,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             cellContent = `${value}`;
                         }
 
+                        let wrapperStart = '<div class="offers-wrapper"><span class="offers-text">';
+                        let wrapperEnd = '</span>';
+
                         // Add AMZN icon if needed
                         if (deal.AMZ === '⚠️') {
-                             cellContent += ` <img src="/static/AMZN.svg" class="amzn-icon" alt="AMZ">`;
+                             wrapperEnd += `<img src="/static/AMZN.svg" class="amzn-icon" alt="AMZ">`;
                         }
+                        wrapperEnd += '</div>';
 
-                        table += `<td>${cellContent}</td>`;
+                        table += `<td>${wrapperStart}${cellContent}${wrapperEnd}</td>`;
 
                     } else {
                         table += `<td>${value}</td>`;
