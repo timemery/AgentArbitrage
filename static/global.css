@@ -454,8 +454,8 @@ button:disabled {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 28px;
+    width: 56px;
+    height: 32px;
     padding: 0;
     background-color: #e67e22; /* Default Orange */
     color: white;
