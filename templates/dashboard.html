@@ -511,20 +511,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (header === 'Buy_Now') {
                 table += '<td></td>'; // No arrows for these columns
             } else {
-                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? 'static/AscendingON.png' : 'static/AscendingOff.png';
-                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? 'static/DescendingON.png' : 'static/DescendingOff.png';
+                const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? '/static/ascending-on.png' : '/static/ascending-off.png';
+                const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? '/static/descending-on.png' : '/static/descending-off.png';
                 table += `
                     <td>
                         <div class="sort-arrows-container">
                             <img src="${upArrowSrc}" class="sort-arrow"
                                  data-order="asc"
                                  data-column="${header}"
-                                 onmouseover="this.src='static/AscendingON.png'"
+                                 onmouseover="this.src='/static/ascending-on.png'"
                                  onmouseout="this.src='${upArrowSrc}'">
                             <img src="${downArrowSrc}" class="sort-arrow"
                                  data-order="desc"
                                  data-column="${header}"
-                                 onmouseover="this.src='static/DescendingON.png'"
+                                 onmouseover="this.src='/static/descending-on.png'"
                                  onmouseout="this.src='${downArrowSrc}'">
                         </div>
                     </td>`;
@@ -645,19 +645,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'Offers') {
                         // Style the trend arrow - Offers arrows are placed BEFORE the number?
                         // "Arrows should be placed before data in all cases, not after."
-                        // Currently format is "15 ↘" or "15 ↗"
+                        // Currently format is "15 ↘" or "15 ↗" or "15 ⇨"
                         if (value && typeof value === 'string') {
                             // Split value and arrow if possible, or just replace
                             // Assuming format "Count Arrow"
                             let arrow = '';
                             let count = value;
 
+                            // Check for Diagonal Down (Falling/Good) -> Map to Vertical Down
                             if (value.includes('↘')) {
                                 arrow = '<span class="trend-falling-green" style="color: #01be0a;">&#x2193;</span>'; // Green Down
                                 count = value.replace('↘', '').trim();
-                            } else if (value.includes('↗')) {
+                            }
+                            // Check for Diagonal Up (Rising/Bad) -> Map to Vertical Up
+                            else if (value.includes('↗')) {
                                 arrow = '<span class="trend-rising-red" style="color: #dd080a;">&#x2191;</span>'; // Red Up
                                 count = value.replace('↗', '').trim();
+                            }
+                            // Check for Flat Arrow (Right Hollow) -> Map to Solid Right Arrow
+                            else if (value.includes('⇨')) {
+                                arrow = '<span style="color: #dc870d; font-weight: bold;">&rightarrow;</span>'; // Orange Right
+                                count = value.replace('⇨', '').trim();
                             }
 
                             if (arrow) {

@@ -14332,5 +14332,365 @@
         "advice": "Buy multiple copies (2+) when alerted, as price rebounds instantly; track new or third-party conditions for advanced use",
         "confidence": "High",
         "source": "hit my tracker right under 30 bucks I was notified picked up both those copies and I picked up those two copies because basically upon the previous history I saw this book was moving for well over 100 bucks and then if we go to current day clearly you're able to see the price rebounded all the way back up to 70 pretty much instantly then went up to 169 I was actually able to sell both copies for almost 200 bucks"
+    },
+    {
+        "id": "keepa-criteria-1",
+        "category": "Buying",
+        "trigger": "Drop percentage >= 30%",
+        "advice": "Filter for books with at least 30% drop in value on Keepa deals page.",
+        "confidence": "High",
+        "source": "i look for a drop percentage range that's 30 or higher so i'm looking for a book to actually drop in value by at least 30"
+    },
+    {
+        "id": "keepa-criteria-2",
+        "category": "Buying",
+        "trigger": "Dollar amount drop >= $25",
+        "advice": "Ensure the dollar drop in price is at least $25 on Keepa deals page.",
+        "confidence": "High",
+        "source": "i'm looking for that dollar amount to be at least 25"
+    },
+    {
+        "id": "keepa-criteria-3",
+        "category": "Buying",
+        "trigger": "Current price >= $33",
+        "advice": "Target books with current price of at least $33 on Keepa deals page.",
+        "confidence": "High",
+        "source": "i'm looking for the price of the book to be at least 33"
+    },
+    {
+        "id": "keepa-criteria-4",
+        "category": "Buying",
+        "trigger": "Sales rank between 1 and 2 million",
+        "advice": "Filter for books with sales rank 1-2 million on Keepa deals page.",
+        "confidence": "High",
+        "source": "i'm looking for a sales rank between 1 and 2 million"
+    },
+    {
+        "id": "keepa-criteria-5",
+        "category": "Buying",
+        "trigger": "Lowest price ever",
+        "advice": "Only consider books at their lowest price ever on Keepa.",
+        "confidence": "High",
+        "source": "i'm looking for the book to actually be its lowest price ever"
+    },
+    {
+        "id": "historical-sales-check",
+        "category": "Buying",
+        "trigger": "Historical sales at 2-3x current price",
+        "advice": "Verify historical sales data shows book sold for 2-3 times the current buy price by overlapping sales rank drops with prices.",
+        "confidence": "High",
+        "source": "is there historical sales that are two to three x the current price"
+    },
+    {
+        "id": "diversify-purchases",
+        "category": "Risk",
+        "trigger": "Planning to buy multiple copies of same book",
+        "advice": "Diversify by buying one copy of 10 different books instead of multiples of one to spread risk.",
+        "confidence": "High",
+        "source": "don't buy 10 copies of one book maybe buy 10 different books and buy maybe one copy of each"
+    },
+    {
+        "id": "track-products",
+        "category": "Buying",
+        "trigger": "Current price not low enough (e.g., $38 not sufficient margin)",
+        "advice": "Set Keepa tracker for target lower prices like $25 on used price, not new, to catch better deals.",
+        "confidence": "High",
+        "source": "you could do is like let's say 38 is not enough margin for you what you could do is track the product and you can say well if this repricing war gets down to like 25 then i'd be more comfortable buying that"
+    },
+    {
+        "id": "repricing-war-opportunity",
+        "category": "Buying",
+        "trigger": "Staircase price drops in used prices over 20 days (e.g., from $115 to $36)",
+        "advice": "Identify repricing wars on Keepa where prices drop due to competing sellers; buy if historical sales support higher resale.",
+        "confidence": "High",
+        "source": "recently you can see that there's been a repricing war where the use price went from 115 and over the last let's say like 20 days the price has gone all the way down to what looks like 36.84"
+    },
+    {
+        "id": "prime-pricing-advantage",
+        "category": "Pricing",
+        "trigger": "Third-party new sellers with 3-4 day shipping",
+        "advice": "As FBA Prime seller, price used books higher than third-party new (e.g., $140-150 vs $127) to win buy box with faster shipping.",
+        "confidence": "High",
+        "source": "if you're the only prime offer you could probably even charge significantly more money than 127 and also get a buy box because you have one or two day shipping"
+    },
+    {
+        "id": "sell-used-above-new",
+        "category": "Pricing",
+        "trigger": "Historical sales support higher prices despite current new offers",
+        "advice": "Sell used books above new prices (e.g., $135 used vs $116 new) leveraging FBA speed and buy box prioritization.",
+        "confidence": "High",
+        "source": "i actually sold mine for 135 dollars which is significantly above the new price of 116 and so that's just another reminder that even though there are people selling the book new on amazon"
+    },
+    {
+        "id": "amazon-stock-risk",
+        "category": "Risk",
+        "trigger": "Buying from Amazon during price drop (e.g., $42 new with 4 copies)",
+        "advice": "Be cautious buying from Amazon in repricing wars; track stock levels as unknown future inventory could suppress prices.",
+        "confidence": "High",
+        "source": "you are kind of gambling in this case because you don't know how much stock amazon's gonna have in the future"
+    },
+    {
+        "id": "buyback-alternative",
+        "category": "General",
+        "trigger": "Have valuable book (e.g., $100+ value) but not doing FBA",
+        "advice": "Use bookfinder.com with ISBN to find buyback offers (e.g., $100) from companies for quick cash without reselling.",
+        "confidence": "High",
+        "source": "you can still make a hundred dollars by selling this book to a buyback company so let me show you how to do that basically you first want to go to a website called book finder"
+    },
+    {
+        "id": "verify-multi-volume",
+        "category": "Risk",
+        "trigger": "Book listed as multi-volume set (e.g., two volumes)",
+        "advice": "Upon receipt, confirm it includes all volumes; return if incomplete to avoid unsellable inventory.",
+        "confidence": "High",
+        "source": "this is a two volume set so you want to make sure that when you actually buy the book and you receive it that it is in fact two volumes otherwise you can't sell it"
+    },
+    {
+        "id": "setup-1",
+        "category": "General",
+        "trigger": "New Keepa installation",
+        "advice": "Reset settings to default, set chart to year view, set Keepa box to full window width, enable display stock quantity on offer listing pages",
+        "confidence": "High",
+        "source": "After installing the Keep a Chrome extension, scroll down on the Amazon listing until you see the price history chart. Then click on the settings tab to open Keepa settings. ... select the year option to view price data over the past year. ... set the keep a box horizontal size to full window width ... Make sure display stock quantity on offer listing pages is set to yes."
+    },
+    {
+        "id": "chart-nav-1",
+        "category": "General",
+        "trigger": "Viewing Keepa chart",
+        "advice": "Disable middle chart (subranks) as it mimics top chart and is not helpful; enable bottom chart for offer counts",
+        "confidence": "High",
+        "source": "the middle chart really displays the sales rank of books, not only in the overall books category, but also in subcategories. I don't really think it's very helpful ... you're better off just um disabling it. ... this bottom graph you we definitely want it on. So we're going to click on graph settings and that's the offer counts and ratings."
+    },
+    {
+        "id": "bottom-chart-1",
+        "category": "General",
+        "trigger": "Analyzing bottom chart for books",
+        "advice": "Disable ratings line as it doesn't matter for books; enable used offer count, disable new offer count initially for simplicity",
+        "confidence": "High",
+        "source": "for books, generally speaking, we don't really care about the rating of the book. ... You definitely want the used offer count because that's what we're flipping. But on occasion, you also want to look at the new offer count, but for simplicity sake, I'm going to recommend starting off with it uh disabled."
+    },
+    {
+        "id": "top-chart-1",
+        "category": "General",
+        "trigger": "Setting up top chart lines",
+        "advice": "Enable sales rank (green line), Amazon price, new price, lowest used price (black line), used buy box (purple line); disable buy box (new), condition-specific lines like acceptable/very good for simplicity",
+        "confidence": "High",
+        "source": "what ones do we need? Let's start at the top. ... sales rank. ... Amazon. ... new price ... use. So this is an this is an important one. ... used buy box. ... The pro of looking at the used good or used very good is that these prices actually include the shipping. ... My recommendation, shut those off. Just let's keep it simple."
+    },
+    {
+        "id": "sales-pattern-1",
+        "category": "Buying",
+        "trigger": "Interpreting sales rank line",
+        "advice": "Dips in the sales rank line indicate sales; zoom in/out and manipulate chart to analyze patterns over year or all time",
+        "confidence": "High",
+        "source": "if you look at these lines when you see the when you see it go down substantially that was most likely a sale. ... You don't want to be just looking at the keep a chart without manipulating it. Okay? Manipulating it means zooming in, zooming out, things like that."
+    },
+    {
+        "id": "scale-1",
+        "category": "General",
+        "trigger": "Reading price scales on chart",
+        "advice": "Always check left scale for price changes (e.g., $7 drop from 39 to 31 may not be significant); reverse scale (1 to 9) if preferred for upward jumps indicating sales",
+        "confidence": "High",
+        "source": "Always look at the scale that's over here on the left. That'll give you a better a better indication of exactly what's going on. ... You can click that and what it does is it flips it over. ... now when you see a jump up, that means that there was a sale"
+    },
+    {
+        "id": "lowest-used-1",
+        "category": "Pricing",
+        "trigger": "Tracking used prices",
+        "advice": "Black line shows lowest used price without shipping; connect dots over time but note it excludes shipping unlike condition-specific lines",
+        "confidence": "High",
+        "source": "the black line is the lowest used price without shipping. ... the used does not. So, in some ways, it's a little more accurate. However, ... it's not always populated"
+    },
+    {
+        "id": "used-buy-box-1",
+        "category": "Pricing",
+        "trigger": "Monitoring buy box",
+        "advice": "Purple line shows used buy box price over time; data not perfect but important for current listing (e.g., $29.20 by Amazon)",
+        "confidence": "High",
+        "source": "the used buy box. ... the purple represents the used buy box. ... Somebody has the used buy box at 2920. It actually happens to be Amazon."
+    },
+    {
+        "id": "non-textbook-1",
+        "category": "Seasonality",
+        "trigger": "Book without clear seasonal pattern",
+        "advice": "Classify as non-textbook if sales are sporadic over year with no consistent peaks; look at full history (all time) to confirm",
+        "confidence": "High",
+        "source": "this would be one where you know we would classify this as a non-extbook. So really important that you understand that. ... it's just sporadically this is an entire year you could see all the sales and you know no real pattern for sure"
+    },
+    {
+        "id": "demand-1",
+        "category": "Buying",
+        "trigger": "Assessing demand from chart",
+        "advice": "High demand shown by frequent dips (e.g., 7 sales in year low, multiple in 90 days high); demand doesn't always equal better profit, consider overall",
+        "confidence": "High",
+        "source": "in the past year it sold one two three four five six sold about seven times ... this book uh sell sells really quick. ... the demand of the book does not always equal a lot of people seem to think that oh the demand the better the demand the better the profit. That is not the case."
+    },
+    {
+        "id": "supply-1",
+        "category": "Risk",
+        "trigger": "Evaluating supply from bottom chart",
+        "advice": "Low used offer count (e.g., 1 vs. 7) is good; watch trends - increasing supply risky unless pre-textbook season, prefer decreasing supply with anticipated price up",
+        "confidence": "High",
+        "source": "there's about 37 used offers. ... supply is really low and that's a good thing. ... when the supply is going up, that's usually not a great sign. But that does happen when uh right before textbook season. ... you'd rather have is have the supply be going down and the and you anticipate that the price going up."
+    },
+    {
+        "id": "keepa-filter-used-books",
+        "category": "General",
+        "trigger": "Setting up Keepa deals filter",
+        "advice": "Select 'Used Book' as deal type, view as table for easier graph analysis",
+        "confidence": "High",
+        "source": "we're going to be looking at Ed book specifically so this book business that I run is an online book Arbitrage used book business... make sure you have that selected under the drop interval we're just going to look at the last month period"
+    },
+    {
+        "id": "keepa-drop-interval",
+        "category": "Buying",
+        "trigger": "Drop interval set to last month",
+        "advice": "Use last month period for drop analysis to find recent price drops",
+        "confidence": "High",
+        "source": "under the drop interval we're just going to look at the last month period now you could choose different time frames here but for this specific filter that's going to be you know just plug and chug really easy for you go ahead and select month"
+    },
+    {
+        "id": "keepa-drop-percentage",
+        "category": "Buying",
+        "trigger": "Drop percentage 20-50% in lowest used price over last month",
+        "advice": "Filter for books that have dropped 20-50% in average lowest used price to identify undervalued opportunities",
+        "confidence": "High",
+        "source": "for the drop percentage we're going to look for anything that over the last month has dropped between 20 to 50% in in the lowest used price in terms of average value"
+    },
+    {
+        "id": "keepa-drop-amount",
+        "category": "Buying",
+        "trigger": "Price drop of at least $10 over last month",
+        "advice": "Ensure the drop is at least $10 or more to focus on meaningful discounts",
+        "confidence": "High",
+        "source": "and we're wanting that drop to be at least $10 or more over that last month"
+    },
+    {
+        "id": "keepa-price-range",
+        "category": "Buying",
+        "trigger": "Current price $0 to $18",
+        "advice": "Limit search to books under $18 to start with low-risk, quick-turnover items; expand as needed",
+        "confidence": "High",
+        "source": "and the price range right now we're going to go ahead and set zero to 18 that means we're only going to be looking at books that are under $18 and of course you could expand beyond that as well"
+    },
+    {
+        "id": "keepa-sales-rank-limit",
+        "category": "Buying",
+        "trigger": "Sales rank up to 1.5 million",
+        "advice": "Include books with sales rank up to 1.5 million or higher, as even 2-4 million rank books can sell profitably",
+        "confidence": "High",
+        "source": "now we're going to look for books with the CES rank up to one and a half million yes if you're somebody who kind of comes from just let's say cherry picking... I sell tons of books with sales ranks much higher than that 1.5 million 2 million 3 million 4 million"
+    },
+    {
+        "id": "keepa-sort-drop",
+        "category": "General",
+        "trigger": "Sort by largest drop",
+        "advice": "Sort results by largest drop to prioritize the most significant undervalued books",
+        "confidence": "High",
+        "source": "now we're going to go ahead and just uh sort by the largest drop so this gives us a bunch of books here"
+    },
+    {
+        "id": "keepa-hover-snapshot",
+        "category": "Buying",
+        "trigger": "Hover over product title in Keepa deals",
+        "advice": "Hover over titles to view Keepa snapshots for quick assessment; enable graph overlays in settings",
+        "confidence": "High",
+        "source": "you can see I'm hovering over the product title of all these books and I'm looking specifically at the keep a snapshot... if you're using your cursor to hover over the title and you don't see this keeper graph pop up because you actually need to enable that when you know actually in your keepa settings"
+    },
+    {
+        "id": "keepa-settings-enable",
+        "category": "General",
+        "trigger": "Keepa settings configuration",
+        "advice": "In Keepa settings, enable 'show price history graphs as overlays when hovering Amazon products' and 'displaying stock quantity and offer listing pages'",
+        "confidence": "High",
+        "source": "come up here to your profile name onipa click on the settings icon then come over here to the website Cog scroll down and you're going to come down to add-on settings and you're going to go and select yes to show price history graphs as overlays when hovering Amazon products make sure that says yes and then while you're here make sure that displaying stock quantity and offer listing pages is also a yes"
+    },
+    {
+        "id": "price-history-low",
+        "category": "Buying",
+        "trigger": "Current used price (black line) significantly lower than historical average",
+        "advice": "Buy books where today's used price is much lower than the rest of the year's average, indicating undervaluation",
+        "confidence": "High",
+        "source": "the used price today which is represented by just the black line is right there at $675 if you look at the whole rest of the year it's been significantly higher than that... so that's a good first sign"
+    },
+    {
+        "id": "sales-rank-improvement",
+        "category": "Buying",
+        "trigger": "Green sales rank lines show drops (improved popularity) during higher price periods",
+        "advice": "Confirm sales history by checking if sales rank improved (dropped) when prices were higher, proving demand at those levels",
+        "confidence": "High",
+        "source": "the second sign is to look at what's called the sales rank which are these green lines and whatever they drop the book has improved in popularity which means the book is sold and so what we can see here is that hey the book was selling throughout this year when the price was much higher than what it is today"
+    },
+    {
+        "id": "offer-gap",
+        "category": "Pricing",
+        "trigger": "Big gap between first few offers and subsequent offers",
+        "advice": "Look for large price gaps between the lowest offers and the rest, indicating potential to sell higher after buying low",
+        "confidence": "High",
+        "source": "this is a good sign here is you actually see that you've got a book at $670 and then the next copy is at 34 so seeing a big gap between the first couple offers and then the rest of the offers is a good sign... that's generally a good sign that you have a book that would be undervalued"
+    },
+    {
+        "id": "avoid-new-offers",
+        "category": "Risk",
+        "trigger": "Multiple new condition offers (blue line) at low prices",
+        "advice": "Pass on books with many new offers flooding the market at low prices, as it may suppress used prices",
+        "confidence": "High",
+        "source": "there appears to be actually 30 plus copies you know 30 or more copies at $31... maybe I'd pass on this one just because of the fact that there are these new offers at $30"
+    },
+    {
+        "id": "seasonality-u-pattern",
+        "category": "Seasonality",
+        "trigger": "U-shaped sales rank pattern in January and August",
+        "advice": "Identify college textbooks with U-shaped sales rank (high demand in peak seasons), buy low in off-season, sell high in January/August",
+        "confidence": "High",
+        "source": "here's a book that has amazing seasonality... the stereotypical U pattern during January and August that tells us that hey this is probably a college textbook... you could have picked it up for definitely under $18 and sold it up here for basically $40 or $50 making $10 $12 per copy"
+    },
+    {
+        "id": "historical-sales-precedent",
+        "category": "Pricing",
+        "trigger": "Sales rank drops when historical low price was $50+",
+        "advice": "Sell at $50+ if historical data shows sales rank improvements at those prices, even if current listing is higher like $80-90",
+        "confidence": "High",
+        "source": "this is a book that has historical precedent for having sold for $50 because of the fact that we see hey the celles rank improved when the lowest price was $50 multiple times... at times when this book is listed much higher than that like $80 $90 that's a great time for you to sell the book"
+    },
+    {
+        "id": "immediate-sales-sign",
+        "category": "Buying",
+        "trigger": "Sales rank drops immediately after price drop from $100 to $20",
+        "advice": "Prioritize books that sell quickly after price drops, indicating strong demand",
+        "confidence": "High",
+        "source": "looks like even when this dropped in price from $100 down to 20 it sold pretty much immediately which is a good sign"
+    },
+    {
+        "id": "high-rank-opportunity",
+        "category": "Risk",
+        "trigger": "Sales rank over 1 million",
+        "advice": "Don't dismiss books with high sales ranks (>1M); analyze individual Keepa graphs for sales opportunities even without rank",
+        "confidence": "High",
+        "source": "oftentimes people will kind of turn away books that have a high sales rank over a million but I can tell you I sell tons of books with sales ranks much higher than that... even books without sales rank because when you're actually looking at an individual KRA there's a lot that you can learn"
+    },
+    {
+        "id": "tip1-high-used-price",
+        "category": "Buying",
+        "trigger": "Lowest used price consistently high (e.g., $25, $50, $67, $57, or 70s-90s) despite infrequent sales",
+        "advice": "Consider buying the book as it holds intrinsic value and people are willing to pay more for it",
+        "confidence": "High",
+        "source": "when you use your cursor and hover over the lowest use price this book is significantly higher than $4 or5 it's a lot of times at 25 then it's at 50 then it's at 67 then it's at 57 ... the lowest use price of this book is generally in the 70s can even get up into the '90s ... here's a book that I'm much much more interested in even that despite the fact that it doesn't sell that much because of the fact that it's lowest use price on Amazon is often very very high"
+    },
+    {
+        "id": "tip2-buy-low-sell-high",
+        "category": "Pricing",
+        "trigger": "Seasonal book currently at low price (e.g., $6) with historical spikes to $40-60+",
+        "advice": "Buy now (e.g., around $10 including shipping) and wait to sell during peak demand periods for higher prices (40-60 range)",
+        "confidence": "High",
+        "source": "even though this book is $6 right now ... I'd buy it here at you know probably around $10 with shipping included try to sell for 40 or 50 or 60 like somewhere in that range ... if a book has seasonality you should probably be waiting to sell the book at that time when it has the most demand where you could also probably get the most money for it"
+    },
+    {
+        "id": "tip3-price-historical",
+        "category": "Pricing",
+        "trigger": "High current offer count but historical sales at $70-80 and past high offer counts resolved positively",
+        "advice": "Price based on historical data (e.g., $60-80) rather than current lowest price, as prices may rebound after offers sell out",
+        "confidence": "High",
+        "source": "there's no way that I'd be pricing it at the lowest price I would actually be probably pricing it between $60 and $80 because I know long-term historically that's what it generally sells at ... we've been at used offer accounts much higher than this and the book has has come back it has performed well ... looking at offer counts is really important generally when offer counts get much higher you should expect the used prices on the listing to go lower ... a lot of people aren't really looking at keep in their pricing books they're kind of just pricing books based upon live data rather than historical data"
     }
 ]
