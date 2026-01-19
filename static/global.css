@@ -359,12 +359,15 @@ button:disabled {
 
 /* --- New Header Styles (Absolute Centering) --- */
 .main-header {
-    position: relative;
+    position: sticky;
+    top: 0;
     width: 100%;
     /* The padding sets the height and pushes down the .container */
     height: 134px;
     padding: 0;
     box-sizing: border-box;
+    z-index: 300;
+    background-color: #000000;
 }
 
 .header-brand {
@@ -602,7 +605,7 @@ button:disabled {
     vertical-align: middle;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 32px); /* Group Header (32px) + Offset */
+    top: calc(var(--filter-panel-height) + 134px + 32px); /* Filter + Main(134) + Group(32) */
     z-index: 190;
     transition: top 0.3s ease;
 }
@@ -614,7 +617,7 @@ button:disabled {
 
 /* Group Header Styles */
 #deals-table .group-header th {
-    background-color: transparent !important; /* NONE */
+    background-color: #15192b !important;
     color: #ffffff;
     font-family: 'Open Sans', sans-serif;
     font-weight: 700; /* Bold */
@@ -629,13 +632,13 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: var(--filter-panel-height);
+    top: calc(var(--filter-panel-height) + 134px); /* Filter + Main(134) */
     z-index: 190;
     transition: top 0.3s ease;
 }
 
 #deals-table tr.group-header {
-    background-color: transparent !important;
+    background-color: #15192b !important;
     height: 32px !important;
 }
 
@@ -668,7 +671,7 @@ button:disabled {
 }
 
 #deals-table .sort-arrows-row td {
-    background-color: #1f293c; /* Dark color to prevent bleed through */
+    background-color: #15192b; /* Opaque matching site background */
     height: 25px !important;
     max-height: 25px !important;
     padding: 0 8px !important;
@@ -676,7 +679,7 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 64px); /* Group(32) + Col(32) = 64 */
+    top: calc(var(--filter-panel-height) + 134px + 64px); /* Filter + Main(134) + Group(32) + Col(32) */
     z-index: 190;
     transition: top 0.3s ease;
 }
@@ -1485,7 +1488,7 @@ body.home-background::before {
     overflow: hidden;
     /* Sticky Positioning */
     position: sticky;
-    top: 0;
+    top: 134px;
     z-index: var(--filter-panel-z);
 
     margin-top: 15px; /* Approx 135px from top given header height ~120px */
@@ -1784,9 +1787,10 @@ body.home-background::before {
     width: 100vw;
     height: 1px;
     background: #1f2a3c;
-    top: calc(var(--filter-panel-height) + 89px); /* 43/102 + 32 + 32 + 25 = 132/191 */
+    top: calc(var(--filter-panel-height) + 134px + 89px); /* Filter + Main(134) + Group(32) + Col(32) + Arrows(25) */
     box-shadow: 0 4px 6px rgba(0,0,0,0.5);
     z-index: 180;
     pointer-events: none;
     transition: top 0.3s ease;
+    display: none;
 }

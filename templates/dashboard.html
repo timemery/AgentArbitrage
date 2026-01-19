@@ -1166,6 +1166,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Shadow Line Scroll Logic
+    const shadowLine = document.getElementById('sticky-header-shadow-line');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            shadowLine.style.display = 'block';
+        } else {
+            shadowLine.style.display = 'none';
+        }
+    });
+
 });
 </script>
 {% endblock %}
