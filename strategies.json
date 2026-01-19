@@ -15044,5 +15044,61 @@
         "advice": "Order 10 units of $5-10 book from mcgrawhill.com, ship to Amazon address, submit receipt to Amazon for approval; alternatively use restrictedinventory.com service splitting 50% profits after shipping/prep",
         "confidence": "High",
         "source": "for McGraw-Hill books... go to mcgrawhill.com... order a five to ten dollar book order 10 of them... you must order 10 units... submit that uh to Amazon... if you can't sell textbooks you can go to restricted inventory.com... we split shipping charges with you 50 50... pay you 50 of the profits"
+    },
+    {
+        "id": "keepa-install-1",
+        "category": "Buying",
+        "trigger": "Browsing Amazon product pages",
+        "advice": "Install Keepa Chrome/Edge extension to automatically display price history graph below product description",
+        "confidence": "High",
+        "source": "Some months ago I stumbled across a nice add-on for chrome/edge called KEEPA: it checks and inform the price history of any item on Amazon (not only books)."
+    },
+    {
+        "id": "price-history-view-2",
+        "category": "Pricing",
+        "trigger": "Evaluating book prices on Amazon",
+        "advice": "Use Keepa graph to view price trends: yellow line for Amazon sales, blue for 3rd party new, black for used; adjust time frames to 1 day, 1 week, 1 month, 3 months, 1 year, or since announcement",
+        "confidence": "High",
+        "source": "The graph is quite easy to understand: yellow line for item sold by Amazon itself, blue for 3rd party new, black for used. You can stretch the graph to show only one day, one week, one month, three months, one year or since the item was announced."
+    },
+    {
+        "id": "price-tracking-3",
+        "category": "Pricing",
+        "trigger": "Interested in future price drops",
+        "advice": "Sign up for free on Keepa website to track products and receive notifications for price drops",
+        "confidence": "High",
+        "source": "To track a product and being notified of price drops you will have to sign up (for free) in the keepa webpage."
+    },
+    {
+        "id": "tool-comparison-4",
+        "category": "General",
+        "trigger": "Choosing price tracking tool",
+        "advice": "Prefer Keepa over CamelCamelCamel for better integration directly into Amazon pages without floating windows",
+        "confidence": "High",
+        "source": "keepa seems better integrated Amazon since it adds an extra panel into the page itself just below the product description; camel seems to open a floating window on the page with the price history."
+    },
+    {
+        "id": "return-policy-5",
+        "category": "Risk",
+        "trigger": "Received damaged book from Amazon",
+        "advice": "Utilize Amazon's free return/replacement policy for any damage, even minor scratches, without questions",
+        "confidence": "High",
+        "source": "their return policy. Anything you don't like in the product, any minimal or superficial damage, even a single scratch, you can return (or replace) it totally free of charge. Absolutely no inquires"
+    },
+    {
+        "id": "packaging-risk-6",
+        "category": "Risk",
+        "trigger": "Buying from Amazon",
+        "advice": "Be aware of potential damage from oversized boxes without padding; recent improvements include air cushions, but still request replacement if no padding or damage occurs",
+        "confidence": "Medium",
+        "source": "Amazon used to simply throw the book in a box usually bigger than the book itself without any padding; many times I received hard cover books with the corners badly damaged... at least Amazon has been padding them with those air cushions."
+    },
+    {
+        "id": "seller-preference-7",
+        "category": "Buying",
+        "trigger": "Purchasing from Amazon in Australia",
+        "advice": "Prioritize sellers labeled 'Amazon AU' for safety and delivery within a week",
+        "confidence": "Medium",
+        "source": "If the is seller Amazon AU I feel super safe and get the item within a week."
     }
 ]

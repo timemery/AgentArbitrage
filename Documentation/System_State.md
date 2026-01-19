@@ -33,11 +33,11 @@
 - **Filtering:**
   - Default view (`Margin >= 0`) excludes `NULL` margins.
   - "Reset" button sets all sliders to 0 ("Any"), which explicitly removes the filter from the query.
+  - **New Filters:** "Hide Gated" (excludes restricted items) and "Hide AMZ Offers" (excludes items sold by Amazon).
 - **Columns:**
   - **Drops:** Sales Rank drops in last 30 days.
-  - **Offers:** Trend arrows (↘/↗) vs 30-day average.
-  - **AMZ:** Warning icon (⚠️) if Amazon is currently selling the item.
-  - **Binding:** Auto-formatted to Title Case (e.g., "Mass Market"), max width 95px.
+  - **Offers:** Trend arrows (↘ Green/Falling, ↗ Red/Rising) vs 30-day average.
+  - **AMZ:** Warning icon (⚠️) right-aligned in "Offers" column if Amazon is currently selling.
 - **Ava Advice:** Overlay feature using `grok-4-fast-reasoning` to provide actionable analysis.
 - **Refresh Logic:** Manual "Refresh Deals" button only reloads the grid; it no longer triggers the "Janitor" cleanup process (as of Jan 2026).
 
