@@ -565,13 +565,13 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 1333px; /* Exact match to filter panel */
-    margin: 24px auto 0 auto; /* Centered with 24px top separation */
+    margin: 22px auto 0 auto; /* Centered with 22px top separation */
+    border-spacing: 0; /* Set spacing to 0 */
+    border-collapse: separate; /* Use separate model for manual control */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
-#deals-table table {
-    border-spacing: 0; /* Set spacing to 0 */
-    border-collapse: separate; /* Use separate model for manual control */
+.deal-table {
     width: 100%;
 }
 
@@ -610,18 +610,13 @@ button:disabled {
     font-weight: 700; /* Bold */
     font-size: 15px;
     border: none !important; /* NONE */
-    height: 32px !important;
+    height: 44px !important;
     padding: 0 8px !important;
     box-sizing: border-box !important;
-    vertical-align: top !important;
-    line-height: 1 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
 }
 
 #deals-table tr.group-header {
     background-color: transparent !important;
-    height: 32px !important;
 }
 
 /* Data Cell Styles */
@@ -1471,7 +1466,7 @@ body.home-background::before {
 }
 
 .filter-panel-closed {
-    height: 43px;
+    height: 42px;
 }
 
 .filter-panel-open {
