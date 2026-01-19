@@ -1,6 +1,11 @@
 /* Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;700&display=swap');
 
+:root {
+    --filter-panel-height: 43px; /* Default closed state */
+    --filter-panel-z: 200;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -595,6 +600,11 @@ button:disabled {
     cursor: default;
     height: 32px;
     vertical-align: middle;
+    /* Sticky Positioning */
+    position: sticky;
+    top: calc(var(--filter-panel-height) + 32px); /* Group Header (32px) + Offset */
+    z-index: 190;
+    transition: top 0.3s ease;
 }
 
 /* Add left border to the first header cell */
@@ -617,6 +627,11 @@ button:disabled {
     line-height: 1 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    /* Sticky Positioning */
+    position: sticky;
+    top: var(--filter-panel-height);
+    z-index: 190;
+    transition: top 0.3s ease;
 }
 
 #deals-table tr.group-header {
@@ -653,12 +668,17 @@ button:disabled {
 }
 
 #deals-table .sort-arrows-row td {
-    background-color: transparent; /* Ascending/Descending Row color - NONE */
+    background-color: #1f293c; /* Dark color to prevent bleed through */
     height: 25px !important;
     max-height: 25px !important;
     padding: 0 8px !important;
     line-height: 25px;
     border: none !important; /* Ascending/Descending Row Border - NONE */
+    /* Sticky Positioning */
+    position: sticky;
+    top: calc(var(--filter-panel-height) + 64px); /* Group(32) + Col(32) = 64 */
+    z-index: 190;
+    transition: top 0.3s ease;
 }
 
 .sort-arrows-container {
@@ -769,7 +789,7 @@ button:disabled {
 .table-container {
     width: auto; /* Allow table to define its own width */
     max-width: 100%; /* Prevent overflow on small screens */
-    overflow-x: auto; /* Add horizontal scroll if needed */
+    /* overflow-x: auto; Removed to allow sticky headers to work relative to viewport */
 }
 
 /* New Filter Styles */
@@ -1463,7 +1483,11 @@ body.home-background::before {
     box-sizing: border-box;
     transition: height 0.3s ease;
     overflow: hidden;
-    position: relative;
+    /* Sticky Positioning */
+    position: sticky;
+    top: 0;
+    z-index: var(--filter-panel-z);
+
     margin-top: 15px; /* Approx 135px from top given header height ~120px */
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -1751,4 +1775,18 @@ body.home-background::before {
 /* Hover effect */
 .custom-checkbox:hover {
     border-color: #a3aec0;
+}
+
+/* Sticky Header Shadow Line */
+#sticky-header-shadow-line {
+    position: fixed;
+    left: 0;
+    width: 100vw;
+    height: 1px;
+    background: #1f2a3c;
+    top: calc(var(--filter-panel-height) + 89px); /* 43/102 + 32 + 32 + 25 = 132/191 */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    z-index: 180;
+    pointer-events: none;
+    transition: top 0.3s ease;
 }
