@@ -5,6 +5,7 @@
     Recalculating deals with new settings... The table will refresh automatically when complete.
 </div>
 <div class="dashboard-content-wrapper">
+    <div id="sticky-header-shadow-line"></div>
     <div class="filter-panel filter-panel-closed" id="filter-panel">
         <!-- CLOSED STATE -->
         <div class="panel-content-closed" id="panel-closed">
@@ -792,9 +793,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (open) {
             filterPanel.classList.remove('filter-panel-closed');
             filterPanel.classList.add('filter-panel-open');
+            document.documentElement.style.setProperty('--filter-panel-height', '102px');
         } else {
             filterPanel.classList.remove('filter-panel-open');
             filterPanel.classList.add('filter-panel-closed');
+            document.documentElement.style.setProperty('--filter-panel-height', '43px');
         }
     }
 
@@ -1160,6 +1163,16 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('click', (event) => {
         if (event.target == overlay) {
             overlay.style.display = 'none';
+        }
+    });
+
+    // Shadow Line Scroll Logic
+    const shadowLine = document.getElementById('sticky-header-shadow-line');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            shadowLine.style.display = 'block';
+        } else {
+            shadowLine.style.display = 'none';
         }
     });
 

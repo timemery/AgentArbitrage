@@ -15100,5 +15100,301 @@
         "advice": "Prioritize sellers labeled 'Amazon AU' for safety and delivery within a week",
         "confidence": "Medium",
         "source": "If the is seller Amazon AU I feel super safe and get the item within a week."
+    },
+    {
+        "id": "dt_books_sourcing",
+        "category": "Buying",
+        "trigger": "Sourcing at Dollar Tree stores",
+        "advice": "Source books and DVDs from Dollar Tree; plan to spend 2-3 hours scanning for profitable deals",
+        "confidence": "High",
+        "source": "When we first started, we sold books and dvds from Dollar Tree. There are still some deals to be had there. When you go and scan, plan to be there for 2-3 hours."
+    },
+    {
+        "id": "profit_threshold",
+        "category": "Pricing",
+        "trigger": "Evaluating item profitability",
+        "advice": "Set limits of at least $5 profit per item and always aim to double your investment",
+        "confidence": "High",
+        "source": "we set some limits, like nothing less than $5 profit per item and we always double our money."
+    },
+    {
+        "id": "tools_investment",
+        "category": "General",
+        "trigger": "Product research and analysis",
+        "advice": "Invest in tools like Keepa, Seller Amp, and Inventory Lab for scanning and profitability assessment",
+        "confidence": "High",
+        "source": "Invest in Keepa, Seller Amp and Inventory Lab. Treat it like a business."
+    },
+    {
+        "id": "tax_exemption",
+        "category": "Risk",
+        "trigger": "Purchasing inventory",
+        "advice": "Obtain a state tax exemption certificate for your business to avoid sales tax at stores like Dollar Tree and Walmart",
+        "confidence": "High",
+        "source": "I have a state tax exemption for my business. That makes a difference. I don\u2019t pay sales tax at Walmart, Dollar Tree and a handful of other stores."
+    },
+    {
+        "id": "scanning_effort",
+        "category": "Buying",
+        "trigger": "In-store sourcing sessions",
+        "advice": "Dedicate time to extensive scanning during sourcing trips, especially for low-cost items like books",
+        "confidence": "Medium",
+        "source": "RA requires a lot of legwork. You have to get out there and scan, scan, scan."
+    },
+    {
+        "id": "scanning-process-1",
+        "category": "General",
+        "trigger": "Sourcing books in retail stores",
+        "advice": "Scan items first with the Amazon seller app to check if listable, then use SellerAMP (SAS) for sales data, seller count, inventory levels, and buy box share; avoid if Amazon does not share buy box",
+        "confidence": "High",
+        "source": "Scan first with the Amazon app. If you can list it, you can sell it. Then scan with SAS. This will tell you how many sell, how many sellers and their inventory levels. Lastly, if Amazon is on the listing, check to see if they share the buy box. If they don\u2019t, don\u2019t bother."
+    },
+    {
+        "id": "sales-threshold-1",
+        "category": "Pricing",
+        "trigger": "Monthly sales below 50 units",
+        "advice": "Target products with 50+ sales per month for profitability, even if margins are low like $0.50",
+        "confidence": "Medium",
+        "source": "I look for 50 sells a month and up."
+    },
+    {
+        "id": "research-volume-1",
+        "category": "General",
+        "trigger": "Initial product sourcing",
+        "advice": "Review hundreds of products before purchasing to identify profitable opportunities",
+        "confidence": "High",
+        "source": "You need to look through 100\u2019s of products before you pull the trigger."
+    },
+    {
+        "id": "ungating-trick-1",
+        "category": "Risk",
+        "trigger": "Gated categories for books",
+        "advice": "Always request approval to sell when gated; automatic ungating may occur without prior purchase",
+        "confidence": "High",
+        "source": "If you are gated, always click on request to sell. Sometimes you will get ungated automatically. You don\u2019t know until you try."
+    },
+    {
+        "id": "cost-saving-1",
+        "category": "Buying",
+        "trigger": "Purchasing inventory",
+        "advice": "Leverage credit card perks, coupons, cash back sites, company websites, and X (Twitter) for discount codes to reduce costs",
+        "confidence": "High",
+        "source": "The thing about OA is to use credit card perks, coupons and cash back sites. Get familiar with all of those. Check online at the company websites and their X account to find discount codes."
+    },
+    {
+        "id": "tool-selleramp-scan",
+        "category": "Buying",
+        "trigger": "Scanning products manually",
+        "advice": "Use SellerAMP to instantly see ROI, fees, sales estimates, competition (avoid if Amazon is selling), and if worth flipping; integrate with Keepa for sales rank and price charts to spot real deals.",
+        "confidence": "High",
+        "source": "You can use it to: - Scan products and instantly see your ROI, fees, and if it\u2019s worth flipping. No spreadsheets, no headaches. - Sales Estimates: Know if a product moves fast or is a dust collector. - Check the Competition: See if Amazon is on the listing (hard pass) and how many other sellers you\u2019d be up against. - Keepa Built-In: If you\u2019re using Keepa (and you should), it overlays sales rank and price charts so you can spot real deals, not flukes."
+    },
+    {
+        "id": "tool-keepa-filters",
+        "category": "General",
+        "trigger": "Product discovery and analysis",
+        "advice": "Buy Keepa immediately and learn to use filters on Keepa\u2019s product finder; analyze trends of offers vs buy box, spot IP issues from significant drops in number of offers, and review data tab for onhand values and sales in last 30 days.",
+        "confidence": "High",
+        "source": "Buy Keepa immediately. Learn how to use filters on Keepa\u2019s product finder. Understand what the trend of offers vs buy box on a product is telling you & how to spot product IP issues based on significant drops in the number of offers. Go in the data tab on a product and get comfortable looking at onhand values, sales in last 30 days, etc."
+    },
+    {
+        "id": "risk-ip-eligibility",
+        "category": "Risk",
+        "trigger": "Tools indicate eligibility to sell",
+        "advice": "Even if Amazon or SellerAMP shows eligibility, verify further as you may receive cease/desist letters from law firms or IP complaints from brand owners or third parties.",
+        "confidence": "High",
+        "source": "Keep in mind just because Amazon or SellerAmp indicates you are eligible to sell something doesn\u2019t really mean you are (ie, you might get cease/desist selling letters from law firms or IP complaints from brand owners or 3rd parties who represent brand owners)."
+    },
+    {
+        "id": "sourcing-888lots",
+        "category": "Buying",
+        "trigger": "Sourcing from liquidators",
+        "advice": "Use 888lots.com for quality products with daily updates, great customer service, negotiable prices, good margins, and easy linking to Amazon account to check gated/ungated status.",
+        "confidence": "Medium",
+        "source": "I have a had great success with 888lots.com. They are out of New Jersey; great customer service and daily product updates, quality products and the ability to negotiate for price. They also easily link to your amazon account to check gated/ungated. The margins have been good to me too."
+    },
+    {
+        "id": "outsourcing-lists",
+        "category": "General",
+        "trigger": "Outsourcing sourcing process",
+        "advice": "Outsource by buying pre-sourced lists from OAsource.com for efficient deal identification.",
+        "confidence": "Medium",
+        "source": "I outsource the entire process by simply buying a list from OAsource.com, works pretty great."
+    },
+    {
+        "id": "tool-coupert-coupons",
+        "category": "Buying",
+        "trigger": "Finding discount codes",
+        "advice": "Add Coupert Chrome extension to identify coupon deals for better sourcing prices.",
+        "confidence": "Low",
+        "source": "hey hey you may try to add extension in chrome to use coupert for coupon deals."
+    },
+    {
+        "id": "general4",
+        "category": "General",
+        "trigger": "Bulk sourcing like Gaylords",
+        "advice": "For volume routes with Gaylords, accept not listing 100% of books and make pennies per sale to justify the squeeze.",
+        "confidence": "High",
+        "source": "Bulk books - Yeah, it can be profitable - but is the juice worth the squeeze?... If you get a Gaylord you\u2019ll receive books that won\u2019t be worth listing unless you\u2019re going the volume route"
+    },
+    {
+        "id": "strat-019",
+        "category": "General",
+        "trigger": "Gated brands like Stanley",
+        "advice": "For ungating, buy at least 10 items directly from brand site, submit invoice in Seller Central; expect 5-10 submissions for approval.",
+        "confidence": "High",
+        "source": "just make sure you buy at least 10 items here... apply to sell that product, submit that invoice... We submit five to 10 times at least per brand before we're actually getting approved."
+    },
+    {
+        "id": "strat-020",
+        "category": "Buying",
+        "trigger": "Profitable items from seller storefronts",
+        "advice": "Source more from storefronts of sellers with active profitable items, as their inventory is likely profitable.",
+        "confidence": "High",
+        "source": "when you find a profitable item... it's usually going to be best to source off of those... the rest of their stuff is more likely to be actively profitable."
+    },
+    {
+        "id": "auto-ungate-focus-1",
+        "category": "General",
+        "trigger": "New Amazon seller starting out",
+        "advice": "Focus on sourcing auto-ungated products to quickly reach $5,000-$10,000 monthly sales without needing approvals.",
+        "confidence": "High",
+        "source": "And then in the background, they're working on these ungating applications. And now the two other types of products you need to be aware of because you cannot sell these on Amazon are going to be restricted products or hardgated products"
+    },
+    {
+        "id": "gated-submission-1",
+        "category": "Buying",
+        "trigger": "Product is gated (e.g., DeWalt tools)",
+        "advice": "Submit invoice or receipt from retailer like Lowe's to get ungated; expect multiple submissions.",
+        "confidence": "High",
+        "source": "We'll just submit the invoicing from wherever we're sourcing those items from. For example, if we wanted to sell DeWalt Tools, I could just go source something from Lowe's, download that order confirmation"
+    },
+    {
+        "id": "restricted-avoid-1",
+        "category": "Risk",
+        "trigger": "Product shows 'copy listing' in Seller Central (e.g., Converse)",
+        "advice": "Avoid listing on such products as third-party sellers cannot sell them; create new listing only if brand registered.",
+        "confidence": "High",
+        "source": "So if you ever punch in a brand and it says copy listing, that means that you cannot list on this listing. You have to make your own new listing"
+    },
+    {
+        "id": "eligibility-check-1",
+        "category": "General",
+        "trigger": "Using Seller Amp for sourcing",
+        "advice": "Check the 'eligible' box in Seller Amp to see if you can sell the product; double-check in Amazon if 'no'.",
+        "confidence": "High",
+        "source": "In this eligible box, it'll tell you if you're allowed to sell this product or not. And then if it says no, you can always double check, go to Amazon"
+    },
+    {
+        "id": "transparency-check-1",
+        "category": "Risk",
+        "trigger": "Product requires transparency application",
+        "advice": "Buy one item to check for custom barcode on packaging; sell only if present, avoid if not.",
+        "confidence": "High",
+        "source": "What you'd have to do is just buy one and see if it has this little barcode on it. If it does, then you can list some of those on Amazon. But if it doesn't, then you'll have to avoid that product"
+    },
+    {
+        "id": "brand-list-1",
+        "category": "General",
+        "trigger": "Sourcing auto-ungated brands (e.g., And one)",
+        "advice": "Use free list of 1,800 auto-ungated brands to test approvals in Seller Central.",
+        "confidence": "High",
+        "source": "And by the way, if you want a whole big list of other brands that you can test and see if you can get auto ungated to sell, I'll leave a link for this down below. It's about 1,800 brands"
+    },
+    {
+        "id": "storefront-sourcing-1",
+        "category": "Buying",
+        "trigger": "Seller has low feedback (e.g., 3 feedback)",
+        "advice": "Source from storefronts of new sellers with low feedback, as they likely sell auto-ungated or easy-to-un gate brands.",
+        "confidence": "High",
+        "source": "you can see how he only has three feedback. That tells me that there's a good chance that the other items in this storefront are either going to be brands that new sellers can apply to ungate pretty easily or will just straight up be auto ungated"
+    },
+    {
+        "id": "max-cost-rule-1",
+        "category": "Pricing",
+        "trigger": "Evaluating profitability",
+        "advice": "Buy for max cost (includes shipping to Amazon and sales tax) to ensure real profit; aim to buy for half or less of Amazon selling price.",
+        "confidence": "High",
+        "source": "Good rule of thumb is everything you buy on Amazon, you're probably going to have to spend half or less on it to be profitable. So, for example, these $24 bottles, we'd probably have to spend 12, 11 bucks or so"
+    },
+    {
+        "id": "keepa-sales-action-1",
+        "category": "General",
+        "trigger": "Using Keepa chart",
+        "advice": "Look for fluctuating new offer count (e.g., 9 to 12 sellers) and price changes as indicators of active sales.",
+        "confidence": "High",
+        "source": "the more this line is changing around, the more people are coming into this listing, the more people are selling out on this listing, we want to see a lot of action. That typically means pretty much guarantees that item is selling"
+    },
+    {
+        "id": "offers-tab-hack-1",
+        "category": "General",
+        "trigger": "Stable price lines on Keepa",
+        "advice": "Use Keepa offers tab to check historical stock counts and prices; prefer decreasing stock and frequent changes indicating sales.",
+        "confidence": "High",
+        "source": "this is going to show me the exact stock count and price of this person's store over the entire history... You can see, for example, this person had seven in stock on November 19th, and then a few days later, they were almost sold out"
+    },
+    {
+        "id": "variations-check-1",
+        "category": "Pricing",
+        "trigger": "One variation not profitable",
+        "advice": "Check Keepa variations tab for other sizes/colors that may sell higher (e.g., $40 vs $30) for profitability.",
+        "confidence": "High",
+        "source": "Are there any other sizes and colors that are profitable for me? On here, I see actually a good amount of these are 40 bucks"
+    },
+    {
+        "id": "test-small-1",
+        "category": "Risk",
+        "trigger": "Uncertain sales velocity",
+        "advice": "Buy small test quantities (5 units) for items with some action but low confidence to verify sales.",
+        "confidence": "High",
+        "source": "Personally, I wouldn't buy more than five of these just to see if it's actually going to sell for you since the profit's pretty solid"
+    },
+    {
+        "id": "roi-threshold-1",
+        "category": "Pricing",
+        "trigger": "Calculating ROI on clothing items",
+        "advice": "Target 30% ROI or above, especially for items with potential returns.",
+        "confidence": "High",
+        "source": "Usually I'm looking for like a 30% ROI or above, especially on close where I might have some returns"
+    },
+    {
+        "id": "review-indicator-1",
+        "category": "General",
+        "trigger": "Recent rating on listing",
+        "advice": "A new review suggests at least 100+ sales (1 in 100 review rate), indicating potential velocity.",
+        "confidence": "High",
+        "source": "There is also a rating left on this, which means that someone's left a review... Typical review rate on Amazon is about one in a 100"
+    },
+    {
+        "id": "buy-box-shift-1",
+        "category": "General",
+        "trigger": "Buy box shifting between sellers",
+        "advice": "Shifting buy box indicates active sales and competition; good sign for velocity.",
+        "confidence": "High",
+        "source": "I'm seeing the buy box is shifting between different sellers a lot. So that means different people are winning this add to cart button here"
+    },
+    {
+        "id": "low-feedback-sellers-1",
+        "category": "Buying",
+        "trigger": "Sellers with 65 feedback or less on listing",
+        "advice": "Prioritize sourcing from low-feedback sellers on listings to find more auto-ungated opportunities.",
+        "confidence": "High",
+        "source": "Person has 65 feedback. So they're relatively new. This person has a lot of feedback. So it seems like those sales are being shared pretty evenly"
+    },
+    {
+        "id": "size-filter-trick-1",
+        "category": "Buying",
+        "trigger": "Sourcing specific variations (e.g., black color)",
+        "advice": "Filter Amazon search by color/size in title (e.g., 'black') to find profitable variations quickly.",
+        "confidence": "High",
+        "source": "The way you can do that is just by going into the title here and then say make it contain black. And now we're going to just see all the options that are that black color there"
+    },
+    {
+        "id": "increasing-sellers-risk-1",
+        "category": "Risk",
+        "trigger": "General increasing seller trend on listing",
+        "advice": "Limit to 5 units per size if seller count is increasing to mitigate competition risk.",
+        "confidence": "High",
+        "source": "This does have a general increasing seller trend, so I'd probably only pick up maybe five of each of those just to see how it goes"
     }
 ]
