@@ -10,27 +10,29 @@ For the underlying data logic, please refer to **`Data_Logic.md`**.
 
 The dashboard uses a responsive grid layout. Columns are defined in `templates/dashboard.html`.
 
-**Note:** Several columns (Genre, Binding, Name, Min. List, List at) have been removed from the visual dashboard as of Jan 2026, but their underlying logic and data extraction remain active in the backend for future use.
+**Note:** The dashboard table logic is dynamically rendered via JavaScript (`renderTable`).
 
 ### 1. Main Data Grid
 
 | Column Header | Data Field (Backend) | Visual Format / Behavior | Width | Sortable? |
 | :--- | :--- | :--- | :--- | :--- |
-| **Image** | `Image` | 60px height. Click expands to full size. | 70px | No |
-| **Title** | `Title` | Truncated (2 lines). Hover shows full title. Hyperlink to Keepa. | Auto | No |
-| **Condition** | `Condition` | **Abbreviated Map:** <br> `Used - Like New` -> **U - LN** <br> `Used - Very Good` -> **U - VG** <br> `Used - Good` -> **U - G** <br> `Used - Acceptable` -> **U - A** | 80px | Yes |
-| **Rank** | `Sales_Rank_Current` | Integer with commas (e.g., "12,345"). | 90px | Yes |
-| **Details** | `Detailed_Seasonality` | Text. | 110px | No |
-| **S. Trust** | `Seller_Quality_Score` | **Scale 0-10:** Raw probability (0.0-1.0) * 10. Rounded to 1 decimal. | 80px | Yes |
-| **Changed** | `last_price_change`, `Trend` | **Composite:** Trend Arrow + " " + Time Ago (e.g., "⇩ 2h ago"). <br> **Arrows:** ⇧ (Up), ⇩ (Down), ⇨ (Flat). | 100px | Yes |
-| **Buy For** | `Price_Now` | Currency ($XX.XX). Bold font. | 90px | Yes |
-| **Avg.** | `1yr_Avg` | Currency ($XX.XX). | 90px | Yes |
-| **% ⇩** | `Percent_Down` | Percentage + "%". Bold if > 50%. | 70px | Yes |
-| **P. Trust** | `Profit_Confidence` | Percentage + "%". | 80px | Yes |
-| **Gated** | `is_restricted` (joined) | **Icons:** <br> ✅ (Green Check) = Allowed <br> ❌ (Red X) = Restricted (Click opens Approval URL) <br> ⏳ (Spinner) = Checking... <br> ⚠️ (Broken) = Error (Hover for details) | 60px | Yes |
-| **Buy** | `Buy_Now` | Link to Amazon Product Page. | 60px | No |
-| **Profit** | `Profit` | Currency ($XX.XX). **Color Coded:** <br> Green if > $0. <br> Red if < $0. | 90px | Yes |
-| **Margin** | `Margin` | Percentage + "%". | 80px | Yes |
+| **ASIN** | `ASIN` | Clean 10-digit ASIN (e.g., "0123456789"). | Auto | Yes |
+| **Title** | `Title` | Truncated (max-width 125px). Hover shows full title. | 125px | Yes |
+| **Condition** | `Condition` | **Abbreviated Map:** <br> `New` -> **New** <br> `Used - Like New` -> **U - LN** <br> `Used - Very Good` -> **U - VG** <br> `Used - Good` -> **U - G** <br> `Used - Acceptable` -> **U - A** | Auto | Yes |
+| **Rank** | `Sales_Rank_Current` | Integer with k/M suffix (e.g., "120k", "4.5M"). | Auto | Yes |
+| **Drops** | `Drops` | Integer count (30 days). | Auto | Yes |
+| **Offers** | `Offers` | Count + Trend Arrow. <br> **Trend:** ↘ (Green/Good), ↗ (Red/Bad), → (Orange/Flat). <br> **Icons:** ⚠️ (AMZ selling) right-aligned if applicable. | Auto | Yes |
+| **Season** | `Detailed_Seasonality` | Text (Truncated max-width 105px). | 105px | Yes |
+| **1yr Avg** | `1yr_Avg` | Currency ($XX.XX). | Auto | Yes |
+| **Now** | `Price_Now` | Currency ($XX.XX). | Auto | Yes |
+| **% ⇩** | `Percent_Down` | Percentage + "%". | Auto | Yes |
+| **Ago** | `last_price_change` | Trend Arrow + Time Ago (e.g., "⇩ 2h ago"). <br> **Trend:** ⇧ (Red/Up), ⇩ (Green/Down), ⇨ (Orange/Flat). | Auto | Yes |
+| **Seller** | `Seller_Quality_Score` | **Scale 0-10:** Derived from Wilson Score (e.g., "9 / 10"). "Unrated" or Name if text. | Auto | Yes |
+| **Estimate** | `Profit_Confidence` | Percentage + "%". | Auto | Yes |
+| **All in** | `All_in_Cost` | Currency ($XX.XX). | Auto | Yes |
+| **Profit** | `Profit` | Currency ($XX.XX). | Auto | Yes |
+| **Margin** | `Margin` | Percentage + "%". | Auto | Yes |
+| **Action** | `Gated` (Logic) | **Buttons (56x32px):** <br> **Buy** (Green): If Not Restricted. <br> **Apply** (Orange): If Restricted (Links to Approval). <br> **View** (Grey): Fallback/Unknown. <br> **Icons:** ⏳ (Spinner), ⚠ (Error). | 60px | Yes |
 
 ---
 
@@ -52,15 +54,18 @@ All sliders utilize a standardized "Any" state logic:
 5.  **Min. Profit Trust**: Filter by `Profit_Confidence`.
 6.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
 
+### Checkbox Filters
+-   **Hide Gated**: Excludes deals where `is_restricted = 1`. (Pending/Error states remain visible).
+-   **Hide AMZ Offers**: Excludes deals where the `AMZ` column contains the warning icon ('⚠️').
+
 ### Special Filters
--   **Keyword Search:** (Commented out in HTML but supported in Backend via `keyword` param).
--   **Deal Count:** The badge in the header shows the total number of deals matching the *current* filters.
+-   **Deal Count**: The badge in the header shows the total number of deals matching the *current* filters.
 
 ---
 
 ## Polling & Updates
 
-1.  **Auto-Refresh:** The dashboard polls `/api/deal-count` every 30 seconds.
+1.  **Auto-Refresh:** The dashboard polls `/api/deal-count` every **60 seconds**.
 2.  **New Deal Notification:**
     -   Logic: Compares `local_record_count` (JS) vs `total_records` (API).
     -   Visual: "New Deals Available! Click to Refresh" banner appears if counts differ.
@@ -157,11 +162,21 @@ The action bar adapts based on the user's restriction status:
 ## CSS & Styling Standards
 
 -   **Color Palette:**
-    -   Primary Blue: `#336699` (Headers, Active States)
+    -   Primary Blue: `#566e9e` (Headers, Active States) - *Updated from legacy #336699*
     -   Filter Active: `rgba(102, 153, 204, 0.9)`
     -   Profit Green: `#28a745`
     -   Loss Red: `#dc3545`
--   **Latency:**
-    -   Hover effects on navigation must be **instant**.
-    -   CSS transitions on `background-color` are explicitly **disabled**.
+-   **Typography:**
+    -   Font Family: 'Open Sans', sans-serif.
+    -   Group Headers: 15px Bold, White.
+    -   Column Headers & Data: 12px Bold, Grey (#a3aec0).
+-   **Dimensions:**
+    -   **Group Header Row:** 32px height.
+    -   **Column Header Row:** 32px height.
+    -   **Data Row:** 48px target height.
+    -   **Action Buttons:** 56px width x 32px height (Total).
+-   **Graphics:**
+    -   **Sort Arrows:** Specific PNG assets (`AscendingOff.png`, etc.).
+    -   **Trend Indicators:** HTML Entities (`&#x2191;`, `&#x2193;`, `&rightarrow;`).
+    -   **Warning Icon:** HTML Entity (`&#x26A0;` ⚠).
 -   **Header:** `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.

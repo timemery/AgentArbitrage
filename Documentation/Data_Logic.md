@@ -166,20 +166,6 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Logic**: Real-time call to `grok-4-fast-reasoning` generating specific, actionable advice (50-80 words).
     -   **Context**: Uses deal metrics + `strategies.json`.
 
-### AI Knowledge Extraction (Guided Learning)
-
--   **`extract_strategies`**:
-    -   **Source**: `wsgi_handler.py`.
-    -   **Prompt**: Extracts specific, actionable rules/numbers.
-    -   **Model**: `grok-4-fast-reasoning` (Temperature 0.2).
-    -   **Logic**: Parses input text for conditions like "Rank < X" or "Profit > Y".
-
--   **`extract_conceptual_ideas`**:
-    -   **Source**: `wsgi_handler.py`.
-    -   **Prompt**: Extracts high-level mental models and "why" logic.
-    -   **Model**: `grok-4-fast-reasoning` (Temperature 0.3).
-    -   **Logic**: Focuses on qualitative insights.
-
 ### Business & Financial Metrics
 
 -   **`All-in Cost`**:
@@ -198,6 +184,20 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Min. Listing Price`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
     -   **Formula**: `All-in Cost / (1 - Default Markup %)`.
+
+### AI Knowledge Extraction (Guided Learning)
+
+-   **`extract_strategies`**:
+    -   **Source**: `wsgi_handler.py`.
+    -   **Prompt**: Extracts specific, actionable rules/numbers.
+    -   **Model**: `grok-4-fast-reasoning` (Temperature 0.2).
+    -   **Logic**: Parses input text for conditions like "Rank < X" or "Profit > Y".
+
+-   **`extract_conceptual_ideas`**:
+    -   **Source**: `wsgi_handler.py`.
+    -   **Prompt**: Extracts high-level mental models and "why" logic.
+    -   **Model**: `grok-4-fast-reasoning` (Temperature 0.3).
+    -   **Logic**: Focuses on qualitative insights.
 
 ---
 
