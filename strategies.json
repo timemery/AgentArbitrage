@@ -15396,5 +15396,285 @@
         "advice": "Limit to 5 units per size if seller count is increasing to mitigate competition risk.",
         "confidence": "High",
         "source": "This does have a general increasing seller trend, so I'd probably only pick up maybe five of each of those just to see how it goes"
+    },
+    {
+        "id": "auto-ungate-check",
+        "category": "Buying",
+        "trigger": "When adding product in Seller Central, loads briefly and sell button appears immediately",
+        "advice": "Proceed to source and list this auto-ungated product without approval",
+        "confidence": "High",
+        "source": "It loaded for a second, and then immediately allows me to sell this item. And those auto ungate products are going to be what we're focused on sourcing today."
+    },
+    {
+        "id": "gated-invoice",
+        "category": "Buying",
+        "trigger": "Product requires approval and asks only for invoice or receipt",
+        "advice": "Source from retailer like Lowe's, submit order confirmation email as invoice to get ungated",
+        "confidence": "High",
+        "source": "all it's going to ask me to submit is an invoice or a receipt for this actual product... I could just go source something from Lowe's, download that order confirmation that they emailed me, and then submit that off to Amazon and get approved"
+    },
+    {
+        "id": "avoid-restricted",
+        "category": "Risk",
+        "trigger": "Brand shows 'copy listing' when trying to add in Seller Central",
+        "advice": "Avoid listing; cannot sell as third-party new seller",
+        "confidence": "High",
+        "source": "if you ever punch in a brand and it says copy listing, that means that you cannot list on this listing... So avoid products that say copy listing"
+    },
+    {
+        "id": "seller-amp-eligible",
+        "category": "General",
+        "trigger": "In Seller Amp, eligible box shows 'no'",
+        "advice": "Double-check in Amazon Seller Central to see if applicable for ungate or if hardgated",
+        "confidence": "High",
+        "source": "on seller amp... in this eligible box, it'll tell you if you're allowed to sell this product or not. And then if it says no, you can always double check, go to Amazon"
+    },
+    {
+        "id": "transparency-check",
+        "category": "Risk",
+        "trigger": "Product has transparency application requirement",
+        "advice": "Buy one unit to check for special barcode on packaging; if present, can list; if not, avoid",
+        "confidence": "High",
+        "source": "sometimes you can actually sell these products. What you'd have to do is just buy one and see if it has this little barcode on it. If it does, then you can list some of those on Amazon. But if it doesn't, then you'll have to avoid that product."
+    },
+    {
+        "id": "low-feedback-sellers",
+        "category": "Buying",
+        "trigger": "Other sellers on listing have low feedback (e.g., 3 feedback)",
+        "advice": "Explore their storefront for auto-ungated or easy-to-ungate brands to source",
+        "confidence": "High",
+        "source": "you can see how he only has three feedback. That tells me that there's a good chance that the other items in this storefront are either going to be brands that new sellers can apply to ungate pretty easily or will just straight up be auto ungated."
+    },
+    {
+        "id": "max-cost-buy",
+        "category": "Pricing",
+        "trigger": "Buy price below calculated max cost (includes shipping, sales tax, fees)",
+        "advice": "Only source if purchase price meets or beats max cost for true profitability",
+        "confidence": "High",
+        "source": "I need to buy this for 13 bucks to be profitable... my max cost includes shipping to Amazon as well as sales tax. So all those extra fees... are included. So when I'm looking at profitable stuff, it is actually profitable."
+    },
+    {
+        "id": "half-price-rule",
+        "category": "Pricing",
+        "trigger": "Selling price on Amazon is known (e.g., $24)",
+        "advice": "Aim to buy for half or less (e.g., $11-12) to ensure profitability",
+        "confidence": "High",
+        "source": "Good rule of thumb is everything you buy on Amazon, you're probably going to have to spend half or less on it to be profitable. So, for example, these $24 bottles, we'd probably have to spend 12, 11 bucks or so."
+    },
+    {
+        "id": "keepa-sales-action",
+        "category": "General",
+        "trigger": "Keepa chart shows changing new offer count and price fluctuations",
+        "advice": "Prioritize listing as it indicates high sales activity and turnover",
+        "confidence": "High",
+        "source": "the more this line is changing around, the more people are coming into this listing, the more people are selling out... we want to see a lot of action. That typically means pretty much guarantees that item is selling."
+    },
+    {
+        "id": "flat-price-check",
+        "category": "Risk",
+        "trigger": "Keepa shows super flat price lines with stable new offer count",
+        "advice": "Check offers tab for stock changes; if stable (e.g., 33 stock unchanged for months), low sales potential",
+        "confidence": "High",
+        "source": "If we see stuff like this where the price is super stable, then we have to look into some other details... they haven't changed their price at all. They've been $39 and their stock has been right at 33 pretty much the entire time."
+    },
+    {
+        "id": "offers-tab-sales",
+        "category": "General",
+        "trigger": "Offers tab shows decreasing stock or frequent sell-outs (e.g., from 7 to near 0 in days)",
+        "advice": "Source this variation as it confirms ongoing sales",
+        "confidence": "High",
+        "source": "this person had seven in stock on November 19th, and then a few days later, they were almost sold out. And that's happening to a lot of sellers on this listing. So, this listing is definitely selling."
+    },
+    {
+        "id": "test-small-quantity",
+        "category": "Risk",
+        "trigger": "Uncertain sales velocity or increasing seller trend",
+        "advice": "Buy only 5 units to test before scaling",
+        "confidence": "High",
+        "source": "Personally, I wouldn't buy more than five of these just to see if it's actually going to sell... I'd probably only pick up maybe five of each of those just to see how it goes."
+    },
+    {
+        "id": "review-sales-estimate",
+        "category": "General",
+        "trigger": "Recent review left on listing",
+        "advice": "Estimate at least 100+ sales based on 1 in 100 review rate",
+        "confidence": "High",
+        "source": "Typical review rate on Amazon is about one in a 100. For storefront reviews, it's even less than that. So, this could equate to 100 plus sales."
+    },
+    {
+        "id": "variation-profit-check",
+        "category": "Pricing",
+        "trigger": "Base variation not profitable (e.g., $30 sell price)",
+        "advice": "Check other sizes/colors for higher prices (e.g., $40+) where profit exists",
+        "confidence": "High",
+        "source": "this particular size and color isn't profitable. It's only 30 bucks. Are there any other sizes and colors that are profitable for me? On here, I see actually a good amount of these are 40 bucks"
+    },
+    {
+        "id": "buy-box-shifting",
+        "category": "General",
+        "trigger": "Buy box shifts between sellers frequently",
+        "advice": "Indicates active competition and sales; good sign for velocity",
+        "confidence": "High",
+        "source": "I'm seeing the buy box is shifting between different sellers a lot. So that means different people are winning this add to cart button here."
+    },
+    {
+        "id": "ungate-persist",
+        "category": "General",
+        "trigger": "Initial ungating submission denied",
+        "advice": "Resubmit 3-10 times with combined PDF including order confirmation, shipping proof, product photos, and payment receipts; open new case if generic denial received",
+        "confidence": "High",
+        "source": "it's pretty typical for me to have to submit anywhere from 3 to 10 times to get ungated. ... if you start to get any of the denials ... just go ahead and keep submitting more information from that order."
+    },
+    {
+        "id": "retail-receipts",
+        "category": "Buying",
+        "trigger": "Denial claiming 'We don't accept retail receipts'",
+        "advice": "Use retail receipts from trusted stores like Costco or Walmart for private label brands; they are valid for ungating as evidenced by existing sellers",
+        "confidence": "High",
+        "source": "I've obviously used a lot of retail receipts. I've gotten ungated personally in a couple hundred brands using retail receipts. ... if retail receipts didn't work, if you go to brands like Kirkland that are only sold by Costco ... those listings would have zero sellers."
+    },
+    {
+        "id": "multi-invoice-combine",
+        "category": "Buying",
+        "trigger": "Unable to buy 10 units in one order due to quantity limits",
+        "advice": "Combine multiple invoices totaling at least 10 units into one PDF for submission; higher success with single invoice but multiple works",
+        "confidence": "High",
+        "source": "you can combine multiple invoices to meet that 10-unit minimum requirement. ... Theoretically, you could get 10 invoices, one unit each, combine them all into a PDF."
+    },
+    {
+        "id": "same-invoice-multi",
+        "category": "General",
+        "trigger": "Invoice covers multiple gated categories or brands",
+        "advice": "Use the same invoice to apply for ungating in multiple related categories or brands, e.g., grocery and Starbucks, or Star Wars and Lego",
+        "confidence": "High",
+        "source": "you can use the same invoice to get ungated in multiple things. ... If you get 10 units of Starbucks coffee, you could use that invoice to get ungated in grocery and the individual brand."
+    },
+    {
+        "id": "no-sales-history",
+        "category": "General",
+        "trigger": "New Amazon seller account with $0 sales",
+        "advice": "Apply for ungating regardless of sales history; applications go to the same department; build trust through auto-ungated sales to unlock more",
+        "confidence": "High",
+        "source": "can I get ungated without any sales history or a brand new account? And the answer is yes. ... those applications are going to the same department."
+    },
+    {
+        "id": "auto-ungated-start",
+        "category": "Buying",
+        "trigger": "New to Amazon selling, seeking low-barrier products",
+        "advice": "Start with auto-ungated products like Stafford t-shirts that require no approval; they have many sellers but serve as entry point",
+        "confidence": "High",
+        "source": "auto ungated products. ... this is an example of a product that is ungated for pretty much every Amazon seller account. ... these products can be a great kind of starting point for your business."
+    },
+    {
+        "id": "min-velocity-30",
+        "category": "Pricing",
+        "trigger": "Evaluating potential product profitability",
+        "advice": "Target products selling at least 30 times per month to ensure quick turnover and justify inventory management",
+        "confidence": "High",
+        "source": "Usually, I'm looking for stuff that sells at least 30 times a month. ... make sure that the items I'm looking at sell fast enough to be interesting."
+    },
+    {
+        "id": "roi-30-50",
+        "category": "Pricing",
+        "trigger": "Assessing overall profitability of a product",
+        "advice": "Aim for 30-50% return on investment (ROI) as typical for Amazon arbitrage; higher profits like $25 possible but not standard",
+        "confidence": "High",
+        "source": "Typical Amazon products are going to be about 30 to 50% return on investment. ... buying it for 10, selling it for $50, that's actually a $25 profit, which honestly that's a lot higher profit than I typically see."
+    },
+    {
+        "id": "start-small-buy",
+        "category": "Risk",
+        "trigger": "Uncertain about new product performance",
+        "advice": "Buy 5-10 units initially to test sales before restocking larger quantities",
+        "confidence": "High",
+        "source": "you can always buy five or 10 units, wait for those to sell, and restock as you go."
+    },
+    {
+        "id": "reverse-sourcing",
+        "category": "General",
+        "trigger": "Found one profitable product from a seller",
+        "advice": "Examine the successful seller's other listings for additional opportunities, focusing on brands from trusted retailers like Costco",
+        "confidence": "High",
+        "source": "look at what these people are already having success selling ... there's a very good chance that they're going to have other items that we can source and sell ... we found a simple hack for finding more items ... these people have to be buying directly from Costco."
+    },
+    {
+        "id": "giftcard-discount",
+        "category": "Pricing",
+        "trigger": "Item needs additional discount for profitability (e.g., 15% off required)",
+        "advice": "Use discounted gift cards from sites like Card Bear (8-12% off) to reduce effective purchase cost and improve ROI",
+        "confidence": "High",
+        "source": "we might be able to get a 12% discount buying from Card Bear or GCX. ... seems like right now it's 8.6%. It seems a few days ago was at 12%."
+    },
+    {
+        "id": "coupon-signup",
+        "category": "Pricing",
+        "trigger": "Item marginally unprofitable",
+        "advice": "Check for signup discounts or coupons (e.g., 15% off) on retailer websites to boost profitability",
+        "confidence": "High",
+        "source": "check and see if there is a signup code. ... some websites you'll see if you plug in your email, they give you like a 15% off code and so on."
+    },
+    {
+        "id": "hardgated-avoid",
+        "category": "Risk",
+        "trigger": "Brand shows 'copy listing' without 'apply to sell' button",
+        "advice": "Avoid hardgated brands like Nike where no new sellers can apply; seek partnerships if profitable",
+        "confidence": "High",
+        "source": "if you see copy listing and not a button that says apply to sell, that means that this brand is not accepting new applications. ... you can't sell it on your account."
+    },
+    {
+        "id": "general5",
+        "category": "General",
+        "trigger": "Need shipping labels",
+        "advice": "Get free half-sheet labels via USPS/UPS account backend; or buy cheap from Amazon (200 for $9, cheaper in bulk); optional label printer for speed",
+        "confidence": "High",
+        "source": "through that same USPS account, you can get some free shipping supplies. So, the most useful of that is getting free shipping labels. So, those half sheet labels I was showing you guys, you can actually get those for free through UPS here. ... You can also buy those shipping labels from Amazon if you want, but to use those shipping labels, you're going to probably want a label printer like this. ... for a while, I was using these half sheet labels like these. I was printing these on a standard printer, and they're really, really cheap. You can see we can get 200 of them for $9."
+    },
+    {
+        "id": "general6",
+        "category": "General",
+        "trigger": "Shipping non-boxable items like books or hoodies",
+        "advice": "Use poly mailers instead of boxes to save ~$1 per unit; measure final packaged dimensions for Seller Central",
+        "confidence": "High",
+        "source": "You're also going to want to grab some poly mailers on top of the boxes. So you can just go ahead and throw the hoodie or whatever it is in this poly bag. You're going to measure out however the dimensions end up there. Punch it into seller central like we're doing and it's going to be way cheaper of an option rather than using boxes. Can save you a dollar or so a unit."
+    },
+    {
+        "id": "seasonality2",
+        "category": "Seasonality",
+        "trigger": "Supply constrained or COGS risen (e.g., bought at $10 sale, now $15 retail, decreasing sellers)",
+        "advice": "Hold pricing; don't cut before favorable conditions like constrained supply (e.g., PS5 launch)",
+        "confidence": "High",
+        "source": "Another reason not to cut prices is if the supply is constrained or the price of your original cost of goods has risen. So, this would be pretty common when it comes to arbitrage. You're going to find a lot of things where you find it on a limited time sale and there was multiple coupons and you're able to get it to 10 bucks and now if a customer wants to buy it regularly it's 15 bucks and you're noticing that the seller count on that listing is decreasing because everyone who bought it at 10 bucks is not able to restock it at 15 bucks anymore. ... Another kind of common version of this would be if the supply was constrained. So if you bought I'll just use an example of PS5s on launch day, right? PS5s were obviously super supply constrained."
+    },
+    {
+        "id": "general7",
+        "category": "General",
+        "trigger": "Setting business goals (e.g., $50k/month revenue)",
+        "advice": "Assume 50% COGS ($25k/month inventory spend, ~$833/day); target 35-40% ROI for $10k gross profit (adjust spend to ~$28-29k/month); reinvest profits to compound growth",
+        "confidence": "High",
+        "source": "let's say so far this year you've sold 10,000 bucks or that's your goal to sell 10,000 bucks. To sell $10,000 on Amazon, that's almost always going to equate to roughly 50% of that revenue being your cost of goods, right? So, you typically spent about $5,000 to sell $10,000 in inventory. ... let's say you have an awesome goal of doing 50,000 bucks a month on Amazon. ... that's going to mean you need to spend $25,000 a month on inventory ... The average ROI for a lot of online arbitrage businesses is going to be somewhere around 35 to 40%. Let's just call it 35% ... to make $10,000 a month, we need to spend about 28 or $29,000 a month."
+    },
+    {
+        "id": "book-lowcapital-1",
+        "category": "Buying",
+        "trigger": "Low capital (e.g., under $1,000)",
+        "advice": "Start with books as the best entry point; buy books for $1 and sell for $3 to achieve high ROI and stack cash for scaling to other models like retail or online arbitrage.",
+        "confidence": "High",
+        "source": "books you go so wide and deep on nothing and it kind and there's such a high ROI if you're willing to grind it and you're low on capital. If you don't have a lot of capital, books is the best way just because you buy a book for a dollar, you sell it for three, you're profiting $3. It's super scalable and like stack cash to then pivot into something really scalable would be like retail arbitrage or online arbitrage"
+    },
+    {
+        "id": "book-sourcing-1",
+        "category": "Buying",
+        "trigger": "Starting phase (0-6 months)",
+        "advice": "Source books from library sales, back rooms of thrift stores, and book markets; make connections to access inventory.",
+        "confidence": "High",
+        "source": "I had books for like probably four to six months. I was ripping like library sales. Oh, we're hitting library sales or hitting like back stores of thrift stores. Like I'd get in the back rooms and everything. Perfect. Yeah. Making those connections, all that."
+    },
+    {
+        "id": "book-scaling-1",
+        "category": "General",
+        "trigger": "After 4-6 months of book selling",
+        "advice": "Use profits from books (high ROI, low investment) to pivot to more scalable models like retail arbitrage or online arbitrage once cash is stacked.",
+        "confidence": "High",
+        "source": "I had books for like probably four to six months... stack cash to then pivot into something really scalable would be like retail arbitrage or online arbitrage, wholesale going through that."
     }
 ]
