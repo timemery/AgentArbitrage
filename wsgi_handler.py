@@ -46,7 +46,7 @@ app.secret_key = 'supersecretkey'
 DATABASE_URL = os.getenv("DATABASE_URL", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db'))
 
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
-AGENT_BRAIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agent_brain.json')
+INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'intelligence.json')
 SETTINGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json')
 
 # --- xAI API Configuration ---
@@ -280,8 +280,8 @@ def strategies():
     return render_template('strategies.html', strategies=strategies_list)
 
 
-@app.route('/agent_brain')
-def agent_brain():
+@app.route('/intelligence')
+def intelligence():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
 
@@ -290,20 +290,20 @@ def agent_brain():
         return redirect(url_for('dashboard'))
     
     ideas_list = []
-    app.logger.info(f"Attempting to read agent brain from: {AGENT_BRAIN_FILE}")
-    if os.path.exists(AGENT_BRAIN_FILE):
-        app.logger.info(f"Agent Brain file found.")
+    app.logger.info(f"Attempting to read Intelligence from: {INTELLIGENCE_FILE}")
+    if os.path.exists(INTELLIGENCE_FILE):
+        app.logger.info(f"Intelligence file found.")
         try:
-            with open(AGENT_BRAIN_FILE, 'r', encoding='utf-8') as f:
+            with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
                 ideas_list = json.load(f)
-            app.logger.info(f"Successfully loaded {len(ideas_list)} ideas from Agent Brain.")
+            app.logger.info(f"Successfully loaded {len(ideas_list)} ideas from Intelligence.")
         except (IOError, json.JSONDecodeError) as e:
-            app.logger.error(f"Error reading Agent Brain file: {e}", exc_info=True)
-            flash("Error reading the Agent Brain file.", "error")
+            app.logger.error(f"Error reading Intelligence file: {e}", exc_info=True)
+            flash("Error reading the Intelligence file.", "error")
     else:
-        app.logger.warning(f"Agent Brain file not found at: {AGENT_BRAIN_FILE}")
+        app.logger.warning(f"Intelligence file not found at: {INTELLIGENCE_FILE}")
 
-    return render_template('agent_brain.html', ideas=ideas_list)
+    return render_template('intelligence.html', ideas=ideas_list)
 
 @app.route('/dashboard')
 def dashboard():
@@ -528,11 +528,11 @@ def approve():
             app.logger.error(f"Error saving strategies: {e}", exc_info=True)
             flash("An error occurred while saving the strategies.", "error")
 
-    # Save the approved ideas to the agent_brain.json file
+    # Save the approved ideas to the intelligence.json file
     if approved_ideas:
         try:
-            if os.path.exists(AGENT_BRAIN_FILE):
-                with open(AGENT_BRAIN_FILE, 'r', encoding='utf-8') as f:
+            if os.path.exists(INTELLIGENCE_FILE):
+                with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
                     ideas = json.load(f)
             else:
                 ideas = []
@@ -541,10 +541,10 @@ def approve():
             ideas.extend(new_ideas)
             
             unique_ideas = list(dict.fromkeys(ideas))
-            with open(AGENT_BRAIN_FILE, 'w', encoding='utf-8') as f:
+            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
                 json.dump(unique_ideas, f, indent=4)
 
-            flash(f"{len(new_ideas)} new conceptual ideas have been approved and saved to the Agent Brain.", "success")
+            flash(f"{len(new_ideas)} new conceptual ideas have been approved and saved to Intelligence.", "success")
         except Exception as e:
             app.logger.error(f"Error saving conceptual ideas: {e}", exc_info=True)
             flash("An error occurred while saving the conceptual ideas.", "error")

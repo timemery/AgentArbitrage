@@ -17,8 +17,8 @@ def test_login_admin(client):
     # Should redirect to Guided Learning (checked by content)
     # Note: Guided Learning template might not say "Guided Learning" in body if empty, but header has it.
     # The title block says "Agent Arbitrage", main-nav has "Guided Learning".
-    # Let's check for "Agent Brain" link presence which implies Admin nav.
-    assert b'href="/agent_brain"' in response.data
+    # Let's check for "Intelligence" link presence which implies Admin nav.
+    assert b'href="/intelligence"' in response.data
     # Data Sourcing should be gone
     assert b"Data Sourcing" not in response.data
 

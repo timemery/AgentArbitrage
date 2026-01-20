@@ -12,7 +12,7 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
 - **Deals Dashboard**: Real-time arbitrage opportunities with advanced filtering, "Janitor" cleanup, and extended historical analytics (180/365-day trends). (User Access)
 - **Settings**: Configure business costs, fees, and API credentials. (User Access)
 - **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI. (Admin Only)
-- **Agent Brain & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
+- **Intelligence & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
 - **Data Sourcing / Deals Config**: Configurable Keepa scanning engine. (Admin Only)
 
 ---

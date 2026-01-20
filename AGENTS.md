@@ -33,7 +33,7 @@ To ensure the stability and performance of the development environment, the foll
    *   **DO NOT READ** the following large system state files:
        - `xai_cache.json`
        - `strategies.json`
-       - `agent_brain.json`
+       - `intelligence.json`
        - `strategies_structured.json`
    *   **READ** `README.md`, this `AGENTS.md` file, and `Documentation/System_State.md` in full.
    *   **READ** the 3-5 most recent logs in `Dev_Logs/` to understand the latest changes.
@@ -94,7 +94,7 @@ This section contains valuable context and learnings from previous development t
 ### Role-Based Access Control (RBAC)
 -   **User Roles:** The system distinguishes between `admin` and `user` roles.
 -   **Access Enforcement:**
-    -   **Admin Only:** `/deals`, `/guided_learning`, `/strategies`, `/agent_brain`.
+    -   **Admin Only:** `/deals`, `/guided_learning`, `/strategies`, `/intelligence`.
     -   **User Accessible:** `/dashboard`, `/settings`.
     -   **Mechanism:** `wsgi_handler.py` checks `session['role']` on restricted routes and redirects unauthorized users to the dashboard.
 -   **Navigation:** Frontend templates conditionally render navigation links based on the user's role.

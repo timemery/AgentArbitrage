@@ -9,7 +9,7 @@
 - **Logging:** `celery.log` is massive; use `tail`/`grep` only.
 
 ## 2. Role-Based Access Control (RBAC)
-- **Admin Only:** `/deals` (Config), `/guided_learning`, `/strategies`, `/agent_brain`.
+- **Admin Only:** `/deals` (Config), `/guided_learning`, `/strategies`, `/intelligence`.
 - **User Accessible:** `/dashboard`, `/settings`.
 - **Mechanism:** `session['role']` checked in `wsgi_handler.py`.
 
