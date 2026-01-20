@@ -16284,5 +16284,85 @@
         "advice": "Expect $35,000 profit in first year with consistent daily sourcing, but transition to other models after initial phase to avoid over-reliance",
         "confidence": "High",
         "source": "I ended up making about $35,000 in profit after my first year with a lot of work. And I should not have done it that long"
+    },
+    {
+        "id": "ungate-check-1",
+        "category": "General",
+        "trigger": "New Amazon seller account",
+        "advice": "Check brands in Seller Central under Add Products tab; if it says 'sell this product' for new condition without application, it's auto-ungated (e.g., Stafford clothing brand).",
+        "confidence": "High",
+        "source": "I'm just on the ad products tab. Super simple here. And I'm going to punch in a brand I know that I was auto ungated for. And pretty much all new Amazon sellers are auto ungated for being Stafer. It's like a clothing brand. And if you go in here and select new condition, it's just going to say sell this product."
+    },
+    {
+        "id": "profit-calc-1",
+        "category": "Pricing",
+        "trigger": "Product sells for $21 on Amazon",
+        "advice": "Target buying cost of $14-15 to ensure profit after fees; use Seller AMP to verify max cost including 5% sales tax and inbound shipping (~$0.60/pound).",
+        "confidence": "High",
+        "source": "And when we Google these products, we want to make sure that we can buy these for the max cost option. So basically, if I can buy these for like 14 to 15 bucks, I'm going to be able to sell these for a profit. ... I'm including 5% sales tax. I'm including an inbound shipping fee, which is about 60 cents a pound when you ship to Amazon."
+    },
+    {
+        "id": "discount-trick-1",
+        "category": "Buying",
+        "trigger": "Bulk purchase available (e.g., 10 units)",
+        "advice": "Look for bulk discounts like $50 off for 10 units ($5/unit savings) from retailers like Costco; buy one order per day if limited to one per member.",
+        "confidence": "High",
+        "source": "So if we buy 10, we get $50 all seems like one per member per day. Okay, so we could buy one order of these every day. So how much does that save us? If we get 10 units and we save $50, that saves us $5 per unit."
+    },
+    {
+        "id": "sales-velocity-1",
+        "category": "Risk",
+        "trigger": "No sales rank or <30 sales/month",
+        "advice": "Avoid listings with no recent sales (e.g., 0 sales in last month) or low velocity (e.g., 4 sales/month); target at least 30 sales/month or sales rank <400 for fast turnover.",
+        "confidence": "High",
+        "source": "Keepa is not showing anyone has made sales on the last month, which could make sense with why there's no sales rank. So, I would probably want to avoid that here. ... Usually I'm looking for 30 times a month at least. ... It's like a 400 sales rank. That's usually going to be a crazy fast seller. So like this particular style sells over 50 times a month."
+    },
+    {
+        "id": "limited-sale-buy-1",
+        "category": "Buying",
+        "trigger": "Limited-time sale price (e.g., $9.90)",
+        "advice": "Buy during limited sales under max cost (e.g., <$10.50) and stock 5-10 units per variation/size; restock when sale returns for ongoing profitability.",
+        "confidence": "High",
+        "source": "these could be profitable actually buying these for $9.90 and they're on like a limited sale. ... You want to be buying things that have a limited window where you can buy them profitably and then you can restock them whenever that sale comes back basically. ... I'd probably pick up like 5 to 10 units of all those."
+    },
+    {
+        "id": "returns-risk-1",
+        "category": "Risk",
+        "trigger": "Women's clothing or similar high-return categories",
+        "advice": "Require higher profit margins (e.g., >$10/unit) to offset returns; avoid low-profit items in these categories.",
+        "confidence": "High",
+        "source": "Especially with stuff like women's clothes, you're going to get a lot of returns. I would probably avoid I'm usually looking for things with really high profit if I do sell like women's clothes and that kind of thing."
+    },
+    {
+        "id": "competition-risk-1",
+        "category": "Risk",
+        "trigger": "Amazon wins >70% of sales on listing",
+        "advice": "Avoid listings where Amazon dominates (e.g., 76% sales via Keepa/Seller AMP); test small (5-10 units FBA) if non-Prime sellers are present but prefer low-Amazon competition.",
+        "confidence": "High",
+        "source": "Amazon has won about 76% of the sales over the last few days here. ... you can see that there's been no other prime sellers. So the only other sellers on this listing are shipping like directly from their house via FBM... But Amazon will tend to give you more sales if you're an FBA seller, especially when you're competing with Amazon."
+    },
+    {
+        "id": "tools-general-1",
+        "category": "General",
+        "trigger": "Sourcing and shipping products",
+        "advice": "Use Seller AMP for storefront analysis and profitability scans, Keepa for sales rank/history/variations (filter Amazon 'no value', highest prices), and Boxom for shipments (3 steps, 2D barcodes for faster processing, track costs).",
+        "confidence": "High",
+        "source": "for sourcing products, all you need is seller amp and Keepa. ... Boxom, Keepa, and Seller Amp will run your entire Amazon business. ... using a software like this is really valuable... It makes the process of actually shipping off to Amazon much simpler. So, it's only three total steps when you use Boxom... switch box contents to 2D barcodes and that's going to automatically add a barcode... I've been seeing sales happen on my account a couple days faster on average."
+    },
+    {
+        "id": "thrift-books-1",
+        "category": "Buying",
+        "trigger": "Book category in seller storefronts",
+        "advice": "Source books from thrift stores and scan for profitability, as many new sellers start this way for low-barrier entry into auto-ungated inventory.",
+        "confidence": "Medium",
+        "source": "this seller is mostly just doing books. So, I would bet that this person is like going to thrift stores and scanning the books. That's actually exactly how I started when I was a new Amazon seller."
+    },
+    {
+        "id": "test-order-1",
+        "category": "Risk",
+        "trigger": "Potential profitable find with uncertainty",
+        "advice": "Place test orders of 5-10 units per variation to validate sales velocity and profitability before scaling.",
+        "confidence": "High",
+        "source": "Place a test order. See how it goes. ... I might actually test this out personally buying this for 1131. I would just do 5 or 10 units FBA."
     }
 ]
