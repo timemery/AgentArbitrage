@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '</tr>';
 
         // Main header row
-        table += '<tr>';
+        table += '<tr class="column-header-row">';
         columnsToShow.forEach(header => {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
             table += `<th data-sort="${header}">${headerText}</th>`;
