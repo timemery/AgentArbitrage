@@ -367,7 +367,7 @@ button:disabled {
     padding: 0;
     box-sizing: border-box;
     z-index: 300;
-    background-color: #000000;
+    background-color: #13161a;
 }
 
 .header-brand {
@@ -378,6 +378,7 @@ button:disabled {
     display: flex;
     align-items: center;
     z-index: 10;
+    margin-top: 2px; /* Fine-tune alignment to match Nav text baseline */
 }
 
 .main-header nav.main-nav {
@@ -399,7 +400,7 @@ button:disabled {
 
 .header-logout a {
     font-family: 'Open Sans', sans-serif;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 400;
     color: #ffffff;
     text-decoration: none;
@@ -407,7 +408,7 @@ button:disabled {
 
 
 .header-logo img {
-    width: 266px;
+    width: 192px;
     height: auto;
     margin-right: 0;
 }
@@ -628,7 +629,7 @@ button:disabled {
 
 /* Group Header Styles */
 #deals-table .group-header th {
-    background-color: #15192b !important;
+    background-color: #13161a !important;
     color: #ffffff;
     font-family: 'Open Sans', sans-serif;
     font-weight: 700; /* Bold */
@@ -651,7 +652,7 @@ button:disabled {
 }
 
 #deals-table tr.group-header {
-    background-color: #15192b !important;
+    background-color: #13161a !important;
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
@@ -687,7 +688,7 @@ button:disabled {
 }
 
 #deals-table .sort-arrows-row td {
-    background-color: #15192b; /* Opaque matching site background */
+    background-color: #13161a; /* Opaque matching site background */
     height: 24px !important;
     min-height: 24px !important;
     max-height: 24px !important;
@@ -1801,12 +1802,13 @@ body.home-background::before {
 /* Sticky Header Shadow Line */
 #sticky-header-shadow-line {
     position: fixed;
-    left: 0;
-    width: 100vw;
-    height: 1px;
-    background: #1f2a3c;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1333px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
     top: calc(var(--filter-panel-height) + 248px); /* Filter + Main(134) + Group(56) + Col(34) + Arrows(24) */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    box-shadow: none;
     z-index: 180;
     pointer-events: none;
     transition: top 0.3s ease;
