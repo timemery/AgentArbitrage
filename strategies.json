@@ -16004,5 +16004,285 @@
         "advice": "After finding a profitable item in a category (e.g., video game toys), scan for related products in the same franchise to compound deals",
         "confidence": "High",
         "source": "sourcing products on Amazon is all about finding adjacent opportunity. So, I knew we probably were on to something with this particular video game franchise, finding some deals."
+    },
+    {
+        "id": "book-buy-1",
+        "category": "Buying",
+        "trigger": "New Amazon seller starting out",
+        "advice": "Source books from thrift stores by scanning barcodes with the Seller Amp app to identify profitable items.",
+        "confidence": "High",
+        "source": "on this book that I sold a really long time ago, going out to thrift stores, that was basically how I got started on Amazon."
+    },
+    {
+        "id": "book-buy-2",
+        "category": "Buying",
+        "trigger": "Identifying sellers focused on books via storefronts",
+        "advice": "Examine storefronts of other sellers who primarily sell books to discover sourcing opportunities, as they likely source from thrift stores.",
+        "confidence": "High",
+        "source": "this person is mostly just doing books. So I would bet that this person is like going to thrift stores and scanning the books. That's actually exactly how I started when I was a new Amazon seller."
+    },
+    {
+        "id": "book-price-1",
+        "category": "Pricing",
+        "trigger": "Listing books on Amazon with multiple offers",
+        "advice": "Use a repricer like BQool to set a minimum price of $16 and maximum of $55, configuring it to match the buy box price within that range to maximize profit while ensuring sales.",
+        "confidence": "High",
+        "source": "on this book that I sold a really long time ago, going out to thrift stores, that was basically how I got started on Amazon. I decided that this item needed to stay at least $16, but go no higher than $55. And within that range, it's going to follow the rule that I automatically set up configured. And basically, what that rule is going to do is make sure that my price is always matching the buy box"
+    },
+    {
+        "id": "ai-image-buy1",
+        "category": "Buying",
+        "trigger": "Scanning product in store or online without clear barcode",
+        "advice": "Use Seller Amp or SAS AI image search to identify Amazon listings and assess sales potential",
+        "confidence": "High",
+        "source": "using Seller's AI image search makes it really simple. This is especially helpful if you like to do retail arbitrage. You don't have to worry about items where the barcode might be covered up or there isn't a barcode that's super obvious."
+    },
+    {
+        "id": "google-lens-buy2",
+        "category": "Buying",
+        "trigger": "Difficulty finding Amazon listing or sourcing options",
+        "advice": "Use Google Lens on product image to find Amazon listings and alternative sourcing sites like eBay or retailer websites",
+        "confidence": "High",
+        "source": "another really good AI image hack I like to use is actually through Google Lens. ... it's going to show me all of those different sources when I just click Google Lens right here."
+    },
+    {
+        "id": "keepa-chatgpt-risk1",
+        "category": "Risk",
+        "trigger": "Uncertain about product stability before purchase",
+        "advice": "Upload Keepa chart screenshot to ChatGPT and prompt for analysis on price stability, sales rank trends, and new seller count",
+        "confidence": "High",
+        "source": "you can actually use JAGBT's ability to analyze images and especially just be able to analyze things like Keepa charts. ... it was able to say, 'Hey, this is pretty consistent. It doesn't drop very often. Price is very stable.'"
+    },
+    {
+        "id": "new-sellers-risk2",
+        "category": "Risk",
+        "trigger": "Decreasing new offer count on Keepa",
+        "advice": "View decreasing new sellers as positive for price stability when analyzing with AI",
+        "confidence": "High",
+        "source": "it notices, hey, there's actually less sellers, so it's positive for price stability."
+    },
+    {
+        "id": "seasonal-backpack",
+        "category": "Seasonality",
+        "trigger": "End of July, back to school season starting",
+        "advice": "Source backpacks as safe for 1-2 months due to seasonal demand, but expect slower sales long-term",
+        "confidence": "High",
+        "source": "It's very safe for the next 1 to two months to sell a backpack. ... buying backpacks is extremely safe. We're just at the beginning of back to school shopping season."
+    },
+    {
+        "id": "fba-fbm-gen1",
+        "category": "General",
+        "trigger": "Consistent non-seasonal product",
+        "advice": "Use FBA for consistent products where most sales go to FBA sellers",
+        "confidence": "High",
+        "source": "on the drink mix, I totally agree. It says we need to FBA. And it's even smart enough to know that most of the sales are going to FBA sellers."
+    },
+    {
+        "id": "fba-fbm-season2",
+        "category": "General",
+        "trigger": "Seasonal product with no storage risk after peak",
+        "advice": "Use FBM for seasonal items if you can ship fast and avoid storage fees post-September",
+        "confidence": "High",
+        "source": "FBA is better in the short term, but FBM might make sense if you can ship fast. You're able to get some stuff with no storage risk after September."
+    },
+    {
+        "id": "ai-brands-buy3",
+        "category": "Buying",
+        "trigger": "New seller needing sourcing ideas",
+        "advice": "Ask ChatGPT for lists of brands sold at retailers like JCPenney or Walmart that have Amazon listings to identify arbitrage opportunities",
+        "confidence": "High",
+        "source": "what I did is I went ahead and asked Chad. I said, 'Hey, looking for some brands that sell on Amazon. I want to buy them at other websites, kind of the basics of online arbitrage.'"
+    },
+    {
+        "id": "low-sales-pricing1",
+        "category": "Pricing",
+        "trigger": "Product sells less than 10 times per month",
+        "advice": "Skip low-velocity items selling under 10 units/month even if potentially profitable",
+        "confidence": "High",
+        "source": "it's only selling 10 times a month. ... I want to sell things more than that per month."
+    },
+    {
+        "id": "sales-velocity-gen2",
+        "category": "General",
+        "trigger": "Product sells more than 6 times per month",
+        "advice": "Prioritize items selling over 6 times/month for better turnover",
+        "confidence": "High",
+        "source": "Like I said, I want to sell things more than six times a month."
+    },
+    {
+        "id": "gift-card-discount-buy4",
+        "category": "Buying",
+        "trigger": "Sourcing from Gap or similar sites needing discount",
+        "advice": "Buy 20% discounted gift cards from cardbear.com to reduce purchase cost below max allowable for profitability",
+        "confidence": "High",
+        "source": "the way we can make this profitable ... is by going to cardbear.com ... we are able to get a 20% discount buying discounted gift cards for the Gap website. ... getting an almost 20% discount gets us under that max cost."
+    },
+    {
+        "id": "email-discount-buy5",
+        "category": "Buying",
+        "trigger": "Full-price item on retailer site like Vitacost",
+        "advice": "Sign up with email (use + aliases for multiples) at site footer for 20% off to achieve profitability",
+        "confidence": "High",
+        "source": "a lot of websites ... you'll be able to punch in your email. And in this case, we can get 20% off. ... you can do this as many times as you want. ... Add a plus and then whatever you want."
+    },
+    {
+        "id": "roi-target-pricing2",
+        "category": "Pricing",
+        "trigger": "Calculating profitability including shipping, tax, boxing",
+        "advice": "Target 50% ROI with $3.61 profit on items selling 200 times/month after all costs",
+        "confidence": "High",
+        "source": "we got a great profit 361 about 50% ROI sells 200 times a month this is a really solid item"
+    },
+    {
+        "id": "cashback-gen3",
+        "category": "General",
+        "trigger": "Profitable item from site like Vitacost",
+        "advice": "Use cashback sites like Mr. Rebates (found via cashback monitor) for additional 5% back",
+        "confidence": "High",
+        "source": "we might as well use in this case Mr. Rebates, which I found through cashback monitor ... I'm going to get 5% in cash back."
+    },
+    {
+        "id": "mistake1-buybox",
+        "category": "Buying",
+        "trigger": "One seller winning 100% of sales on buy box analysis pie chart",
+        "advice": "Avoid listings where a single seller, brand, or distributor hogs all sales; look for products where sales rotate among multiple third-party sellers of various sizes, including small ones with low feedback",
+        "confidence": "High",
+        "source": "on the listing that I was competing on, there was actually four to five different sellers. But I just didn't know that I needed to pay attention to this buy box analysis pie chart. And if I had, I would have noticed that one particular seller was winning 100% of the sales on the listing. So I just was never able to get any traction on that product. Instead, what you're looking for in a good winning product is something where you can see sales rotating to all kinds of different sellers."
+    },
+    {
+        "id": "mistake2-amazon",
+        "category": "Risk",
+        "trigger": "Amazon winning 100% of sales based on pie chart and orange line always in stock",
+        "advice": "Skip listings where Amazon dominates all sales; ensure third-party sellers are winning sales",
+        "confidence": "High",
+        "source": "for the majority of products that Amazon sells, they're not going to share sales with you as a third party seller. ... Amazon is actually winning all the sales. That orange line showing that Amazon is always in stock and they've won basically 100% of the sales based on this pie chart right here."
+    },
+    {
+        "id": "volume30",
+        "category": "General",
+        "trigger": "Products selling fewer than 30 times per month",
+        "advice": "Only source products that sell at least 30 units per month to ensure quick turnover and minimize exposure to price drops or listing issues",
+        "confidence": "High",
+        "source": "I'm always looking for things that sell at least 30 times a month and I'm just looking at the data on seller to tell me that. ... the slower an item sells, the more time there is in between each sale that happens on that listing, which creates more and more time for the product's price to go down, bad things to happen on the listing."
+    },
+    {
+        "id": "priceconsistency",
+        "category": "Pricing",
+        "trigger": "Current sell price significantly higher than 30-day or 90-day average without improving sales rank or demand",
+        "advice": "Verify profit consistency by checking price charts; avoid products with unexplained price spikes; only buy if price increase aligns with seasonality or rising demand (e.g., sales rank improving)",
+        "confidence": "High",
+        "source": "the major problem on this item comes when we try to compare this to the average price that it likes to sell for, which in this case I can see over the last 30 days, the average price was only 30 bucks. So we'd be losing money. ... you just want to avoid products where it seems like as of this morning the price went up to $50 and there's just no grounds in reality why that price would be significantly higher. ... if you're seeing that reason why the price is going up back to school, you're seeing demand increase, you're seeing the sales rank go lower and lower, that's like a real reason why the price should stay a little bit higher than normal."
+    },
+    {
+        "id": "seasonality-bts",
+        "category": "Seasonality",
+        "trigger": "Middle of summer with back-to-school demand increase and improving sales rank",
+        "advice": "Buy products with rising prices during seasonal peaks like back-to-school if sales rank is decreasing (better demand) and volume supports it",
+        "confidence": "High",
+        "source": "while I'm recording this video, it's the middle of summer, so prices are going to start going up on back to school products, right? That would make total sense and maybe there is a reason for you to hop on a listing that is a little bit more expensive than it probably should be. ... you're seeing demand increase, you're seeing the sales rank go lower and lower"
+    },
+    {
+        "id": "sellercount",
+        "category": "Risk",
+        "trigger": "Seller count suddenly triples (e.g., from 7 to 31 or 43) while price remains unchanged",
+        "advice": "Assess if current price is reasonable given increased seller count; avoid if supply surge without price adjustment, as drops are likely; no hard cutoff but 43+ is too many if unprecedented for the listing",
+        "confidence": "High",
+        "source": "This item had 31 sellers right here. ... back here it was like 1775. It was 1750 and there were seven sellers, right? So, our supply ... was six sellers and our price point ... was about $1,750. But then, why is that same equilibrium price being spit out on this listing when there's literally were three times as many sellers, right? ... 43 is clearly too many sellers for this listing because number one, it has never had that many sellers and number two, that price is already starting to decrease"
+    },
+    {
+        "id": "costs-inclusion",
+        "category": "Pricing",
+        "trigger": "Heavy products (e.g., 10 lb) without including shipping, tax, or prep fees in calculator",
+        "advice": "Include all costs in profit calculator: shipping at 60-80 cents per pound, 5% sales tax, miscellaneous fees (e.g., $1-2 for boxes/poly bags), prep center fees; set up in SellerAmp settings before sourcing",
+        "confidence": "High",
+        "source": "make sure you already have all of those extra costs included in your profit calculator. ... shipping ... costs about 60 cents a pound. Sometimes I do see closer to 30 to 40 cents a pound ... But if you want to be really conservative with it, call it 60 to 80 cents per pound. ... include any sales tax you might pay. So, for example ... 5% sales tax. ... include in a miscellaneous fee any like box costs ... Poly bags, all those little smaller fees ... If you're working with a prep center, you can include the per unit prep fee"
+    },
+    {
+        "id": "sourcing-strategy",
+        "category": "Buying",
+        "trigger": "Small third-party sellers (10-200 feedback) succeeding on listings",
+        "advice": "Use SellerAmp offers tab to view storefronts of small successful sellers; identify profitable products they sell (e.g., GAP brand), source similar from retail sites like Gap.com; filter by fast-selling items and brands",
+        "confidence": "High",
+        "source": "what I do to source winning items is go to the offers tab on seller amp and then I'll just pop open one of the storefronts. ... Usually, I'll pick anyone with a couple feedback up to a couple hundred feedback. ... this is a product that has lots of success from other small third party sellers. So that means that these small third party sellers are going to have other products that we can find from big major retail websites"
+    },
+    {
+        "id": "buyhalf",
+        "category": "Pricing",
+        "trigger": "Buy price not approximately half of target sell price",
+        "advice": "Aim to buy products for about half the expected sell price to ensure profitability; target $30+ sell price for ideal ROI on items bought at $14-17",
+        "confidence": "High",
+        "source": "Usually, we're trying to buy things for about half of what we want to sell it for. ... if we sell it for 28, the ROI is a little low. So, what I'm really looking for here is a $30 sale price to get close to my ideal ROI, profit, all that good stuff."
+    },
+    {
+        "id": "variations-profit",
+        "category": "Buying",
+        "trigger": "Specific sizes/colors (e.g., XL khaki, skipper blue large) selling above double buy price with stock available",
+        "advice": "Check variations for profitable sizes/colors (e.g., $33+ sell for $14 buy); prioritize in-stock basics like black, khaki; spread risk across multiple variations and listings",
+        "confidence": "High",
+        "source": "this khaki version, the XL has been at least like $33 very consistently ... Khaki XL is in stock and that was $33 and we can buy it for 14 bucks. ... Spread your risk across multiple listings and see what kind of money you can make. ... usually when I'm looking at clothes, I just start with the most basic colors"
+    },
+    {
+        "id": "bookstrat1",
+        "category": "Buying",
+        "trigger": "Low startup budget ($50-100)",
+        "advice": "Use $50-100 to purchase used books from thrift stores or yard sales for resale on Amazon",
+        "confidence": "High",
+        "source": "To sell books on Amazon, you'll need 50 to 100 bucks to just go buy some books at the thrift store."
+    },
+    {
+        "id": "bookstrat2",
+        "category": "Buying",
+        "trigger": "Access to thrift stores or yard sales",
+        "advice": "Source used books from thrift stores, yard sales, or cheap donated products by driving around daily after other commitments",
+        "confidence": "High",
+        "source": "Think about yard sales, thrift stores, anywhere that there are cheap donated products. There's probably going to be some books for you to buy and resell. I drove around from thrift store to thrift store every day after my college classes"
+    },
+    {
+        "id": "bookstrat3",
+        "category": "Buying",
+        "trigger": "Books available on personal shelf",
+        "advice": "Scan and sell books already owned from your personal shelf to start with zero additional cost",
+        "confidence": "High",
+        "source": "You can just scan stuff off your shelf."
+    },
+    {
+        "id": "bookstrat4",
+        "category": "Pricing",
+        "trigger": "Buy price $1, Amazon sell price $850 (used condition)",
+        "advice": "Scan books to identify profitability; buy if Amazon price significantly exceeds acquisition cost, even for small margins like $1-2 profit",
+        "confidence": "High",
+        "source": "This book, for example, I just kind of picked up off the shelf, scanned it, and it looks like it's going for like $850 in used condition... And I believe we're buying this for a buck... you're only making a buck or two"
+    },
+    {
+        "id": "bookstrat5",
+        "category": "Buying",
+        "trigger": "Niches: medical, politics, religion, niche romance",
+        "advice": "Target books in specific niches like medical, politics, religion, or niche romance for higher potential demand and profitability",
+        "confidence": "High",
+        "source": "This is like a medical book that's like a decent niche, right? Some of these that we've already found profitably are like this one's politics. There's some religion in there. Like some niche romance can be pretty good as well."
+    },
+    {
+        "id": "bookstrat6",
+        "category": "Buying",
+        "trigger": "Sleek material and good branding",
+        "advice": "Prioritize books with sleek materials and strong branding as indicators of past sales success and ongoing Amazon demand",
+        "confidence": "High",
+        "source": "This one kind of stuck out to me cuz it's like kind of a sleek material. The the branding is pretty good. And a lot of times that means that the book sold really well. Might be still some demand on Amazon for it."
+    },
+    {
+        "id": "bookstrat7",
+        "category": "General",
+        "trigger": "High effort and hustle with limited funds",
+        "advice": "If lacking capital but possessing hustle, focus on scanning large volumes of books at sources to find small-profit opportunities",
+        "confidence": "High",
+        "source": "If you don't have a lot of money, but you got hustle, that's the way to do it. I was just going around scanning a ton of books."
+    },
+    {
+        "id": "bookstrat8",
+        "category": "Risk",
+        "trigger": "First year of operation with daily effort",
+        "advice": "Expect $35,000 profit in first year with consistent daily sourcing, but transition to other models after initial phase to avoid over-reliance",
+        "confidence": "High",
+        "source": "I ended up making about $35,000 in profit after my first year with a lot of work. And I should not have done it that long"
     }
 ]
