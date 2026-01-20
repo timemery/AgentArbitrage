@@ -1,10 +1,10 @@
-# Feature Documentation: Guided Learning, Strategies & Agent Brain
+# Feature Documentation: Guided Learning, Strategies & Intelligence
 
 This document details the functionality and logic for the AI-driven "Guided Learning" system, which extracts actionable strategies and conceptual ideas from external content and integrates them into the agent's knowledge base.
 
 ## Access Control
 
-**Access Control:** These features (`/guided_learning`, `/strategies`, `/agent_brain`) are strictly **Admin-Only**.
+**Access Control:** These features (`/guided_learning`, `/strategies`, `/intelligence`) are strictly **Admin-Only**.
 *   **Authentication:** The system checks the user's role in the session (`session['role'] == 'admin'`).
 *   **Enforcement:** Non-admin users attempting to access these routes are redirected to the Dashboard with an "Access Denied" error.
 *   **Navigation:** Links to these pages are hidden from the navigation bar for non-admin users.
@@ -34,7 +34,7 @@ Guided Learning is the entry point for teaching the agent. The user provides a s
         *   The system sends the cleaned text to the xAI API in parallel threads.
         *   **Model:** Uses `grok-4-fast-reasoning` (Temperature 0.2-0.3) for high-speed, logical extraction.
         *   **Task A (Strategies):** Extracts actionable rules (numbers, thresholds, specific "if-then" logic).
-        *   **Task B (Conceptual Ideas):** Extracts high-level mental models and "why" logic (The "Agent Brain").
+        *   **Task B (Conceptual Ideas):** Extracts high-level mental models and "why" logic (The "Intelligence").
 
 3.  **Review (`/results`):**
     *   Displays the raw AI output for both Strategies and Conceptual Ideas.
@@ -44,7 +44,7 @@ Guided Learning is the entry point for teaching the agent. The user provides a s
     *   User clicks "Approve".
     *   The system parses the approved text (splitting by newlines).
     *   **Strategies** are appended to `strategies.json`.
-    *   **Conceptual Ideas** are appended to `agent_brain.json`.
+    *   **Conceptual Ideas** are appended to `intelligence.json`.
     *   Duplicates are removed automatically.
 
 ---
@@ -65,16 +65,16 @@ Displays the repository of actionable rules the agent has "learned". These are s
 
 ---
 
-## 3. Agent Brain Page
+## 3. Intelligence Page
 
-**Route:** `/agent_brain`
-**Template:** `templates/agent_brain.html`
-**Data Source:** `agent_brain.json`
+**Route:** `/intelligence`
+**Template:** `templates/intelligence.html`
+**Data Source:** `intelligence.json`
 
 ### Overview
 Displays the "Mental Models" and high-level concepts the agent uses to understand the market. Unlike strategies, these are qualitative (e.g., "Textbooks have a U-shaped sales rank curve").
 
 ### Logic
-*   Reads the `agent_brain.json` file from the root directory.
+*   Reads the `intelligence.json` file from the root directory.
 *   Renders the list of ideas.
 *   This serves as the "System Prompt" or context for the agent's decision-making processes (e.g., when judging if a price is "reasonable" via AI).

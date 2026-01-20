@@ -25,12 +25,12 @@ The system enforces strict role-based access control (RBAC):
 
 *   **Regular User:**
     *   **Access:** Dashboard (`/dashboard`) and Settings (`/settings`) ONLY.
-    *   **Prohibited:** Deals Configuration (`/deals`), Guided Learning (`/guided_learning`), Strategies (`/strategies`), Agent Brain (`/agent_brain`).
+    *   **Prohibited:** Deals Configuration (`/deals`), Guided Learning (`/guided_learning`), Strategies (`/strategies`), Intelligence (`/intelligence`).
 *   **Admin User:**
     *   **Access:** All areas.
     *   **Exclusive Features:**
         *   **Guided Learning:** Teaching the AI new concepts.
-        *   **Strategies / Agent Brain:** Viewing and managing the AI's knowledge base.
+        *   **Strategies / Intelligence:** Viewing and managing the AI's knowledge base.
         *   **Deals Configuration:** Editing the `keepa_query.json`.
 
 ---
@@ -87,7 +87,7 @@ There are four primary background tasks that manage the data lifecycle.
 *   **Processing:**
     1.  **Scraper:** Fetches content (supports YouTube transcripts via BrightData).
     2.  **LLM Extraction:** Calls xAI (`grok-4-fast-reasoning`) in parallel to extract "Strategies" and "Mental Models".
-*   **Storage:** Results are reviewed by the user and saved to JSON files (`strategies.json`, `agent_brain.json`).
+*   **Storage:** Results are reviewed by the user and saved to JSON files (`strategies.json`, `intelligence.json`).
 
 ### Advice from Ava
 *   **Route:** `/api/ava-advice/<ASIN>`
