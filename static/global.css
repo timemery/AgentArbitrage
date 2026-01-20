@@ -601,15 +601,24 @@ button:disabled {
     border-right: 1px solid #000000;
     border-left: none; /* Default no left border */
     cursor: default;
-    height: 34px;
-    min-height: 34px;
-    max-height: 34px;
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
     vertical-align: middle !important;
+    line-height: 1.2 !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Filter + Main(134) + Group(32) */
-    z-index: 190;
+    top: calc(var(--filter-panel-height) + 190px); /* Filter + Main(134) + Group(56) */
+    z-index: 180;
     transition: top 0.3s ease;
+}
+
+#deals-table tr.column-header-row {
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
 }
 
 /* Add left border to the first header cell */
@@ -631,7 +640,7 @@ button:disabled {
     padding: 0 8px !important;
     box-sizing: border-box !important;
     vertical-align: middle !important;
-    line-height: 1 !important;
+    line-height: 56px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     /* Sticky Positioning */
@@ -672,8 +681,9 @@ button:disabled {
 
 /* Sort Arrows Row Styles */
 #deals-table .sort-arrows-row {
-    height: 24px;
-    max-height: 24px;
+    height: 24px !important;
+    max-height: 24px !important;
+    min-height: 24px !important;
 }
 
 #deals-table .sort-arrows-row td {
@@ -681,15 +691,15 @@ button:disabled {
     height: 24px !important;
     min-height: 24px !important;
     max-height: 24px !important;
-    min-height: 24px !important;
     padding: 0 8px !important;
-    line-height: 24px;
+    line-height: 24px !important;
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 224px); /* Filter + Main(134) + Group(32) + Col(32) */
-    z-index: 190;
+    top: calc(var(--filter-panel-height) + 224px); /* Filter + Main(134) + Group(56) + Col(34) */
+    z-index: 170;
     transition: top 0.3s ease;
+    vertical-align: middle !important;
 }
 
 .sort-arrows-container {
@@ -1068,7 +1078,7 @@ body.home-background::before {
 .main-header nav.main-nav a {
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 700; /* Bold */
     color: #ffffff;
     margin: 0 5px;
     padding: 0 20px;
@@ -1795,7 +1805,7 @@ body.home-background::before {
     width: 100vw;
     height: 1px;
     background: #1f2a3c;
-    top: calc(var(--filter-panel-height) + 248px); /* Filter + Main(134) + Group(32) + Col(32) + Arrows(25) */
+    top: calc(var(--filter-panel-height) + 248px); /* Filter + Main(134) + Group(56) + Col(34) + Arrows(24) */
     box-shadow: 0 4px 6px rgba(0,0,0,0.5);
     z-index: 180;
     pointer-events: none;
