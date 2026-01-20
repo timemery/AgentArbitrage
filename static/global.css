@@ -573,7 +573,7 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 1333px; /* Exact match to filter panel */
-    margin: 24px auto 0 auto; /* Centered with 24px top separation */
+    margin: 0 auto; /* Centered with 24px top separation */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
@@ -604,7 +604,7 @@ button:disabled {
     height: 34px;
     min-height: 34px;
     max-height: 34px;
-    vertical-align: middle;
+    vertical-align: middle !important;
     /* Sticky Positioning */
     position: sticky;
     top: calc(var(--filter-panel-height) + 190px); /* Filter + Main(134) + Group(32) */
@@ -630,7 +630,7 @@ button:disabled {
     max-height: 56px !important;
     padding: 0 8px !important;
     box-sizing: border-box !important;
-    vertical-align: top !important;
+    vertical-align: middle !important;
     line-height: 1 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
@@ -1490,7 +1490,7 @@ body.home-background::before {
     background-color: #1f293c;
     border: 1px solid #000000;
     border-radius: 8px;
-    margin: 0 auto 20px auto; /* Centered horizontally */
+    margin: 0 auto; /* Centered horizontally */
     box-sizing: border-box;
     transition: height 0.3s ease;
     overflow: hidden;
@@ -1499,7 +1499,7 @@ body.home-background::before {
     top: 134px;
     z-index: var(--filter-panel-z);
 
-    margin-top: 15px; /* Approx 135px from top given header height ~120px */
+     /* Approx 135px from top given header height ~120px */
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
