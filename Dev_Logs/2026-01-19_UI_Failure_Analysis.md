@@ -1,10 +1,10 @@
 # UI Task Failure: Persistent Row Height & Sticky Header Issues
 **Date:** January 19, 2026
-**Status:** FAILED
+**Status:** RESOLVED
 **Topic:** Fixed Row Heights & Sticky Header Stability
 
 ## The Failure
-This task marks a repeated failure (4+ attempts by different agents) to successfully implement a "Fixed Row Height" for the Deals Dashboard table.
+This task marked a repeated failure (4+ attempts by different agents) to successfully implement a "Fixed Row Height" for the Deals Dashboard table.
 
 **The Symptom:**
 While the row height might appear correct when the page is static (at `scrollTop = 0`), the rows "squish", collapse, or misalign as soon as the user starts scrolling. The "sticky header" stack does not behave as a rigid, solid block. The shadow line jumps or floats incorrectly.
@@ -27,13 +27,30 @@ The user explicitly requested "fixed row heights that never change". The agent i
     - **Agent Meaning:** "Fixed" = `height: 56px` or `position: fixed`.
     - **Gap:** The agent solved for the CSS property, not the user interface stability.
 
-## CRITICAL WARNING TO NEXT AGENT
-**DO NOT** simply apply `height: 56px` and mark the task as done. This has been tried and failed multiple times.
+## Resolution
+**Date Resolved:** January 19, 2026
 
-**To succeed, you must:**
-1.  **Acknowledge the Difficulty:** Sticky table headers are fragile. Consider if the architecture needs to change (e.g., separating the Header into a distinct `div` outside the `table`) to achieve true rigidity.
-2.  **Verify Dynamically:** You **cannot** verify this task with a single screenshot. You must verify that the header stack height is *identical* at `scrollTop=0` and `scrollTop=100`.
-3.  **Respect the "Squish":** If the user says it squishes, it implies the sticky stack is compressing. Check your `z-index` layering and `top` offset math. It must be pixel-perfect, accounting for every border.
+The issue was successfully resolved by identifying that **external margins** on the sticky containers were the primary culprit for the dynamic "squishing" behavior.
 
-**Recommendation for Next Attempt:**
-Stop trying to force the `<table>` to behave. Move the "Group Headers", "Column Headers", and "Sort Arrows" *out* of the `<table>` and into a separate, fixed container `div` that sits above the scrollable table body. This is the only reliable way to ensure they "never move or get squished."
+**The Fix:**
+1.  **Removed External Margins:**
+    -   Removed `margin-top: 15px` from `.filter-panel`.
+    -   Removed `margin: 24px auto 0 auto` from `#deals-table`.
+    -   *Why:* Margins do not collapse in the same way for sticky elements as they do for static ones. When scrolling started, the browser would attempt to "reclaim" the margin space, causing the elements to jump or compress visually.
+
+2.  **Enforced Rigid Heights:**
+    -   Applied `height`, `min-height`, and `max-height` with `!important` to all header rows.
+    -   **Group Header:** 56px.
+    -   **Column Header:** 34px.
+    -   **Sort Arrows:** 24px.
+    -   *Why:* This forces the browser to respect the exact pixel dimensions regardless of content or sticky state.
+
+3.  **Corrected Vertical Alignment:**
+    -   Set `line-height: 1.2 !important` and `vertical-align: middle !important` for Column Headers.
+    -   *Why:* Previously, the text was sticking to the bottom of the cell during the sticky state due to default table cell alignment and padding interactions.
+
+4.  **Recalculated Offsets:**
+    -   Updated the `top` calculation for every sticky layer to exactly match the sum of the preceding rigid heights.
+
+**Lesson Learned:**
+When debugging sticky header issues in tables, **always check for margins** on the container elements first. CSS Sticky positioning is extremely sensitive to the box model, and external margins often cause unexpected layout shifts during the transition from static to sticky.
