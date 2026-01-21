@@ -1814,3 +1814,157 @@ body.home-background::before {
     transition: top 0.3s ease;
     display: none;
 }
+
+/* -------------------------------------------------------------------------- */
+/* TIDY LAYOUT (NON-DASHBOARD PAGES)                                          */
+/* -------------------------------------------------------------------------- */
+
+/* Tidy Layout - Standardized Page Container */
+.tidy-container {
+    width: 100%;
+    max-width: 950px;
+    /* 135px from top means we need padding-top or margin-top on the container
+       assuming the header is fixed/sticky.
+       The main header is 134px height.
+       So margin-top: 1px gives 135px.
+    */
+    margin: 1px auto 40px;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* Specific override for Settings page */
+.tidy-container.settings-width {
+    max-width: 750px;
+}
+
+/* Typography Standard */
+.tidy-header,
+.tidy-container h1,
+.tidy-container h2,
+.tidy-container h3,
+.tidy-container h4,
+.tidy-container h5 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-align: left;
+    letter-spacing: normal;
+    border-bottom: none;
+    line-height: 1.4;
+}
+
+.tidy-text,
+.tidy-container p,
+.tidy-container label,
+.tidy-container .setting-label,
+.tidy-container .settings-description {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: #a3aec0;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+/* Button Standard - Matches .filter-btn style but adaptable width */
+.tidy-button,
+.tidy-container button,
+.tidy-container .btn-primary-custom,
+.tidy-container .btn-edit,
+.tidy-container .styled-button {
+    background-color: #566e9e;
+    border: 2px solid #7397c2;
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 0 16px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    width: auto;
+    min-width: 56px;
+    box-sizing: border-box;
+    line-height: 1;
+    margin: 0; /* Reset default margins */
+}
+
+.tidy-button:hover,
+.tidy-container button:hover,
+.tidy-container .styled-button:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #566e9e; /* Keep standard color unless specific override */
+}
+
+/* Maintain semantic colors for Danger/Warning but keep the shape/font style */
+.tidy-container .btn-danger-style {
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+.tidy-container .btn-warning-style {
+    background-color: #f0ad4e;
+    border-color: #eea236;
+    color: #ffffff;
+}
+.tidy-container .btn-info-style {
+    background-color: #5bc0de;
+    border-color: #46b8da;
+}
+
+/* Code Block Style */
+.tidy-code-block,
+.tidy-container textarea.large-textarea {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(102, 153, 204, 0.5);
+    border-radius: 5px;
+    padding: 15px;
+    font-family: monospace;
+    color: #ffffff;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Card / Section Style */
+.tidy-card,
+.tidy-container .settings-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+    margin-top: 0; /* Reset previous margin-top */
+}
+
+.tidy-container .settings-card.card-warning {
+    border-left: 5px solid #ffc107;
+}
+.tidy-container .settings-card.card-danger {
+    border-left: 5px solid #ff4d4d;
+    border-color: #ff4d4d; /* Use full border color if previously specified */
+}
+
+/* Input Fields in Tidy Container */
+.tidy-container input[type="text"],
+.tidy-container input[type="number"],
+.tidy-container .styled-text-field {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(102, 153, 204, 0.5);
+    border-radius: 5px;
+    color: #ffffff;
+    padding: 5px 10px;
+    height: 32px; /* Match button height usually */
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+}

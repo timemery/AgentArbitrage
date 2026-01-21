@@ -4,33 +4,37 @@
 
 {% block content %}
 
-<div class="settings-container">
-    <p class="settings-description">
-        Use this page to set the Keepa deals query. The query must be a valid JSON object.
+<div class="tidy-container">
+    <h2 class="tidy-header">Keepa Deals API Query</h2>
+    <p class="tidy-text">
+        Use this file to set the Keepa deals query. The query must be a valid JSON object.
     </p>
 
     <div id="recalc-indicator" class="recalc-indicator">
         Recalculating deals with new settings... The task status will update below.
     </div>
 
-    <div class="settings-card card-no-margin">
-        <form action="{{ url_for('deals') }}" method="post" class="settings-form">
-            <input type="hidden" name="action" value="update_query">
-            <div class="form-group">
-                <label for="keepa_query">Keepa API Query</label>
-                <textarea id="keepa_query" name="keepa_query" class="styled-text-field large-textarea" rows="20">{{ keepa_query }}</textarea>
-            </div>
+    <!-- No card wrapper for the main query box as per mockup -->
+    <form action="{{ url_for('deals') }}" method="post" class="settings-form">
+        <input type="hidden" name="action" value="update_query">
+        <!-- Label removed to match mockup if it's redundant with header, or kept hidden -->
+        <!-- The mockup shows the text "Keepa Deals API Query" as a header, then description. -->
+        <!-- Then the code block starts immediately. -->
 
-            <div class="form-actions">
-                <button type="submit" class="styled-button">Save Query</button>
-            </div>
-        </form>
-    </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+             <!-- <label for="keepa_query">Keepa API Query</label> -->
+            <textarea id="keepa_query" name="keepa_query" class="tidy-code-block" rows="20">{{ keepa_query }}</textarea>
+        </div>
+
+        <div class="form-actions" style="margin-bottom: 20px;">
+            <button type="submit" class="tidy-button">Save Query</button>
+        </div>
+    </form>
 
     <!-- Artificial Backfill Limiter -->
-    <div class="settings-card card-warning">
-        <h2>Artificial Backfill Limiter</h2>
-        <p>
+    <div class="tidy-card">
+        <h2 class="tidy-header">Artificial Backfill Limiter</h2>
+        <p class="tidy-text">
             Automatically stop the backfill process when the total deal count reaches a specific number.
             Useful for controlling costs during testing or maintaining a small database.
         </p>
@@ -39,36 +43,36 @@
 
             <div class="form-group form-group-checkbox">
                 <input type="checkbox" id="backfill_limit_enabled" name="backfill_limit_enabled" class="checkbox-margin" {% if limit_enabled %}checked{% endif %}>
-                <label for="backfill_limit_enabled" class="label-bold">Enable Limit</label>
+                <label for="backfill_limit_enabled" class="label-bold tidy-text" style="margin-bottom: 0;">Enable Limit</label>
             </div>
 
-            <div class="form-group">
-                <label for="backfill_limit_count">Stop when Deal Count reaches:</label>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="backfill_limit_count" class="tidy-text">Stop when Deal Count reaches:</label>
                 <input type="number" id="backfill_limit_count" name="backfill_limit_count" value="{{ limit_count }}" class="styled-text-field input-limit">
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="styled-button btn-warning-style">Update Limit</button>
+                <button type="submit" class="tidy-button">Update Limit</button>
             </div>
         </form>
     </div>
 
-    <div class="settings-card">
-        <h2>Manual Data Refresh</h2>
-        <p>
+    <div class="tidy-card">
+        <h2 class="tidy-header">Manual Data Refresh</h2>
+        <p class="tidy-text">
             Recalculate Profit, Margin, and All-in Cost for all deals in the database using the latest business settings.
             This does not call external APIs (Keepa/SP-API) but refreshes internal logic.
         </p>
-        <button id="refresh-all-data" class="styled-button btn-info-style">Refresh All Data</button>
+        <button id="refresh-all-data" class="tidy-button">Refresh All Data</button>
     </div>
 
-    <div class="settings-card card-danger">
-        <h2 class="danger-text">Danger Zone</h2>
-        <p>
+    <div class="tidy-card">
+        <h2 class="tidy-header">Danger Zone</h2>
+        <p class="tidy-text">
             Resetting the database will clear all existing deals and restart the backfill process from scratch.
             This action cannot be undone.
         </p>
-        <button id="reset-db-btn" class="styled-button btn-danger-style">
+        <button id="reset-db-btn" class="tidy-button">
             Reset Database & Restart Backfill
         </button>
     </div>

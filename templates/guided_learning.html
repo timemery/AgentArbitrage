@@ -1,38 +1,46 @@
 {% extends "layout.html" %}
 {% block title %}Guided Learning - Agent Arbitrage{% endblock %}
 {% block content %}
-    <form action="{{ url_for('learn') }}" method="post">
-        <textarea name="learning_text" placeholder="Paste a URL or enter text-based guidance..."></textarea>
-        <div class="learning-controls">
-            <button type="button" class="clear-session" onclick="window.location.href='/clear_session'">Clear Session</button>
-            <div id="progress" class="progress-container">
-                <div class="spinner"></div>
-                <p>Processing...</p>
+<div class="tidy-container">
+    <h2 class="tidy-header">Guided Learning</h2>
+    <p class="tidy-text">Paste a URL or enter text-based guidance for the agent.</p>
+
+    <div class="tidy-card">
+        <form action="{{ url_for('learn') }}" method="post">
+            <textarea name="learning_text" class="tidy-code-block" placeholder="Paste a URL or enter text-based guidance..."></textarea>
+            <div class="learning-controls" style="display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" class="tidy-button clear-session" onclick="window.location.href='/clear_session'" style="background-color: transparent; border-color: #CC6666; color: white;">Clear Session</button>
+                <div id="progress" class="progress-container">
+                    <div class="spinner"></div>
+                    <p class="tidy-text">Processing...</p>
+                </div>
+                <button type="submit" class="tidy-button submit">Submit for Analysis</button>
             </div>
-            <button type="submit" class="submit">Submit for Analysis</button>
-        </div>
-    </form>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const submitButton = document.querySelector('button.submit');
-            const clearButton = document.querySelector('button.clear-session');
-            const progress = document.getElementById('progress');
-            const textarea = document.querySelector('textarea[name="learning_text"]');
+        </form>
+    </div>
+</div>
 
-            form.addEventListener('submit', function() {
-                progress.style.display = 'block';
-                submitButton.disabled = true;
-                clearButton.disabled = true;
-            });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitButton = document.querySelector('button.submit');
+        const clearButton = document.querySelector('button.clear-session');
+        const progress = document.getElementById('progress');
+        const textarea = document.querySelector('textarea[name="learning_text"]');
 
-            textarea.addEventListener('keydown', function(event) {
-                // Submit on Enter, but allow newlines with Shift+Enter
-                if (event.key === 'Enter' && !event.shiftKey) {
-                    event.preventDefault(); // Prevent default Enter behavior (newline)
-                    form.submit();
-                }
-            });
+        form.addEventListener('submit', function() {
+            progress.style.display = 'block';
+            submitButton.disabled = true;
+            clearButton.disabled = true;
         });
-    </script>
+
+        textarea.addEventListener('keydown', function(event) {
+            // Submit on Enter, but allow newlines with Shift+Enter
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent default Enter behavior (newline)
+                form.submit();
+            }
+        });
+    });
+</script>
 {% endblock %}
