@@ -37,7 +37,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-        *   **Fallback (High Velocity):** If no inferred sales are found but `monthlySold > 20`, uses `Used - 90 days avg`.
+        *   **Fallback (High Velocity):** *[DEPRECATED]* The use of `Used - 90d avg` as a fallback when `monthlySold > 20` is currently identified as a source of bad data (Zombie listings) and is slated for removal. **Do not rely on this fallback.**
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Ceiling Guardrail:** The "List at" price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).

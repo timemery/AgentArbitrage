@@ -16364,5 +16364,261 @@
         "advice": "Place test orders of 5-10 units per variation to validate sales velocity and profitability before scaling.",
         "confidence": "High",
         "source": "Place a test order. See how it goes. ... I might actually test this out personally buying this for 1131. I would just do 5 or 10 units FBA."
+    },
+    {
+        "id": "pricing-min-max-setup",
+        "category": "Pricing",
+        "trigger": "Consistent selling price observed in price history",
+        "advice": "Set minimum price at the consistent selling price (e.g., $21 if buy box at $21); set maximum price at double to three times the minimum (e.g., $62 for $21 min)",
+        "confidence": "High",
+        "source": "in this case, I'd probably go ahead and set my minimum price at $21. The maximum price... I tend to just go like double to three times that minimum price."
+    },
+    {
+        "id": "repricer-method",
+        "category": "Pricing",
+        "trigger": "Setting up repricing rules",
+        "advice": "Use the AI repricer as the default method for optimal automated pricing",
+        "confidence": "High",
+        "source": "The one that you'll most likely want to go with is just the AI repricer."
+    },
+    {
+        "id": "yo-yo-method",
+        "category": "Pricing",
+        "trigger": "Every 240 minutes",
+        "advice": "Increase price to maximum and hold for 20 minutes to influence other repricers to raise prices",
+        "confidence": "High",
+        "source": "every 240 minutes, so every few hours, I'm going to increase my price and stay at that maximum price for 20 minutes."
+    },
+    {
+        "id": "no-sale-aggressive",
+        "category": "Pricing",
+        "trigger": "No sale within 24 hours",
+        "advice": "Make repricing more aggressive to win half the buy box",
+        "confidence": "High",
+        "source": "if a certain item doesn't sell within 24 hours, I want it to get a little more aggressive. I want it to try to win the buy box. In this case, I want it to win half the buy box."
+    },
+    {
+        "id": "backorder-pricing",
+        "category": "Risk",
+        "trigger": "Product is backordered",
+        "advice": "Set price to maximum to avoid competing while unable to fulfill",
+        "confidence": "High",
+        "source": "if it's backorded, go ahead and set my price to maximum price."
+    },
+    {
+        "id": "suppressed-buybox-standard",
+        "category": "Pricing",
+        "trigger": "Buy box is suppressed and not at minimum price",
+        "advice": "Target the low FBA price in stock (ignore backordered) and match their price",
+        "confidence": "High",
+        "source": "if the buy box is suppressed... I want it to target the low FBA price and specifically the low FBA that's actually in stock... then typically I'm just going to match their price"
+    },
+    {
+        "id": "slow-mover-aggressive",
+        "category": "Pricing",
+        "trigger": "No purchase within last few days on listings held for a while",
+        "advice": "Apply aggressive rule: follow lowest FBA and undercut by a little bit; use only on non-selling items to clear inventory",
+        "confidence": "High",
+        "source": "if I'm not making a purchase within the last few days... Instead of targeting the buy box, I tend to follow the lowest FBA and try to undercut that price by a little bit."
+    },
+    {
+        "id": "suppressed-buybox-aggressive",
+        "category": "Pricing",
+        "trigger": "Buy box suppressed in aggressive rule",
+        "advice": "Follow lowest FBA price and undercut by 1%",
+        "confidence": "High",
+        "source": "I'm going to undercut them by 1%. Because when you're undercutting people, it does actually matter. If you're on a buy box suppressed listing, being one penny cheaper will make you appear higher."
+    },
+    {
+        "id": "low-inventory-profit",
+        "category": "Pricing",
+        "trigger": "Fulfillable quantity below 5 units",
+        "advice": "Increase profit target on a percentage basis when following the buy box to maximize profit on last units",
+        "confidence": "High",
+        "source": "when I get below five units in stock, I want to really be making as much profit as possible... following the buy box except you increase the amount of profit you're looking for on a percentage basis."
+    },
+    {
+        "id": "nighttime-price-raise",
+        "category": "Pricing",
+        "trigger": "Specific time of day, e.g., 2 a.m.",
+        "advice": "Raise FBA buy box price by 10% above the buy box to increase profit during low activity periods",
+        "confidence": "High",
+        "source": "during the middle of the night... at 2 a.m. I want you to raise my FBA buy box price by 10% above the buy box."
+    },
+    {
+        "id": "suppressed-buybox-fba",
+        "category": "Pricing",
+        "trigger": "Suppressed buy box with no low FBA",
+        "advice": "If no low FBA, target low FBM and add prime bump premium",
+        "confidence": "High",
+        "source": "if there's no low FBA to compete with and there's a low FBM, then bang, I'm going to increase my price a little bit. Typically, you can still charge a prime bump"
+    },
+    {
+        "id": "suppressed-buybox-no-comp",
+        "category": "Pricing",
+        "trigger": "Suppressed buy box with no FBA or FBM competitors",
+        "advice": "Apply a big multiplier to the minimum price",
+        "confidence": "High",
+        "source": "if there's still no FBA or FBM competitors to compete with, I'm going to put a big multiplier on the minimum price of that product."
+    },
+    {
+        "id": "bulk-price-adjust-slow",
+        "category": "Pricing",
+        "trigger": "Inventory 2-3 months old, not winning buy box",
+        "advice": "Lower minimum prices by 10% in bulk using export/import to add momentum",
+        "confidence": "High",
+        "source": "inventory that's 2 to 3 months old... I'll just take a simple formula... lower it by 10% basically... times.90"
+    },
+    {
+        "id": "post-checkin-setup",
+        "category": "General",
+        "trigger": "Items in stock but not repricing (no min set)",
+        "advice": "Set minimum and maximum prices after inventory checks in to account for price changes and avoid unnecessary competition",
+        "confidence": "High",
+        "source": "items that are in stock, but I'm not currently repricing... as it checks in, I'll go ahead and then go set a minimum and maximum price."
+    },
+    {
+        "id": "cost-based-min",
+        "category": "Pricing",
+        "trigger": "Setting minimum price based on cost",
+        "advice": "Set minimum price to 2x the cost for a simple profit target",
+        "confidence": "High",
+        "source": "generally you're going to want to sell your items for about two times what you're buying them for... set the minimum price based on 2x multiplier of the cost."
+    },
+    {
+        "id": "seasonal-aggressive",
+        "category": "Seasonality",
+        "trigger": "Item out of season or less popular",
+        "advice": "Apply aggressive repricing rule to undercut and clear inventory",
+        "confidence": "High",
+        "source": "on items where... the item itself got less popular or it's out of season... I'm really aggressively targeting winning the vast majority of the sales."
+    },
+    {
+        "id": "fba-fbm-check-1",
+        "category": "General",
+        "trigger": "Recent FBM sellers winning buy box on Seller Amp",
+        "advice": "Proceed with FBM for the product",
+        "confidence": "High",
+        "source": "two FBM sellers actually won the sales on this listing. And that's different to a lot of listings. For example, this one right here, if you notice, 3 days ago, 5 days ago, 1 week ago, this entire list all the way down to 8 weeks ago, you guys can see right there is all FBA sellers."
+    },
+    {
+        "id": "fba-fbm-check-2",
+        "category": "General",
+        "trigger": "Only FBA sellers winning sales on listing",
+        "advice": "Send product to Amazon FBA instead of FBM",
+        "confidence": "High",
+        "source": "If the item you're considering selling is only seeing sales to FBA sellers, I would highly suggest you just send it into Amazon FBA. You're probably not going to have much success making FBM sales."
+    },
+    {
+        "id": "shipping-cost-fba",
+        "category": "Risk",
+        "trigger": "Shipping to FBA warehouse",
+        "advice": "Budget 60-90 cents per pound for shipping costs, higher for lighter boxes",
+        "confidence": "High",
+        "source": "it's usually going to cost about 60 to 90 cents per pound to ship to Amazon FBA. And it's going to be higher on that sliding scale if your boxes are generally a little bit lighter, meaning you're sending lots of smaller FBA shipments."
+    },
+    {
+        "id": "shipping-cost-fbm",
+        "category": "Risk",
+        "trigger": "FBM sale for 7.5 oz item",
+        "advice": "Estimate $5.50 for shipping via USPS or UPS, choose cheapest option",
+        "confidence": "High",
+        "source": "an item that is 7.5 O. Based on the quick cost estimates I just flashed on screen, that's usually going to cost you about $5.50 to ship via USPS or UPS. Generally, I just choose the cheapest shipping option that I see when I'm able to go in and buy shipping"
+    },
+    {
+        "id": "product-type-fba",
+        "category": "General",
+        "trigger": "Small, light, and relatively cheap products",
+        "advice": "Fulfill via FBA for better profitability",
+        "confidence": "High",
+        "source": "Typically, the products that are better suited for FBA are going to be smaller and lighter items, especially if they're relatively cheap."
+    },
+    {
+        "id": "product-type-fbm",
+        "category": "General",
+        "trigger": "Heavy products",
+        "advice": "Fulfill via FBM for better profitability",
+        "confidence": "High",
+        "source": "And if the product is really heavy, it's almost always going to be better to be sold via FBM."
+    },
+    {
+        "id": "storage-fees-q4",
+        "category": "Seasonality",
+        "trigger": "Storing inventory in FBA during quarter 4",
+        "advice": "Account for storage fees being about four times more expensive during holiday rush",
+        "confidence": "High",
+        "source": "these fees can massively increase. They're about four times more expensive during quarter 4 when the warehouse is really backed up during the holiday rush."
+    },
+    {
+        "id": "fba-lag-time",
+        "category": "Seasonality",
+        "trigger": "Limited time profitable opportunities or seasonal products like Christmas items",
+        "advice": "Use FBM to list immediately and avoid 2-4 week FBA processing lag",
+        "confidence": "High",
+        "source": "sending things into Amazon FBA is typically going to take 2 to 4 weeks for you to start making sales. So if you want to sell a Christmas item on December 1st, you're not really going to have enough time to send that into FBA and make lots of sales. Whereas the seller who lists that December 1st Christmas item via FBM, they're going to have basically the entire Christmas season to make as many sales as possible on that listing."
+    },
+    {
+        "id": "inventory-turns-fbm",
+        "category": "General",
+        "trigger": "Using FBM fulfillment",
+        "advice": "Expect 8-12 inventory turns per year for faster cash flow growth",
+        "confidence": "High",
+        "source": "you can turn your money over about 8 to 12 times a year with FBM versus FBA, it's more typical to see about four to six inventory turns per year just because of that 2 to 4 week lag period"
+    },
+    {
+        "id": "inventory-turns-fba",
+        "category": "General",
+        "trigger": "Using FBA fulfillment",
+        "advice": "Expect 4-6 inventory turns per year due to shipping lag",
+        "confidence": "High",
+        "source": "you can turn your money over about 8 to 12 times a year with FBM versus FBA, it's more typical to see about four to six inventory turns per year just because of that 2 to 4 week lag period"
+    },
+    {
+        "id": "test-strategy",
+        "category": "General",
+        "trigger": "New product opportunities",
+        "advice": "Test items via FBM for immediate feedback, then restock via FBA for scaling",
+        "confidence": "High",
+        "source": "what I generally see some of the smartest, fastest growing Amazon sellers do is test items via FBM and then restock those items via FBA to buy a lot deeper and see a lot more sales going through the FBA program."
+    },
+    {
+        "id": "fba-scale-limit",
+        "category": "Risk",
+        "trigger": "Slow-selling products sent to FBA",
+        "advice": "Ensure products sell well to avoid slashed storage limits",
+        "confidence": "High",
+        "source": "if you end up sending a bunch of products into Amazon FBA that sell pretty slowly, Amazon can actually slash your storage limits. So, it's important that the things you send into Amazon FBA, you know, are going to sell well and you're doing a good job of consistently selling through those items."
+    },
+    {
+        "id": "fbm-scale-cap",
+        "category": "Risk",
+        "trigger": "Scaling FBM business",
+        "advice": "Note that FBM typically caps at $50-100k monthly sales due to manual shipping effort",
+        "confidence": "High",
+        "source": "it's not extremely scalable to be an FBM seller, most sellers who do all FBM tend to cap out somewhere around $50 to $100,000 a month in sales, which is definitely a lot, but it's definitely also a lot of work to get all that stuff shipped out item by item."
+    },
+    {
+        "id": "book-source-estate-1",
+        "category": "Buying",
+        "trigger": "Estate sales with books available",
+        "advice": "Network with estate sale organizers in your city to get notified about book lots and clear them out before others arrive",
+        "confidence": "High",
+        "source": "I'd talk to a couple other estate sale ladies in my city and they'd be like, \"Hey, I've got a bunch of books at this one. Come check them out.\" And then I clear out the books before anyone else got to them. I'm like, \"A lot of money to be made in estate sales if you're just willing to hustle.\""
+    },
+    {
+        "id": "book-listing-scale-1",
+        "category": "General",
+        "trigger": "Starting with books on platforms like eBay or Amazon",
+        "advice": "Begin by listing books as they are easier to source and list initially, then scale to other products for growth",
+        "confidence": "Medium",
+        "source": "I knew how to list books but just doing more than books and scaling it really pushed me into the deep end of finding better sources and finding more"
+    },
+    {
+        "id": "book-thrift-start-1",
+        "category": "Buying",
+        "trigger": "Limited budget and starting online selling",
+        "advice": "Source books from thrift stores and estate sales for quick sales on eBay to build initial capital before moving to Amazon",
+        "confidence": "High",
+        "source": "I started selling as a way to buy groceries... Scaling was always the issue there... found Amazon... I knew how to list books"
     }
 ]

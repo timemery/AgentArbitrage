@@ -15,6 +15,27 @@ The process follows three main stages:
 
 ------
 
+## ⚠️ Critical Warning: The Dangers of Fallback Data
+
+**Do NOT attempt to "fill in the blanks" with unverified data.**
+
+A critical lesson learned in January 2026 is that fallback mechanisms—attempts to provide a price when the primary logic finds none—are extremely dangerous. They often result in the system confidently presenting garbage data, which then triggers downstream rejections (like the AI Reasonableness Check) or, worse, leads users to make bad buying decisions.
+
+**Specific Failure Case: The "High Velocity" Fallback**
+The system previously contained a fallback logic:
+> *If no sales are inferred, but `monthlySold > 20`, use the `Used - 90 days avg` price.*
+
+This caused massive deal rejection rates (~95%) because:
+1.  `monthlySold` measures **Total** velocity (New + Used).
+2.  `avg90` (Used) measures the **Used** price history.
+3.  **Scenario:** A book sells briskly as New ($50) but has a stale, high-priced Used listing ($400) that never sells.
+4.  **Result:** The fallback sees high velocity (from New sales) and erroneously grabs the high Used price ($400).
+5.  **Impact:** The system sets "List at" to $400. The AI check correctly rejects "$400 for this book". The deal is discarded.
+
+**Principle:** If the system cannot find a price through **confirmed inferred sales** (Offer Drop + Rank Drop), it should return `None` (missing data) rather than guessing. Accuracy is prioritized over completeness.
+
+------
+
 ## 2. Stage 1: Inferring Sale Events
 
 This is the foundational step handled by `infer_sale_events(product)` in `keepa_deals/stable_calculations.py`.
@@ -56,7 +77,7 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (High Velocity):** If `sane_sales == 0` AND `monthlySold > 20`, uses the **Used - 90 days avg** price.
+    -   **Fallback 2 (High Velocity):** *[DEPRECATED/DANGEROUS]* See Critical Warning above.
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
