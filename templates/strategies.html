@@ -1,42 +1,44 @@
 {% extends "layout.html" %}
 {% block title %}Strategies - Agent Arbitrage{% endblock %}
 {% block content %}
-    <div class="result-section">
-        <h2>Strategy Database</h2>
-        <div class="content">
-            {% if strategies %}
-                <table class="strategies-table">
-                    <thead>
-                        <tr class="strategies-header">
-                            <th>Category</th>
-                            <th>Trigger</th>
-                            <th>Advice</th>
-                            <th>Confidence</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for strategy in strategies %}
-                        {% if strategy is mapping %}
-                            <tr>
-                                <td class="strategies-cell">{{ strategy.category }}</td>
-                                <td class="strategies-cell">{{ strategy.trigger }}</td>
-                                <td class="strategies-cell">{{ strategy.advice }}</td>
-                                <td class="strategies-cell">{{ strategy.confidence }}</td>
+    <div class="tidy-container">
+        <h2 class="tidy-header">Strategy Database</h2>
+        <div class="tidy-card">
+            <div class="content" style="border: none; background: transparent; padding: 0;">
+                {% if strategies %}
+                    <table class="strategies-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr class="strategies-header" style="background-color: #26567e; color: white;">
+                                <th class="tidy-header" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-size: 13px; margin-bottom: 0;">Category</th>
+                                <th class="tidy-header" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-size: 13px; margin-bottom: 0;">Trigger</th>
+                                <th class="tidy-header" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-size: 13px; margin-bottom: 0;">Advice</th>
+                                <th class="tidy-header" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-size: 13px; margin-bottom: 0;">Confidence</th>
                             </tr>
-                        {% else %}
-                            <tr>
-                                <td class="strategies-cell">Legacy/General</td>
-                                <td class="strategies-cell">N/A</td>
-                                <td class="strategies-cell">{{ strategy }}</td>
-                                <td class="strategies-cell">N/A</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No strategies have been approved yet.</p>
-            {% endif %}
+                        </thead>
+                        <tbody>
+                        {% for strategy in strategies %}
+                            {% if strategy is mapping %}
+                                <tr>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">{{ strategy.category }}</td>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">{{ strategy.trigger }}</td>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">{{ strategy.advice }}</td>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">{{ strategy.confidence }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">Legacy/General</td>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">N/A</td>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">{{ strategy }}</td>
+                                    <td class="strategies-cell tidy-text" style="padding: 10px; border: 1px solid rgba(102, 153, 204, 0.5); font-weight: normal;">N/A</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="tidy-text">No strategies have been approved yet.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

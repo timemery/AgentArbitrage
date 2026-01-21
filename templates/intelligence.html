@@ -1,16 +1,18 @@
 {% extends "layout.html" %}
 {% block title %}Intelligence - Agent Arbitrage{% endblock %}
 {% block content %}
-    <div class="result-section">
-        <h2>Conceptual Ideas & Methodologies</h2>
-        <div class="content">
-            {% if ideas %}
-                {% for idea in ideas %}
-                    <p>{{ idea }}</p>
-                {% endfor %}
-            {% else %}
-                <p>No conceptual ideas have been saved to Intelligence yet.</p>
-            {% endif %}
+    <div class="tidy-container">
+        <h2 class="tidy-header">Conceptual Ideas & Methodologies</h2>
+        <div class="tidy-card">
+            <div class="content" style="border: none; background: transparent; padding: 0;">
+                {% if ideas %}
+                    {% for idea in ideas %}
+                        <p class="tidy-text" style="margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">{{ idea }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p class="tidy-text">No conceptual ideas have been saved to Intelligence yet.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
