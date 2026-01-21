@@ -16844,5 +16844,285 @@
         "advice": "Buy discounted gift cards for specific retailers (e.g., 16% off Carter's) to add extra profit (e.g., $14 per $100 spent).",
         "confidence": "High",
         "source": "you can buy a $50 gift card for 42 bucks right there. That's great. We can squeeze an extra $14 in profit for every $100 we're spending."
+    },
+    {
+        "id": "srd-1",
+        "category": "Buying",
+        "trigger": "10+ sales rank drops in 90 days",
+        "advice": "Estimate 5-15+ sales per month; viable for arbitrage",
+        "confidence": "High",
+        "source": "10+ drops often means 5\u201315+ sales/month"
+    },
+    {
+        "id": "psg-1",
+        "category": "Pricing",
+        "trigger": "Price gaps >$10\u201320 after fees",
+        "advice": "Prioritize consistent drops without cliffs for arbitrage opportunities",
+        "confidence": "High",
+        "source": "price gaps >$10\u201320 after fees"
+    },
+    {
+        "id": "oc-1",
+        "category": "Risk",
+        "trigger": "Rising new/used offer counts",
+        "advice": "Warns of incoming saturation; monitor or avoid",
+        "confidence": "High",
+        "source": "Rising new/used offer counts warn of incoming saturation"
+    },
+    {
+        "id": "oc-2",
+        "category": "Buying",
+        "trigger": "Low/stable offer counts (<5\u201310 FBA)",
+        "advice": "Favors buy box wins; source for arbitrage",
+        "confidence": "High",
+        "source": "low/stable counts (<5\u201310 FBA) favor buy box wins"
+    },
+    {
+        "id": "ap-1",
+        "category": "Risk",
+        "trigger": "Heavy orange shading",
+        "advice": "Indicates direct Amazon competition; riskier unless margins strong and stable",
+        "confidence": "High",
+        "source": "Heavy orange indicates Amazon competes directly\u2014riskier for resellers unless margins hold"
+    },
+    {
+        "id": "zv-1",
+        "category": "General",
+        "trigger": "Zoom into 3\u201312 month windows",
+        "advice": "Spot seasonal patterns or baseline value; use 'all time' for long-term viability",
+        "confidence": "High",
+        "source": "Zoom into 3\u201312 month windows to spot seasonal patterns or baseline value; \"all time\" reveals long-term viability"
+    },
+    {
+        "id": "mup-1",
+        "category": "Pricing",
+        "trigger": "Used price $10\u2013$30 below FBA averages with minimal volatility",
+        "advice": "Prime for MF-to-FBA flips in book arbitrage",
+        "confidence": "High",
+        "source": "Look for black lines sitting $10\u2013$30 below FBA averages with minimal volatility\u2014prime for MF-to-FBA flips"
+    },
+    {
+        "id": "srd-2",
+        "category": "Buying",
+        "trigger": "10\u201315 drops in 90 days",
+        "advice": "Signals 5\u201320 monthly sales; viable for arbitrage; focus on jagged consistent drops",
+        "confidence": "High",
+        "source": "10\u201315 drops in 90 days often signals 5\u201320 monthly sales\u2014viable for arbitrage"
+    },
+    {
+        "id": "psv-1",
+        "category": "Pricing",
+        "trigger": "No cliffs (sudden 40\u201370% drops)",
+        "advice": "Seek stable black/blue lines with gradual upward trends; avoid volatile products",
+        "confidence": "High",
+        "source": "no \"cliffs\" (sudden 40\u201370% drops from competition flooding or repricers)"
+    },
+    {
+        "id": "oc-3",
+        "category": "Buying",
+        "trigger": "Stable low offer counts (<5\u20138 FBA)",
+        "advice": "Indicates defensible buy box potential; combine with historical buy box winners",
+        "confidence": "High",
+        "source": "Steady low counts indicate defensible buy box potential; stable low counts (<5\u20138 FBA)"
+    },
+    {
+        "id": "sev-1",
+        "category": "Seasonality",
+        "trigger": "Consistent seasonal rank improvements + price spikes in peak seasons (e.g., textbooks Aug/Jan)",
+        "advice": "Confirm repeatable demand; zoom into peak seasons for textbooks",
+        "confidence": "High",
+        "source": "Consistent seasonal rank improvements + price spikes confirm repeatable demand. Switch to \"all\" view then zoom into peak seasons (e.g., textbooks Aug/Jan)"
+    },
+    {
+        "id": "eb-1",
+        "category": "Buying",
+        "trigger": "Flat baseline ranks under 200,000 with periodic drops",
+        "advice": "Seek for evergreen books with consistent demand",
+        "confidence": "High",
+        "source": "For evergreen books, seek flat baseline ranks under 200,000 with periodic drops"
+    },
+    {
+        "id": "pf-1",
+        "category": "General",
+        "trigger": "Drop counts >10/90 days, avg. rank <200k, offer count <10",
+        "advice": "Use Product Finder filters to surface hidden opportunities matching proven graphs",
+        "confidence": "High",
+        "source": "Product Finder Filters: Use historical rank changes, drop counts (>10/90 days), avg. rank <200k, offer count <10"
+    },
+    {
+        "id": "ub-1",
+        "category": "Buying",
+        "trigger": "Used price $8\u2013$15 below FBA sell ($25\u2013$50+), 10+ drops/90 days, low offer counts, no major cliffs",
+        "advice": "High-confidence flip for used books; example for textbooks with seasonal spikes and baseline rank ~150k",
+        "confidence": "High",
+        "source": "For used books: Seek black used price $8\u2013$15 below FBA sell ($25\u2013$50+), consistent green drops (10+/90 days), low offer counts, no major cliffs"
+    },
+    {
+        "id": "srd-3",
+        "category": "Buying",
+        "trigger": "Sales Rank Drops (90 days) 10\u201320+",
+        "advice": "Proxies real sales velocity; avoid overestimating from flat ranks",
+        "confidence": "High",
+        "source": "Sales Rank Drops (90 days)10\u201320+Proxies real sales velocityOverestimate demand from flat rank"
+    },
+    {
+        "id": "ups-1",
+        "category": "Pricing",
+        "trigger": "No >40% drops in used price over 6 months",
+        "advice": "Predicts margin stability; avoid erosion risk",
+        "confidence": "High",
+        "source": "Used Price StabilityNo >40% drops in 6 monthsPredicts margin erosion"
+    },
+    {
+        "id": "oc-4",
+        "category": "Risk",
+        "trigger": "Offer Count (FBA) <8 stable",
+        "advice": "Boosts buy box win probability; saturation kills profits if ignored",
+        "confidence": "High",
+        "source": "Offer Count (FBA)<8 stableBuy box win probabilitySaturation kills profits"
+    },
+    {
+        "id": "aos-1",
+        "category": "Risk",
+        "trigger": "Amazon Orange Shading Minimal/light",
+        "advice": "Avoid direct Amazon competition; hard to win buy box long-term if heavy",
+        "confidence": "High",
+        "source": "Amazon Orange ShadingMinimal/lightAvoid direct Amazon competitionHard to win box long-term"
+    },
+    {
+        "id": "hab-1",
+        "category": "Buying",
+        "trigger": "Historical Avg. BSR <200,000",
+        "advice": "Indicates consistent demand baseline; avoids seasonal-only items tying capital",
+        "confidence": "High",
+        "source": "Historical Avg. BSR<200,000Consistent demand baselineSeasonal-only items tie capital"
+    },
+    {
+        "id": "pt-1",
+        "category": "Risk",
+        "trigger": "Sharp tanks (sudden 50%+ drops in prices)",
+        "advice": "Avoid; signals instability even if current price looks good",
+        "confidence": "High",
+        "source": "no sharp \"tanks\" (sudden 50%+ drops)"
+    },
+    {
+        "id": "oa-strat-001",
+        "category": "General",
+        "trigger": "MF price lower than FBA price gap identified via Keepa",
+        "advice": "Source books from Amazon Marketplace Fulfillment (MF) and flip to Fulfillment by Amazon (FBA) using Keepa charts to spot opportunities",
+        "confidence": "High",
+        "source": "Keepa integration for identifying MF-FBA price gaps in books"
+    },
+    {
+        "id": "oa-strat-002",
+        "category": "Risk",
+        "trigger": "Rising fees and increased competition in 2025-2026",
+        "advice": "Prioritize recent videos and articles from 2025\u20132026 for updated strategies to adapt to current market conditions",
+        "confidence": "High",
+        "source": "fresh 2025\u20132026 videos and updated articles provide current strategies amid rising fees and competition"
+    },
+    {
+        "id": "oa-strat-003",
+        "category": "General",
+        "trigger": "Searching for unique, high-relevance content on online book arbitrage",
+        "advice": "Use refined search terms like '2026 Keepa book flips' or niche queries to uncover additional resources while avoiding duplicates and off-topic results",
+        "confidence": "Medium",
+        "source": "refinements like '2026 Keepa book flips' or niche searches can uncover additional ones"
+    },
+    {
+        "id": "bsr-target",
+        "category": "Buying",
+        "trigger": "Avg BSR (90 days) <200,000",
+        "advice": "Target books with average BSR under 200,000 for consistent demand and 5-15 monthly sales",
+        "confidence": "High",
+        "source": "BSR & Drops: Target <200,000 average with 10+ drops/90 days for 5\u201315 monthly sales. MetricIdeal RangeWhy It MattersCommon PitfallAvg. BSR (90 days)<200,000Consistent demandOver-relying on current rank only"
+    },
+    {
+        "id": "rank-drops",
+        "category": "Buying",
+        "trigger": "Rank Drops (90 days) 10-20+",
+        "advice": "Look for 10-20+ rank drops in 90 days as proxy for real sales velocity",
+        "confidence": "High",
+        "source": "BSR & Drops: Target <200,000 average with 10+ drops/90 days for 5\u201315 monthly sales. Rank Drops (90 days)10\u201320+Proxies real salesIgnoring seasonal flat periods"
+    },
+    {
+        "id": "price-gap",
+        "category": "Buying",
+        "trigger": "MF-FBA Price Gap $10-30+",
+        "advice": "Buy MF listings $10-30 below FBA sell price, calculate ROI after 15-40% fees and storage",
+        "confidence": "High",
+        "source": "Price Gaps: MF buy $10\u2013$20 below FBA sell; calculate ROI post-fees (15\u201340%). MF-FBA Price Gap$10\u2013$30+Core profit driverIgnoring fees/storage"
+    },
+    {
+        "id": "fba-offers",
+        "category": "Buying",
+        "trigger": "FBA Offer Count <8 stable",
+        "advice": "Target less than 8 stable FBA competitors for higher buy box probability",
+        "confidence": "High",
+        "source": "Offer Counts: <5\u20138 FBA competitors for better buy box odds. FBA Offer Count<8 stableBuy box probabilityEntering saturated niches"
+    },
+    {
+        "id": "price-stability",
+        "category": "Risk",
+        "trigger": "No >40% price drops in 6 months",
+        "advice": "Avoid books with more than 40% price drops in 6 months to protect margins",
+        "confidence": "High",
+        "source": "Stability: Avoid sharp drops/cliffs; seek consistent patterns. Price StabilityNo >40% drops in 6 monthsMargin protectionBuying into temporary spikes"
+    },
+    {
+        "id": "sourcing-flips",
+        "category": "Buying",
+        "trigger": "MF listings verified via Keepa",
+        "advice": "Scan MF listings on Amazon, verify with Keepa extension, and buy multiples if velocity holds",
+        "confidence": "High",
+        "source": "Focus on Amazon-to-Amazon flips: Scan MF listings, verify via Keepa extension, buy multiples if velocity holds."
+    },
+    {
+        "id": "product-finder-filters",
+        "category": "Buying",
+        "trigger": "Drops >10, offers <10",
+        "advice": "Use Product Finder with filters for drops >10 and offers <10 to generate bulk leads",
+        "confidence": "High",
+        "source": "Use Product Finder filters (e.g., drops >10, offers <10) for bulk leads."
+    },
+    {
+        "id": "dynamic-pricing",
+        "category": "Pricing",
+        "trigger": "Initial sales building",
+        "advice": "Start with competitive pricing and use repricer to increase prices as sales velocity builds",
+        "confidence": "High",
+        "source": "Price dynamically: Start competitive, repricer upward as sales build."
+    },
+    {
+        "id": "seasonal-textbooks",
+        "category": "Seasonality",
+        "trigger": "Textbooks in Aug/Jan",
+        "advice": "Focus on textbook sourcing and flips in August and January to amplify returns",
+        "confidence": "High",
+        "source": "Seasonal plays (textbooks Aug/Jan) amplify returns."
+    },
+    {
+        "id": "starting-budget",
+        "category": "General",
+        "trigger": "Initial setup",
+        "advice": "Start with $200-500 budget and aim for 20-50 flips per week",
+        "confidence": "High",
+        "source": "Start $200\u2013$500 budget; aim 20\u201350 flips/week."
+    },
+    {
+        "id": "diversification",
+        "category": "General",
+        "trigger": "Saturated textbooks",
+        "advice": "Diversify beyond saturated textbooks into collectibles for growth",
+        "confidence": "High",
+        "source": "Diversify beyond saturated textbooks to collectibles."
+    },
+    {
+        "id": "risk-mitigation",
+        "category": "Risk",
+        "trigger": "Returns 5-15%, storage fees",
+        "advice": "Mitigate returns (5-15%) and storage fees with thorough condition checks and focus on high-velocity books",
+        "confidence": "High",
+        "source": "Risks: Returns (5\u201315%), storage fees\u2014mitigate with condition checks and velocity focus."
     }
 ]
