@@ -16620,5 +16620,229 @@
         "advice": "Source books from thrift stores and estate sales for quick sales on eBay to build initial capital before moving to Amazon",
         "confidence": "High",
         "source": "I started selling as a way to buy groceries... Scaling was always the issue there... found Amazon... I knew how to list books"
+    },
+    {
+        "id": "strategy22",
+        "category": "Buying",
+        "trigger": "Single items that can be bundled",
+        "advice": "Buy singles and polybag 2 units to create packs using clear poly bags; list as 2-pack on Amazon.",
+        "confidence": "High",
+        "source": "this is actually a two pack of these shirts right here that are $5 each. What we can do is we can just grab two units of that. ... you'll ship all of these products into Amazon FBA. ... we would take two of those shirts and we would put them down into the same clear poly bag."
+    },
+    {
+        "id": "strategy23",
+        "category": "Risk",
+        "trigger": "Brand sells on listing (98% sales share)",
+        "advice": "Avoid if brand dominates sales or history shows sudden drop in new offer count (e.g., from 24 to 1); prefer steady third-party activity.",
+        "confidence": "High",
+        "source": "If that's the case, you typically want to avoid that just because the brand might have interest in kicking another third party seller off. ... You can see how that stock count decreased all at once. You see how the new offer count was around like 23 24 and then all of a sudden it dropped to one right away. This could be a sign that they basically gave an IP complaint"
+    },
+    {
+        "id": "strategy24",
+        "category": "General",
+        "trigger": "Sourcing from seller storefronts",
+        "advice": "Browse storefronts of low-feedback sellers (2-50) on auto-ungated listings to find new leads; aim for 10-15 products before switching.",
+        "confidence": "High",
+        "source": "you could find a ton of winning items just by looking at what the other Amazon sellers on these listings have already sourced. So I'm just going to pop open like one of these Athletic Works sellers. You can see this person had two feedback. ... if you aren't finding much that's even like close to profitable within the first 10 to 15 products, usually I'll just go back to that original source listing"
+    },
+    {
+        "id": "strategy25",
+        "category": "Pricing",
+        "trigger": "Max cost $12.39 with stable price history",
+        "advice": "Target $16.80 source with 11% discount for marginal profit; skip if ROI <30%.",
+        "confidence": "High",
+        "source": "if I can buy this for $1239, then I'm going to be profitable basically. ... 1680. And then we want to subtract our 11% right there. So, this is close to profitable, right? So, 351 profit, but the ROI isn't quite where I like to have that ROI hanging out at."
+    },
+    {
+        "id": "strategy26",
+        "category": "Risk",
+        "trigger": "Amazon on listing but buy box below Amazon price",
+        "advice": "Consider if third-party prices consistently undercut Amazon; avoid if source cost too high (e.g., $20 vs max $6).",
+        "confidence": "High",
+        "source": "you notice how the buy box line is actually pretty consistently under the Amazon price. So, this would be one of those exceptions where we can compete with Amazon. They're just not lowering their price to where third party sellers are at for some reason."
+    },
+    {
+        "id": "strategy27",
+        "category": "Pricing",
+        "trigger": "Source $17.70 with 9% discount",
+        "advice": "Achieve $4 profit and 20%+ ROI for stable $31-34 price; check variations for higher prices ($45).",
+        "confidence": "High",
+        "source": "this is 1770. And so, when we're plugging that into Seller app, I can see right now it's a $4 profit. ... minus 9% right there. And now we've made this item profitable. ... On average, it's about 32 31 bucks."
+    },
+    {
+        "id": "strategy28",
+        "category": "Risk",
+        "trigger": "Recent ratings increases and sales >30/month",
+        "advice": "Prioritize for 10-20 unit orders; sort variations by current price for best opportunities.",
+        "confidence": "High",
+        "source": "I also like to look for products that have increases in ratings recently. That just shows me that people are actually more interested in buying that. ... I'd be a lot more interested in grabbing 10 20 units of, especially since this sells decently well."
+    },
+    {
+        "id": "strategy29",
+        "category": "Buying",
+        "trigger": "Walmart source at $20 vs max $16.60",
+        "advice": "Apply 7.7% gift card discount to create $2.30 profit; skip if ROI <30% or profit <$3.",
+        "confidence": "High",
+        "source": "buying this for, let's just say, 20 bucks. ... minus 7.7% is kind of the margin we can create there. Sweet. So, now we're making $2.30. Our ROI is not super great. Typically, I'm trying to make $3 profit and at least a 30% ROI."
+    },
+    {
+        "id": "strategy30",
+        "category": "General",
+        "trigger": "Calculating true profit",
+        "advice": "Include 5% sales tax and $0.60/lb inbound shipping in Seller Amp calculator.",
+        "confidence": "High",
+        "source": "You can see total fees. I am including about 5% sales tax. And I'm also including inbound shipping, which is usually about 60 cents a pound when we're shipping to Amazon. So, this is true profit after all those extra fees"
+    },
+    {
+        "id": "std-001",
+        "category": "General",
+        "trigger": "Sales rank indicates 30 sales per month, $3 profit, 35% ROI",
+        "advice": "Only pursue items meeting minimum standards of 30 sales per month, at least $3 profit, and 35% ROI for high viability.",
+        "confidence": "High",
+        "source": "now this obviously meets our standards of 30 times a month, $3 profit, 35% ROI."
+    },
+    {
+        "id": "price-001",
+        "category": "Pricing",
+        "trigger": "Keepa chart shows consistent price, currently at lowest point",
+        "advice": "Look for items where Keepa indicates stable pricing and current Amazon price is the lowest historically to minimize risk of further drops.",
+        "confidence": "High",
+        "source": "the Keepa shows a very consistent price. So the Keipa chart is the basically the next tool that you need to sell products on Amazon. When I look at items like this, I can see that that price chart is pretty consistent. Basically, right now is the cheapest it's ever been on Amazon."
+    },
+    {
+        "id": "season-001",
+        "category": "Seasonality",
+        "trigger": "Meltable items (e.g., chocolate) between March 1 and October 1",
+        "advice": "Avoid shipping meltable items to FBA from March 1 to October 1 (strictly April 15 to October 15) to prevent damage; consider FBM or buy cheap post-deadline.",
+        "confidence": "High",
+        "source": "Typically for me, I like to avoid anything that's meltable between March 1st and October 1st. The meltable season, where you're actually not allowed to sell anything meltable via FBA, is actually April 15th to October 15th."
+    },
+    {
+        "id": "pricing-002",
+        "category": "Pricing",
+        "trigger": "Include misc fees (10 cents), sales tax (5%), shipping (60 cents/lb)",
+        "advice": "Factor in all costs like 10 cents miscellaneous, 5% sales tax, and 60 cents per pound shipping to FBA when calculating true profit.",
+        "confidence": "High",
+        "source": "include some fees on these settings back here. So, a miscellaneous fee of 10 cents or so. ... I include 5% as sales tax... And then for me, I pay about 60 cents per pound to ship to Amazon."
+    },
+    {
+        "id": "buying-003",
+        "category": "Buying",
+        "trigger": "Sales or coupons available (e.g., 25% off $200+)",
+        "advice": "Stack sales and coupons to reduce cost, e.g., buy at sale price plus 25% off to achieve profitability.",
+        "confidence": "High",
+        "source": "we're using discount method number one and number two. The simplest ones being a sale. So, you can see it's usually 65 bucks down to 25 bucks. And we also get a coupon, right? So, 25% off 200 bucks plus."
+    },
+    {
+        "id": "pricing-003",
+        "category": "Pricing",
+        "trigger": "Gift cards discounted 12% on cardbear.com",
+        "advice": "Use discounted gift cards from sites like cardbear.com (e.g., 12% off) to lower effective purchase cost and boost ROI.",
+        "confidence": "High",
+        "source": "discount method number three... cardbear.com. So basically I can go on this website and we can buy discounted money on these different websites. ... we can get 12% off gift card."
+    },
+    {
+        "id": "pricing-004",
+        "category": "Pricing",
+        "trigger": "Cashback portals (e.g., 30% at Belk)",
+        "advice": "Treat cashback from portals like topcashback (e.g., 30%) as bonus profit, not core margin, via cashbackmonitor.com.",
+        "confidence": "High",
+        "source": "we go to cashbackmonitor.com... the cash back at top cashback might be crazy at at Belulk today. So we might even be able to get 30% cash back."
+    },
+    {
+        "id": "buying-004",
+        "category": "Buying",
+        "trigger": "Email signup for coupons",
+        "advice": "Use email alias trick (e.g., add + to Gmail) to get multiple signup coupons from sites like Nautica without new accounts.",
+        "confidence": "High",
+        "source": "on Nautica, when you first log into the website, it'll prompt you to punch in your email... add a plus and then usually just expand the keyboard... that is going to redirect whatever is before the plus to that email basically."
+    },
+    {
+        "id": "buying-005",
+        "category": "Buying",
+        "trigger": "Hidden coupons via Chrome extensions",
+        "advice": "Install Capital One Shopping extension to auto-apply hidden coupons (e.g., 20% off) at checkout.",
+        "confidence": "High",
+        "source": "make sure you have a free Chrome extension, something like Capital One Shopping installed. ... You're able to get 20% off with that coupon code there."
+    },
+    {
+        "id": "risk-006",
+        "category": "Risk",
+        "trigger": "High new seller count or Amazon dominating buy box",
+        "advice": "Use FBM for risky listings with rising sellers or Amazon competition to sell faster without FBA delays.",
+        "confidence": "High",
+        "source": "if you do want to buy one of those items that's a little bit riskier where the new seller count is going up a lot, I would really just encourage you to do merchant fulfillment on that listing."
+    },
+    {
+        "id": "pricing-005",
+        "category": "Pricing",
+        "trigger": "Rewards programs (e.g., Ulta 6% effective discount)",
+        "advice": "Factor in loyalty rewards like Ulta's points (e.g., 6% discount on $2000 spend) into profit calculations.",
+        "confidence": "High",
+        "source": "at Ulta, for every 2,000 bucks you spend, you get one buck per point... works out to around like a 6% discount or so."
+    },
+    {
+        "id": "buying-006",
+        "category": "Buying",
+        "trigger": "Resale permit submission",
+        "advice": "Obtain and submit state resale permit to avoid sales tax on purchases where accepted.",
+        "confidence": "High",
+        "source": "submit your sales tax permit. So that's another one of those pretty easy just more bureaucratic ways to create profit... we're reselling these items, so we don't have to pay sales tax on this."
+    },
+    {
+        "id": "buying-007",
+        "category": "Buying",
+        "trigger": "Shipping to no-sales-tax states (e.g., Montana)",
+        "advice": "Ship to low-tax states like Montana via prep centers to save on sales tax (e.g., $0 on $50 item minus $1-2 prep fee).",
+        "confidence": "High",
+        "source": "my Amazon business, I send probably 95% of all my inventory to a prep center in Montana. And when I ship it there, I pay nothing in sales tax. So instead of the $5 in sales tax, I would pay on like a $50 item. Instead, I can pay $0 in sales tax."
+    },
+    {
+        "id": "pricing-006",
+        "category": "Pricing",
+        "trigger": "Credit card cashback (2% on $100k spend)",
+        "advice": "Use business cards like Capital One Spark for 2% cashback on inventory spend to add extra profit.",
+        "confidence": "High",
+        "source": "I spend the vast majority of my inventory budget on the Spark Cash Plus card. We spend right around 100,000 bucks a month or so on inventory. And when we're using this with 2% cash back, that is an extra 2,000 bucks a month back."
+    },
+    {
+        "id": "general-003",
+        "category": "General",
+        "trigger": "Exploring seller storefronts via Seller Amp",
+        "advice": "Analyze other sellers' storefronts in Seller Amp to identify profitable brands and listings, focusing on low-feedback sellers for similar sourcing.",
+        "confidence": "High",
+        "source": "open up one of these storefronts here because they've already done the work of sourcing this... I have a lot of success looking at storefronts that don't have a crazy amount of feedback."
+    },
+    {
+        "id": "buying-008",
+        "category": "Buying",
+        "trigger": "Gift card discounts for specific sites (e.g., 15% off JCPenney)",
+        "advice": "Apply site-specific gift card discounts (e.g., 15% off JCPenney via cardbear.com) to make marginal deals profitable.",
+        "confidence": "High",
+        "source": "when I'm looking for stuff at J C Penney, I know I can get 15% off basically right away. Just buying discounted gift cards from legitimate sites like Card Depot."
+    },
+    {
+        "id": "strat-021",
+        "category": "Buying",
+        "trigger": "Brand sales or clearances",
+        "advice": "Focus on brands with active sales/clearances for deeper sourcing; use Google Lens or Seller Amp for quick lookups.",
+        "confidence": "High",
+        "source": "Whenever I see a big kind of flashing sale going on that tells me that I can dig a little bit deeper... now that we've found a good item on a sale, we know that there's going to be more good items on that same sale."
+    },
+    {
+        "id": "strat-022",
+        "category": "General",
+        "trigger": "Ratings increasing recently",
+        "advice": "Filter variations by highest price and total ratings; prefer those with recent rating increases for proven sales.",
+        "confidence": "High",
+        "source": "Usually, I like to see those ratings increasing somewhat recently. So, something like this. You can see those sales nicely spiking up recently."
+    },
+    {
+        "id": "strat-023",
+        "category": "Pricing",
+        "trigger": "Carter's gift cards at 16% discount ($50 for $42)",
+        "advice": "Buy discounted gift cards for specific retailers (e.g., 16% off Carter's) to add extra profit (e.g., $14 per $100 spent).",
+        "confidence": "High",
+        "source": "you can buy a $50 gift card for 42 bucks right there. That's great. We can squeeze an extra $14 in profit for every $100 we're spending."
     }
 ]
