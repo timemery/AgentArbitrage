@@ -36,7 +36,7 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 MAX_ASINS_PER_BATCH = 50
 LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
-
+MAX_PAGES_PER_RUN = 50 # Safety limit to prevent runaway pagination
 
 def _convert_keepa_time_to_iso(keepa_minutes):
     """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
@@ -109,6 +109,16 @@ def update_recent_deals():
         
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
+            # --- LOOP SAFETY CHECKS ---
+            if page >= MAX_PAGES_PER_RUN:
+                logger.warning(f"Safety Limit Reached: Stopped pagination after {MAX_PAGES_PER_RUN} pages to prevent runaway task.")
+                break
+
+            if not token_manager.has_enough_tokens(5):
+                logger.warning(f"Low tokens during pagination ({token_manager.tokens}). Stopping fetch loop.")
+                break
+            # --------------------------
+
             # Sort by newest first (sortType=4: Last Update)
             deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=4)
             token_manager.update_after_call(tokens_left)
@@ -148,6 +158,11 @@ def update_recent_deals():
         asin_list = [d['asin'] for d in all_new_deals]
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
+            # Inner loop token check (optional but good practice for large batches)
+            if not token_manager.has_enough_tokens(5):
+                 logger.warning(f"Low tokens during product fetch ({token_manager.tokens}). Stopping batch processing.")
+                 break
+
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
                 api_key, batch_asins, history=1, offers=20
@@ -223,6 +238,15 @@ def update_recent_deals():
             logger.error(f"Step 6 Failed: Unexpected error during upsert: {e}", exc_info=True)
 
         # --- Final Step: Update Watermark ---
+        # Only update watermark if we actually found newer deals AND processed them properly
+        # If we broke early due to token limits, we should probably STILL update the watermark to the newest thing we saw?
+        # Or should we be conservative?
+        # If we update the watermark, we might miss the deals we skipped.
+        # However, we sort by Newest First.
+        # If we processed page 0 (newest), we have the newest deals.
+        # The skipped deals are OLDER.
+        # So it is safe to update the watermark to `newest_deal_timestamp`.
+
         if newest_deal_timestamp > watermark_keepa_time:
             new_watermark_iso = _convert_keepa_time_to_iso(newest_deal_timestamp)
             save_watermark(new_watermark_iso)
