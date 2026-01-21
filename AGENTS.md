@@ -91,6 +91,11 @@ To prevent regressions and ensure that "hard-won" code remains stable, I will ad
 
 This section contains valuable context and learnings from previous development tasks. Consult these notes before working on related parts of the codebase.
 
+### Fallback Data Warning (CRITICAL - Jan 2026)
+**Do NOT use unverified fallback data to fill missing fields.**
+Previous attempts to "solve" data gaps by using fallback values (e.g., using `monthlySold` velocity to justify using a stale `avg90` Used price) resulted in massive rejection rates and dwindling deal counts.
+-   **Principle:** If the primary data source (e.g., confirmed inferred sales) is missing, it is better to return `None` (and reject the deal) than to guess. Incorrect guesses lead to "Zombie Listings" passing initial checks but failing downstream validation (AI checks), wasting resources and obscuring real issues.
+
 ### Role-Based Access Control (RBAC)
 -   **User Roles:** The system distinguishes between `admin` and `user` roles.
 -   **Access Enforcement:**
