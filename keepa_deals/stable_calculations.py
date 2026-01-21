@@ -350,31 +350,12 @@ def analyze_sales_performance(product, sale_events):
     else:
         logger.warning(f"ASIN {asin}: No prices found for trough month {trough_month}.")
 
-    # --- High-Velocity / Sparse Data Fallback ---
-    # If we have insufficient inferred sales (e.g. graph too smooth for drops), try using monthlySold + Avg Price
+    # --- High-Velocity / Sparse Data Fallback REMOVED ---
     peak_price_mode_cents = -1
 
     if not peak_season_prices:
-        monthly_sold = product.get('monthlySold', -1)
-        # Some items have monthlySold in stats
-        if monthly_sold == -1:
-             monthly_sold = product.get('stats', {}).get('monthlySold', -1)
-
-        logger.info(f"ASIN {asin}: No peak season prices found. Checking monthlySold fallback (val={monthly_sold}).")
-
-        if monthly_sold > 20: # Arbitrary threshold for "high velocity / decent demand"
-             # Fallback to Used - 90 days avg (index 2 in stats.avg90)
-             avg90 = product.get('stats', {}).get('avg90', [])
-             if avg90 and len(avg90) > 2 and avg90[2] > 0:
-                 peak_price_mode_cents = avg90[2]
-                 logger.info(f"ASIN {asin}: Using fallback 'Used - 90 days avg' ({peak_price_mode_cents}) as Peak Price due to high monthlySold ({monthly_sold}).")
-                 # We treat this as the "peak" for now to allow XAI to validate it
-             else:
-                 logger.warning(f"ASIN {asin}: High monthlySold but no valid 'Used - 90 days avg'.")
-                 return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
-        else:
-             logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}) and insufficient monthlySold.")
-             return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
+        logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
+        return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
     else:
         # Normal calculation
         # Calculate the mode. Scipy's mode is robust.
