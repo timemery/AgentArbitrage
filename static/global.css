@@ -575,14 +575,23 @@ button:disabled {
 /* VERIFICATION: Sticky header alignment fix active - 2026-02-05 */
 #deals-table {
     width: 1333px; /* Exact match to filter panel */
-    margin: -10px auto 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
+    margin: 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
 #deals-table table {
-    border-spacing: 0 10px; /* Vertical spacing only */
+    border-spacing: 0; /* No structural spacing */
     border-collapse: separate; /* Use separate model for manual control */
     width: 100%;
+}
+
+/* Spacer Row for Pill Effect */
+.spacer-row td {
+    height: 10px !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    pointer-events: none; /* Let clicks pass through if needed */
 }
 
 #deals-table th, #deals-table td {
@@ -1593,7 +1602,7 @@ body.home-background::before {
 
 .filter-panel {
     width: 1333px;
-    background-color: #1f293c;
+    background-color: transparent;
     border: 1px solid #000000;
     border-radius: 8px;
     margin: 0 auto; /* Centered horizontally */
@@ -1615,9 +1624,18 @@ body.home-background::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-color: #13161a; /* Matches site background */
-    z-index: -1; /* Behind panel content */
+    background-color: #13161a; /* Blocker: Site Background */
+    z-index: -2; /* Bottom Layer */
     border-radius: 0; /* Square corners to block bleed-through */
+}
+
+.filter-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #1f293c; /* Visual: Panel Background */
+    z-index: -1; /* Middle Layer */
+    border-radius: 8px; /* Rounded Corners */
 }
 
 .filter-panel-closed {
