@@ -574,7 +574,7 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 #deals-table {
     width: 1333px; /* Exact match to filter panel */
-    margin: 0 auto; /* Centered with 24px top separation */
+    margin: 0 auto; /* Centered - External margins removed to fix sticky behavior */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
@@ -613,7 +613,7 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Filter + Main(134) + Group(56) */
+    top: calc(var(--filter-panel-height) + 170px); /* Adjusted: Flush with Group Header (114 + 56) */
     z-index: 180;
     transition: top 0.3s ease;
     box-shadow: 0 10px 0 #13161a; /* Fill gap below */
@@ -686,7 +686,7 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 124px); /* Adjusted: Shifted up 10px */
+    top: calc(var(--filter-panel-height) + 114px); /* Adjusted: Shifted up to cover top gap */
     z-index: 190;
     transition: top 0.3s ease;
     box-shadow: 0 10px 0 #13161a; /* Fill gap below */
@@ -773,7 +773,7 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 231px); /* Adjusted: 190 + 31 + 10 */
+    top: calc(var(--filter-panel-height) + 201px); /* Adjusted: Flush with Column Header (170 + 31) */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
@@ -1904,7 +1904,7 @@ body.home-background::before {
     width: 1333px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 266px); /* Adjusted: 231 + 25 + 10 */
+    top: calc(var(--filter-panel-height) + 236px); /* Adjusted: 201 + 25 + 10 */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;
