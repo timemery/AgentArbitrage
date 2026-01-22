@@ -285,6 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
         "All_in_Cost", "Profit", "Margin", "Gated"
     ];
 
+    const groupEndColumns = ['Condition', 'Detailed_Seasonality', 'last_price_change', 'Profit_Confidence'];
+
     const headerTitleMap = {
         "Categories_Sub": "Genre",
         "Gated": "Action",
@@ -491,10 +493,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add the new group header row
         table += '<tr class="group-header">';
-        table += '<th colspan="3">Book Details</th>';
-        table += '<th colspan="4">Supply & Demand</th>';
-        table += '<th colspan="5">Deal Details</th>';
-        table += '<th colspan="2">Trust Ratings</th>';
+        table += '<th colspan="3" class="group-end">Book Details</th>';
+        table += '<th colspan="4" class="group-end">Supply & Demand</th>';
+        table += '<th colspan="4" class="group-end">Deal Details</th>';
+        table += '<th colspan="2" class="group-end">Trust Rates</th>';
         table += '<th colspan="4">Profit Estimates</th>';
         table += '</tr>';
 
@@ -502,20 +504,22 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '<tr class="column-header-row">';
         columnsToShow.forEach(header => {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
-            table += `<th data-sort="${header}">${headerText}</th>`;
+            let groupClass = groupEndColumns.includes(header) ? 'group-end' : '';
+            table += `<th data-sort="${header}" class="${groupClass}">${headerText}</th>`;
         });
         table += '</tr>';
 
         // New sorting arrows row
         table += '<tr class="sort-arrows-row">';
         columnsToShow.forEach(header => {
+            let groupClass = groupEndColumns.includes(header) ? 'group-end' : '';
             if (header === 'Buy_Now') {
-                table += '<td></td>'; // No arrows for these columns
+                table += `<td class="${groupClass}"></td>`; // No arrows for these columns
             } else {
                 const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? '/static/ascending-on.png' : '/static/ascending-off.png';
                 const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? '/static/descending-on.png' : '/static/descending-off.png';
                 table += `
-                    <td>
+                    <td class="${groupClass}">
                         <div class="sort-arrows-container">
                             <img src="${upArrowSrc}" class="sort-arrow"
                                  data-order="asc"
@@ -541,6 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 table += `<tr class="deal-row" data-asin="${cleanAsin}" style="cursor: pointer;">`;
                 columnsToShow.forEach(col => {
+                    let groupClass = groupEndColumns.includes(col) ? 'group-end' : '';
                     let value = deal[col] != null ? deal[col] : '-';
                     // Re-written formatting logic for robustness
                     const numValue = parseFloat(value);
@@ -592,6 +597,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         value = formatCondition(value);
                     }
 
+                    let tdContent = '';
+
                     if (col === 'Gated') {
                         let gatedContent = '';
                         switch (deal.restriction_status) {
@@ -616,10 +623,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Fallback to "View" if status unknown
                                 gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #6c757d; border: 2px solid #5a6268;" onclick="event.stopPropagation()">View</a>`;
                         }
-                        table += `<td>${gatedContent}</td>`;
+                        tdContent = `<td>${gatedContent}</td>`;
+                        // Override tdContent to include class
+                        tdContent = `<td class="${groupClass}">${gatedContent}</td>`;
+
                     } else if (col === 'Title') {
                         const fullTitle = deal[col] || '';
-                        table += `<td class="title-cell" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
+                        tdContent = `<td class="title-cell ${groupClass}" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
                     } else if (col === 'Categories_Sub') {
                         let displayValue = value;
                         if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
@@ -630,19 +640,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (displayValue.trim() === '' || displayValue.trim() === '-') {
                             displayValue = 'No Subject Listed';
                         }
-                        table += `<td class="genre-cell"><span>${displayValue}</span></td>`;
+                        tdContent = `<td class="genre-cell ${groupClass}"><span>${displayValue}</span></td>`;
                     } else if (col === 'Detailed_Seasonality') {
-                        table += `<td class="season-detail-cell"><span>${value}</span></td>`;
+                        tdContent = `<td class="season-detail-cell ${groupClass}"><span>${value}</span></td>`;
                     } else if (col === 'Binding') {
-                        table += `<td class="binding-cell"><span>${value}</span></td>`;
+                        tdContent = `<td class="binding-cell ${groupClass}"><span>${value}</span></td>`;
                     } else if (col === 'Sells') {
-                        table += `<td class="sells-cell"><span>${value}</span></td>`;
+                        tdContent = `<td class="sells-cell ${groupClass}"><span>${value}</span></td>`;
                     } else if (col === 'Seller') {
-                        table += `<td class="seller-cell"><span>${value}</span></td>`;
+                        tdContent = `<td class="seller-cell ${groupClass}"><span>${value}</span></td>`;
                     } else if (col === 'ASIN') {
-                        table += `<td>${cleanAsin}</td>`;
+                        tdContent = `<td class="${groupClass}">${cleanAsin}</td>`;
                     } else if (col === 'Price_Now') {
-                        table += `<td class="price-now-cell">${value}</td>`;
+                        tdContent = `<td class="price-now-cell ${groupClass}">${value}</td>`;
                     } else if (col === 'Offers') {
                         // Style the trend arrow - Offers arrows are placed BEFORE the number?
                         // "Arrows should be placed before data in all cases, not after."
@@ -689,11 +699,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         wrapperEnd += '</div>';
 
-                        table += `<td>${wrapperStart}${cellContent}${wrapperEnd}</td>`;
+                        tdContent = `<td class="${groupClass}">${wrapperStart}${cellContent}${wrapperEnd}</td>`;
 
                     } else {
-                        table += `<td>${value}</td>`;
+                        tdContent = `<td class="${groupClass}">${value}</td>`;
                     }
+                    table += tdContent;
                 });
                 table += '</tr>';
             });
