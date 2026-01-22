@@ -1408,7 +1408,7 @@ body.home-background::before {
     border: 2px solid #a54805;
 }
 
-.group-header {
+.overlay-group-header {
     background-color: #283143;
     font-weight: bold;
     padding: 0 10px;
@@ -1421,7 +1421,7 @@ body.home-background::before {
     box-sizing: border-box;
 }
 
-.sub-header {
+.overlay-sub-header {
     background-color: #283143;
     font-weight: bold;
     padding: 0 10px;
@@ -1434,7 +1434,7 @@ body.home-background::before {
     box-sizing: border-box;
 }
 
-.group-row {
+.overlay-group-row {
     display: flex;
     justify-content: space-between;
     padding: 0 10px;
@@ -1444,15 +1444,15 @@ body.home-background::before {
     background-color: #1e2227;
     box-sizing: border-box;
 }
-.group-row:last-child {
+.overlay-group-row:last-child {
     border-bottom: none;
 }
 
-.group-row .label {
+.overlay-group-row .label {
     font-weight: normal;
     color: rgba(255, 255, 255, 0.7);
 }
-.group-row .value {
+.overlay-group-row .value {
     text-align: right;
     color: #ffffff;
     font-weight: 300;
