@@ -572,16 +572,28 @@ button:disabled {
 }
 
 /* Deals Dashboard Table Styles */
+/* VERIFICATION: Sticky header alignment fix active - 2026-02-05 */
 #deals-table {
     width: 1333px; /* Exact match to filter panel */
-    margin: 0 auto; /* Centered with 24px top separation */
+    margin: 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
 #deals-table table {
-    border-spacing: 0 10px; /* Vertical spacing only */
+    border-spacing: 0; /* No structural spacing */
     border-collapse: separate; /* Use separate model for manual control */
     width: 100%;
+}
+
+/* Spacer Row for Pill Effect */
+.spacer-row td {
+    height: 10px !important;
+    line-height: 10px !important;
+    font-size: 1px !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    pointer-events: none;
 }
 
 #deals-table th, #deals-table td {
@@ -613,10 +625,9 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Filter + Main(134) + Group(56) */
+    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Flush with Group Header (134 + 56) */
     z-index: 180;
     transition: top 0.3s ease;
-    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Pseudo-elements for Blocker and Visual Layers (Column Header) */
@@ -686,10 +697,9 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 124px); /* Adjusted: Shifted up 10px */
+    top: calc(var(--filter-panel-height) + 134px); /* Adjusted: Matches Filter Panel Bottom */
     z-index: 190;
     transition: top 0.3s ease;
-    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Pseudo-elements for Blocker (Group Header) */
@@ -773,11 +783,10 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 231px); /* Adjusted: 190 + 31 + 10 */
+    top: calc(var(--filter-panel-height) + 221px); /* Adjusted: Flush with Column Header (190 + 31) */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
-    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Pseudo-elements for Blocker (Sort Arrows) */
@@ -1595,7 +1604,7 @@ body.home-background::before {
 
 .filter-panel {
     width: 1333px;
-    background-color: #1f293c;
+    background-color: transparent;
     border: 1px solid #000000;
     border-radius: 8px;
     margin: 0 auto; /* Centered horizontally */
@@ -1611,6 +1620,24 @@ body.home-background::before {
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.filter-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Blocker: Site Background */
+    z-index: -2; /* Bottom Layer */
+    border-radius: 0; /* Square corners to block bleed-through */
+}
+
+.filter-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #1f293c; /* Visual: Panel Background */
+    z-index: -1; /* Middle Layer */
+    border-radius: 8px; /* Rounded Corners */
 }
 
 .filter-panel-closed {
@@ -1904,7 +1931,7 @@ body.home-background::before {
     width: 1333px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 266px); /* Adjusted: 231 + 25 + 10 */
+    top: calc(var(--filter-panel-height) + 246px); /* Adjusted: 221 + 25 */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;
