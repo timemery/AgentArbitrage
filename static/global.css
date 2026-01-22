@@ -579,57 +579,97 @@ button:disabled {
 }
 
 #deals-table table {
-    border-spacing: 0; /* Set spacing to 0 */
+    border-spacing: 0 10px; /* Vertical spacing only */
     border-collapse: separate; /* Use separate model for manual control */
     width: 100%;
 }
 
 #deals-table th, #deals-table td {
-    padding: 8px;
+    padding: 0 11px; /* Standard horizontal padding */
     text-align: left;
     white-space: nowrap; /* Prevent wrapping on all columns */
+    border: none; /* No default borders */
+}
+
+/* Special padding for first cell in row */
+#deals-table th:first-child,
+#deals-table td:first-child {
+    padding-left: 13px !important;
 }
 
 /* Column Header Styles */
 #deals-table th {
-    background-color: #1f293c;
+    background-color: transparent !important; /* Managed by pseudos */
     color: #a3aec0;
     font-family: 'Open Sans', sans-serif;
     font-weight: 700; /* Bold */
     font-size: 12px;
-    border-top: 1px solid #000000;
-    border-bottom: 1px solid #000000;
-    border-right: 1px solid #000000;
-    border-left: none; /* Default no left border */
     cursor: default;
-    height: 34px !important;
-    min-height: 34px !important;
-    max-height: 34px !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    max-height: 31px !important;
     vertical-align: middle !important;
     line-height: 1.2 !important;
-    padding: 0 8px !important;
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Filter + Main(134) + Group(56) */
+    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Filter + Main(134) + Group(56) */
     z-index: 180;
     transition: top 0.3s ease;
+    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
+}
+
+/* Pseudo-elements for Blocker and Visual Layers (Column Header) */
+#deals-table .column-header-row th::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Blocker: Site Background */
+    z-index: -2;
+}
+
+#deals-table .column-header-row th::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #1f293c; /* Visual: Header Color */
+    z-index: -1;
+}
+
+/* Rounded corners for Column Header Row (Applied to Visual Layer) */
+#deals-table tr.column-header-row th:first-child::after {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+#deals-table tr.column-header-row th:last-child::after {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* Remove radius from the TH itself */
+#deals-table tr.column-header-row th:first-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+#deals-table tr.column-header-row th:last-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #deals-table tr.column-header-row {
-    height: 34px !important;
-    min-height: 34px !important;
-    max-height: 34px !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    max-height: 31px !important;
 }
 
-/* Add left border to the first header cell */
-#deals-table tr > th:first-child {
-    border-left: 1px solid #000000;
+/* Group Separation Border */
+#deals-table .group-end {
+    border-right: 2px solid #13161a !important; /* Matches site background */
 }
 
 /* Group Header Styles */
 #deals-table .group-header th {
-    background-color: #13161a !important;
+    background-color: transparent !important; /* Managed by pseudos */
     color: #ffffff;
     font-family: 'Open Sans', sans-serif;
     font-weight: 700; /* Bold */
@@ -638,7 +678,7 @@ button:disabled {
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
-    padding: 0 8px !important;
+    padding: 0 11px !important;
     box-sizing: border-box !important;
     vertical-align: middle !important;
     line-height: 56px !important;
@@ -646,9 +686,31 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 134px); /* Filter + Main(134) */
+    top: calc(var(--filter-panel-height) + 124px); /* Adjusted: Shifted up 10px */
     z-index: 190;
     transition: top 0.3s ease;
+    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
+}
+
+/* Pseudo-elements for Blocker (Group Header) */
+#deals-table .group-header th::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Blocker */
+    z-index: -2;
+}
+#deals-table .group-header th::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Visual */
+    z-index: -1;
+}
+
+/* Group Header special padding */
+#deals-table .group-header th:first-child {
+    padding-left: 13px !important;
 }
 
 #deals-table tr.group-header {
@@ -664,13 +726,27 @@ button:disabled {
     font-weight: 700; /* Bold */
     font-size: 12px;
     color: #a3aec0;
-    border: none; /* Reset default borders if any */
 }
 
 /* Row Styles */
 .deal-row {
-    height: 48px; /* Adjusted target height */
-    background-color: #283143; /* Normal Data Row Color */
+    height: 47px; /* Adjusted target height */
+    background-color: transparent; /* Transparent so cells control the background/radius */
+}
+
+.deal-row td {
+    background-color: #283143; /* Normal Data Row Color applied to cells */
+}
+
+/* Rounded corners for Data Rows */
+#deals-table .deal-row td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+#deals-table .deal-row td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding-right: 11px !important; /* Ensure padding for button */
 }
 
 
@@ -682,26 +758,47 @@ button:disabled {
 
 /* Sort Arrows Row Styles */
 #deals-table .sort-arrows-row {
-    height: 24px !important;
-    max-height: 24px !important;
-    min-height: 24px !important;
+    height: 25px !important; /* Adjusted to 25px */
+    max-height: 25px !important;
+    min-height: 25px !important;
 }
 
 #deals-table .sort-arrows-row td {
-    background-color: #13161a; /* Opaque matching site background */
-    height: 24px !important;
-    min-height: 24px !important;
-    max-height: 24px !important;
-    padding: 0 8px !important;
-    line-height: 24px !important;
+    background-color: transparent !important; /* Managed by pseudos */
+    height: 25px !important; /* Adjusted to 25px */
+    min-height: 25px !important;
+    max-height: 25px !important;
+    padding: 0 11px !important;
+    line-height: 25px !important; /* Adjusted */
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 224px); /* Filter + Main(134) + Group(56) + Col(34) */
+    top: calc(var(--filter-panel-height) + 231px); /* Adjusted: 190 + 31 + 10 */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
+    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
+
+/* Pseudo-elements for Blocker (Sort Arrows) */
+#deals-table .sort-arrows-row td::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Blocker */
+    z-index: -2;
+}
+#deals-table .sort-arrows-row td::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Visual */
+    z-index: -1;
+}
+#deals-table .sort-arrows-row td:first-child {
+    padding-left: 13px !important;
+}
+
 
 .sort-arrows-container {
     display: flex;
@@ -1807,7 +1904,7 @@ body.home-background::before {
     width: 1333px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 248px); /* Filter + Main(134) + Group(56) + Col(34) + Arrows(24) */
+    top: calc(var(--filter-panel-height) + 266px); /* Adjusted: 231 + 25 + 10 */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;
