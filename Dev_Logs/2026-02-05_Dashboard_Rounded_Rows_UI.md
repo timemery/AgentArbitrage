@@ -19,4 +19,8 @@ Addressed a regression where the new `border-spacing: 0 10px` introduced to crea
 - The `box-shadow` approach is cleaner than adding pseudo-elements or borders because it moves with the sticky element automatically and respects the table cell box model.
 
 ## Status
-- **Verified:** Mathematical model aligns with the spacing constraints. Overlaps should be resolved.
+- **Unsuccessful:** The task was closed by the user as the changes did not have the desired effect.
+- **Outstanding Issues:**
+  - Extra padding/margin/spacing above the Group Headers was **NOT** removed.
+  - Extra padding/margin/spacing both above and below the Ascending/Descending arrows was **NOT** removed.
+- **Action:** Code submitted as-is to preserve state for the next attempt.
