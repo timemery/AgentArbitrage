@@ -19,8 +19,6 @@ def test_dashboard_sticky_headers():
         page.click("button[type='submit']")
 
         # Go to Dashboard
-        # Note: The login logic in wsgi_handler.py redirects 'tester' (admin) to /guided_learning
-        # We need to manually navigate to /dashboard after login if the redirect goes elsewhere
         page.wait_for_load_state("networkidle")
         if "/dashboard" not in page.url:
             page.goto("http://localhost:5000/dashboard")
@@ -28,16 +26,20 @@ def test_dashboard_sticky_headers():
         # Wait for table to load
         page.wait_for_selector("#deals-table table", timeout=20000)
 
-        # Scroll down to trigger sticky headers
-        # We need to scroll enough to pass the filter panel (134px + 43px = 177px)
-        page.evaluate("window.scrollTo(0, 500)")
+        # 1. Capture Top State (Static)
+        time.sleep(1)
+        page.screenshot(path="verification/dashboard_top_static.png", clip={'x': 0, 'y': 0, 'width': 1920, 'height': 400})
+
+        # 2. Scroll down to trigger sticky headers
+        # Scroll enough to move the table up but keep headers sticky
+        # Filter Bottom is ~177px. Scroll 200px.
+        page.evaluate("window.scrollTo(0, 250)")
 
         # Wait a bit for transition
         time.sleep(2)
 
         # Take screenshot of the header area
-        # We focus on the top part of the viewport where sticky headers are
-        page.screenshot(path="verification/dashboard_sticky_headers.png", clip={'x': 0, 'y': 0, 'width': 1920, 'height': 400})
+        page.screenshot(path="verification/dashboard_scrolled_sticky.png", clip={'x': 0, 'y': 0, 'width': 1920, 'height': 400})
 
         browser.close()
 

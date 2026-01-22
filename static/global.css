@@ -572,9 +572,10 @@ button:disabled {
 }
 
 /* Deals Dashboard Table Styles */
+/* VERIFICATION: Sticky header alignment fix active - 2026-02-05 */
 #deals-table {
     width: 1333px; /* Exact match to filter panel */
-    margin: 0 auto; /* Centered - External margins removed to fix sticky behavior */
+    margin: -10px auto 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
@@ -613,7 +614,7 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 170px); /* Adjusted: Flush with Group Header (114 + 56) */
+    top: calc(var(--filter-panel-height) + 200px); /* Adjusted: Flush with Group Header (134 + 56 + 10) */
     z-index: 180;
     transition: top 0.3s ease;
     box-shadow: 0 10px 0 #13161a; /* Fill gap below */
@@ -686,7 +687,7 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 114px); /* Adjusted: Shifted up to cover top gap */
+    top: calc(var(--filter-panel-height) + 134px); /* Adjusted: Matches Filter Panel Bottom */
     z-index: 190;
     transition: top 0.3s ease;
     box-shadow: 0 10px 0 #13161a; /* Fill gap below */
@@ -773,7 +774,7 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 201px); /* Adjusted: Flush with Column Header (170 + 31) */
+    top: calc(var(--filter-panel-height) + 241px); /* Adjusted: Flush with Column Header (200 + 31 + 10) */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
@@ -1904,7 +1905,7 @@ body.home-background::before {
     width: 1333px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 236px); /* Adjusted: 201 + 25 + 10 */
+    top: calc(var(--filter-panel-height) + 276px); /* Adjusted: 241 + 25 + 10 */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;
