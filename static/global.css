@@ -1330,7 +1330,7 @@ body.home-background::before {
     margin-top: 0;
     font-size: 1.3em; /* Increased size */
     margin-bottom: 5px;
-    color: #75afd1;
+    color: #ffffff;
     text-align: left; /* Left align */
 }
 .ava-advice-container p {
@@ -1414,7 +1414,7 @@ body.home-background::before {
     padding: 0 10px;
     border: 1px solid #000000;
     margin-top: 0;
-    color: rgba(102, 153, 204, 0.9);
+    color: #ffffff;
     height: 42px;
     display: flex;
     align-items: center;
@@ -1427,7 +1427,7 @@ body.home-background::before {
     padding: 0 10px;
     border: 1px solid #000000;
     margin-top: 0;
-    color: rgba(102, 153, 204, 0.9);
+    color: #ffffff;
     height: 42px;
     display: flex;
     align-items: center;
