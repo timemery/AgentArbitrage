@@ -1,38 +1,22 @@
-# Dashboard Rounded Rows UI Update
+# Dashboard Sticky Header Fix & Refinement
 
 ## Overview
-Implemented a major UI refresh for the Dashboard table rows to match the `UI_AA_V2_RoundedRows.png` visual specification. The update introduces rounded corners for all rows ("pills"), distinct separation between column groups, and updated spacing/dimensions.
+Addressed a regression where the new `border-spacing: 0 10px` introduced to create "pill" rows caused the sticky header stack to overlap ("squish") during scroll. The vertical spacing acted as extra margin that was not accounted for in the sticky top offsets.
 
 ## Changes
 
-### 1. Dashboard Template (`templates/dashboard.html`)
-- **Group Logic:** Updated `renderTable` to identify "Group End" columns (`Condition`, `Detailed_Seasonality`, `last_price_change`, `Profit_Confidence`) and apply the `group-end` class to `th` and `td` elements.
-- **Sorting Arrows:** Applied `group-end` logic to the sort arrows row to maintain visual consistency.
-
-### 2. Global Styles (`static/global.css`)
-- **Table Structure:**
-  - Switched to `border-collapse: separate` with `border-spacing: 0 10px` to create vertical gaps between rows.
-  - Removed default borders from cells.
-- **Row Styling ("Pills"):**
-  - **Correction:** Removed `background-color` from row (`tr`) elements to allow proper border-radius clipping.
-  - Applied `background-color` directly to `td` and `th` cells (`#1f293c` Header, `#283143` Data).
-  - Applied `border-radius: 8px` to the **first** and **last** cells of every row to creating the "pill" shape.
-  - Hover states updated to apply background color to `td` cells.
-- **Group Separation:**
-  - Implemented `.group-end` with `border-right: 2px solid #13161a`. This uses the site background color to create the illusion of a cut/gap between groups while keeping the row logically connected.
-- **Dimensions & Spacing:**
-  - **Column Header Height:** Reduced to **31px** (was 34px).
-  - **Data Row Height:** Set to **47px**.
-  - **Padding:** Enforced `13px` left padding on the first column and `11px` horizontal padding generally.
-- **Sticky Header Stack:**
-  - Recalculated `top` offsets for sticky elements to account for the header height change (34px -> 31px).
-  - **Sort Arrows:** Top offset adjusted to `calc(var(--filter-panel-height) + 221px)`.
-  - **Shadow Line:** Top offset adjusted to `calc(var(--filter-panel-height) + 245px)`.
+### 1. Global Styles (`static/global.css`)
+- **Recalculated Sticky Offsets:** Updated `top` values for sticky elements to explicitly account for the `10px` gap between each row.
+  - **Column Headers:** Increased offset by 10px (`190px` -> `200px`).
+  - **Sort Arrows:** Increased offset by 20px (`221px` -> `241px`) (Accumulated gaps).
+  - **Shadow Line:** Increased offset by 30px (`245px` -> `275px`) (Accumulated gaps).
+- **Gap Filling:** Added `box-shadow: 0 10px 0 #13161a` to sticky header cells (`.group-header th`, `.column-header-row th`, `.sort-arrows-row td`).
+  - **Purpose:** This projects a solid 10px block of the site background color *below* the sticky element. This visual "filler" hides the scrolling content that would otherwise be visible through the transparent 10px gap caused by `border-spacing`.
+  - **Result:** The headers stack solidly without bleed-through, while maintaining the required spacing for the data row "pills".
 
 ## Technical Notes
-- The "Group Separation" relies on the border color matching the body background (`#13161a`). If the background changes, this border color must be updated.
-- The Sort Arrows row remains on a transparent (background-matching) row, effectively sitting in the "gap" between the header pill and the first data pill.
+- The math relies on the `border-spacing` being exactly `10px`. If spacing changes, all `top` offsets and `box-shadow` values must be updated.
+- The `box-shadow` approach is cleaner than adding pseudo-elements or borders because it moves with the sticky element automatically and respects the table cell box model.
 
 ## Status
-- **Complete:** UI matches the provided red-line mockup specifications.
-- **Verified:** Frontend verification script passed and screenshot confirmed rounded corner rendering.
+- **Verified:** Mathematical model aligns with the spacing constraints. Overlaps should be resolved.

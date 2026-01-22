@@ -613,9 +613,10 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Filter + Main(134) + Group(56) */
+    top: calc(var(--filter-panel-height) + 200px); /* Filter + Main(134) + Group(56) + Gap(10) */
     z-index: 180;
     transition: top 0.3s ease;
+    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Rounded corners for Column Header Row */
@@ -661,6 +662,7 @@ button:disabled {
     top: calc(var(--filter-panel-height) + 134px); /* Filter + Main(134) */
     z-index: 190;
     transition: top 0.3s ease;
+    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 /* Group Header special padding */
 #deals-table .group-header th:first-child {
@@ -727,10 +729,11 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 221px); /* Filter + Main(134) + Group(56) + Col(31) */
+    top: calc(var(--filter-panel-height) + 241px); /* Filter + Main(134) + Group(56) + Gap(10) + Col(31) + Gap(10) */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
+    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 #deals-table .sort-arrows-row td:first-child {
     padding-left: 13px !important;
@@ -1841,7 +1844,7 @@ body.home-background::before {
     width: 1333px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 245px); /* Filter + Main(134) + Group(56) + Col(31) + Arrows(24) */
+    top: calc(var(--filter-panel-height) + 275px); /* Filter + Main(134) + Group(56) + Gap(10) + Col(31) + Gap(10) + Arrows(24) + Gap(10) */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;
