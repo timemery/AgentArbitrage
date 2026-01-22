@@ -707,6 +707,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     table += tdContent;
                 });
                 table += '</tr>';
+                table += `<tr class="spacer-row"><td colspan="${columnsToShow.length}">&nbsp;</td></tr>`;
             });
         } else {
             table += `<tr><td colspan="${columnsToShow.length}" class="no-deals-message">No deals found matching the criteria.</td></tr>`;

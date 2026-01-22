@@ -588,10 +588,12 @@ button:disabled {
 /* Spacer Row for Pill Effect */
 .spacer-row td {
     height: 10px !important;
+    line-height: 10px !important;
+    font-size: 1px !important;
     background-color: transparent !important;
     padding: 0 !important;
     border: none !important;
-    pointer-events: none; /* Let clicks pass through if needed */
+    pointer-events: none;
 }
 
 #deals-table th, #deals-table td {
