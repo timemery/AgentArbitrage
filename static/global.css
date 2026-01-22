@@ -614,10 +614,9 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 200px); /* Adjusted: Flush with Group Header (134 + 56 + 10) */
+    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Flush with Group Header (134 + 56) */
     z-index: 180;
     transition: top 0.3s ease;
-    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Pseudo-elements for Blocker and Visual Layers (Column Header) */
@@ -690,7 +689,6 @@ button:disabled {
     top: calc(var(--filter-panel-height) + 134px); /* Adjusted: Matches Filter Panel Bottom */
     z-index: 190;
     transition: top 0.3s ease;
-    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Pseudo-elements for Blocker (Group Header) */
@@ -774,11 +772,10 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 241px); /* Adjusted: Flush with Column Header (200 + 31 + 10) */
+    top: calc(var(--filter-panel-height) + 221px); /* Adjusted: Flush with Column Header (190 + 31) */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
-    box-shadow: 0 10px 0 #13161a; /* Fill gap below */
 }
 
 /* Pseudo-elements for Blocker (Sort Arrows) */
@@ -1614,6 +1611,15 @@ body.home-background::before {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.filter-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Matches site background */
+    z-index: -1; /* Behind panel content */
+    border-radius: 0; /* Square corners to block bleed-through */
+}
+
 .filter-panel-closed {
     height: 43px;
 }
@@ -1905,7 +1911,7 @@ body.home-background::before {
     width: 1333px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 276px); /* Adjusted: 241 + 25 + 10 */
+    top: calc(var(--filter-panel-height) + 246px); /* Adjusted: 221 + 25 */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;
