@@ -109,15 +109,14 @@
         <span class="close-overlay">&times;</span>
 
         <div id="ava-advice-container" class="ava-advice-container">
-            <h3>Advice from Ava:
+            <h3>Purchase Assessment & Advice
                 <div id="ava-spinner" class="spinner-inline"></div>
             </h3>
             <p id="ava-advice-text">Analyzing...</p>
         </div>
 
         <div class="overlay-action-bar">
-            <div class="gated-status" id="overlay-gated-status">Gated: <span>-</span></div>
-            <a href="#" id="overlay-buy-btn" class="overlay-buy-btn" target="_blank">Buy Now</a>
+            <!-- Action buttons injected dynamically -->
         </div>
 
         <div class="overlay-grid">
@@ -1118,19 +1117,25 @@ document.addEventListener('DOMContentLoaded', function() {
             // Gated
             messageHtml = 'You are <strong class="action-strong-red">Not Approved</strong> to sell this title: ';
             const applyUrl = (deal.approval_url && deal.approval_url !== 'ERROR') ? deal.approval_url : 'https://sellercentral.amazon.com/hz/approvalrequest?asin=' + deal.ASIN;
-            buttonHtml = `<a href="${applyUrl}" target="_blank" class="yellow-action-btn">Apply Now</a>`;
+            buttonHtml = `<a href="${applyUrl}" target="_blank" class="overlay-action-btn overlay-btn-apply">Apply Now</a>`;
         } else if (deal.restriction_status === 'not_restricted') {
             // Approved
             messageHtml = 'You are <strong class="action-strong-white">Approved</strong> to sell this title: ';
             const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
-            buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn">Buy Now</a>`;
+            buttonHtml = `<a href="${buyUrl}" target="_blank" class="overlay-action-btn overlay-btn-buy">Buy Now</a>`;
         } else if (deal.restriction_status === 'pending_check') {
              messageHtml = 'Checking approval status... <span class="spinner-small"></span>';
         } else {
              // Default / Error / Unknown
              messageHtml = 'Approval status unknown: ';
              const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
-             buttonHtml = `<a href="${buyUrl}" target="_blank" class="yellow-action-btn view-amazon-btn">View on Amazon</a>`;
+             // Use Apply style for fallback view but maybe neutral color if desired, currently using Apply Orange style or maybe keep generic
+             // User requested specific colors for Buy (Green) and Apply (Orange).
+             // For "View on Amazon" fallback, I'll use a generic style if needed, or default to Buy style but grey?
+             // The previous code had "yellow-action-btn view-amazon-btn" where view-amazon-btn had opacity 0.7.
+             // I will use a simple inline style or just the base class with a background override if needed, or just let it use the new classes.
+             // Given the prompt "Restyle the Buy Now and Apply Now buttons...", I will use a grey fallback.
+             buttonHtml = `<a href="${buyUrl}" target="_blank" class="overlay-action-btn" style="background-color: #6c757d; border: 2px solid #5a6268;">View on Amazon</a>`;
         }
 
         actionBar.innerHTML = `<span class="action-message">${messageHtml}</span> ${buttonHtml}`;

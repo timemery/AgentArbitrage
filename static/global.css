@@ -513,16 +513,17 @@ button:disabled {
     background-color: rgba(0,0,0,0.5);
 }
 .deal-overlay-content {
-    background-color: #003852;
+    background-color: #13161a;
     color: #ffffff;
     margin: 5% auto;
-    padding: 20px;
-    border: 1px solid rgba(102, 153, 204, 0.5); /* Updated from #888 to match theme */
+    padding: 40px;
+    border: 1px solid #1f293c;
     width: 95%; /* Updated from 80% to match dashboard */
     max-width: 1200px;
     border-radius: 8px; /* Updated from 10px */
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Added box shadow */
+    font-family: 'Open Sans', sans-serif;
 }
 .deal-overlay-content h1, .deal-overlay-content h2, .deal-overlay-content h3 {
     color: #ffffff;
@@ -1277,9 +1278,9 @@ body.home-background::before {
 }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
-.action-message { font-size: 1.1em; margin-right: 10px; color: white; }
-.action-strong-red { color: #ff4d4d; }
-.action-strong-white { color: white; }
+.action-message { font-size: 0.9em; margin-right: 10px; color: white; font-weight: 400 !important; }
+.action-strong-red { color: #ff4d4d; font-weight: 400 !important; }
+.action-strong-white { color: white; font-weight: 400 !important; }
 .view-amazon-btn { opacity: 0.7; }
 
 /* Overlay Styles (Merged from Dashboard) */
@@ -1317,10 +1318,10 @@ body.home-background::before {
 }
 
 .ava-advice-container {
-    border: 1px solid rgba(102, 153, 204, 0.5);
+    border: 1px solid #000000;
     padding: 15px;
     margin-bottom: 20px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: #283143;
     border-radius: 5px;
     clear: both; /* Ensure it sits below the close button */
     margin-top: 35px; /* Add space for the close button above */
@@ -1361,47 +1362,87 @@ body.home-background::before {
 .overlay-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    border: 1px solid rgba(102, 153, 204, 0.4);
+    gap: 20px;
     font-size: 0.85em;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: transparent;
+    border: none;
 }
 
 .grid-group {
-    border-right: 1px solid rgba(102, 153, 204, 0.4);
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
-.grid-group:last-child {
-    border-right: none;
+
+.overlay-action-btn {
+    height: 32px;
+    border-radius: 8px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 0 15px; /* Auto width */
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    line-height: 1;
+    color: white;
+}
+.overlay-action-btn:hover {
+    color: white;
+    text-decoration: none;
+    opacity: 0.9;
+}
+
+.overlay-btn-buy {
+    background-color: #034106;
+    border: 2px solid #06610b;
+}
+
+.overlay-btn-apply {
+    background-color: #8a3c04;
+    border: 2px solid #a54805;
 }
 
 .group-header {
-    background-color: #011b2a;
+    background-color: #283143;
     font-weight: bold;
-    padding: 5px 10px;
-    border-top: 1px solid rgba(102, 153, 204, 0.4);
-    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    padding: 0 10px;
+    border: 1px solid #000000;
     margin-top: 0;
     color: rgba(102, 153, 204, 0.9);
+    height: 42px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .sub-header {
-    background-color: #011b2a;
+    background-color: #283143;
     font-weight: bold;
-    padding: 5px 10px;
-    border-top: 1px solid rgba(102, 153, 204, 0.4);
-    border-bottom: 1px solid rgba(102, 153, 204, 0.4);
+    padding: 0 10px;
+    border: 1px solid #000000;
     margin-top: 0;
     color: rgba(102, 153, 204, 0.9);
+    height: 42px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .group-row {
     display: flex;
     justify-content: space-between;
-    padding: 6px 10px;
-    border-bottom: 1px solid rgba(102, 153, 204, 0.2);
+    padding: 0 10px;
+    border: none;
     align-items: center;
-    min-height: 24px;
+    height: 40px;
+    background-color: #1e2227;
+    box-sizing: border-box;
 }
 .group-row:last-child {
     border-bottom: none;
