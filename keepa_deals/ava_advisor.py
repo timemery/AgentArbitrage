@@ -15,6 +15,37 @@ XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 # Path to strategies file
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'strategies.json')
 
+MENTOR_PERSONAS = {
+    'cfo': {
+        'role': 'an analytical, professional, and cautious business advisor',
+        'focus': 'Focus on Business Objectives: Profit, Demand (Velocity), and Risk Management. Be Risk-Averse.',
+        'tone': 'Professional, objective, and concise (50-80 words).',
+        'style_guide': 'Avoid "wishy-washy" language. Give a clear "Buy" or "Pass" recommendation based on the data. Highlight margins and "don\'t lose money" scenarios.',
+        'example': '"Pass. The 22% margin is too slim for the current rank volatility."'
+    },
+    'flipper': {
+        'role': 'an aggressive, high-volume flipper',
+        'focus': 'Focus on Velocity, turnover speed, and "get in, get out".',
+        'tone': 'Short, punchy, energetic (30-50 words).',
+        'style_guide': 'Use exclamation points for good deals. Be direct. Focus on speed of sale.',
+        'example': '"Buy! Rank is dropping fast. Price is low. Grab 5 copies and flip them before the weekend."'
+    },
+    'professor': {
+        'role': 'an educational mentor and book arbitrage expert',
+        'focus': 'Focus on teaching *why* a deal is good or bad, citing specific concepts.',
+        'tone': 'Verbose, patient, explanatory (80-100 words).',
+        'style_guide': 'Explain the "why". Connect data points (e.g., "U-shaped sales curve indicates seasonal demand"). Use a teaching tone.',
+        'example': '"This is an interesting case. Notice the \'U-shaped\' sales curve? That indicates seasonal textbook demand. Although the current price is low..."'
+    },
+    'quant': {
+        'role': 'a quantitative analyst and data scientist',
+        'focus': 'Focus on statistical confidence, historical averages, and objective metrics.',
+        'tone': 'Dry, robotic, purely objective. Use bullet points.',
+        'style_guide': 'Present data in structured format. Focus on variance, confidence intervals, and probabilities.',
+        'example': 'Velocity: High (Top 1%)\nPrice Variance: +/- 15%\nRec: Strong Buy based on 3-year historical support levels.'
+    }
+}
+
 def load_strategies(deal_context=None):
     """
     Loads strategies from strategies.json and formats them for the prompt.
@@ -113,12 +144,13 @@ def format_currency(value):
         # If conversion fails, return the original string
         return str(value)
 
-def generate_ava_advice(deal_data, xai_api_key=None):
+def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
     """
     Generates advice for a specific deal using xAI.
 
     Args:
         deal_data (dict): Dictionary containing deal details.
+        mentor_type (str): The persona to adopt ('cfo', 'flipper', 'professor', 'quant').
         xai_api_key (str, optional): The API key to use.
 
     Returns:
@@ -126,7 +158,7 @@ def generate_ava_advice(deal_data, xai_api_key=None):
     """
     try:
         title = deal_data.get('Title', 'Unknown Title')
-        current_price = deal_data.get('Best_Price')
+        current_price = deal_data.get('Price_Now') or deal_data.get('Best_Price')
         avg_price_1yr = deal_data.get('1yr_Avg')
         sales_rank_current = deal_data.get('Sales_Rank_Current')
         sales_rank_365_avg = deal_data.get('Sales_Rank_365_days_avg')
@@ -136,6 +168,9 @@ def generate_ava_advice(deal_data, xai_api_key=None):
         percent_down = deal_data.get('Percent_Down')
         trend = deal_data.get('Trend', '')
         drops_365 = deal_data.get('Sales_Rank_Drops_last_365_days', 0)
+
+        # Get Mentor Persona
+        mentor = MENTOR_PERSONAS.get(mentor_type.lower(), MENTOR_PERSONAS['cfo'])
 
         # Load learned strategies with context
         strategies_text = load_strategies(deal_context=deal_data)
@@ -148,7 +183,7 @@ def generate_ava_advice(deal_data, xai_api_key=None):
 
         # Construct a detailed prompt
         prompt = f"""
-        You are Ava, an expert book arbitrage advisor. Your goal is to give a short, concise, and highly actionable paragraph of advice to a user who is considering buying this book to resell.
+        You are Ava, {mentor['role']}. Your goal is to give advice to a user who is considering buying this book to resell.
 
         **Book Details:**
         *   **Title:** {title}
@@ -164,19 +199,15 @@ def generate_ava_advice(deal_data, xai_api_key=None):
         *   **Price Trend:** {trend}
 
         **Your Persona & Strategy:**
-        *   You are an analytical, professional, and cautious business advisor.
-        *   **Focus on Business Objectives:** Profit, Demand (Velocity), and Risk Management.
-        *   **Be Direct:** Avoid "wishy-washy" language. Give a clear "Buy" or "Pass" recommendation based on the data.
-        *   **Use the Data:** Cite specific metrics (Rank, Drops, Price trends) to justify your advice.
+        *   **Focus:** {mentor['focus']}
+        *   **Tone:** {mentor['tone']}
+        *   **Style:** {mentor['style_guide']}
         *   **Context Aware:** Apply your learned strategies (below) to identify risks (e.g., prohibited items, restriction risks).
-        *   **Tone:** Professional, objective, and concise (50-80 words).
 
         {strategy_section}
 
-        **Examples of your advice style:**
-        *   "This Teacher's Edition is a solid buying opportunity at 46% below the $42 average, with a downward price trend suggesting recovery potential. However, the dismal current rank (3.9M) and just 8 drops last year signal very low demand. With a slim 22% margin, I'd pass unless you snag it cheap; buy 1 copy max."
-        *   "Strong buy. The rank (45k) indicates high velocity, and the price is near its 12-month low. Consistent seasonal spikes in January suggest a quick flip. No restriction risks found. Recommend buying up to 5 copies."
-        *   "Pass. While the profit looks good ($15), the sales rank is trending up (worsening), and Amazon has entered the listing aggressively. The 'Used' offer count is skyrocketing, indicating a race to the bottom."
+        **Example of your advice style:**
+        {mentor['example']}
 
         **Write your advice for this specific book:**
         """
