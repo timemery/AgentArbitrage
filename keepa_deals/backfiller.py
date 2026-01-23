@@ -245,6 +245,9 @@ def backfill_deals(reset=False):
                     finally:
                         if conn: conn.close()
 
+                # Throttling to prevent excessive token consumption
+                time.sleep(60)
+
             save_backfill_state(page)
             page += 1
             time.sleep(1)

@@ -102,7 +102,7 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
             "mustHaveAmazonOffer": False,
             "mustNotHaveAmazonOffer": False,
             "sortType": sort_type,
-            "dateRange": "3",
+            "dateRange": 3,
             "warehouseConditions": [
                 2,
                 3,

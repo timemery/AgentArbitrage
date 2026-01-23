@@ -22707,5 +22707,1093 @@
         "advice": "Balance filters to avoid too many (restricting results) or too few (yielding thousands of unprofitable, low-selling products); always include sales rank cap and profit/ROI minimums.",
         "confidence": "High",
         "source": "if you put too many filters you're going to just restrict how many results you have whereas if you put too little filters you're gonna have thousands and thousands... of results that are not even profitable... you need to definitely put like if you're going to put any filters you need to put you need to cap it off at a maximum sales rank and then you need to create a profit margin"
+    },
+    {
+        "id": "ta-trial-1",
+        "category": "General",
+        "trigger": "Signing up for Tactical Arbitrage",
+        "advice": "Ensure you have a professional Amazon seller account before starting; use the extended 10-day trial link for OA Hunt readers.",
+        "confidence": "High",
+        "source": "*Important Note: You will need a professional Amazon seller account to conduct product searches with Tactical Arbitrage. Make sure you have one before you sign up for your trial. OA Hunt readers are offered an extended trial (10 days total) using the link below."
+    },
+    {
+        "id": "searches-2",
+        "category": "Buying",
+        "trigger": "Conducting product searches",
+        "advice": "Run up to 20 searches simultaneously and keep searches running 24/7 to ensure a continuous supply of products to source and purchase.",
+        "confidence": "High",
+        "source": "You can run 20 searches at a time. I would also recommend that you always have searches going. Some searches are done in an hour, others can take a full day. If you always have searches running 24/7 you will always have products to source and purchase."
+    },
+    {
+        "id": "filters-3",
+        "category": "General",
+        "trigger": "Initial product search stage",
+        "advice": "Avoid using too many filters initially; apply filters after the full search is complete to review the final data.",
+        "confidence": "High",
+        "source": "I would caution against using too many filters during this initial stage. Once you have the full search done, you can go in and filter from the final data."
+    },
+    {
+        "id": "reverse-search-4",
+        "category": "Buying",
+        "trigger": "Having a list of ASINs available",
+        "advice": "Upload ASINs into the reverse search tool to scan retail sites for profitable products, which often yields more opportunities than standard searches.",
+        "confidence": "High",
+        "source": "Once you source the ASINs, you will upload them all into the reverse search tool. Then the software will pull all that data and scan all its websites to find those products for you. In my experience, this has brought me more profitable products than a standard search."
+    },
+    {
+        "id": "wholesale-scan-5",
+        "category": "Risk",
+        "trigger": "Uploading wholesaler product sheets with 40k+ products",
+        "advice": "After scanning, verify that the Amazon listing matches the product quantity (single item vs. bundles or multipacks) before purchasing.",
+        "confidence": "High",
+        "source": "Some wholesalers can have 40k+ products in their product sheet. ... it can display Amazon items that are bundles or multipacks. So before you get too excited and start buying a bunch of wholesale products, do your research! Make sure that the pricing you are looking at matches the product quantity that is in the Amazon listing."
+    },
+    {
+        "id": "amazon-flips-6",
+        "category": "Pricing",
+        "trigger": "Amazon product going out of stock regularly",
+        "advice": "Buy the product from Amazon when in stock at low price, hold inventory, and resell when out of stock for a 3-6x or greater price increase; plan for longer holding periods.",
+        "confidence": "High",
+        "source": "When Amazon goes out of stock, the price will generally increase by 3-6x or more! When you come across an item that indicates Amazon going out of stock regularly, it can be a great item to buy from amazon, hold, and then sell it once Amazon goes out of stock. For these items, you won\u2019t generally buy today and flip tomorrow. These items are generally held for a longer amount of time while you wait for the item to go out of stock."
+    },
+    {
+        "id": "library-search-7",
+        "category": "Buying",
+        "trigger": "Sourcing books specifically",
+        "advice": "Use the Library Search module, which functions similarly to the standard product search but is dedicated to scanning and sourcing books.",
+        "confidence": "High",
+        "source": "The library search module is very similar to the product search but it\u2019s for scanning and sourcing books."
+    },
+    {
+        "id": "always-scanning-8",
+        "category": "General",
+        "trigger": "Running out of primary scans to review",
+        "advice": "Use the Always Be Scanning feature as a secondary tool, checking it once a week for additional products across all sites.",
+        "confidence": "High",
+        "source": "The always be scanning feature is exactly as it sounds. It\u2019s a feature in Tactical Arbitrage that constantly scans through all the sites and finds you products. I would not recommend this as your primary focus. It\u2019s more of a secondary scan that you can use when you run out. Maybe check it once a week and see what type of products are in there."
+    },
+    {
+        "id": "xpaths-9",
+        "category": "Buying",
+        "trigger": "Needing access to sites not in Tactical Arbitrage's list",
+        "advice": "Create Xpaths to scan custom sites for an edge over competitors; hire a freelancer on Fiverr if lacking technical knowledge.",
+        "confidence": "High",
+        "source": "Xpaths are really cool once you understand them! Basically, an Xpath is a code that allows you to scan sites that are not on the tactical arbitrage sourcing list. ... Xpaths give you an edge. You can find new sites and plug them into the software yourself. ... I didn\u2019t have this knowledge myself so I found a freelancer online that would create them for me. If you\u2019re looking for a freelancer to help with this I would highly recommend checking out Fiverr."
+    },
+    {
+        "id": "ta-filter-roi-rank",
+        "category": "General",
+        "trigger": "ROI < 20% or Sales Rank > 50,000",
+        "advice": "Set filters to find products with at least 20% ROI or ranking below 50,000 to identify profitable opportunities.",
+        "confidence": "High",
+        "source": "Data Filtering: Users can set filters to find products with at least a 20% ROI or a ranking below 50,000."
+    },
+    {
+        "id": "ta-scan-running",
+        "category": "General",
+        "trigger": "No active scans",
+        "advice": "Always have at least one scan running at all times to continuously discover new ASINs and subcategories.",
+        "confidence": "High",
+        "source": "I would recommend that you always have at least one scan running at all times."
+    },
+    {
+        "id": "ta-results-retention",
+        "category": "General",
+        "trigger": "Results older than 28 days",
+        "advice": "Save leads you like to keep them beyond the 28-day retention period for Always Be Scanning results.",
+        "confidence": "High",
+        "source": "Always be scanning results stay in your account for 28 days. You can save any leads that you like if you want to keep them around beyond this window."
+    },
+    {
+        "id": "ta-cache-duration",
+        "category": "General",
+        "trigger": "Default cache settings",
+        "advice": "Set the cache to as long as possible, up to 10 days, to optimize scan efficiency.",
+        "confidence": "High",
+        "source": "We recommend that you set the cache to as long as possible, which for me is 10 days."
+    },
+    {
+        "id": "ta-category-limit",
+        "category": "General",
+        "trigger": "More than 500 categories",
+        "advice": "Limit bulk category lists to 500 at a time and ensure scans complete within 72 hours; resume manually if needed.",
+        "confidence": "High",
+        "source": "Keep in mind that you can only run 500 categories at a time, and you only have 72 hours for a scan to run. If a scan fails to fully run in 72 hours, you simply need to manually resume the scan."
+    },
+    {
+        "id": "ta-remove-third-party",
+        "category": "Buying",
+        "trigger": "Items from third-party sellers",
+        "advice": "Always activate the filter to remove third-party sellers as they are not worth the time due to chain of custody issues.",
+        "confidence": "High",
+        "source": "Third Party Sellers: Always activate this. Third party sellers are really not worth our time as it is really hard to prove the chain of custody when buying from them."
+    },
+    {
+        "id": "ta-oversize-filter",
+        "category": "Risk",
+        "trigger": "Oversize products",
+        "advice": "Leave the oversize products filter on unless you can handle large inventory to manage storage risks.",
+        "confidence": "High",
+        "source": "Oversize Products: I leave this on, but if you can\u2019t hold large inventory turn it off."
+    },
+    {
+        "id": "ta-out-of-stock-opportunity",
+        "category": "Buying",
+        "trigger": "Out of stock items",
+        "advice": "Leave the out-of-stock filter off as it can present buying opportunities.",
+        "confidence": "High",
+        "source": "Out of Stock: I leave that off because that can sometimes be an opportunity."
+    },
+    {
+        "id": "ta-sales-limit",
+        "category": "Pricing",
+        "trigger": "Estimated monthly sales < 5",
+        "advice": "Set a low estimated sales limit of 5 to filter for viable products.",
+        "confidence": "High",
+        "source": "Estimated Sales Limit: This is a monthly figure. I usually set a low limit of 5."
+    },
+    {
+        "id": "ta-cost-overestimate",
+        "category": "Pricing",
+        "trigger": "Uncertain costs/fees",
+        "advice": "Overestimate costs and fees by 25 to 50 cents to ensure accurate ROI calculations and avoid underestimating expenses.",
+        "confidence": "High",
+        "source": "Overestimating (usually by 25 to 50 cents) is always better than undervaluing costs and fees."
+    },
+    {
+        "id": "ta-roi-avoid-high",
+        "category": "Pricing",
+        "trigger": "ROI target > 400%",
+        "advice": "Avoid setting ROI to 400% or higher; focus on consistent, replenishable items with realistic profits like singles and doubles instead of rare high-ROI items.",
+        "confidence": "High",
+        "source": "You shouldn\u2019t set your ROI to 400% or something crazy like that... Don\u2019t shoot for the fences when it's way easier to hit singles and doubles."
+    },
+    {
+        "id": "ta-scan-limit",
+        "category": "General",
+        "trigger": "More than 5 concurrent scans",
+        "advice": "Run up to 5 scans simultaneously; additional scans queue, but use Rubies to increase active scans if needed.",
+        "confidence": "High",
+        "source": "You can run multiple scans at the same time, with a baseline limit of about 5. After the 5th scan is installed, the remaining searches should go into a queue."
+    },
+    {
+        "id": "ta-reverse-asin-limit",
+        "category": "General",
+        "trigger": "More than 25,000 ASINs",
+        "advice": "Limit reverse search uploads to 25,000 ASINs per CSV; use Rubies to increase capacity.",
+        "confidence": "High",
+        "source": "This software is limited to accepting a maximum of 25,000 ASINs in a CSV or Spreadsheet, so keep that in mind."
+    },
+    {
+        "id": "ta-min-profit-roi",
+        "category": "Pricing",
+        "trigger": "Profit < $1 or ROI < 10%",
+        "advice": "Set minimum profit to $1 and ROI to 10% in reverse search filters to identify viable opportunities.",
+        "confidence": "High",
+        "source": "I typically look for at least 1$ profit and at least 10% ROI."
+    },
+    {
+        "id": "ta-bestseller-level",
+        "category": "General",
+        "trigger": "More than 1 level of separation",
+        "advice": "Use Scan Bestsellers with only the 1st level of separation to avoid getting too granular.",
+        "confidence": "High",
+        "source": "I typically don\u2019t get too granular with it and only use the 1st level."
+    },
+    {
+        "id": "ta-sales-rank-limit",
+        "category": "General",
+        "trigger": "Sales Rank > 100,000",
+        "advice": "Use features like Scan Bestsellers to return ASINs with sales rank at or below 100,000 for good product viability.",
+        "confidence": "High",
+        "source": "It will return any ASINs that are positioned at or below 100,000 in the sales rank, so you know that you are looking at good products."
+    },
+    {
+        "id": "ta-loosen-filters-mf",
+        "category": "Pricing",
+        "trigger": "Tight ROI/NP filters for FBA only",
+        "advice": "For merchant fulfilled opportunities, loosen ROI and net profit filters by a dollar or two and 10% to discover items where you can price 10% higher and win the buy box.",
+        "confidence": "High",
+        "source": "Set your ROI and NP (net profit) filters a dollar or two and 10% lower. It will allow you to discover items that you wouldn't normally buy, but if the buy box is held by an MF seller, you can typically can price up to 10% higher and win the buy box."
+    },
+    {
+        "id": "ta-library-search-books",
+        "category": "Buying",
+        "trigger": "Searching for inexpensive book titles",
+        "advice": "Use Library Search to find books to resell at a profit by scanning sites like BarnesandNoble.com and AbeBooks.com.",
+        "confidence": "High",
+        "source": "Library Search: This feature helps sellers find books to resell at a profit by searching through sites like BarnesandNoble.com and AbeBooks.com for inexpensive titles."
+    },
+    {
+        "id": "filter-sales-1",
+        "category": "Pricing",
+        "trigger": "Minimum estimated sales per month < 1",
+        "advice": "Set the minimum estimated sales per month to at least 1 to gather potential products meeting basic profitability criteria",
+        "confidence": "High",
+        "source": "Sales and ROI: Set the minimum estimated sales per month to at least 1 and the minimum Return on Investment (ROI) to 1%."
+    },
+    {
+        "id": "filter-roi-1",
+        "category": "Pricing",
+        "trigger": "Minimum ROI < 1%",
+        "advice": "Set the minimum Return on Investment (ROI) to 1% to ensure basic profitability targets are met",
+        "confidence": "High",
+        "source": "Sales and ROI: Set the minimum estimated sales per month to at least 1 and the minimum Return on Investment (ROI) to 1%."
+    },
+    {
+        "id": "filters-broad",
+        "category": "General",
+        "trigger": "Initial filter setup",
+        "advice": "Start with loosened filters to create a larger pool of potential products for evaluation",
+        "confidence": "High",
+        "source": "Loosened filters: Initially, it\u2019s a good idea not to restrict your filters too much. Start broad so you have a larger pool of potential products to evaluate."
+    },
+    {
+        "id": "cache-live",
+        "category": "General",
+        "trigger": "Need current pricing information",
+        "advice": "Set Cache to 'LIVE ONLY' to search only live sites for the most accurate current data, though it takes longer",
+        "confidence": "High",
+        "source": "If you leave this set to \u201cLIVE ONLY,\u201d then Tactical Arbitrage will only search live sites and will not check older data from other users. This is the best way to get current information, but it takes longer to perform the search."
+    },
+    {
+        "id": "cache-3day",
+        "category": "General",
+        "trigger": "Ongoing sale for 3 days",
+        "advice": "Select '3 Day' in Set Cache to use cached data that reflects sale prices nearly as accurately as live data for speed",
+        "confidence": "High",
+        "source": "For instance, if you\u2019re eyeing a sale that has been ongoing for 3 days, you could select \u201c3 Day\u201d in Set Cache. You could be sure the sale prices would be reflected, so the cached data would be nearly as accurate as live data."
+    },
+    {
+        "id": "scan-pages",
+        "category": "General",
+        "trigger": "Category with 317 products at 100 per page",
+        "advice": "Set start page to 1 and last page to 4 to scan all products in the category",
+        "confidence": "High",
+        "source": "For example, if you want to scan all 317 products in the category and there are 100 per page, set the start page value as 1 and the last page value as 4. Leave blank to scan all available products in that category."
+    },
+    {
+        "id": "search-duration",
+        "category": "General",
+        "trigger": "Need to limit search time",
+        "advice": "Stop the search after a set duration between 3\u201360 hours to control runtime",
+        "confidence": "High",
+        "source": "If you want, you can also export your results to Google Drive, name your search, or stop the search after a set duration (3\u201360 hours)."
+    },
+    {
+        "id": "searches-simultaneous",
+        "category": "General",
+        "trigger": "Most TA plans",
+        "advice": "Run up to four searches simultaneously to explore multiple categories or sites",
+        "confidence": "High",
+        "source": "You can run up to four searches simultaneously on most TA plans, except for Pro where you can run up to 10."
+    },
+    {
+        "id": "queue-scans",
+        "category": "General",
+        "trigger": "First five TA plans",
+        "advice": "Queue up to 3 searches to run in the background while exploring multiple categories",
+        "confidence": "High",
+        "source": "You can also queue up to 3 searches in the first five plans and up to 20 scans if you\u2019re a Pro user."
+    },
+    {
+        "id": "segment-scans",
+        "category": "General",
+        "trigger": "Targeting a major retailer with extensive inventory",
+        "advice": "Segment scans by specific categories like electronics, home goods, apparel to manage data effectively",
+        "confidence": "High",
+        "source": "When focusing on a website on a large scale, it\u2019s often more efficient to segment your scans by specific categories. For example, say you\u2019re targeting a major retailer with an extensive inventory. You can run separate scans for electronics, home goods, apparel, and so on."
+    },
+    {
+        "id": "manual-urls",
+        "category": "General",
+        "trigger": "Targeting specific categories not covered by Easy Bulk",
+        "advice": "Manually enter up to 25 category URLs to scan, pressing enter after each to separate them",
+        "confidence": "High",
+        "source": "You can add up to 25 category URLs. Just press enter after each one to separate them."
+    },
+    {
+        "id": "results-columns",
+        "category": "General",
+        "trigger": "Analyzing scan results",
+        "advice": "Arrange columns as: data chart, product image, Amazon image, title, Amazon title, gross profit, and price for quick assessment",
+        "confidence": "High",
+        "source": "A recommended setup is to arrange the columns as follows: data chart, product image, Amazon image, title, Amazon title, gross profit, and price."
+    },
+    {
+        "id": "update-data",
+        "category": "General",
+        "trigger": "Before final analysis of results",
+        "advice": "Click Update Data to refresh source and adjusted prices, Amazon data, or all data for the most accurate information",
+        "confidence": "High",
+        "source": "For the most accurate analysis, click on Update Data to refresh source and adjusted prices, Amazon data, or all data."
+    },
+    {
+        "id": "risk-too-good",
+        "category": "Risk",
+        "trigger": "Deals that seem too good to be true",
+        "advice": "Be cautious as they might be bundled items or have hidden issues skewing the data",
+        "confidence": "High",
+        "source": "Be cautious of deals that seem too good to be true, as they might be bundled items or have other hidden issues that skew the data."
+    },
+    {
+        "id": "upc-image-match",
+        "category": "General",
+        "trigger": "Searching for hard-to-find items with matching images but no UPC",
+        "advice": "Toggle Check UPC Products for Image Matches ON to uncover opportunities, but note it doubles search time",
+        "confidence": "High",
+        "source": "Toggle this switch ON if you want the tool to check for image and title matches on Amazon. ... This feature can uncover hard-to-find items, but be aware that enabling it can double your search time."
+    },
+    {
+        "id": "out-of-stock-results",
+        "category": "Buying",
+        "trigger": "Opportunities with Amazon out-of-stock products",
+        "advice": "Toggle Show Amazon Out-of-Stock Results ON under Other Filters to include such products",
+        "confidence": "High",
+        "source": "Toggling it ON will include results for products currently out of stock on Amazon, which can present unique opportunities."
+    },
+    {
+        "id": "reverse-search",
+        "category": "General",
+        "trigger": "Need broader search view",
+        "advice": "Toggle UPC sites and Title/Image Sites ON in Show Reverse Search Results to include more comprehensive product data",
+        "confidence": "High",
+        "source": "Toggle UPC sites and Title/Image Sites options ON to broaden your search. It\u2019ll also provide a more comprehensive view of available products."
+    },
+    {
+        "id": "buy-small",
+        "category": "Risk",
+        "trigger": "First-time purchases",
+        "advice": "Buy smaller quantities of several products rather than all-in on one to minimize risk and gain experience",
+        "confidence": "High",
+        "source": "If you\u2019re just starting out, consider buying smaller quantities of several products rather than going all-in on one item. This approach helps you gain experience, test the waters, and build confidence without taking on too much risk."
+    },
+    {
+        "id": "ungating-restricted",
+        "category": "Buying",
+        "trigger": "Products in restricted categories",
+        "advice": "Apply for ungating to gain permission and expand inventory options",
+        "confidence": "High",
+        "source": "As you come across products in restricted categories, don\u2019t forget to apply for ungating. Gaining permission to sell in these categories keeps your options open and expands your inventory."
+    },
+    {
+        "id": "upc-format-fix",
+        "category": "Buying",
+        "trigger": "UPC is 11 digits (e.g., 21200011139)",
+        "advice": "Reformat by adding a leading zero to make it exactly 12 digits (e.g., 021200011139) before uploading",
+        "confidence": "High",
+        "source": "Pro tip: Check your UPC format before uploading. Valid UPCs need to be exactly 12 digits. Sometimes, supplier lists contain 11-digit UPCs (like 21200011139) that need to be reformatted with a leading zero (021200011139)."
+    },
+    {
+        "id": "wholesale-reduction",
+        "category": "Pricing",
+        "trigger": "Supplier offers percentage discount for orders over $1,000",
+        "advice": "Enter the percentage (e.g., 5) in the Wholesale Reductions field to automatically adjust all prices",
+        "confidence": "High",
+        "source": "For example, if your supplier offers a 5% discount for orders over $1,000, you can enter \u201c5\u201d in the Wholesale Reductions field to adjust all prices automatically."
+    },
+    {
+        "id": "cashback-adjustment",
+        "category": "Pricing",
+        "trigger": "Available cashback from credit cards or supplier programs",
+        "advice": "Enter the cashback percentage in the Cashback Percentage field to include in profit calculations",
+        "confidence": "High",
+        "source": "Cashback Percentage: Add cashback from credit cards or supplier programs"
+    },
+    {
+        "id": "gift-card-savings",
+        "category": "Pricing",
+        "trigger": "Savings from discounted gift cards",
+        "advice": "Enter the gift card percentage in the Gift Card Percentage field to factor into costs",
+        "confidence": "High",
+        "source": "Gift Card Percentage: Include savings from discounted gift cards"
+    },
+    {
+        "id": "provider-shipping",
+        "category": "Pricing",
+        "trigger": "Typical shipping cost is about 3% of product cost",
+        "advice": "Enter the percentage (e.g., 3) in the Provider shipping costs field to include in profit calculations",
+        "confidence": "High",
+        "source": "If you know your typical shipping cost is about 3% of your product cost, enter \u201c3\u201d in this field to include it in profit calculations."
+    },
+    {
+        "id": "sales-tax",
+        "category": "Pricing",
+        "trigger": "Pay sales tax on wholesale purchases without tax-exempt status",
+        "advice": "Enter your local tax rate in the Sales tax considerations field for accurate profit projections",
+        "confidence": "High",
+        "source": "Unless you have tax-exempt status, you\u2019ll likely pay sales tax on wholesale purchases. Enter your local tax rate to ensure accurate profit projections."
+    },
+    {
+        "id": "prep-cost",
+        "category": "Pricing",
+        "trigger": "Cost to prepare each item for Amazon FBA",
+        "advice": "Enter the prep cost per item in the Prep Cost Per Item field for accurate ROI calculations",
+        "confidence": "High",
+        "source": "Prep Cost Per Item: The cost to prepare each item for Amazon FBA"
+    },
+    {
+        "id": "shipping-per-pound",
+        "category": "Pricing",
+        "trigger": "Average cost to ship items to Amazon",
+        "advice": "Enter the shipping cost per pound in the Shipping Cost Per Pound field for complete cost picture",
+        "confidence": "High",
+        "source": "Shipping Cost Per Pound: Your average cost to ship items to Amazon"
+    },
+    {
+        "id": "inbound-shipping-per-item",
+        "category": "Pricing",
+        "trigger": "Flat-rate shipping calculation to Amazon",
+        "advice": "Enter the inbound shipping cost per item in the Inbound Shipping Cost Per Item field as an alternative",
+        "confidence": "High",
+        "source": "Inbound Shipping Cost Per Item: Alternative flat-rate shipping calculation"
+    },
+    {
+        "id": "cache-feature",
+        "category": "General",
+        "trigger": "Need faster preliminary scans or speed is critical",
+        "advice": "Set Cache to 1 hour to 7 days and toggle Cache Only Search on; follow with live searches on promising products",
+        "confidence": "High",
+        "source": "Set Cache: Choose how recent the cached data should be (1 hour to 7 days); Cache Only Search: Toggle this on to search only cached data"
+    },
+    {
+        "id": "supplier-organization",
+        "category": "General",
+        "trigger": "Building relationships with multiple suppliers",
+        "advice": "Label sources during upload, use consistent naming conventions, create separate searches per supplier, and save successful filter combinations",
+        "confidence": "High",
+        "source": "Always label your sources during upload; Use consistent naming conventions; Create separate searches for each supplier; Save successful filter combinations for each supplier"
+    },
+    {
+        "id": "upc-matching-prefer",
+        "category": "Buying",
+        "trigger": "UPCs are accurate and available",
+        "advice": "Use UPC Matching as it is faster and more precise; toggle on 'Also Check UPC Products for Image Matches' for backup",
+        "confidence": "High",
+        "source": "UPC Matching: Faster and more precise when UPCs are accurate; However, toggling on \u201cAlso Check UPC Products for Image Matches\u201d provides a backup method"
+    },
+    {
+        "id": "image-matching-backup",
+        "category": "Buying",
+        "trigger": "UPCs are missing or incorrect",
+        "advice": "Use Image Matching as a helpful alternative when UPCs have issues",
+        "confidence": "High",
+        "source": "Image Matching: Helpful when UPCs are missing or incorrect"
+    },
+    {
+        "id": "upc-format-1",
+        "category": "General",
+        "trigger": "UPC is 11 digits (e.g., 21200011139)",
+        "advice": "Reformat by adding a leading zero to make it exactly 12 digits (e.g., 021200011139) before uploading",
+        "confidence": "High",
+        "source": "Valid UPCs need to be exactly 12 digits. Sometimes, supplier lists contain 11-digit UPCs (like 21200011139) that need to be reformatted with a leading zero (021200011139)."
+    },
+    {
+        "id": "wholesale-reduction-1",
+        "category": "Pricing",
+        "trigger": "Supplier offers percentage discount for orders over $1,000",
+        "advice": "Enter the discount percentage (e.g., 5) in the Wholesale Reductions field to adjust all prices automatically",
+        "confidence": "High",
+        "source": "For example, if your supplier offers a 5% discount for orders over $1,000, you can enter \u201c5\u201d in the Wholesale Reductions field to adjust all prices automatically."
+    },
+    {
+        "id": "cashback-percentage-1",
+        "category": "Pricing",
+        "trigger": "Available cashback from credit cards or supplier programs",
+        "advice": "Add the cashback percentage in the Cashback Percentage field to factor into profit calculations",
+        "confidence": "High",
+        "source": "Cashback Percentage: Add cashback from credit cards or supplier programs"
+    },
+    {
+        "id": "gift-card-percentage-1",
+        "category": "Pricing",
+        "trigger": "Savings from discounted gift cards",
+        "advice": "Include the percentage savings in the Gift Card Percentage field",
+        "confidence": "High",
+        "source": "Gift Card Percentage: Include savings from discounted gift cards"
+    },
+    {
+        "id": "provider-shipping-1",
+        "category": "Pricing",
+        "trigger": "Typical shipping cost is about 3% of product cost",
+        "advice": "Enter the percentage (e.g., 3) in the Provider shipping costs field to include in profit calculations",
+        "confidence": "High",
+        "source": "If you know your typical shipping cost is about 3% of your product cost, enter \u201c3\u201d in this field to include it in profit calculations."
+    },
+    {
+        "id": "sales-tax-1",
+        "category": "Pricing",
+        "trigger": "Pay sales tax on wholesale purchases without tax-exempt status",
+        "advice": "Enter your local tax rate in the Sales tax considerations field for accurate profit projections",
+        "confidence": "High",
+        "source": "Unless you have tax-exempt status, you\u2019ll likely pay sales tax on wholesale purchases. Enter your local tax rate to ensure accurate profit projections."
+    },
+    {
+        "id": "prep-cost-1",
+        "category": "Pricing",
+        "trigger": "Costs to prepare each item for Amazon FBA",
+        "advice": "Enter the prep cost per item in the Prep Cost Per Item field for accurate ROI calculations",
+        "confidence": "High",
+        "source": "Prep Cost Per Item: The cost to prepare each item for Amazon FBA"
+    },
+    {
+        "id": "shipping-per-pound-1",
+        "category": "Pricing",
+        "trigger": "Average cost to ship items to Amazon",
+        "advice": "Enter the shipping cost per pound in the Shipping Cost Per Pound field",
+        "confidence": "High",
+        "source": "Shipping Cost Per Pound: Your average cost to ship items to Amazon"
+    },
+    {
+        "id": "inbound-shipping-1",
+        "category": "Pricing",
+        "trigger": "Flat-rate shipping calculation to Amazon",
+        "advice": "Enter the inbound shipping cost per item in the Inbound Shipping Cost Per Item field as an alternative",
+        "confidence": "High",
+        "source": "Inbound Shipping Cost Per Item: Alternative flat-rate shipping calculation"
+    },
+    {
+        "id": "cache-feature-1",
+        "category": "General",
+        "trigger": "Need faster preliminary scans or speed is critical",
+        "advice": "Set Cache to 1 hour to 7 days recent data and toggle Cache Only Search on; follow with live searches on promising products",
+        "confidence": "High",
+        "source": "Set Cache: Choose how recent the cached data should be (1 hour to 7 days); Cache Only Search: Toggle this on to search only cached data. Use cache searches for preliminary scans or when speed is critical, then run live searches on promising batches of products for the most current data."
+    },
+    {
+        "id": "supplier-organization-1",
+        "category": "General",
+        "trigger": "Building relationships with multiple suppliers",
+        "advice": "Label sources during upload, use consistent naming conventions, create separate searches for each supplier, and save successful filter combinations",
+        "confidence": "High",
+        "source": "Always label your sources during upload; Use consistent naming conventions; Create separate searches for each supplier; Save successful filter combinations for each supplier"
+    },
+    {
+        "id": "matching-method-1",
+        "category": "Buying",
+        "trigger": "UPCs are accurate and available",
+        "advice": "Use UPC Matching for faster and more precise results",
+        "confidence": "High",
+        "source": "UPC Matching: Faster and more precise when UPCs are accurate"
+    },
+    {
+        "id": "matching-method-2",
+        "category": "Buying",
+        "trigger": "UPCs are missing or incorrect",
+        "advice": "Use Image Matching as a backup method",
+        "confidence": "High",
+        "source": "Image Matching: Helpful when UPCs are missing or incorrect"
+    },
+    {
+        "id": "matching-method-3",
+        "category": "Buying",
+        "trigger": "Products with UPC issues",
+        "advice": "Toggle on 'Also Check UPC Products for Image Matches' to provide a backup method",
+        "confidence": "High",
+        "source": "For most wholesale searches, UPC matching is preferable. However, toggling on \u201cAlso Check UPC Products for Image Matches\u201d provides a backup method for products with UPC issues."
+    },
+    {
+        "id": "rule-010",
+        "category": "General",
+        "trigger": "Use of sourcing tools",
+        "advice": "Employ free tools like Priceblink, Honey, Invisible Hand, Cashback Monitor, and Hummingbird for deal detection, coupons, and cashback to reduce costs and increase ROI.",
+        "confidence": "High",
+        "source": "Priceblink is a Chrome extension that helps you know when the item you are reviewing can be bought somewhere else at a lower cost... Honey... helps you find and apply the best coupon codes... Invisible Hand enables you to make informed purchases... Cash back is something that exists and should be used... Hummingbird Hover Graph Extension... allows you to interact with graphical data..."
+    },
+    {
+        "id": "rule-011",
+        "category": "Buying",
+        "trigger": "Automated sourcing with software",
+        "advice": "Use paid tools like Tactical Arbitrage to scan over 1,000 sites, filter by sales rank and ROI, and analyze results for scalable deal finding.",
+        "confidence": "High",
+        "source": "Tactical Arbitrage... allows sellers to search a ton of sites with just a few clicks... Filter products on numerous criteria such as Amazon sales ranking and ROI... Scans over 1,000 product sourcing websites... Results analysis for the deep dive into the listings and products."
+    },
+    {
+        "id": "bsr-selection-1",
+        "category": "Buying",
+        "trigger": "Best Sellers Rank is low (e.g., not enormous)",
+        "advice": "Select products with a low Best Sellers Rank to ensure they sell at a volume worth your time; avoid products with high ranks",
+        "confidence": "High",
+        "source": "When you look at a listing, look for a heading called \u201cProduct Details.\u201d Then, look for the \u201cBest Sellers Rank\u201d below that. This ranking will show you how well the item has been selling within its product category. The lower that number is, the better that product has been selling through Amazon. If it has an enormous number, it\u2019s best to stay away from that product."
+    },
+    {
+        "id": "competition-pricing-2",
+        "category": "Pricing",
+        "trigger": "Competing sellers within 2% of the buy box price",
+        "advice": "List your product price within 2% of the buy box to remain competitive and win sales",
+        "confidence": "High",
+        "source": "Your main competition will be those sellers who are within about 2% of the price in the buy box. ... The price you list the product for should also be within this 2% range."
+    },
+    {
+        "id": "niche-products-3",
+        "category": "Buying",
+        "trigger": "Mainstream products with high competition",
+        "advice": "Focus on niche products that have a ready-made customer base but less competition to sell quickly with fewer rivals",
+        "confidence": "High",
+        "source": "That\u2019s why it\u2019s important to find niche products that will still sell well. A niche product has a ready-made customer base, but it isn\u2019t something that everyone would buy. These types of products can still sell quickly, but you will have far less competition when you sell them."
+    },
+    {
+        "id": "brand-evaluation-4",
+        "category": "Buying",
+        "trigger": "Brand is not well-established",
+        "advice": "Prioritize established brands that already have marketing, reputation, and customer base to avoid additional marketing costs",
+        "confidence": "High",
+        "source": "Before choosing a product, look into the brand. Do they market themselves? Is it a brand that is already established in its niche? ... If the brand isn\u2019t well-established, you may end up having to market it for the company."
+    },
+    {
+        "id": "negotiation-trick-5",
+        "category": "Buying",
+        "trigger": "Contacting manufacturer or distributor for bulk purchase",
+        "advice": "Negotiate the price per unit when buying large volumes to potentially lower costs below competitors and gain an edge",
+        "confidence": "High",
+        "source": "When you get in touch with a manufacturer or distributor, don\u2019t be afraid to negotiate the price. ... If you\u2019re buying a large volume, you may be able to negotiate down the price per unit. If you are able to get a lower price than your competitors, you might be able to be the top seller even if the listing is crowded."
+    },
+    {
+        "id": "sales-estimation-6",
+        "category": "General",
+        "trigger": "Known sales numbers and number of competitors",
+        "advice": "Estimate your potential sales volume by dividing total sales numbers by the number of competitors to assess viability",
+        "confidence": "High",
+        "source": "Look at the number of items that are selling. With third-party software, you can not only see the competition, but you can see an estimate of how many of the items are moving. When you divide the sales numbers by the number of competitors, you can see just how likely it is that you will be able to sell a high volume of that item."
+    },
+    {
+        "id": "manufacturer-competition-7",
+        "category": "Risk",
+        "trigger": "Manufacturer is also selling on Amazon",
+        "advice": "Avoid products where the manufacturer sells directly on Amazon, as they can price lower than wholesalers due to no wholesale markup",
+        "confidence": "High",
+        "source": "It\u2019s also important to look at the competition and to make sure the manufacturer of the product isn\u2019t selling it. When the manufacturer is a competitor, they can always price the item for lower than you can because they made a profit when they sold you the items in the first place."
+    },
+    {
+        "id": "seasonal-balance-8",
+        "category": "Seasonality",
+        "trigger": "Products are seasonal (e.g., holiday items)",
+        "advice": "Balance inventory with evergreen and seasonal products across categories to maintain steady sales year-round, avoiding unsold holiday stock in off-seasons",
+        "confidence": "High",
+        "source": "Having many products to sell also gives you a way to keep your items evergreen. If you have holiday items, these won\u2019t sell in summer, so you will need summer items as well. Balancing your product offerings takes time and a lot of work."
+    },
+    {
+        "id": "moq-consideration-9",
+        "category": "Risk",
+        "trigger": "High minimum order quantities (MOQ)",
+        "advice": "Evaluate your budget against MOQs before pursuing; avoid or negotiate high MOQs unless high profit potential justifies the upfront cost",
+        "confidence": "High",
+        "source": "Your wholesale account will likely have minimum quantities (MOQ) that you have to buy in order to get the product. ... Some manufacturers have enormous minimums that would be hard for any small business to afford. These products are ones you might want to shy away from, but it could also be an opportunity to make big money."
+    },
+    {
+        "id": "roi-priority-10",
+        "category": "General",
+        "trigger": "High competition but strong profitability",
+        "advice": "Prioritize products with high ROI even if competition is present, as profitability indicates strong demand worth pursuing",
+        "confidence": "High",
+        "source": "However, if you find a product that is highly profitable, sells fast and has a lot of competition, it may be worth it to sell this product. Profitability is a major indicator that a product may be right for you to sell. The ROI numbers are important, even if it takes a little longer for your item to sell."
+    },
+    {
+        "id": "ta-001",
+        "category": "Buying",
+        "trigger": "Configuring search criteria",
+        "advice": "Set filters based on categories, price, shipping costs, and calculate Amazon fees to estimate profit margins",
+        "confidence": "High",
+        "source": "Set your filters based on categories, price, shipping costs, and more. With just a few clicks, the software starts working its magic, calculating Amazon fees, and estimating profit margins to highlight the most profitable products."
+    },
+    {
+        "id": "ta-002",
+        "category": "General",
+        "trigger": "Running scans",
+        "advice": "Run scans for several hours to capture complete results including real winners",
+        "confidence": "High",
+        "source": "The real winners can take longer so my suggestion is to set up scans and let them run for several hours before you check in on them."
+    },
+    {
+        "id": "ta-003",
+        "category": "Buying",
+        "trigger": "Using filters for precision",
+        "advice": "Apply advanced filters for estimated sales, ROI, number of sellers, profit margin to focus on high-potential products",
+        "confidence": "High",
+        "source": "Use advanced filters like estimated sales, ROI, number of sellers, profit margin, and more. These tools allow you to narrow your focus and find the products that match your exact criteria."
+    },
+    {
+        "id": "ta-004",
+        "category": "Buying",
+        "trigger": "Hybrid arbitrage opportunity",
+        "advice": "Scan stores with brick-and-mortar locations to find products online and pick up in-store for better margins",
+        "confidence": "High",
+        "source": "If the stores you're scanning have local brick and mortar stores you can even find the products online and pick them up in store. We call this hybrid arbitrage."
+    },
+    {
+        "id": "ta-005",
+        "category": "Risk",
+        "trigger": "Amazon fees variation",
+        "advice": "Account for referral fees, fulfillment fees, and storage fees that vary by product category, size, and weight when estimating profits",
+        "confidence": "High",
+        "source": "Amazon fees can eat away at profits if you\u2019re not careful. Sellers are charged referral fees, fulfillment fees, and storage fees\u2014all of which can vary by product category, size, and weight."
+    },
+    {
+        "id": "ta-006",
+        "category": "Pricing",
+        "trigger": "Winning the Buy Box",
+        "advice": "Price competitively by balancing profitability with factors like shipping times and seller ratings to secure the Buy Box",
+        "confidence": "High",
+        "source": "To win the highly coveted Buy Box... sellers need to price competitively without sacrificing profits. ...consider factors like shipping times, seller ratings, and other metrics that Amazon uses to award the Buy Box."
+    },
+    {
+        "id": "ta-007",
+        "category": "Pricing",
+        "trigger": "Undercutting competitors",
+        "advice": "Undercut slightly below competition only as a liquidation strategy, ensuring Amazon fees and costs are accounted for to avoid profit loss",
+        "confidence": "High",
+        "source": "One tried-and-true method is pricing your products slightly below the competition to snag the buy box. But here\u2019s the catch\u2014if you don't account for Amazon fees and other costs, you could end up cutting into your profits... In today's world of smart repricing you likely don't need to undercut and should only use this as a liquidation strategy."
+    },
+    {
+        "id": "ta-008",
+        "category": "Pricing",
+        "trigger": "Bundling products",
+        "advice": "Offer bundles or discounts on multiple purchases to boost sales, but calculate margins carefully to maintain profitability",
+        "confidence": "High",
+        "source": "Offering bundle deals or discounts on multiple purchases is a powerful way to boost sales... The trick? Make sure your discounts don't gobble up all your profits. By carefully calculating your margins..."
+    },
+    {
+        "id": "ta-009",
+        "category": "Buying",
+        "trigger": "Leveraging cashback",
+        "advice": "Use cashback websites, credit cards, and discount codes when sourcing to reduce upfront costs and increase margins",
+        "confidence": "High",
+        "source": "Smart sellers know how to use cashback sites, discount codes, and retailer promotions to reduce their upfront costs... You can significantly increase your margins on each sale by stacking cashback and discount offers."
+    },
+    {
+        "id": "ta-010",
+        "category": "Buying",
+        "trigger": "Advanced mode searches",
+        "advice": "In advanced mode, enter specific ASINs, sales velocity, and ROI targets for precise product sourcing",
+        "confidence": "High",
+        "source": "Its advanced mode allows you to fine-tune your searches by entering specific ASINs, sales velocity, ROI targets, and more."
+    },
+    {
+        "id": "ta-011",
+        "category": "General",
+        "trigger": "Continuous monitoring",
+        "advice": "Enable the Always Be Scanning feature for constant scans across retail sites with notifications for profitable products",
+        "confidence": "High",
+        "source": "The \u201cAlways Be Scanning\u201d feature takes sourcing to the next level, running constant scans across your selected retail sites and sending notifications when profitable products hit the market."
+    },
+    {
+        "id": "ta-012",
+        "category": "Risk",
+        "trigger": "Inventory replenishment",
+        "advice": "Use sales history and profit margin reports to identify high-potential repeat sales items and avoid stockouts",
+        "confidence": "High",
+        "source": "With its detailed reports on product performance\u2014covering everything from sales history to profit margins\u2014you can easily track which items are flying off the shelves... Analyzing past sales patterns highlights products with high potential for repeat sales."
+    },
+    {
+        "id": "ta-013",
+        "category": "Seasonality",
+        "trigger": "Prime Day events",
+        "advice": "Leverage tools like Tactical Arbitrage during high-demand events like Prime Day to source and sell over 200 million items profitably",
+        "confidence": "Medium",
+        "source": "Independent sellers sold more than 200 million items on Prime Day 2024, and many are gaining a competitive edge with tools like Tactical Arbitrage"
+    },
+    {
+        "id": "oa-018",
+        "category": "General",
+        "trigger": "Scaling operations",
+        "advice": "Phase 1 (Months 1-3): Master research; Phase 2 (3-6): Systematize; Phase 3 (6+): Scale with outsourcing",
+        "confidence": "High",
+        "source": "Phase 1: Learning (Months 1-3); Phase 2: Systematizing (Months 3-6); Phase 3: Scaling (Months 6+)"
+    },
+    {
+        "id": "oa-019",
+        "category": "Risk",
+        "trigger": "Inventory performance",
+        "advice": "Keep IPI Score above 450 to avoid storage limits",
+        "confidence": "High",
+        "source": "IPI Score (Inventory Performance Index) \u2013 Keep above 450 to avoid storage limits"
+    },
+    {
+        "id": "oa-020",
+        "category": "Pricing",
+        "trigger": "Repricing for Buy Box",
+        "advice": "Use intelligent repricing to win Buy Box without lowest price, aiming for 40-60% increase in ownership",
+        "confidence": "High",
+        "source": "Online arbitrage sellers using Aura typically see: 40-60% increase in Buy Box ownership"
+    },
+    {
+        "id": "aa-001",
+        "category": "General",
+        "trigger": "Planned sales volume <40 items per month",
+        "advice": "Choose Individual Seller Account with no monthly fee but $0.99 per-item fee to test the waters",
+        "confidence": "High",
+        "source": "Individual Seller Account: This account type requires no monthly fee, but you pay a per-item fee (currently $0.99) for each product sold. This choice is best if you plan to sell fewer than 40 items per month or just want to test the waters."
+    },
+    {
+        "id": "aa-002",
+        "category": "General",
+        "trigger": "Planned sales volume >40 items per month",
+        "advice": "Choose Professional Seller Account for $39.99 monthly fee with no per-item fee and access to advanced tools",
+        "confidence": "High",
+        "source": "Professional Seller Account: A pro seller account comes with a monthly fee of $39.99 and you do not pay a per-item fee. This option is more cost-effective if you sell more than 40 items a month and want access to advanced selling tools."
+    },
+    {
+        "id": "aa-003",
+        "category": "Buying",
+        "trigger": "Products with extremely high BSR",
+        "advice": "Avoid sourcing products with extremely high Best Sellers Rank (BSR) as they are slow movers",
+        "confidence": "High",
+        "source": "Sales Rank (BSR): Amazon\u2019s Best Sellers Rank (BSR) is an indicator of how often a product sells. A lower BSR usually means faster sales. Products with extremely high BSRs may be slow movers."
+    },
+    {
+        "id": "aa-004",
+        "category": "Pricing",
+        "trigger": "High competition for Buy Box",
+        "advice": "Assess competition and Buy Box dynamics to avoid eroding profit margins from price races to the bottom",
+        "confidence": "High",
+        "source": "Competition and Buy Box: High competition can erode profit margins. If many sellers are competing for the same Buy Box, prices often race to the bottom."
+    },
+    {
+        "id": "aa-005",
+        "category": "Buying",
+        "trigger": "Discounted items with sufficient price difference",
+        "advice": "Source items discounted enough to cover Amazon fees, shipping costs, and yield profit margins that justify time and effort",
+        "confidence": "High",
+        "source": "Price Difference: Look for items discounted enough to leave room for a profit after Amazon\u2019s fees and shipping costs. ... Profit Margins: Calculate your net profit (selling price minus all fees and your cost) before purchasing inventory and aim for margins that justify your time and effort."
+    },
+    {
+        "id": "aa-006",
+        "category": "Buying",
+        "trigger": "Clearance or sale prices in retail stores",
+        "advice": "Visit retailers like Walmart, Target for clearance sales and use Amazon Seller App to scan barcodes for sales rank, price history, and profit estimates",
+        "confidence": "High",
+        "source": "Retail Arbitrage ... Sellers then scan these items with the Amazon Seller App to check their sales rank, price history, and estimated profit margins."
+    },
+    {
+        "id": "aa-007",
+        "category": "Buying",
+        "trigger": "Online sales events like Black Friday, Cyber Monday, holidays",
+        "advice": "Target limited-time offers and flash sales on seasonal items during peak periods to secure inventory before prices rise",
+        "confidence": "High",
+        "source": "Keep an eye out for big online sales events such as Black Friday, Cyber Monday, or holiday-themed promotions. Limited-time offers and flash sales provide huge savings, especially on seasonal items ... Capitalize on Fast-Moving and Seasonal Trends ... During these peak periods, demand spikes for certain products, often pushing up prices and profit margins."
+    },
+    {
+        "id": "aa-008",
+        "category": "Pricing",
+        "trigger": "Dynamic marketplace price changes",
+        "advice": "Use automated tools like Informed Repricer to adjust prices in real time, set minimum and maximum thresholds, and win the Buy Box without manual intervention",
+        "confidence": "High",
+        "source": "Using an automated pricing tool like Informed Repricer will empower you to: Adjust Prices in Real Time ... set minimum and maximum price thresholds ... Win the Buy Box: By reacting to competitors\u2019 price drops ..."
+    },
+    {
+        "id": "aa-009",
+        "category": "Risk",
+        "trigger": "Selling in single category or niche",
+        "advice": "Diversify product categories to spread risk from market fluctuations and Amazon policy changes",
+        "confidence": "High",
+        "source": "Failing to Diversify Product Categories ... When arbitrage sellers sell products in a single category or niche, it makes them vulnerable to market fluctuations and Amazon policy changes. So, spread your risk by exploring new categories or seasonal items."
+    },
+    {
+        "id": "aa-010",
+        "category": "Risk",
+        "trigger": "Slow-moving items in FBA",
+        "advice": "Monitor inventory and for slow sellers, lower price or issue removal order to avoid high storage fees",
+        "confidence": "High",
+        "source": "Underestimating Storage Fees and Long-Term Costs ... With FBA, large or slow-moving items can rack up high storage fees. Continually review your inventory performance. If a product isn\u2019t selling quickly, consider lowering the price or opting for a removal order to minimize costs."
+    },
+    {
+        "id": "aa-011",
+        "category": "Seasonality",
+        "trigger": "Major events, holidays, seasons like back-to-school, Halloween, Christmas",
+        "advice": "Keep a calendar of peak periods to target demand spikes early and secure inventory for higher profit margins",
+        "confidence": "High",
+        "source": "Keep a calendar of major events, holidays, and seasons (e.g., back-to-school, Halloween, Christmas). During these peak periods, demand spikes for certain products, often pushing up prices and profit margins. Targeting these trends early can help you secure inventory before prices rise"
+    },
+    {
+        "id": "aa-012",
+        "category": "Buying",
+        "trigger": "Overstock or returned items on liquidation platforms",
+        "advice": "Source from wholesale liquidation platforms but ensure items are in resalable condition and not restricted or damaged",
+        "confidence": "High",
+        "source": "Wholesale liquidation platforms sell overstock or returned items from major retailers at deeply discounted prices. While these can be profitable, ensure that the merchandise is in resalable condition and not restricted or damaged beyond repair."
+    },
+    {
+        "id": "start-cost-1",
+        "category": "General",
+        "trigger": "Starting a new online arbitrage business",
+        "advice": "Budget $500-$1,000 for initial inventory, Amazon fees, shipping, and other startup expenses",
+        "confidence": "High",
+        "source": "Starting Amazon FBA can cost as little as $500-$1,000, covering initial inventory, Amazon fees, shipping, and other startup expenses. Costs vary depending on product choice and scale."
+    },
+    {
+        "id": "low-entry-2",
+        "category": "General",
+        "trigger": "Beginner with limited capital",
+        "advice": "Start with less than $500, as 33% of arbitrage sellers do",
+        "confidence": "High",
+        "source": "Online arbitrage offers a low barrier to entry, with 33% of arbitrage sellers starting their businesses with less than $500."
+    },
+    {
+        "id": "profit-margin-3",
+        "category": "Pricing",
+        "trigger": "Calculating potential profits",
+        "advice": "Target profit margins between 10% and 30%, accounting for sourcing and Amazon fees",
+        "confidence": "High",
+        "source": "Profit margins typically range from 10% to 30%, depending on product sourcing and Amazon fees."
+    },
+    {
+        "id": "success-rate-4",
+        "category": "General",
+        "trigger": "Evaluating business viability",
+        "advice": "Aim for monthly profits around $5,000, as 62% of online arbitrage sellers achieve this",
+        "confidence": "High",
+        "source": "Approximately 62% of sellers involved in online arbitrage reported making nearly $5,000 per month."
+    },
+    {
+        "id": "referral-fees-5",
+        "category": "Pricing",
+        "trigger": "Products in electronics category",
+        "advice": "Factor in 8% referral fees for electronics when calculating profits",
+        "confidence": "High",
+        "source": "For example, electronics typically incur a 8% fee"
+    },
+    {
+        "id": "referral-fees-6",
+        "category": "Pricing",
+        "trigger": "Products in jewelry category",
+        "advice": "Factor in up to 20% referral fees for jewelry when calculating profits",
+        "confidence": "High",
+        "source": "while jewelry can be as high as 20%"
+    },
+    {
+        "id": "account-type-7",
+        "category": "General",
+        "trigger": "Low volume sales (under 40 listings)",
+        "advice": "Use Individual Seller Account at $0.99 per sale for starting out",
+        "confidence": "High",
+        "source": "Individual Seller Account: This free option charges $0.99 per sale and limits you to 40 product listings."
+    },
+    {
+        "id": "account-type-8",
+        "category": "General",
+        "trigger": "High volume sales with unlimited listings",
+        "advice": "Opt for Professional Account at $39.99 monthly to avoid per-sale fees",
+        "confidence": "High",
+        "source": "Professional Account: Priced at $39.99 monthly, it offers unlimited listings without per-sale fees."
+    },
+    {
+        "id": "sourcing-walmart-9",
+        "category": "Buying",
+        "trigger": "Seeking competitive prices and clearance items",
+        "advice": "Source from Walmart for extensive selection and frequent clearance deals, using in-store pickup for promotions",
+        "confidence": "High",
+        "source": "Walmart's online marketplace offers competitive prices and extensive product selection, with frequent clearance items and special offers. Their flexible fulfillment options allow for in-store pickup to take advantage of additional store promotions."
+    },
+    {
+        "id": "sourcing-target-10",
+        "category": "Buying",
+        "trigger": "Looking for affordable items in clearance sections",
+        "advice": "Source from Target's clearance and weekly deals, especially exclusive brands not common on Amazon",
+        "confidence": "High",
+        "source": "Target provides affordable prices across various categories, with particularly good opportunities in their clearance section and weekly deals. Their exclusive brands can offer unique arbitrage opportunities not readily available on Amazon."
+    },
+    {
+        "id": "book-lib-search-001",
+        "category": "Buying",
+        "trigger": "Sellers focusing on books",
+        "advice": "Use the Library Search feature to identify book deals across all conditions and kinds for resale on Amazon",
+        "confidence": "High",
+        "source": "Library Search This feature is designed for sellers who sell books. It helps find book deals of all conditions and kinds to resell on Amazon."
+    },
+    {
+        "id": "oa-automated-scan-001",
+        "category": "General",
+        "trigger": "Automated product sourcing for arbitrage including books",
+        "advice": "Set up automated scans across over 1000 online retailers like eBay, Walmart, and Target to find lower-priced books for profitable resale on Amazon",
+        "confidence": "High",
+        "source": "Tactical Arbitrage can scan over 1000 stores worldwide, including well-known retailers like eBay, Walmart, and Target. That gives sellers a wide range of products to choose from and increases their chances of finding profitable opportunities."
+    },
+    {
+        "id": "filter-profit-roi-001",
+        "category": "Buying",
+        "trigger": "Product search with profitability criteria",
+        "advice": "Apply filters for desired profit margins, ROI, and exclude non-book items like hazmat or oversize to narrow down book sourcing opportunities",
+        "confidence": "Medium",
+        "source": "When doing a product search, you can select the stores you want to scan and apply additional filters for specific product categories and parameters, like profit, ROI, exclude hazmat and oversize items, etc. Filtering options allow you to narrow down search parameters."
+    },
+    {
+        "id": "bsr-profit-calc-001",
+        "category": "Pricing",
+        "trigger": "Evaluating book profitability",
+        "advice": "Use BSR, price history, projected profits, and ROI data to assess book deals and set competitive prices based on number of sellers",
+        "confidence": "High",
+        "source": "The search results provide purchase and selling prices, projected profits, Return on Investment, price and BSR history, and the number of sellers offering the product."
+    },
+    {
+        "id": "reverse-lookup-books-001",
+        "category": "Buying",
+        "trigger": "Sourcing specific book editions",
+        "advice": "Upload book images for reverse lookup to find cheaper sourcing options on other online retailers",
+        "confidence": "Medium",
+        "source": "The reverse search feature allows sellers to upload an image of a product to find it on other online retailers. That lets you find products to source cheaper in other stores."
+    },
+    {
+        "id": "restriction-check-books-001",
+        "category": "Risk",
+        "trigger": "Checking book eligibility",
+        "advice": "Use restriction checkers to identify any gated, IP, oversize, or adult flags on books before listing to avoid account issues",
+        "confidence": "High",
+        "source": "Seller Assistant App's Restriction Checker tool effectively identifies product restrictions, such as hazmat, oversize, meltable, fragile, and adult flags. This feature assists sellers in avoiding the listing of gated products on Amazon."
+    },
+    {
+        "id": "ip-alert-books-001",
+        "category": "Risk",
+        "trigger": "Potential IP issues with books",
+        "advice": "Monitor IP-Alert system for intellectual property claims on books to maintain account health and avoid complaints",
+        "confidence": "High",
+        "source": "Seller Assistant App's proactive IP-Alert system safeguards sellers by notifying them of potential intellectual property claims, enabling them to promptly identify and address potential issues, thereby maintaining their account health."
+    },
+    {
+        "id": "lookup-limit-001",
+        "category": "General",
+        "trigger": "High-volume book research",
+        "advice": "Choose tools with lookup limits up to 3,500 per month to handle extensive book product analysis without restrictions",
+        "confidence": "High",
+        "source": "In contrast to comparable tools, Seller Assistant App grants sellers the ability to perform up to 3,500 product lookups per month."
+    },
+    {
+        "id": "dedicated-book-search",
+        "category": "Buying",
+        "trigger": "Sourcing books for resale on Amazon",
+        "advice": "Use Tactical Arbitrage's Dedicated Book Search feature to identify profitable book arbitrage opportunities, as it provides specialized scanning not available in Source Mogul.",
+        "confidence": "High",
+        "source": "Dedicated Book Search No (under Tactical Arbitrage functionality)"
+    },
+    {
+        "id": "library-book-search",
+        "category": "Buying",
+        "trigger": "Sourcing from library sales or similar for book flips",
+        "advice": "Subscribe to Tactical Arbitrage Flip Pack ($50/mo yearly billing) which includes Library Book Search for Amazon to Amazon flips and book-specific sourcing.",
+        "confidence": "High",
+        "source": "Flip Pack Amazon to Amazon Flips and Library Book Search *$50/mo"
+    },
+    {
+        "id": "always-be-scanning",
+        "category": "General",
+        "trigger": "Daily automated product discovery for online arbitrage including books",
+        "advice": "Enable the 'Always Be Scanning' feature in Tactical Arbitrage to automatically scan unique sites and categories nightly on auto-pilot, generating leads without manual effort.",
+        "confidence": "High",
+        "source": "The new 'Always Be Scanning' feature dramatically reduces the learning curve since it scans unique sites and categories for each user nightly on auto-pilot."
+    },
+    {
+        "id": "more-sites-for-leads",
+        "category": "Buying",
+        "trigger": "Maximizing potential book sourcing opportunities",
+        "advice": "Select Tactical Arbitrage with 910 supported sites across 7 countries (vs. Source Mogul's 401 in 2 countries) to access more leads and reduce competition in book arbitrage.",
+        "confidence": "High",
+        "source": "Tactical Arbitrage has over 2x as many supported sites as Source Mogul and supports 7 different markets while Source Mogul supports only 2. TOTAL 910 Total Sites 401 Total Sites. More sites means more leads and less competition."
+    },
+    {
+        "id": "general-3",
+        "category": "General",
+        "trigger": "Category selection for beginners",
+        "advice": "Begin sourcing in Toys or Home & Kitchen categories but expand to all allowable categories without limitation.",
+        "confidence": "High",
+        "source": "I have found that most sellers get started in Toys or Home & Kitchen, but never limit yourself to just one category."
     }
 ]
