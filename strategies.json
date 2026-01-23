@@ -21392,5 +21392,13 @@
         "advice": "For book arbitrage at low volumes, opt for simpler, cheaper tools like the Lite version of Tactical Arbitrage; scale to advanced features as volume increases to 50-500 or 500+ products",
         "confidence": "High",
         "source": "Low-volume sellers (under 50 products monthly) can use simpler, cheaper tools. Medium-volume sellers (50-500 products monthly) need batch processing capabilities. High-volume sellers (500+ products monthly) require enterprise-level automation."
+    },
+    {
+        "id": "e4ba815d-bff8-4b7e-959c-83b52c3a302c",
+        "category": "Risk",
+        "trigger": "Teacher's Edition, Instructor's Edition, or Promotional Copy",
+        "advice": "Do not buy or list this item. It is prohibited on Amazon.",
+        "confidence": "High",
+        "source": "Prohibited Items: Promotional Instructor's Editions, Annotated Instructor's Editions, and Teacher's Editions are generally not allowed to be listed for sale on Amazon.com."
     }
 ]
