@@ -57,10 +57,21 @@ The system is rejecting ~24% of deals because the AI Reasonableness Check flags 
         -   **Scenario A (Zombie Prices):** If the rejected prices are absurdly high (e.g., $400 for a generic paperback), the inference engine is picking up "Zombie" offers. **Action:** Implement a pre-AI filter (e.g., `Reject if Price > 4 * 1yr_Avg`) to filter these cheaply without wasting AI tokens.
         -   **Scenario B (Strict AI):** If the prices look reasonable (e.g., $45 for a Textbook) but AI says "No", the AI is hallucinating or too strict. **Action:** Tune the AI prompt (e.g., add "You are an Arbitrage Advisor, slight premiums are expected...") or increase the temperature slightly.
 
-3.  **Implement Optimizations:**
-    -   Apply the chosen fix (Pre-filter or Prompt Tuning).
+3.  **Option C: Extended History & Trend Analysis (Strategic Enhancement):**
+    -   **Concept:** Use a 3-year history to provide a stronger "Reasonableness Signal" to the AI or as a mathematical validation layer.
+    -   **Implementation Steps:**
+        -   **Verify Data:** Check `keepa_query.json` and `keepa_api.py` to ensure the `dateRange` parameter (currently "4") supports fetching 3 years (approx 1000 days) of history.
+        -   **Extend Window:** Update `infer_sale_events` in `stable_calculations.py` to look back 3 years instead of 2 (`timedelta(days=1095)`).
+        -   **Calculate Trend:** Implement a `3yr_Trend` metric (Slope of price over 3 years).
+        -   **Logic Application:**
+            -   If `List At` > `Price Now` BUT `3yr_Trend` is **Significantly Down**, flag as "Unreasonable" (Mathematical Rejection).
+            -   Inject `3yr_Avg` and `3yr_Trend` into the AI prompt (e.g., "The price has been trending DOWN for 3 years, is a peak price of $X still reasonable?").
+    -   **Benefit:** This uses hard data to catch "falling knife" scenarios that might currently look like good deals based on a short-term blip, or validate high prices that are supported by a long-term upward trend.
+
+4.  **Implement Optimizations:**
+    -   Apply the chosen fix (Pre-filter, Prompt Tuning, or Extended Trend).
     -   Verify the rejection rate drops below 10-15% while maintaining data quality.
 
-4.  **Verify & Cleanup:**
+5.  **Verify & Cleanup:**
     -   Ensure no "fallback" data logic is reintroduced.
     -   Remove the temporary debug logging.
