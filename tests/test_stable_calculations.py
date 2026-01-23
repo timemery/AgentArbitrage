@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import sys
 import os
+from datetime import datetime
 
 # Ensure local imports work
 sys.path.append(os.getcwd())
@@ -54,9 +55,9 @@ class TestStableCalculations(unittest.TestCase):
 
         # 3 sales in May (Month 5) at $20.00
         sale_events = [
-            {'event_timestamp': '2025-05-01', 'inferred_sale_price_cents': 2000},
-            {'event_timestamp': '2025-05-02', 'inferred_sale_price_cents': 2000},
-            {'event_timestamp': '2025-05-03', 'inferred_sale_price_cents': 2000},
+            {'event_timestamp': datetime(2025, 5, 1), 'inferred_sale_price_cents': 2000},
+            {'event_timestamp': datetime(2025, 5, 2), 'inferred_sale_price_cents': 2000},
+            {'event_timestamp': datetime(2025, 5, 3), 'inferred_sale_price_cents': 2000},
         ]
 
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness', return_value=True):

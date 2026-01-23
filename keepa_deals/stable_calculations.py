@@ -24,7 +24,7 @@ xai_token_manager = XaiTokenManager()
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
 
-def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A"):
+def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A", trend_info="N/A", avg_3yr_usd="N/A"):
     """
     Queries the XAI API to act as a reasonableness check for a calculated price,
     now with caching and token management.
@@ -34,7 +34,7 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
         return True
 
     # 1. Create a unique cache key (include new fields to differentiate contexts)
-    cache_key = f"reasonableness:{title}|{category}|{season}|{price_usd:.2f}|{binding}|{rank_info}"
+    cache_key = f"reasonableness:{title}|{category}|{season}|{price_usd:.2f}|{binding}|{rank_info}|{trend_info}|{avg_3yr_usd}"
 
     # 2. Check cache first
     cached_result = xai_cache.get(cache_key)
@@ -59,6 +59,8 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
     - **Binding:** "{binding}"
     - **Page Count:** "{page_count}"
     - **Sales Rank Info:** "{rank_info}"
+    - **3-Year Trend:** "{trend_info}"
+    - **3-Year Average Price:** "${avg_3yr_usd}"
     - **Image URL:** "{image_url}"
     """
     payload = {
@@ -78,6 +80,9 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
             is_reasonable = "yes" in content
 
             logging.info(f"XAI Reasonableness Check for '{title}' at ${price_usd:.2f}: AI responded '{content}'")
+
+            if not is_reasonable:
+                logging.warning(f"XAI REJECTED: Title='{title}', Price=${price_usd:.2f}, Category='{category}', Season='{season}', Binding='{binding}', Rank='{rank_info}', Trend='{trend_info}', 3yrAvg='${avg_3yr_usd}'")
 
             # 5. Cache the successful result as a string
             xai_cache.set(cache_key, str(is_reasonable))
@@ -189,7 +194,7 @@ def infer_sale_events(product):
         df_used_price = pd.DataFrame(np.array(used_price_history).reshape(-1, 2), columns=['timestamp', 'price_cents']).pipe(_convert_ktm_to_datetime) if used_price_history else None
         df_new_price = pd.DataFrame(np.array(new_price_history).reshape(-1, 2), columns=['timestamp', 'price_cents']).pipe(_convert_ktm_to_datetime) if new_price_history else None
 
-        two_years_ago = datetime.now() - timedelta(days=730)
+        two_years_ago = datetime.now() - timedelta(days=1095) # Extended to 3 years
         df_rank = df_rank[df_rank['timestamp'] >= two_years_ago]
 
         # --- Find all instances of offer drops (New and Used) ---
@@ -307,6 +312,42 @@ def recent_inferred_sale_price(product):
     else:
         return {'Recent Inferred Sale Price': '-'}
 
+def calculate_long_term_trend(sale_events):
+    """Calculates the long-term price trend slope over the available history."""
+    if not sale_events or len(sale_events) < 3:
+        return "Insufficient data"
+
+    try:
+        df = pd.DataFrame(sale_events)
+        # Convert timestamp to float for regression
+        df['timestamp_val'] = df['event_timestamp'].apply(lambda x: x.timestamp())
+        slope, intercept, r_value, p_value, std_err = st.linregress(df['timestamp_val'], df['inferred_sale_price_cents'])
+
+        # Calculate % change over the period based on the regression line
+        start_time = df['timestamp_val'].min()
+        end_time = df['timestamp_val'].max()
+        start_price = slope * start_time + intercept
+        end_price = slope * end_time + intercept
+
+        if start_price <= 0: return "Flat"
+
+        percent_change = ((end_price - start_price) / start_price) * 100
+
+        direction = "FLAT"
+        if percent_change > 5: direction = "UP"
+        elif percent_change < -5: direction = "DOWN"
+
+        return f"{direction} ({percent_change:.1f}% over 3 years)"
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Error calculating trend: {e}")
+        return "Error"
+
+def calculate_3yr_avg(sale_events):
+    """Calculates the average price over the full history (now 3 years)."""
+    if not sale_events: return -1
+    prices = [s['inferred_sale_price_cents'] for s in sale_events]
+    return sum(prices) / len(prices)
+
 def analyze_sales_performance(product, sale_events):
     """
     Analyzes inferred sale events to determine peak/trough seasons and calculate
@@ -417,11 +458,17 @@ def analyze_sales_performance(product, sale_events):
     # For now, we will pass the rank info as a proxy for velocity.
 
     # --- Enhanced Logging for Debugging ---
-    logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}', Rank='{rank_info}'")
+    # Calculate 3yr metrics
+    trend_info = calculate_long_term_trend(sale_events)
+    avg_3yr_cents = calculate_3yr_avg(sale_events)
+    avg_3yr_usd = f"{avg_3yr_cents/100:.2f}" if avg_3yr_cents > 0 else "N/A"
+
+    logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}', Rank='{rank_info}', Trend='{trend_info}', 3yrAvg='${avg_3yr_usd}'")
 
     is_reasonable = _query_xai_for_reasonableness(
         title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key,
-        binding=binding, page_count=page_count, image_url=image_url, rank_info=rank_info
+        binding=binding, page_count=page_count, image_url=image_url, rank_info=rank_info,
+        trend_info=trend_info, avg_3yr_usd=avg_3yr_usd
     )
 
     if not is_reasonable:
