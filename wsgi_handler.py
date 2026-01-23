@@ -1503,7 +1503,8 @@ def get_ava_advice(asin):
                 return jsonify({'error': 'Deal not found'}), 404
 
             deal_data = dict(row)
-            advice = generate_ava_advice(deal_data)
+            mentor_type = request.args.get('mentor', 'cfo')
+            advice = generate_ava_advice(deal_data, mentor_type=mentor_type)
 
             return jsonify({'advice': advice})
 
