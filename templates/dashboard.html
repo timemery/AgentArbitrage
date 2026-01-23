@@ -108,10 +108,82 @@
     <div class="deal-overlay-content">
         <span class="close-overlay">&times;</span>
 
+        <style>
+            /* Mentor Selection Styles */
+            .advice-header-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px; /* Additional space below header */
+                padding-bottom: 5px;
+            }
+            .advice-title-section {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .active-mentor-img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            .mentor-selector-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .mentor-label {
+                font-size: 12px;
+                color: #a3aec0;
+                font-weight: 700;
+            }
+            .mentor-icons-list {
+                display: flex;
+                gap: 8px;
+            }
+            .mentor-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: opacity 0.2s, transform 0.2s;
+                object-fit: cover;
+                opacity: 0.5; /* Default inactive (50% transparency) */
+            }
+            .mentor-icon:hover {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            .mentor-icon.active {
+                opacity: 1.0;
+                border: 2px solid #566e9e;
+            }
+            .ava-advice-container h3 {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        </style>
         <div id="ava-advice-container" class="ava-advice-container">
-            <h3>Purchase Analysis & Advice
-                <div id="ava-spinner" class="spinner-inline"></div>
-            </h3>
+            <div class="advice-header-wrapper">
+                <div class="advice-title-section">
+                     <img src="{{ url_for('static', filename='AvaCFO.png') }}" class="active-mentor-img" id="active-mentor-icon" alt="Mentor">
+                     <h3>Purchase Analysis & Advice
+                        <div id="ava-spinner" class="spinner-inline"></div>
+                     </h3>
+                </div>
+                <div class="mentor-selector-container">
+                    <span class="mentor-label">Choose Your Mentor:</span>
+                    <div class="mentor-icons-list">
+                        <img src="{{ url_for('static', filename='AvaCFO.png') }}" class="mentor-icon active" data-mentor="cfo" title="CFO">
+                        <img src="{{ url_for('static', filename='AvaFlipper.png') }}" class="mentor-icon" data-mentor="flipper" title="Flipper">
+                        <img src="{{ url_for('static', filename='AvaProfessor.png') }}" class="mentor-icon" data-mentor="professor" title="Professor">
+                        <img src="{{ url_for('static', filename='AvaQuant.png') }}" class="mentor-icon" data-mentor="quant" title="Quant">
+                    </div>
+                </div>
+            </div>
             <p id="ava-advice-text">Analyzing...</p>
         </div>
 
@@ -267,6 +339,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let totalPages = 1;
     let currentSort = { by: 'id', order: 'asc' };
     let currentDeals = [];
+    let currentMentor = localStorage.getItem('ava_mentor') || 'cfo';
+    let currentAsin = null;
 
     const overlay = document.getElementById('deal-overlay');
     const closeOverlayBtn = document.querySelector('.close-overlay');
@@ -1141,8 +1215,51 @@ document.addEventListener('DOMContentLoaded', function() {
         actionBar.innerHTML = `<span class="action-message">${messageHtml}</span> ${buttonHtml}`;
 
         // Load Ava Advice
+        currentAsin = deal.ASIN;
         loadAvaAdvice(deal.ASIN);
     }
+
+    function updateMentorUI() {
+        // Update Icons
+        document.querySelectorAll('.mentor-icon').forEach(icon => {
+            if (icon.dataset.mentor === currentMentor) {
+                icon.classList.add('active');
+                icon.classList.remove('inactive'); // Ensure active isn't faded
+            } else {
+                icon.classList.remove('active');
+                icon.classList.add('inactive'); // Ensure others are faded
+            }
+        });
+
+        // Update Main Header Icon
+        const mainIcon = document.getElementById('active-mentor-icon');
+        // Construct filename based on mentor. Capitalize first letter.
+        const mentorName = currentMentor.charAt(0).toUpperCase() + currentMentor.slice(1);
+        let fileName = 'Ava' + mentorName + '.png';
+        if (currentMentor === 'cfo') fileName = 'AvaCFO.png';
+
+        mainIcon.src = '/static/' + fileName;
+    }
+
+    // Initialize UI on load
+    updateMentorUI();
+
+    // Event Listeners for Mentors
+    document.querySelectorAll('.mentor-icon').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            const newMentor = icon.dataset.mentor;
+            if (newMentor !== currentMentor) {
+                currentMentor = newMentor;
+                localStorage.setItem('ava_mentor', currentMentor);
+                updateMentorUI();
+
+                // Reload advice if a deal is open
+                if (currentAsin) {
+                     loadAvaAdvice(currentAsin);
+                }
+            }
+        });
+    });
 
     async function loadAvaAdvice(asin) {
         const adviceContainer = document.getElementById('ava-advice-text');
@@ -1155,7 +1272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         spinner.style.display = 'inline-block';
 
         try {
-            const response = await fetch(`/api/ava-advice/${asin}`);
+            const response = await fetch(`/api/ava-advice/${asin}?mentor=${currentMentor}`);
             const data = await response.json();
 
             spinner.style.display = 'none';
