@@ -21392,5 +21392,77 @@
         "advice": "For book arbitrage at low volumes, opt for simpler, cheaper tools like the Lite version of Tactical Arbitrage; scale to advanced features as volume increases to 50-500 or 500+ products",
         "confidence": "High",
         "source": "Low-volume sellers (under 50 products monthly) can use simpler, cheaper tools. Medium-volume sellers (50-500 products monthly) need batch processing capabilities. High-volume sellers (500+ products monthly) require enterprise-level automation."
+    },
+    {
+        "id": "te-prohibit-1",
+        "category": "Risk",
+        "trigger": "Book is a Promotional Instructor's Edition, Annotated Instructor's Edition, or Teacher's Edition",
+        "advice": "Do not list for sale on Amazon.com, especially through FBA",
+        "confidence": "High",
+        "source": "Prohibited Items: Promotional Instructor's Editions, Annotated Instructor's Editions, and Teacher's Editions are generally not allowed to be listed for sale on Amazon.com."
+    },
+    {
+        "id": "te-prohibit-2",
+        "category": "Risk",
+        "trigger": "Book has stamps or labels such as 'Complimentary Copy,' 'Free Copy,' 'Instructor's Edition,' or 'Not for Sale'",
+        "advice": "Do not list for sale on Amazon.com",
+        "confidence": "High",
+        "source": "'Not for Sale' Markings: Books with stamps or labels such as 'Complimentary Copy,' 'Free Copy,' 'Instructor's Edition,' or 'Not for Sale' are prohibited."
+    },
+    {
+        "id": "te-exception",
+        "category": "General",
+        "trigger": "Publisher intends Teacher\u2019s Edition for public sale (e.g., for homeschooling) and Amazon.com is selling it",
+        "advice": "May list for sale on Amazon.com",
+        "confidence": "High",
+        "source": "The Exception: In rare cases where publishers intend specific Teacher\u2019s Edition titles for public sale (e.g., for homeschooling), they may be listed. A general rule of thumb is: If Amazon.com is not selling the Teacher's Edition, you should not list it."
+    },
+    {
+        "id": "te-rule-thumb",
+        "category": "Risk",
+        "trigger": "Amazon.com is not selling the Teacher's Edition",
+        "advice": "Do not list it on Amazon.com",
+        "confidence": "High",
+        "source": "A general rule of thumb is: If Amazon.com is not selling the Teacher's Edition, you should not list it."
+    },
+    {
+        "id": "te-risk",
+        "category": "Risk",
+        "trigger": "Listing prohibited Teacher\u2019s Editions on Amazon",
+        "advice": "Avoid listing to prevent account suspension",
+        "confidence": "High",
+        "source": "Risk of Listing: Listing these items can result in account suspension."
+    },
+    {
+        "id": "sm-prohibit",
+        "category": "Risk",
+        "trigger": "Solutions Manual is not intended for public sale",
+        "advice": "Do not list for sale on Amazon.com",
+        "confidence": "High",
+        "source": "Solutions Manuals that are intended for students may be sold, but those not intended for public sale are prohibited."
+    },
+    {
+        "id": "fba-recommend",
+        "category": "General",
+        "trigger": "Planning to sell Teacher\u2019s Editions via FBA",
+        "advice": "Do not send to Amazon FBA centers; use other platforms like eBay instead",
+        "confidence": "High",
+        "source": "Recommendation for FBA Sellers: To avoid account health issues, do not send Teacher\u2019s Editions to Amazon FBA centers. These are better suited for other platforms like eBay."
+    },
+    {
+        "id": "pricing-3",
+        "category": "Pricing",
+        "trigger": "Repricing used books",
+        "advice": "Reprice according to the condition's lowest offer in any channel",
+        "confidence": "High",
+        "source": "I reprice according to the condition's lowest offer in any channel."
+    },
+    {
+        "id": "e4ba815d-bff8-4b7e-959c-83b52c3a302c",
+        "category": "Risk",
+        "trigger": "Teacher's Edition, Instructor's Edition, or Promotional Copy",
+        "advice": "Do not buy or list this item. It is prohibited on Amazon.",
+        "confidence": "High",
+        "source": "Prohibited Items: Promotional Instructor's Editions, Annotated Instructor's Editions, and Teacher's Editions are generally not allowed to be listed for sale on Amazon.com."
     }
 ]
