@@ -33,7 +33,7 @@ load_dotenv()
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-MAX_ASINS_PER_BATCH = 50
+MAX_ASINS_PER_BATCH = 10
 LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 MAX_PAGES_PER_RUN = 50 # Safety limit to prevent runaway pagination
@@ -160,13 +160,13 @@ def update_recent_deals():
         asin_list = [d['asin'] for d in all_new_deals]
 
         for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
-            # Inner loop token check (optional but good practice for large batches)
-            if not token_manager.has_enough_tokens(5):
-                 logger.warning(f"Low tokens during product fetch ({token_manager.tokens}). Stopping batch processing.")
-                 incomplete_run = True
-                 break
-
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
+
+            # Estimated cost: ~20 tokens per ASIN for 3 years of history.
+            estimated_cost = 20 * len(batch_asins)
+            # Block and wait for tokens if needed (Controlled Deficit Strategy)
+            token_manager.request_permission_for_call(estimated_cost)
+
             # Fetch 3 years (1095 days) of history to support long-term trend analysis
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
                 api_key, batch_asins, days=1095, history=1, offers=20
@@ -176,6 +176,9 @@ def update_recent_deals():
             if product_response and 'products' in product_response and not (api_info and api_info.get('error_status_code')):
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
+
+            # Throttling to prevent burstiness
+            time.sleep(2)
         logger.info(f"Step 3 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
         logger.info("Step 4: Processing deals...")
