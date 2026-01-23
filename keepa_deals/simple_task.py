@@ -33,6 +33,10 @@ load_dotenv()
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
+# REGRESSION WARNING: Do not increase MAX_ASINS_PER_BATCH above 10 without careful testing.
+# A batch of 50 ASINs (fetching 3 years of history) costs ~1000 tokens.
+# With a refill rate of 5 tokens/min, this causes massive deficits (-300+) and starves the system.
+# A batch of 10 costs ~200 tokens, which is sustainable with the Controlled Deficit strategy.
 MAX_ASINS_PER_BATCH = 10
 LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
@@ -164,7 +168,12 @@ def update_recent_deals():
 
             # Estimated cost: ~20 tokens per ASIN for 3 years of history.
             estimated_cost = 20 * len(batch_asins)
-            # Block and wait for tokens if needed (Controlled Deficit Strategy)
+
+            # BLOCKING WAIT STRATEGY:
+            # We use request_permission_for_call() to wait for tokens if we are low.
+            # We do NOT use 'if not has_enough_tokens: break' because that leads to "starvation loops"
+            # where the task starts, sees low tokens, quits, and never processes the pending deals.
+            # By blocking, we ensure we eventually process the batch, even if it takes a few minutes to refill.
             token_manager.request_permission_for_call(estimated_cost)
 
             # Fetch 3 years (1095 days) of history to support long-term trend analysis
