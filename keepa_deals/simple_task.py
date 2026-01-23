@@ -164,8 +164,9 @@ def update_recent_deals():
                  break
 
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
+            # Fetch 3 years (1095 days) of history to support long-term trend analysis
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
-                api_key, batch_asins, history=1, offers=20
+                api_key, batch_asins, days=1095, history=1, offers=20
             )
             token_manager.update_after_call(tokens_left)
 

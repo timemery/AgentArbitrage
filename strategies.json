@@ -21464,5 +21464,1248 @@
         "advice": "Do not buy or list this item. It is prohibited on Amazon.",
         "confidence": "High",
         "source": "Prohibited Items: Promotional Instructor's Editions, Annotated Instructor's Editions, and Teacher's Editions are generally not allowed to be listed for sale on Amazon.com."
+    },
+    {
+        "id": "bsr-drop-1",
+        "category": "Buying",
+        "trigger": "Significant drops in Sales Rank (BSR) marked by green dots, e.g., from 28,000 to 19,000",
+        "advice": "Indicates sales events; larger drops suggest more units sold, signaling potential demand for arbitrage opportunities",
+        "confidence": "High",
+        "source": "The green dots on the chart represent downward rank movements or significant drops in the BSR. In other words, at these points, the BSR made big swings (ex: from 28,000 to 19,000). Looking back at the two knowns about an ASIN\u2019s sales rank, we can see this chart and the prominent sales events at those points."
+    },
+    {
+        "id": "bsr-trend-1",
+        "category": "General",
+        "trigger": "BSR does not climb back up after a drop (blue dots)",
+        "advice": "Suggests prolonged sales events; monitor for sustained demand to inform buying decisions in arbitrage",
+        "confidence": "High",
+        "source": "I marked these spots with blue dots to describe sales events and potentially prolonged ones. At these points, we can see the BSR for this ASIN didn\u2019t climb back up as we expected it would, given every other ASIN in the category is also in constant flux because of product sales."
+    },
+    {
+        "id": "bsr-high-volume-1",
+        "category": "Buying",
+        "trigger": "Low BSR in top positions, e.g., 500 or changes from 19 to 18",
+        "advice": "Implies high sales volume even with small movements; prioritize for fast turnover in book arbitrage",
+        "confidence": "High",
+        "source": "As a product\u2019s BSR climbs toward the top of the best-seller list... an ASIN with a high sales rank position of 500, for example, may move in smaller, more persistent waves... A change from sales rank 19 to 18 could mean a swing of hundreds of units sold daily, but 19,000 to 18,999 may be just 2 per day."
+    },
+    {
+        "id": "bsr-low-volume-1",
+        "category": "Risk",
+        "trigger": "High BSR, e.g., over 5,000,000 dropping to 380,000",
+        "advice": "Indicates infrequent sales; avoid buying large quantities to prevent excess inventory in arbitrage",
+        "confidence": "High",
+        "source": "This is a sample of a sales rank chart for an item that, on the worst end, ranked over 5,000,000 in its category, and when a sale took place, rocketed up to the 380,000 level. Because this item sold so infrequently, any sales event has a massive effect on its sales rank."
+    },
+    {
+        "id": "amazon-position-1",
+        "category": "Risk",
+        "trigger": "Orange shading present on chart",
+        "advice": "Amazon is a competitor; treat as red flag and research further before buying for resale",
+        "confidence": "High",
+        "source": "Knowing if Amazon is on the listing and their price can be a red flag for some sellers. Seeing right away if Amazon may be a competitor (they\u2019re a vicious one) can decide on a seller without doing any research. If that orange shading appears, it\u2019s a ??. Some sellers don\u2019t mind this and can even take the Amazon price data as a sign of potential room for competition."
+    },
+    {
+        "id": "buy-box-decline-1",
+        "category": "Pricing",
+        "trigger": "Gradual and steady decreases in Buy Box (magenta diamonds) without recovery",
+        "advice": "Indicates penny war or race to the bottom; avoid entering to prevent margin erosion in arbitrage",
+        "confidence": "High",
+        "source": "A penny war, or \u201crace to the bottom,\u201d is a scenario where multiple sellers have set their repricers to undercut the current buy box price by $0.01... This often results in a steady decline in price, margins, and profits... A penny war could occur if you see gradual and steady decreases that do not recover over time."
+    },
+    {
+        "id": "buy-box-stable-1",
+        "category": "Pricing",
+        "trigger": "Consistent Buy Box level (magenta diamonds)",
+        "advice": "Signals strong price support; suitable for pricing arbitrage buys to capture stable margins",
+        "confidence": "High",
+        "source": "A consistent buy box level indicates strong price support."
+    },
+    {
+        "id": "fba-position-1",
+        "category": "Pricing",
+        "trigger": "New 3rd Party FBA offer (orange triangle) above Buy Box",
+        "advice": "Offer is not competitive; potential to undercut for Buy Box win in book resale",
+        "confidence": "Medium",
+        "source": "Sometimes, you might see an FBA offer positioned well above the buy box. This means the offer is out of the money and not competitively priced (to Amazon\u2019s liking)."
+    },
+    {
+        "id": "fbm-opportunity-1",
+        "category": "Buying",
+        "trigger": "New 3rd Party FBM offers (blue square) below FBA/Buy Box price",
+        "advice": "Opportunity for profits via Amazon-Amazon flips; booksellers should buy low FBM and resell as FBA",
+        "confidence": "High",
+        "source": "Sometimes we see FBM sellers offering up products well below the FBA/Buy Box price, leaving money on the table and an opportunity for profits. Booksellers would do well to pay attention to this one if they\u2019re doing any flipping like this."
+    },
+    {
+        "id": "avg-bsr-low-1",
+        "category": "General",
+        "trigger": "Low average BSR across 30-day, 90-day, etc. (consistent low averages)",
+        "advice": "Implies year-round sales viability; target for steady arbitrage inventory",
+        "confidence": "High",
+        "source": "For example, having an average sales rank for each of the consistent averages implies this ASIN sells well all year round and has a moderately high sales volume."
+    },
+    {
+        "id": "avg-bsr-recent-improve-1",
+        "category": "Buying",
+        "trigger": "Low 30-day average BSR but high 180-day average",
+        "advice": "Suggests recent improvement (e.g., new offers or PPC); potential entry point for arbitrage",
+        "confidence": "Medium",
+        "source": "A low BSR 30-day average and a high 180-day average may imply the ASIN didn\u2019t historically sell well for a variety of reasons like no reasonable offers (or no offers at all) until recently, historical buy box suppression that was just released, PPC, or any combination of these."
+    },
+    {
+        "id": "avg-bsr-sporadic-1",
+        "category": "Risk",
+        "trigger": "Low current BSR but high climbing averages",
+        "advice": "Indicates sporadic sales; risk of low volume, avoid large buys",
+        "confidence": "Medium",
+        "source": "A current BSR that\u2019s low but averages are high (and climb steadily as the average range grows) may be an item that doesn\u2019t sell but a few units over a significant period, and one of those sales just happened."
+    },
+    {
+        "id": "avg-bsr-no-offers-1",
+        "category": "Buying",
+        "trigger": "High 30-day average BSR but low 180-day average",
+        "advice": "Implies lack of viable offers; opportunity to list and capture Buy Box exposure",
+        "confidence": "Medium",
+        "source": "The 30-day average is high, but the 180-day is low, which may imply no viable offers on this listing. There might be an opportunity to get in on this listing and be granted exposure with the buy box because yours is the only offer the Amazon algorithms consider reasonable."
+    },
+    {
+        "id": "filter-roi",
+        "category": "Pricing",
+        "trigger": "Custom filter settings for ROI",
+        "advice": "Set ROI to 20% or more to target profitable deals",
+        "confidence": "High",
+        "source": "you can customize your filters by yourself, setting targets like ROI, which you can select 20% or more"
+    },
+    {
+        "id": "filter-profit",
+        "category": "Pricing",
+        "trigger": "Custom filter settings for profit",
+        "advice": "Set minimum profit to $3 to $5 to ensure viable margins",
+        "confidence": "High",
+        "source": "profit $3 to $5 minimum"
+    },
+    {
+        "id": "exclude-hazmat",
+        "category": "Risk",
+        "trigger": "Items that are hazmat or restricted",
+        "advice": "Exclude hazmat or restricted items to avoid compliance issues",
+        "confidence": "High",
+        "source": "You can exclude hazmat or restricted items"
+    },
+    {
+        "id": "beginner-preset",
+        "category": "General",
+        "trigger": "New sellers starting out",
+        "advice": "Use the beginner preset for a wide set of results ideal for those just starting",
+        "confidence": "High",
+        "source": "Select filter settings and beginner preset. You can use the beginner preset for a wide set of results. This is ideal for sellers that are just starting out"
+    },
+    {
+        "id": "cached-scan",
+        "category": "General",
+        "trigger": "Beginners needing faster scans",
+        "advice": "Use cached scans for faster results using recent data, perfect for beginners",
+        "confidence": "High",
+        "source": "Cash scans are faster because they use recent data. It's perfect for beginners"
+    },
+    {
+        "id": "live-scan",
+        "category": "General",
+        "trigger": "Need for current pricing accuracy",
+        "advice": "Use live scans to pull current pricing from the source site for more accuracy, though slower",
+        "confidence": "High",
+        "source": "Live scan pull current pricing from the source site. It's more accurate, but it can be slower"
+    },
+    {
+        "id": "category-selection",
+        "category": "Buying",
+        "trigger": "Sourcing products in specific categories",
+        "advice": "Select categories like books to scan up to 500 categories, starting with a few and using bulk setup",
+        "confidence": "High",
+        "source": "You can select categories like toys, beauty, and books, and much more. You can scan up to 500 categories. Select a few to start and click add to bulk. Easy bulk setup"
+    },
+    {
+        "id": "verify-data",
+        "category": "Risk",
+        "trigger": "Before making buying decisions",
+        "advice": "View results and verify the provider data before purchasing to ensure accuracy",
+        "confidence": "High",
+        "source": "Remember to view the results and verify the provider data before making any buying decisions"
+    },
+    {
+        "id": "refine-results",
+        "category": "General",
+        "trigger": "After initial scan completion",
+        "advice": "Use the filter manager to refine settings without rerunning the scan",
+        "confidence": "High",
+        "source": "if you need to refine your results, use the filter manager to refine your settings without having to rerun the scan"
+    },
+    {
+        "id": "save-export",
+        "category": "General",
+        "trigger": "Promising products found",
+        "advice": "Click the heart icon to save products for later review or export to a spreadsheet",
+        "confidence": "High",
+        "source": "if you've seen a promising product, click the heart icon to save it for later review or export it to a spreadsheet"
+    },
+    {
+        "id": "connect-account",
+        "category": "General",
+        "trigger": "For accurate results",
+        "advice": "Connect your Amazon Seller Central account to ensure Tactical Arbitrage knows your marketplace, restrictions, and eligibility",
+        "confidence": "High",
+        "source": "connect your Amazon Seller Central account to Tactical Arbitrage. This will ensure that Tactical Arbitrage knows your marketplace, your restrictions, and your eligibility"
+    },
+    {
+        "id": "ta-cache-10day",
+        "category": "General",
+        "trigger": "Setting up scans for speed",
+        "advice": "Use a 10-day cache to pull data from the database for faster scans; refresh Amazon prices with Keepa if needed.",
+        "confidence": "High",
+        "source": "I will typically run a ten-day cache now I know that some people will say well you know that's that's going to give me old data and that's very possible you may get some older data and that's okay because you can always refresh it but what I'm looking for in in scans is I'm looking for hot nasty speed I want things to go as quickly as possible"
+    },
+    {
+        "id": "ta-upc-image-match",
+        "category": "Buying",
+        "trigger": "UPC products without exact Amazon match",
+        "advice": "Turn on 'also check UPC products for image matches' to find matches even if UPC doesn't align, leveraging advanced image matching.",
+        "confidence": "High",
+        "source": "this also check UPC products for image matches I always turn this on okay if for some reason a product on say Walgreens or Walmart has a UPC but maybe that maybe that UPC doesn't come back on Amazon well ta we'll go in and we'll also check those products for an image match"
+    },
+    {
+        "id": "ta-upc-sites-only-off",
+        "category": "Buying",
+        "trigger": "To include more sites in scans",
+        "advice": "Leave 'UPC sites and products only' off to scan image or title-based sites, avoiding loss of potential opportunities.",
+        "confidence": "High",
+        "source": "one of the things that I see quite often in product search is this UPC sites and products only will pop up okay yeah they're they'll have this turned on okay now what this does is this is going to this is going to only show you UPC sites and you're going to lose a bunch of sites that are in here okay I suggest to people to not turn this on"
+    },
+    {
+        "id": "ta-live-search-sales",
+        "trigger": "Known ongoing sales or new promotions",
+        "advice": "Switch to live search (no cache) before scanning sites with active sales to ensure current pricing.",
+        "confidence": "High",
+        "source": "if you know that you're going into a sale just change your cash to life okay before you set up your scam that's all you have to you can do this for every single scan that you set up"
+    },
+    {
+        "id": "ta-discount-buy2get1",
+        "category": "Pricing",
+        "trigger": "Buy 2 get 1 free promotions",
+        "advice": "Apply a 33% discount in scan settings for buy 2 get 1 free deals, as sites don't auto-adjust per unit price.",
+        "confidence": "High",
+        "source": "with Walgreens is these buy two get one get the third free it's not going to figure that out for you automatically they don't they don't change it to a per unit price on their site you'll see 579 okay and what I'm gonna do is I'm gonna be able to buy two and they get the third free so what I need to do is I need to put in a 33% discount"
+    },
+    {
+        "id": "ta-discount-coupon-stack",
+        "category": "Pricing",
+        "trigger": "Coupon thresholds like $76 spend",
+        "advice": "Stack discounts: add 17% off for $76+ spend on top of promo discounts in scan settings.",
+        "confidence": "High",
+        "source": "I know because I get my sales gazer emails that Walgreens has a 4th of July coupon code I can't remember the code exactly where I left on my head but if you spend $76 you can take 17 percent off so 17 percent off at $76 1776 nice little play"
+    },
+    {
+        "id": "ta-cashback-bonus",
+        "category": "Pricing",
+        "trigger": "Using cashback sites like Ebates or Giving Assistant",
+        "advice": "Do not include cashback (e.g., 3-8%) in ROI calculations; treat as quarterly bonus income.",
+        "confidence": "High",
+        "source": "some people will also had in their cash back now I consider cashback a bonus so I don't add cash back in here and then once a quarter or once a month or once a week depending on which cashback company you're using I just get it as a little bit of a bonus"
+    },
+    {
+        "id": "ta-sales-tax-state",
+        "category": "Pricing",
+        "trigger": "Sourcing in taxable states like Florida",
+        "advice": "Add state sales tax (e.g., 7% in Florida) to scan costs if not exempt; leave blank for tax-free states or prep centers.",
+        "confidence": "High",
+        "source": "with Walgreens I have not figured out how to get them to not charge me sales tax even though I have a sales tax permit in the state of Florida so I do get charged seven percent state sales tax here in Florida you want to change that to whatever your personal state sales tax is"
+    },
+    {
+        "id": "ta-shipping-costs",
+        "category": "Pricing",
+        "trigger": "Partnered carrier shipping to Amazon",
+        "advice": "Set shipping cost at 75 cents per pound to account for dimensional weight; adjust lower for LTL shipments.",
+        "confidence": "High",
+        "source": "I use currently 75 cents per pound for partnered carrier shipping that used to be 50 cents per pound but I've raised it because you do have you do have dimensional weight and it's mandatory now there there's no getting around it okay so I'm typically getting less than that but I do like to overestimate"
+    },
+    {
+        "id": "ta-min-sales-filter",
+        "category": "Risk",
+        "trigger": "Filtering low-volume items",
+        "advice": "Set 'remove if estimated sales less than 5' to widen results; use Keepa for deeper sales trend analysis.",
+        "confidence": "High",
+        "source": "what I do here is I typically do the number five okay remove if estimated sales is less than five that's going to give me a really nice wide berth on sales ranks and then I can go in and look at the Kiba they keep a chart on my own"
+    },
+    {
+        "id": "ta-no-sales-rank-filter",
+        "category": "Risk",
+        "trigger": "Overly strict sales rank filters (e.g., >100,000)",
+        "advice": "Leave sales rank filters blank or use average sales rank over current to avoid limiting trends; current is a snapshot.",
+        "confidence": "High",
+        "source": "personally I'm going to leave this blank I'm gonna leave it at nothing okay remove of estimated sales is less than this ta does have one of the most powerful sales estimators in my opinion so what I do here is I typically do the number five"
+    },
+    {
+        "id": "ta-keep-out-of-stock",
+        "category": "Buying",
+        "trigger": "Products out of stock at source",
+        "advice": "Do not remove out-of-stock products; set up in-stock alerts in TA to catch restocks and buy quickly.",
+        "confidence": "High",
+        "source": "the same goes for out of stock products oh I see a lot of people say well I don't want to see products that are out of stock the thing with items being out of stock at the source site is this very often they will come back in stock and if you've got ta set up to alert you to those products then you will be able to get an alert from tactical arbitrage"
+    },
+    {
+        "id": "ta-keep-oversized",
+        "category": "Buying",
+        "trigger": "Oversized products in results",
+        "advice": "Do not remove oversized products; they can yield high profits (e.g., $75-150/unit) despite prep challenges.",
+        "confidence": "High",
+        "source": "if you're removing oversized products you're removing oversized profits some of the things that I've sold in the past that have made me the most money have been oversized items and I will be the first to admit they are an absolute pain in the backside to prep pack and ship to Amazon but when you're making 75 or 100 or 150 dollars a unit"
+    },
+    {
+        "id": "ta-sellers-filter-loose",
+        "category": "Risk",
+        "trigger": "High number of sellers (e.g., 400-500)",
+        "advice": "Do not strictly filter number of sellers; focus on competitive buy box sellers (5-7) and fast-selling items for quick cuts.",
+        "confidence": "High",
+        "source": "if you're removing the number of sellers you're also going to limit yourself especially with q4 coming up there are times when I'll hop on a toy that's got four hundred five hundred other sellers but the price is so high and it's selling so fast that I will just take my cut"
+    },
+    {
+        "id": "ta-no-amazon-compete",
+        "category": "Risk",
+        "trigger": "Amazon as seller in stock",
+        "advice": "Do not remove items where Amazon sells; check Keepa for buy box sharing history and consider if ROI >100% or low risk.",
+        "confidence": "High",
+        "source": "remove if the Amazon is also a seller and now in stock I know it's tempting to not sell against Amazon they may or may not share the buy box and so on I would suggest that you at least look at them now be honest I typically don't sell against Amazon however if I something that maybe is going to make a hundred percent ROI"
+    },
+    {
+        "id": "ta-reviews-filter-off",
+        "category": "Risk",
+        "trigger": "Low reviews or ratings (e.g., <3 stars)",
+        "advice": "Leave review/rating filters blank to include new market or staple items; check for return risks in categories like clothing.",
+        "confidence": "High",
+        "source": "removing if the number of reviews is less then it's fine but you're gonna miss out on some newer to market products or products that just don't get reviewed very often... you can also remove the roommate excuse me if the rating is lower than X and this can be something like three stars or 3.2 stars or even two point two stars a lot of times I suggest not to worry about this either"
+    },
+    {
+        "id": "ta-price-range-loose",
+        "category": "Buying",
+        "trigger": "Source or Amazon prices outside limits (e.g., <$3 or >$50)",
+        "advice": "Use price removal filters sparingly (e.g., source <$2 or >$45) to avoid missing high-ROI flips; don't bust budgets on singles.",
+        "confidence": "High",
+        "source": "this removed products with a source price of less than X and more than an X is fine maybe you don't want to buy things that are maybe less than two dollars or less than three dollars maybe you don't want to spend it anything let more than you know fifty or twenty or forty five or whatever your ceiling might be for a single product"
+    },
+    {
+        "id": "ta-no-3x-rule",
+        "category": "Pricing",
+        "trigger": "Seeking 3x buy box multiple",
+        "advice": "Abandon strict 3x ROI rule; accept 10-30% ROI for fast movers (e.g., 100 units/day) as market has changed.",
+        "confidence": "High",
+        "source": "remove product if the amazon buy box is not at least x times the store price this was this was added because a user specifically asked for it chris green the og of of everything arbitrage you used to tell people that you need to have use a three times row you're getting started... that market doesn't exist anymore okay I mean you're still going to find things that are three and five and seven and twelve times what you paid for them but if you're running a business like this... you're gonna you're gonna be willing to take a 20 or 30 percent return on your investment if it moves fast"
+    },
+    {
+        "id": "ta-seasonal-pricing",
+        "category": "Seasonality",
+        "trigger": "Upcoming seasons like back-to-school or Q4",
+        "advice": "Use custom average price date range (e.g., July 15-Sept 1 last year) to compare current buy prices to historical seasonal trends.",
+        "confidence": "High",
+        "source": "for seasonal buy box prices you can use the average price date range... we've got back-to-school season coming up so let's say that I'm going into an office supply store on ta and I'm looking at the binders of notebooks and so on well a lot of the stuff is not going to be profitable right now but we know that the demand curve is going to start spiking pretty soon... so what we can do is we can go in here in a custom range and we can choose we can choose the dates of last year let's say we want to do July I don't know 15 okay to September the 1st of 2018"
+    },
+    {
+        "id": "ta-prep-center-timing",
+        "category": "General",
+        "trigger": "Overwhelmed by prep volume",
+        "advice": "Use prep center early if solo and buys exceed daily prep capacity; prefer tax-free states for wholesale drops.",
+        "confidence": "High",
+        "source": "at what point should you use a prep center the earlier the better if I were a complete one-man show and I did not have a partner in crime to to lean on then I would do it sooner rather than later... if you're ever getting to that point and you're not still excited to stay up until 2:00 in the morning to tape boxes then I think it's time to get a prep center... if I were going to go back to a prep center or if I were gonna if I had if I get a wholesale account that I don't want to have delivered to the house then I would use a prep center in a tax free state most likely"
+    },
+    {
+        "id": "abs-001",
+        "category": "General",
+        "trigger": "Tactical Arbitrage subscription active",
+        "advice": "Enable and check the Always Be Scanning feature daily to receive unique, 24/7 scanned deals across all supported websites, diversifying your product sourcing beyond usual categories.",
+        "confidence": "High",
+        "source": "it is scanning pretty much 24/7 in the background all the websites that are on tal Arbitrage to find you deals okay those deals you are going to be the only person to find those deals... you are going to find potentially leads that you are not like you are going to look at categories and products that you may not look into um usually"
+    },
+    {
+        "id": "abs-002",
+        "category": "Buying",
+        "trigger": "Limited rubies available",
+        "advice": "Spend rubies to get double the deals from Always Be Scanning, costing 100,000 rubies, to increase lead volume.",
+        "confidence": "High",
+        "source": "you can actually get double the deals and it is right there get double the deal is 100,000 pounds to get the deals"
+    },
+    {
+        "id": "abs-003",
+        "category": "General",
+        "trigger": "Multiple sourcing methods in use (e.g., target lists, stalking, Keepa)",
+        "advice": "Combine Always Be Scanning with other tools like target lists, store stalking, Tactical Arbitrage searches, and Keepa Product Finder to accumulate more deals daily.",
+        "confidence": "High",
+        "source": "it's all about having multiple like multiple Tools in your tool boox you know that you can use all right... if you have my target list or you use the target list you also do some star from stalking um you use tactical Arbitrage you know you you run some search you you you do you use the keep product finder you find a few more leads"
+    },
+    {
+        "id": "abs-004",
+        "category": "Pricing",
+        "trigger": "Many leads show inflated Amazon prices",
+        "advice": "Sort through numerous low-quality leads with inflated prices to find gems; expect to review a lot of data to identify profitable opportunities.",
+        "confidence": "High",
+        "source": "you're going to see a lot of products with their price inflated... the name of the game with online Arbitrage and especially with tactical Arbitrage is that you are going to need to sort through a lot of dirt to find you know the gem in the dirt pretty much"
+    },
+    {
+        "id": "abs-005",
+        "category": "Risk",
+        "trigger": "Books or unwanted categories appear in scans",
+        "advice": "Use filters to exclude specific websites or categories like books if they don't align with your selling strategy.",
+        "confidence": "High",
+        "source": "we can filter out website because what i notic is that there's a lot of books and I do not necessarily sell a lot of books doing online Arbitrage"
+    },
+    {
+        "id": "abs-006",
+        "category": "Buying",
+        "trigger": "Average sales rank last 90 days >150,000",
+        "advice": "Filter scans to only show products with average sales rank under 150,000 for better selling velocity.",
+        "confidence": "High",
+        "source": "we are going to filter by sales rank all right so average rank we for the last 90 days we want it under 150,000 okay"
+    },
+    {
+        "id": "abs-007",
+        "category": "Pricing",
+        "trigger": "Amazon listed as buy box seller",
+        "advice": "Filter out products where Amazon holds the buy box to focus on third-party opportunities.",
+        "confidence": "High",
+        "source": "we do not want Amazon on the buy box okay"
+    },
+    {
+        "id": "abs-008",
+        "category": "Buying",
+        "trigger": "FBM (Fulfilled by Merchant) products identified",
+        "advice": "Prioritize FBM products in scans for potentially higher margins without FBA fees.",
+        "confidence": "Medium",
+        "source": "what could be interesting would be to actually look at fbm products only it would be super interesting"
+    },
+    {
+        "id": "abs-009",
+        "category": "Pricing",
+        "trigger": "Gross ROI <30%",
+        "advice": "Filter scans to only include products with at least 30% gross ROI to focus on high-margin deals.",
+        "confidence": "High",
+        "source": "gross Roi we want at least 30% all right"
+    },
+    {
+        "id": "abs-010",
+        "category": "Risk",
+        "trigger": "Product details mismatch (e.g., size, condition)",
+        "advice": "Verify exact product match by checking sizes, dimensions (e.g., 12x18), condition (new), and adding to cart if needed before purchasing.",
+        "confidence": "High",
+        "source": "we just need to make sure that it's the right size 12 by 18 um and we do not have the we do not have the size... let's just add it to card to make sure"
+    },
+    {
+        "id": "abs-011",
+        "category": "Pricing",
+        "trigger": "Sale or low stock on source site",
+        "advice": "Act quickly on deals as prices can change or items go out of stock rapidly after scanning.",
+        "confidence": "High",
+        "source": "no it's not on sale anymore great... it looks like it's actually for whatever reason it could be sitting at this price I have no idea why somebody would actually buy this at this price but it's not available on target anymore"
+    },
+    {
+        "id": "abs-012",
+        "category": "Pricing",
+        "trigger": "Books with low profit (e.g., $2.37 on $6.99 buy)",
+        "advice": "Evaluate books for slow sales and low ROI; skip if sales rank indicates poor velocity unless margins justify.",
+        "confidence": "Medium",
+        "source": "we get it for $6.99 okay we make two $237 cents profit uh so it's not that great of a profit... it's selling a little bit slowly"
+    },
+    {
+        "id": "abs-013",
+        "category": "Buying",
+        "trigger": "Discounts, taxes, shipping, prep center fees apply",
+        "advice": "Calculate true cost including 10% cashback, taxes (e.g., 7%), shipping, and prep center fees (e.g., $28.25 total for $30 item) to ensure profitability.",
+        "confidence": "High",
+        "source": "we can get 10% on this website okay so 30 $30 minus 10% is going to be like $27 okay so $27 time 107 because I'm paying tax 2889 actually... send it to my prep Center so I'm going to pay 2825"
+    },
+    {
+        "id": "abs-014",
+        "category": "Pricing",
+        "trigger": "FBM sell price $59.99, ROI 55%",
+        "advice": "Target FBM sales at $59+ for items like Yeti products; even at reduced $51, maintain at least 28% ROI if historical sales support.",
+        "confidence": "High",
+        "source": "we sell it FBA at $59.99 okay... 55% return on investment... at 51 it is not going to be at 51 is still 28% return on investment"
+    },
+    {
+        "id": "global-shipping-001",
+        "category": "Buying",
+        "trigger": "Setting up global filters",
+        "advice": "Set shipping estimate to 0.51 per item to be conservative (actual around 0.30 per pound)",
+        "confidence": "High",
+        "source": "i usually like to put my shipping estimate as 0.51 it's usually around 0 30 30 cents per pound but i put it a little bit more just to be more conservative"
+    },
+    {
+        "id": "fulfillment-costs-001",
+        "category": "Buying",
+        "trigger": "Using prep center for online arbitrage items",
+        "advice": "Include fulfillment costs of 1.85 dollars per item in calculations",
+        "confidence": "High",
+        "source": "i do have fulfillment costs because i don't do anything myself in terms of prepping i prep using a prep center in delaware and they charge me for online arbitrage items 1.85 dollars per item"
+    },
+    {
+        "id": "cashback-001",
+        "category": "Pricing",
+        "trigger": "Using Capital One Spark Business card",
+        "advice": "Factor in 2% cashback on every purchase in profit calculations",
+        "confidence": "High",
+        "source": "for the cashback amount i put two percent because i use capital one spark business that gives me two percent on every single purchase"
+    },
+    {
+        "id": "categories-search-001",
+        "category": "General",
+        "trigger": "Searching for products",
+        "advice": "Focus on categories: food and grocery, beauty, household, health and household, beauty and personal care, grocery and gourmet food",
+        "confidence": "High",
+        "source": "my categories are usually a food and grocery beauty household ... i'm going to search health and household i'm going to search beauty and personal care i'm going to search grocery and gourmet food and i think those are my three strongest categories"
+    },
+    {
+        "id": "retailers-preferred-001",
+        "category": "Buying",
+        "trigger": "Selecting retailers for search",
+        "advice": "Prioritize retailers: Target, Walmart, Kohl's, Walgreens",
+        "confidence": "High",
+        "source": "some of the retailers i use the most are target walmart coals walgreens etc ... i'm going to choose walmart target and perhaps walgreens ... i'm going here and i'm putting 25 off ... so now we're running searches on walgreens target walmart and kohl's"
+    },
+    {
+        "id": "target-discount-001",
+        "category": "Pricing",
+        "trigger": "Searching Target retailer",
+        "advice": "Add 5% discount for Target Red Card in search settings",
+        "confidence": "High",
+        "source": "now for target i use the red card target credit card red card and that gives me five percent so i'm going to add an additional ... five percent in here"
+    },
+    {
+        "id": "kohls-discount-001",
+        "category": "Pricing",
+        "trigger": "Site-wide sale at Kohl's",
+        "advice": "Apply 25% site-wide discount plus 2% cashback (total 27%) when available",
+        "confidence": "High",
+        "source": "they are having 25 percent off ... so i'm going here and i'm putting 25 off um actually 25 plus my 2 cashback from my credit cards 27"
+    },
+    {
+        "id": "sitewide-discount-001",
+        "category": "Pricing",
+        "trigger": "Retailer has site-wide discount",
+        "advice": "Only apply category-specific discounts if site-wide; otherwise search entire site and manually verify",
+        "confidence": "High",
+        "source": "because i found a really cool discount here 20 off on a beauty and personal care but i can't apply 20 off because ... it's going to apply to the entire site so this would only be cool if it has one for site-wide uh discount"
+    },
+    {
+        "id": "roi-filter-001",
+        "category": "Pricing",
+        "trigger": "Filtering search results",
+        "advice": "Set minimum ROI to 35%; lower to 15% if few results",
+        "confidence": "High",
+        "source": "i want my roi to be at least 35 and you can always change it if you are getting very few results um i usually go down to even like 15"
+    },
+    {
+        "id": "profit-filter-001",
+        "category": "Pricing",
+        "trigger": "Filtering search results",
+        "advice": "Set minimum profit to 3 dollars per item; lower to 1.5 if few results",
+        "confidence": "High",
+        "source": "my profit at least 3 percent per item and again if i'm not getting a lot of results i change it to maybe like 1.5 per item"
+    },
+    {
+        "id": "sales-rank-filter-001",
+        "category": "Pricing",
+        "trigger": "Filtering for premium items",
+        "advice": "Filter sales rank to 0-2% (top 2%) for high-velocity items with estimated monthly sales",
+        "confidence": "High",
+        "source": "i want only really premium items in terms of sales rank items that are selling quite a lot so a lot of estimated monthly sales so i'm gonna stick to like zero to two percent sales rank"
+    },
+    {
+        "id": "max-buy-price-001",
+        "category": "Buying",
+        "trigger": "Setting premium filters",
+        "advice": "Set maximum buy price to 80 dollars; ideal range 1-50 dollars",
+        "confidence": "High",
+        "source": "in terms of the maximum buy price this is the most you're willing to spend at the retailer ... i don't want to buy products that are over 80 dollars you know i wanna my ideal range is anywhere from like a dollar to maybe fifty dollars"
+    },
+    {
+        "id": "min-amazon-price-001",
+        "category": "Pricing",
+        "trigger": "Setting premium filters",
+        "advice": "Set minimum Amazon price to 11 dollars to avoid negative ROI",
+        "confidence": "High",
+        "source": "the minimum amazon price and put like 11 because i found that once it goes under 10 or 11 it's like a negative roi"
+    },
+    {
+        "id": "buy-box-filter-001",
+        "category": "Risk",
+        "trigger": "Viewing search results",
+        "advice": "Enable 'high without buy box' to only show items with an active buy box",
+        "confidence": "High",
+        "source": "you always want to uh basically put that on because otherwise you're gonna get results that don't have they have the buy box suppressed and you only want to show results that have a buy box"
+    },
+    {
+        "id": "avoid-hazmat-ip-001",
+        "category": "Risk",
+        "trigger": "Evaluating potential products",
+        "advice": "Avoid products that are hazmat/dangerous goods, have IP issues, no buy box, meltable, or sold only by Amazon",
+        "confidence": "High",
+        "source": "i don't touch anything that is either hazmat dangerous goods doesn't have an a buy box it's meltable or it has ip issues ... amazon is the only seller so we're going to stay away ... norelco has ip issues so we're going to skip it ... it has only amazon selling it so we're gonna skip it"
+    },
+    {
+        "id": "seller-review-check-001",
+        "category": "Risk",
+        "trigger": "Checking product seller on retailer site",
+        "advice": "Avoid sellers with long names (likely from China), only 1 review, or long delivery times (e.g., 16 days)",
+        "confidence": "High",
+        "source": "look the seller is this very long name that uh i think it's from china and it's only one seller review and it's going to be delivering on may 16th ... so it's going to take 16 days to deliver so this is probably a drop shipper or an importer and we definitely don't want to buy from him"
+    },
+    {
+        "id": "upc-match-check-001",
+        "category": "Risk",
+        "trigger": "Verifying product match",
+        "advice": "Right-click inspect/view page source, search for GTIN or UPC to confirm product match between retailer and Amazon",
+        "confidence": "High",
+        "source": "you right click inspect to see if the upc code matches here ... view page source and then you uh control f ... and then you type g t i n and this will give you the actual upc code ... so as you see it is the same product"
+    },
+    {
+        "id": "seller-amp-tool-001",
+        "category": "Risk",
+        "trigger": "Checking Amazon restrictions",
+        "advice": "Use Seller Amp Chrome extension to verify if product can be sold, check for gating, IP, or other issues",
+        "confidence": "High",
+        "source": "i do have this really cool service called seller amp sas and it's a chrome extension ... it will tell you if you can sell it or if you need to get it and sometimes you can actually auto and gate right there"
+    },
+    {
+        "id": "out-of-stock-avoid-001",
+        "category": "Risk",
+        "trigger": "Product availability at retailer",
+        "advice": "Skip products that are out of stock at the retailer",
+        "confidence": "High",
+        "source": "but it's out of stock say 12 dollars ... we can't get it it's out of stock"
+    },
+    {
+        "id": "buy-box-average-001",
+        "category": "Pricing",
+        "trigger": "Evaluating profitability",
+        "advice": "Compare buying price to 30-day buy box average (not current price) for realistic ROI; check 90-day if needed",
+        "confidence": "High",
+        "source": "i usually always compare my buying price from the retailer against the 30 day buy box average instead of the actual current price ... i'm still doing a hefty 48 roi which is nice and i see even the 90-day average i stay pretty much the same"
+    },
+    {
+        "id": "units-calculation-001",
+        "category": "Buying",
+        "trigger": "Determining order quantity",
+        "advice": "Calculate max units as monthly sales divided by (number of FBA sellers + 1 for yourself); e.g., 53 sales / 4 = 13 units",
+        "confidence": "High",
+        "source": "i calculate three fba sellers with me it's going to be four and we have 53 units per month 53 divided by 4 i can get 13 units"
+    },
+    {
+        "id": "wishlist-save-001",
+        "category": "General",
+        "trigger": "Finding a good product",
+        "advice": "Add promising products to wishlist in Source Module to save for later review and bulk buying",
+        "confidence": "High",
+        "source": "once you actually find a product go ahead and on source module add it to your wish list that way it saves it which is pretty amazing"
+    },
+    {
+        "id": "free-shipping-bulk-001",
+        "category": "Buying",
+        "trigger": "Retailer minimum for free shipping (e.g., $50 at Kohl's)",
+        "advice": "Add multiple items to cart to reach free shipping threshold before purchasing",
+        "confidence": "High",
+        "source": "the only bad thing is that they only have one available ... so what i can do is i'm going to add it to the cart and then if i find anything else from kohl's i'm going to go ahead and buy that as well so i can get a free ship ... now i have two items and 13 of this which is a very nice profit"
+    },
+    {
+        "id": "new-member-discount-001",
+        "category": "Pricing",
+        "trigger": "First-time purchase at retailer like Kmart",
+        "advice": "Sign up as new member for additional discounts (e.g., $5 off) and factor into calculations",
+        "confidence": "High",
+        "source": "oh and by the way i even can get a five dollar off if i sign up as a new member which i will uh so let's plug in our 6 18"
+    },
+    {
+        "id": "sm-beginner-friendly",
+        "category": "General",
+        "trigger": "New to online arbitrage",
+        "advice": "Use SourceMogul as it can be learned and mastered in 20-30 minutes via one tutorial, allowing immediate sourcing and profit.",
+        "confidence": "High",
+        "source": "you can learn and master source mogul in 20 to 30 minutes by watching one tutorial if not less and start sourcing immediately and start making money with source mogul"
+    },
+    {
+        "id": "ta-learning-curve",
+        "category": "General",
+        "trigger": "Attempting to use Tactical Arbitrage",
+        "advice": "Expect days to weeks to master Tactical Arbitrage; avoid if beginner due to complexity.",
+        "confidence": "High",
+        "source": "it's gonna take you days probably a master tactical arbitrage and all the ways to source attack arbitrage and I know people that you know have tried to spend weeks mastering tactical arbitrage and still don't get it"
+    },
+    {
+        "id": "sm-pricing-discount",
+        "category": "Pricing",
+        "trigger": "Subscribing to SourceMogul for first three months",
+        "advice": "Get $30 off first three months, paying $67/month for online arbitrage and wholesale combined.",
+        "confidence": "High",
+        "source": "you can get $30 off your first three months so then for wholesale and for the our online arbitrage versions of it you're paying 67 a month for the first three months"
+    },
+    {
+        "id": "sm-monthly-cost",
+        "category": "Pricing",
+        "trigger": "Ongoing SourceMogul subscription",
+        "advice": "Pay $97/month for SourceMogul covering online arbitrage and wholesale.",
+        "confidence": "High",
+        "source": "on source mobile you're going to be paying ninety seven a month for both of those"
+    },
+    {
+        "id": "ta-monthly-cost",
+        "category": "Pricing",
+        "trigger": "Subscribing to Tactical Arbitrage for both OA and wholesale",
+        "advice": "Pay $109/month for Tactical Arbitrage online arbitrage and wholesale package.",
+        "confidence": "High",
+        "source": "if you go with the online arbitrage and the wholesale package here it's gonna be 109 the month"
+    },
+    {
+        "id": "free-trial-length",
+        "category": "General",
+        "trigger": "Starting trial for either tool",
+        "advice": "Utilize 7-day free trial for both SourceMogul and Tactical Arbitrage to test without commitment.",
+        "confidence": "High",
+        "source": "with tactical arbitrage there's a seven day free trial okay so seven day free trial you're paying 109 a month that's tactical arbitrage right now source mobile does 90 percent... seven day free trial so what is seven days as well"
+    },
+    {
+        "id": "sm-coverage",
+        "category": "Buying",
+        "trigger": "Sourcing products with SourceMogul",
+        "advice": "Scan approximately 400 popular retail sites and hundreds of thousands to millions of pre-loaded products immediately.",
+        "confidence": "High",
+        "source": "you can scan wholesale supplier lists and you can also do I think it's like a couple it might be like 400 I'd have to look at the website 400 of the most popular retail sites and like hundreds of thousands of products if not millions"
+    },
+    {
+        "id": "sm-efficiency",
+        "category": "General",
+        "trigger": "Using SourceMogul for beginners",
+        "advice": "Focus on SourceMogul's 90% coverage of essential features to save time and master quickly compared to Tactical Arbitrage.",
+        "confidence": "High",
+        "source": "source mobile does 90 percent of what you're gonna need it to do versus tactical arbitrage right you can't necessarily do like reverse searching but you can do you can scan wholesale supplier lists"
+    },
+    {
+        "id": "monthly-payment-flex",
+        "category": "Risk",
+        "trigger": "Variable sourcing approach",
+        "advice": "Opt for monthly subscriptions over annual to avoid commitment and switch between online arbitrage, wholesale, or ebooks based on monthly needs.",
+        "confidence": "High",
+        "source": "I don't even pay annually for these services because I switch my might with a way that I approach it around so much so like some to some months"
+    },
+    {
+        "id": "pre-textbook-season",
+        "category": "Seasonality",
+        "trigger": "Pre-textbook season",
+        "advice": "Shift focus to ebooks, investing thousands in books while reducing spending on online arbitrage or wholesale products.",
+        "confidence": "High",
+        "source": "especially like pre textbook season I'll be like full into ebooks and I'll be spending thousands of dollars into books so I'm not really spending a lot of my money in my cash flow on like online arbitrage products or even wholesale products sometimes in those months"
+    },
+    {
+        "id": "stick-to-working-method",
+        "category": "General",
+        "trigger": "Finding a successful tool or method",
+        "advice": "Continue using Tactical Arbitrage or other tools if they yield results, even if not the recommended option.",
+        "confidence": "High",
+        "source": "if you've tried tactical arbitrage and you're seeing results with it stick with it... if you see something that's working for you that's different try it and if it works for you then stick with it"
+    },
+    {
+        "id": "52041024-c9a8-4d42-9b9c-81252a4e5fab",
+        "advice": "[",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "70595eaf-ce3c-476b-aaf4-9182d89e54af",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "15efc972-7137-41c5-9262-d2ad41f0474d",
+        "advice": "\"id\": \"sales-rank-filter\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "57c6a14d-4dc9-4729-b330-6d124e6ea579",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f4c26a04-fa4c-4e51-9e1a-c767cb307172",
+        "advice": "\"trigger\": \"Sales Rank >= 100,000\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b2262b0c-22dd-472b-97f4-a7a3538fa3cf",
+        "advice": "\"advice\": \"Filter out products with sales rank 100,000 or higher to focus on faster-selling items.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f8ff7e3f-bf19-4375-a7fb-5a85996c787b",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4402814d-605c-4477-ba14-9df98a164862",
+        "advice": "\"source\": \"saying for the the sales rank is to high let's do sales rank less than 100,000\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fd8761e3-8d4b-43dd-a824-b4cc950f66a5",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c51f9464-d3a9-4c91-bb86-3a66761db515",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "85164b5e-e00b-4f81-9f06-2c2ffa027522",
+        "advice": "\"id\": \"min-profit-margin\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6fc9240a-4f94-4252-8681-dcd9926f6cb5",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d4299201-fc0e-45bd-82f8-1d7cc08d0a6e",
+        "advice": "\"trigger\": \"Profit margin < 30%\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a34f8ed7-f4f3-4db5-8b43-a3cc49ef0162",
+        "advice": "\"advice\": \"Apply a minimum 30% profit margin filter to identify viable deals.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b959869a-f2d7-414b-93cf-72dc5a855427",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f1eb4e74-f910-488f-a00c-446c0b9648c0",
+        "advice": "\"source\": \"let's do 30% minimum okay now we talking\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "740eacdb-0343-42dc-a2b0-320e13308740",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9f239d21-e200-4da6-8b3a-acf84ab41ad0",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ded0b8a0-18e1-4d89-b403-713a9805be23",
+        "advice": "\"id\": \"avg-price-calc\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d8fa2d70-9ada-446d-8473-e1e5d3c09944",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e7e99c30-b69a-4970-8d8a-389e409a3def",
+        "advice": "\"trigger\": \"Using current inflated price\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bbf8f6c6-2c52-431f-9606-4ab2c71c74c9",
+        "advice": "\"advice\": \"Calculate profit based on 30-day average price for more realistic profitability assessment.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3f53cee6-7999-44b5-89ac-5434872a73a6",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "49d470cb-18f2-49e6-8f19-68abc63b217f",
+        "advice": "\"source\": \"calculated profit by average price 30 days here we go\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b9f41b07-be14-41d1-beb9-9d71edcde97d",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "223989cf-3e1a-4e9e-9dd9-8657e50764ca",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "52ae8f82-940c-4aa5-abed-e1885abd40e6",
+        "advice": "\"id\": \"amazon-instock-avoid\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "230021c4-b8d4-456b-9997-f411afc7bc45",
+        "advice": "\"category\": \"Risk\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9859408a-6be2-4c46-8341-caa081ee023d",
+        "advice": "\"trigger\": \"Amazon is in stock\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4c430812-78cf-4900-bc14-a59923413a03",
+        "advice": "\"advice\": \"Filter for products where Amazon is not in stock to avoid direct competition and potential IP issues.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "73a02861-6d54-44a7-9922-e89cd3fc8e6a",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3ef04498-c01c-4bee-9f9e-5bf4ca3f8e98",
+        "advice": "\"source\": \"Amazon inst stock no\" and \"mismatch and no the ordinary out of stock\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9cb93634-8ad1-4fbe-9cde-e3b4f54b32eb",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a6be87c4-16b1-402a-ba1b-335892e3a033",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0a963db7-564c-45f3-bad1-345d48591418",
+        "advice": "\"id\": \"roi-evaluation\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "81ca7b06-70c0-417a-98e4-afec52ed3934",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9a09eee6-2e34-4591-80f1-17e82afc7872",
+        "advice": "\"trigger\": \"ROI around 177% with uncertain pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7ec9eb12-5d27-44b9-bbd1-5e545e84fe12",
+        "advice": "\"advice\": \"Reject deals with high ROI if source pricing is inflated or unreliable, even at 177%, unless combinable offers confirm viability.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "be7dbfbf-36cc-4ba2-9712-ff0aa54a0523",
+        "advice": "\"confidence\": \"Medium\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "938abfe1-cb03-413e-b11b-a81c79b55089",
+        "advice": "\"source\": \"worst gate scenario at this price it's 177% return on investment nah it's not good enough\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "485949bf-1c45-43c8-887d-25c9af4fb329",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9103edea-efe2-46df-98ab-3ed3101eff78",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "43646a46-2c3d-414f-bb5e-59488a073d96",
+        "advice": "\"id\": \"coupon-usage\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "99c2146b-01b4-4b60-ab14-391a9b59cb9e",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fc1f9b7b-0b3e-4f1f-80ab-9ccfff3cfaa4",
+        "advice": "\"trigger\": \"Availability of coupons or offers\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "22b42bb3-5d27-4963-bcf6-18576c808554",
+        "advice": "\"advice\": \"Factor in coupons like 25% off to reduce buy price and improve profitability.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7cefe1cb-6083-4871-aeb3-e85f519753c5",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1e481e0c-2168-4ddd-9453-2d42f3f65b89",
+        "advice": "\"source\": \"so we can get a 25% coupon from what I've seen okay so it looks like it's actually profitable\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7d5297d7-9fed-4c4d-a30b-01274ec0e70e",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e8a3e6d2-8844-4688-96da-5ef13f8dd3d6",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "33fa7426-5e5d-489c-a26a-7379233c09e2",
+        "advice": "\"id\": \"quick-picks-skepticism\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c4f01005-cdb1-4293-9199-e882fa803f62",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ae468e00-27f6-4f47-871f-8fa738fe7f33",
+        "advice": "\"trigger\": \"Relying solely on Quick Picks leads\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6f6b4e78-53f3-4c21-a654-9e4ec9e0e631",
+        "advice": "\"advice\": \"Test Quick Picks for quick leads but prefer running full custom searches if results include many unprofitable or mismatched products.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bfef5651-2ae4-4600-830c-1d14b93c046b",
+        "advice": "\"confidence\": \"Medium\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cb9a1d30-9350-4757-bbcd-d7eeebd1e1e2",
+        "advice": "\"source\": \"I don't really know I feel about that feature if I'm being 100% honest\" and \"if from these five products we don't have any profitable products any products that is good enough for us to buy I'm just going to skip it\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c25f8e80-3073-4148-85ac-d6ecfe53fc9c",
+        "advice": "}",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9db813b6-1b01-4608-be6a-911e130e9b31",
+        "advice": "]",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "multi-site-niche-search",
+        "category": "General",
+        "trigger": "Niche-specific product search (e.g., toys only)",
+        "advice": "Select toys or niche categories from multiple websites like Walmart, Target, Walgreens, and Toy Wiz; add subcategories (e.g., Barbie, clearance, Despicable Me, Disney) to bulk selector without exceeding 500 slots total",
+        "confidence": "High",
+        "source": "let's say that all I want to do is search for toys that's all I want to do that's my niche... pick websites that have toys or toys sections and run scans on those... Walmart kind of takes up a lot of space for toys you see if we select this and add to bulk it's gonna fill 418 slots out of that 500... Target... toys has 103... Walgreens baby kids in toys... toy Wiz... select Barberie maybe we just want to see you know the clearance section... Despicable Me I want to see Disney"
+    },
+    {
+        "id": "slot-limit-management",
+        "category": "General",
+        "trigger": "Adding categories from multiple sites",
+        "advice": "Monitor slot usage in bulk selector; Walmart toys use 418 slots, Target toys 103 slots; add sites sequentially until reaching 500 slot cap; can include 5-20 websites if under limit",
+        "confidence": "High",
+        "source": "Walmart kind of takes up a lot of space for toys... 418 slots out of that 500... toys has 103 so it's not gonna be able to fill it up completely... you can run as many websites as you want on one single search... capped at 500 so as long as you don't go over 500 you can put as many as these websites into one search as you like... 5 10 20 even"
+    },
+    {
+        "id": "broad-site-search",
+        "category": "General",
+        "trigger": "Searching entire websites without niche focus",
+        "advice": "For 1000 slots, select all categories from one site; if under 500 slots remain, add full categories from additional sites to maximize coverage",
+        "confidence": "High",
+        "source": "if you just want to look at more websites as a whole you can try to really squeeze in as much as you can so if we go 1,000 bulbs select all and add to bulk it fills it up but if you find a website and you select every product in every category in it and it doesn't fill up this section here if you still have space you're not at that 500 limit you can go to another website and select it and add that in"
+    },
+    {
+        "id": "price-comparison-method",
+        "category": "Pricing",
+        "trigger": "Comparing retail to Amazon",
+        "advice": "Use TA to compare retail prices from sites (e.g., Target, Walmart) to Amazon buy box price only; does not compare merchant fulfilled vs FBA unless using full suite ($149/month)",
+        "confidence": "High",
+        "source": "tactical arbitrage is looking at the buy box from Amazon it's pulling bad information it's not really looking at the merchant fulfilled offers what it does is it compares retail pricing at other retail online stores Target Walmart whatever and it compares that price to the same products by box price on Amazon... can ta compare merger fulfilled and FBA prices that answer I believe is no... looks like it can if you get that full suite you can look for Amazon flips but I don't have the full suite"
+    },
+    {
+        "id": "gated-filtering",
+        "category": "Risk",
+        "trigger": "Restricted or gated in brands/categories (e.g., Disney, Lego, Star Wars)",
+        "advice": "In settings > searching tab > search filters, add excluded brands, categories, or ASINs to skip gated items and save time",
+        "confidence": "High",
+        "source": "within tactical arbitrage under settings you're gonna go to the searching tab and then search filters from here you can filter out the brands that you don't want to see so exclusions search categories if you're excluded or restricted in certain categories you can go ahead and put those categories in here... certain brands that you're Skloot in you can go ahead and put them here you see I've got Disney Lego and Star Wars those are known brands to me that I am gated in"
+    },
+    {
+        "id": "new-listing-creation",
+        "category": "Buying",
+        "trigger": "Item not in Amazon catalog (no listing found)",
+        "advice": "Create new listings on Amazon if not ungated/restricted in the brand and category",
+        "confidence": "High",
+        "source": "what do you do when you scan an item that is not in the Amazon catalogue yet like there is no listing can sellers create new listings items if they aren't unguided in that brand and category so yes you can create new listings on Amazon"
+    },
+    {
+        "id": "software-tier-selection",
+        "category": "General",
+        "trigger": "Starting with online arbitrage",
+        "advice": "Use $99/month online arbitrage tier for product and reverse search; upgrade to $149 full suite for Amazon flips and merchant fulfilled vs FBA comparison if needed",
+        "confidence": "High",
+        "source": "I used I think the middle rung one... the full suite for 149 online arbitrage $4.99... I have online arbitrage only its $99 a month so I use product search and reverse search... $99 might be more than you're willing to spend in that case I suggest you check out my patreon group"
+    },
+    {
+        "id": "retail-arbitrage-support",
+        "category": "Buying",
+        "trigger": "Planning retail store visits",
+        "advice": "Use TA to build a shopping list of potential deals before entering stores for retail arbitrage",
+        "confidence": "High",
+        "source": "if you want to do retail arbitrage just using TA to go ahead and build a shopping list before you walk into the retail arbitrage store it's gonna save you lots of time"
+    },
+    {
+        "id": "book-lib-001",
+        "category": "Buying",
+        "trigger": "Used book priced at $2.45 in good condition + $3 postage",
+        "advice": "Scan Amazon book categories using library search to identify used books that can be bought low and sold FBA for $15 in very good condition",
+        "confidence": "High",
+        "source": "the good thing about library search is what it'll do is it'll show you if a seller has a book for maybe you know two dollars forty five used book in good condition and it'll say that's a motion for fulfilled seller a $2.00 forty five plus three dollars postage but it normally sells FBA in very good condition for fifteen dollars"
+    },
+    {
+        "id": "book-lib-002",
+        "category": "General",
+        "trigger": "Familiar with thrifting books",
+        "advice": "Dive into library search feature in Tactical Arbitrage to focus on used books and media for online arbitrage opportunities",
+        "confidence": "High",
+        "source": "people who are into thrifting they will probably want to dive into say the library book especially if you're familiar with buying books is 20 only areas in practical arbitrage where you can focus on used products"
+    },
+    {
+        "id": "book-scan-001",
+        "category": "Buying",
+        "trigger": "Amazon book category scan",
+        "advice": "Use library search to scan full Amazon book categories for used books (youth books) to buy and resell at higher price via FBA",
+        "confidence": "High",
+        "source": "library search as well which is very book centric if you just wanted to scan an Amazon category full of books and see whether or not you can you can find a youth book perhaps to to buy and then send in again and sell at a higher price"
+    },
+    {
+        "id": "media-lib-001",
+        "category": "Buying",
+        "trigger": "Expanded library search for media",
+        "advice": "Include software, video, TV, CDs, and vinyls in library search alongside books to find used media arbitrage deals",
+        "confidence": "High",
+        "source": "we also really cared options there for software illusion TV CDs and vinyls that's expanded the catalog significantly we kept that we've kept the name of the place to live research but um it's becoming more and more of a misnomer as we had more used as far as"
+    },
+    {
+        "id": "rs-001",
+        "category": "General",
+        "trigger": "Performing product sourcing",
+        "advice": "Use reverse search in Tactical Arbitrage starting from Amazon bestseller listings by category instead of starting from specific websites.",
+        "confidence": "High",
+        "source": "Reverse Search essentially what it does instead of searching a website it's actually going to search the Amazon bestseller listings so you're kind of doing literally the reverse of a product search"
+    },
+    {
+        "id": "cat-001",
+        "category": "Buying",
+        "trigger": "Category selection for search",
+        "advice": "Select categories where you have had success, such as electronics or home and kitchen, and niche down to level 2 subcategories like headphones but avoid niching too much to ensure sufficient results.",
+        "confidence": "High",
+        "source": "if you are somebody that has had a lot of success with electronics you're going to specifically choose Electronics you can actually choose multiple categories as well but if you want to do a really like niched down search... my recommendation would be to not don't Niche it down too much because then you're just not going to have that many results"
+    },
+    {
+        "id": "filt-001",
+        "category": "General",
+        "trigger": "Search setup",
+        "advice": "Use advanced searches in Tactical Arbitrage for more control over filters compared to basic searches.",
+        "confidence": "High",
+        "source": "some people like to do basic ones I always do Advanced searches for both my reverse searches and also for the product searches I just prefer Advanced"
+    },
+    {
+        "id": "sr-001",
+        "category": "Pricing",
+        "trigger": "Sales rank filtering per category",
+        "advice": "Cap sales rank at the top 4% threshold for the specific category using Tactical Arbitrage's 'as per settings' feature, e.g., 150,000 for Automotive, to focus on popular products.",
+        "confidence": "High",
+        "source": "make sure that you're capping off the specific category that you chose at the max sales rank for that specific category... if you press as per settings it will actually tell you what is the top four percent of each category... for Automotive... 146,000 is the sales rank... cap it off at around 150,000"
+    },
+    {
+        "id": "filt-002",
+        "category": "Risk",
+        "trigger": "Product filters for exclusions",
+        "advice": "Apply filters to remove oversized products, items sold by Amazon, and Hazmat products to avoid high shipping costs and restrictions.",
+        "confidence": "High",
+        "source": "remove oversized products because again I don't want to sell products that are too big or too large it's going to be too expensive to ship them if Amazon's selling the product that's probably not a good thing either if it's a Hazmat product you can remove it"
+    },
+    {
+        "id": "roi-001",
+        "category": "Pricing",
+        "trigger": "Minimum ROI filter",
+        "advice": "Set minimum ROI filter between 10-30%, typically 20%, adjusting higher (up to 30%) for stricter searches or lower (15%) for more results.",
+        "confidence": "High",
+        "source": "generally I would say between 10 to 30 for your Roi filter is a good place to go... sometimes I'll put 15 if I want to open up the filters... sometimes if I'm really lazy... I'll raise it even up to 30"
+    },
+    {
+        "id": "filt-003",
+        "category": "General",
+        "trigger": "Filter balance",
+        "advice": "Balance filters to avoid too many (restricting results) or too few (yielding thousands of unprofitable, low-selling products); always include sales rank cap and profit/ROI minimums.",
+        "confidence": "High",
+        "source": "if you put too many filters you're going to just restrict how many results you have whereas if you put too little filters you're gonna have thousands and thousands... of results that are not even profitable... you need to definitely put like if you're going to put any filters you need to put you need to cap it off at a maximum sales rank and then you need to create a profit margin"
     }
 ]
