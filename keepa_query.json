@@ -35,7 +35,7 @@
     "mustHaveAmazonOffer": false,
     "mustNotHaveAmazonOffer": false,
     "sortType": 4,
-    "dateRange": "4",
+    "dateRange": 4,
     "warehouseConditions": [
         2,
         3,

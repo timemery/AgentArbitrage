@@ -106,6 +106,7 @@ def update_recent_deals():
         newest_deal_timestamp = 0
         all_new_deals = []
         page = 0
+        incomplete_run = False
         
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
@@ -116,6 +117,7 @@ def update_recent_deals():
 
             if not token_manager.has_enough_tokens(5):
                 logger.warning(f"Low tokens during pagination ({token_manager.tokens}). Stopping fetch loop.")
+                incomplete_run = True
                 break
             # --------------------------
 
@@ -161,6 +163,7 @@ def update_recent_deals():
             # Inner loop token check (optional but good practice for large batches)
             if not token_manager.has_enough_tokens(5):
                  logger.warning(f"Low tokens during product fetch ({token_manager.tokens}). Stopping batch processing.")
+                 incomplete_run = True
                  break
 
             batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
@@ -248,10 +251,12 @@ def update_recent_deals():
         # The skipped deals are OLDER.
         # So it is safe to update the watermark to `newest_deal_timestamp`.
 
-        if newest_deal_timestamp > watermark_keepa_time:
+        if not incomplete_run and newest_deal_timestamp > watermark_keepa_time:
             new_watermark_iso = _convert_keepa_time_to_iso(newest_deal_timestamp)
             save_watermark(new_watermark_iso)
             logger.info(f"Successfully updated watermark to {new_watermark_iso}")
+        elif incomplete_run:
+            logger.warning("Task was incomplete due to token limits. Skipping watermark update to prevent data loss.")
 
         logger.info("--- Task: update_recent_deals finished ---")
     finally:
