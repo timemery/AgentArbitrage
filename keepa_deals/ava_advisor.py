@@ -14,6 +14,21 @@ XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 
 # Path to strategies file
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'strategies.json')
+INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'intelligence.json')
+
+def load_intelligence():
+    """
+    Loads conceptual ideas from intelligence.json.
+    """
+    try:
+        if os.path.exists(INTELLIGENCE_FILE):
+            with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
+                ideas = json.load(f)
+                if isinstance(ideas, list):
+                    return "\n".join([f"- {i}" for i in ideas])
+    except Exception as e:
+        logger.error(f"Error loading intelligence: {e}")
+    return ""
 
 def load_strategies(deal_context=None):
     """
@@ -139,11 +154,16 @@ def generate_ava_advice(deal_data, xai_api_key=None):
 
         # Load learned strategies with context
         strategies_text = load_strategies(deal_context=deal_data)
+        intelligence_text = load_intelligence()
+
         strategy_section = ""
-        if strategies_text:
+        if strategies_text or intelligence_text:
             strategy_section = f"""
-        **Your Learned Strategies (Use these to inform your advice):**
+        **Your Learned Strategies & Mental Models (Use these to inform your advice):**
         {strategies_text}
+
+        **Mental Models (Conceptual Ideas):**
+        {intelligence_text}
         """
 
         # Construct a detailed prompt
