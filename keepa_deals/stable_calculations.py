@@ -13,7 +13,7 @@ from .seasonal_config import SEASONAL_KEYWORD_MAP
 import os
 import httpx
 import time
-from scipy import stats as st
+import scipy.stats as st
 from .xai_token_manager import XaiTokenManager
 from .xai_cache import XaiCache
 
@@ -50,6 +50,7 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
 
     # 4. If permission granted, proceed with the API call
     prompt = f"""
+    You are an expert Arbitrage Advisor. Slight premiums above the average are expected in peak season.
     Given the following book details, is a peak selling price of ${price_usd:.2f} reasonable?
     Respond with only "Yes" or "No".
 
@@ -194,8 +195,8 @@ def infer_sale_events(product):
         df_used_price = pd.DataFrame(np.array(used_price_history).reshape(-1, 2), columns=['timestamp', 'price_cents']).pipe(_convert_ktm_to_datetime) if used_price_history else None
         df_new_price = pd.DataFrame(np.array(new_price_history).reshape(-1, 2), columns=['timestamp', 'price_cents']).pipe(_convert_ktm_to_datetime) if new_price_history else None
 
-        two_years_ago = datetime.now() - timedelta(days=1095) # Extended to 3 years
-        df_rank = df_rank[df_rank['timestamp'] >= two_years_ago]
+        history_window_start = datetime.now() - timedelta(days=1095) # Extended to 3 years
+        df_rank = df_rank[df_rank['timestamp'] >= history_window_start]
 
         # --- Find all instances of offer drops (New and Used) ---
         all_offer_drops_list = []
@@ -204,7 +205,7 @@ def infer_sale_events(product):
         # Process Used offers if they exist
         if used_offer_count_history:
             df_used_offers = pd.DataFrame(np.array(used_offer_count_history).reshape(-1, 2), columns=['timestamp', 'offer_count']).pipe(_convert_ktm_to_datetime)
-            df_used_offers = df_used_offers[df_used_offers['timestamp'] >= two_years_ago]
+            df_used_offers = df_used_offers[df_used_offers['timestamp'] >= history_window_start]
             df_used_offers['offer_diff'] = df_used_offers['offer_count'].diff()
             used_drops = df_used_offers[df_used_offers['offer_diff'] < 0].copy()
             if not used_drops.empty:
@@ -215,7 +216,7 @@ def infer_sale_events(product):
         # Process New offers if they exist
         if new_offer_count_history:
             df_new_offers = pd.DataFrame(np.array(new_offer_count_history).reshape(-1, 2), columns=['timestamp', 'offer_count']).pipe(_convert_ktm_to_datetime)
-            df_new_offers = df_new_offers[df_new_offers['timestamp'] >= two_years_ago]
+            df_new_offers = df_new_offers[df_new_offers['timestamp'] >= history_window_start]
             df_new_offers['offer_diff'] = df_new_offers['offer_count'].diff()
             new_drops = df_new_offers[df_new_offers['offer_diff'] < 0].copy()
             if not new_drops.empty:
