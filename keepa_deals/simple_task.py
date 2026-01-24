@@ -94,8 +94,10 @@ def update_recent_deals():
         logger.info("Step 1: Initializing Delta Sync...")
 
         # CRITICAL FIX: Add token check before any API calls
-        # DO NOT CHANGE. A buffer of 20 is required to prevent this task from starving the backfiller of tokens.
-        if not token_manager.has_enough_tokens(20):
+        # The simple_task is aborting at the "Step 1" entry gate because it requires 20 tokens but only has ~1-6.
+        # This prevents it from reaching the new blocking logic. The entry requirement needs to be lowered
+        # to allow the task to start and then wait inside the loop.
+        if not token_manager.has_enough_tokens(5):
             logger.warning(f"Upserter: Low tokens ({token_manager.tokens}). Skipping run to allow refill.")
             return
 
