@@ -24379,5 +24379,237 @@
         "advice": "Bundle them to increase sales and profit",
         "confidence": "High",
         "source": "Bundling products is an effective strategy to increase profits. Bundle Ideas tool helps you to find products that sell well together. It gives you great combinations based on Amazon's recommendations, helping you make more sales and profit."
+    },
+    {
+        "id": "pm_threshold_low",
+        "category": "General",
+        "trigger": "Profit margin < 8%",
+        "advice": "Take immediate action to improve profitability by reviewing costs, pricing, and product selection.",
+        "confidence": "High",
+        "source": "If you\u2019re making less than 8% in profit margin, you must take care of improving it."
+    },
+    {
+        "id": "pm_threshold_avg",
+        "category": "General",
+        "trigger": "Profit margin between 15-20%",
+        "advice": "Monitor and aim to increase margins through optimization to reach higher performance levels.",
+        "confidence": "High",
+        "source": "The average Amazon seller profit margin is around 15-20%."
+    },
+    {
+        "id": "pm_threshold_high",
+        "category": "General",
+        "trigger": "Profit margin > 25%",
+        "advice": "Continue current strategies as the business is performing very well; focus on scaling high-margin items.",
+        "confidence": "High",
+        "source": "Generally, if your profit margin exceeds 25%, that means your business is doing very well."
+    },
+    {
+        "id": "category_margin_variation",
+        "category": "Buying",
+        "trigger": "Selling in low-margin categories like Apparel or Groceries",
+        "advice": "Shift focus to higher-margin categories such as Electronics or Home & Kitchen for better profitability.",
+        "confidence": "Medium",
+        "source": "For example, sellers in high-margin categories such as Electronics and Home & Kitchen typically have higher profit margins than sellers in low-margin categories such as Apparel and Groceries."
+    },
+    {
+        "id": "product_selection",
+        "category": "Buying",
+        "trigger": "Products with high profit margins and low competition",
+        "advice": "Prioritize sourcing these products using research tools like Seller Assistant to identify deals.",
+        "confidence": "High",
+        "source": "Look for products that have high-profit margins and low competition. You can use product research tools like Seller Assistant to research product margins and competition."
+    },
+    {
+        "id": "competitive_pricing",
+        "category": "Pricing",
+        "trigger": "Pricing based on Buy Box, competitor activity, and market demand",
+        "advice": "Use repricing tools to set competitive prices without undercutting profitability.",
+        "confidence": "High",
+        "source": "You want to ensure you're not undercutting yourself, but you also don't want to set too high price to be out of the market. Use repricing tools to adjust prices based on Buy Box (Featured Offer) price, competitor activity and market demand."
+    },
+    {
+        "id": "pricing_review",
+        "category": "Pricing",
+        "trigger": "Regular review of profit margins for all products",
+        "advice": "Adjust pricing strategies, use promotions and discounts strategically to boost sales volume while maintaining margins.",
+        "confidence": "High",
+        "source": "Regularly review your profit margins for all products and adjust pricing strategies accordingly. Use promotions and discounts strategically to increase sales volume without significantly impacting profit margins."
+    },
+    {
+        "id": "cost_reduction_fees",
+        "category": "Risk",
+        "trigger": "High Amazon fees (referral, FBA, storage)",
+        "advice": "Regularly review and minimize fees by optimizing fulfillment methods, considering FBA, or negotiating with 3PL providers.",
+        "confidence": "High",
+        "source": "Regularly review Amazon fees (referral, FBA, storage) and look for ways to minimize them. Optimize fulfillment methods, consider using FBA, or negotiate better rates with 3PL providers."
+    },
+    {
+        "id": "inventory_management",
+        "category": "General",
+        "trigger": "Risk of stockouts or overstocks",
+        "advice": "Monitor inventory levels closely to avoid aged inventory fees and use 3PL if needed to balance stock.",
+        "confidence": "High",
+        "source": "Avoid stockouts and overstocks, which can both hurt your profit margin. Monitor inventory levels to avoid aged inventory storage fees and consider using third-party logistics (3PL) providers if needed."
+    },
+    {
+        "id": "reduce_returns",
+        "category": "Risk",
+        "trigger": "Inaccurate product descriptions or images",
+        "advice": "Ensure descriptions and images accurately represent the item, analyze customer feedback to address return reasons.",
+        "confidence": "High",
+        "source": "Ensure product descriptions and images accurately represent the item to set clear customer expectations, reducing the likelihood of returns. Actively analyze customer feedback to identify and address common reasons for returns."
+    },
+    {
+        "id": "tool_usage_profit_calc",
+        "category": "General",
+        "trigger": "Evaluating product profitability",
+        "advice": "Use tools like Seller Assistant\u2019s FBM&FBA Amazon profit calculator to compute Profit, ROI, and Margin directly on Amazon pages.",
+        "confidence": "High",
+        "source": "One of the best such tools is Seller Assistant\u2019s FBM&FBA Amazon profit calculator. This calculator shows you such essential product profitability metrics as Profit, ROI, and Margin figures for FBA and FBM separately."
+    },
+    {
+        "id": "sourcing_high_margin",
+        "category": "Buying",
+        "trigger": "Product sourcing for online arbitrage",
+        "advice": "Focus on high-margin products, adjust inventory, and use Seller Assistant for instant research and deal identification.",
+        "confidence": "High",
+        "source": "Identify best sellers. Focus on products with higher profit margins and adjust inventory levels accordingly. Use Seller Assistant to find and research deals."
+    },
+    {
+        "id": "buy-scan-bsr",
+        "category": "Buying",
+        "trigger": "Sourcing products in stores or online",
+        "advice": "Use a scan tool or the free Amazon Seller app on your cell phone to scan the barcode and check the Amazon Best Seller Rank and current selling price before purchasing to ensure profitability.",
+        "confidence": "High",
+        "source": "When you go sourcing, you will use what we call a \u201cscan tool\u201d to scan the barcode on the product. The tool will then tell you the Amazon \u201cBest Seller Rank\u201d and what price it is currently selling at. When getting started, your scan tool can be as simple as your cell phone and the free Amazon Seller app."
+    },
+    {
+        "id": "price-history-check",
+        "category": "Buying",
+        "trigger": "Evaluating a potential product purchase",
+        "advice": "Use CamelCamelCamel to review the price history and confirm the product will reliably sell at current or higher prices.",
+        "confidence": "High",
+        "source": "A tool like CamelCamelCamel can then tell you the price history if you want to check and make sure the product will reliably sell at current prices (or higher)."
+    },
+    {
+        "id": "textbook-buyback",
+        "category": "Buying",
+        "trigger": "End of academic semester or from students",
+        "advice": "Buy textbooks directly from students at low prices after low bookstore buyback offers and resell them online for higher profit.",
+        "confidence": "High",
+        "source": "I just got a really low offer on some textbooks I was trying to sell back to my college campus\u2019s bookstore, and decided to see if I could get more selling them myself. Selling those books worked really well, so it wasn\u2019t long before I was buying back other students\u2019 books to sell as well."
+    },
+    {
+        "id": "pricing-avoid-wars",
+        "category": "Pricing",
+        "trigger": "Listing a product for sale",
+        "advice": "Set the price slightly above the current best price on the listing to avoid price wars, and allow the market price to adjust upward to your listing.",
+        "confidence": "High",
+        "source": "Avoiding price wars is simple \u2013 don\u2019t undercut your competitors on a listing. ... We recommend pricing your products a little above the current best price and allowing the price to move to you rather than the other way around."
+    },
+    {
+        "id": "risk-price-drop",
+        "category": "Risk",
+        "trigger": "Selling price drops after purchase",
+        "advice": "Limit potential losses by buying in small quantities (as little as 1 unit); monitor with price history tools and be patient as drops are often temporary.",
+        "confidence": "High",
+        "source": "One of the advantages of arbitrage based selling is that since you are never dealing with huge quantities of products, the amount of money you can potentially lose in this even is limited. ... Often times the price drop is temporary. It can pay to be patient and give the price a chance to rebound. This is a situation where using a price history tool is useful."
+    },
+    {
+        "id": "seasonality-q4",
+        "category": "Seasonality",
+        "trigger": "October to December (Q4)",
+        "advice": "Plan for and maximize sourcing and sales during Q4 when sales volumes are highest, but maintain operations year-round as profitability is possible in all months by leveraging seasonality.",
+        "confidence": "High",
+        "source": "Q4 (October \u2013 December) is when you\u2019ll see the greatest sales volumes, but you can still make a living during the other nine months as well. One of the keys to maximizing your sales throughout the year is take advantage of seasonality."
+    },
+    {
+        "id": "general-time-min",
+        "category": "General",
+        "trigger": "Starting or scaling the business",
+        "advice": "Dedicate a minimum of 5 hours per week to sourcing and operations to achieve success and consistent results.",
+        "confidence": "High",
+        "source": "We recommend a minimum of 5 hours per week if you want to be successful. More is better."
+    },
+    {
+        "id": "general-start-capital",
+        "category": "General",
+        "trigger": "No initial capital available",
+        "advice": "Begin with flipping items you already own to generate seed capital for purchasing inventory, aiming for at least a couple hundred dollars to invest.",
+        "confidence": "High",
+        "source": "If you don\u2019t have any, take on our flipping challenge and sell things you already own to get your initial capital to invest. ... If you want to enroll in our course, we recommend having at least a couple hundred dollars to invest into products if you want to get maximum early results."
+    },
+    {
+        "id": "general-profit-goal",
+        "category": "General",
+        "trigger": "First 30 days and 3 months of operation",
+        "advice": "Target selling at least $250 worth of products in the first 30 days and $1000 in profits within the first 3 months by focusing on quick-start strategies.",
+        "confidence": "High",
+        "source": "We include our quick-start challenge content to help new sellers sell at least $250 worth of products in their first 30 days. We encourage all new sellers to aim for hitting their first $1000 in profits within their first 3 months."
+    },
+    {
+        "id": "oa-gen-1",
+        "category": "General",
+        "trigger": "Starting online arbitrage business",
+        "advice": "Begin with a relatively small capital investment, such as $500, to lower entry threshold and focus capital on product procurement.",
+        "confidence": "High",
+        "source": "Some entrepreneurs on Amazon started their business with only $500."
+    },
+    {
+        "id": "oa-buy-1",
+        "category": "Buying",
+        "trigger": "Selecting product categories",
+        "advice": "Focus on profitable categories by checking sales ranking on Amazon and using tools to determine profit margin and minimum price point.",
+        "confidence": "High",
+        "source": "Consider the categories you want to explore. Make sure that these are profitable categories. Check their sales ranking on Amazon and use online arbitrage tools to determine the profit margin and the minimum price point."
+    },
+    {
+        "id": "oa-pricing-1",
+        "category": "Pricing",
+        "trigger": "Determining resale price",
+        "advice": "Use repricing tools to automatically adjust item prices based on parameters to keep up with price fluctuations and competitors' rates.",
+        "confidence": "High",
+        "source": "Repricing tools enable you to automatically reprice your items. They allow you to adjust their parameters so you can keep up with price fluctuations and your competitors\u2019 rates."
+    },
+    {
+        "id": "oa-buy-2",
+        "category": "Buying",
+        "trigger": "Vetting product flips",
+        "advice": "Apply razor-accurate profit analytics factoring over 100 Amazon fees and shifting COGS by batch, period, or marketplace to confidently vet and replenish products.",
+        "confidence": "High",
+        "source": "sellerboard\u2019s strength is razor-accurate profit analytics that factor 100+ Amazon fees and shifting COGS by batch, period, or marketplace. That means you can vet flips and replenish winners with confidence"
+    },
+    {
+        "id": "oa-buy-3",
+        "category": "Buying",
+        "trigger": "Product sourcing and filtering",
+        "advice": "Use customized filters aligned with specific profit and ROI criteria to sift through thousands of stores and identify tailored profitable deals.",
+        "confidence": "High",
+        "source": "It sifts through thousands of stores using customized filters that align with users\u2019 specific profit and ROI criteria, ensuring tailored and actionable opportunities."
+    },
+    {
+        "id": "oa-pricing-2",
+        "category": "Pricing",
+        "trigger": "Analyzing product profitability",
+        "advice": "Utilize profitability dashboards to calculate margin percentages, estimated profit, cost of goods, marketing costs, and fees to determine advertising spend limits.",
+        "confidence": "High",
+        "source": "The profitability dashboard gives insight into key factors such as margin percentages, estimated profit, cost of goods, marketing costs, fees, and more. This is a critical tool for arbitrage sellers because it empowers them with knowledge of their product\u2019s profitability, and ultimately how much they can spend on advertising without wasting money."
+    },
+    {
+        "id": "oa-buy-4",
+        "category": "Buying",
+        "trigger": "Evaluating product potential",
+        "advice": "Set a minimum profit threshold and calculate potential ROI using tools to identify products with good profit potential before purchasing.",
+        "confidence": "High",
+        "source": "You must set a minimum profit threshold and proceed to calculate your potential ROI."
+    },
+    {
+        "id": "oa-general-1",
+        "category": "General",
+        "trigger": "Scaling with FBA",
+        "advice": "Leverage Amazon FBA for free sponsored ads up to $200, promotional clicks, shipment discounts, 90 days free monthly storage, and 180 days free removals to scale efficiently.",
+        "confidence": "High",
+        "source": "Amazon FBA also enables first-time users to scale their business through free sponsored ads (up to $200), promotional clicks, and discounts on their shipments to Amazon\u2019s fulfillment centers. New users are also eligible for free monthly storage (90 days) and removals (180 days)."
     }
 ]
