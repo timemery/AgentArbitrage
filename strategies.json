@@ -24051,5 +24051,333 @@
         "advice": "Choose FBA or FBM fulfillment and manage inventory to prevent stockouts or overstocking",
         "confidence": "High",
         "source": "Once your products are listed, manage your inventory effectively to avoid stockouts/overstocking. Choose between fulfillment options such as Fulfillment by Amazon (FBA) or Fulfillment by Merchant (FBM) based on your preferences and business needs."
+    },
+    {
+        "id": "oa-tip1a",
+        "category": "Buying",
+        "trigger": "Need to source more products for full-time OA",
+        "advice": "Subscribe to multiple Online Arbitrage deals services to leverage others' expertise and achieve exponential growth",
+        "confidence": "High",
+        "source": "Most OA sellers find that it is impossible to research enough products on their own to run a successful full-time Online Arbitrage business. ... Pro Tip #1: Use multiple lists if you really want to experience exponential growth."
+    },
+    {
+        "id": "oa-tip2a",
+        "category": "Buying",
+        "trigger": "Items on clearance in Health and Beauty categories",
+        "advice": "Buy discontinued or original versions of products that consumers prefer, as they often sell at a premium on Amazon; always check expiration dates and manufacturer date codes to comply with Amazon rules",
+        "confidence": "High",
+        "source": "Check the Clearance Section - ESPECIALLY the Health and Beauty Categories ... Always check expiration dates and manufacturer\u2019s date codes. ... Pro Tip \u2013 If you find out that a major manufacturer is discontinuing its line of fragrance-free laundry detergent \u2013 buy ALL that you can find of it."
+    },
+    {
+        "id": "oa-tip3a",
+        "category": "Buying",
+        "trigger": "Placing OA orders below free shipping threshold",
+        "advice": "Spend at least $35 (Target) or $49/$75/$99 (other retailers) to qualify for free shipping; consider paying for faster shipping during holiday season for quicker turnaround",
+        "confidence": "High",
+        "source": "Purchase Enough to Qualify for FREE SHIPPING ... For some retailers, like Target, it is as low as $35. For other online retailers, it may be $49, or $75, or $99. ... Pro-Tip: Free shipping is usually the slowest shipping method. Sometimes it\u2019s better to pay for shipping ... especially during the busy holiday shopping season."
+    },
+    {
+        "id": "oa-tip4a",
+        "category": "General",
+        "trigger": "Using cash-back sites for purchases",
+        "advice": "Use reputable sites like Rakuten, Mr Rebates, and Be Frugal for highest rebates; avoid clicking multiple links to prevent cookie overwrites; install Chrome extensions for automatic notifications and $10 signup bonus on Rakuten",
+        "confidence": "High",
+        "source": "Be Careful Using Cash-Back Websites ... We use Rakuten, Mr Rebates, and Be Frugal, since they consistently have some of the highest rebate percentages. ... Avoid the temptation to click around. ... Pro-Tip: Download the Chrome browser extensions from the cash-back sites. ... Here\u2019s the Rakuten link to get you started. They will give you a $10 bonus just for signing up."
+    },
+    {
+        "id": "oa-tip5a",
+        "category": "Risk",
+        "trigger": "Receiving OA shipments",
+        "advice": "Open and inspect every item for condition (e.g., damage from no packing), accuracy (wrong item/color/quantity), and remove price labels/stickers (especially Disney tags inside packaging) to avoid returns",
+        "confidence": "High",
+        "source": "Open and Inspect every Order ... You need to check the condition of the items, make sure the order is correct, and check for things like price labels and store tags. ... Pro Tip: It is much easier to make a return in the same box something was shipped in, so check your orders prior to recycling the shipping box."
+    },
+    {
+        "id": "oa-tip6a",
+        "category": "General",
+        "trigger": "Relying on single prep service",
+        "advice": "Set up relationships with multiple prep services in advance, send test shipments, to ensure continuity if one fails; check listings for discounts",
+        "confidence": "High",
+        "source": "Use multiple Prep Services ... Establish a relationship with more than one Prep Service now. Send in some items. Be ready \u201cjust in case\u201d. ... Pro-Tip: We have close to 300 prep centers listed on our Prep Services Page. Many of the Featured Prep Services ... offer discounts to our audience."
+    },
+    {
+        "id": "oa-tip7a",
+        "category": "Risk",
+        "trigger": "OA purchases subject to sales tax",
+        "advice": "Use prep services in tax-free states to save on sales tax (which can offset prep fees); make smaller purchases and pay tax to avoid retailer detection as a reseller",
+        "confidence": "High",
+        "source": "Render unto Caesar... ... Using a Prep Service in a tax free state for OA purchases could SAVE you money! In fact, the tax savings alone will often more than PAY for the prep charges ... Pro-Tip: Wait \u2013 Why do resellers pay sales tax in the first place? \u2013 ... By ordering in smaller quantities and paying the sales tax, you may be less likely to be on their radar than if you make large purchases and use your sales tax certificate."
+    },
+    {
+        "id": "oa-tip9a",
+        "category": "Buying",
+        "trigger": "Finding discounted items on Amazon for flips",
+        "advice": "Set Keepa alerts for target buy prices (e.g., $19.99) on Amazon-to-Amazon flips; subscribe to paid version ($21/month) for sales graphs and alerts via email/text",
+        "confidence": "High",
+        "source": "Set Keepa Tracking Alerts ... set your Keepa extension to alert you when the item reaches the targeted buy price again. ... Four other sellers also have alerts set for this item ... They all have their alert set for $19.99. ... If you are serious about Online Arbitrage, get the paid version of Keepa. The sales graph feature alone is worth the $21 a month"
+    },
+    {
+        "id": "oa-tip10a",
+        "category": "Pricing",
+        "trigger": "Inventory not selling quickly",
+        "advice": "Use automatic repricer like Bqool; manually reprice every 1-2 weeks in batches of 50 items: sort by price (highest to lowest, pages 4-1 for top 200), date created (oldest first, pages 1-4 for oldest 200), available quantity (highest to lowest, pages 4-1 for most stock); avoid repricing outside min/max to prevent stranded listings",
+        "confidence": "High",
+        "source": "Use a Repricer ... Perform these steps every 1-2 weeks ... Pro Tip: We recommend only working with 50 results per page ... Technique 1: ... sort your inventory from the highest price to the lowest. Scroll to the bottom of the page and select page 4. Reprice this page. ... Technique 2: ... sort your inventory by oldest to newest. Reprice the first 4 pages ... Technique 3: ... sort your inventory by quantity in stock, highest to lowest. ... Note \u2013 Reprice from page 4 to page 1 when repricing by Price and Availability, but from page 1 to page 4 when repricing by Date. ... Pro Tip: If you take advantage of the Minimum and Maximum Price settings in Amazon, you need to be careful not to reprice above the maximum or below the minimum"
+    },
+    {
+        "id": "filter-min-sales",
+        "category": "Pricing",
+        "trigger": "Setting up initial filters for profitability",
+        "advice": "Set the minimum estimated sales per month to at least 1 to gather potential products meeting basic criteria",
+        "confidence": "High",
+        "source": "Sales and ROI: Set the minimum estimated sales per month to at least 1 and the minimum Return on Investment (ROI) to 1%."
+    },
+    {
+        "id": "filter-min-roi",
+        "category": "Pricing",
+        "trigger": "Setting up initial filters for profitability",
+        "advice": "Set the minimum Return on Investment (ROI) to 1% to ensure basic profitability targets",
+        "confidence": "High",
+        "source": "Sales and ROI: Set the minimum estimated sales per month to at least 1 and the minimum Return on Investment (ROI) to 1%."
+    },
+    {
+        "id": "cache-3day-sale",
+        "category": "General",
+        "trigger": "Searching during an ongoing sale that has lasted 3 days",
+        "advice": "Select '3 Day' in Set Cache to use cached data that reflects sale prices, speeding up the search while maintaining accuracy",
+        "confidence": "High",
+        "source": "For instance, if you\u2019re eyeing a sale that has been ongoing for 3 days, you could select \u201c3 Day\u201d in Set Cache. You could be sure the sale prices would be reflected, so the cached data would be nearly as accurate as live data."
+    },
+    {
+        "id": "live-cache-only",
+        "category": "General",
+        "trigger": "Needing the most current product information",
+        "advice": "Set Cache to 'LIVE ONLY' to search only live sites without older data, ensuring up-to-date results though it takes longer",
+        "confidence": "High",
+        "source": "If you leave this set to \u201cLIVE ONLY,\u201d then Tactical Arbitrage will only search live sites and will not check older data from other users. This is the best way to get current information, but it takes longer to perform the search."
+    },
+    {
+        "id": "concurrent-searches",
+        "category": "General",
+        "trigger": "Running multiple product searches",
+        "advice": "Run up to 4 searches simultaneously on most plans (up to 10 on Pro) and queue up to 3 (up to 20 on Pro) to explore multiple categories or sites",
+        "confidence": "High",
+        "source": "You can run up to four searches simultaneously on most TA plans, except for Pro where you can run up to 10. You can also queue up to 3 searches in the first five plans and up to 20 scans if you\u2019re a Pro user."
+    },
+    {
+        "id": "category-pages",
+        "category": "General",
+        "trigger": "Scanning a category with known product count and pagination",
+        "advice": "Set start page to 1 and last page to the calculated number (e.g., 4 for 317 products at 100 per page) to control crawl depth; leave blank to scan all",
+        "confidence": "High",
+        "source": "For example, if you want to scan all 317 products in the category and there are 100 per page, set the start page value as 1 and the last page value as 4. Leave blank to scan all available products in that category."
+    },
+    {
+        "id": "manual-urls-limit",
+        "category": "General",
+        "trigger": "Manually entering category URLs for scanning",
+        "advice": "Add up to 25 category URLs, pressing enter after each to separate them, for precise control over scan targets",
+        "confidence": "High",
+        "source": "You can add up to 25 category URLs. Just press enter after each one to separate them."
+    },
+    {
+        "id": "start-small-buying",
+        "category": "Risk",
+        "trigger": "Making first purchases as a beginner",
+        "advice": "Buy smaller quantities of several products rather than large amounts of one to minimize risk and gain experience",
+        "confidence": "High",
+        "source": "If you\u2019re just starting out, consider buying smaller quantities of several products rather than going all-in on one item. This approach helps you gain experience, test the waters, and build confidence without taking on too much risk."
+    },
+    {
+        "id": "loosened-filters",
+        "category": "General",
+        "trigger": "Initial setup of search filters",
+        "advice": "Start with loosened filters to avoid restricting too much and get a larger pool of potential products for evaluation",
+        "confidence": "High",
+        "source": "Loosened filters: Initially, it\u2019s a good idea not to restrict your filters too much. Start broad so you have a larger pool of potential products to evaluate."
+    },
+    {
+        "id": "accurate-prep-costs",
+        "category": "Pricing",
+        "trigger": "Setting up Costs/Fees filters",
+        "advice": "Enter estimated preparation costs (packaging, shipping, etc.) as accurately as possible to ensure precise profit estimates",
+        "confidence": "High",
+        "source": "Prep costs: Enter your estimated preparation costs as accurately as possible. This includes packaging, shipping, and any other expenses related to getting the product ready for sale. The more precise your inputs, the more accurate your profit estimates will be."
+    },
+    {
+        "id": "filter-min-sales-roi",
+        "category": "Pricing",
+        "trigger": "Initial filter setup for profitability",
+        "advice": "Set the minimum estimated sales per month to at least 1 and the minimum Return on Investment (ROI) to 1% to gather potential products meeting basic criteria",
+        "confidence": "High",
+        "source": "Sales and ROI: Set the minimum estimated sales per month to at least 1 and the minimum Return on Investment (ROI) to 1%. This will help you gather a list of potential products that meet basic profitability criteria."
+    },
+    {
+        "id": "crawl-pages",
+        "category": "General",
+        "trigger": "Scanning category with paginated products",
+        "advice": "Set start page as 1 and last page value based on total products and items per page (e.g., 4 for 317 products at 100 per page); leave blank to scan all",
+        "confidence": "High",
+        "source": "For example, if you want to scan all 317 products in the category and there are 100 per page, set the start page value as 1 and the last page value as 4. Leave blank to scan all available products in that category."
+    },
+    {
+        "id": "simultaneous-searches",
+        "category": "General",
+        "trigger": "Running multiple searches on TA plans",
+        "advice": "Run up to 4 searches simultaneously on most plans (up to 10 on Pro) and queue up to 3 (up to 20 on Pro) to explore multiple categories or sites",
+        "confidence": "High",
+        "source": "You can run up to four searches simultaneously on most TA plans, except for Pro where you can run up to 10. You can also queue up to 3 searches in the first five plans and up to 20 scans if you\u2019re a Pro user."
+    },
+    {
+        "id": "buy-small-quantities",
+        "category": "Buying",
+        "trigger": "First purchases as a beginner",
+        "advice": "Buy smaller quantities of several products rather than going all-in on one to gain experience, test, and minimize risk",
+        "confidence": "High",
+        "source": "If you\u2019re just starting out, consider buying smaller quantities of several products rather than going all-in on one item. This approach helps you gain experience, test the waters, and build confidence without taking on too much risk."
+    },
+    {
+        "id": "loosened-filters-start",
+        "category": "General",
+        "trigger": "Initial search setup",
+        "advice": "Start with loosened filters to not restrict too much, creating a larger pool of potential products for evaluation",
+        "confidence": "High",
+        "source": "Loosened filters: Initially, it\u2019s a good idea not to restrict your filters too much. Start broad so you have a larger pool of potential products to evaluate."
+    },
+    {
+        "id": "prep-costs-accurate",
+        "category": "Pricing",
+        "trigger": "Setting up costs/fees filters",
+        "advice": "Enter estimated preparation costs accurately, including packaging, shipping, and other expenses, for precise profit estimates",
+        "confidence": "High",
+        "source": "Prep costs: Enter your estimated preparation costs as accurately as possible. This includes packaging, shipping, and any other expenses related to getting the product ready for sale. The more precise your inputs, the more accurate your profit estimates will be."
+    },
+    {
+        "id": "caution-too-good-deals",
+        "category": "Risk",
+        "trigger": "Reviewing scan results",
+        "advice": "Be cautious of deals that seem too good to be true, as they might be bundled items or have hidden issues skewing data",
+        "confidence": "High",
+        "source": "Be cautious of deals that seem too good to be true, as they might be bundled items or have other hidden issues that skew the data."
+    },
+    {
+        "id": "update-data-accuracy",
+        "category": "General",
+        "trigger": "Analyzing results",
+        "advice": "Click Update Data to refresh source/adjusted prices, Amazon data, or all for the most accurate analysis; use orange button for specific items",
+        "confidence": "High",
+        "source": "After narrowing down your options in the View Data tab, it\u2019s important to ensure you have the most current information. For the most accurate analysis, click on Update Data to refresh source and adjusted prices, Amazon data, or all data. Additionally, there\u2019s an orange button in each data row that allows you to update specific items as needed."
+    },
+    {
+        "id": "segment-scans-categories",
+        "category": "General",
+        "trigger": "Targeting large websites",
+        "advice": "Segment scans by specific categories (e.g., electronics, home goods, apparel) for efficient data management and to avoid missing profitable products",
+        "confidence": "High",
+        "source": "When focusing on a website on a large scale, it\u2019s often more efficient to segment your scans by specific categories. For example, say you\u2019re targeting a major retailer with an extensive inventory. You can run separate scans for electronics, home goods, apparel, and so on. This way, you\u2019ll manage the data more effectively and ensure you don\u2019t miss out on any profitable products."
+    },
+    {
+        "id": "account-type-1",
+        "category": "General",
+        "trigger": "Expected sales volume > 40 items per month",
+        "advice": "Choose Professional Account at $39.99/month instead of Individual Account with $0.99 per item fee to avoid per-item costs.",
+        "confidence": "High",
+        "source": "Individual Account: Free to set up, but you pay $0.99 for every item you sell. Professional Account: Costs $39.99 per month, but you can sell as many items as possible without per-item fees."
+    },
+    {
+        "id": "sourcing-bulk-1",
+        "category": "Buying",
+        "trigger": "Access to wholesale suppliers",
+        "advice": "Buy products in large quantities to reduce cost per unit and enable profitable resale on Amazon.",
+        "confidence": "High",
+        "source": "Buy in Bulk from Wholesale Suppliers: Purchase products in large quantities to get them at a lower cost, allowing you to resell them on Amazon for a profit."
+    },
+    {
+        "id": "sourcing-software-1",
+        "category": "Buying",
+        "trigger": "Need to compare prices across sites",
+        "advice": "Use software like Tactical Arbitrage to scan products from hundreds of websites and filter for profitability on Amazon.",
+        "confidence": "High",
+        "source": "Utilize Scanning Software like Tactical Arbitrage: Use software like Tactical Arbitrage to scan products and compare their prices on Amazon quickly. This helps you find items that are cheaper on retail sites but sell for more on Amazon."
+    },
+    {
+        "id": "research-demand-1",
+        "category": "Buying",
+        "trigger": "Before purchasing any product",
+        "advice": "Conduct thorough research on product demand, Amazon guidelines, and potential profit margins to ensure sourcing is worthwhile.",
+        "confidence": "High",
+        "source": "Conduct Thorough Research: Always check product demand, Amazon guidelines, and potential profit margins before purchasing to ensure your sourcing efforts are worthwhile."
+    },
+    {
+        "id": "pricing-competitive-1",
+        "category": "Pricing",
+        "trigger": "Listing products on Amazon",
+        "advice": "Set prices that are competitive with other sellers while ensuring profit after Amazon fees; use a repricer tool to maintain competitiveness.",
+        "confidence": "High",
+        "source": "Price Competitively: Set a price that balances being competitive with other sellers and making a profit. Don't forget to account for Amazon's fees. Make sure to use a repricer to stay competitive at all times."
+    },
+    {
+        "id": "fees-consideration-1",
+        "category": "Pricing",
+        "trigger": "Calculating final selling price",
+        "advice": "Factor in Amazon's fees for each sale when setting prices to ensure profitability.",
+        "confidence": "High",
+        "source": "Consider Amazon's Fees: Amazon charges fees for each sale, so factor those costs in when setting your final price to ensure you're still making a profit."
+    },
+    {
+        "id": "fulfillment-fba-1",
+        "category": "General",
+        "trigger": "Desire to avoid shipping logistics",
+        "advice": "Use Fulfillment by Amazon (FBA) to handle storage, packing, shipping, and customer service, making products eligible for Prime to increase sales.",
+        "confidence": "High",
+        "source": "You send products to Amazon's warehouses, and Amazon handles storage, packing, shipping, and customer service. Ideal for sellers who want to focus on sourcing products and not deal with shipping logistics. Products become eligible for Prime shipping, attracting more buyers."
+    },
+    {
+        "id": "fulfillment-mfn-1",
+        "category": "General",
+        "trigger": "Preference for inventory control",
+        "advice": "Use Merchant Fulfilled Network (MFN) for full control over inventory and shipping, avoiding FBA storage and fulfillment fees but managing all logistics yourself.",
+        "confidence": "High",
+        "source": "You store, pack, and ship the products yourself, taking care of all logistics. Best for sellers who want more control over their inventory and shipping process. No FBA fees, but you manage all shipping costs and tasks."
+    },
+    {
+        "id": "profit-margins-1",
+        "category": "Pricing",
+        "trigger": "Evaluating products for sale",
+        "advice": "Calculate profit margins as the difference between selling price and total costs; use tools like Keepa to track price history and assess if margins are sufficient.",
+        "confidence": "High",
+        "source": "Profit margins are the difference between how much you sell a product for and what it costs you to buy. Knowing the profit margin for each item helps you decide which products are worth selling. A tool like Keepa can help you track price history and see if a product's profit margin is high enough to be profitable."
+    },
+    {
+        "id": "oa-seller-identification",
+        "category": "Buying",
+        "trigger": "Seller sells multiple brands",
+        "advice": "Identify as potential Online Arbitrage seller and source products from them",
+        "confidence": "High",
+        "source": "To spot Online Arbitrage sellers, check how many brands they're selling. The more brands they have, the more likely they are to be Online Arbitrage sellers."
+    },
+    {
+        "id": "core-arbitrage-concept",
+        "category": "General",
+        "trigger": "High-demand, low-competition product sold by online retailers",
+        "advice": "Buy the product and resell on Amazon at a higher price",
+        "confidence": "High",
+        "source": "find a high-demand, low-competition product being sold by online retailers, buy it, and then resell it on Amazon at a higher price."
+    },
+    {
+        "id": "storefront-stalking",
+        "category": "Buying",
+        "trigger": "Successful top sellers identified",
+        "advice": "Use Storefront Stalker to view their inventories and source similar profitable products",
+        "confidence": "High",
+        "source": "Storefront Stalker is a game-changing tool. It lets you see what's in the top sellers' inventories, showing you what products are making them money. You can use this info to figure out which items could earn you a profit too."
+    },
+    {
+        "id": "bundling-strategy",
+        "category": "General",
+        "trigger": "Products that sell well together based on Amazon recommendations",
+        "advice": "Bundle them to increase sales and profit",
+        "confidence": "High",
+        "source": "Bundling products is an effective strategy to increase profits. Bundle Ideas tool helps you to find products that sell well together. It gives you great combinations based on Amazon's recommendations, helping you make more sales and profit."
     }
 ]
