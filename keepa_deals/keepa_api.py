@@ -47,7 +47,11 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
     Accepts a page number and a sort_type.
     Returns the response data, tokens consumed, and the number of tokens left.
     """
-    logger.info(f"Fetching deals. Page: {page}, Sort: {sort_type}")
+    # Ensure types are integers
+    page = int(page)
+    sort_type = int(sort_type)
+
+    logger.info(f"Executing fetch_deals_for_deals (v_fix_sort). Page: {page}, Sort: {sort_type}")
 
     KEEPA_QUERY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'keepa_query.json')
 
