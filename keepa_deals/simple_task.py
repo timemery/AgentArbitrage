@@ -26,6 +26,7 @@ from .processing import _process_single_deal, clean_numeric_values
 # Configure logging
 logger = getLogger(__name__)
 
+# Version Check: Load Shedding & Smart Reset Implemented
 # Load environment variables
 load_dotenv()
 

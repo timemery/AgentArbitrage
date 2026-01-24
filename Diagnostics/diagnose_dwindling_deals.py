@@ -15,6 +15,7 @@ try:
 except ImportError:
     DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'deals.db')
 
+# Version Check: Diagnostic Tool
 def get_redis_client():
     return redis.Redis.from_url('redis://127.0.0.1:6379/0')
 
