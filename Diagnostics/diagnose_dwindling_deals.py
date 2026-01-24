@@ -71,7 +71,7 @@ def analyze_db_state():
 
         # 3. Watermark
         try:
-            cursor.execute("SELECT value FROM system_state WHERE key = 'keepa_watermark'")
+            cursor.execute("SELECT value FROM system_state WHERE key = 'watermark_iso'")
             row = cursor.fetchone()
             watermark = row[0] if row else "Not Found"
             print(f"Current Watermark: {watermark}")

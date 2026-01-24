@@ -39,6 +39,7 @@ class TestDiagnoseScript(unittest.TestCase):
 
         # System state
         cursor.execute("INSERT INTO system_state VALUES (?, ?, ?)", ("backfill_page", "5", now.isoformat()))
+        cursor.execute("INSERT INTO system_state VALUES (?, ?, ?)", ("watermark_iso", "2026-01-01T00:00:00+00:00", now.isoformat()))
 
         conn.commit()
         conn.close()
