@@ -49,6 +49,9 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
         return True
 
     # 4. If permission granted, proceed with the API call
+    # NOTE: We explicitly explain that the "3-Year Average Price" includes off-season lows and that seasonal items
+    # (especially Textbooks) can validly have peak prices 200-400% higher than the average.
+    # This context is critical to prevent the AI from falsely rejecting valid peak season prices.
     prompt = f"""
     You are an expert Arbitrage Advisor.
     CONTEXT: The "3-Year Average Price" is a simple mean of all sales, including off-season lows.
