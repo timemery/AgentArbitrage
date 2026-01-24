@@ -41,6 +41,7 @@ MAX_ASINS_PER_BATCH = 10
 LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 MAX_PAGES_PER_RUN = 50 # Safety limit to prevent runaway pagination
+MAX_NEW_DEALS_PER_RUN = 200 # Safety limit: If we find > 200 new deals, stop fetching and process what we have to allow catch-up.
 
 def _convert_keepa_time_to_iso(keepa_minutes):
     """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
@@ -113,12 +114,18 @@ def update_recent_deals():
         all_new_deals = []
         page = 0
         incomplete_run = False
+        hit_new_deal_limit = False
         
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
             # --- LOOP SAFETY CHECKS ---
             if page >= MAX_PAGES_PER_RUN:
                 logger.warning(f"Safety Limit Reached: Stopped pagination after {MAX_PAGES_PER_RUN} pages to prevent runaway task.")
+                break
+
+            if len(all_new_deals) >= MAX_NEW_DEALS_PER_RUN:
+                logger.warning(f"New Deal Limit Reached: Found {len(all_new_deals)} new deals. Stopping fetch to process current batch and update watermark.")
+                hit_new_deal_limit = True
                 break
 
             if not token_manager.has_enough_tokens(5):
@@ -256,20 +263,18 @@ def update_recent_deals():
             logger.error(f"Step 6 Failed: Unexpected error during upsert: {e}", exc_info=True)
 
         # --- Final Step: Update Watermark ---
-        # Only update watermark if we actually found newer deals AND processed them properly
-        # If we broke early due to token limits, we should probably STILL update the watermark to the newest thing we saw?
-        # Or should we be conservative?
-        # If we update the watermark, we might miss the deals we skipped.
-        # However, we sort by Newest First.
-        # If we processed page 0 (newest), we have the newest deals.
-        # The skipped deals are OLDER.
-        # So it is safe to update the watermark to `newest_deal_timestamp`.
+        # Only update watermark if we actually found newer deals AND processed them properly.
+        # If we hit the `MAX_NEW_DEALS_PER_RUN` limit, we MUST update the watermark to the newest deal we found.
+        # This effectively "skips" the older backlog deals that we chose not to process in this run.
+        # Given that we sort by Newest First, skipping the backlog (old deals) is acceptable behavior for an upserter.
 
-        if not incomplete_run and newest_deal_timestamp > watermark_keepa_time:
+        should_update_watermark = (not incomplete_run) or hit_new_deal_limit
+
+        if should_update_watermark and newest_deal_timestamp > watermark_keepa_time:
             new_watermark_iso = _convert_keepa_time_to_iso(newest_deal_timestamp)
             save_watermark(new_watermark_iso)
             logger.info(f"Successfully updated watermark to {new_watermark_iso}")
-        elif incomplete_run:
+        elif incomplete_run and not hit_new_deal_limit:
             logger.warning("Task was incomplete due to token limits. Skipping watermark update to prevent data loss.")
 
         logger.info("--- Task: update_recent_deals finished ---")
