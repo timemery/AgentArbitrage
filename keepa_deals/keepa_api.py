@@ -40,11 +40,12 @@ def get_token_status(api_key):
         return None
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
+def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4, token_manager=None):
     """
     Fetches deals from the Keepa API using a fixed, user-provided query.
     The `use_deal_settings` parameter is ignored to ensure stability.
     Accepts a page number and a sort_type.
+    Optional: token_manager instance to handle rate limiting and token bucket waits.
     Returns the response data, tokens consumed, and the number of tokens left.
     """
     # Ensure types are integers
@@ -52,6 +53,14 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4):
     sort_type = int(sort_type)
 
     logger.info(f"Executing fetch_deals_for_deals (v_fix_sort). Page: {page}, Sort: {sort_type}")
+
+    # --- Token Management ---
+    # If a token manager is provided, use it to wait for tokens if necessary.
+    # Deal queries are generally cheap (approx 10 tokens), but we should be safe.
+    if token_manager:
+        logger.info("TokenManager provided. Checking/Waiting for tokens before Deal API call...")
+        token_manager.request_permission_for_call(estimated_cost=10)
+    # ------------------------
 
     KEEPA_QUERY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'keepa_query.json')
 
