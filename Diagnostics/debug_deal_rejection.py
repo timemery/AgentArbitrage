@@ -4,6 +4,7 @@ import os
 import logging
 import json
 from datetime import datetime
+from dotenv import load_dotenv
 
 # Ensure local imports work
 sys.path.append(os.getcwd())
@@ -17,6 +18,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def main():
+    load_dotenv()
     api_key = os.getenv("KEEPA_API_KEY")
     if not api_key:
         logger.error("KEEPA_API_KEY not found.")
