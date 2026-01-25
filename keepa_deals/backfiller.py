@@ -140,8 +140,8 @@ def backfill_deals(reset=False):
                     break
 
             logger.info(f"Fetching page {page} of deals...")
-            token_manager.request_permission_for_call(estimated_cost=5)
-            deal_response, _, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True)
+            # We pass token_manager to fetch_deals_for_deals to handle the rate limiting internaly
+            deal_response, _, tokens_left = fetch_deals_for_deals(page, api_key, use_deal_settings=True, token_manager=token_manager)
             token_manager.update_after_call(tokens_left)
 
             if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
