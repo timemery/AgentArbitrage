@@ -77,7 +77,7 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (High Velocity):** *[DEPRECATED/DANGEROUS]* See Critical Warning above.
+    -   **Fallback 2 (High Velocity):** **REMOVED**. See Critical Warning above.
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
@@ -85,6 +85,7 @@ This determines the recommended listing price.
 4.  **AI Reasonableness Check:**
     -   The calculated price, along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**, is sent to **xAI (Grok)**.
     -   Prompt: "Is a peak price of $X.XX reasonable for [Book Title]?"
+    -   **Prompt Context:** The prompt explicitly instructs the AI that for seasonal items (especially Textbooks), a Peak Season price can validly be **200-400% higher** than the 3-Year Average to prevent false positive rejections.
     -   If the AI rejects it (returns "No"), the deal is discarded.
 
 ### B. 1-Year Average (`1yr. Avg.`)

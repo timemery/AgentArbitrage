@@ -17,11 +17,12 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
 
 *   **Data Grid:** Displays deals in a responsive table. Columns are defined in `Documentation/Dashboard_Specification.md`.
 *   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Profit Confidence (Trust), Seller Trust, and Price Drops.
+    *   **New Checkboxes:** "Hide Gated" (excludes restricted items) and "Hide AMZ Offers" (excludes items sold by Amazon).
     *   *Logic:* Filters are applied server-side by the `/api/deals` endpoint SQL query.
     *   **"Any" Logic:** Setting a filter to 0 ("Any") excludes it from the query, ensuring that NULL/Negative values are not hidden by default.
 *   **Sorting:** Columns like "Profit", "Rank", "Update Time" are sortable.
 *   **Real-time Updates (The "Janitor"):**
-    *   **"Refresh Deals" Button:** Manually triggers the "Janitor" task (`POST /api/run-janitor`) to clean up stale deals (older than **72 hours**) and reload the grid.
+    *   **"Refresh Deals" Button:** Manually reloads the grid to show the latest data. **Note:** As of Jan 2026, this button does **not** trigger the "Janitor" cleanup task (which runs automatically every 4 hours) to prevent accidental data loss.
     *   **Passive Notification:** The dashboard polls `/api/deal-count` (filtered) every 30 seconds. It compares this count against the local filtered record count. If the server count differs, a notification ("New Deals Available") appears.
 *   **Recalculation:** A "Recalculate" feature allows updating business metrics (Profit, ROI) based on changed settings (Tax, Prep Fee) without re-fetching data from Keepa.
 
@@ -35,6 +36,11 @@ The "Gated" column indicates the user's restriction status on Amazon:
 ### Advice from Ava (AI Overlay)
 When expanding a deal's details:
 *   An "Advice from Ava" section appears prominently at the top of the overlay.
+*   **Choose Your Mentor:** Users can switch between 4 AI personas to get different perspectives:
+    *   **CFO:** Risk-averse, profit-focused.
+    *   **Flipper:** Speed/Volume focused.
+    *   **Professor:** Educational, explains concepts.
+    *   **Quant:** Statistical, data-heavy.
 *   It asynchronously fetches an AI analysis (`/api/ava-advice/<ASIN>`) powered by `grok-4-fast-reasoning`.
 *   Provides 50-80 words of actionable advice based on the deal's specific metrics.
 

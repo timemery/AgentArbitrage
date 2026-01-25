@@ -22,7 +22,9 @@ Keepa's API allows the token balance to go negative (deficit spending) as long a
 
 ### Task-Specific Buffers
 *   **Backfiller:** Uses the standard strategy.
-*   **Upserter (`simple_task.py`):** Requires a stricter **20 token buffer** to ensure it doesn't starve the backfiller or trigger a lock-out during critical updates.
+*   **Upserter (`simple_task.py`):**
+    *   **Batch Size:** Reduced to **10 ASINs** (approx 200 tokens) to minimize cost spikes.
+    *   **Blocking Wait:** Uses `token_manager.request_permission_for_call()` to block and wait for sufficient tokens instead of skipping the run. This prevents "starvation loops" where the task repeatedly starts, sees low tokens, and exits without doing work.
 
 ---
 

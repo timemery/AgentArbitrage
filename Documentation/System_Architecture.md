@@ -49,7 +49,8 @@ There are four primary background tasks that manage the data lifecycle.
         *   **Chunk Size:** Hardcoded to **20** (`DEALS_PER_CHUNK`). Increasing this causes token starvation (bucket empties faster than refill) and must not be changed.
         *   **Locking:** Protected by a Redis Lock (`backfill_deals_lock`) with a **10-day timeout**. This prevents concurrent backfills (which would crash the token manager) while ensuring the lock persists through long-running jobs.
     4.  **Resiliency:** Persists its progress (page number) to the `system_state` table. If the server crashes, it resumes from the last checkpoint.
-    5.  **Optimized Fetching:** Fetches seller details *only* for the specific seller winning the Buy Box/Lowest Used price to save tokens.
+    5.  **Watermark Initialization:** When processing **Page 0**, it explicitly updates the `watermark_iso` to the timestamp of the newest deal found. This ensures the Upserter knows where to pick up once the Backfill is complete.
+    6.  **Optimized Fetching:** Fetches seller details *only* for the specific seller winning the Buy Box/Lowest Used price to save tokens.
 
 ### B. `update_recent_deals` (The Delta Sync)
 *   **Purpose:** Keeps the database up-to-date with live market changes without re-scanning the entire catalog.
@@ -59,7 +60,9 @@ There are four primary background tasks that manage the data lifecycle.
     2.  Queries Keepa for "Products changed since [watermark]".
     3.  Updates only the modified records in the database.
     4.  Updates the watermark timestamp upon completion.
-    5.  **Safety:** Checks the Keepa Token Balance before running. If low (buffer < 20), it skips the run to preserve tokens for high-priority tasks.
+    5.  **Safety:**
+        *   **Blocking Wait:** Uses `request_permission_for_call` to block and wait for tokens (up to the estimated cost) instead of aborting when low, preventing starvation loops.
+        *   **Load Shedding:** Enforces `MAX_NEW_DEALS_PER_RUN = 200`. If more than 200 new deals are found, the task stops fetching, processes the current batch, and **updates the watermark to the newest deal found**, effectively skipping the backlog to allow the system to catch up to real-time.
 
 ### C. `clean_stale_deals` (The Janitor)
 *   **Purpose:** Removes "zombie" deals to ensure dashboard freshness.

@@ -123,6 +123,9 @@ This field aims to find the most recent price change for relevant used condition
 **General Timestamp Conversion:**
 All Keepa minute timestamps should be converted to datetime objects using `KEEPA_EPOCH = datetime(2011, 1, 1)`, then localized from naive UTC to aware UTC (`timezone('UTC').localize(dt)`), and finally converted to 'America/Toronto' (`astimezone(TORONTO_TZ)`), formatted as '%Y-%m-%d %H:%M:%S'. Timestamps <= 100000 are generally considered invalid/too old.
 
+**The "Keepa Epoch Bug" (Jan 2026):**
+A critical regression occurred when the system interpreted Keepa timestamps using an epoch of `2000-01-01` instead of `2011-01-01`. This 11-year offset caused fresh 2026 data to be seen as 2015 data ("Ancient Data"), causing the ingestion pipeline to reject everything. **Always verify the epoch is 2011.**
+
 ### Circular Dependencies & Module Structure
 -   **`keepa_deals/new_analytics.py`**: This module was specifically created to house downstream analytical logic (e.g., trend calculations, offer count averages) to prevent circular imports between `processing.py`, `stable_calculations.py`, and `stable_products.py`.
 -   **Rule:** If you are adding a new metric that depends on core calculations (like inferred sales) but is used by the main processing loop, place it in `new_analytics.py` rather than modifying the core stable modules.

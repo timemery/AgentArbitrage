@@ -92,6 +92,7 @@ The "Deal Details" overlay replaces the standard modal with a high-density, 4-co
 ### 1. Layout & Structure
 -   **Header:** The standard modal title is removed. Context is provided by the grid content.
 -   **Ava Advice:** Positioned at the very top, spanning the full width, providing immediate AI analysis.
+    -   **Choose Your Mentor:** A selector allows users to toggle between different AI personas (CFO, Flipper, Professor, Quant).
 -   **Action Bar:** Top-right corner containing the "Gated" status and primary action button (Buy/Apply).
 
 ### 2. Data Grid (4 Columns)
