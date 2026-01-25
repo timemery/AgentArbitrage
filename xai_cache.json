@@ -17975,14 +17975,9 @@
     "reasonableness:Jim Clark: The Best of the Best|Books > Subjects > Biographies & Memoirs|Aug|253.99|hardcover|Current Rank: 664673, 90-day Avg Rank: 6748758|DOWN (-77.3% over 3 years)|212.93": "False",
     "reasonableness:Tu mundo, 3rd Edition|Books > Subjects|Jan|226.96|Printed Access Code|Current Rank: 901485, 90-day Avg Rank: 1879226|UP (93.4% over 3 years)|164.04": "False",
     "seasonality:By Ivan Van Sertima - African Presence In Early Europe|Books, Subjects|Transaction Publishers": "Year-round",
-    "reasonableness:American Dance: The Complete Illustrated History|Books > Subjects > Arts & Photography > Performing Arts > Dance > Reference|Apr|25.72|Hardcover|Current Rank: 267805, 90-day Avg Rank: 1110582|UP (33.8% over 3 years)|38.50": "False",
-    "reasonableness:The Great Prison Break;: The Supreme Court Leads the Way|Books > Subjects|Dec|79.99|Paperback|Current Rank: 932111, 90-day Avg Rank: 7233389|DOWN (-70.1% over 3 years)|51.12": "True",
-    "reasonableness:Occupational Safety and Health Law Handbook|Books > Subjects > Business & Money > Management & Leadership > Production & Operations|Mar|73.84|Hardcover|Current Rank: 671569, 90-day Avg Rank: 1551474|DOWN (-50.8% over 3 years)|78.21": "False",
-    "reasonableness:Introduction to Corrections: Policy, Populations, and Controversial Issues|Books > Subjects|Sep|97.94|Paperback|Current Rank: 791817, 90-day Avg Rank: 2200278|DOWN (-6.6% over 3 years)|94.00": "True",
-    "reasonableness:Reveal Math Integrated II, Student Edition|Books > Subjects|Jul|22.95|None|Current Rank: 670104, 90-day Avg Rank: 1239737|DOWN (-23.4% over 3 years)|48.09": "False",
-    "reasonableness:Animal Physiology. Fourth Edition by Richard W. Hill (2016-04-18)|Books > Subjects|Feb|29.83|Hardcover|Current Rank: 880661, 90-day Avg Rank: 6368687|UP (19.3% over 3 years)|22.82": "True",
-    "reasonableness:Nudibranch & Sea Slug Identification - Indo-Pacific- 2nd Edition|Books > Subjects > Arts & Photography > Photography & Video > Nature & Wildlife > Plants & Animals|Feb|41.86|Paperback|Current Rank: 298576, 90-day Avg Rank: 211146|FLAT (3.4% over 3 years)|43.67": "True",
-    "reasonableness:Encyclopedia of Mental Health|Books > Subjects > Health, Fitness & Dieting > Mental Health > Anxiety|Dec|1244.02|Hardcover|Current Rank: 660811, 90-day Avg Rank: 4907365|DOWN (-73.3% over 3 years)|729.13": "True",
-    "reasonableness:Firearms Law and the Second Amendment: Regulation, Rights, and Policy [Connected Ebook] (Aspen Casebook)|Books > Subjects > Law > Administrative Law|May|189.99|hardcover|Current Rank: 608995, 90-day Avg Rank: 1035942|DOWN (-32.0% over 3 years)|235.77": "False",
-    "reasonableness:Microwave Spectroscopy (Dover Books on Physics)|Books > Subjects > Engineering & Transportation > Engineering > Electrical & Electronics|Jun|42.75|Paperback|Current Rank: 421353, 90-day Avg Rank: 3451569|DOWN (-19.6% over 3 years)|22.84": "True"
+    "seasonality:The Great Prison Break;: The Supreme Court Leads the Way|Books, Subjects|Western Islands": "Law School",
+    "seasonality:Introduction to Corrections: Policy, Populations, and Controversial Issues|Books, Subjects|Cognella Academic Publishing": "Textbook (Summer)",
+    "seasonality:Nudibranch & Sea Slug Identification - Indo-Pacific- 2nd Edition|Books, Subjects, Arts & Photography, Photography & Video, Nature & Wildlife, Plants & Animals|New World Publications": "Year-round",
+    "seasonality:Encyclopedia of Mental Health|Books, Subjects, Health, Fitness & Dieting, Mental Health, Anxiety|Academic Press": "Year-round",
+    "seasonality:Microwave Spectroscopy (Dover Books on Physics)|Books, Subjects, Engineering & Transportation, Engineering, Electrical & Electronics|Dover Publications": "Textbook (Summer)"
 }
