@@ -31,7 +31,7 @@ import json
 # Fetch Product for Retry - ends
 
 # Constants
-KEEPA_EPOCH_DATETIME = datetime(2000, 1, 1) # Keepa epoch is Jan 1, 2000
+KEEPA_EPOCH_DATETIME = datetime(2011, 1, 1) # Keepa epoch is Jan 1, 2011
 KEEPA_EPOCH_LEGACY = datetime(2011, 1, 1) # Older epoch used in some functions
 TORONTO_TZ = timezone('America/Toronto')
 
