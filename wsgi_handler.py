@@ -235,8 +235,6 @@ def ensure_sp_api_session():
 @app.route('/')
 def index():
     if session.get('logged_in'):
-        if session.get('role') == 'admin':
-            return redirect(url_for('guided_learning'))
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
@@ -253,10 +251,7 @@ def login():
 
         ensure_sp_api_session()
 
-        if session['role'] == 'admin':
-            return redirect(url_for('guided_learning'))
-        else:
-            return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
     else:
         return 'Invalid credentials', 401
 

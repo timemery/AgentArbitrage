@@ -14,13 +14,11 @@ def test_login_admin(client):
         'password': USERS['tester']['password']
     }, follow_redirects=True)
     assert response.status_code == 200
-    # Should redirect to Guided Learning (checked by content)
-    # Note: Guided Learning template might not say "Guided Learning" in body if empty, but header has it.
-    # The title block says "Agent Arbitrage", main-nav has "Guided Learning".
-    # Let's check for "Intelligence" link presence which implies Admin nav.
-    assert b'href="/intelligence"' in response.data
-    # Data Sourcing should be gone
-    assert b"Data Sourcing" not in response.data
+    # Should redirect to Dashboard (UPDATED)
+    # Dashboard page has "Dashboard" in title or nav.
+    assert b"Deals Dashboard" in response.data or b"Dashboard" in response.data
+    # Check for presence of Dashboard specific content
+    assert b'id="deals-table"' in response.data
 
 def test_login_user(client):
     response = client.post('/login', data={
