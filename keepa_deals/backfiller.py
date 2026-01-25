@@ -40,8 +40,8 @@ LOCK_TIMEOUT = 864000 # 10 days
 STATE_FILE_LEGACY = 'backfill_state.json'
 
 def _convert_keepa_time_to_iso(keepa_minutes):
-    """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
-    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    """Converts Keepa time (minutes since 2011-01-01) to ISO 8601 UTC string."""
+    keepa_epoch = datetime(2011, 1, 1, tzinfo=timezone.utc)
     dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
     return dt_object.isoformat()
 

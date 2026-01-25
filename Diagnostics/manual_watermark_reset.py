@@ -12,8 +12,8 @@ from keepa_deals.keepa_api import fetch_deals_for_deals
 
 # Version Check: Smart Watermark Reset Tool
 def _convert_keepa_time_to_iso(keepa_minutes):
-    """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
-    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    """Converts Keepa time (minutes since 2011-01-01) to ISO 8601 UTC string."""
+    keepa_epoch = datetime(2011, 1, 1, tzinfo=timezone.utc)
     dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
     return dt_object.isoformat()
 

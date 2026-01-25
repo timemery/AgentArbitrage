@@ -45,17 +45,17 @@ MAX_PAGES_PER_RUN = 50 # Safety limit to prevent runaway pagination
 MAX_NEW_DEALS_PER_RUN = 200 # Safety limit: If we find > 200 new deals, stop fetching and process what we have to allow catch-up.
 
 def _convert_keepa_time_to_iso(keepa_minutes):
-    """Converts Keepa time (minutes since 2000-01-01) to ISO 8601 UTC string."""
-    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    """Converts Keepa time (minutes since 2011-01-01) to ISO 8601 UTC string."""
+    keepa_epoch = datetime(2011, 1, 1, tzinfo=timezone.utc)
     dt_object = keepa_epoch + timedelta(minutes=keepa_minutes)
     return dt_object.isoformat()
 
 def _convert_iso_to_keepa_time(iso_str):
-    """Converts an ISO 8601 UTC string to Keepa time (minutes since 2000-01-01)."""
+    """Converts an ISO 8601 UTC string to Keepa time (minutes since 2011-01-01)."""
     if not iso_str:
         return 0
     dt_object = datetime.fromisoformat(iso_str).astimezone(timezone.utc)
-    keepa_epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    keepa_epoch = datetime(2011, 1, 1, tzinfo=timezone.utc)
     delta = dt_object - keepa_epoch
     return int(delta.total_seconds() / 60)
 
