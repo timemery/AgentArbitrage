@@ -211,11 +211,30 @@ USERS = {
     }
 }
 
+def ensure_sp_api_session():
+    """
+    Checks if the session has SP-API credentials. If not, attempts to re-hydrate
+    them from the persistent database (user_credentials).
+    """
+    if not session.get('sp_api_connected'):
+        try:
+            creds = get_all_user_credentials()
+            if creds:
+                # We have at least one connected user in the persistent DB.
+                # Since this is a single-tenant app, we'll use the first one.
+                user_record = creds[0]
+                session['sp_api_connected'] = True
+                session['sp_api_user_id'] = user_record['user_id']
+                # We don't necessarily need to put the refresh token in session if background tasks handle it,
+                # but for consistency with the connect flow, we can.
+                session['sp_api_refresh_token'] = user_record['refresh_token']
+                app.logger.info(f"Re-hydrated SP-API session for user: {user_record['user_id']}")
+        except Exception as e:
+            app.logger.error(f"Error checking DB for credentials during session hydration: {e}")
+
 @app.route('/')
 def index():
     if session.get('logged_in'):
-        if session.get('role') == 'admin':
-            return redirect(url_for('guided_learning'))
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
@@ -230,10 +249,9 @@ def login():
         session['username'] = username
         session['role'] = USERS[username]['role']
 
-        if session['role'] == 'admin':
-            return redirect(url_for('guided_learning'))
-        else:
-            return redirect(url_for('dashboard'))
+        ensure_sp_api_session()
+
+        return redirect(url_for('dashboard'))
     else:
         return 'Invalid credentials', 401
 
@@ -309,6 +327,7 @@ def intelligence():
 def dashboard():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
+    ensure_sp_api_session()
     return render_template('dashboard.html')
 
 
@@ -733,22 +752,7 @@ def settings():
         return redirect(url_for('index'))
 
     # --- Session Re-hydration Logic ---
-    # Check if the database has credentials even if the session forgot them.
-    if not session.get('sp_api_connected'):
-        try:
-            creds = get_all_user_credentials()
-            if creds:
-                # We have at least one connected user in the persistent DB.
-                # Since this is a single-tenant app, we'll use the first one.
-                user_record = creds[0]
-                session['sp_api_connected'] = True
-                session['sp_api_user_id'] = user_record['user_id']
-                # We don't necessarily need to put the refresh token in session if background tasks handle it,
-                # but for consistency with the connect flow, we can.
-                session['sp_api_refresh_token'] = user_record['refresh_token']
-                app.logger.info(f"Re-hydrated SP-API session for user: {user_record['user_id']}")
-        except Exception as e:
-            app.logger.error(f"Error checking DB for credentials during settings load: {e}")
+    ensure_sp_api_session()
 
     if request.method == 'POST':
         try:
