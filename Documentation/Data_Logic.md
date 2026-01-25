@@ -13,7 +13,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 1.  **Extraction (Raw Data)**:
     *   Basic attributes (ASIN, Title, Category) are pulled from the Keepa `/product` API.
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
-    *   **Amazon Prices**: Extracts `Amazon Current`, `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
+    *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
 
 2.  **Seller & Price Analysis**:
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
@@ -37,7 +37,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-        *   **Fallback (High Velocity):** *[DEPRECATED]* The use of `Used - 90d avg` as a fallback when `monthlySold > 20` is currently identified as a source of bad data (Zombie listings) and is slated for removal. **Do not rely on this fallback.**
+        *   **Fallback (High Velocity):** **REMOVED**. The system no longer uses `Used - 90d avg` as a fallback. If no mode/median can be found from confirmed sales, the deal is rejected.
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Ceiling Guardrail:** The "List at" price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
