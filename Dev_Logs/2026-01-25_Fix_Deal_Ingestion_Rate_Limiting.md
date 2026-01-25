@@ -21,6 +21,7 @@ Diagnostic logs revealed:
 
 ## Verification
 *   **Diagnostic Script:** `Diagnostics/debug_deal_rejection.py` (newly created) ran successfully without 429 errors, confirming the token wait logic works.
+    *   *Note:* The script was updated to explicitly load environment variables via `dotenv` to ensure standalone execution reliability.
 *   **Deal Analysis:** The diagnostic script processed 3 deals:
     *   1 Rejected (Valid AI rejection for Used Digital Pack).
     *   2 Accepted.
