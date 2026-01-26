@@ -8,13 +8,17 @@
     "priceTypes": [
         2
     ],
+    "deltaRange": [
+        0,
+        10000
+    ],
     "deltaPercentRange": [
         20,
         2147483647
     ],
     "salesRankRange": [
-        50000,
-        1000000
+        100000,
+        5000000
     ],
     "currentRange": [
         2000,

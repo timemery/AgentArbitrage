@@ -3,6 +3,7 @@ import sys
 import sqlite3
 import redis
 import json
+import subprocess
 from datetime import datetime, timedelta, timezone
 
 # Add parent directory to path to allow imports
@@ -18,6 +19,15 @@ except ImportError:
 # Version Check: Diagnostic Tool
 def get_redis_client():
     return redis.Redis.from_url('redis://127.0.0.1:6379/0')
+
+def check_scheduler_process():
+    """Checks if Celery Beat (scheduler) is running."""
+    try:
+        # pgrep -f matches the full command line
+        result = subprocess.run(['pgrep', '-f', 'celery beat'], capture_output=True, text=True)
+        return result.returncode == 0
+    except Exception:
+        return False
 
 def check_locks(r):
     print("\n--- LOCK STATUS ---")
@@ -160,6 +170,13 @@ def main():
     analyze_db_state()
 
     print("\n--- DIAGNOSIS SUMMARY ---")
+
+    scheduler_running = check_scheduler_process()
+    if scheduler_running:
+        print(f"[OK] Scheduled Upserter (Celery Beat) is RUNNING.")
+    else:
+        print(f"[WARNING] Scheduled Upserter (Celery Beat) is NOT RUNNING.")
+
     if backfill_active:
         print("1. The BACKFILLER is currently RUNNING (Lock held).")
         print("   -> This blocks the Upserter (Simple Task) from running.")
