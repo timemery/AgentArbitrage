@@ -23,9 +23,10 @@
 - **Extended Metrics:** 180-day and 365-day trend analysis for Offer Counts and Sales Rank drops.
 
 ### Backfill & Maintenance
+- **Keepa Epoch:** Strictly **2011-01-01** to prevent 11-year data offsets.
 - **Backfiller:** Runs continuous delta-sync. Uses "Mark and Sweep" to update `last_seen_utc`.
 - **Janitor:** Deletes deals older than **72 hours** (`grace_period_hours`).
-- **Tokens:** `TokenManager` uses a "Controlled Deficit" strategy (allows dips to -50, refills to +5).
+- **Tokens:** `TokenManager` uses a "Controlled Deficit" strategy (allows dips to -50, refills to +5). API wrapper enforces blocking waits.
 - **Concurrency:** Backfiller and Upserter (`simple_task.py`) run concurrently. Upserter requires 20 token buffer.
 
 ## 4. Dashboard & UI

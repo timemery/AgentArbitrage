@@ -203,7 +203,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 ## The "Janitor" & Data Freshness
 
--   **Trigger**: Every 4 hours or Manual "Refresh Deals".
+-   **Trigger**: Every 4 hours (Scheduled Task).
+-   **Note**: The manual trigger via the "Refresh Deals" button was removed in Jan 2026.
 -   **Logic**: Deletes deals where `last_seen_utc` is older than **72 hours**.
 -   **Purpose**: Prevents stale deals from cluttering the dashboard while giving the backfiller enough time (3 days) to update them.
 
