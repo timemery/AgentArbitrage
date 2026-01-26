@@ -206,3 +206,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **Trigger**: Every 4 hours or Manual "Refresh Deals".
 -   **Logic**: Deletes deals where `last_seen_utc` is older than **72 hours**.
 -   **Purpose**: Prevents stale deals from cluttering the dashboard while giving the backfiller enough time (3 days) to update them.
+
+---
+
+## Data Standards & Epochs
+
+### Keepa Timestamps
+-   **Epoch:** `2011-01-01` (January 1st, 2011).
+-   **Note:** Keepa uses different epochs for different API fields. For the fields used in this system (e.g., `stats.current`, `stats.lastUpdate`), the epoch is 2011. Using the standard Unix epoch (1970) or the Java epoch (2000) will result in incorrect dates.

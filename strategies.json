@@ -24611,5 +24611,357 @@
         "advice": "Leverage Amazon FBA for free sponsored ads up to $200, promotional clicks, shipment discounts, 90 days free monthly storage, and 180 days free removals to scale efficiently.",
         "confidence": "High",
         "source": "Amazon FBA also enables first-time users to scale their business through free sponsored ads (up to $200), promotional clicks, and discounts on their shipments to Amazon\u2019s fulfillment centers. New users are also eligible for free monthly storage (90 days) and removals (180 days)."
+    },
+    {
+        "id": "oa-budget-start",
+        "category": "General",
+        "trigger": "Starting a new OA business",
+        "advice": "Allocate a budget of 1-2K, including $130/month for Amazon seller account and initial software, $20-50 for shipping supplies, and the rest for inventory.",
+        "confidence": "High",
+        "source": "Almond Arbitrage you only need a budget of 1 to 2K with around 130 per month for your Amazon seller account and your initial software, like 20 to 50 bucks for your basic shipping supplies to get started and then the rest of the budget for inventory."
+    },
+    {
+        "id": "oa-software-stack",
+        "category": "General",
+        "trigger": "Setting up tech for OA",
+        "advice": "Use three software tools totaling $90/month: Seller Amp for profit calculation, Keepa for historical data, and Box for business management, listing, shipping, and analytics.",
+        "confidence": "High",
+        "source": "You will need three basic pieces of software that are going to cost in total $90 per month. Seller Amp... Keepa... Box..."
+    },
+    {
+        "id": "oa-product-bsr",
+        "category": "Buying",
+        "trigger": "Evaluating product sales speed",
+        "advice": "Target products with Best Sellers Rank (BSR) below 200,000 for good sales velocity.",
+        "confidence": "High",
+        "source": "As long as we're below 200, pretty good right there."
+    },
+    {
+        "id": "oa-product-sales-est",
+        "category": "Buying",
+        "trigger": "Checking monthly sales volume",
+        "advice": "Ensure estimated sales per month are above 30 units.",
+        "confidence": "High",
+        "source": "you want to make sure you stay above 30 estimated sales per month right here."
+    },
+    {
+        "id": "oa-product-profit",
+        "category": "Pricing",
+        "trigger": "Assessing profitability",
+        "advice": "Aim for at least $3 profit per unit after fees, tax, and costs.",
+        "confidence": "High",
+        "source": "in terms of profit on a specific product, we want to make sure we're above $3 profit per unit"
+    },
+    {
+        "id": "oa-product-roi",
+        "category": "Pricing",
+        "trigger": "Calculating return on investment",
+        "advice": "Target ROI above 30% per unit.",
+        "confidence": "High",
+        "source": "above a 30% return on investment."
+    },
+    {
+        "id": "oa-test-order-size",
+        "category": "Buying",
+        "trigger": "Initial purchase for new products",
+        "advice": "Start with test orders of 5-10 units to minimize risk.",
+        "confidence": "High",
+        "source": "when you're a beginner, you just want to be grabbing five to 10 of different products... small quantity, what we call test orders"
+    },
+    {
+        "id": "oa-keepa-timeframe",
+        "category": "Buying",
+        "trigger": "Analyzing historical performance",
+        "advice": "Focus on 3-month data in Keepa for beginners to assess recent trends.",
+        "confidence": "High",
+        "source": "you really only got to worry about the threemon data right here."
+    },
+    {
+        "id": "oa-keepa-competition",
+        "category": "Risk",
+        "trigger": "Evaluating competition via Keepa",
+        "advice": "Look for steady or decreasing new offer count (competition); avoid sharp increases.",
+        "confidence": "High",
+        "source": "we just want to make sure the competition isn't shooting up that it's either nice and steady or going down"
+    },
+    {
+        "id": "oa-keepa-price-trend",
+        "category": "Pricing",
+        "trigger": "Checking price stability in Keepa",
+        "advice": "Ensure buy box price is steady or increasing; avoid sharp declines.",
+        "confidence": "High",
+        "source": "the buy box price. We want to make sure it's either steady or going up and not shooting down."
+    },
+    {
+        "id": "oa-sourcing-method",
+        "category": "Buying",
+        "trigger": "Finding initial products",
+        "advice": "Use storefront stalking: In Seller Amp, review successful sellers (25+ reviews) to identify brands/categories, then search those on Google and retail sites for deals.",
+        "confidence": "High",
+        "source": "I'm going to show you guys how to do the storefront stocking method where we look inside the storefronts of other sellers to see what all products they carry and then go ahead and look those products up on Google, see what websites actually sell those items"
+    },
+    {
+        "id": "oa-seller-review-threshold",
+        "category": "Buying",
+        "trigger": "Selecting sellers for stalking",
+        "advice": "Target sellers with 25+ reviews in their storefront for stalking.",
+        "confidence": "High",
+        "source": "Anyone over 25 we want a storefront stock."
+    },
+    {
+        "id": "oa-discount-coupons",
+        "category": "Pricing",
+        "trigger": "Creating margins on products",
+        "advice": "Use coupon extensions like Coupert, Capital One Shopping, and CouponBirds; look for signup coupons (e.g., $20 off $100) and calculate per-unit cost for bulk buys.",
+        "confidence": "High",
+        "source": "the magic of online arbitrage couponing comes in... making sure you have the free cash back and coupon extensions like Coopert, Capital One Shopping, and Coupon Birds. Always making sure you're clicking around on the website a little bit... get to see that 20 off 100 signup coupon."
+    },
+    {
+        "id": "oa-seasonal-opportunities",
+        "category": "Seasonality",
+        "trigger": "Upcoming holidays",
+        "advice": "Target sales during Labor Day, October Prime Day, Halloween, and early Black Friday in November for discounted products.",
+        "confidence": "High",
+        "source": "There's a lot of holidays coming up like Labor Day, October Prime Day, Halloween, and early Black Friday sales in early November. That's going to be a ton of opportunity"
+    },
+    {
+        "id": "oa-gift-cards-discount",
+        "category": "Pricing",
+        "trigger": "Reducing buy cost",
+        "advice": "Check cardbear.com for discounted gift cards (e.g., $100 card for $85) to lower per-unit costs.",
+        "confidence": "High",
+        "source": "You always want to be taking a look at cardar.com to see if there's any discounted gift cards where if I can buy an $100 discounted gift card for 85 bucks, that lowers my buy cost substantially."
+    },
+    {
+        "id": "oa-tax-exemption",
+        "category": "Pricing",
+        "trigger": "Avoiding sales tax",
+        "advice": "Obtain a resell certificate from your state's website and submit it to tax-exempt portals on retail sites to avoid sales tax.",
+        "confidence": "High",
+        "source": "using a resource certificate, which you can just get from your state's website to go ahead and avoid sales tax on websites that have a tax exempt portal"
+    },
+    {
+        "id": "oa-ungating-quantity",
+        "category": "General",
+        "trigger": "Ungating a brand as a beginner",
+        "advice": "Purchase 10+ units of the product from retail sites like Kohl's, Walmart, Target; use multiple invoices if needed.",
+        "confidence": "High",
+        "source": "find a product that's also listed on Amazon, buy 10 of it across either one order or multiple orders. You can use multiple invoices for ungating as long as they combine to 10 plus"
+    },
+    {
+        "id": "oa-ungating-attempts",
+        "category": "Risk",
+        "trigger": "Submitting ungating requests",
+        "advice": "Expect 10-15 denials per brand; resubmit with additional docs like order confirmation PDF, shipping email, product photos to show supply chain.",
+        "confidence": "High",
+        "source": "you're going to get declined, typically about 10 to 15 times per brand... Keep submitting that documentation. As you get more purchase info from those documentations, just add in like the shipping email, the delivery email, picture of the product"
+    },
+    {
+        "id": "oa-autogate-brands",
+        "category": "General",
+        "trigger": "Selling without ungating docs",
+        "advice": "Use auto-gate brands like Stafford, Danner, Athletic Works, Cuddle Duds; paste ASIN in Seller Central and request approval for immediate listing if no docs required.",
+        "confidence": "High",
+        "source": "stuff like Stafford and Danner and Athletic Works and Cuddle Duds are going to let you list it immediately. So if it asks for documents, it's not an autogate"
+    },
+    {
+        "id": "oa-fbm-pricing",
+        "category": "Pricing",
+        "trigger": "Competing with FBM sellers",
+        "advice": "As an FBA seller, price 5% above FBM buy box to win the buy box.",
+        "confidence": "High",
+        "source": "when I compete with merchant fulfilled sellers, aka FBM, I can price above them when I'm doing Amazon FBA... add in like 5% from this to price higher"
+    },
+    {
+        "id": "oa-track-products",
+        "category": "Risk",
+        "trigger": "Out-of-stock winning products",
+        "advice": "Export potentially profitable listings to Seller Amp spreadsheet to track over time for restocks.",
+        "confidence": "High",
+        "source": "I would want to go ahead and oneclick export this out to a seller amp spreadsheet... so I can track this listing over time"
+    },
+    {
+        "id": "oa_roi_threshold",
+        "category": "Pricing",
+        "trigger": "Filters set to 100% ROI or higher",
+        "advice": "Lower ROI expectations for online arbitrage; aim for 30% ROI or progressively lower from 100% to 75%, 50%, then 30% as experience grows to source more items with higher volume",
+        "confidence": "High",
+        "source": "Many sellers who are just starting out in OA get frustrated... Almost without fail, these sellers have their filters set to only find items with 100% ROI or higher... Right now, we\u2019re comfortable with a 30% ROI\u2026 but some people need to get more comfortable with lower ROIs over time\u2026 so if you\u2019re used to 100%, then maybe seek a 75% ROI.. then 50%\u2026. then 30%."
+    },
+    {
+        "id": "ta_learning_curve",
+        "category": "General",
+        "trigger": "New to Tactical Arbitrage",
+        "advice": "Invest significant time in learning during trial (several hours on tutorials and practice); watch YouTube videos and consider Tactical Arbitrage Academy for advanced strategies to avoid frustration and maximize results",
+        "confidence": "High",
+        "source": "Learning curve? Tactical Arbitrage is an extremely powerful tool, and it isn\u2019t super intuitive at times to learn it. Watching the YouTube tutorials helped me a great deal... If you do decide to do a trial of Tactical Arbitrage, I highly encourage you to make sure you are prepared to spend a significant amount of time during that trial learning the software..."
+    },
+    {
+        "id": "ta_book_feature",
+        "category": "Buying",
+        "trigger": "Sourcing books for arbitrage",
+        "advice": "Use the library search feature in Tactical Arbitrage specifically for finding book deals by scanning libraries or book categories",
+        "confidence": "Medium",
+        "source": "Tactical Arbitrage also includes tools for wholesale spreadsheets scans, Amazon flips, reverse lookup, and library search for books."
+    },
+    {
+        "id": "fba-prohibited-alcohol",
+        "category": "General",
+        "trigger": "Products including alcoholic beverages",
+        "advice": "Do not ship alcoholic beverages (including non-alcoholic beer) to Amazon FBA fulfillment centers",
+        "confidence": "High",
+        "source": "The following products are prohibited from FBA: Alcoholic beverages (including non-alcoholic beer)"
+    },
+    {
+        "id": "fba-prohibited-tires",
+        "category": "General",
+        "trigger": "Vehicle tires",
+        "advice": "Do not ship vehicle tires to Amazon FBA fulfillment centers",
+        "confidence": "High",
+        "source": "The following products are prohibited from FBA: Vehicle tires"
+    },
+    {
+        "id": "fba-prohibited-giftcards",
+        "category": "General",
+        "trigger": "Gift cards, certificates, or stored-value instruments",
+        "advice": "Do not ship gift cards, gift certificates, or other stored-value instruments to Amazon FBA fulfillment centers",
+        "confidence": "High",
+        "source": "The following products are prohibited from FBA: Gift cards, gift certificates, and other stored-value instruments"
+    },
+    {
+        "id": "fba-unauthorized-materials",
+        "category": "Buying",
+        "trigger": "Products with unauthorized marketing materials like pamphlets, price tags, or non-Amazon stickers",
+        "advice": "Remove all unauthorized marketing materials, pamphlets, price tags, or non-Amazon stickers before shipping to FBA; Amazon will not accept pre-priced labels or products",
+        "confidence": "High",
+        "source": "Products with unauthorized marketing materials, such as pamphlets, price tags, or other non-Amazon stickers. Note: Amazon will not accept pre-priced labels or products."
+    },
+    {
+        "id": "fba-prep-requirements",
+        "category": "General",
+        "trigger": "Products requiring preparation",
+        "advice": "Prep products according to FBA packaging and prep requirements before shipping; un-prepped products will be prohibited",
+        "confidence": "High",
+        "source": "Products that require preparation but that have not been prepped according to FBA packaging and prep requirements"
+    },
+    {
+        "id": "fba-loose-batteries",
+        "category": "General",
+        "trigger": "Loose packaged batteries",
+        "advice": "Do not ship loose packaged batteries to Amazon FBA fulfillment centers",
+        "confidence": "High",
+        "source": "Loose packaged batteries"
+    },
+    {
+        "id": "fba-damaged-units",
+        "category": "Risk",
+        "trigger": "Damaged or defective units",
+        "advice": "Avoid shipping damaged or defective units unless they are used condition products labeled appropriately; used books with damage are acceptable if properly conditioned",
+        "confidence": "High",
+        "source": "Damaged or defective units. Note: Used condition products may have damage as long as the product is labeled with the appropriate condition."
+    },
+    {
+        "id": "fba-label-registration",
+        "category": "General",
+        "trigger": "Products with unregistered or mismatched labels",
+        "advice": "Register labels with Amazon before shipment and ensure they match the product; unregistered or mismatched labels will result in prohibition",
+        "confidence": "High",
+        "source": "Products with labels that were not properly registered with Amazon before shipment or that do not match the product that was registered"
+    },
+    {
+        "id": "fba-agreement-compliance",
+        "category": "General",
+        "trigger": "Products not complying with seller agreements",
+        "advice": "Ensure all products comply with any agreement between Amazon and the seller to avoid prohibition",
+        "confidence": "High",
+        "source": "Products that do not comply with any agreement between Amazon and the seller"
+    },
+    {
+        "id": "fba-counterfeit",
+        "category": "Risk",
+        "trigger": "Illegally replicated, reproduced, or manufactured products",
+        "advice": "Avoid shipping counterfeit or illegally produced products; Amazon may deny removal requests and destroy such inventory without reimbursement",
+        "confidence": "High",
+        "source": "Products that have been illegally replicated, reproduced, or manufactured. Note: We reserve the right to deny removal requests for and to destroy any inventory identified as counterfeit."
+    },
+    {
+        "id": "fba-unsuitable",
+        "category": "General",
+        "trigger": "Products Amazon determines unsuitable",
+        "advice": "Monitor for products Amazon deems unsuitable and avoid shipping them to FBA",
+        "confidence": "High",
+        "source": "Products that Amazon otherwise determines are unsuitable"
+    },
+    {
+        "id": "fba-hazmat-responsibility",
+        "category": "Risk",
+        "trigger": "Products that may be hazardous materials",
+        "advice": "Identify and comply with hazardous materials regulations; unidentified hazmat shipped to FBA may be disposed without reimbursement; refer to Dangerous goods identification guide",
+        "confidence": "High",
+        "source": "It is your responsibility to know whether the products you are shipping are regulated as hazardous materials. Hazardous materials that are shipped to Amazon fulfillment centers may be subject to disposal without reimbursement, even if they have not been previously identified by Amazon as hazardous materials. To learn more, see the Dangerous goods identification guide."
+    },
+    {
+        "id": "textbook-restriction-001",
+        "category": "General",
+        "trigger": "Planning to sell textbooks",
+        "advice": "Note that textbooks have restrictions, even if not on the main restricted products list; review Amazon\u2019s FBA Product Restrictions and check for approval requirements before listing",
+        "confidence": "High",
+        "source": "Though the following products aren\u2019t included on Amazon\u2019s current list of restricted products, they have restrictions as well: Ink and toner cartridges Software Textbooks"
+    },
+    {
+        "id": "ungating-process-001",
+        "category": "General",
+        "trigger": "Product falls into a gated category or has restrictions (potentially applicable to book-related items like textbooks)",
+        "advice": "Login to Seller Central, go to \u2018Category\u2019 tab, select \u2018Add Products\u2019, find the item, click \u2018Show limitations\u2019, and request approval if eligible",
+        "confidence": "High",
+        "source": "To see if you and your product are eligible, simply go through the following steps: First, login to your Seller Central account. Once you\u2019re on your homepage, click on the \u2018Category\u2019 tab located near the top-left of the screen. Next, from the dropdown, select \u2018Add Products\u2019. From there, find the item you want to sell. Then, click on \u2018Show limitations\u2019 to the left of the product info. Finally, either you\u2019ll be able to click the \u2018Request Approval\u2019 button to begin the application process, or you\u2019ll receive a notification saying you are not approved and that applications aren\u2019t being accepted."
+    },
+    {
+        "id": "violation-risk-001",
+        "category": "Risk",
+        "trigger": "Violating category restrictions when selling books or textbooks",
+        "advice": "Comply with all rules to avoid listing cancellation, limits on privileges, suspension, or permanent removal; reinstatement is difficult",
+        "confidence": "High",
+        "source": "What happens if you violate Amazon category restrictions? Amazon takes the violation of their policies very seriously. If you\u2019re debating whether or not to bend or break their rules, consider the possible consequences: Your listings could be canceled. They may place limits on your listing privileges. Your listing privileges could be suspended. They may remove your listing privileges altogether. And once Amazon takes disciplinary action against you, it can be difficult to get reinstated. Your safest course of action is to comply with all of Amazon\u2019s rules and regulations."
+    },
+    {
+        "id": "prohibited-claims-001",
+        "category": "Pricing",
+        "trigger": "Listing books or products with claims like \u2018FDA Cleared\u2019 or environmental assertions",
+        "advice": "Avoid misleading claims in listings; ensure compliance with FTC guidelines and Amazon\u2019s policy to prevent violations, especially for any book-related supplements or educational materials",
+        "confidence": "Medium",
+        "source": "Amazon\u2019s \u2018Prohibited Product Claims\u2019 policy... Products claim they\u2019re \u201cFDA Cleared,\u201d or \u201cFDA approved\u201d (also those that display the FDA logo in their listing images... As for products making environmental claims on Amazon, they mustn\u2019t mislead customers about the qualities or characteristics of the item being sold."
+    },
+    {
+        "id": "restrict-check-store",
+        "category": "Buying",
+        "trigger": "Evaluating product in retail store",
+        "advice": "Scan the product using the Amazon Seller App to check for FBA restrictions and allowed conditions (e.g., new only).",
+        "confidence": "High",
+        "source": "If I am in stores, then I will scan with the Amazon Seller App to determine if it is restricted. If the product is restricted, the app is going to let me know. ... The app will also tell you what condition you can list the items in, which is helpful as there are some items where only the new condition is restricted."
+    },
+    {
+        "id": "restrict-check-online",
+        "category": "Buying",
+        "trigger": "Sourcing product online or via wholesale",
+        "advice": "Log into Amazon seller account, navigate to Inventory > Add a Product, enter the UPC to verify eligibility to sell in new condition.",
+        "confidence": "High",
+        "source": "If I\u2019m in retail stores, that\u2019s literally it. ... If I am sourcing online or am evaluating an online / wholesale buy, then I will do a very similar process. I will login to my Amazon seller account, hover over inventory at the top of the screen, and then click \u201cadd a product.\u201d Then I will enter the UPC of the product to determine if I am eligible to sell the product in new condition."
+    },
+    {
+        "id": "avoid-lists",
+        "category": "General",
+        "trigger": "Uncertain about product or brand restrictions",
+        "advice": "Directly check restrictions via Amazon Seller App or seller account instead of relying on third-party lists of restricted brands.",
+        "confidence": "High",
+        "source": "Rather than use any list of restricted brands, I go direct to the source (Amazon) and see if they will allow me to sell the item in new condition or not. ... The reason for this is that there will inevitably products that are restricted that do not show up on any restricted product list, and there will inevitably be products that are sellable that show up on a restricted product list."
+    },
+    {
+        "id": "category-verification",
+        "category": "Risk",
+        "trigger": "Product appears unrestricted in search",
+        "advice": "Confirm the product is listed in the correct category, as miscategorization may hide restrictions.",
+        "confidence": "High",
+        "source": "you should confirm that the product is listed in the correct category though, i came across a product that was miscategorized so it wasn\u2019t showing as restricted, but if it was posted in the correct category, it would have been restricted"
     }
 ]
