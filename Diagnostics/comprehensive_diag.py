@@ -96,6 +96,20 @@ def run_diagnostic():
     print("========================================")
     print("          DEAL PROCESSING STATS         ")
     print("========================================")
+
+    # Check Scheduler
+    try:
+        res = subprocess.run(['pgrep', '-f', 'celery beat'], capture_output=True, text=True)
+        scheduler_running = (res.returncode == 0)
+    except Exception:
+        scheduler_running = False
+
+    if scheduler_running:
+        print("[OK] Scheduled Upserter (Celery Beat) is RUNNING.")
+    else:
+        print("[WARNING] Scheduled Upserter (Celery Beat) is NOT RUNNING.")
+    print("----------------------------------------")
+
     print(f"Total Processed:       {total_processed}")
     print(f"Successfully Saved:    {raw_db_count}")
     print(f"Dashboard Visible:     {dashboard_visible_count}  <-- (Margin >= 0%)")
