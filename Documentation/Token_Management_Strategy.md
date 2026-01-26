@@ -25,6 +25,9 @@ Keepa's API allows the token balance to go negative (deficit spending) as long a
 *   **Upserter (`simple_task.py`):**
     *   **Batch Size:** Reduced to **10 ASINs** (approx 200 tokens) to minimize cost spikes.
     *   **Blocking Wait:** Uses `token_manager.request_permission_for_call()` to block and wait for sufficient tokens instead of skipping the run. This prevents "starvation loops" where the task repeatedly starts, sees low tokens, and exits without doing work.
+*   **API Wrapper (`keepa_api.py`):**
+    *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.
+    *   **Behavior:** If provided, the wrapper calls `request_permission_for_call` *before* the API request. This enforces a blocking wait if tokens are low, preventing `429 Too Many Requests` errors during high-frequency ingestion loops.
 
 ---
 

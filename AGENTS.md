@@ -129,3 +129,11 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 ### Circular Dependencies & Module Structure
 -   **`keepa_deals/new_analytics.py`**: This module was specifically created to house downstream analytical logic (e.g., trend calculations, offer count averages) to prevent circular imports between `processing.py`, `stable_calculations.py`, and `stable_products.py`.
 -   **Rule:** If you are adding a new metric that depends on core calculations (like inferred sales) but is used by the main processing loop, place it in `new_analytics.py` rather than modifying the core stable modules.
+
+### Data Standards & Epochs
+- **Keepa Epoch:** The system strictly uses `datetime(2011, 1, 1)` as the epoch for interpreting Keepa API timestamps. This differs from the 2000 epoch used in some other contexts or documentation. Failure to use 2011 results in an 11-year data offset.
+
+### Token Management & Rate Limiting
+- **Blocking Wait Strategy:** To prevent API 429 (Too Many Requests) errors, the system employs a "Blocking Wait" strategy.
+- **Implementation:** API wrapper functions (like `fetch_deals_for_deals` in `keepa_deals/keepa_api.py`) accept a `token_manager` argument. If provided, the function calls `token_manager.request_permission_for_call()` which sleeps the thread until sufficient tokens are available, rather than failing immediately.
+- **Rule:** When adding new API calls to high-volume loops, always ensure they are integrated with the `TokenManager` to support this flow.
