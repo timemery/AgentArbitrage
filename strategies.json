@@ -24963,5 +24963,1777 @@
         "advice": "Confirm the product is listed in the correct category, as miscategorization may hide restrictions.",
         "confidence": "High",
         "source": "you should confirm that the product is listed in the correct category though, i came across a product that was miscategorized so it wasn\u2019t showing as restricted, but if it was posted in the correct category, it would have been restricted"
+    },
+    {
+        "id": "book-restrict-1",
+        "category": "Risk",
+        "trigger": "Selling solutions manuals for teachers, proctors, or examiners",
+        "advice": "Do not sell solutions manuals intended for teachers, proctors, or official examiners; student versions are permitted",
+        "confidence": "High",
+        "source": "Solutions manuals intended to be used by teachers, proctors, or official examiners (textbooks and solutions manuals for students are permitted)"
+    },
+    {
+        "id": "book-restrict-2",
+        "category": "Risk",
+        "trigger": "Selling teacher's editions of textbooks in any format",
+        "advice": "Avoid listing or selling teacher's editions of textbooks, including hardcopy, softcover, eBook, CD-R, DVD, or other electronic versions",
+        "confidence": "High",
+        "source": "Teacher's editions of textbooks in any format, such as: Hardcopy or softcover books eBook, CD-R, DVD or other electronic versions of teacher's editions"
+    },
+    {
+        "id": "book-restrict-3",
+        "category": "Risk",
+        "trigger": "Selling products with digital downloads or access codes",
+        "advice": "Do not sell products made available by digital download, including codes for accessing content on other websites or services, which may apply to bundled eBooks or textbook access codes",
+        "confidence": "Medium",
+        "source": "Products made available by digital download, including \"codes\" that can be used to access content on other websites or services"
+    },
+    {
+        "id": "risk6",
+        "category": "Risk",
+        "trigger": "Listing updates or keywords like 'antibacterial' triggering flag after initial approval",
+        "advice": "Sanitize listing by removing potential trigger keywords or images; monitor for flags post-update",
+        "confidence": "High",
+        "source": "if you've just gone through and made a listing update like maybe you added new images or this and that that's when we see a lot of people have them but it can also just be it's you've had that maybe a keyword in there like antibacterial in the listing and it didn't get flagged for the first like three or four months I've seen that happen before so sanitize your listing try to get rid of any of those kind of keywords or images that might be flagging it"
+    },
+    {
+        "id": "risk7",
+        "category": "Risk",
+        "trigger": "Amazon policy changes (e.g., stricter health claims in 2021, toys safety docs early 2021)",
+        "advice": "Stay updated on Amazon policy changes, especially those affecting specific categories or states, to prepare listings in advance",
+        "confidence": "High",
+        "source": "sometimes the reason for flagging is actually the updates on Amazon's policy like I remember back in 2021 that they are not that strict when it comes to having um claims on to your supplement listing and they started implementing it if I'm not mistaken July of 2021 did a lot of health supplement listing that uh you know they activated Amazon took them down and yeah so even with toys category early 2021 that they started asking for um child CH children product safety and um test document to provide to Amazon you know with all of this Amazon is always changing they sometimes they will Implement a lot of policies that that will only affect specific state so you have to um yeah be up to date as well on what's going on inside Amazon"
+    },
+    {
+        "id": "risk8",
+        "category": "Risk",
+        "trigger": "Hijackers or competitors adding violating keywords to your listing",
+        "advice": "Monitor listings for unauthorized changes; remove added violating elements and reinstate as per standard process",
+        "confidence": "High",
+        "source": "there are also some um you know hijackers mostly your competitors just so that they know what are the keywords that Amazon will not like and turn down uh the listing so what they will do is try to hijack your listing by adding them on their own selling account and they'll do everything actually yeah it is just to add in there right yes that is yeah"
+    },
+    {
+        "id": "ungating-history-books",
+        "category": "General",
+        "trigger": "Need to build sales history for ungating in restricted categories",
+        "advice": "Buy around 10 items from three different groups to establish order history, e.g., 10 collectible books, 10 food items, and 10 watches; retain or sell them on your own listings without expecting profit, aiming to navigate the ungating system.",
+        "confidence": "High",
+        "source": "Starting a History of Short Order: Around 10 items from three different groups you choose to have ungated in would need to be bought, e.g. 10 collectible books, 10 food items, and 10 watches. You may retain or sell these things on your own listings for yourself, but don\u2019t expect to turn a profit. Your goal here is to get through the system of ungating."
+    },
+    {
+        "id": "risk-media-illegal",
+        "category": "Risk",
+        "trigger": "Books containing illegal content",
+        "advice": "Do not sell books with illegal content of any kind, including stolen, promotional material not permitted for distribution in the respective country, pirated material, or content that infringes privacy or copyrights.",
+        "confidence": "High",
+        "source": "Illegal content of any kind (including, but not limited to, stolen, promotional material not permitted for distribution in the respective country, pirated material, content that infringes privacy or copyrights)"
+    },
+    {
+        "id": "risk-media-porn",
+        "category": "Risk",
+        "trigger": "Books classified as pornography",
+        "advice": "Avoid selling pornographic books, except for censored content or other content normally available for sale in bookshops.",
+        "confidence": "High",
+        "source": "Pornography (with the exception of, for example, censored content and other content that is normally available for sale in bookshops)"
+    },
+    {
+        "id": "risk-media-violence",
+        "category": "Risk",
+        "trigger": "Books promoting intolerance or violence",
+        "advice": "Do not sell books that promote intolerance and violence, as rules apply to content-related issues and vary by marketplace.",
+        "confidence": "High",
+        "source": "The rules obviously apply to all content-related issues, so for example intolerance and violence"
+    },
+    {
+        "id": "risk-erotica-books",
+        "category": "Risk",
+        "trigger": "Erotica or sex-related books promoting violence",
+        "advice": "Prohibit sale of pornographic articles or erotica books promoting violence; allow non-violent erotica or sex-related merchandise if compliant with local laws and cultural norms.",
+        "confidence": "High",
+        "source": "The rules regarding the sale of sex and erotica-related products are strictly related to and dependent on local laws and cultural norms... pornographic articles promoting violence in any way"
+    },
+    {
+        "id": "general-market-variation",
+        "category": "General",
+        "trigger": "Selling books in different marketplaces",
+        "advice": "Check specific rules for each marketplace as prohibitions for media like books can vary widely depending on the region.",
+        "confidence": "High",
+        "source": "As with the products listed above, when it comes to media, Amazon stipulates that the rules can vary widely, depending on the marketplace."
+    },
+    {
+        "id": "risk-textbooks-used",
+        "category": "Risk",
+        "trigger": "Used textbooks or books",
+        "advice": "Ensure used books or textbooks are not counterfeit, pirated, or containing prohibited content; no general prohibition on used media unlike apparel.",
+        "confidence": "Medium",
+        "source": "Media (DVDs, books, textbooks, games, etc.)... No second-hand clothing items can be sold on Amazon. (inferential from apparel contrast)"
+    },
+    {
+        "id": "3898d135-0f95-4169-a6c2-e990c745ec82",
+        "advice": "[",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e5e2d1d0-bb3d-4dc5-9da0-63ac753fec1d",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "75bbcce2-25b5-445f-83df-c6d96aaa0a98",
+        "advice": "\"id\": \"book-new-condition\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c900fce9-9946-4ea0-a906-1c98de5c886e",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9c36ecdc-39fa-4ee5-9909-9a7a36ddfe34",
+        "advice": "\"trigger\": \"Brand-new copy with intact cover and protective wrapping\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b408cc6d-e18c-488a-bc36-212f8c340ecf",
+        "advice": "\"advice\": \"List as New only if no markings, no 'Bargain' or 'Remainder' marks, and no labels attached\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "da327329-8d7e-4ee9-87d6-d4ae98ec5381",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "42d2730e-2a18-4316-8cb2-e91d29e4bcb5",
+        "advice": "\"source\": \"New: A brand-new copy with cover and original protective wrapping intact. Books with markings of any kind on the cover or pages, books marked as \"Bargain\" or \"Remainder,\" or with any other labels attached may not be listed as New condition.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5a2418db-bff8-4901-bc80-8c788c8e8182",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9f3c5bb3-9aab-4a9a-b951-526bcf09073e",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "af637626-5a25-45ec-9085-e2a356b012bd",
+        "advice": "\"id\": \"book-used-like-new\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "253dcfbc-79be-464d-9a1b-5226481e837c",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3c4c9425-c381-4961-95eb-3b894a8aae0c",
+        "advice": "\"trigger\": \"Minor cosmetic defects on cover, spine, pages, or dust cover\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "23b2e55c-03e4-46d8-8b33-64e549466a66",
+        "advice": "\"advice\": \"List as Used - Like New if pages are clean with no notes, dust cover intact, may include remainder marks on edges, and may miss bundled media\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2d9beda5-4722-4b89-a4d6-354e798579f6",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "534939ed-97d5-4788-b9b2-568818cfdf6c",
+        "advice": "\"source\": \"Used - Like New: Item may have minor cosmetic defects (such as marks, wears, cuts, bends, or crushes) on the cover, spine, pages, or dust cover. Dust cover is intact and pages are clean and not marred by notes. Item may contain remainder marks on outside edges. Item may be missing bundled media.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5ba8df7f-7a19-42ba-a654-016abc5606ba",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3ece7f51-44c0-4a3f-b364-75ce9b7b7b56",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2b292253-78d3-4e96-ab3e-3ce2f46e046a",
+        "advice": "\"id\": \"book-used-very-good\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "89d83f9e-4705-481d-9d5d-30d28ae62a48",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c7784fbd-da98-4307-bb59-d45412edb4b5",
+        "advice": "\"trigger\": \"Minor cosmetic defects on cover, spine, pages, or dust cover\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7a31941a-8515-4805-a629-57ee7cf93541",
+        "advice": "\"advice\": \"List as Used - Very Good if shrink wrap, dust covers, or boxed set case may be missing, include remainder marks in comments, and may miss bundled media\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4a25c70e-7563-4c2e-bb44-2a9097ff7344",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cfb388ff-304f-45f8-82eb-fc93bd1c5249",
+        "advice": "\"source\": \"Used - Very Good: Item may have minor cosmetic defects (such as marks, wears, cuts, bends, or crushes) on the cover, spine, pages, or dust cover. Shrink wrap, dust covers, or boxed set case may be missing. Item may contain remainder marks on outside edges, which should be noted in listing comments. Item may be missing bundled media.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5192f3f0-e2e6-4c36-94c4-d70f59476207",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cd0d02aa-532f-4d03-858b-c87550e21698",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "543a1039-31c4-4ab4-8843-b3e371d071da",
+        "advice": "\"id\": \"book-used-good\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ddc211d0-b578-45d3-ad23-4c3c2d23570b",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "28cdf481-0a7e-4cc6-a2ea-7611e4495d5d",
+        "advice": "\"trigger\": \"All pages and cover intact, spine shows wear\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c01adca7-ab8c-4807-a4f2-baa7b4267dfa",
+        "advice": "\"advice\": \"List as Used - Good if pages have limited notes and highlighting, may include 'From the library of' labels, shrink wrap or dust covers missing, and may miss bundled media\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8218522a-24ff-4e65-93b0-7a60f4af6070",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c7cece2d-4ead-40c6-a214-0964d5d33487",
+        "advice": "\"source\": \"Used - Good: All pages and cover are intact (including the dust cover, if applicable). Spine may show signs of wear. Pages may include limited notes and highlighting. May include \"From the library of\" labels. Shrink wrap, dust covers, or boxed set case may be missing. Item may be missing bundled media.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8a88a5a0-4519-45ab-afd0-1727bc66f3b8",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "73258b18-dc35-401c-9d9d-4b8fa6f73677",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b00c494e-d547-421d-b8fe-3163e2b03543",
+        "advice": "\"id\": \"book-used-acceptable\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8d7c1273-a8f2-4d83-a2cb-0cfee2b1f3df",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ad57d8e3-c7da-4682-a5b3-8c29bc5ba671",
+        "advice": "\"trigger\": \"All pages and cover intact but may miss shrink wrap or dust covers\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e6392037-8d5a-4ba5-896a-4c601fc91665",
+        "advice": "\"advice\": \"List as Used - Acceptable if pages have limited notes, highlighting, or minor water damage with readable text, and may miss bundled media\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "eea3bfe5-ec2f-440d-8795-f53597f33ef8",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0ab7c18a-f555-47c6-b6b1-db69d8644615",
+        "advice": "\"source\": \"Used - Acceptable: All pages and the cover are intact, but shrink wrap, dust covers, or boxed set case may be missing. Pages may include limited notes, highlighting, or minor water damage but the text is readable. Item may be missing bundled media.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a317d435-81fd-4eb7-ace2-26f20ff011cd",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "dc5b484b-67b0-4fda-9968-29d0fa6b712d",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1713f3e5-18b4-4812-988f-715a6157dbb9",
+        "advice": "\"id\": \"book-unacceptable\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9bb1ed5e-eb36-478c-80a8-8d5af8985337",
+        "advice": "\"category\": \"Risk\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7dd7a6c2-d06a-4c5f-ae34-b5210798d691",
+        "advice": "\"trigger\": \"Missing pages or obscured/unreadable text\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f8a911cd-8219-4f77-8b4b-b3f2dc9c42e7",
+        "advice": "\"advice\": \"Do not list or sell; also avoid advance reading copies or uncorrected proofs of in-print or not-yet-published books\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bbd9e840-a7f6-4876-a8d6-0e9a2cb3452f",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fb608adf-03d2-4cba-aa4d-f2d90401f65b",
+        "advice": "\"source\": \"Unacceptable: Has missing pages and obscured or unreadable text. We also do not permit the sale of advance reading copies, including uncorrected proofs, of in-print or not-yet-published books.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f30c9b2a-2f7c-4857-9f3f-f9455ee8983c",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "09fcaf8e-6fc1-46db-9da9-695503e2b89a",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "75044dc8-bc0e-48a9-bb94-06515014af1a",
+        "advice": "\"id\": \"book-collectible-criteria\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7f1c1623-add0-4f3a-a768-8efcb0011115",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6083b35f-5b22-477a-9de5-552f3d1c28d7",
+        "advice": "\"trigger\": \"Unique features increasing collector value\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b895f745-e8ed-4e50-9a81-4adefb1751c2",
+        "advice": "\"advice\": \"Consider collectible if first editions/printings, signed/inscribed/scarce copies, or advance copies/proofs of out-of-print books; avoid uncorrected proofs of in-print books, former library books, remaindered books, book club editions\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5cf15fab-00a8-4002-87bf-0896259071d6",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5d57850f-2b46-455c-8ef4-dd9f77455ff7",
+        "advice": "\"source\": \"To be considered collectible, a book should be unique in a way that could reasonably be assumed to increase the book's value to a collector: First editions and first printings Signed, inscribed, or scarce copies Advance reading copies and uncorrected proofs of out-of-print books Collectible books do not include the following: Uncorrected proofs of in-print or not-yet-published books Former library books Remaindered books Book club editions\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8ebe4f34-2c3e-49a4-bcdd-1a3027db5ef3",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "89683556-2e29-4942-b11e-b327fffe79a5",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "43061a0a-d8bb-480c-83c9-72eb741dd415",
+        "advice": "\"id\": \"book-collectible-like-new\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "93ea3666-fd6e-4775-a218-91eef848e072",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "aab4e29a-bb38-4a23-a555-1dbd7a37431b",
+        "advice": "\"trigger\": \"All pages and cover intact, dust jacket intact with no or minor flaws\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d14a2b0f-33f4-415c-bef4-0a59ba86fe0b",
+        "advice": "\"advice\": \"List as Collectible - Like New if spine has no creasing and only very small unnoticeable flaws\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1c0d6b1f-5784-4519-8f61-7f6fab4f3451",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "12fcd77e-1337-4e59-9cda-8fe016851496",
+        "advice": "\"source\": \"Collectible - Like New: All pages and the cover are intact. The dust jacket is intact, if applicable, with no noticeable or very minor nicks or flaws. Spine has no signs of creasing. Book may have very small but virtually unnoticeable flaws.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ea221a7d-e633-4afa-bff7-42da58e70a6d",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a85f9e2b-0a7b-4e15-8863-cbe21f8d8112",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a0491373-0a91-4544-b786-d1eec27a989d",
+        "advice": "\"id\": \"book-collectible-very-good\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "80b1b6cf-4686-4fbf-8ac7-c9c2867ed10f",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c8164ad7-119e-468d-b42f-2335b08b076b",
+        "advice": "\"trigger\": \"Pages intact with no notes or highlighting, spine no creasing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5edf453d-d33d-4d70-95ca-87c3ad7a6c84",
+        "advice": "\"advice\": \"List as Collectible - Very Good if dust jacket shows rubbing or chipping\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "acc22614-4b36-4852-b5c8-9897a98ce52f",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "274018f8-3a66-473b-b2da-da87160f87b1",
+        "advice": "\"source\": \"Collectible - Very Good: Pages are intact and not marred by notes or highlighting. Spine shows no sign of creasing. Dust jacket, if applicable, shows signs of some rubbing or chipping.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c5876b69-4ffe-4df3-8d9f-154bbea620bd",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "32f9585f-583e-4918-ab90-201119296172",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f4ad264d-9bc4-4d2f-a92b-477442968586",
+        "advice": "\"id\": \"book-collectible-good\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "99ad6c22-09f1-475a-a5b1-5ca30dc9dd87",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5ebf9577-cc0e-413c-8bba-0c7882425001",
+        "advice": "\"trigger\": \"All pages and cover intact, spine shows wear\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f323d4cd-e4d0-4493-bcc9-f0c6319d4b59",
+        "advice": "\"advice\": \"List as Collectible - Good, but note that Good condition books are generally not considered collectible grade\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ddc82156-6b64-469b-9148-c96de4d1f508",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "dc223ebb-d352-401f-9f84-9f9d350ae9fa",
+        "advice": "\"source\": \"Collectible - Good: All pages and the cover are intact, including the dust jacket, if applicable. Spine may show signs of wear. Generally, books in Good condition are not considered to be collectible grade.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f2a5e76a-10c1-4179-ab0a-9495bc450b8e",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "91b19f49-5e91-4e81-a5d7-653a2d317c58",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3fb3f905-fb7f-4477-ac39-9e030626c7bc",
+        "advice": "\"id\": \"book-collectible-acceptable\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a332378f-be4c-4df9-b7ff-76de5ed7eb71",
+        "advice": "\"category\": \"Risk\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "adfda4b9-2a35-468e-861f-7830e8bc752a",
+        "advice": "\"trigger\": \"Readable copy with significant wear, dust jacket may be missing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "033a8ed5-4b61-4e1f-823b-f3b114d5062b",
+        "advice": "\"advice\": \"List as Collectible - Acceptable only for rare items; generally not considered collectible grade\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "300204ea-c20f-48ba-919c-214a907aee65",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "93722654-4fe2-4e09-bc2c-d18240be63e9",
+        "advice": "\"source\": \"Collectible - Acceptable: A readable copy showing significant wear. Dust jacket may be missing. For all but the rarest items, books in Acceptable condition are not considered to be collectible grade.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3c106753-31ba-44d9-b11a-85f135cec9bd",
+        "advice": "}",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8603f396-448e-4233-9938-e83ca81153f4",
+        "advice": "]",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "new1",
+        "category": "Buying",
+        "trigger": "Sourcing books for sale as new",
+        "advice": "Purchase only from authorized distributor or publisher to qualify as new; obtain wholesale invoice, not receipt",
+        "confidence": "High",
+        "source": "nothing is ever 'new' unless it comes from an authorized distributor. Anything purchased by an individual, even if untouched and unopened, is used like new"
+    },
+    {
+        "id": "new2",
+        "category": "General",
+        "trigger": "Determining book condition as new",
+        "advice": "New condition requires provenance from original source; no preowned book qualifies as new regardless of appearance or packaging",
+        "confidence": "High",
+        "source": "Provenance. That's all. New is not a statement of condition. It is a statement of provenance. No preowned book is New -- no matter how nice it looks."
+    },
+    {
+        "id": "strategy-20",
+        "category": "Risk",
+        "trigger": "Gated books requiring 10 units invoice",
+        "advice": "For gated textbooks or publishers, sell on alternatives like eBay, Alibris, or use BookScouter for buyback instead of seeking ungating.",
+        "confidence": "High",
+        "source": "\u201cIf you wanted to sell this brand, you would need to order 10 brand new units and provide the invoice/receipt/packing slip and pictures of the 10 units to get ungated.\u201d \u2014 tiggs"
+    },
+    {
+        "id": "strategy-21",
+        "category": "General",
+        "trigger": "Part-time sourcing 4\u20135 hours/week",
+        "advice": "Source for 4\u20135 hours per week to achieve $250/week in sales, scaling to $6\u2013700 with college books.",
+        "confidence": "High",
+        "source": "\u201cI would source for maybe 4-5 hours on a Sat each week, and was selling about $250 a week. If I did college books I would make $6-700.\u201d \u2014 broken_shoelace_jw"
+    },
+    {
+        "id": "strategy-22",
+        "category": "General",
+        "trigger": "Invest couple hundred dollars and 5 hours/week",
+        "advice": "Start with an investment of a couple hundred dollars and 5 hours per week to generate profits in book arbitrage.",
+        "confidence": "High",
+        "source": "\u201cIf you invest a couple hundred dollars and five hours a week you will make money.\u201d \u2014 Progunk"
+    },
+    {
+        "id": "cond1",
+        "category": "General",
+        "trigger": "Assessing book condition for listing",
+        "advice": "Print and display Amazon's condition guidelines from search 'Amazon condition guidelines', scroll to books section, highlight and print for reference.",
+        "confidence": "High",
+        "source": "you're gonna want to open up a new tab in your browser and head over to Google when you get to Google you're gonna want to search for Amazon condition guidelines the first result that comes up should be what you want to see so go ahead and click on that then you're gonna want to scroll down about 20% down the page until you find this books new and be used and you're gonna want to print that out"
+    },
+    {
+        "id": "cond2",
+        "category": "General",
+        "trigger": "New condition books",
+        "advice": "List as New only if brand new, unused, unread, perfect condition, dust cover and wrapping intact, all supplementary materials included, access codes valid; no markings, bargain/remainder labels, or attached labels.",
+        "confidence": "High",
+        "source": "new just like it sounds a brand new unused unread copy in perfect condition the dust cover and original protective wrapping if any are intact all supplementary materials are included and all access codes for electronic material if applicable are valid and/or in working condition books with markings of any kind on the cover or pages books marked as bargain or remainder or with any other labels attached may not be listed as new condition"
+    },
+    {
+        "id": "cond3",
+        "category": "General",
+        "trigger": "Like New condition books",
+        "advice": "List as Like New if dust cover intact with no nicks/tears, spine no creasing, pages clean no notes/folds, may contain remainder marks noted in comments.",
+        "confidence": "High",
+        "source": "used like new dust cover is intact with no nicks or tears spine has no signs of creasing pages are clean and not marred by notes or folds of any kind may contain remainder marks on the outside edges which should be noted in listing comments"
+    },
+    {
+        "id": "cond4",
+        "category": "General",
+        "trigger": "Very Good condition books",
+        "advice": "List as Very Good if pages and dust cover intact, no notes/highlighting, spine undamaged.",
+        "confidence": "High",
+        "source": "used very good pages and dust-cover are intact and not marred by notes or highlighting the spine is undamaged"
+    },
+    {
+        "id": "cond5",
+        "category": "General",
+        "trigger": "Good condition books",
+        "advice": "List as Good if all pages and cover intact (dust cover if applicable), spine may show use signs, pages may include limited notes/highlighting, may include library labels.",
+        "confidence": "High",
+        "source": "used good all pages and cover our intact including the desk cover if applicable spine may show signs of where pages may include limited notes and highlighting may include from the library of labels"
+    },
+    {
+        "id": "cond6",
+        "category": "General",
+        "trigger": "Acceptable condition books",
+        "advice": "List as Acceptable if all pages and cover intact but dust cover may be missing, pages may include limited notes/highlighting but text not obscured/unreadable.",
+        "confidence": "High",
+        "source": "used acceptable all pages in the cover are intact but the dust cover may be missing pages may include limited notes and highlighting but the text cannot be obscured and/or unreadable"
+    },
+    {
+        "id": "cond7",
+        "category": "Risk",
+        "trigger": "Unacceptable condition books",
+        "advice": "Do not list books with missing pages, obscured/unreadable text, or advanced reading copies (ARCs, uncorrected proofs); these cannot be sold on Amazon.",
+        "confidence": "High",
+        "source": "unacceptable these ones cannot be listed on Amazon has missing pages and obscured or unreadable text we also do not permit the sale of advanced reading copies including uncorrect and proofs of in print or not yet published books"
+    },
+    {
+        "id": "cond8",
+        "category": "General",
+        "trigger": "Conditioning process",
+        "advice": "Quickly fan through pages for markings, remove any inserts/objects, check edges and dust jacket; should take a few seconds per book.",
+        "confidence": "High",
+        "source": "conditioning books doesn't take very long it should take you a few seconds per book you just quickly fan through the pages make sure there's no markings if there's anything inside of the book pull it out get rid of it look on the edges look at the dust jacket make sure everything's good"
+    },
+    {
+        "id": "cond9",
+        "category": "Risk",
+        "trigger": "Books with tears or damage",
+        "advice": "Downgrade to Acceptable if there's a tear in dust cover, even if otherwise Very Good or Good; avoid listing if water/oil stains make it disgusting to prevent negative feedback.",
+        "confidence": "High",
+        "source": "this book it looks pretty good on the edges a little bit of warping or water damage here there's some apparent creasing here but there's this tear here and if it wasn't for that tear I would easily put this into very good or even good but with this little tear I'm actually gonna put it into acceptable so the next book right away you see that we have some water stain issues or oil stains or coffee stains or something and if you go through you can see the damage to the pages so while there's no markings in the cover and everything is good this is just disgusting and this is actually a book that we probably shouldn't have bought so this is what I would call unacceptable and I wouldn't sell this if it wasn't stained from the water damage like this I might list it as acceptable and say minimal water damage but unless this book is worth a ton of money I'm just not gonna risk getting a negative feedback for an acceptable book with water damage"
+    },
+    {
+        "id": "cond10",
+        "category": "General",
+        "trigger": "Books with creases or stains",
+        "advice": "List as Good if pages creased but no markings, minor edge stains, spine shows reading wear; open creases to flatten.",
+        "confidence": "High",
+        "source": "these pages are creased you're gonna want to open those up so they're not creased any more give it the once-over and this book I would say is in good to very good condition you're gonna say good because of this stain edge and we're to the edge and because it's pretty broke right not broke in but the back it's been read right you can tell so this is gonna be a good condition"
+    },
+    {
+        "id": "cond11",
+        "category": "General",
+        "trigger": "Pristine unread books",
+        "advice": "List as Like New if no blemishes, sharp corners, no markings/creases, book resists opening, clearly unread.",
+        "confidence": "High",
+        "source": "this next book is just pristine you can see the cover has no blemishes the edges are really nice the corners are still pretty sharp there's no markings in here or creases the book doesn't even really want to open it would prefer to stay close because I can tell you for a fact that no one ever read this book this book has not been read and I would list this book as like new"
+    },
+    {
+        "id": "cond12",
+        "category": "Risk",
+        "trigger": "Books with foreign objects",
+        "advice": "Remove any inserts like price tags or food (e.g., cheese); list as Very Good if otherwise clean but shows reading wear and waviness.",
+        "confidence": "High",
+        "source": "there's a price tag here you can see there's no markings but there's a slice of cheese you do not want to mail a slice of cheese to your customers besides that you should be going through these books pretty fast just get through them this book - the slice of cheese I would say is in very good condition I would almost say like new but you can tell it's been read the dust jacket has somewhere the pages have some waviness to it so there's going to be a solid very good book"
+    },
+    {
+        "id": "cond13",
+        "category": "General",
+        "trigger": "Books with heavy markings",
+        "advice": "List as Acceptable if highlights/markings are extensive but text still usable for customer; do not list if not usable.",
+        "confidence": "High",
+        "source": "there's a lot of highlights and markings in this so sometimes there's so much highlights and markings you don't want to sell it at all this is borderline I would list this as acceptable you just have to make a call is it still useable to the student that's going to use it or to the customer if not don't list it if you think there's still some use to it just list it as acceptable"
+    },
+    {
+        "id": "cond14",
+        "category": "General",
+        "trigger": "Finding items in books",
+        "advice": "Always check inside books for money or objects; pass on any found money ethically.",
+        "confidence": "High",
+        "source": "you always check the books and if you're lucky enough you will find some money in a book one day it doesn't happen very often and it's usually one dollar bills not hundreds but my wife did find $700 in a book once so make sure you check the books for money I'm gonna leave that for the next person I'm gonna pass that on pass the buck pay it forward just kidding gonna need that back"
+    },
+    {
+        "id": "cond15",
+        "category": "Risk",
+        "trigger": "Books with curled pages or moisture damage",
+        "advice": "List as Good if pages curled but clean and no stains, possible dried moisture; downgrade to Acceptable if severe.",
+        "confidence": "High",
+        "source": "when you look on the edges you can see there's some curling to some pages this really cannot be fixed I mean you can pull them all out but it's not these weren't really like bookmarked by the customer they kind of just got pushed up and and squished up in there so with that being said I wouldn't list this any more than good just because of that and you can I don't know if there's water damage to this or not but can you guys hear that the book pops right so I think it has some water damage that's dried out or moisture damage for sure you can see the way the pages move when you flex them but I would list this as good may be acceptable the only reason I would go good is because the pages themselves are so clean and not stained at all"
+    },
+    {
+        "id": "cond16",
+        "category": "General",
+        "trigger": "Sealed books",
+        "advice": "List sealed books as New; if not sealed but appears new, confirm before listing to avoid risks.",
+        "confidence": "High",
+        "source": "this book is sealed in plastic this is a new book this book is sealed that's what makes it new its new now not all new books are gonna be sealed if it's new its new if you aren't sure if it's new then don't list it as new don't risk your account unhappy customers and bad feedback or getting suspended for trying to list used books as new either it's new or it's not and if you're not sure it's not new"
+    },
+    {
+        "id": "cond17",
+        "category": "General",
+        "trigger": "Books with accompanying materials",
+        "advice": "Include CD or other materials if present and undamaged; note in condition comments (e.g., 'CD included'); list as Very Good if minor cover crease but no markings.",
+        "confidence": "High",
+        "source": "this is a spiral book has a use sticker on it you can see the edges are a little gross it has the CD that's important for books that come with accompanying material no cheese I would list this one has a very good book it does have a crease here on the cover and it's not the most perfect book but it does have the CD that it's supposed to come with and there's no markings in it so this is going to be listed as very good and in the condition notes I would include CD included"
+    },
+    {
+        "id": "cond18",
+        "category": "Risk",
+        "trigger": "Unsure about condition",
+        "advice": "If unsure about condition, always downgrade (go lower) rather than upgrade; underpromise and overdeliver to ensure happy customers, positive feedback, and avoid suspension.",
+        "confidence": "High",
+        "source": "one of the main things that I want you guys know about conditioning books is don't ever try to deceive your customer don't ever try to upgrade the condition when it's not that good if you're ever unsure if a condition is what it's supposed to be you always go down you don't go up it's not even worth it most of the time so don't try to sell used books as new and don't try to pass off weak condition books as better condition books it's just not good it's much better to under promise and over deliver them to do the opposite your feedback will reflect this your customers will be happy and you'll make more money"
+    },
+    {
+        "id": "season3",
+        "category": "Seasonality",
+        "trigger": "Spring semester peak",
+        "advice": "Peak of textbook season for spring semester is around January 10th, with sales leaping up on January 1st.",
+        "confidence": "High",
+        "source": "For spring semester, the peak of textbook season is around January 10th (with sales taking a huge leap up on January 1st)."
+    },
+    {
+        "id": "season4",
+        "category": "Seasonality",
+        "trigger": "Fall season end",
+        "advice": "Textbook season for fall ends by September 7th, returning to normal sales.",
+        "confidence": "High",
+        "source": "For fall semester: By September 7th, textbook sales on Amazon have mostly returned to normal."
+    },
+    {
+        "id": "season5",
+        "category": "Seasonality",
+        "trigger": "Spring season end",
+        "advice": "Textbook season for spring ends after the 3rd week in January, returning to normal sales.",
+        "confidence": "High",
+        "source": "For spring semester: After the 3rd week in January, textbook sales have mostly returned to normal."
+    },
+    {
+        "id": "season6",
+        "category": "Seasonality",
+        "trigger": "Mid-to-late December",
+        "advice": "Textbook sales plummet in mid-to-late December due to no school.",
+        "confidence": "High",
+        "source": "(For what is worth, the only uniformity in higher education is that no one is in school in mid-to-late December. Textbooks sales plummet on Amazon in middle of the month.)"
+    },
+    {
+        "id": "price5",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers, off-season sales rank 1-30,000",
+        "advice": "Price $50 to $100 above the lowest non-FBA offer.",
+        "confidence": "High",
+        "source": "When a book holds an average sales rank (in the off season) of: 1 to 30,000: Price $50 to $100 above the lowest non-FBA offer."
+    },
+    {
+        "id": "price6",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers, off-season sales rank 30,000-150,000",
+        "advice": "Price $40 to $70 above the lowest non-FBA offer.",
+        "confidence": "High",
+        "source": "30,000 to 150,000: Price $40 to $70 above the lowest non-FBA offer."
+    },
+    {
+        "id": "price7",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers, off-season sales rank 150,000-300,000",
+        "advice": "Price $35 to $50 above lowest non-FBA offer.",
+        "confidence": "High",
+        "source": "150,000 to 300,000: Price $35 to $50 above lowest non-FBA offer."
+    },
+    {
+        "id": "price8",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers, off-season sales rank 300,000-600,000",
+        "advice": "Price $30 to $40 above lowest non-FBA offer.",
+        "confidence": "High",
+        "source": "300,000 to 600,000: Price $30 to $40 above lowest non-FBA offer."
+    },
+    {
+        "id": "price9",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers, off-season sales rank 600,000-900,000",
+        "advice": "Price $25 to $35 above lowest non-FBA offer.",
+        "confidence": "High",
+        "source": "600,000 to 900,000: Price $25 to $35 above lowest non-FBA offer."
+    },
+    {
+        "id": "price10",
+        "category": "Pricing",
+        "trigger": "Competing FBA offers, off-season sales rank 1-30,000",
+        "advice": "Price as the 5th or 6th lowest FBA offer going into textbook season.",
+        "confidence": "High",
+        "source": "When a book holds an average Amazon sales rank (in the off season) of\u2026 1 to 30,000: Price your FBA offer as the 5th or 6th lowest."
+    },
+    {
+        "id": "price11",
+        "category": "Pricing",
+        "trigger": "Competing FBA offers, off-season sales rank 30,000-300,000",
+        "advice": "Price as the 4th or 5th lowest FBA offer going into textbook season.",
+        "confidence": "High",
+        "source": "30,000 to 300,000: Price your FBA offer as the 4th or 5th lowest."
+    },
+    {
+        "id": "price12",
+        "category": "Pricing",
+        "trigger": "Competing FBA offers, off-season sales rank 300,000-600,000",
+        "advice": "Price as the 3rd or 4th lowest FBA offer going into textbook season.",
+        "confidence": "High",
+        "source": "300,000 to 600,000: Price your FBA offer as the 3rd or 4th lowest"
+    },
+    {
+        "id": "price13",
+        "category": "Pricing",
+        "trigger": "Competing FBA offers, off-season sales rank 600,000-900,000",
+        "advice": "Price as the 2nd or 3rd lowest FBA offer going into textbook season.",
+        "confidence": "High",
+        "source": "600,000 to 900,000: Price your FBA offer as the 2nd or 3rd lowest."
+    },
+    {
+        "id": "price14",
+        "category": "Pricing",
+        "trigger": "After textbook season peak",
+        "advice": "Reprice to position high-demand FBA textbooks in the bottom 3 or so based on sales rank, getting more conservative.",
+        "confidence": "High",
+        "source": "After we clear the peak of Amazon textbook sales, then I want to reprice to get all but my most high demand FBA textbooks somewhere in the bottom 3 or so (depending on the Amazon sales rank)."
+    },
+    {
+        "id": "tip1_fba",
+        "category": "General",
+        "trigger": "New to selling books",
+        "advice": "Sell using Amazon FBA instead of FBM to get Prime badge, faster sales, higher prices, and hassle-free fulfillment",
+        "confidence": "High",
+        "source": "selling on amazon fba and not as a merchant fba stands for fulfillment by amazon... you want to sell fba you're going to sell your items quicker they're going to sell for more money"
+    },
+    {
+        "id": "tip2_scanner",
+        "category": "Buying",
+        "trigger": "Sourcing at thrift stores, garage sales, libraries",
+        "advice": "Purchase a dedicated scanner like the one from rakenprofit.com for under $50 to filter books 90-95% faster than the free Amazon Seller app",
+        "confidence": "High",
+        "source": "get yourself a scanner so you can actually go to rakenprofit.com forward slash scanner... it's a little less than fifty dollars... 90 to 95 of the book sometimes even more are gonna be worthless"
+    },
+    {
+        "id": "tip3_listing_software",
+        "category": "General",
+        "trigger": "Listing books for shipment to Amazon FBA",
+        "advice": "Use software like List or Inventory Lab instead of Amazon Seller Central to list 3-5 times faster and track profitability",
+        "confidence": "High",
+        "source": "get off listing on amazon so once you buy all your books... try not to ship and list your books via the amazon.com amazon seller central platform it's slow it's inefficient and it takes literally like three to five times longer"
+    },
+    {
+        "id": "tip4_free_pickups",
+        "category": "Buying",
+        "trigger": "Seeking low-cost inventory sources",
+        "advice": "Post wanted ads on Nextdoor or Facebook Marketplace offering free pickups of unwanted books to acquire hundreds or thousands for free",
+        "confidence": "High",
+        "source": "free book pickups so i don't know if you've ever heard of the website next door or facebook marketplace... put out ads wanted ads saying hey i'll pick up your books uh for free... this is one of the best ways to get literally hundreds and sometimes thousands of books for free"
+    },
+    {
+        "id": "tip5_pricing_strategy",
+        "category": "Pricing",
+        "trigger": "Multiple sellers with prices like $26, $32, $40 and sales rank around 30,000 (fast-moving)",
+        "advice": "Avoid pricing at the lowest if high sales velocity; wait for lowest offer to sell out to capture higher prices and boost profits by 15-20%",
+        "confidence": "High",
+        "source": "don't always price the lowest... depending on the sales rank... imagine there's somebody at 26 and 32 and 35 and it's maybe a 30 000 rank in books which is fast... you could boost your profits by 15 or 20 percent by just being a little more patient"
+    },
+    {
+        "id": "tip6_scout_iq",
+        "category": "Buying",
+        "trigger": "Scanning books with rank around 400,000",
+        "advice": "Use Scout IQ app with e-score (days with sales in last 6 months) and custom triggers; prefer high e-score (e.g., 56 vs. 7) for consistent sellers and audio/visual cues for faster decisions",
+        "confidence": "High",
+        "source": "get yourself a good scanning app... my favorite scanning application which is scout iq... e-score is a number that will tell you how many days out of the last six months it's had a sale... a book that has a 400 000 rank but a 56 e score... custom triggers are rules... ding which means buy... green light which means buy"
+    },
+    {
+        "id": "tip7_thrift_timing",
+        "category": "Seasonality",
+        "trigger": "Visiting thrift stores",
+        "advice": "Experiment with different days and times (e.g., avoid Mondays/Tuesdays if dead; arrive when new inventory is stocked); 90% of stores have profitable books, build employee relationships for access",
+        "confidence": "High",
+        "source": "experiment with different days and times at the thrift store... ninety percent of thrift stores have profitable books... at my local savers a lot of times on mondays and tuesdays it's dead... get there when the new inventory comes out... build relationships with the employees"
+    },
+    {
+        "id": "tip8_shipments",
+        "category": "General",
+        "trigger": "Aiming for $1,000-$2,000 monthly sales",
+        "advice": "Send 1-2 shipments per week consistently; most inventory sells in 2 months, 20-30% in up to 6 months, 10% in up to 1 year to feed Amazon and grow profits",
+        "confidence": "High",
+        "source": "send at least one to two shipments a week to grow sales... get in that habit... of sourcing and shipping out a box once or twice a week if you really want to get to one to two thousand a month... most of my inventory sells within a couple of months but i do have quite a bit of inventory probably 20 to 30 percent that might take a couple months upwards to six months and then there's you know 10 percent or less that might take up to a year"
+    },
+    {
+        "id": "tip9_ungating",
+        "category": "General",
+        "trigger": "Gated categories like DVDs",
+        "advice": "Get ungated by purchasing at least 10 DVDs from wholesalers like Alliance Entertainment or Ingram to obtain invoice; expand to DVDs which sell for $30-$50+ (some up to $200-$400 profit)",
+        "confidence": "High",
+        "source": "getting ungated so when you sell on amazon a lot of categories are gonna be gated... i'd recommend looking into dvds... go to a website like alliance entertainment or ingram and get yourself uh at least 10 of a dvd get yourself a wholesale invoice... dvds especially new sealed dvds can sell for 30 40 50. i mean i've sold new dvds... for two three four hundred dollars"
+    },
+    {
+        "id": "tip10_restricted_books",
+        "category": "Risk",
+        "trigger": "Finding restricted books like popular textbooks (e.g., Pearson, Wiley) with $20-$50+ profit",
+        "advice": "Don't skip restricted books; send to restrictedinventory.com service for 50% profit share via app/dashboard for extra income stream",
+        "confidence": "High",
+        "source": "don't pass up on books that are restricted... popular textbooks and pearsons and some wily's... if they're making 20 30 40 50 profit use my good friend avery's service called restrictedinventory.com... when it sells he'll send you 50 of the profits... i'll find books that are selling for 100 to 200 bucks profit"
+    },
+    {
+        "id": "risk-fba-kdp-pod",
+        "category": "Risk",
+        "trigger": "Attempting to sell KDP print-on-demand titles via FBA",
+        "advice": "Avoid this approach as it negates the benefits of KDP, leads to losses on every sale, and provides no ranking gains; requires buying author copies at print cost plus shipping (~$4.50-$5 per book for US media rate) and receiving only 45% of list price from Amazon",
+        "confidence": "High",
+        "source": "Sarah E. Holroyd: 'This isn't a financially viable option for a KDP print on demand title, however. It would also completely negate the entire reason for using KDP in the first place.' Levi's Companion: 'Sure, if you want to lose money on every sale and not gain any rankings.' cdalebrittain: 'You'd have to buy author copies, print cost plus shipping... Amazon will pay you 45% of the list price... you'll lose money.'"
+    },
+    {
+        "id": "buying-old-stock-fba",
+        "category": "Buying",
+        "trigger": "Acquiring physical book inventory at zero or low cost (e.g., from closed small presses)",
+        "advice": "Use FBA to sell such books to break even or minimally profit, avoiding print and acquisition costs; suitable for pre-KDP era stock that is otherwise at risk of being discarded",
+        "confidence": "High",
+        "source": "cdalebrittain: 'I too have a FBA Amazon account and sell books, but these are books printed 20 years ago... they gave me their stock on hand free, so I haven't had to pay for the print cost. I'm basically breaking even... (I'm just doing this because the small press created very handsome books that I can't bear to see pulped.)'"
+    },
+    {
+        "id": "bookset_fba_avoid",
+        "category": "Risk",
+        "trigger": "Selling large book sets (e.g., 60 volumes) via FBA",
+        "advice": "Avoid sending to FBA due to potential issues with Amazon keeping boxes together during shipping, high storage and inbound fees (potentially $100+ loss), and handling difficulties",
+        "confidence": "High",
+        "source": "It is not a good idea to send sets of books like this to FBA. You are much better off shipping the books yourself. ... Amazon has enough trouble normally; expecting them to find 3 boxes to ship together is expecting too much. This is not to mention the storage and FBA fees that you would face; and don't forget you would be paying for inbound shipping as well, so easy to quickly be $100 in the hole."
+    },
+    {
+        "id": "bookset_fbm_prefer",
+        "category": "General",
+        "trigger": "Selling books, especially large sets",
+        "advice": "Use FBM (Fulfillment by Merchant) to ship yourself, check shipping options like UPS vs. Media Mail for cost savings, and benefit from lower fees compared to FBA for higher long-term profits",
+        "confidence": "High",
+        "source": "Ship them out yourself, and when you do, be sure to check various shipping options; if it is going nearby, then UPS sometimes is cheaper than even Media Mail for items like this. ... I started out as FBM, transitioned to FBA, and am now back FBM. Been selling on Amazon since 2008 and I sell mostly books. Trust me you don't want to send this set to FBA, it will not go well. Sell it off your shelf. You'll make more money in the long run because fees are lower for FBM and you won't lose your product."
+    },
+    {
+        "id": "bookset_official_isbn",
+        "category": "Risk",
+        "trigger": "Attempting to sell a custom-made book set without publisher's ISBN",
+        "advice": "Only sell sets as issued by the publisher with their own ISBN number; creating your own sets can lead to account suspension",
+        "confidence": "High",
+        "source": "ALSO -- was that a set as sold by the publisher with their own ISBN number for the set? That is one of the requirements for selling here. You do NOT get to make up a 'set' of books yourself since it will probably get you suspended."
+    },
+    {
+        "id": "bookset_alternative_platform",
+        "category": "General",
+        "trigger": "Facing Amazon restrictions or whitelisting for books",
+        "advice": "Consider selling large book sets on alternative platforms like eBay or Alibris, where you can organize by search, photo, and text without FBA complications",
+        "confidence": "Medium",
+        "source": "In addition to what @Seller_MyXY4Myx9zVcR and @Seller_nRFmxiQg4EGrw have noted consider selling them someplace else, such as eBay. Amazon has made selling books problematic with all of the whitelisting and restrictions set by publishers. ... Alibris and other book sites offer the same platform sales of volumes, however many there is."
+    },
+    {
+        "id": "bookset_fba_packaging",
+        "category": "General",
+        "trigger": "Selling heavy book sets (e.g., Time Life or Great Books) via FBA despite risks",
+        "advice": "Package as one unit using two heavy-duty boxes (one inside the other), stretch wrap stacks of books together, apply 'Team Lift' label, and note that the 50 lb per box limit does not apply to single units; get help loading",
+        "confidence": "Medium",
+        "source": "I have sold a number of sets like this in the past, mostly Time Life and even Great books of the Western World, all FBA. They can be a hassle, but worth it. Remember that the 50 pound limit per box does not apply if it is one unit. I use two heavy duty boxes with one cut to fit inside the other. You can use stretch wrap to make stacks of books, then wrap them together into one unit. Make sure to put a 'Team Lift' label on the box. Get help loading. Good luck."
+    },
+    {
+        "id": "buy-6",
+        "category": "Buying",
+        "trigger": "Free books on Craigslist or Facebook Marketplace",
+        "advice": "Pick up free books but be cautious as they may be duds from other sellers.",
+        "confidence": "High",
+        "source": "Check out Craigslist or Facebook Marketplace; there is always someone who is looking to offload books at no charge. All you have to do is go get them. Just be careful, as sometimes these free books could be listed by other sellers who are getting rid of the books that don\u2019t sell."
+    },
+    {
+        "id": "buy-7",
+        "category": "Buying",
+        "trigger": "Niche books with low print runs",
+        "advice": "Target niche books, parts of collections like Dungeons & Dragons, for low competition and good resale.",
+        "confidence": "High",
+        "source": "Niche books. Books that had low print runs and are a part of a larger collection do well on Amazon thanks to a lack of competition. For example, there is money to be made purchasing Dungeons & Dragons books on eBay and reselling them on Amazon."
+    },
+    {
+        "id": "buy-8",
+        "category": "Buying",
+        "trigger": "Comic books, single issues or graphic novels",
+        "advice": "Source comic books, especially collectible issues, for decent profits on Amazon.",
+        "confidence": "High",
+        "source": "Comic books. You can sell comic books on Amazon, too. Both single issues and graphic novels perform well on Amazon, and if you have collectible issues they can fetch a decent profit."
+    },
+    {
+        "id": "buy-9",
+        "category": "Buying",
+        "trigger": "Collectible books like first editions or signed",
+        "advice": "Buy first edition, signed, or other collectible books, but check Amazon restrictions before selling.",
+        "confidence": "High",
+        "source": "Collectibles. First edition books, signed books, and any other book that could be considered \u201ccollectible\u201d are also popular on Amazon. Again, be sure to check if you\u2019re allowed to sell any \u201ccollectible\u201d you come across on Amazon."
+    },
+    {
+        "id": "buy-10",
+        "category": "Buying",
+        "trigger": "Non-fiction books",
+        "advice": "Prioritize non-fiction over fiction as it holds value better and performs better in resale.",
+        "confidence": "High",
+        "source": "Non-fiction. Overall, non-fiction performs a lot better than fiction on Amazon \u2014 in the resale market. That\u2019s not to say that fiction does poorly, but in my experience, fiction books tend to lose their value faster than non-fiction books."
+    },
+    {
+        "id": "buy-11",
+        "category": "Buying",
+        "trigger": "Hardcover books",
+        "advice": "Focus on hardcovers as they have higher prices and hold value better than paperbacks.",
+        "confidence": "High",
+        "source": "Hardcovers. Naturally, hardcovers have higher prices than paperback books and tend to hold their value better."
+    },
+    {
+        "id": "buy-12",
+        "category": "Buying",
+        "trigger": "Textbooks, especially old editions",
+        "advice": "Source textbooks for high demand and prices, but check for publisher restrictions (brand gating) before buying.",
+        "confidence": "High",
+        "source": "Textbooks are always in high demand, especially during the fall and spring, and tend to have high prices \u2014 even old editions! The only drawback with textbooks is that sometimes publishers \u201cbrand gate\u201d their books to prevent non-certified sellers from selling new or used copies so always be sure to check if you\u2019re able to sell a particular book in your seller account before buying."
+    },
+    {
+        "id": "general-4",
+        "category": "General",
+        "trigger": "Selling <40 items/month",
+        "advice": "Use Individual seller account with no monthly fee but $0.99 per item; switch to Professional ($39.99/month) if >40 items/month.",
+        "confidence": "High",
+        "source": "Individual sellers are sellers who sell 40 or less products per month. If you are an individual seller, there is no monthly subscription fee, but you do have to pay an additional $0.99 per-item fee after each sale. If you sell (or plan to sell) more than 40 products per month, go with the professional seller account... $39.99 subscription fee every month."
+    },
+    {
+        "id": "general-5",
+        "category": "General",
+        "trigger": "All book sales",
+        "advice": "Expect 15% referral fee on sale price (e.g., $1.50 on $10 sale) and $1.80 closing fee for media products like books.",
+        "confidence": "High",
+        "source": "When you sell a book on Amazon, Amazon takes 15% of the sale price. For example, if you sell a book for $10, the referral fee will be $1.50... Media products such as books... come with a flat $1.80 fee per sale."
+    },
+    {
+        "id": "general-6",
+        "category": "General",
+        "trigger": "FBA inventory storage",
+        "advice": "For slower-selling books, use FBM to avoid FBA storage fees, or accept fees if storing longer than 180 days (aged surcharge).",
+        "confidence": "High",
+        "source": "If you don\u2019t mind storing books in your own home for a longer period of time, or paying the additional storage fees (if you\u2019re an FBA seller), then you can list books that sell more slowly... Amazon also has a FBA aged inventory surcharge for inventory stored in fulfillment centers for over 180 days."
+    },
+    {
+        "id": "level1-sourcing",
+        "category": "Buying",
+        "trigger": "No knowledge of book value principles",
+        "advice": "Avoid scanning every book as it takes 8 hours for 10,000 books at 3 seconds per scan, leading to wasted time and missed opportunities.",
+        "confidence": "High",
+        "source": "Level One Sourcing: Amazon booksellers who scan everything... 10,000 books, 3 seconds per book, 30,000 seconds, 500 minutes, 8 hours."
+    },
+    {
+        "id": "level2-sourcing",
+        "category": "Buying",
+        "trigger": "Guessing based on superficial clues without principles",
+        "advice": "Scan selectively but principle-driven; scanning every 5th book takes 1 hour 40 minutes for 10,000 books but misses many profitable items due to scattershot approach.",
+        "confidence": "High",
+        "source": "Level Two Book Sourcing: The numbers, 10,000 books, 3 seconds per book, 2,000 books scanned, 6,000 seconds, 100 minutes, 1 hour, 40 minutes."
+    },
+    {
+        "id": "level3-sourcing",
+        "category": "Buying",
+        "trigger": "Applying principles of value to pre-scan",
+        "advice": "Scan only about 1 out of 50 books, taking around 10 minutes for 10,000 books, to find more profitable books faster and increase efficiency.",
+        "confidence": "High",
+        "source": "Level Three Book Sourcing: The numbers, 10,000 books, 3 seconds per book, 200 books scanned, 600 seconds, 10 minutes."
+    },
+    {
+        "id": "pre-scanning-mastery",
+        "category": "General",
+        "trigger": "At book sources with high volume",
+        "advice": "Master pre-scanning by filtering options before picking up books to scan, allowing you to hit 8 sources in a day instead of one and clean out sales faster.",
+        "confidence": "High",
+        "source": "How Level Three book sourcing lets you find more books faster, You can hit 8 sources in a day instead of one... You can clean out a book sale while your competition is still on the first table."
+    },
+    {
+        "id": "over-99-percent-low-value",
+        "category": "Risk",
+        "trigger": "General book inventory",
+        "advice": "Recognize that over 99% of books cannot be sold on Amazon for $10 or more, so focus efforts on the small percentage with potential value.",
+        "confidence": "High",
+        "source": "Five facts that make pre-scanning mastery crucial, Over 99% of books cannot be sold on Amazon for $10 or more on Amazon."
+    },
+    {
+        "id": "rule-of-recency",
+        "category": "Buying",
+        "trigger": "Books published in recent years",
+        "advice": "Prioritize books published recently, as value diminishes over time due to saturation and loss of interest, leading to sub-$4 offers.",
+        "confidence": "High",
+        "source": "#1 Principle of book value: The rule of recency, Books published in recent years. The more time that elapses since a book is published, the more time for people to lose interest... to penny-book status, and lower (sub-$4 FBA offers)."
+    },
+    {
+        "id": "rule-of-relevance",
+        "category": "Buying",
+        "trigger": "Subjects that evolve or become obsolete",
+        "advice": "Target books that provide enduring value, avoiding those like computer books (obsolete within 3 years) or dated titles (e.g., '2011 RV Park Directory'), while favoring advanced math books relevant for 50+ years.",
+        "confidence": "High",
+        "source": "#2 Principle of book value: The rule of relevance, Books providing value that have not diminished over time. Very, very few books remain relevant long... Examples... Virtually all computer books, becoming obsolete within 3 years... Advanced math books, which often remain as relevant 50 years later."
+    },
+    {
+        "id": "rule-of-necessity",
+        "category": "Buying",
+        "trigger": "Highly specialized topics",
+        "advice": "Seek books on niche subjects with no or few substitutes, ensuring demand as buyers have no other options.",
+        "confidence": "High",
+        "source": "#3 Principle of book value: The rule of necessity, Books for which there is no substitute, for which no (or few) other books in the world are written. These are the books that are so specialized, it\u2019s likely (or impossible) that no other book on this subject exists anywhere."
+    },
+    {
+        "id": "rule-of-micro-passion",
+        "category": "Buying",
+        "trigger": "Small, irrationally passionate audiences",
+        "advice": "Focus on books for niche passions like secret reptilian races or collectible Garbage Pail Kids history, avoiding broad topics like yoga with large audiences.",
+        "confidence": "High",
+        "source": "#4 Principle of book value: The rule of micro-passion, Books for a small and irrationally passionate audience. These are books on the secret reptilian race controlling the planet, and the history of collectible Garbage Pail Kids cards. Note the key element of \u201csmall.\u201d"
+    },
+    {
+        "id": "avoid-category-thinking",
+        "category": "General",
+        "trigger": "Thinking in terms of good/bad categories like 'textbooks good, travel bad'",
+        "advice": "Move beyond category-based sourcing to principle-driven identification, as value can appear in any category, including romance sub-niches like Christian or urban romance.",
+        "confidence": "High",
+        "source": "How categories are different than principles, The Level Two Sourcer thinks in terms of categories: \u201cTravel is a bad book category. Textbooks are a good category.\u201d This is very lower-order thinking... Value is free-range and equal-opportunity across lines of \u201ccategory\u201d."
+    },
+    {
+        "id": "safe-category-books",
+        "category": "Risk",
+        "trigger": "Selecting product category for arbitrage",
+        "advice": "Choose books to avoid restrictions, regulations, safety concerns, storage issues, age restrictions, or manufacturer reselling prohibitions",
+        "confidence": "High",
+        "source": "Books, on the other hand, are relatively safe to sell. You don\u2019t have to worry about safety concerns or storage restrictions."
+    },
+    {
+        "id": "constant-demand-books",
+        "category": "General",
+        "trigger": "Assessing product demand",
+        "advice": "Select books due to consistent demand as they are a product people always need",
+        "confidence": "High",
+        "source": "Plus, books are a product that people always need, so there is always demand for them."
+    },
+    {
+        "id": "learn-fba-via-books",
+        "category": "General",
+        "trigger": "Learning Amazon FBA basics",
+        "advice": "Start with used books to gain experience in product sourcing, inventory management, pricing strategies, listing optimization, and customer service",
+        "confidence": "High",
+        "source": "By starting with selling used books on Amazon, you can gain valuable experience in product sourcing, inventory management, pricing strategies, listing optimization, and customer service"
+    },
+    {
+        "id": "scale-with-warehouse",
+        "category": "General",
+        "trigger": "Business operations established",
+        "advice": "Learn warehouse requirements to scale and grow the business after initial setup",
+        "confidence": "High",
+        "source": "Once everything is up and going, you will want to learn what your warehouse needs to help you scale your business and continue to grow."
+    },
+    {
+        "id": "min_profit_threshold",
+        "category": "Pricing",
+        "trigger": "Estimated profit < $2.50",
+        "advice": "Reject the book",
+        "confidence": "High",
+        "source": "The next book we scan gives us a rejection because we\u2019re looking for a minimum profit of $2.50 per book, and this one comes in at an estimated $1.68."
+    },
+    {
+        "id": "accept_recommendation",
+        "category": "Buying",
+        "trigger": "Scout IQ shows ACCEPT",
+        "advice": "Buy the book if acquisition cost is $1-2",
+        "confidence": "High",
+        "source": "The rules on Scout IQ are pretty conservative, so if the app recommends you accept the book, it\u2019s probably a decent buy, especially if you can pick it up for a buck or two."
+    },
+    {
+        "id": "bluetooth_scanner_setup",
+        "category": "General",
+        "trigger": "Setting up scouting tools",
+        "advice": "Attach Bluetooth scanner (e.g., Opticon 2002) to phone using VELCRO Sticky Back Tape for one-hand operation",
+        "confidence": "High",
+        "source": "This scanner is discreet and lightweight, so we recommend attaching it to your phone using something like VELCRO\u00ae Sticky Back Tape so you can do everything with one hand."
+    },
+    {
+        "id": "scanning_mode",
+        "category": "General",
+        "trigger": "Scanning books",
+        "advice": "Use Data + Live mode in Scout IQ app for speed",
+        "confidence": "High",
+        "source": "When scanning books, speed is important, which is why we\u2019ll be in Data + Live."
+    },
+    {
+        "id": "sound_off",
+        "category": "Risk",
+        "trigger": "Scanning in public places",
+        "advice": "Turn off phone sound unless using headphones to avoid attracting attention",
+        "confidence": "High",
+        "source": "We also recommend turning off the sound on your phone unless you\u2019re using headphones so you don\u2019t attract attention."
+    },
+    {
+        "id": "quick_scan_technique",
+        "category": "General",
+        "trigger": "Scanning books on shelves",
+        "advice": "Pull books out just far enough to quickly scan the barcode",
+        "confidence": "High",
+        "source": "As you get faster, you should just be able to pull books out from the shelf just far enough to quickly scan the barcode."
+    },
+    {
+        "id": "adjust_buy_cost",
+        "category": "Pricing",
+        "trigger": "Evaluating scanned book",
+        "advice": "Adjust buy cost in Scout IQ app to estimate FBA profits",
+        "confidence": "High",
+        "source": "You can also adjust the buy cost in the corner to learn your estimated FBA profits."
+    },
+    {
+        "id": "book_selection_process",
+        "category": "Buying",
+        "trigger": "After scanning multiple books",
+        "advice": "Pull and set aside ACCEPT books; leave REJECT books on the shelf",
+        "confidence": "High",
+        "source": "We\u2019ve found it easiest to pull the books that are recommended to accept and assess them later, and to just leave the recommended rejections on the shelf."
+    },
+    {
+        "id": "practice_scanning",
+        "category": "General",
+        "trigger": "Before field sourcing",
+        "advice": "Practice scanning on home or friend's bookshelf to familiarize with tools",
+        "confidence": "High",
+        "source": "Get familiar with your phone and scanner by testing on a bookshelf in your home, or your friend\u2019s home."
+    },
+    {
+        "id": "focus_on_fba",
+        "category": "General",
+        "trigger": "Sourcing strategy",
+        "advice": "Prioritize FBA over Merchant Fulfilled for most training and operations",
+        "confidence": "High",
+        "source": "While we\u2019ll show you some of the basics for Merchant Fulfilled (MF) in future sourcing segments, a majority of our training will be focused on Fulfilled by Amazon (FBA)."
+    },
+    {
+        "id": "bulk1",
+        "category": "General",
+        "trigger": "Need to list multiple books for ungating",
+        "advice": "Use GoToLister bulk upload feature: select CSV file, auto-match columns, upload to list books in inventory; gated books go to error queue for quick approval requests",
+        "confidence": "High",
+        "source": "what you'll do is go within a batch click on bu upload click on select CSP file and now you're going to grab the file that I've shared below and what this is going to do is it's going to up upload all of these columns so literally all you have to do is click on that all the columns automatically match because the way I made the spreadsheet is compatible with the software"
+    },
+    {
+        "id": "error1",
+        "category": "General",
+        "trigger": "Books appear in error queue due to gating",
+        "advice": "Click 'apply' on error queue items to automatically open Seller Central, paste ASIN, and request approval for fastest ungating process",
+        "confidence": "High",
+        "source": "if you're gated in the books it's going to put it in the eror que over here so you can see these are books that I can sell and then over here these are books I can't sell so all I need to do is click on apply and it's going to open up sell our Central automatically paste that ASN and then I can quickly request approval"
+    },
+    {
+        "id": "software1",
+        "category": "General",
+        "trigger": "New to bulk listing for ungating",
+        "advice": "Sign up for GoToLister free trial to access bulk upload feature, which enables listing hundreds of books quickly and handles ungating requests efficiently",
+        "confidence": "High",
+        "source": "you will need a go-to Lister Bulk Upload account but you can get a free trial this is a software I created uh but this is a new feature we have to bulk upload"
+    },
+    {
+        "id": "gated-books-001",
+        "category": "Risk",
+        "trigger": "Selling collectible books",
+        "advice": "Avoid selling in the collectible books category unless approved, as it requires approval and staying away saves time and money",
+        "confidence": "High",
+        "source": "collectible books... so those are the categories that you want to stay as far away as possible unless you are looking to get approved which takes some time and also takes some money to do so"
+    },
+    {
+        "id": "holiday-baby-001",
+        "category": "Seasonality",
+        "trigger": "Holiday selling in baby products",
+        "advice": "Approval may be required for baby products during holiday season; check restrictions to avoid issues",
+        "confidence": "High",
+        "source": "baby products that says no it's not required but it may be required for a holiday selling... some restrictions apply during holiday season"
+    },
+    {
+        "id": "holiday-toys-001",
+        "category": "Seasonality",
+        "trigger": "Holiday selling in toys",
+        "advice": "Toys are open except during holiday seasons where some restrictions apply; verify before selling",
+        "confidence": "High",
+        "source": "toys are open except for during holiday seasons some restrictions apply"
+    },
+    {
+        "id": "general-research-001",
+        "category": "General",
+        "trigger": "Unfamiliar with product categories",
+        "advice": "Search 'gated categories' in Amazon Seller Central to identify restricted products and categories requiring approval; do homework to avoid losses",
+        "confidence": "High",
+        "source": "go into your Amazon seller central account search Getty categories and a whole list of different information... please do your homework... understand these restricted products and gated and undertake categories because they are going to save you a lot of money in the long run"
+    },
+    {
+        "id": "risk-loss-001",
+        "category": "Risk",
+        "trigger": "Selling without knowing gated categories",
+        "advice": "Research gated and restricted categories before purchasing inventory to prevent financial losses from unsellable products",
+        "confidence": "High",
+        "source": "I lost hundreds of dollars in inventory when I first started selling and I had no idea about these gated and on gated categories"
+    },
+    {
+        "id": "risk-margins-1",
+        "category": "Risk",
+        "trigger": "Using online arbitrage model",
+        "advice": "Anticipate small profit margins when engaging in online arbitrage due to the nature of buying low and reselling at modest markups.",
+        "confidence": "High",
+        "source": "but expect the profit margins to be small."
+    },
+    {
+        "id": "general-startup-1",
+        "category": "General",
+        "trigger": "Starting an Amazon FBA business including arbitrage",
+        "advice": "Allocate $10,000 to $20,000 initially to cover inventory purchases, photos, packaging, shipping, and other startup costs for sourcing and selling items.",
+        "confidence": "High",
+        "source": "In order to put yourself in the best position when selling Amazon FBA, you\u2019ll want to invest a sizable amount at the start of your venture\u2014think $10,000-$20,000. This significant fee will help cover your inventory, photos, packaging, shipping, and any other startup costs that may arise."
+    },
+    {
+        "id": "risk-referral-1",
+        "category": "Risk",
+        "trigger": "Calculating net profit on sales",
+        "advice": "Factor in referral fees of 6% to 45% of the sale price (excluding taxes and shipping) when determining profitability for resold items, varying by product category.",
+        "confidence": "High",
+        "source": "Referral fees are calculated based on your item\u2019s sale price\u2014but exclude any taxes or shipping fees\u2014and are charged by Amazon for facilitating the sale. This fee can vary depending on the specific product category, although they usually range from 6% to 45% of the item\u2019s sale price."
+    },
+    {
+        "id": "seasonality-storage-1",
+        "category": "Seasonality",
+        "trigger": "Storing inventory during peak periods",
+        "advice": "Monitor and plan for seasonal changes in storage fees, as per cubic foot charges can increase during high-demand times like holidays.",
+        "confidence": "High",
+        "source": "Additionally, keep in mind that the per cubic foot fees can change based on the time of year."
+    },
+    {
+        "id": "risk-storage-1",
+        "category": "Risk",
+        "trigger": "Slow-moving or seasonal inventory in fulfillment centers",
+        "advice": "Avoid long-term storage fees by actively managing inventory turnover, especially for slow-selling or seasonal items, to prevent additional charges.",
+        "confidence": "High",
+        "source": "Amazon will charge its FBA sellers additional storage fees if their inventory spends too much time in one of their fulfillment centers. This could end up negatively affecting your metrics for any seasonal Amazon products or slow-moving items you possess."
+    },
+    {
+        "id": "buying-sourcing-1",
+        "category": "Buying",
+        "trigger": "Identifying products for arbitrage",
+        "advice": "Source clearance or low-priced items from other e-commerce sites like Alibaba or AliExpress for resale on Amazon, using tools like Helium 10's Xray extension to find opportunities directly.",
+        "confidence": "Medium",
+        "source": "After you\u2019ve found a winning product that you want to start selling, you\u2019ll need to source it from a supplier; Alibaba or AliExpress are popular sourcing options that new and old sellers frequently use. You can even be taken directly to Alibaba\u2019s site when looking for potential products on Amazon by clicking one button within the Xray function of the free Chrome Extension."
+    },
+    {
+        "id": "cap1",
+        "category": "General",
+        "trigger": "Monthly capacity limits announced in the third week",
+        "advice": "Plan inventory using confirmed limit for upcoming month and estimates for two additional months to ensure predictability",
+        "confidence": "High",
+        "source": "Each month, Amazon announces these limits for the upcoming month in the third week, providing sellers more control and predictability over their inventory planning."
+    },
+    {
+        "id": "cap2",
+        "category": "Risk",
+        "trigger": "Exceeding monthly capacity limit",
+        "advice": "Monitor inventory to stay below limit; exceeding leads to shipment restrictions, overage fees, stockouts, and potential IPI score drop",
+        "confidence": "High",
+        "source": "When you go over this monthly capacity limit, Amazon may impose overage fees, and you won\u2019t be able to send additional shipments... This can lead to stockouts... Lower IPI Score."
+    },
+    {
+        "id": "cap3",
+        "category": "General",
+        "trigger": "Insufficient monthly capacity limit",
+        "advice": "Use Capacity Manager to request additional space by specifying volume in cubic feet and bidding a maximum reservation fee per cubic foot; fee may be offset by performance credits up to 100% if sales goals met",
+        "confidence": "High",
+        "source": "Amazon\u2019s Capacity Manager tool allows you to request additional space... specify the additional volume (in cubic feet)... set a maximum reservation fee per cubic foot... offset by performance credits."
+    },
+    {
+        "id": "cap4",
+        "category": "General",
+        "trigger": "Low Inventory Performance Index (IPI) score",
+        "advice": "Improve IPI by minimizing excess stock, running sales or promotions on slow-moving items, and maintaining stock for high-demand products to increase capacity limit",
+        "confidence": "High",
+        "source": "To improve your IPI score, focus on maintaining a balanced inventory by minimizing excess stock, running sales or promotions to clear slow-moving items, and keeping high-demand products readily available."
+    },
+    {
+        "id": "cap5",
+        "category": "General",
+        "trigger": "Low sell-through rate over 90-day period",
+        "advice": "Optimize sell-through rate with targeted promotions, advertising, or discounts on slower-moving items to boost sales velocity and capacity allowance",
+        "confidence": "High",
+        "source": "Your sell-through rate, which measures how quickly products sell over a 90-day period... Consider strategies like targeted promotions, advertising, or offering discounts on slower-moving items."
+    },
+    {
+        "id": "cap6",
+        "category": "Risk",
+        "trigger": "High levels of aged inventory",
+        "advice": "Regularly review and reduce aged inventory by running sales, creating removal orders, or shifting to FBM to improve IPI and capacity limit",
+        "confidence": "High",
+        "source": "Aged inventory... can negatively impact your IPI score... regularly review your inventory for slow-moving or stagnant items... running sales, creating removal orders, or shifting these products to FBM."
+    },
+    {
+        "id": "cap7",
+        "category": "General",
+        "trigger": "Reordering inventory",
+        "advice": "Adjust reordering to smaller, more frequent shipments aligned with actual sales velocity to stay within capacity and signal effective management",
+        "confidence": "High",
+        "source": "align your reordering frequency and quantities with your actual sales velocity. Sending smaller, more frequent shipments helps you stay within your capacity limit."
+    },
+    {
+        "id": "cap8",
+        "category": "General",
+        "trigger": "Selling on multiple platforms",
+        "advice": "Use Multi-Channel Fulfillment (MCF) for non-Amazon orders as it does not count against FBA capacity limit, freeing up space for Amazon inventory",
+        "confidence": "High",
+        "source": "consider using Amazon\u2019s Multi-Channel Fulfillment service for non-Amazon orders. MCF doesn\u2019t count against your monthly FBA capacity limit."
+    },
+    {
+        "id": "cap9",
+        "category": "General",
+        "trigger": "Potential changes in capacity limits",
+        "advice": "Monitor current and estimated capacity limits regularly in Seller Central's Capacity Monitor to adjust inventory strategy proactively",
+        "confidence": "High",
+        "source": "make it a habit to regularly check your current and estimated limits in Seller Central. Staying informed allows you to adjust your inventory strategy proactively."
+    },
+    {
+        "id": "cap10",
+        "category": "Seasonality",
+        "trigger": "High-demand periods like Q4",
+        "advice": "Anticipate tighter capacity limits during Q4; bid for additional space via Capacity Manager to manage holiday demand",
+        "confidence": "High",
+        "source": "during high-demand periods like Q4, Amazon may increase or decrease limits... During high-demand seasons, such as Q4, Amazon often restricts capacity more tightly."
+    },
+    {
+        "id": "cap11",
+        "category": "Risk",
+        "trigger": "Decreased FBA capacity limit due to low IPI, slow sales, or aged inventory",
+        "advice": "Prioritize fast-selling items in FBA, shift restricted items to FBM, and bid for extra space if needed to stabilize and recover limit",
+        "confidence": "High",
+        "source": "Focus on keeping popular, fast-selling items in stock... For items restricted... consider shifting them to FBM... use Amazon\u2019s Capacity Manager to bid for additional storage."
+    },
+    {
+        "id": "acc-eligibility",
+        "category": "General",
+        "trigger": "Creating Amazon seller account",
+        "advice": "Must be at least 18 years old, reside in an approved country, and have a bank account in an approved country; US sellers can use SSN without business registration",
+        "confidence": "High",
+        "source": "you need to be at least 18 years old you must live in one of the approved countries on this list and in order to get your payment disbursements you must also have a bank from an approved country from this list you don't have to have registered business to sell on Amazon if you live in the US and plan to sell in the US marketplace you can create an Amazon account using your social security number"
+    },
+    {
+        "id": "cat-approval",
+        "category": "Risk",
+        "trigger": "Intending to sell in a gated category",
+        "advice": "Obtain Amazon approval before purchasing inventory; most have instant approval via questions and terms, but strict categories like jewelry and grocery require invoices from legitimate sources (not performa or receipts), may need multiple submissions; professional seller account required; some categories have non-refundable fees upwards of several hundred dollars",
+        "confidence": "High",
+        "source": "these categories require approval by Amazon... most gated categories have an instant approval process you just have to answer some simple questions and agree to some terms and conditions however other more strict categories such as jewelry and grocery will require that you provide invoices Performa invoices and receipts don't count they have to be actual invoices... it's not uncommon that you'll need to go through this process... several times... some categories have a non-refundable fee upwards of several hundreds of dollars... you also need to have a professional Amazon seller account to get unguided"
+    },
+    {
+        "id": "buy-confirmation",
+        "category": "Buying",
+        "trigger": "Before purchasing any inventory",
+        "advice": "Confirm ungated status and permission to sell in the intended category/subcategory using Amazon's gated categories list; do not assume eligibility based on others selling",
+        "confidence": "High",
+        "source": "never purchase an inventory until you've confirmed that you're unjaded and allowed to sell in the category you intend to sell in... some unguided main categories may have gated subcategories... just because you see other people selling it doesn't mean you're allowed to either"
+    },
+    {
+        "id": "seasonal-toys",
+        "category": "Seasonality",
+        "trigger": "Selling in toys and games category as new seller",
+        "advice": "Avoid new seller applications during Q4 (last four months of year) as category is closed seasonally",
+        "confidence": "High",
+        "source": "the toys and games category has a seasonal restriction it's closed to new sellers during q4 which is the last four months of each year"
+    },
+    {
+        "id": "prod-prohibited",
+        "category": "Risk",
+        "trigger": "Product potentially prohibited or restricted",
+        "advice": "Consult Amazon's prohibited products list before buying; ensure products are not hazardous or illegal; shipping prohibited/hazardous items to FBA may result in disposal without reimbursement",
+        "confidence": "High",
+        "source": "Amazon has strict guidelines on what you can and cannot sell mostly due to safety and liability or legality there's products that you outright cannot sell you can find a list of prohibited products here... it is your responsibility to know whether the prod you are shipping are regulated as hazardous materials hazardous materials that are shipped to amazon fulfillment centers may be subject to disposal without reimbursement so if you ship prohibited products to Amazon you may not get them back or reimbursed"
+    },
+    {
+        "id": "hazmat-review",
+        "category": "Risk",
+        "trigger": "Product contains or may contain hazardous materials",
+        "advice": "Undergo hazmat review process and submit valid SDS (Material Safety Data Sheet) from manufacturer; cannot sell without passing review",
+        "confidence": "High",
+        "source": "the most common issue you'll run into with restricted products is when a product contains hazardous materials even if it doesn't contain them Amazon will require you to go through a hazmat review process and you'll have to submit documentation called an MSDS or just SDS which is a materials Safety Data Sheet you can usually get this from your manufacturer but be aware that there's no way around this if you cannot provide the valid documentation you will not pass the hazmat review and you will not be able to sell the product period"
+    },
+    {
+        "id": "check-restrictions",
+        "category": "General",
+        "trigger": "Uncertain about product restrictions",
+        "advice": "Use ASIN of existing listing and contact seller support with clear description including key keywords (e.g., magnets, lithium-ion batteries, lockpick set); alternatively, create temporary product listing or shipping plan to identify issues early; algorithm may flag later even if initial checks pass, requiring review (up to a week or longer)",
+        "confidence": "High",
+        "source": "get the Aysen of an existing listing and contact seller support and ask them if the product has any restrictions a pro tip here is to make sure you're absolutely clear about what the product is like clearly describing it using the main keywords such as if it's a magnet has any lithium-ion batteries or if it's a lockpick set... you can also create a temporary product listing and fill out the details for that product if there's any restrictions it may pop up at this time you can also create a shipping plan... there's times when no issues or restrictions appear it's only after you've already been selling when suddenly one day your listing gets shut down... the process can take up to a week or sometimes longer"
+    },
+    {
+        "id": "book-new-cond",
+        "category": "General",
+        "trigger": "Listing new books",
+        "advice": "Ensure brand-new copy with intact cover and original protective wrapping; avoid any markings, bargain/remainder labels, or attached labels to qualify as New.",
+        "confidence": "High",
+        "source": "New: A brand-new copy with cover and original protective wrapping intact. Books with markings of any kind on the cover or pages, books marked as Bargain or Remainder, or with any other labels attached, may not be listed as New condition."
+    },
+    {
+        "id": "book-like-new",
+        "category": "Buying",
+        "trigger": "Sourcing for Used - Like New resale",
+        "advice": "Source books with only minor cosmetic defects on cover, spine, pages, or dust cover; ensure pages are clean without notes, dust cover intact, and may include remainder marks or missing bundle media.",
+        "confidence": "High",
+        "source": "Used - Like New: Item may have minor cosmetic defects (marks, wears, cuts, bends, crushes) on the cover, spine, pages or dust cover. Dust cover is intact and pages are clean and not marred by notes. Item may contain remainder marks on outside edges. Item may be missing bundle media."
+    },
+    {
+        "id": "book-very-good",
+        "category": "Buying",
+        "trigger": "Sourcing for Used - Very Good resale",
+        "advice": "Source books with minor cosmetic defects; shrink wrap, dust covers, or boxed set case may be missing; note remainder marks in details; may miss bundled media.",
+        "confidence": "High",
+        "source": "Used - Very Good: Item may have minor cosmetic defects (marks, wears, cuts, bends, crushes) on the cover, spine, pages or dust cover. Shrink wrap, dust covers, or boxed set case may be missing. Item may contain remainder marks on outside edges, which should be noted in Product Details. Item may be missing bundled media."
+    },
+    {
+        "id": "book-good",
+        "category": "Buying",
+        "trigger": "Sourcing for Used - Good resale",
+        "advice": "Source intact books with all pages and cover (including dust cover); spine may show wear; limited notes and highlighting allowed; may miss shrink wrap, dust covers, bundled media, or include library labels.",
+        "confidence": "High",
+        "source": "Used - Good: All pages and cover are intact (including the dust cover, if applicable). Spine may show signs of wear. Pages may include limited notes and highlighting. May include From the library of labels. Shrink wrap, dust covers, or boxed set case may be missing. Item may be missing bundled media."
+    },
+    {
+        "id": "book-acceptable",
+        "category": "Risk",
+        "trigger": "Sourcing for Used - Acceptable resale",
+        "advice": "Source books with intact pages and cover but possible missing shrink wrap/dust cover; allow limited notes, highlighting, or minor water damage as long as text remains readable and not obscured.",
+        "confidence": "High",
+        "source": "Used - Acceptable: All pages and the cover are intact, but shrink wrap, dust covers, or boxed set case may be missing. Pages may include limited notes, highlighting, or minor water damage but the text is readable. Pages may include limited notes and highlighting, but the text cannot be obscured or unreadable."
+    },
+    {
+        "id": "access-codes-risk",
+        "category": "Risk",
+        "trigger": "Books with electronic material access codes",
+        "advice": "Avoid relying on access codes in used books, including Like New, as they are valid only for one user and may not function.",
+        "confidence": "High",
+        "source": "Note: Some electronic material access codes are valid only for one user. For this reason, used books, including books listed in the Used \u2013 Like New condition, may not come with functional electronic material access codes."
+    },
+    {
+        "id": "collectible-like-new",
+        "category": "Pricing",
+        "trigger": "Sourcing collectible books for Like New",
+        "advice": "Source unique books (first editions, signed, scarce) with intact pages/cover, dust jacket with no noticeable flaws, no spine creasing, and only very small unnoticeable flaws to list as Collectible - Like New for higher value.",
+        "confidence": "High",
+        "source": "Collectible - Like New: All pages and the cover are intact. The dust jacket is intact, if applicable, with no noticeable or very tiny nicks or flaws. Spine has no signs of creasing. Book may have very small but virtually unnoticeable flaws"
+    },
+    {
+        "id": "collectible-very-good",
+        "category": "Pricing",
+        "trigger": "Sourcing collectible books for Very Good",
+        "advice": "Source unique books with intact pages without notes/highlighting, no spine creasing, and dust jacket showing some rubbing or chipping to list as Collectible - Very Good.",
+        "confidence": "High",
+        "source": "Collectible - Very Good: Pages are intact and not marred by notes or highlighting. Spine shows no sign of creasing. Dust jacket, if applicable, shows signs of some rubbing or chipping."
+    },
+    {
+        "id": "collectible-good-limit",
+        "category": "Risk",
+        "trigger": "Books in Good condition for collectibles",
+        "advice": "Avoid listing general Good condition books as collectible, as they typically do not qualify unless unique; focus on intact pages/cover with possible spine wear.",
+        "confidence": "High",
+        "source": "Collectible - Good: All pages and the cover are intact, including the dust jacket, if applicable. Spine may show signs of wear. Generally, books in Good condition are not considered to be collectible grade."
+    },
+    {
+        "id": "collectible-acceptable-limit",
+        "category": "Risk",
+        "trigger": "Books in Acceptable condition for collectibles",
+        "advice": "Limit Acceptable collectible listings to rare items only; expect significant wear, possible missing dust jacket, and ensure readability.",
+        "confidence": "High",
+        "source": "Collectible - Acceptable: A readable copy showing significant wear. Dust jacket may be missing. For all but the rarest items, books in Acceptable condition are not considered to be collectible grade."
+    },
+    {
+        "id": "collectible-qualify",
+        "category": "General",
+        "trigger": "Identifying collectible books",
+        "advice": "Target first editions, first printings, signed/inscribed/scarce copies, advance reading copies, or uncorrected proofs of out-of-print books to qualify as collectible and increase resale value.",
+        "confidence": "High",
+        "source": "To be considered collectible, a book should be unique in a way that could reasonably be assumed to increase the book's value to a collector such as first editions and first printings; signed, inscribed or scarce copies; and advance reading copies and uncorrected proofs of out-of-print books."
+    },
+    {
+        "id": "book-new-condition",
+        "category": "General",
+        "trigger": "Book is brand-new with intact cover and original protective wrapping",
+        "advice": "List as New only if no markings, no 'Bargain' or 'Remainder' marks, and no labels attached",
+        "confidence": "High",
+        "source": "New: A brand-new copy with cover and original protective wrapping intact. Books with markings of any kind on the cover or pages, books marked as \"Bargain\" or \"Remainder,\" or with any other labels attached may not be listed as New condition."
+    },
+    {
+        "id": "book-like-new-defects",
+        "category": "General",
+        "trigger": "Minor cosmetic defects on cover, spine, pages, or dust cover",
+        "advice": "List as Used - Like New if pages are clean, no notes, dust cover intact, may have remainder marks or missing bundled media",
+        "confidence": "High",
+        "source": "Used - Like New: Item may have minor cosmetic defects (such as marks, wears, cuts, bends, or crushes) on the cover, spine, pages, or dust cover. Dust cover is intact and pages are clean and not marred by notes. Item may contain remainder marks on outside edges. Item may be missing bundled media."
+    },
+    {
+        "id": "book-very-good-missing",
+        "category": "General",
+        "trigger": "Minor cosmetic defects and missing shrink wrap, dust cover, or boxed set case",
+        "advice": "List as Used - Very Good, note remainder marks in comments, may be missing bundled media",
+        "confidence": "High",
+        "source": "Used - Very Good: Item may have minor cosmetic defects (such as marks, wears, cuts, bends, or crushes) on the cover, spine, pages, or dust cover. Shrink wrap, dust covers, or boxed set case may be missing. Item may contain remainder marks on outside edges, which should be noted in listing comments. Item may be missing bundled media."
+    },
+    {
+        "id": "book-good-intact",
+        "category": "General",
+        "trigger": "All pages and cover intact, spine wear, limited notes or highlighting",
+        "advice": "List as Used - Good, may include 'From the library of' labels, missing shrink wrap or media",
+        "confidence": "High",
+        "source": "Used - Good: All pages and cover are intact (including the dust cover, if applicable). Spine may show signs of wear. Pages may include limited notes and highlighting. May include \"From the library of\" labels. Shrink wrap, dust covers, or boxed set case may be missing. Item may be missing bundled media."
+    },
+    {
+        "id": "book-acceptable-readable",
+        "category": "General",
+        "trigger": "Pages and cover intact but with limited notes, highlighting, or minor water damage",
+        "advice": "List as Used - Acceptable if text is readable, may be missing shrink wrap or media",
+        "confidence": "High",
+        "source": "Used - Acceptable: All pages and the cover are intact, but shrink wrap, dust covers, or boxed set case may be missing. Pages may include limited notes, highlighting, or minor water damage but the text is readable. Item may be missing bundled media."
+    },
+    {
+        "id": "book-unacceptable",
+        "category": "Risk",
+        "trigger": "Missing pages or obscured/unreadable text",
+        "advice": "Do not sell; also prohibit advance reading copies or uncorrected proofs of in-print or not-yet-published books",
+        "confidence": "High",
+        "source": "Unacceptable: Has missing pages and obscured or unreadable text. We also do not permit the sale of advance reading copies, including uncorrected proofs, of in-print or not-yet-published books."
+    },
+    {
+        "id": "collectible-unique",
+        "category": "General",
+        "trigger": "Book is first edition, first printing, signed, inscribed, scarce, or advance copy of out-of-print book",
+        "advice": "List as Collectible to potentially increase value",
+        "confidence": "High",
+        "source": "To be considered collectible, a book should be unique in a way that could reasonably be assumed to increase the book's value to a collector: First editions and first printings Signed, inscribed, or scarce copies Advance reading copies and uncorrected proofs of out-of-print books"
+    },
+    {
+        "id": "collectible-exclusions",
+        "category": "Risk",
+        "trigger": "Book is uncorrected proof of in-print/not-yet-published, former library, remaindered, or book club edition",
+        "advice": "Do not list as Collectible",
+        "confidence": "High",
+        "source": "Collectible books do not include the following: Uncorrected proofs of in-print or not-yet-published books Former library books Remaindered books Book club editions"
+    },
+    {
+        "id": "collectible-good",
+        "category": "General",
+        "trigger": "Pages and cover intact, spine wear",
+        "advice": "List as Collectible - Good, but generally not considered collectible grade",
+        "confidence": "High",
+        "source": "Collectible - Good: All pages and the cover are intact, including the dust jacket, if applicable. Spine may show signs of wear. Generally, books in Good condition are not considered to be collectible grade."
+    },
+    {
+        "id": "collectible-acceptable",
+        "category": "Risk",
+        "trigger": "Readable copy with significant wear, dust jacket may be missing",
+        "advice": "List as Collectible - Acceptable only for rare items; otherwise not collectible grade",
+        "confidence": "High",
+        "source": "Collectible - Acceptable: A readable copy showing significant wear. Dust jacket may be missing. For all but the rarest items, books in Acceptable condition are not considered to be collectible grade."
     }
 ]
