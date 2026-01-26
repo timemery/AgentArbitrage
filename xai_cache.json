@@ -18046,5 +18046,6 @@
     "reasonableness:Connect Access Card for M: Management|Books > Subjects|Jan|96.23|Printed Access Code|Current Rank: 757093, 90-day Avg Rank: 1933423|DOWN (-60.3% over 3 years)|52.37": "True",
     "reasonableness:Loose Leaf for Accounting Information Systems|Books > Subjects > Business & Money > Accounting|Oct|107.99|Loose Leaf|Current Rank: 564055, 90-day Avg Rank: 1152955|UP (54.0% over 3 years)|90.54": "True",
     "reasonableness:Passages Level 2 Full Contact with Digital Pack|Books > Subjects > Reference > English as a Second Language|Oct|65.14|Paperback|Current Rank: 769914, 90-day Avg Rank: 1130555|DOWN (-12.3% over 3 years)|75.07": "False",
-    "seasonality:Terrorism Soviet Connectn Pb|Books, Subjects, Politics & Social Sciences, Social Sciences|Misc-Sci/Eng": "Year-round"
+    "seasonality:Terrorism Soviet Connectn Pb|Books, Subjects, Politics & Social Sciences, Social Sciences|Misc-Sci/Eng": "Year-round",
+    "seasonality:Essentials of Emergency Medicine|Books, Subjects, Medical Books, Allied Health Professions, Emergency Medical Services|Jones & Bartlett Learning": "Medical School"
 }
