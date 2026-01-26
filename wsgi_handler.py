@@ -330,6 +330,12 @@ def dashboard():
     ensure_sp_api_session()
     return render_template('dashboard.html')
 
+@app.route('/tracking')
+def tracking():
+    if not session.get('logged_in'):
+        return redirect(url_for('index'))
+    return render_template('tracking.html')
+
 
 @app.route('/learn', methods=['POST'])
 def learn():
