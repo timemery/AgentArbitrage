@@ -143,7 +143,9 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4, t
         logger.info(f"Fetched {len(deals)} deals. Tokens consumed: {tokens_consumed}. Tokens left: {tokens_left}")
         return data, tokens_consumed, tokens_left
     except requests.exceptions.RequestException as e:
-        logger.error(f"Deal fetch failed: {e.response.status_code if e.response else 'N/A'}, {e.response.text if e.response else e}")
+        status_code = e.response.status_code if e.response else None
+
+        # Extract token data if available to update TokenManager before raising/returning
         tokens_consumed = 0
         tokens_left = None
         if e.response is not None:
@@ -151,8 +153,21 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4, t
                 error_data = e.response.json()
                 tokens_consumed = error_data.get('tokensConsumed', 0)
                 tokens_left = error_data.get('tokensLeft')
+
+                # Critical: Update TokenManager immediately if we have info,
+                # ensuring we don't blindly retry without waiting if bucket is empty.
+                if token_manager and tokens_left is not None:
+                    token_manager.update_after_call(tokens_left)
             except json.JSONDecodeError:
-                pass # tokens_left remains None
+                pass
+
+        # Check if we should retry (429 or 5xx)
+        if status_code == 429 or (status_code and status_code >= 500):
+            logger.warning(f"Deal fetch failed with retryable error {status_code}. Re-raising for retry decorator.")
+            raise e
+
+        # Non-retryable error
+        logger.error(f"Deal fetch failed: {status_code or 'N/A'}, {e.response.text if e.response else e}")
         return None, tokens_consumed, tokens_left
     except Exception as e:
         logger.error(f"Deal fetch exception: {str(e)}")

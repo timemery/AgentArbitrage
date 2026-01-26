@@ -136,11 +136,33 @@ def update_recent_deals():
             # --------------------------
 
             # Sort by newest first (sortType=4: Last Update)
-            deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=4, token_manager=token_manager)
-            token_manager.update_after_call(tokens_left)
+            deal_response = None
+            max_page_retries = 3
 
-            if not deal_response or 'deals' not in deal_response or not deal_response['deals']['dr']:
-                logger.info("No more deals found on subsequent pages. Stopping pagination.")
+            # Retry loop for robustness against 429s/Network blips
+            for attempt in range(max_page_retries):
+                try:
+                    deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=4, token_manager=token_manager)
+                    if tokens_left is not None:
+                        token_manager.update_after_call(tokens_left)
+
+                    if deal_response and 'deals' in deal_response:
+                        break # Success
+                except Exception as e:
+                    logger.warning(f"Fetch failed on page {page} (Attempt {attempt+1}/{max_page_retries}): {e}")
+                    # If we failed (likely 429), wait a bit before retrying
+                    time.sleep(15 * (attempt + 1))
+
+            if not deal_response or 'deals' not in deal_response:
+                if page == 0:
+                    logger.error("Failed to fetch Page 0 after retries. Aborting task to prevent partial state.")
+                    return
+                else:
+                    logger.info("Failed to fetch subsequent page. Stopping pagination.")
+                    break
+
+            if not deal_response['deals']['dr']:
+                logger.info("No more deals found (empty list). Stopping pagination.")
                 break
 
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
@@ -153,6 +175,8 @@ def update_recent_deals():
             found_older_deal = False
             for deal in deals_on_page:
                 if deal['lastUpdate'] <= watermark_keepa_time:
+                    # Detailed logging to help diagnose why ingestion stops
+                    logger.info(f"Stop Trigger: Deal {deal.get('asin')} (Update: {deal['lastUpdate']}) <= Watermark ({watermark_keepa_time}). Diff: {watermark_keepa_time - deal['lastUpdate']} min.")
                     found_older_deal = True
                     break # Stop processing deals on this page
                 all_new_deals.append(deal)
