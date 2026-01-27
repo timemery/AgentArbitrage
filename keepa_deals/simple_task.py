@@ -65,11 +65,14 @@ def update_recent_deals():
     redis_client = redis.Redis.from_url(celery.conf.broker_url)
 
     # --- Backfiller Lock Check ---
-    # Check if the main backfill task is running. If it is, exit immediately.
-    backfill_lock = redis_client.lock("backfill_deals_lock")
-    if backfill_lock.locked():
-        logger.warning("Backfill task is running. Skipping update_recent_deals to prevent interference.")
-        return
+    # Optimization: We NO LONGER skip if backfiller is running.
+    # We want the 'Refiller' (simple_task) to be high priority.
+    # The TokenManager handles the shared resource (tokens), so concurrency is safe.
+    # If tokens are low, both will block, which is fine.
+    # backfill_lock = redis_client.lock("backfill_deals_lock")
+    # if backfill_lock.locked():
+    #     logger.warning("Backfill task is running. Skipping update_recent_deals to prevent interference.")
+    #     return
 
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
     if not lock.acquire(blocking=False):
