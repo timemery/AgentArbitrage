@@ -357,42 +357,46 @@ button:disabled {
     }
 }
 
-/* --- New Header Styles (Absolute Centering) --- */
+/* --- New Header Styles (Flexbox) --- */
 .main-header {
     position: sticky;
     top: 0;
     width: 100%;
     /* The padding sets the height and pushes down the .container */
     height: 134px;
-    padding: 0;
+    padding: 0 17px; /* Horizontal padding moved here */
     box-sizing: border-box;
     z-index: 300;
     background-color: #131d39; /* Updated Color */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Nav Sections */
 .nav-section {
-    position: absolute;
-    top: 50%;
+    position: static;
+    transform: none;
     display: flex;
     align-items: center;
     z-index: 10;
+    height: 100%;
 }
 
 .nav-left {
-    left: 17px;
-    transform: translateY(-50%);
+    flex: 1;
+    justify-content: flex-start;
 }
 
 .nav-center {
-    left: 50%;
-    transform: translate(-50%, -50%);
+    flex: 0 1 auto;
+    justify-content: center;
     white-space: nowrap;
 }
 
 .nav-right {
-    right: 17px;
-    transform: translateY(-50%);
+    flex: 1;
+    justify-content: flex-end;
 }
 
 /* Nav Items */
@@ -505,6 +509,16 @@ button:disabled {
     margin-right: 0;
     position: relative;
     top: 3px; /* Align text baseline with nav items */
+    transition: width 0.3s ease;
+}
+
+@media (max-width: 1100px) {
+    .header-logo img {
+        width: 35px; /* Clip to show only 'A' symbol */
+        height: 35px; /* Ensure aspect ratio or crop works */
+        object-fit: cover;
+        object-position: left;
+    }
 }
 
 /* Styles for Gated/Restriction Status */
@@ -1336,10 +1350,20 @@ body.home-background::before {
 .trend-falling-green { color: green; font-weight: bold; }
 .trend-rising-red { color: red; font-weight: bold; }
 
-.amzn-icon {
-    height: 10px;
-    width: auto;
+.amzn-icon, .amz-warn-icon {
+    width: 16px;
+    height: 16px;
     display: block;
+    vertical-align: bottom;
+    margin-left: 5px;
+}
+
+.trend-icon {
+    width: 13px;
+    height: 13px;
+    vertical-align: bottom;
+    margin-right: 4px;
+    display: inline-block;
 }
 
 .offers-wrapper {
