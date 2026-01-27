@@ -28883,5 +28883,2889 @@
         "advice": "Create reusable case pack templates in Send to Amazon for box content, weight, dimensions, and prep details to save time on future replenishments",
         "confidence": "High",
         "source": "Create reusable case pack templates to provide box content information, box weight and dimensions, and prep and labeling details for shipments of single-SKU boxes. The templates are ideal when you use the same box configuration for a SKU because you won\u2019t have to re-enter the details each time you replenish inventory."
+    },
+    {
+        "id": "recycle-opp-1",
+        "category": "General",
+        "trigger": "Access to recycling centers or discard piles",
+        "advice": "Put yourself where opportunities might present themselves with a 'let\u2019s just see what happens' approach to source books opportunistically",
+        "confidence": "High",
+        "source": "Half the battle is just showing up. Having a plan isn\u2019t what\u2019s most important. Putting yourself where opportunities might present Best of Peter Valley & FBA Mastery 21 themselves is. Some of my best book scores have come from putting myself somewhere with a \u201clet\u2019s just see what happens\u201d approach."
+    },
+    {
+        "id": "competition-miss-1",
+        "category": "Buying",
+        "trigger": "Books deemed unsellable by other sellers (e.g., multiples or no FBA value to them)",
+        "advice": "Evaluate and buy books that competitors discard, as they often have FBA value even if not profitable via non-FBA methods",
+        "confidence": "High",
+        "source": "Your competition is probably doing everything wrong. The majority of books the bookseller from the recycling center deemed \u201cunsellable\u201d didn\u2019t just have FBA value, they had non-FBA value. Meaning, he could have made money off them, but instead threw them out by the thousands."
+    },
+    {
+        "id": "fba-throwaways-1",
+        "category": "Buying",
+        "trigger": "Books with FBA value but no value to non-FBA sellers",
+        "advice": "Arrange regular pickups of throwaway books from sources like recycling centers that only become profitable via FBA",
+        "confidence": "High",
+        "source": "Since a ton of books that have no FBA-value can be sold profitably via FBA, there was still some potential to arrange for regular pick ups of their throwaways \u2013 books that would only be profitable when sold via Fulfillment by Amazon, but were of no value to them."
+    },
+    {
+        "id": "mental-catalog-1",
+        "category": "Buying",
+        "trigger": "Encounter collections where scanning is impractical (e.g., no phone, inappropriate context)",
+        "advice": "Use a mental catalog of profitable titles, publishers, or subjects to buy books blind and assess value without scanning",
+        "confidence": "High",
+        "source": "Two, refer to your mental catalog of profitable book titles, publishers, or subjects (every experienced Amazon bookseller should have this mental list)."
+    },
+    {
+        "id": "arcadia-buy-1",
+        "category": "Buying",
+        "trigger": "Books from Arcadia Publishing (niche local history titles)",
+        "advice": "Buy Arcadia titles totally blind without scanning, as they hold value due to scarcity (most < few hundred copies in print) and sell for $10+ on Amazon",
+        "confidence": "High",
+        "source": "I bought the entire shelf of 40 aforementioned niche history titles without looking up a single one. The reason? I could tell by the book spines alone they were published by Arcadia Publishing. ... Most are selling on Amazon for $10+."
+    },
+    {
+        "id": "arcadia-rank-1",
+        "category": "Buying",
+        "trigger": "Sales Rank worse than 2 million (average 4,237,991 for Arcadia)",
+        "advice": "Prioritize Arcadia books despite low demand (steady/timeless), as they are worth waiting for sales without price plummeting",
+        "confidence": "High",
+        "source": "The bad news is, with so many titles on such niche historical sites, the demand for their titles is inherently low (most average worse than 2 million Amazon Sales Rank). I knew the demand for Arcadia titles on Amazon was low, but that the value was high. I have no problem waiting out a sale if I have confidence the Amazon price won\u2019t plummet."
+    },
+    {
+        "id": "arcadia-experiment-1",
+        "category": "Risk",
+        "trigger": "$1 per book at library sales for niche publishers",
+        "advice": "Invest in blind buys of known profitable publishers like Arcadia for long-tail inventory, expecting $222 profit on $40 investment despite poor average ranks",
+        "confidence": "High",
+        "source": "Total cost: $40 Total expected profit: $222.26 ... Not a purchase I would recommend if you\u2019re just getting started selling on Amazon, or have limited capital to invest. But for my inventory \u2013 with a mix of high-demand and \u201clong tail\u201d inventory \u2013 its a perfect fit."
+    },
+    {
+        "id": "abeka-spot-1",
+        "category": "Buying",
+        "trigger": "Abeka Christian grade/high school books (ubiquitous in second-hand market, distinct 80s logo)",
+        "advice": "Spot and buy Abeka books despite no real ISBN/barcode; key titles manually into Amazon Seller App to check value",
+        "confidence": "High",
+        "source": "Abeka books have one distinct feature that set them apart from virtually every other book: A bar code that doesn\u2019t scan, with an ISBN that isn\u2019t really an ISBN. ... Keying the books into the Amazon Seller App by title."
+    },
+    {
+        "id": "abeka-blind-1",
+        "category": "Buying",
+        "trigger": "Abeka books published after 2000 at $1 each",
+        "advice": "Buy stacks of post-2000 Abeka books totally blind without lookup, expecting 85% profitability (46/54 books with $3+ payout, average $14 listing price)",
+        "confidence": "High",
+        "source": "I was only going to buy books from the box published after 2000. ... 46 had value on Amazon (an expected payout of $3+) $640 listing price ... a full 85% of the stack brought an expected Amazon payout of $3 and up. Other big one is that the average listing price was $14."
+    },
+    {
+        "id": "abeka-rank-1",
+        "category": "Buying",
+        "trigger": "Sales Rank worse than 1 million (average >1.2 million for Abeka)",
+        "advice": "Buy Abeka books despite poor sales ranks, as they represent slow and steady sellers in enduring categories like religious education",
+        "confidence": "High",
+        "source": "The average Beka book is ranked worse than 1 million, and even the good selling ones tend to hover around 600,000. I\u2019m almost certain the average sales rank was worse than 1.2 million. ... Abeka is one of those categories [with low but enduring demand]."
+    },
+    {
+        "id": "rank-deceive-1",
+        "category": "Pricing",
+        "trigger": "Sales Rank >3 million (e.g., 4 million vs 2.5 million)",
+        "advice": "Don't ignore books with poor ranks if they are in timeless subjects (niche history, advanced math) over fast-plummeting categories like travel guides",
+        "confidence": "High",
+        "source": "But there are ways that the book with an Amazon Sales Rank of 4 million can be a better investment than the book ranked 2.5 million. ... Now lets saw that 4 million ranked book is a niche history book about an event that has the attention of a small but passionate group of historians. Or a book on advanced mathematical theory (a timeless subject). Which one is the better investment? The books ranked 4 million."
+    },
+    {
+        "id": "manual-key-1",
+        "category": "Buying",
+        "trigger": "Barcode-less books from known profitable categories",
+        "advice": "Cultivate skill of manually keying titles into scanning app for barcode-less books like Abeka to uncover high-value opportunities others miss",
+        "confidence": "High",
+        "source": "Learning to spot value and type in barcode-less books manually is one of the highest-paying skills you can cultivate in the context of Amazon bookselling."
+    },
+    {
+        "id": "weather-risk-1",
+        "category": "Risk",
+        "trigger": "Outdoor storage of sourced books (e.g., pallets at recycling center)",
+        "advice": "Formally arrange pickups before books are dumped outside to avoid weather damage; act quickly on opportunities to prevent losses like $30,000 in snow-damaged inventory",
+        "confidence": "High",
+        "source": "How can I prevent this from happening in the future? Formally arrange to pick up their throwaways before they get dumped into pallets and set outside. ... I can safely estimate $30,000+ worth of books was buried under wet, slushy snow."
+    },
+    {
+        "id": "multiples-buy-1",
+        "category": "Buying",
+        "trigger": "Multiples of same title (e.g., 10 copies from high school dropoff)",
+        "advice": "Quickly scan one copy of multiples to check worth before buying, as they may still have value despite excess supply",
+        "confidence": "High",
+        "source": "When we hit patches of multiples of the same title, I\u2019d quickly scan one to see if they were worth our time. It usually was."
+    },
+    {
+        "id": "textbook-value-1",
+        "category": "Buying",
+        "trigger": "Brand new high school textbooks (e.g., priced at $350, ranked 380,000)",
+        "advice": "Source new-condition textbooks from discards, expecting solid profits (e.g., sell for $220 despite rank drop)",
+        "confidence": "High",
+        "source": "One of the first textbooks I scanned was priced at $350 and ranked 380,000 (The 20 RESELLING FOR REBELS price quickly dropped, but I sold it within a month for $220)."
+    },
+    {
+        "id": "abeka-steady-demand",
+        "category": "General",
+        "trigger": "Abeka books with low but steady demand",
+        "advice": "Recognize that low demand does not equal unsteady demand; buy even older editions as they maintain demand due to decade-long edition cycles",
+        "confidence": "High",
+        "source": "he demand might be low, but it is very steady. Abeka books may appeal to a niche audience (Christian homeschoolers), but that audience is consistent and they\u2019re not going anywhere. And also with Abeka books, there can be a decade between editions, so even \u201colder\u201d copies maintain demand on Amazon."
+    },
+    {
+        "id": "abeka-buy-rule",
+        "category": "Buying",
+        "trigger": "Encounter Abeka books in sourcing",
+        "advice": "Buy them regardless of manual key-in; if you see them, acquire them",
+        "confidence": "High",
+        "source": "With Abeka, it doesn\u2019t matter if you key them in or not: If you see them, buy them."
+    },
+    {
+        "id": "dumpster-timing",
+        "category": "Seasonality",
+        "trigger": "College finals Monday-Thursday, move-out by Friday",
+        "advice": "Target Wednesday evening to Friday daytime for dumpster diving at dorms to exploit post-finals discard",
+        "confidence": "High",
+        "source": "Final exams happen Monday through Thursday. ... The best time is going to be Friday \u2013 preferably day, but night will work. ... Most moving out is done by Thursday night, with students having to be completely out of the dorms sometime Friday."
+    },
+    {
+        "id": "dumpster-targets",
+        "category": "Buying",
+        "trigger": "Near college dorms during move-out",
+        "advice": "Identify student dorms via Google (school name + \u201cstudent housing\u201d) and map route; hit 10+ dorms in 4 hours",
+        "confidence": "High",
+        "source": "#1: Choose your targets Identify student dorms (Google school name + \u201cstudent housing\u201d) and map your course. ... In total, we hit approximately 10 dorms."
+    },
+    {
+        "id": "dumpster-comfort",
+        "category": "General",
+        "trigger": "Willingness to be aggressive in dumpster diving",
+        "advice": "More aggressive approach (daytime, all dumpsters, ignore witnesses) yields more finds; start with recycling bins for books over dumpsters",
+        "confidence": "High",
+        "source": "#3: Choose your comfort zone Bottom line: The more aggressive you\u2019re willing to be, the more you\u2019ll find (and make). ... How much better the recycling bins were for books than the dumpsters themselves. Most of the books I found were in the recycle bins."
+    },
+    {
+        "id": "dumpster-stats",
+        "category": "Risk",
+        "trigger": "Books from dorm dumpsters with average sales rank 417,617",
+        "advice": "Expect 23 profitable books from 10 dumpsters in 4 hours, yielding $581.77 payout ($145/hour); include non-books like electronics",
+        "confidence": "High",
+        "source": "\u2022 Profitable books found: 23 \u2022 Average Amazon sales rank: 417,617 ... \u2022 Total estimated Amazon payout: $581.77 \u2022 Hourly earnings: $145 / hour."
+    },
+    {
+        "id": "freebook-trigger",
+        "category": "Buying",
+        "trigger": "Marketing guru 'free + shipping' books ($6 cost, no Amazon ISBN/listing)",
+        "advice": "Buy multiple copies immediately after sale confirmation; resell on Amazon without listing if none exists",
+        "confidence": "High",
+        "source": "I bought one. It was $6. ... I shipped it in and priced it at $100. It sold almost right away. ... I ordered another copy. ... I didn\u2019t mess around this time. I ordered another copy right away."
+    },
+    {
+        "id": "freebook-pricing",
+        "category": "Pricing",
+        "trigger": "Limited print marketing books with no Amazon presence",
+        "advice": "Price at $100 each; expect sales within 3 weeks, yielding $77 profit per copy",
+        "confidence": "High",
+        "source": "priced it at $100. ... to date, I have done $700 in sales off this single book. It\u2019s still in print ... It has never gone more than three weeks on Amazon before selling. ... 12 copies ... @ $77 Amazon profit each = $924"
+    },
+    {
+        "id": "courses-buy",
+        "category": "Buying",
+        "trigger": "High-end out-of-print courses (e.g., Anthony Robbins CD sets at $99.95, real estate DVDs $175-200 on eBay)",
+        "advice": "Source from outlets/eBay; buy if potential to flip for 2-3x cost, especially with $100+ profit",
+        "confidence": "High",
+        "source": "Four high-end Anthony Robbins CD box sets. ... All four were a flat $99.95 each. ... I won the auction for $175. ... I got it for $200."
+    },
+    {
+        "id": "courses-pricing",
+        "category": "Pricing",
+        "trigger": "Timeless guru products with sales rank >1.5 million but high demand",
+        "advice": "List at $200-500 on Amazon (e.g., $475 for $500 original); exception to 3x rule for $100+ returns",
+        "confidence": "High",
+        "source": "three of them were selling for over $200 each on Amazon. ... list that at $475 on Amazon ... With one or two of these, I was only roughly doubling my money, when my general rule is to triple my money. I make exceptions ... for $100. ... flipped it on Amazon for $500"
+    },
+    {
+        "id": "courses-tally",
+        "category": "General",
+        "trigger": "Reselling 9 books + 4 courses from gurus",
+        "advice": "Spot opportunities by following niches; invest $100-200 per item for big rewards ($1,999 total profit)",
+        "confidence": "High",
+        "source": "\u2022 12 (almost free) marketing books = $924 Amazon profit. \u2022 4 Anthony Robbins box sets = $600 Amazon profit. \u2022 2 real estate courses = $475 Amazon profit. ... the profit comes to $1,999."
+    },
+    {
+        "id": "estate-trigger",
+        "category": "Buying",
+        "trigger": "Craigslist estate sale ads mentioning alternative health, herbalism, out-of-print/odd books",
+        "advice": "Prioritize; arrive even if late (5.5 hours) as niches like alternative health are high-profit",
+        "confidence": "High",
+        "source": "\u201cMom was into alternative health, herbalism, holistic medicine. If you\u2019re looking for some odd, out of print book about herbalism ...\u201d ... \u201cAlternative health books\u201c: ... it\u2019s a high-profit Amazon category."
+    },
+    {
+        "id": "estate-lowesteem",
+        "category": "Buying",
+        "trigger": "Estate sale ads with low self-esteem tone (e.g., 'nothing super expensive')",
+        "advice": "Expect cheap prices and volume discounts; use to negotiate bulk buys",
+        "confidence": "High",
+        "source": "The seller had low self-esteem: ... \u201cThere\u2019s nothing super expensive.\u201d ... this kind of low-selfesteem could only mean cheap prices and volume discounts."
+    },
+    {
+        "id": "estate-bulk",
+        "category": "Buying",
+        "trigger": "Large book collection (150-300 books) in high-profit niche with $80 profit in small sample",
+        "advice": "Make flat bulk offer at estimated total profit /10 (e.g., $75 for $750+ potential); scan sample first",
+        "confidence": "High",
+        "source": "I estimated 150 to 300 books. ... at least $80 in Amazon profit in that small sample. ... high-profit book niche. ... I divided it by 10. ... \u201cHow about $75?\u201d He said yes."
+    },
+    {
+        "id": "bulk-buy-threshold",
+        "category": "Buying",
+        "trigger": "Book in possession with at least $3 payout on Amazon",
+        "advice": "Ship it if confident it will sell in under six months, even with poor sales rank",
+        "confidence": "High",
+        "source": "If I already have a book in my possession, and it will bring me at least a $3 payout on Amazon, I\u2019m probably shipping it in \u2013 if its a book I\u2019m very confident I\u2019ll sell in under six months. For books with a worse Amazon sales rank, I\u2019ll gradually increase my profit standards"
+    },
+    {
+        "id": "estate-sale-bulk",
+        "category": "Buying",
+        "trigger": "Bulk buy from estate sale with average sales rank 1,736,031",
+        "advice": "Purchase despite poor average rank if total estimated profit exceeds $1,000 from $75 cost",
+        "confidence": "High",
+        "source": "Average Amazon Sales Rank: 1,736,031 (for books, this is not very good... Estimated profit:$1,113 Cost: $75"
+    },
+    {
+        "id": "garage-random-check",
+        "category": "Buying",
+        "trigger": "Garage sales not advertising books (random selection of 25 sales)",
+        "advice": "Visit and check anyway; expect 15/25 to have books, yielding 37 profitable books for $556 profit in 3 hours",
+        "confidence": "High",
+        "source": "Approximately 25 sales visited. 15 had books. Purchased books at 8 of them. Total number of books purchased: 37... Expected net profit: $556 Total time investment: 3 hours"
+    },
+    {
+        "id": "garage-price-flat",
+        "category": "Pricing",
+        "trigger": "Garage sales with flat $1 per book pricing",
+        "advice": "Buy at $1 each across categories like children's, Harry Potter sets ($5 for $65 value), business books ($10 bulk for high-value items)",
+        "confidence": "High",
+        "source": "I didn\u2019t pay any more (or any less) than $1 for a book all day (Harry Potter excluded)... every sale I went to that day was asking a flat $1 for their books"
+    },
+    {
+        "id": "library-poetry-grab",
+        "category": "Buying",
+        "trigger": "Bag sale at library with $5 per small bag (under 25 cents/book average)",
+        "advice": "Prioritize and shovel all poetry books into bags first (30/book per bag, ~17 cents each) to beat competition, as poetry often values $10+ despite rank >1M",
+        "confidence": "High",
+        "source": "I shoveled every single poetry book into my bags... Poetry books are generally in the 80 to 130 pages range, so I was fitting 30 or so books per bag. That comes to about 17-cents per book... A vastly disproportionate number of poetry books have value in the $10+ range... you will rarely find a poetry book with an Amazon Sales Rank better than 1 million"
+    },
+    {
+        "id": "library-classics-target",
+        "category": "Buying",
+        "trigger": "Classics section in fiction-heavy library sale",
+        "advice": "Scan and fill bags with classics (anthologies, Norton Critical Editions) quickly while competition focuses on general fiction; expect profitable even at pennies per book",
+        "confidence": "High",
+        "source": "I went for the \u201cclassics.\u201d... I scanned all three tables quickly, and filled six bags... another section was all \u201cclassics.\u201d This is another category that holds a lot of profit. Especially when you get into literature anthologies for college students, Norton \u201cCritical Editions,\u201d"
+    },
+    {
+        "id": "library-overall",
+        "category": "Buying",
+        "trigger": "Worst library sale conditions: all fiction, $2+ prices, picked over monthly, heavy competition",
+        "advice": "Still attend for bag day; buy 191 books for $75 (15 bags), discard 140, profit $1,276 despite average rank 1,962,733 if cost under 25 cents/book",
+        "confidence": "High",
+        "source": "15 bags. $75 spent. 191 books with Amazon value. 140 books discarded. Total Amazon listing price: $2,131 Expected profit (eventually): $1,276 Average Amazon sales rank: 1,962,733... paid under 25 cents per book on average"
+    },
+    {
+        "id": "rank-tolerance-lowcost",
+        "category": "Risk",
+        "trigger": "Books with sales rank >1M (up to 2M), bought at pennies (under 25 cents)",
+        "advice": "Include in inventory despite poor rank if low cost allows $10+ profit potential, especially poetry/classics; maintain IPI score with mix of long-tail items",
+        "confidence": "High",
+        "source": "even a rank of 1 million isn\u2019t that bad... 2 million is much worse. But consider that the majority of the books I bought, I didn\u2019t even scan first... paid under 25 cents per book... poetry books which (again) rarely have an Amazon Sales Rank better than 2 million, but are valued high"
+    },
+    {
+        "id": "craigslist-filter",
+        "category": "Buying",
+        "trigger": "Craigslist garage sale listings searching 'books' yielding dozens, but only 5 meet criteria",
+        "advice": "Only visit if promises 'tons' of books, specific profitable categories (e.g., metaphysical, yoga, professors' collections, hundreds, entire collection); expect 25% no books",
+        "confidence": "High",
+        "source": "My rule with Craigslist and garage sales is that I won\u2019t cross the street for anything that doesn\u2019t promise... a LOT of books... only 5 that met my criteria: One stated... \u201ctwo professors\u201d... \u201ctons\u201d of \u201cmetaphysical\u201d books... \u201cyoga,\u201d \u201cnatural healing,\u201d... \u201chundreds\u201d of books... \u201centire book collection.\u201d... even with this scrutiny, I still come away with no books about 25% of the time"
+    },
+    {
+        "id": "garage-freestyle",
+        "category": "General",
+        "trigger": "While visiting targeted garage sales",
+        "advice": "Make unscheduled stops at other sales passed by; can lead to big scores despite not advertising books",
+        "confidence": "High",
+        "source": "When I\u2019m out visiting garage sales, I still give myself room to freestyle and make unscheduled stops. Because you\u2019ll always pass other sales you should pull over and give a look to. Occasionally this will lead to some big book scores"
+    },
+    {
+        "id": "talk-to-hosts",
+        "category": "Buying",
+        "trigger": "Seeing another seller talking to host about unlisted items",
+        "advice": "Ask host if they have more books inside not put out for sale to access additional inventory",
+        "confidence": "High",
+        "source": "Talking to garage sale hosts is a favorite tactic of mine. I ask if they have more books inside that they didn\u2019t put out"
+    },
+    {
+        "id": "seasonal-garage-start",
+        "category": "Seasonality",
+        "trigger": "Opening day of garage sale season in late April (warmer weather)",
+        "advice": "Target Craigslist announcements blowing up then; search 'books' on garage sales page for high-volume opportunities",
+        "confidence": "High",
+        "source": "Every year... when the weather starts to get warmer, Craigslist will blow up with announcements for garage sales... this kickoff of garage sale season came in late-April... My usual garage sale search formula on Craigslist is pretty simple. I go to the \u201cGarage Sales\u201d page and search for \u201cbooks.\u201d"
+    },
+    {
+        "id": "gs1",
+        "category": "Buying",
+        "trigger": "Disorganized stacks of books at garage sales",
+        "advice": "Quickly scan and stack 15+ books, mostly niche like yoga or metaphysical, prepare to pay up to $2 each but negotiate lower for the stack",
+        "confidence": "High",
+        "source": "I had a stack of 15 books, mostly on yoga. A few of 70 RESELLING FOR REBELS them were selling for $20+, so I was prepared to pay as much as $2 each (very high for garage sale prices). I was more than happy when I asked one of the hosts to name a price for the stack, and she said \u201cHow about $4?\u201d"
+    },
+    {
+        "id": "gs2",
+        "category": "Buying",
+        "trigger": "High percentage of valuable books in boxes (every third book)",
+        "advice": "Pile up 30+ books quickly in under 10 minutes, pay 50 cents each for categories like new age/metaphysical",
+        "confidence": "High",
+        "source": "There were about 7 boxes of books, and about every third book had value (a very high percentage). I piled up nearly 30 books on everything from beating cancer through nutrition to something about crystals. I paid 50 cents each, and was in and out in under 10 minutes"
+    },
+    {
+        "id": "gs3",
+        "category": "Buying",
+        "trigger": "Hundreds of books advertised, mostly fiction but some classics",
+        "advice": "Scan for 7+ classics among old fiction, pay $1 each or negotiate $7 for stack",
+        "confidence": "High",
+        "source": "I did find 7 books to resell, each of them among the \u201cclassics.\u201d I paid the host Best of Peter Valley & FBA Mastery 71 $7, and went home."
+    },
+    {
+        "id": "ts1",
+        "category": "General",
+        "trigger": "Thrift store with disorganized chaos and overbrimming shelves",
+        "advice": "Prioritize 'real' thrift stores with everything on the floor, including weird books, over 'fake' orderly ones that discard valuables",
+        "confidence": "High",
+        "source": "A real thrift stores puts almost everything on the floor. Including the weird books that sell for the most money. When I walked in, I could tell this was definitely a \u201creal\u201d thrift store: They had way more merchandise than they had room for. Every shelf and table was brimming over with disorganized chaos."
+    },
+    {
+        "id": "ts2",
+        "category": "Buying",
+        "trigger": "VHS section with long tail documentaries (sales rank 500,000+)",
+        "advice": "Buy at 50 cents each if selling for $20+, regardless of slow sell potential",
+        "confidence": "High",
+        "source": "Five very \u201clong tail\u201d documentary and instructional titles (with an Amazon sales rank of 500,000+) but each going for $20+. Will they ever sell? Who cares. They were 50 cents."
+    },
+    {
+        "id": "ts3",
+        "category": "Buying",
+        "trigger": "CDs mixed with business audio books like Brian Tracy",
+        "advice": "Scan sparingly for 12 CDs selling $7-15 at $1 each, avoid FBA if priced much higher than Merchant Fulfilled offers",
+        "confidence": "High",
+        "source": "I ended up with 12 CDs, each selling in the $7 to $15 range. They were $1 each, so I was happy. CDs are very hit-or-miss, and in my experience do not do well when listed FBA and priced significantly higher than the Merchant Fulfilled offer."
+    },
+    {
+        "id": "ts4",
+        "category": "Buying",
+        "trigger": "DVDs with how-to titles selling $10+",
+        "advice": "Buy 4 at $2 each to triple money after FBA fees",
+        "confidence": "High",
+        "source": "I quickly pulled found 4 selling for $10+ on Amazon. Three were how-to titles on making arts and crafts, and one was on repairing your credit. They were $2 each, so even at $10 I was still tripling my money after FBA commissions."
+    },
+    {
+        "id": "ts5",
+        "category": "Buying",
+        "trigger": "Picked over books with scratched barcodes",
+        "advice": "In picked over stores, hit bottom shelves, look up books without barcodes manually, buy high sales rank (1 million+) if esoteric",
+        "confidence": "High",
+        "source": "When a store has been previously visited by a thorough Amazon bookseller, you have to do a few things to extract profit: \u2022 Hit the bottom shelves. The lazy resellers miss those. \u2022 Look up books without barcodes manually. The lazy resellers miss those too. \u2022 Get comfortable buying books with high Amazon sales ranks (1 Best of Peter Valley & FBA Mastery 75 million+)."
+    },
+    {
+        "id": "ts6",
+        "category": "Buying",
+        "trigger": "Manual lookup needed for books without barcodes",
+        "advice": "Focus time on esoteric, arcane, weird titles in value-holding categories; avoid Time-Life books; requires deep knowledge",
+        "confidence": "High",
+        "source": "When it comes to looking up books to resell manually, the trick is: 1. Have a deep knowledge of books 2. Know what categories hold their value 3. Know what titles to give your time to. You can\u2019t look up everything. I go into these subject in depth elsewhere, but in short: You have to look for esoteric, arcane, and weird; and leave those Time-Life books alone."
+    },
+    {
+        "id": "ts7",
+        "category": "Buying",
+        "trigger": "Volume purchase of 75 books in 6 boxes",
+        "advice": "Buy in large volume to negotiate ~50% discount from cashier",
+        "confidence": "High",
+        "source": "the cashier looked down at the 6 boxes I had filled, confronted herself with the daunting task of counting everything up, and just said \u201cHow about $50?\u201d That amounted to a discount of almost 50%. (When you buy in volume, this actually happens more than you\u2019d think.)"
+    },
+    {
+        "id": "ts8",
+        "category": "Risk",
+        "trigger": "Average sales rank 860,000, including books ranked 5-8 million",
+        "advice": "Accept worse-than-average ranks if some $50+ books pull up value, especially in picked over stores",
+        "confidence": "High",
+        "source": "Average sales rank: 860,000 (this is definitely a worse-than-average number, pulled down by several $50+ books ranked 5 to 8 million, and 18 books total ranked worse than 1 million)."
+    },
+    {
+        "id": "lbs1",
+        "category": "Buying",
+        "trigger": "Library book sale line 30 min before opening",
+        "advice": "Arrive early to surveil competition; identify non-sellers (no bags/phones) to gauge low competition",
+        "confidence": "High",
+        "source": "I was there 30 minutes before doors opened, to surveil the line for my competition. ... No one with bags or boxes, no one fiddling with their cell phones or PDAs. This seemed impossible, ... but I had scrutinized the crowd closely enough to be confident I was the only bookseller there."
+    },
+    {
+        "id": "lbs2",
+        "category": "Buying",
+        "trigger": "100% non-fiction library sale at $1 each",
+        "advice": "Focus on non-fiction for higher value; apply 3x rule to buy if sell price $7-7.50 for $3 profit threshold",
+        "confidence": "High",
+        "source": "One exciting feature was immediately apparent: the sale was 100% nonfiction (the fiction books were to be sold at the following sale in six months, I learned). Anyone who has sold books for more than a minute knows that non-fiction is where the money is. ... Everything was $1, including the many hundreds of DVDs. This meant that to maintain the \u201c3x rule\u201d, I needed to be able to sell each book for $7 to $7.50, to meet the $3 payout threshold."
+    },
+    {
+        "id": "lbs3",
+        "category": "Buying",
+        "trigger": "Library discards on obscure subjects from niche publishers",
+        "advice": "Target reference, art, religious (eastern), history sections where 80%+ are discards; every 3rd-4th book has value at $1",
+        "confidence": "High",
+        "source": "80%+ of the books were library discards, which presumably were pulled because they weren\u2019t checked out often. Which means they were on rather obscure subjects and published by mostly niche publishing houses. All of this was the perfect recipe for Amazon value. ... It seemed like every 3rd or 4th book had value."
+    },
+    {
+        "id": "lbs4",
+        "category": "Buying",
+        "trigger": "After buying 200+ books, build rapport with cashier",
+        "advice": "Don't ask for deals; loyalty leads to arbitrary discounts like $20 for more, then free books after volume",
+        "confidence": "High",
+        "source": "after buying about 200 books, the cashier began to cut me some deals. I didn\u2019t ask for any deals, mind you, he just made some comment about wanting to \u201creward loyalty,\u201d and stopped counting the books, instead tossing out an arbitrary number \u2013 \u201cLet\u2019s call this $20 worth.\u201d ... he stopped taking my money. ... I\u2019d just walk in, shovel books into my bag, and walk out. Every other trip or so I\u2019d pass the table and throw down a twenty, but for most of the last 3 hours of the sale, everything was free."
+    },
+    {
+        "id": "rt1",
+        "category": "General",
+        "trigger": "Road trip through rural areas with uncertain sources",
+        "advice": "No advance research; daily use Google Maps/Craigslist for thrift, library sales, estate/church sales; aim 70% thrift stores",
+        "confidence": "High",
+        "source": "I did zero research on sources in advance. ... make a list of potential sources using (primarily) Google Maps and Craigslist, hit the road, and source inventory until everything is closed. ... By the end of the trip, it would work out to approximately 70% thrift stores, and everything else ran the range from school rummage sales to Craigslist ads."
+    },
+    {
+        "id": "rt2",
+        "category": "Risk",
+        "trigger": "Books with sales rank 1.2 million",
+        "advice": "Buy high-value textbooks $99.95+ even at ranks 1M+, including $1,995 title if Keepa shows sales history",
+        "confidence": "High",
+        "source": "Exactly 25 books (mostly textbooks) worth $99.95 and up. ... One title worth (or selling for) $1,995, ranked 1.2 million (not a bad rank, despite what others will tell you). Prices can be artificially high, but according to Keepa, copies have sold for amounts in this range so I\u2019m hopeful."
+    },
+    {
+        "id": "rt3",
+        "category": "Buying",
+        "trigger": "Unsecured book room at library sale before official start",
+        "advice": "Sneak in early (in dark if needed) to pre-scan and confirm goldmine, then return next day for full 6+ hours",
+        "confidence": "High",
+        "source": "I went to the basement where the book sale was to be held and found the door to the book room unlocked. So I ducked in and started scanning (in the dark). ... I checked into a hotel and went back to the book the next day. I spent six solid hours scanning books in the two huge rooms"
+    },
+    {
+        "id": "antique-rural",
+        "category": "Buying",
+        "trigger": "Antique stores in rural areas like Montana",
+        "advice": "Source books from antique mall-style stores where vendors don't check Amazon prices; look for rare collectibles",
+        "confidence": "High",
+        "source": "Most of the booths you\u2019ll find in the \u201cantique mall\u201d-style stores (especially in rural areas) are stocked by people who don\u2019t look up prices on Amazon."
+    },
+    {
+        "id": "antique-ufo",
+        "category": "Pricing",
+        "trigger": "Sales Rank of 1 million, no other copies listed",
+        "advice": "Price rare unique books at $1,000 and hold out for buyer if only copy available",
+        "confidence": "High",
+        "source": "Best antique store book find: A rare and highly collectible UFO title with an Amazon Sales Rank of 1 million, with no other copies listed. I priced it at $1,000."
+    },
+    {
+        "id": "library-small",
+        "category": "Buying",
+        "trigger": "Small town libraries with book carts",
+        "advice": "Buy 5-10 books at a time from library book sales for profitable FBA inventory",
+        "confidence": "High",
+        "source": "A lot of my best book finds came 5 or 10 at a time from small town libraries, who will often have a small book cart or two."
+    },
+    {
+        "id": "usedbook-smalltown",
+        "category": "Buying",
+        "trigger": "Used bookstores in small towns with computer aversion",
+        "advice": "Check if store prices based on own formula vs Amazon; buy titles with big FBA margins even at bookstore prices",
+        "confidence": "High",
+        "source": "Because of the general computer aversion of small town America, I found a surprising amount of profitable titles at used book stores. It is usually clear after a few minutes in any bookstore whether they price their titles based on Amazon prices, or their own formula."
+    },
+    {
+        "id": "rummage-textbooks",
+        "category": "Buying",
+        "trigger": "Grade school textbooks in new condition at rummage sales, cost 50 cents each",
+        "advice": "Buy in bulk (e.g., 80 books) for huge profits if Amazon Sales Rank 100,000 to 1 million",
+        "confidence": "High",
+        "source": "At one school rummage sale in Idaho, I picked up 80 grade school textbooks. These books were in brand new condition, and cost 50 cents each. Most had an Amazon Sales Rank of 100,000 to 1 million."
+    },
+    {
+        "id": "roadtrip-unlikely",
+        "category": "Buying",
+        "trigger": "Small towns, unlikely places like pawn shops or coffee shops",
+        "advice": "Source books from non-traditional spots to find untapped profitable inventory",
+        "confidence": "High",
+        "source": "When you\u2019re in small towns, you have to look for books in the most unlikely places. For example: pawn shops. I even scored a sizeable load of profitable books from a place I stopped for coffee, that happened to have four shelves of books for sale in the back."
+    },
+    {
+        "id": "roadtrip-pace",
+        "category": "General",
+        "trigger": "Road trip sourcing, average 60 books per day",
+        "advice": "Stay in motion to hit fertile untapped sources daily for higher quality than local leftovers; aim for 1200 books in 20 days for $10,000 profit",
+        "confidence": "High",
+        "source": "I averaged 60 books a day. This isn\u2019t a lot, but the quality was a lot higher than I find at home primarily because I wasn\u2019t going over my own leftovers. ... over 1,200 books (and misc. media) in 20 days, and projected profit of over $10,000."
+    },
+    {
+        "id": "dumpster-college",
+        "category": "Buying",
+        "trigger": "College library dumpsters with obscure 1970s-1980s scholarly non-fiction",
+        "advice": "Rescue free books (e.g., 400 books in 1 hour), sort and list 112 worth $10+ for $5,900 total; use FBA for passive selling even if slow (ASR average 4 million)",
+        "confidence": "High",
+        "source": "Total: Approximately 400 books. \u2022 Books with a value of $10 or more: 112 \u2022 Total listing price: $5,900. \u2022 Total time: About 1 hour of loading and transport time, 3 hours of sorting & listing on Amazon. \u2022 Average Amazon sales rank: 4 million."
+    },
+    {
+        "id": "math-old",
+        "category": "Buying",
+        "trigger": "Old advanced math books (not textbooks) with hard-to-pronounce words in title",
+        "advice": "Source timeless math books as they remain valuable unlike other subjects; profitable disproportionately often",
+        "confidence": "High",
+        "source": "Rule of thumb: If it\u2019s on the subject of math, and you can\u2019t easily pronounce one or more words in the title, it\u2019s worth money on Amazon."
+    },
+    {
+        "id": "university-press",
+        "category": "Buying",
+        "trigger": "Old university press hardcovers without dustjackets, barcodes, or ISBNs on obscure subjects",
+        "advice": "Don't skip these niche books; they are often the only copies available as university presses sell few hundred copies before out of print",
+        "confidence": "High",
+        "source": "When looking for profitable books to sell on Amazon, it\u2019s very convenient to avoid anything without a barcode. Most sellers dismiss these as too old to still have value. I would recommend that approach with nearly every book category except university press titles."
+    },
+    {
+        "id": "university-price",
+        "category": "Pricing",
+        "trigger": "Only seller of old university press book",
+        "advice": "Default price at $99.99 for unique niche titles",
+        "confidence": "High",
+        "source": "And for the rest of human history, if anyone wants a copy, they have to buy yours on Amazon for $99.99 (that\u2019s my general default price for old books for which I am the only seller.)"
+    },
+    {
+        "id": "bestseller-bundle",
+        "category": "Buying",
+        "trigger": "Common book series with no individual value (net <50 cents)",
+        "advice": "Buy cheap worthless individual books, bundle complete sets to sell for $25+ as people pay for convenience",
+        "confidence": "High",
+        "source": "I can buy these \u201ccheap, worthless\u201d books, wait until I have a complete set, and then sell the set at a price much higher than the sum of its parts. ... books that wouldn\u2019t even net you 50 cents on Amazon if sold individually, yet will bring $25+ when sold as sets."
+    },
+    {
+        "id": "avoid-hardcover-fiction",
+        "category": "Risk",
+        "trigger": "Hardcover fiction, abundant in sources",
+        "advice": "Avoid to increase sourcing efficiency by 30%; rarely profitable after initial 8 weeks popularity",
+        "confidence": "High",
+        "source": "Hardcover fiction is just about the most abundant category of books. ... This one bit of knowledge could increase your book sourcing efficiency by 30%."
+    },
+    {
+        "id": "avoid-mmp",
+        "category": "Risk",
+        "trigger": "Mass market paperbacks (4.25 x 6.87 inches)",
+        "advice": "Avoid abundant category; inefficient to scan (UPC not ISBN); rare exceptions can be profitable but hard to spot",
+        "confidence": "High",
+        "source": "Mass Market Paperbacks These are the small \u201cromance novel\u201d size books (their dimensions are 4.25 x 6.87 to be specific). ... That makes this the least efficient book category to source in."
+    },
+    {
+        "id": "avoid-computers",
+        "category": "Risk",
+        "trigger": "Computer books more than a few years old",
+        "advice": "Dismiss entirely as they become obsolete quickly; avoid driving far for lots",
+        "confidence": "High",
+        "source": "You can pretty much dismiss them entirely if the book looks more than a few years old. Things change faster in the world of computers faster than probably any other book category."
+    },
+    {
+        "id": "avoid-romance",
+        "category": "Risk",
+        "trigger": "Romance books unless niche (Christian, urban)",
+        "advice": "Write off entire category; low profitability odds",
+        "confidence": "High",
+        "source": "Romance Whether in the aforementioned \u201cmass market paperback\u201d format, or not, romance is among the least profitable book categories to resell on Amazon."
+    },
+    {
+        "id": "avoid-travel",
+        "category": "Risk",
+        "trigger": "Travel books from major publishers (Lonely Planet, etc.) older than last couple years",
+        "advice": "Avoid as they lose value quickly; check recent publications for profit",
+        "confidence": "High",
+        "source": "You can safely avoid any of the major travel book publishers, such as Lonely Planet, Frommers, Frodors, DK, Rough Guides, Moon, etc. Again, if you come across one published in the last couple years, you probably have some profit there."
+    },
+    {
+        "id": "avoid-childrens",
+        "category": "Risk",
+        "trigger": "Children\u2019s books with low cover price and narrow spines",
+        "advice": "Avoid in all sourcing environments; inefficient to pull and scan every one, low used profit potential",
+        "confidence": "High",
+        "source": "Low cover price: Most children\u2019s books are cheap even when purchased new. If you can buy a book new for $10, you\u2019re probably not going to be able to sell them profitably on Amazon used. 2. Narrow spines: ... I generally avoid children\u2019s books in every book sourcing environment."
+    },
+    {
+        "id": "avoid-famous",
+        "category": "Risk",
+        "trigger": "Books by well-known authors (e.g., John Grisham) not published in last 12 months",
+        "advice": "Ignore saturated market; profit only in recent releases",
+        "confidence": "High",
+        "source": "If an author is a household name, there are probably so many used copies of their book out there that the market is saturated. ... If it\u2019s a name you or your parents know, and it wasn\u2019t published in the last 12 months, you should pretty much ignore it."
+    },
+    {
+        "id": "avoid-efficiency",
+        "category": "General",
+        "trigger": "Sourcing where books > time available",
+        "advice": "Avoid least profitable categories (40%+ of market) to focus on high-profit ones and increase efficiency/profits",
+        "confidence": "High",
+        "source": "The categories covered here might represent 40%+ of the entire used book market. Avoid these, and your efficiency (and profits) will go up accordingly."
+    },
+    {
+        "id": "3060-rule",
+        "category": "General",
+        "trigger": "After FBA shipment of books",
+        "advice": "Expect to double investment in 30 days and sell at least half in 60 days; use as baseline to check pricing, inventory mix, margins",
+        "confidence": "High",
+        "source": "\u201cYou will at least double your investment in 30 days, and sell at least half your shipment in 60.\u201d"
+    },
+    {
+        "id": "rule-30-60-general",
+        "category": "General",
+        "trigger": "Evaluating FBA shipment performance",
+        "advice": "Expect to at least double your investment in 30 days and sell at least half your shipment in 60 days using conservative estimations",
+        "confidence": "High",
+        "source": "The \u201c30/60 Rule\u201d states that, on a shipment-by-shipment basis: \u201cYou will at least double your investment in 30 days, and sell at least half your shipment in 60.\u201d Simple math. Conservative math."
+    },
+    {
+        "id": "double-investment-30-days",
+        "category": "General",
+        "trigger": "Shipment with average sales rank of 1 million, cost $100, expected payout $1000",
+        "advice": "Expect at least $200 back in under 30 days to double investment",
+        "confidence": "High",
+        "source": "Even at this average sales rank (which isn\u2019t bad but isn\u2019t great), you should expect to get at least $200 back in under 30 days"
+    },
+    {
+        "id": "sell-half-60-days",
+        "category": "General",
+        "trigger": "Shipment with average sales rank of 1 million",
+        "advice": "Sell 50 books in under 60 days and get roughly $500 in 60 days",
+        "confidence": "High",
+        "source": "sell 50 books in under 60 days, and get roughly $500 in 60 days"
+    },
+    {
+        "id": "reprice-for-benchmarks",
+        "category": "Pricing",
+        "trigger": "Not hitting 30/60 benchmarks",
+        "advice": "Reprice consistently to improve numbers and hit 30/60 metrics",
+        "confidence": "High",
+        "source": "Failure to reprice. Again, I\u2019ll hit these figures (usually) even if I don\u2019t reprice, but being more consistent about repricing will get your numbers up."
+    },
+    {
+        "id": "poor-rank-high-margin",
+        "category": "Risk",
+        "trigger": "Amazon sales rank of 500,000",
+        "advice": "Ship books if can sell for $10; for rank 4 million, require higher payout",
+        "confidence": "High",
+        "source": "I\u2019ll ship a book ranked 500,000 in that I can sell for $10, no problem. But I won\u2019t ship in a book with an Amazon sales rank of 4 million that price."
+    },
+    {
+        "id": "low-demand-payout",
+        "category": "Risk",
+        "trigger": "Shipments with unusually poorly-ranked items",
+        "advice": "For low-demand items, ensure average Amazon payouts of $15 or $20+ to double investment quickly",
+        "confidence": "High",
+        "source": "with a low-demand item you should be looking for $15 or $20+ average Amazon payouts"
+    },
+    {
+        "id": "minimum-margin",
+        "category": "Risk",
+        "trigger": "Any book to ship to Amazon",
+        "advice": "Only ship if expecting at least $3 payout for every $1 invested",
+        "confidence": "High",
+        "source": "I won\u2019t ship anything to Amazon I don\u2019t expect to get $3 back on for every $1 I invest."
+    },
+    {
+        "id": "relist-new-as-used",
+        "category": "Pricing",
+        "trigger": "New books unsold for over one year",
+        "advice": "Create removal order, relist as Used if $3+ payout and price drop from New to Used <70%",
+        "confidence": "High",
+        "source": "I will do this only when both of the following conditions apply: 1. Selling the book as Used will still yield me at least a $3+ payout... 2. The price-drop from New to Used isn\u2019t more than 70%"
+    },
+    {
+        "id": "list-new-as-used-initial",
+        "category": "Pricing",
+        "trigger": "New book with price gap between New and Used <30% and poor sales rank",
+        "advice": "List as Used initially to increase sales odds by winning Buy Box, sacrificing <=30% payout",
+        "confidence": "High",
+        "source": "I will actually list it as Used on Amazon if both of these conditions apply: \u2022 The price gap between New and Used condition is less than 30%. \u2022 The book has a poor sales rank"
+    },
+    {
+        "id": "used-sells-better",
+        "category": "General",
+        "trigger": "Comparing used vs new condition for third-party sellers",
+        "advice": "Prioritize used books as they sell faster than new for third-party sellers due to Buy Box advantage",
+        "confidence": "High",
+        "source": "Used condition books sell better than new condition books... New books never get the Buy Box."
+    },
+    {
+        "id": "avoid-scanner-dependence",
+        "category": "Buying",
+        "trigger": "Sourcing books without principles",
+        "advice": "Spot value before scanning using principles to avoid scanning everything and wasting time",
+        "confidence": "High",
+        "source": "Spotting value before picking up a scanner is the single biggest \u201cmissing link\u201d to Amazon selling success. The secret wasn\u2019t in the scanning. It was in the pre-scanning."
+    },
+    {
+        "id": "sourcing-level-three",
+        "category": "Buying",
+        "trigger": "Book sourcing at estate sale with 10,000 books",
+        "advice": "Scan based on principles of value (e.g., Sage Publications, niche music genres, Harvard Business Press) to efficiently find profitable books",
+        "confidence": "High",
+        "source": "\u201cSage Publications, niche textbook co, high likelihood of value.\u201d \u2022 \u201cAnything on music genres you\u2019ve never heard of.\u201d \u2022 \u201cHarvard Business Press \u2013 worth $ often.\u201d"
+    },
+    {
+        "id": "scanning-time-level-one",
+        "category": "Buying",
+        "trigger": "Scanning every book in 10,000 book source",
+        "advice": "Avoid scanning everything as it takes 8 hours; use selective scanning to save time",
+        "confidence": "High",
+        "source": "10,000 books \u2022 3 seconds per book \u2022 30,000 seconds \u2022 500 minutes \u2022 8 hours."
+    },
+    {
+        "id": "scanning-time-level-two",
+        "category": "Buying",
+        "trigger": "Scanning every 5th book in 10,000 book source",
+        "advice": "Scan selectively (e.g., every 5th) to reduce time to 1 hour 40 minutes, but upgrade to principle-based for better efficiency",
+        "confidence": "High",
+        "source": "2,000 books scanned \u2022 6,000 seconds \u2022 100 minutes \u2022 1 hour, 40 minutes."
+    },
+    {
+        "id": "a2b3d376-9de9-4407-b5b1-2e097ceef7b2",
+        "advice": "[",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2c8bbf24-d4a4-437d-a363-afe9de3816cb",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "732527d2-efe9-4735-bf1e-dfd1aa4e5fe4",
+        "advice": "\"id\": \"rule1\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "360cfc6b-62df-4fd4-a58f-5aa56f4264dc",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c5b8e8f1-64e4-4a74-80d3-a7179d1d18c9",
+        "advice": "\"trigger\": \"Evaluating large volumes of books (e.g., 10,000 books)\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7dd5005a-34ab-4d64-8ea1-533ef298105f",
+        "advice": "\"advice\": \"Scan only about 1 out of 50 books using pre-scanning to filter based on principles, allowing sourcing of 8 locations per day instead of 1\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "35bc3236-82a1-43bf-9c78-6a294ffcb822",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bd6e42a0-0e79-43c5-a1a3-844d9b619b26",
+        "advice": "\"source\": \"Level Three Book Sourcing: The numbers Remember, Level Three sourcing comes with a deep understanding of the factors that drive value \u2013 something totally different than a database of Amazon price values stored in your head. 118 RESELLING FOR REBBest of PeAt this level, we\u2019re scanning about one out of 50 books (super-rough estimate and subject to wide variation depending on quality). Let\u2019s run those numbers: \u2022\t 10,000 books \u2022\t 3 seconds per book \u2022\t 200 books scanned \u2022\t 600 seconds \u2022\t 10 minutes\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "99ee0e53-3223-414d-98dc-5f1f9490afe5",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2787d7d6-219d-47f4-b7f2-49b620f5c6e8",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2282fda4-4ad1-46fb-81dc-96766a3bf94e",
+        "advice": "\"id\": \"rule2\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "84944b6e-0e84-47d6-85f7-cec97a791cc8",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "66c1e14d-a81a-4bac-ae3a-bcc38e81d4be",
+        "advice": "\"trigger\": \"Books published in recent years\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4460b400-da8f-4adf-aae0-1ae7bbab81d8",
+        "advice": "\"advice\": \"Prioritize recent publications as value decreases over time due to saturation and loss of interest\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f3ad2420-57bd-4e1e-86e4-0185f8462b3d",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ba0d0e78-2cae-4a83-9ceb-de35a045f535",
+        "advice": "\"source\": \"#1 Principle of book value: The rule of recency Books published in recent years. The more time that elapses since a book is published, the more time for people to lose interest, and the more time for the used market to be saturated with increasingly cheaper used copies.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1160bec2-115a-4f63-9189-c769c58fd079",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d4a3014e-2746-4f3e-a2f8-7af399540c66",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e8ea47b8-4d97-419c-9994-8a27a12244c8",
+        "advice": "\"id\": \"rule3\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fd99e57e-c512-42f6-b253-d5db8e9ba268",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4a000ea2-e3d1-456c-a280-24d3d5dfd02e",
+        "advice": "\"trigger\": \"Books on evolving subjects like computers or dated titles (e.g., '2011 RV Park Directory')\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ad8d5341-3fcf-4918-a7a1-f7ccb89877ee",
+        "advice": "\"advice\": \"Avoid books that become obsolete within 3 years or have specific years in titles, unless timeless like advanced math books relevant after 50 years\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "23282dce-1d55-4b6f-b3cb-334f0c49f618",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "be0dee21-42d9-482c-abfc-4b6db8331542",
+        "advice": "\"source\": \"#2 Principle of book value: The rule of relevance Books providing value that have not diminished over time. Very, very few books remain relevant long. Very few subjects do not evolve over time, making past books on the subject irrelevant. Examples on one end of the spectrum: Virtually all computer books, becoming obsolete within 3 years; any book with a year in its title (\u201c2011 RV Park Directory\u201d). On the other end: Advanced math books, which often remain as relevant 50 years later as the day they were published.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "95eeaac9-7264-45d2-8ed7-30b4ad0c69c4",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1904aa31-326b-4951-899d-1ae5b610db33",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b159defa-12b0-499d-ba72-b9303bf606fd",
+        "advice": "\"id\": \"rule4\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "034d8618-5c38-4385-a9e0-a7d961a2e920",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8f325bad-77f1-44e8-a95f-f6382e1a6240",
+        "advice": "\"trigger\": \"Specialized subjects with no or few substitutes\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8c494af3-ec56-417e-9053-3e54a7143a98",
+        "advice": "\"advice\": \"Target books that are the only option for a specific topic, ensuring demand without alternatives\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4549702e-94c5-4066-b947-4b51127527a1",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b36f8b36-6df4-4428-9fbe-78842ddc3952",
+        "advice": "\"source\": \"#3 Principle of book value: The rule of necessity Books for which there is no substitute, for which no (or few) other books in the world are written. These are the books that are so specialized, it\u2019s likely (or impossible) that no other book on this subject exists anywhere. If someone wants to know about this subject (and they will), they have to buy this book. They simply have no other option.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "26c3e5ac-d207-4f9c-a65c-2f2e38d9aa83",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2710c5a4-66d3-4cae-bce9-afd887ee58f8",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2e31fd1a-9771-4c58-9238-2609ab08f1fc",
+        "advice": "\"id\": \"rule5\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0da0139f-706f-44a0-882b-6e67f7dfc5d1",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c0b1de9c-6e9e-4636-883b-367503695882",
+        "advice": "\"trigger\": \"Niche topics with small, passionate audiences (e.g., secret reptilian race or collectible Garbage Pail Kids)\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3b816411-5f98-44b5-b996-59e4b36f45c0",
+        "advice": "\"advice\": \"Focus on micro-passion books for irrational enthusiasts, avoiding broad topics like yoga with high supply\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4d270073-da35-4419-bcaf-26233115fdfe",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8bf07093-8302-43aa-a657-0eab56600f69",
+        "advice": "\"source\": \"#4 Principle of book value: The rule of micro-passion Books for a small and irrationally passionate audience. These are books on the secret reptilian race controlling the planet, and the history of collectible Garbage Pail Kids cards. 122 RESELLING FOR REBBest of PeNote the key element of \u201csmall.\u201d Practitioners of yoga are often irrationally passionate, but they also comprise every third person on the street\u2026 and every fourth book at any book sale.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "aaf302a9-1d8f-4731-81df-b062baa21746",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6146dab2-13d7-400a-b6be-5ce779fce55a",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "00b01505-4026-4a2c-822e-274c76b2d6c1",
+        "advice": "\"id\": \"rule6\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2a6d845f-4182-46db-9bbf-2697101f1967",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "695a44ba-3402-4ced-ab5f-d3672380215f",
+        "advice": "\"trigger\": \"Over 99% of books at sales\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6a3d8b03-ed17-4543-be35-bc065ac50b82",
+        "advice": "\"advice\": \"Skip scanning books unlikely to sell for $10 or more on Amazon, focusing on patterns of value to improve speed and batting average\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f3325cdc-1b5b-4a3e-aa12-f8cfb2ace51c",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "787c48d0-4c6a-401d-9b31-ba0d6b7db7e7",
+        "advice": "\"source\": \"Five facts that make pre-scanning mastery crucial 1.\t You can almost never scan every book. 2.\t You almost never should scan every book. 3.\t Over 99% of books cannot be sold on Amazon for $10 or more on Amazon. 4.\t Profits are directly tied into speed and quality of your scanning. 5.\t Value is not accidental \u2013 there are patterns.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "43dfd305-6aa3-42b1-85d9-ed6331727f7b",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4ad5053d-1c60-4bac-af03-ae8f20e905c1",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "31c462f9-f768-4049-a5ee-011d61ba2273",
+        "advice": "\"id\": \"rule7\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9e9b1aee-ad11-44bf-9b87-78cb783cd8ed",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cfcc0690-317c-4b16-92fd-59565a9ee9ad",
+        "advice": "\"trigger\": \"FBA column blank in scanning app\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "50b1aa59-4b1f-4f51-8e17-a85fc4e01a9b",
+        "advice": "\"advice\": \"Manually check Amazon page for hidden FBA offers, as apps only show FBA if in lowest 20 offers\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6bbdc6fe-8357-41da-96b4-ad0042548b05",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "37003a93-bfa6-481d-9b9f-f7dc99a9e72d",
+        "advice": "\"source\": \"1. Click over to Amazon from your scanning app The simple one: When all other data checks out (sales rank, etc), we click through from the app to Amazon\u2019s page to view FBA offers. It\u2019s quite annoying and time consuming, but it\u2019s effective.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a796b682-a454-4fbb-8a3a-e12f7ca5ec91",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "66fdc457-eb70-4b83-ac11-c742728bfad2",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e4ce218d-01f5-42be-be92-cce7397e008d",
+        "advice": "\"id\": \"rule8\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "efd2cb16-4ed9-4b16-9609-4e292b296b68",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b6095b43-1b71-4f20-a72d-8de086c04bb7",
+        "advice": "\"trigger\": \"Good sales rank and few merchant fulfilled offers\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d9dc1441-b088-4013-84e2-9e31e391bb6a",
+        "advice": "\"advice\": \"Use as indicator of high probability for no or high-priced FBA competition, justifying purchase without full check\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "583bf382-166e-46b2-945c-f4e2339c6f93",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1a9a0681-8a92-4d09-aaee-3c17985e5183",
+        "advice": "\"source\": \"2. Data-driven probability Through trial and error, some sellers have learned a cool trick using some advanced math to determine if a book has a high probability of having no Fulfillment by Amazon offers (or FBA offers priced high enough to make it worth our investment). BELS eter Valley & FBA Mastery 131 The basic idea is: The better the rank and the fewer the merchant fulfilled offers (data Amazon FBA scanning apps still show), the better the likelihood of there being no Fulfillment by Amazon offers (or at least FBA offers that are priced high enough to be in the blindspot).\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2c31aa4c-1cd3-4553-84e7-99492fc8eec1",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "289dafb9-dcc4-41a1-bfd7-703d234cd969",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e200e792-b72c-4968-aa80-a6a9baeab393",
+        "advice": "\"id\": \"rule9\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9f522750-32c6-4adf-bd9a-398b8dd223c1",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8bbc99a6-8c98-483b-80e4-eb0b02460745",
+        "advice": "\"trigger\": \"Perceived inaccessible or overlooked inventory\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e650e6c4-db08-419a-ae64-b010cc50831f",
+        "advice": "\"advice\": \"Exploit blindspots by sourcing books other sellers ignore or don't believe will sell profitably, like unlocked balcony doors analogy\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "91a9be82-ae53-4a56-985b-dcd211ff49be",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "89b17c50-9046-430e-8c1a-9a41cc1cc345",
+        "advice": "\"source\": \"Blindspot Sourcing: Profiting from what other Amazon sellers can\u2019t see Over Christmas, I was reading a book about the most successful jewel thief in history. He figured out that most balcony doors on the 2nd story or up are left unlocked, because the balconies are perceived by their owners as being inaccessible. And I thought: \u201cThis is how I make most of my money on Amazon.\u201d Not through thievery, but by exploiting blindspots. Money laying around unguarded that other sellers don\u2019t notice. That\u2019s where the money is.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "04e9f6ce-0747-49e3-82b6-fea7d9a1287e",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4f54e7af-4b80-4599-b18f-21c6f061217f",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "478ade7e-09ea-4972-bf19-be9dc062448c",
+        "advice": "\"id\": \"rule10\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "acce6e0b-50b7-4b63-ace3-ad022b0c2ba5",
+        "advice": "\"category\": \"Buying\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3cb41bb0-a172-484a-adf9-fef838391c73",
+        "advice": "\"trigger\": \"Opportunities to build relationships at sourcing locations\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c7c03420-030e-44a3-9344-4e615c814acc",
+        "advice": "\"advice\": \"Use social sourcing to make bulk buys by talking to strangers, securing tons of inventory through connections\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5314ed9d-43ae-472c-9741-821c083ef42e",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "28a73c3c-e5b0-4706-8701-f6484bbc2164",
+        "advice": "\"source\": \"2. Social Sourcing: Making bulk buys driven by relationships (aka getting tons of inventory by talking to strangers) Blindspot Sourcing: Profiting from what other Amazon sellers can\u2019t see\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "46b44b1a-39db-495e-bb08-49c3c586a457",
+        "advice": "}",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1702b3dc-bf13-4551-9551-6595ccd38427",
+        "advice": "]",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ebay-throwaways-1",
+        "category": "General",
+        "trigger": "Books with Amazon Sales Rank > 2,000,000 selling for $2 each",
+        "advice": "Organize throwaway books into lots of 20+ on niche subjects like boating or JFK assassination and sell on eBay for higher profit than individual Amazon sales",
+        "confidence": "High",
+        "source": "The eBay buyer doesn\u2019t care that this lot of 50 books on the JFK assassination are just your throwaways. They don\u2019t care each one has an Amazon Sales Rank of worse than 2 million. They don\u2019t even car that on Amazon they\u2019re selling for $2 each. ... Sell books in lots (20+). Group books by narrow subject matter."
+    },
+    {
+        "id": "ebay-throwaways-2",
+        "category": "Buying",
+        "trigger": "Mainstream books with thousands available on Amazon and eBay",
+        "advice": "Discard mainstream books and focus only on niche or specific subjects for eBay lots",
+        "confidence": "High",
+        "source": "First, if it\u2019s a mainstream book that there are literally thousands of on Amazon and eBay, I get rid of it. Ebay book lots are for very niche or very specific subjects only."
+    },
+    {
+        "id": "travel-sourcing-1",
+        "category": "Buying",
+        "trigger": "Planning multi-week road trips 4x per year",
+        "advice": "Spend 1 hour pre-trip researching source list with Google Street View and internet sources, omitting low-profit categories to maximize vacation time",
+        "confidence": "High",
+        "source": "#1: Compile an airtight source list before you leave You\u2019ll want to spend the maximum amount of time on your trip actually seeing and doing new things \u2013 not sourcing inventory (though it can be fun). I optimize my Amazon sourcing time by spending about one hour doing research before my trip. ... Then I use Google Street View and other internet sources to get clues as to whether they are worth my time. And I omit anything that doesn\u2019t seem likely to offer higher-than-average profits."
+    },
+    {
+        "id": "travel-sourcing-2",
+        "category": "Buying",
+        "trigger": "Sourcing inventory while traveling with finite time",
+        "advice": "Limit source list to only high-probability profitable locations like church sales or auctions to avoid time-wasting chances",
+        "confidence": "High",
+        "source": "#2: Focus only on the most profitable inventory sources At home, you may be willing to take chances and be more loose with your time. When traveling, your time is finite. I will keep anything off my FBA source list that doesn\u2019t appear to have a high probability of bringing significant profit."
+    },
+    {
+        "id": "travel-sourcing-3",
+        "category": "General",
+        "trigger": "Sourcing on road trips to cover travel costs",
+        "advice": "Set a specific FBA profit target like full trip coverage and track with app's net-payout feature to know when to stop sourcing and start vacationing",
+        "confidence": "High",
+        "source": "#3: Set an FBA profit target You want to know when the sourcing should strop and the vacation begin. I.e., you want to know when you\u2019ve hit your target. Your \u201cprofit target\u201d could be mitigating the cost of your trip, or covering it in full (personally, I am to cover all travel costs with FBA). The net-payout feature of your sourcing/scanning app makes it simple to track your profit as you go"
+    },
+    {
+        "id": "travel-sourcing-4",
+        "category": "Buying",
+        "trigger": "Multiple inventory sources during road trip",
+        "advice": "Enter all sources like church sales and auctions into a single Google map for quick at-a-glance planning to minimize work time",
+        "confidence": "High",
+        "source": "#4: Enter all your inventory sources into a Google map This is crucial to further streamline your inventory acquisition process and keep the \u201cwork\u201d portion of your trip as short as possible. You\u2019ll want everything from church sales to auctions in one ready-to-go, at-aglance Google map."
+    },
+    {
+        "id": "travel-sourcing-5",
+        "category": "General",
+        "trigger": "Listing and packing FBA shipments while traveling",
+        "advice": "Use public resources like hotel computers and FedEx Office printers as substitutes for home setup to handle all FBA tasks on the road",
+        "confidence": "High",
+        "source": "#5: Know how to utilize public resources to list & pack FBA shipments There is nothing you can do at home you can\u2019t do from the road. ... From hotel computers to FedEx Office printers, you can find a substitute on the road for anything you do at home."
+    },
+    {
+        "id": "condition-desc-1",
+        "category": "Pricing",
+        "trigger": "Writing Amazon book condition descriptions",
+        "advice": "Place book condition front and center in first 7-10 words or 65 characters to instill trust and defeat objections like inaccurate grading or lack of inspection",
+        "confidence": "High",
+        "source": "1. Put the condition of the book front and center. 2. Make it very short (first 7-ish words). ... The Four Part Amazon Condition Note Optimization Framework 1. Instill trust. 2. Defeat the buyer\u2019s objections. ... 4. Do all of this in the first 10 words. ... Amazon buyers only see the first 10 words ... To be really specific, the Amazon buyer only sees the first 65 characters"
+    },
+    {
+        "id": "condition-desc-2",
+        "category": "Pricing",
+        "trigger": "Textbooks or books prone to highlighting/writing",
+        "advice": "Emphasize absence of highlighting or writing in condition notes, e.g., 'No writing or highlighting' or 'Clean copy', to build buyer trust and boost sales",
+        "confidence": "High",
+        "source": "2. Make it very short (first 7-ish words). 3. Emphasize the absence of highlighting or writing (these were textbooks). ... Sample text for \u201cabove the fold\u201d: \u2022 \u201cNo writing or highlighting\u201d (how I describe textbooks) \u2022 \u201cClean copy\u201d"
+    },
+    {
+        "id": "condition-desc-3",
+        "category": "Pricing",
+        "trigger": "Competing offers on Amazon listings",
+        "advice": "Convey individual book inspection in condition notes to outperform megasellers who use generic descriptions, allowing sales at higher prices like $25 above lowest offer",
+        "confidence": "High",
+        "source": "The easiest way to beat Amazon megasellers in the condition description game is to convey that we\u2019ve individually inspected the book. ... He got a sale $25 above the lowest FBA offer. ... Condition descriptions are really the #1 way we can get an advantage over Amazon megasellers."
+    },
+    {
+        "id": "condition-desc-4",
+        "category": "Pricing",
+        "trigger": "Amazon condition notes below the fold",
+        "advice": "Add secondary details like 'Hassle-free returns' or 'Small family business' after first 65 characters to potentially convert more buyers without harming sales",
+        "confidence": "High",
+        "source": "Amazon condition notes \u201cbelow the fold\u201d This is where you stack on obvious and/or extraneous details ... Examples: \u2022 \u201cHassle-free returns.\u201d \u2022 \u201cSmall family business.\u201d"
+    },
+    {
+        "id": "sourcing-trick-1",
+        "category": "Buying",
+        "trigger": "Locations with 'No scanning' rules like library sales",
+        "advice": "Ignore most no-scanning rules by scanning covertly and flying under the radar to access profitable books without revealing Amazon seller status",
+        "confidence": "High",
+        "source": "Rule to break #1: Ignoring most \u201cNo scanning\u201d rules. ... And that\u2019s why I ignore (most) \u201cno scanning\u201d rules. I keep my book scanning covert, and fly way under the radar."
+    },
+    {
+        "id": "sourcing-trick-2",
+        "category": "Buying",
+        "trigger": "Books with price stickers covering barcodes",
+        "advice": "Remove price stickers to uncover barcodes and enable scanning for Amazon value assessment",
+        "confidence": "High",
+        "source": "Rule to break #2: Removing book price stickers It\u2019s unfortunately uncommon: Book sources that cover the barcodes of books with a price sticker. ... And that is why a huge amount of the time you will find places that cover their barcodes with price stickers, making them unscannable."
+    },
+    {
+        "id": "scratch-sticker",
+        "category": "Buying",
+        "trigger": "Sources with covered barcodes or price stickers",
+        "advice": "Militantly drag fingernail across every book\u2019s price sticker to reveal the price without fully removing it, enabling more purchases and increasing sales for the source",
+        "confidence": "High",
+        "source": "I can\u2019t even begin to quantify what impact it would have on my revenue if I didn\u2019t militantly drag my fingernail across every book\u2019s price sticker at this source... The more book price stickers I scratch off, the more I buy."
+    },
+    {
+        "id": "no-weigh-box",
+        "category": "Risk",
+        "trigger": "FBA sourcing while traveling without a scale",
+        "advice": "Estimate the weight of FBA boxes without weighing them to save time, as checks are rare and charges are handled by Amazon and UPS",
+        "confidence": "High",
+        "source": "This is a small rule I bend primarily when I\u2019m doing FBA sourcing while traveling. Nobody really checks FBA box weight, so when I\u2019m anywhere that my scale is not, I estimate the weight without actually weighing the box."
+    },
+    {
+        "id": "stranded-inventory",
+        "category": "General",
+        "trigger": "Stranded FBA inventory marked as damaged or unsellable (95% erroneous)",
+        "advice": "Place a removal order, receive the inventory, and reship it back to Amazon; 99% chance of acceptance if damage is not severe",
+        "confidence": "High",
+        "source": "I place a removal order, have the stranded inventory shipped back to me, and 95% of the time I ship it right back in to Amazon. When inventory is marked as \u201cdamaged,\u201d unless the damage is severe, there is a 99% chance the FBA warehouse worker who receives it the second time won\u2019t have the same assessment as the first."
+    },
+    {
+        "id": "dvd-loophole",
+        "category": "Pricing",
+        "trigger": "Restricted DVDs with MSRP over $25 or general DVD restrictions",
+        "advice": "List restricted DVDs in non-Movies & TV categories like Sports to bypass restrictions and sell on Amazon instead of eBay",
+        "confidence": "High",
+        "source": "You do find the errant Amazon product page for a DVD outside of \u201cMovies & TV.\u201d You\u2019ll see this particularly in the Sports category... When I find one of these, I don\u2019t hesitate to list my \u201crestricted\u201d DVDs in these other Amazon categories, where they are outside of the reach of DVD restrictions."
+    },
+    {
+        "id": "sniper-surge",
+        "category": "Pricing",
+        "trigger": "Sudden media surge causing book to reach #1 sales rank and Amazon sold out",
+        "advice": "If you have the book in stock, immediately raise price significantly (e.g., up to $250 for urgent buyers); source copies quickly for high markup",
+        "confidence": "High",
+        "source": "One day, I saw on Twitter that the author of the book American Sniper died. That day the book shot to #1 on Amazon... If I didn\u2019t have to fear Amazon getting copies back in stock, I would price this book at $250, knowing that someone would (eventually) pay that much to get the next-day or second-day shipping."
+    },
+    {
+        "id": "merchant-higher",
+        "category": "Pricing",
+        "trigger": "Merchant fulfilled offers priced $30+ above Amazon's offer",
+        "advice": "This indicates Amazon is sold out; confirm on product page ('Temporarily out of stock') and price above lowest merchant offer, especially for top sales ranks like #1 (no ceiling, e.g., $130 for $15 book)",
+        "confidence": "High",
+        "source": "Anytime you see merchant fulfilled offers for more than Amazon\u2019s offer, that\u2019s a clear sign of one thing only: Amazon itself is sold out... That means there is literally no price ceiling, and the better the Amazon Sales Rank, the higher you can price the book above the lowest merchant-fulfilled offer."
+    },
+    {
+        "id": "increase-sources",
+        "category": "General",
+        "trigger": "Current inventory sources feel exhausted",
+        "advice": "Increase sources by 30% (e.g., from 10 to 13) by asking: Who has large quantities of books? What do they do with unwanted books? Invest 2 weeks to find 7 new ones for doubled business",
+        "confidence": "High",
+        "source": "Grow your Amazon business by increasing your inventory sources 30%... If you currently have 20 consistent sources, that\u2019s just 7 new ones... Every year I grow my Amazon business by increasing my sources 20%+"
+    },
+    {
+        "id": "increase-per-source",
+        "category": "Buying",
+        "trigger": "Fixed beliefs on profit thresholds, conditions, or categories limiting buys",
+        "advice": "Revise beliefs (e.g., accept books under $10 profit, list used as new if applicable, explore non-textbook categories) and adopt abundance mindset to extract 30% more inventory per source (e.g., from $80 to $105/month)",
+        "confidence": "High",
+        "source": "Grow your business by increasing inventory from each source by 30%... By revising what you \u201cknow\u201d is profitable, you will yield more Amazon profit... Your inventory yield is shaped by your beliefs."
+    },
+    {
+        "id": "diversify-range",
+        "category": "General",
+        "trigger": "Inventory overly focused on one category (e.g., 90% books)",
+        "advice": "Diversify to 3 categories by researching models, identifying new categories, contacting successful sellers for advice/training, and taking action; aim for $70 profit/month from each new category to double business",
+        "confidence": "High",
+        "source": "Grow your Amazon business by increasing your range of inventory... I\u2019ve moved from an inventory that was comprised of 90%+ books, to Amazon inventory that is roughly 70% books today... Identify three new Amazon product categories... Get them to teach you what they know."
+    },
+    {
+        "id": "library-peek",
+        "category": "Buying",
+        "trigger": "Library book sale the next day",
+        "advice": "Visit the day before, jiggle doorknobs or enter if setup is open to peek at room layout, book quantity, quality, prices, and categories to plan attack and decide attendance (e.g., avoid if low value)",
+        "confidence": "High",
+        "source": "At any library book sale where its not too inconvenient to do so, I\u2019ll visit the library the day before and see if I can get inside the book sale room... I want to know the layout of the book sale room... Most sales are set up the day before."
+    },
+    {
+        "id": "lib1",
+        "category": "Buying",
+        "trigger": "Before library book sale opens",
+        "advice": "Scout the layout by sticking head in or quick walk-through; check front, side, back doors for unlocked access to plan tables and order.",
+        "confidence": "High",
+        "source": "To the extent that I can get away with it, I\u2019ll either stick my head in, or do a quick walk through to gather the info I\u2019m looking for. If the book room is not open, I\u2019ll still make an attempt to get access. I\u2019ll find the room and check every front door, side door, and back door. You\u2019ll find an unlocked door more often than you\u2019d think. Armed with this info, I can plan exactly what tables I want to go to, and in what order."
+    },
+    {
+        "id": "lib2",
+        "category": "Buying",
+        "trigger": "Library book sale offers preview sale for Friends of the Library members",
+        "advice": "Join Friends of the Library ($7 to $25) at the door for first access; recoup cost easily with early picks; competition ratio 10:1 lower than public sale.",
+        "confidence": "High",
+        "source": "Many library book sales will offer a special \u201cpreview sale\u201d for members of Friends of the Library. Generally, membership is somewhere in the range of $7 to $25... The ratio of booksellers at the \u201copen to the public\u201d sale to the preview sale is easily 10 to 1."
+    },
+    {
+        "id": "lib3",
+        "category": "Buying",
+        "trigger": "Big library book sale starting",
+        "advice": "Arrive 20 to 30 minutes early to be in when it opens; avoid 1+ hour early (minimal advantage) or 10 minutes late (mobbed, books taken).",
+        "confidence": "High",
+        "source": "I recommend getting to most sales about 20 to 30 minutes early. That extra 30+ minutes simply doesn\u2019t get you very much except in the door an extra 1 minute early... What\u2019s even worse however is getting to the book sale 10 minutes late."
+    },
+    {
+        "id": "lib4",
+        "category": "Buying",
+        "trigger": "At library book sale",
+        "advice": "Bring folding aluminum hand cart or 6 canvas bags to carry max books, minimize trips to car and checkout lines; mark haul as taken to deter others.",
+        "confidence": "High",
+        "source": "A lot of time is lost at a library book sale waiting in line to purchase books. That\u2019s why I limit my trips to the car by bringing one of two things: A folding aluminum hand cart, or six or so canvas bags."
+    },
+    {
+        "id": "lib5",
+        "category": "Buying",
+        "trigger": "Entering library book sale",
+        "advice": "Target high-priority sections first: textbooks, business, DVDs; last: hardcover fiction, children\u2019s books; prioritize money sections over closest/open spots.",
+        "confidence": "High",
+        "source": "Because time at a library book sale is of the essence, you want to target the \u201chigh priority\u201d sections first... I\u2019m targeting textbooks, business, and DVDs first; hardcover fiction and children\u2019s books last."
+    },
+    {
+        "id": "lib6",
+        "category": "Buying",
+        "trigger": "After initial scan of library book sale",
+        "advice": "Rescan all sections, especially those thought picked over or low-value (hardcover fiction, mass market paperbacks); always find missed profitable books.",
+        "confidence": "High",
+        "source": "After you\u2019ve scanned everything and bled the library book sale dry, go back and do it again... Go over book sections I\u2019ve convinced I\u2019ve picked over to death. \u2022 Go over book sections I\u2019m convinced have no value (hardcover fiction, mass market paperbacks, etc)."
+    },
+    {
+        "id": "lib7",
+        "category": "Buying",
+        "trigger": "Library book sale ends without bag sale and books priced >$1",
+        "advice": "Approach organizers to buy leftovers cheap (e.g., $50 for 5,000 books); avoid if $1 books or bag sale, as low-profit potential.",
+        "confidence": "High",
+        "source": "I only recommend this at library book sales where the books are priced at more than $1, and there is no bag sale the last day... Most of the time, they books are just a liability to them and they will be thrilled to get $50 for the remaining 5,000 books."
+    },
+    {
+        "id": "upc1",
+        "category": "Buying",
+        "trigger": "Creating new Amazon product page for non-book or book without ISBN (pre-1970, self-published, micro-press)",
+        "advice": "Buy UPC codes from eBay (e.g., 500 for $44 or 100 for $13.99); receive certificate, barcode artwork, text/spreadsheet files for instant use.",
+        "confidence": "High",
+        "source": "If you\u2019re creating an new Amazon \u201cproduct detail page\u201d on Amazon, and either: 1. It\u2019s not a book. 2. It\u2019s a book, but it doesn\u2019t have an ISBN... Go to eBay. \u2022 Search for \u201cUPC code\u201d or \u201cUPC barcode\u201d... The first result that comes up offers 500 UPC numbers for $44."
+    },
+    {
+        "id": "upc2",
+        "category": "Risk",
+        "trigger": "Buying cheap UPC codes from eBay for high-volume sales",
+        "advice": "Risk of bogus or duplicate numbers leading to page takedown; for dozens/hundreds/thousands of units, use trusted seller like Bar Codes Talk for legitimacy.",
+        "confidence": "High",
+        "source": "It\u2019s possible you\u2019ll receive bogus numbers. \u2022 It\u2019s possible you\u2019ll receive real numbers that will be issued to someone else... For those who set up an Amazon product page with plans to sell dozens, hundreds, or thousands of an item, you might want to purchase from a company with a proven track records. One trusted company is Bar Codes Talk."
+    },
+    {
+        "id": "log1",
+        "category": "General",
+        "trigger": "Planning book sourcing trips within 45 min radius",
+        "advice": "Maintain sourcing log with source info, last visit date, notes; organize by routes (2-10 sources); revisit every 3+ weeks to allow fresh inventory.",
+        "confidence": "High",
+        "source": "A list of every FBA inventory source within a 45 min radius of my house, and a record of my last visit there... I like to allow 3 or more weeks... Each book source gets its own sheet of paper where I write down three things: 1. Source info... 2. Date of last visit... 3. Notes."
+    },
+    {
+        "id": "dd1",
+        "category": "Buying",
+        "trigger": "Buildings with books inside (e.g., libraries, colleges)",
+        "advice": "Check dumpsters in the back for free books, as they often contain discarded inventory",
+        "confidence": "High",
+        "source": "If there\u2019s books inside, there\u2019s books in the back. That doesn\u2019t mean always, but more often than you\u2019d think."
+    },
+    {
+        "id": "dd2",
+        "category": "Risk",
+        "trigger": "Legal concerns about dumpster diving",
+        "advice": "Proceed without worry, as dumpster diving for trash is not illegal and unlikely to result in arrest",
+        "confidence": "High",
+        "source": "If dumpster diving was arrestable, I\u2019d be serving a life sentence. ... So I cannot stretch my brain far enough to imagine any cop considering taking trash an arrestable offense."
+    },
+    {
+        "id": "dd3",
+        "category": "Buying",
+        "trigger": "Dumpster diving at night",
+        "advice": "Dive at night and stay out of sight to avoid interference from nosy individuals, not due to legality",
+        "confidence": "High",
+        "source": "I\u2019m dumpster diving for books at night, and being conscious of who might be watching \u2013 but not because it\u2019s criminal. Just because a lot of people are crazy."
+    },
+    {
+        "id": "dd4",
+        "category": "Buying",
+        "trigger": "Potential visibility during diving",
+        "advice": "Act confident and like you belong if observed, to reduce suspicion",
+        "confidence": "High",
+        "source": "Then again, if you act like you own a place, you own it. ... if act like you belong, people are likely to assume that\u2019s the case."
+    },
+    {
+        "id": "dd5",
+        "category": "Buying",
+        "trigger": "Regional scouting for dumpsters",
+        "advice": "Scout locally for sources like public libraries, college libraries, recycling centers, and college dorms at end of semester; persevere through duds",
+        "confidence": "High",
+        "source": "There is no checklist of dumpster book sources. ... here are a few of my favorites: Public libraries, college libraries, recycling centers, and college dorms at the end of the semester."
+    },
+    {
+        "id": "dd6",
+        "category": "Risk",
+        "trigger": "Inconsistent yields (1 out of 10 visits fruitful)",
+        "advice": "Persist despite low success rate, as hits can yield high profits",
+        "confidence": "High",
+        "source": "I frequent dumpsters that are only fruitful 1 out of 10 times I visit."
+    },
+    {
+        "id": "dd7",
+        "category": "General",
+        "trigger": "Places discarding 90% of donated books",
+        "advice": "Target libraries and similar venues that throw away high volumes of books due to space and low perceived value",
+        "confidence": "High",
+        "source": "I know of one library book sale that throws away 90% of the books donated."
+    },
+    {
+        "id": "dd8",
+        "category": "Buying",
+        "trigger": "End of semester at college dorms",
+        "advice": "Prioritize dumpster diving at college dorms during end of semester for seasonal influx of discarded books",
+        "confidence": "High",
+        "source": "college dorms at the end of the semester."
+    },
+    {
+        "id": "ss2",
+        "category": "Buying",
+        "trigger": "Barcodes covered by stickers (10% of sources)",
+        "advice": "Scan books even with covered barcodes, as profitable titles like $30-40 sellers can appear",
+        "confidence": "High",
+        "source": "About half the books had their barcodes covered by price stickers. ... I found a small paperback selling on Amazon for $40. ... another one ... for $30."
+    },
+    {
+        "id": "ss3",
+        "category": "General",
+        "trigger": "Adherence to $1-2 book cult",
+        "advice": "Avoid limiting to $1-2 books; embrace higher-priced sources with high Amazon value to escape low-profit traps",
+        "confidence": "High",
+        "source": "Escaping the cult of the $1 book ... the belief is that any potential Amazon profits vanish. ... until I was wrong."
+    },
+    {
+        "id": "ss4",
+        "category": "Buying",
+        "trigger": "Monthly visits to high-yield source",
+        "advice": "Visit fruitful sources regularly (e.g., monthly), investing $200-400 to achieve $1000+ profit per trip",
+        "confidence": "High",
+        "source": "I started going back, once a month. And every trip, I was spending $200 to $400, and my projected Amazon profits were over $1,000 each trip."
+    },
+    {
+        "id": "ss5",
+        "category": "Risk",
+        "trigger": "Discovery of secret source by competitors",
+        "advice": "Monitor sources for new scanners and adapt, as even remote, high-price sources can be overrun",
+        "confidence": "High",
+        "source": "My #1 most profitable book source for over three years was discovered by other Amazon sellers. ... Don\u2019t ever get too comfortable."
+    },
+    {
+        "id": "ss6",
+        "category": "Buying",
+        "trigger": "Selective vs. exhaustive scanning",
+        "advice": "Consider scanning more books thoroughly, even if time-intensive, to uncover double the profits in high-quality sources",
+        "confidence": "High",
+        "source": "This couple scanned everything. ... they found more books than me. More than double. That meant ... I had been missing thousands ... worth of books each year."
+    },
+    {
+        "id": "access1",
+        "category": "General",
+        "trigger": "Textbook contains unused access code",
+        "advice": "Always look for and sell unused access codes separately on Amazon to increase profitability, especially for recent editions (up to 2 most recent)",
+        "confidence": "High",
+        "source": "Always look for unused access codes in your textbooks. When appropriate, sell textbook access codes on Amazon separately."
+    },
+    {
+        "id": "access2",
+        "category": "Pricing",
+        "trigger": "Access code sales rank around 1.7 million",
+        "advice": "Sell access code FBA for approximately $6 net payout if merchant value is $12, tripling overall book profit",
+        "confidence": "High",
+        "source": "You look it up on Amazon, and it has an average rank of 1.7 million. Not amazing, but not terrible. Let\u2019s say the access code has a merchant fulfilled value of $12. Because the access code is so light, selling it FBA you still get a $6 Amazon payout."
+    },
+    {
+        "id": "access3",
+        "category": "Risk",
+        "trigger": "Ethical concerns about selling access codes",
+        "advice": "List the book under the product page that does not promise an access code to avoid issues",
+        "confidence": "High",
+        "source": "If you still find yourself in the middle of an ethical debate about selling textbook access codes, you can play it really safe and list the book for sale under the product page for the version that does not promise an access code."
+    },
+    {
+        "id": "counter1",
+        "category": "Buying",
+        "trigger": "High-demand textbook (sales rank top 10,000) priced suspiciously cheap on non-Amazon sites like eBay",
+        "advice": "Scrutinize closely and avoid purchasing, as it may be counterfeit",
+        "confidence": "High",
+        "source": "If you see a book on an non-Amazon site (like eBay) that is priced way below the price on Amazon, you may be looking at a counterfeit textbook. ... If you\u2019re not holding a textbook ranked in the top 10,000, it\u2019s probably not counterfeit."
+    },
+    {
+        "id": "counter2",
+        "category": "Risk",
+        "trigger": "Thin, low-quality paper (text visible through page)",
+        "advice": "Inspect for counterfeit indicators like thin paper and reject the book",
+        "confidence": "High",
+        "source": "Counterfeit Textbook Clue #2: Thin, low-quality paper. Big red flag: Paper that is so thin you can see text on one side of the page through the other side of the page."
+    },
+    {
+        "id": "counter3",
+        "category": "Risk",
+        "trigger": "Book thinner than stated dimensions on Amazon",
+        "advice": "Compare spine width to Amazon product details and avoid if significantly thinner",
+        "confidence": "High",
+        "source": "Counterfeit Textbook Clue #3: Book is thinner than its stated dimensions ... you can look at the dimensions provided on Amazon (in the \u201cproduct details\u201d section) and see if the spine width differs dramatically."
+    },
+    {
+        "id": "counter4",
+        "category": "Risk",
+        "trigger": "Poor quality or distorted cover art",
+        "advice": "Reject books with fuzzy, pixelated, or off cover art as counterfeit",
+        "confidence": "High",
+        "source": "Counterfeit Textbook Clue #4: Poor quality or distorted cover art Art that looks slightly distorted, pixelated, or just \u201coff.\u201d"
+    },
+    {
+        "id": "counter5",
+        "category": "Risk",
+        "trigger": "Fuzzy or distorted barcode",
+        "advice": "Check barcode first; if fuzzy, it's 100% counterfeit and avoid",
+        "confidence": "High",
+        "source": "Counterfeit Textbook Clue #5: Fuzzy barcode. The first place I\u2019d look when determining if a textbook is counterfeit is the barcode. If the barcode is distorted or fuzzy \u2013 it\u2019s a fake. 100% of the time."
+    },
+    {
+        "id": "disguise1",
+        "category": "General",
+        "trigger": "Book shows sales rank spike in August or January on Keepa",
+        "advice": "Confirm as 'textbook in disguise' and price aggressively high year-round, especially before semesters",
+        "confidence": "High",
+        "source": "Head over to Keepa and see what happened to its sales rank in August or January. Did sales spike to an unusual degree? There\u2019s your answer."
+    },
+    {
+        "id": "disguise2",
+        "category": "Buying",
+        "trigger": "Niche nonfiction with no real-world application, feels academic",
+        "advice": "Consider as potential 'textbook in disguise' if it seems like something only studied under professor requirement",
+        "confidence": "High",
+        "source": "Textbook In Disguise Clue #1: Niche nonfiction that doesn\u2019t really have any real world application. ... \u201cA book on a subject that nobody won\u2019t care about if they weren\u2019t forced to care by a professor.\u201d"
+    },
+    {
+        "id": "disguise3",
+        "category": "Buying",
+        "trigger": "Book has giant white square stickers or 'Used' stickers from college bookstore",
+        "advice": "View as positive clue for 'textbook in disguise' and prioritize for higher pricing",
+        "confidence": "High",
+        "source": "Textbook In Disguise Clue #2: Books that have those giant white square stickers on the back. ... Other cosmetic clues included \u201cUsed\u201d stickers or other college bookstore stickers or stamps."
+    },
+    {
+        "id": "disguise4",
+        "category": "Buying",
+        "trigger": "Fiction with supplemental material like annotations",
+        "advice": "Identify as likely student purchase for literature classes and price high",
+        "confidence": "High",
+        "source": "Textbook In Disguise Clue #3: Fiction titles that have supplemental material like annotations. ... The average Jane Austen reader is not going to want an annotated edition."
+    },
+    {
+        "id": "condition1",
+        "category": "Pricing",
+        "trigger": "Textbook has no highlighting or writing",
+        "advice": "Add 'No highlighting or writing' to condition description to boost sales over generic megaseller listings",
+        "confidence": "High",
+        "source": "FBA sellers will likely get a sales boost if you mention \u201cNo highlighting or writing\u201d in your condition description. ... I suggest adding this \u201cno highlighting\u201d mention to the beginning of every condition description."
+    },
+    {
+        "id": "txb-1",
+        "category": "General",
+        "trigger": "Using third-party repricing software on FBA textbooks",
+        "advice": "Avoid using third-party repricing software as it cannot see many FBA offers and will lead to significant profit losses",
+        "confidence": "High",
+        "source": "Third party repricing software (yes, all of it), cannot \u201csee\u201d many FBA offers. So you\u2019re taking a blowtorch to your profits if you\u2019re using third party repricing software. ... Don\u2019t do it."
+    },
+    {
+        "id": "txb-2",
+        "category": "Pricing",
+        "trigger": "FBA textbooks requiring manual repricing",
+        "advice": "Code SKUs with 'text' to filter inventory, show ASIN/FNSKU, check competing FBA offers and Amazon sales rank history in Keepa to inform pricing",
+        "confidence": "High",
+        "source": "First, you should have all your SKUs coded to denote the textbooks. (I just put the word \u201ctext\u201d in mine). Now you can go into your FBA Inventory page and bring up just the textbooks. Next, I check the box to \u201cShow ASIN/FNSKU.\u201d Then I click on every (text)book, and do two things: 1. See competing FBA offers. 2. See Amazon sales rank history in Keepa"
+    },
+    {
+        "id": "txb-3",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers and off-season sales rank 1 to 30,000",
+        "advice": "Price $50 to $100 above the lowest non-FBA offer",
+        "confidence": "High",
+        "source": "When a book holds an average sales rank (in the off season) of: \u2022 1 to 30,000: Price $50 to $100 above the lowest non-FBA offer."
+    },
+    {
+        "id": "txb-4",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers and off-season sales rank 30,000 to 150,000",
+        "advice": "Price $40 to $70 above the lowest non-FBA offer",
+        "confidence": "High",
+        "source": "\u2022 30,000 to 150,000: Price $40 to $70 above the lowest non-FBA offer."
+    },
+    {
+        "id": "txb-5",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers and off-season sales rank 150,000 to 300,000",
+        "advice": "Price $35 to $50 above lowest non-FBA offer",
+        "confidence": "High",
+        "source": "\u2022 150,000 to 300,000: Price $35 to $50 above lowest non-FBA offer."
+    },
+    {
+        "id": "txb-6",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers and off-season sales rank 300,000 to 600,000",
+        "advice": "Price $30 to $40 above lowest non-FBA offer",
+        "confidence": "High",
+        "source": "\u2022 300,000 to 600,000: Price $30 to $40 above lowest non-FBA offer."
+    },
+    {
+        "id": "txb-7",
+        "category": "Pricing",
+        "trigger": "No competing FBA offers and off-season sales rank 600,000 to 900,000",
+        "advice": "Price $25 to $35 above lowest non-FBA offer",
+        "confidence": "High",
+        "source": "\u2022 600,000 to 900,000: Price $25 to $35 above lowest non-FBA offer."
+    },
+    {
+        "id": "txb-8",
+        "category": "Pricing",
+        "trigger": "Multiple FBA competitors and off-season sales rank 1 to 30,000, going into textbook season",
+        "advice": "Price your FBA offer as the 5th or 6th lowest FBA offer",
+        "confidence": "High",
+        "source": "When a book holds an average Amazon sales rank (in the off season) of\u2026 \u2022 1 to 30,000: Price your FBA offer as the 5th or 6th lowest."
+    },
+    {
+        "id": "txb-9",
+        "category": "Pricing",
+        "trigger": "Multiple FBA competitors and off-season sales rank 30,000 to 300,000, going into textbook season",
+        "advice": "Price your FBA offer as the 4th or 5th lowest FBA offer",
+        "confidence": "High",
+        "source": "\u2022 30,000 to 300,000: Price your FBA offer as the 4th or 5th lowest."
+    },
+    {
+        "id": "txb-10",
+        "category": "Pricing",
+        "trigger": "Multiple FBA competitors and off-season sales rank 300,000 to 600,000, going into textbook season",
+        "advice": "Price your FBA offer as the 3rd or 4th lowest FBA offer",
+        "confidence": "High",
+        "source": "\u2022 300,000 to 600,000: Price your FBA offer as the 3rd or 4th lowest"
+    },
+    {
+        "id": "txb-11",
+        "category": "Pricing",
+        "trigger": "Multiple FBA competitors and off-season sales rank 600,000 to 900,000, going into textbook season",
+        "advice": "Price your FBA offer as the 2nd or 3rd lowest FBA offer",
+        "confidence": "High",
+        "source": "\u2022 600,000 to 900,000: Price your FBA offer as the 2nd or 3rd lowest."
+    },
+    {
+        "id": "txb-12",
+        "category": "Pricing",
+        "trigger": "After peak of textbook season",
+        "advice": "Reprice to position all but highest demand FBA textbooks in the bottom 3 FBA offers, depending on sales rank",
+        "confidence": "High",
+        "source": "After we clear the peak of Amazon textbook sales, then I want to reprice to get all but my most high demand FBA textbooks somewhere in the bottom 3 or so (depending on the Amazon sales rank)."
+    },
+    {
+        "id": "txb-13",
+        "category": "Seasonality",
+        "trigger": "Fall semester textbook season",
+        "advice": "Peak sales in the third full week in August",
+        "confidence": "High",
+        "source": "\u2022 For fall semester the peak of textbook season is the third full week in August."
+    },
+    {
+        "id": "txb-14",
+        "category": "Seasonality",
+        "trigger": "Spring semester textbook season",
+        "advice": "Peak sales around January 10th, with huge leap on January 1st",
+        "confidence": "High",
+        "source": "\u2022 For spring semester, the peak of textbook season is around January 10th (with sales taking a huge leap up on January 1st)."
+    },
+    {
+        "id": "txb-15",
+        "category": "General",
+        "trigger": "During textbook season",
+        "advice": "Reprice textbooks every day",
+        "confidence": "High",
+        "source": "\u2022 Reprice your textbooks every day during textbook season."
+    },
+    {
+        "id": "txb-16",
+        "category": "Pricing",
+        "trigger": "Going into textbook season",
+        "advice": "Price above the lowest FBA offers",
+        "confidence": "High",
+        "source": "\u2022 Price above the lowest FBA offers going into textbook season."
+    },
+    {
+        "id": "txb-17",
+        "category": "Pricing",
+        "trigger": "After textbook season peaks",
+        "advice": "Get less aggressive with prices",
+        "confidence": "High",
+        "source": "\u2022 Get less insanely bold with your prices after textbook season peaks."
+    },
+    {
+        "id": "txb-18",
+        "category": "Risk",
+        "trigger": "Not all textbooks sell during season",
+        "advice": "Do not worry if not all textbooks sell; if close to all sell, price more aggressively and source more",
+        "confidence": "High",
+        "source": "What if all your textbooks don\u2019t sell? They won\u2019t all sell during textbook season. And it doesn\u2019t matter. Bottom line: If anywhere close to all your textbooks sell, then: 1. You aren\u2019t pricing aggressively enough. 2. You don\u2019t have enough textbooks."
+    },
+    {
+        "id": "txb-19",
+        "category": "General",
+        "trigger": "Textbook inserts",
+        "advice": "Do not get hung up on textbook inserts",
+        "confidence": "High",
+        "source": "\u2022 Don\u2019t get hung up on textbook inserts."
+    },
+    {
+        "id": "gen-2",
+        "category": "Buying",
+        "trigger": "Sourcing large lots of media like DVDs from closed stores",
+        "advice": "Make lowball offers on desperate liquidations near universities for higher-value collections appealing to younger audiences",
+        "confidence": "High",
+        "source": "The video store was across the street from Drake University. Their DVD collection appealed to a hipper, younger audience. ... The owners had gotten out of the video rental business and just wanted to liquidate DVDs. To me, this meant making a lowball offer they just might take."
+    },
+    {
+        "id": "vhs-buy1",
+        "category": "Buying",
+        "trigger": "Dumpster at university library at midnight",
+        "advice": "Search for VHS tapes in trash; check nearby recycling for covers if missing; prioritize niche educational/documentary titles on obscure subjects",
+        "confidence": "High",
+        "source": "Hundreds of VHS tapes. A bittersweet find. Good because VHS tapes can be valuable... Niche educational / documentary titles on weird subjects like hypnotherapy and the train system in Siberia."
+    },
+    {
+        "id": "vhs-sort1",
+        "category": "Buying",
+        "trigger": "VHS tapes found without covers or barcodes",
+        "advice": "Sort into piles: $3+ Amazon payout, no value or unsellable, possible value with no page; manually look up on Amazon; ship 51+ viable ones",
+        "confidence": "High",
+        "source": "I separated the tapes into three piles: \u2022 Had an Amazon payout of $3 or more. \u2022 Did not have an Amazon payout of $3 or more OR had no Amazon product page, but no one on Amazon will ever buy it. \u2022 No Amazon product page but people will possibly buy it."
+    },
+    {
+        "id": "vhs-list1",
+        "category": "Pricing",
+        "trigger": "VHS with no Amazon product page but potential demand",
+        "advice": "Create product pages and list at $99 each; for unique items like rare footage, list at $499",
+        "confidence": "High",
+        "source": "I still have 50+ VHS tapes with no product pages on Amazon... I intend to make product pages for each of them and list at $99 each... I didn\u2019t factor in a 5-tape set... I listed it for $499."
+    },
+    {
+        "id": "cd-buy1",
+        "category": "Buying",
+        "trigger": "Craigslist ad for large CD collection (e.g., 1,000 CDs for $100)",
+        "advice": "Interrogate seller via text for details (count, condition, artwork); estimate true count at 60% of claimed; inspect in person; target obscure metal, classic rock, prog rock genres",
+        "confidence": "High",
+        "source": "I texted the seller to interrogate him for details... The \u201c1,000 CDs\u201d became \u201capproximately 1,000 CDs.\u201d... I did the rough \u201cCraigslist math\u201d and estimated... closer to 600... 95% of the CDs were flawless... Obscure metal and classic rock."
+    },
+    {
+        "id": "cd-sort1",
+        "category": "Buying",
+        "trigger": "CD collection with separated artwork and CDs",
+        "advice": "Alphabetize cases to reunite with CDs; discard or bundle missing artwork CDs for eBay lots by genre",
+        "confidence": "High",
+        "source": "I had to hunt through 1,000 cases... I quickly realized I would have to alphabetize the cases... I used my \u201ceBay leftovers bundling technique\u201d with the 168 CDs that didn\u2019t have artwork... divided them up by genre... listed them on eBay."
+    },
+    {
+        "id": "cd-price1",
+        "category": "Pricing",
+        "trigger": "CDs with Amazon Sales Rank 5,000 or better",
+        "advice": "Price high, within 50 cents of Amazon\u2019s price for FBA",
+        "confidence": "High",
+        "source": "Sales Rank 5,000 or better: Price high, all the way to within 50-cents of Amazon\u2019s price."
+    },
+    {
+        "id": "cd-price2",
+        "category": "Pricing",
+        "trigger": "CDs with Amazon Sales Rank 5,000 or worse",
+        "advice": "Match the lowest Merchant-Fulfilled price for FBA; set rock-bottom at $4.99 for penny CDs with SR >200,000",
+        "confidence": "High",
+        "source": "Sales Rank 5,000 or worse: Match the lowest Merchant-Fulfilled price... 65 CDs with an Amazon Sales Rank worse than 200,000, that were also \u201cpenny CDs\u201d I was pricing at $4.99 (my rock-bottom pricing threshold)."
+    },
+    {
+        "id": "lib-buy1",
+        "category": "Buying",
+        "trigger": "Library book sale with low competition (e.g., unadvertised university sale)",
+        "advice": "Arrive early (take morning off); scan with Bluetooth scanner (Opticon + iPhone + Scoutly app); for books without barcodes (30-40%), check title page ISBN if promising",
+        "confidence": "High",
+        "source": "I took the morning off of work just to be there... I use an Opticon 2002 Bluetooth barcode scanner paired with my iPhone and the Scoutly app... About 30-40% of the books didn\u2019t have a barcode... look on the title page for the ISBN."
+    },
+    {
+        "id": "lib-price1",
+        "category": "Pricing",
+        "trigger": "Softcover books at $1, hardcover at $2",
+        "advice": "Buy if FBA sells for $8+ (soft) or $10+ (hard) with SR under 2MM; for SR 3MM require lowest price ~$30, 4MM ~$40",
+        "confidence": "High",
+        "source": "Books were $1 for softcovers and $2 for hardcovers, so I wanted to find books that were selling FBA for at least $8 (softcovers) or $10 (hardcovers). I only accept books with sales ranks under 2MM at those prices though. Once I get to 3MM, I want to see the lowest price at around $30, 4MM needs to be around $40, etc."
+    },
+    {
+        "id": "lib-buy2",
+        "category": "Buying",
+        "trigger": "Ex-library books on niche topics with higher SR (e.g., >2MM)",
+        "advice": "Buy if high dollar value potential despite SR; aim for avg list $35; buy in bulk (e.g., 304 books for $445) if low risk",
+        "confidence": "High",
+        "source": "Their sales rank when I listed them was a hair over 2MM \u2013 a bit higher than I would prefer, but these were mostly on niche topics with high dollar values. My average list price was around $35... 304 books x $35 =~$10,500"
+    },
+    {
+        "id": "general-risk1",
+        "category": "Risk",
+        "trigger": "Craigslist sellers claiming large quantities",
+        "advice": "Assume exaggeration (e.g., 40% undercount); verify in person; be prepared for missing artwork reducing sellable % to 612/780",
+        "confidence": "High",
+        "source": "Underestimating by 40% is never an accident... 780 CDs total... 168 CDs missing artwork... This left 612 CDs"
+    },
+    {
+        "id": "general-risk2",
+        "category": "Risk",
+        "trigger": "Low-demand items like VHS or CDs with poor SR (e.g., avg 398,982 for VHS, 128,000 for CDs)",
+        "advice": "Still pursue if acquisition cost low (e.g., free from dumpster, 15\u00a2/CD); expect slow sales but potential high value from niches",
+        "confidence": "High",
+        "source": "The average Amazon sales rank: 398,982 (not great)... Average Amazon Sales Rank: 128,000... after all, I only paid about 15 cents per CD"
+    },
+    {
+        "id": "source1",
+        "category": "Buying",
+        "trigger": "Dumpsters at libraries and book-heavy places",
+        "advice": "Source free books entirely from dumpsters at libraries and other locations that discard large volumes of books, starting with the library next door for low-risk entry",
+        "confidence": "High",
+        "source": "There were the books you brought from the trash bins at the library next to my house, so I knew if I wanted to start selling on Amazon I could start with that."
+    },
+    {
+        "id": "source2",
+        "category": "Buying",
+        "trigger": "Places that throw away books due to cost or laziness",
+        "advice": "Brainstorm and research unique places beyond libraries that discard books because they believe selling them costs more than disposal, using computer searches and driving to identify 6 consistent sources",
+        "confidence": "High",
+        "source": "I started brainstorming different types of places that might throw away a lot of books, places that weren\u2019t libraries. ... I had six places that I felt pretty good about."
+    },
+    {
+        "id": "select1",
+        "category": "Buying",
+        "trigger": "Books with favorable Sales Rank",
+        "advice": "Scan and only take books that have a certain minimum value based on Sales Rank to ensure profitability, becoming more selective after initial over-sourcing to avoid low-value inventory",
+        "confidence": "High",
+        "source": "I learned about the Sales Ranks and what that means. After I learned all of that I got more picky, and now I might average 500 or 600."
+    },
+    {
+        "id": "volume1",
+        "category": "General",
+        "trigger": "Monthly sourcing goal of 800 books",
+        "advice": "Aim to find and process 800 books per month by visiting sources consistently, starting with higher volumes like 1000 in the first month and refining to 500-600 after learning selectivity",
+        "confidence": "High",
+        "source": "My goal is to find 800 a month. I did that 1000 or so that I talked about, that first month. ... now I might average 500 or 600."
+    },
+    {
+        "id": "schedule1",
+        "category": "General",
+        "trigger": "After 10 PM on 3 nights per week",
+        "advice": "Schedule dumpster dives for 3 nights a week after 10 PM when places are closed, visiting at least 2 dumpsters per night to cover all sources weekly while minimizing detection",
+        "confidence": "High",
+        "source": "I\u2019ll go out a few nights a week, usually three. ... So I\u2019ll usually try to go out after 10 at night. ... I schedule things so I\u2019m going to every dumpster on my list once a week. So I\u2019ll go to two dumpsters a night"
+    },
+    {
+        "id": "profit1",
+        "category": "General",
+        "trigger": "Steady inventory buildup leading to $1500-$3000 monthly",
+        "advice": "Build inventory quickly to 1000 books in the first month via free sourcing, expecting Amazon payments to range from $1500 to over $3000 per month as sales stabilize",
+        "confidence": "High",
+        "source": "It took me about a month to ship in a thousand books. ... They\u2019ve ranged from $1,500, to over $3,000 a month. ... $3,000, a little over $3,000 is normal."
+    },
+    {
+        "id": "strat25",
+        "category": "Buying",
+        "trigger": "Collector books for passionate audiences",
+        "advice": "Target books for irrational passionate collectors, like model train enthusiasts",
+        "confidence": "High",
+        "source": "High book values are primarily driven by \u201cirrationally passionate\u201d customers. And few audiences are more passionate (and irrational) than collectors."
+    },
+    {
+        "id": "strat26",
+        "category": "Buying",
+        "trigger": "Books with historical or mythological significance",
+        "advice": "Seek books with cultural or historical notoriety beyond content",
+        "confidence": "High",
+        "source": "An example of a book that can have significant value not because of its specific content, but because of it\u2019s mythology or historical significance."
+    },
+    {
+        "id": "strat27",
+        "category": "Buying",
+        "trigger": "Textbooks on fringe nutrition or diets",
+        "advice": "Combine textbooks with fringe topics like nutrition for amplified value",
+        "confidence": "High",
+        "source": "Combines two major drivers of value: A textbook that is also about fringe diets or nutrition. Both of those categories have disproportionate value."
+    },
+    {
+        "id": "strat28",
+        "category": "Buying",
+        "trigger": "Rare conspiracy books with low print runs (e.g., 300 copies)",
+        "advice": "Look for conspiracy books with limited print runs",
+        "confidence": "High",
+        "source": "A rare JFK conspiracy theory book. If I remember right, only 300 copies of this were printed."
+    },
+    {
+        "id": "strat29",
+        "category": "Buying",
+        "trigger": "Limited run books by social media influencers",
+        "advice": "Find used copies of recent limited-run books from influencers shortly after publication",
+        "confidence": "High",
+        "source": "Increasingly, you\u2019re seeing people with social media platforms publish limited run books and selling them for high prices. This is a recent example. I was fortunate to find a used copy shortly after it was published."
+    },
+    {
+        "id": "strat30",
+        "category": "Buying",
+        "trigger": "Computer books within 1-2 years of release",
+        "advice": "Target computer books in their first 1-2 years after release for high value, before prices plummet",
+        "confidence": "High",
+        "source": "Generally, these are high-value for the first one or two years after they\u2019re released, then plummet in value."
+    },
+    {
+        "id": "strat31",
+        "category": "Buying",
+        "trigger": "Books blurring categories (e.g., art and science)",
+        "advice": "Look for books that don't fit neatly into one category, indicating niche value",
+        "confidence": "High",
+        "source": "Is this an art book? A science book? Both? The fact that you can\u2019t tell is a big clue that it\u2019s worth serious money."
+    },
+    {
+        "id": "strat32",
+        "category": "Buying",
+        "trigger": "Out of print books on passionate music subjects",
+        "advice": "Seek out-of-print books on music topics where passion meets limited supply",
+        "confidence": "High",
+        "source": "Not a lot of subjects elicit as much passion as music. And where passion meets limited supply (this book is out of print), there tends to be high value."
+    },
+    {
+        "id": "strat33",
+        "category": "Buying",
+        "trigger": "Teacher's editions with poor sales ranks",
+        "advice": "Don't overlook teacher's editions despite poor sales ranks, as they hold high value",
+        "confidence": "High",
+        "source": "Revisiting \u201cteacher\u2019s editions\u201d again. They usually have poor Sales Ranks, but high value."
+    },
+    {
+        "id": "strat34",
+        "category": "Buying",
+        "trigger": "Box sets of grade school textbooks in odd packaging",
+        "advice": "Check odd-looking sets that might be overlooked as toys, but are actually textbook box sets",
+        "confidence": "High",
+        "source": "Interesting box set of grade school textbooks that most sellers might miss altogether. This came in odd packaging and looked more like a toy set that a set of books."
+    },
+    {
+        "id": "strat35",
+        "category": "Buying",
+        "trigger": "Any textbooks",
+        "advice": "Look up all textbooks encountered, as they are a core profitable category",
+        "confidence": "High",
+        "source": "The lesson is: Look up all textbooks."
+    },
+    {
+        "id": "strat-16",
+        "category": "Buying",
+        "trigger": "Fringe health titles with 'healing' and complex terms",
+        "advice": "Target fringe health titles, especially those with 'healing' next to hard-to-pronounce words",
+        "confidence": "High",
+        "source": "This title should make any Amazon seller salivate. What about it exactly? Specifically the word \u201chealing\u201d next to any word you can\u2019t pronounce. Fringe health titles are a valuable category."
+    },
+    {
+        "id": "strat-17",
+        "category": "Buying",
+        "trigger": "Esoteric subjects that appear self-published",
+        "advice": "Prioritize esoteric or weird subjects that appear self-published for high value potential",
+        "confidence": "High",
+        "source": "When you combine esoteric subject matter + self published (or appearing to be), there\u2019s a high HIGH potential for serious value. This book is flat-out weird, and that\u2019s why I will always look up books like this."
+    },
+    {
+        "id": "strat-18",
+        "category": "Buying",
+        "trigger": "Niche personal finance topics",
+        "advice": "Focus on extremely niche personal finance topics, as 'the more niche the better' applies especially to money-related books",
+        "confidence": "High",
+        "source": "This is a book on an extremely niche personal finance topic. \u201cThe more niche the better\u201d is a good general rule with books, but especially with books on subjects related to money."
+    },
+    {
+        "id": "strat-19",
+        "category": "Buying",
+        "trigger": "Conference proceedings or low-print-run publications",
+        "advice": "Target conference proceedings or hyper-niche low-supply items like annual conference papers for high value due to scarcity",
+        "confidence": "High",
+        "source": "It\u2019s likely very few copies of this were printed, and the combo of hyper-niche + low supply is the best possible recipe for book value."
+    },
+    {
+        "id": "strat-20",
+        "category": "Buying",
+        "trigger": "Scholarly non-fiction titles",
+        "advice": "Most money in books is in scholarly non-fiction titles; prioritize them",
+        "confidence": "High",
+        "source": "Most money in books is in scholarly non-fiction titles, like this one."
+    },
+    {
+        "id": "strat-21",
+        "category": "Buying",
+        "trigger": "Sealed new condition limited edition journals like Moleskine",
+        "advice": "Source sealed, new condition limited edition journals (e.g., Moleskine with artwork), often found among used books",
+        "confidence": "High",
+        "source": "Here\u2019s one you weren\u2019t expecting: Blank Moleskine journals can be highly collectible. Moleskine publishes limited edition journals with different artwork. And they can often be found mixed among used books. One catch: These only command high prices if they are sealed and in new condition."
+    },
+    {
+        "id": "strat-22",
+        "category": "Buying",
+        "trigger": "Niche or weird fitness books",
+        "advice": "Check niche or weird fitness titles, as they can be valuable despite fitness not being exciting",
+        "confidence": "High",
+        "source": "Fitness isn\u2019t the most exciting category for books. But it can be valuable when a title is.... (you can guess what I\u2019m going to say next) ... very niche and/or \u201cweird.\u201d"
+    },
+    {
+        "id": "strat-23",
+        "category": "Pricing",
+        "trigger": "Books with multiple product pages",
+        "advice": "For books with duplicate product pages, list on the higher-priced one to maximize value (e.g., $99 vs $15)",
+        "confidence": "High",
+        "source": "This title is interesting in that it has two product pages that appear to be for the same book. On one product page it\u2019s selling for $99. On the other, a more modest $15. This is a powerful tip to command more for otherwise low-value books."
+    },
+    {
+        "id": "strat-24",
+        "category": "Buying",
+        "trigger": "Self-published or low production-value books",
+        "advice": "Pay attention to self-published or low production-value books, as they indicate scarcity and potential high value",
+        "confidence": "High",
+        "source": "One thing I recommend sellers pay attention to is any book that appears to be self-published or of low production-value. It\u2019s counterintuitive, but this is important because it means the book was likely published in low quantities and is scarce."
+    },
+    {
+        "id": "strat-25",
+        "category": "Buying",
+        "trigger": "Weird fiction with cult following and out of print",
+        "advice": "Even if skipping most fiction, check weird-looking titles with potential cult followings that are out of print",
+        "confidence": "High",
+        "source": "Even if you generally skip fiction, pay attention to \u201cweird\u201d looking titles like this."
+    },
+    {
+        "id": "strat-26",
+        "category": "Risk",
+        "trigger": "Subjects that are timeless",
+        "advice": "Evaluate if a book's subject is timeless to ensure it holds value over time",
+        "confidence": "High",
+        "source": "I\u2019m always looking at a book\u2019s subject and asking: \u201cIs this timeless? Will this hold value over time?\u201d While this subject may not be 100% timeless, books on theater do tend to hold their value."
+    },
+    {
+        "id": "strat-27",
+        "category": "Buying",
+        "trigger": "Extremely niche subjects with unique titles",
+        "advice": "Buy books on extremely niche subjects almost without checking, as scarcity drives high likelihood of value",
+        "confidence": "High",
+        "source": "With a title/subject like this, I would almost buy this without looking it up. How many books in the world do you think there are on \u201caerosol dynamics\u201d? That\u2019s why you know this book has a high likelihood of value."
+    },
+    {
+        "id": "strat-28",
+        "category": "Buying",
+        "trigger": "Titles with unfamiliar or complex terms",
+        "advice": "Target books with hard-to-understand terms (e.g., 'biodynamic'), indicating niche value",
+        "confidence": "High",
+        "source": "I don\u2019t know what \u201cbiodynamic approach\u201d means, but if I see those words in a book title, I know its probably worth serious money. Another subject so niche, its almost impossible this doesn\u2019t have value on Amazon."
+    },
+    {
+        "id": "strat-29",
+        "category": "Buying",
+        "trigger": "Advanced math books from Springer",
+        "advice": "Prioritize advanced math books, especially from Springer, and consider buying without full lookup due to consistency",
+        "confidence": "High",
+        "source": "I\u2019ve said it many times: I love advanced math books. And I love this publisher (Springer). Anytime I see a Springer title (especially one on math), I would almost buy it without looking it up. They\u2019re that consistent."
+    },
+    {
+        "id": "strat-30",
+        "category": "Buying",
+        "trigger": "Professional books for high-net-worth fields (e.g., M&A)",
+        "advice": "Target books for high-income professionals (e.g., M&A, private equity), as buyers have high net worth and pay premiums",
+        "confidence": "High",
+        "source": "One look at that title and you should know the average buyer has a net worth in the seven figures. Which means they probably don\u2019t care that much about spending $100 on a book."
+    },
+    {
+        "id": "strat-31",
+        "category": "Buying",
+        "trigger": "Instructional music books",
+        "advice": "Source instructional music books, as they command high prices even without extreme niche",
+        "confidence": "High",
+        "source": "There\u2019s something about instructional music books. They don\u2019t even need to be that niche to command high prices a lot of the time."
+    },
+    {
+        "id": "strat-32",
+        "category": "Buying",
+        "trigger": "Books on non-mainstream or unorthodox therapies",
+        "advice": "Prioritize books on unorthodox therapies (e.g., dialectical behavior therapy) for high selling prices",
+        "confidence": "High",
+        "source": "No surprise here. Books on very unorthodox or non-mainstream therapies often sell for high prices."
+    },
+    {
+        "id": "strat-33",
+        "category": "Buying",
+        "trigger": "Niche art history books",
+        "advice": "Target niche art history books as a strong category",
+        "confidence": "High",
+        "source": "Niche art history books are a strong category."
+    },
+    {
+        "id": "strat-34",
+        "category": "Buying",
+        "trigger": "Titles with 'theory' and narrow subjects",
+        "advice": "Look for books with 'theory' in the title combined with narrow subjects for value",
+        "confidence": "High",
+        "source": "In addition to the narrow subject matter, and the likelihood no other book in the world can replace this, I also just like the word \u201c theory.\u201d I\u2019m getting really nuanced here, but I\u2019ve learned to see money when the word \u201c theory\u201d is in the title."
+    },
+    {
+        "id": "strat-35",
+        "category": "Buying",
+        "trigger": "Golf books",
+        "advice": "Source golf books due to passionate audience with money, leading to high prices",
+        "confidence": "High",
+        "source": "Amazing we got this far in this guide without talking about golf books. For reasons that should be obvious by now (passionate audience with money), golf books are a strong category."
+    },
+    {
+        "id": "strat-36",
+        "category": "Buying",
+        "trigger": "Corporate or manager training books",
+        "advice": "Target books for managers or corporate use, as companies often cover costs making money less of an object",
+        "confidence": "High",
+        "source": "This book appears to be for managers at companies. Which probably means their companies are paying for it. Which means money is no object (or less of one). Which means high value."
+    },
+    {
+        "id": "strat-37",
+        "category": "Buying",
+        "trigger": "Grade school textbooks",
+        "advice": "Don't ignore grade school textbooks, as they are nearly as strong as college ones",
+        "confidence": "High",
+        "source": "We haven\u2019t talked much about grade school textbooks. These are almost as strong of a category as college textbooks. Don\u2019t ignore them."
+    },
+    {
+        "id": "strat-38",
+        "category": "General",
+        "trigger": "Niche business titles sold only on author websites",
+        "advice": "Create Amazon product pages for niche business titles only available on authors' sites to sell for big profits",
+        "confidence": "High",
+        "source": "There are LOTS of niche business titles that are only sold on the author\u2019s websites. You can create product pages for them, and sell for big $$$."
+    },
+    {
+        "id": "strat-39",
+        "category": "General",
+        "trigger": "Bundling related books",
+        "advice": "Bundle related books (even your own) to create sets and sell for profit",
+        "confidence": "High",
+        "source": "Yes, you can buy my older books separately, bundle them together, and sell them as a set for a profit."
+    },
+    {
+        "id": "strat-buy-1",
+        "category": "Buying",
+        "trigger": "Super-niche or highly specialized subjects",
+        "advice": "Prioritize books on super-niche subjects like psychological consultation in schools, as they often command significant value due to limited alternatives.",
+        "confidence": "High",
+        "source": "The super-niche subject should be your biggest clue that this was going to have significant value."
+    },
+    {
+        "id": "strat-buy-2",
+        "category": "Buying",
+        "trigger": "Conspiracy theory or fringe beliefs/politics books",
+        "advice": "Target books on conspiracy theories, fringe beliefs, or politics, as they are a good recipe for high value.",
+        "confidence": "High",
+        "source": "I\u2019ve talked about conspiracy theory books in this guide. And while this isn\u2019t exactly that, this book outlines how a cabal of financial elites is controlling the world. And any book on \u201cfringe\u201d beliefs or politics is a good recipe for value."
+    },
+    {
+        "id": "strat-buy-3",
+        "category": "Buying",
+        "trigger": "Highly specialized business books",
+        "advice": "Seek highly specialized business books, as buyers (individuals or companies) have the means to pay premiums up to $500.",
+        "confidence": "High",
+        "source": "Another highly specialized business book. The people (or companies) that want this book likely have the means to pay a premium for it (in this case, $500)."
+    },
+    {
+        "id": "strat-season-1",
+        "category": "Seasonality",
+        "trigger": "Books tied to media attention or timely events like political campaigns",
+        "advice": "Buy books boosted by current events, but monitor for quick value fades (e.g., from $125 to $12 post-event).",
+        "confidence": "High",
+        "source": "Sometimes high values are driven by media attention or other timely forces that fade quickly (this book sells for $12 now)."
+    },
+    {
+        "id": "strat-buy-4",
+        "category": "Buying",
+        "trigger": "Niche science topics",
+        "advice": "Always look up and consider buying books on niche science topics like modern quantum mechanics.",
+        "confidence": "High",
+        "source": "Any book on a niche science topic: Look it up."
+    },
+    {
+        "id": "strat-buy-5",
+        "category": "Buying",
+        "trigger": "Irreplaceable or unique subjects (e.g., endangered plants in specific regions)",
+        "advice": "Target books on unique subjects with no alternatives, as scarcity drives high prices up to $99.99.",
+        "confidence": "High",
+        "source": "There is not likely to be any other book on this subject in the world. If you want to learn about endangered plants in the Southwest, you\u2019ll have to pay big money for a copy of this specific book."
+    },
+    {
+        "id": "strat-buy-6",
+        "category": "Buying",
+        "trigger": "Obscure collections like annual magazine hardbounds",
+        "advice": "Check obscure collections, such as complete year magazine volumes, for potential value.",
+        "confidence": "High",
+        "source": "More evidence that nothing is too obscure to be worth money."
+    },
+    {
+        "id": "strat-buy-7",
+        "category": "Buying",
+        "trigger": "Language learning audio box sets or CDs",
+        "advice": "Source language learning CDs or box sets, as they can command serious value despite CDs being 'dead'.",
+        "confidence": "High",
+        "source": "Who says CDs are dead? This box set that teaches Chinese commands serious value."
+    },
+    {
+        "id": "strat-buy-8",
+        "category": "Buying",
+        "trigger": "Photography books",
+        "advice": "Evaluate photography books carefully; they are hit-or-miss but can be very profitable when valuable.",
+        "confidence": "High",
+        "source": "Like all book categories. photography books are very hit-or-miss. But when they\u2019re profitable, they can be very profitable."
+    },
+    {
+        "id": "strat-buy-9",
+        "category": "Buying",
+        "trigger": "Hyper-niche religious or audio topics",
+        "advice": "Look for hyper-niche religious audiobooks, as they can sell for high amounts like $323.89.",
+        "confidence": "High",
+        "source": "Another audiobook on a subject that is almost too niche to believe: How to preach religion to your child while it is in the womb."
+    },
+    {
+        "id": "strat-buy-10",
+        "category": "Buying",
+        "trigger": "Instructor\u2019s resource manuals or teacher\u2019s editions",
+        "advice": "Target instructor\u2019s resource manuals and teacher\u2019s editions, as they hold value similar to textbooks.",
+        "confidence": "High",
+        "source": "Similar to the aforementioned \u201cteacher\u2019s editions,\u201d \u201cresource manuals\u201d (these go by various names) tend to hold their value for the same reasons."
+    },
+    {
+        "id": "strat-buy-11",
+        "category": "Buying",
+        "trigger": "Fiction with cult following or libertarian themes",
+        "advice": "Consider fiction books with cult followings or specific themes like libertarian novels, though profitable fiction is rare.",
+        "confidence": "High",
+        "source": "This is one of the only fiction books I\u2019ve sold for $100+. This book is a libertarian-themed novel. ... Fiction can be profitable, but it\u2019s rarely really profitable."
+    },
+    {
+        "id": "strat-buy-12",
+        "category": "Buying",
+        "trigger": "Audio programs on finance or money management",
+        "advice": "Source audio programs related to making or managing money for big profits.",
+        "confidence": "High",
+        "source": "Again, there\u2019s big profits in audio programs on anything related to making or manag- ing money."
+    },
+    {
+        "id": "strat-buy-13",
+        "category": "Buying",
+        "trigger": "Out-of-print mainstream business titles from major publishers",
+        "advice": "Check out-of-print mainstream business books, even from major publishers, as they can sell for $99.99+.",
+        "confidence": "High",
+        "source": "Generally mainstream titles aren\u2019t going to sell for more than $15 or $20. Business is the one category that has a lot of exceptions. Random mainstream business titles that have fallen out of print can command high selling prices - even if they are released by major publishers (like this one)."
+    },
+    {
+        "id": "strat-buy-14",
+        "category": "Buying",
+        "trigger": "Antiquarian or rare first editions",
+        "advice": "Include rare first editions in sourcing, though they form a small part of most sellers' business.",
+        "confidence": "High",
+        "source": "This is what most people think it means to sell used books: a book that\u2019s valuable because its a very old first edition. In fact, antiquarian books like this are generally a very small part of most Amazon sellers\u2019 business."
+    },
+    {
+        "id": "strat-buy-15",
+        "category": "Buying",
+        "trigger": "Fringe health titles with 'healing' and technical terms",
+        "advice": "Prioritize fringe health books combining 'healing' with hard-to-pronounce words for high value.",
+        "confidence": "High",
+        "source": "This title should make any Amazon seller salivate. What about it exactly? Specifically the word \u201chealing\u201d next to any word you can\u2019t pronounce. Fringe health titles are a valuable category."
+    },
+    {
+        "id": "strat-buy-16",
+        "category": "Buying",
+        "trigger": "Esoteric or weird self-published books",
+        "advice": "Always look up esoteric, weird, or self-published books for high potential value.",
+        "confidence": "High",
+        "source": "When you combine esoteric subject matter + self published (or appearing to be), there\u2019s a high HIGH potential for serious value. This book is flat-out weird, and that\u2019s why I will always look up books like this."
+    },
+    {
+        "id": "strat-buy-17",
+        "category": "Buying",
+        "trigger": "Conference proceedings or low-supply niche academic collections",
+        "advice": "Target conference proceedings on hyper-niche topics with low print runs for best value recipe.",
+        "confidence": "High",
+        "source": "It\u2019s likely very few copies of this were printed, and the combo of hyper-niche + low supply is the best possible recipe for book value."
+    },
+    {
+        "id": "strat-buy-18",
+        "category": "Buying",
+        "trigger": "Scholarly non-fiction titles",
+        "advice": "Focus on scholarly non-fiction for most profitable opportunities.",
+        "confidence": "High",
+        "source": "Most money in books is in scholarly non-fiction titles, like this one."
+    },
+    {
+        "id": "strat-buy-19",
+        "category": "Buying",
+        "trigger": "Sealed new limited edition journals like Moleskine",
+        "advice": "Source sealed, new condition limited edition journals mixed among used books for collectible value.",
+        "confidence": "High",
+        "source": "Here\u2019s one you weren\u2019t expecting: Blank Moleskine journals can be highly collectible. ... These only command high prices if they are sealed and in new condition."
+    },
+    {
+        "id": "strat-buy-20",
+        "category": "Buying",
+        "trigger": "Niche or weird fitness books",
+        "advice": "Check niche or weird fitness titles, as they can be valuable despite fitness not being exciting.",
+        "confidence": "High",
+        "source": "Fitness isn\u2019t the most exciting category for books. But it can be valuable when a title is.... very niche and/or \u201cweird.\u201d"
+    },
+    {
+        "id": "strat-buy-21",
+        "category": "Buying",
+        "trigger": "Books with multiple product pages at different prices",
+        "advice": "Identify books with duplicate product pages to sell on the higher-priced one for more profit.",
+        "confidence": "High",
+        "source": "This title is interesting in that it has two product pages that appear to be for the same book. On one product page it\u2019s selling for $99. On the other, a more modest $15. This is a powerful tip to command more for otherwise low-value books."
+    },
+    {
+        "id": "strat-buy-22",
+        "category": "Buying",
+        "trigger": "Self-published or low production-value books",
+        "advice": "Pay attention to self-published or low production-value books, as low quantities mean scarcity and high value.",
+        "confidence": "High",
+        "source": "One thing I recommend sellers pay attention to is any book that appears to be self-published or of low production-value. It\u2019s counterintuitive, but this is important because it means the book was likely published in low quantities and is scarce."
+    },
+    {
+        "id": "strat-buy-23",
+        "category": "Buying",
+        "trigger": "Out-of-print weird fiction with cult following",
+        "advice": "Don't skip weird-looking fiction titles; check for cult followings and out-of-print status.",
+        "confidence": "High",
+        "source": "Even if you generally skip fiction, pay attention to \u201cweird\u201d looking titles like this."
+    },
+    {
+        "id": "strat-general-1",
+        "category": "General",
+        "trigger": "Timeless subjects like theater or math",
+        "advice": "Evaluate if a book's subject is timeless (e.g., theater, math) to ensure it holds value over time.",
+        "confidence": "High",
+        "source": "I\u2019m always looking at a book\u2019s subject and asking: \u201cIs this timeless? Will this hold value over time?\u201d While this subject may not be 100% timeless, books on theater do tend to hold their value."
+    },
+    {
+        "id": "strat-buy-24",
+        "category": "Buying",
+        "trigger": "Hyper-specific scientific subjects (e.g., aerosol dynamics)",
+        "advice": "Buy hyper-specific science books without much hesitation, as few alternatives exist worldwide.",
+        "confidence": "High",
+        "source": "With a title/subject like this, I would almost buy this without looking it up. How many books in the world do you think there are on \u201caerosol dynamics\u201d?"
+    },
+    {
+        "id": "strat-buy-25",
+        "category": "Buying",
+        "trigger": "Titles with unfamiliar niche terms (e.g., biodynamic approach)",
+        "advice": "Source books with unfamiliar or niche terms, as they indicate high value potential.",
+        "confidence": "High",
+        "source": "I don\u2019t know what \u201cbiodynamic approach\u201d means, but if I see those words in a book title, I know its probably worth serious money."
+    },
+    {
+        "id": "strat-buy-26",
+        "category": "Buying",
+        "trigger": "Advanced math books from Springer publisher",
+        "advice": "Prioritize Springer advanced math titles; buy them almost without checking due to consistency.",
+        "confidence": "High",
+        "source": "I\u2019ve said it many times: I love advanced math books. And I love this publisher (Springer). Anytime I see a Springer title (especially one on math), I would almost buy it without looking it up."
+    },
+    {
+        "id": "strat-buy-27",
+        "category": "Buying",
+        "trigger": "Books for high-net-worth professionals (e.g., M&A, private equity)",
+        "advice": "Target books appealing to wealthy professionals, as they are willing to pay $100+ without concern.",
+        "confidence": "High",
+        "source": "One look at that title and you should know the average buyer has a net worth in the seven figures. Which means they probably don\u2019t care that much about spending $100 on a book."
+    },
+    {
+        "id": "strat-buy-28",
+        "category": "Buying",
+        "trigger": "Instructional music books",
+        "advice": "Source instructional music books, as they command high prices even without extreme niche.",
+        "confidence": "High",
+        "source": "There\u2019s something about instructional music books. They don\u2019t even need to be that niche to command high prices a lot of the time."
+    },
+    {
+        "id": "strat-buy-29",
+        "category": "Buying",
+        "trigger": "Non-mainstream or unorthodox therapy books",
+        "advice": "Buy books on unorthodox therapies like dialectical behavior therapy for high selling prices.",
+        "confidence": "High",
+        "source": "Books on very unorthodox or non-mainstream therapies often sell for high prices."
+    },
+    {
+        "id": "strat-buy-30",
+        "category": "Buying",
+        "trigger": "Niche art history books",
+        "advice": "Target niche art history books as a strong category for value.",
+        "confidence": "High",
+        "source": "Niche art history books are a strong category."
+    },
+    {
+        "id": "strat-buy-31",
+        "category": "Buying",
+        "trigger": "Niche titles with 'theory' (e.g., speech perception theory)",
+        "advice": "Look for niche titles including the word 'theory' for potential high value.",
+        "confidence": "High",
+        "source": "I also just like the word \u201c theory.\u201d I\u2019m getting really nuanced here, but I\u2019ve learned to see money when the word \u201c theory\u201d is in the title."
+    },
+    {
+        "id": "strat-buy-32",
+        "category": "Buying",
+        "trigger": "Golf books",
+        "advice": "Source golf books, as the passionate audience with money drives high prices.",
+        "confidence": "High",
+        "source": "For reasons that should be obvious by now (passionate audience with money), golf books are a strong category."
+    },
+    {
+        "id": "strat-buy-33",
+        "category": "Buying",
+        "trigger": "Professional development books for managers or companies",
+        "advice": "Target books for managers or corporate use, as budgets make money no object.",
+        "confidence": "High",
+        "source": "This book appears to be for managers at companies. Which probably means their companies are paying for it. Which means money is no object (or less of one). Which means high value."
+    },
+    {
+        "id": "strat-buy-34",
+        "category": "Buying",
+        "trigger": "Grade school textbooks",
+        "advice": "Don't ignore grade school textbooks; they are nearly as strong as college ones.",
+        "confidence": "High",
+        "source": "We haven\u2019t talked much about grade school textbooks. These are almost as strong of a category as college textbooks. Don\u2019t ignore them."
+    },
+    {
+        "id": "strat-buy-35",
+        "category": "Buying",
+        "trigger": "Niche business titles sold only on author websites",
+        "advice": "Create Amazon product pages for niche business titles from author sites to sell for big profits.",
+        "confidence": "High",
+        "source": "There are LOTS of niche business titles that are only sold on the author\u2019s websites. You can create product pages for them, and sell for big $$$."
+    },
+    {
+        "id": "strat-pricing-1",
+        "category": "Pricing",
+        "trigger": "Bundled sets of related books",
+        "advice": "Bundle related books (even your own) into sets to sell for higher profits like $125.",
+        "confidence": "High",
+        "source": "Yes, you can buy my older books separately, bundle them together, and sell them as a set for a profit."
+    },
+    {
+        "id": "strat36",
+        "category": "Buying",
+        "trigger": "Instructional music books",
+        "advice": "Source instructional music books as they command high prices even if not super niche",
+        "confidence": "High",
+        "source": "There\u2019s something about instructional music books. They don\u2019t even need to be that niche to command high prices a lot of the time."
+    },
+    {
+        "id": "strat37",
+        "category": "Buying",
+        "trigger": "Non-mainstream therapy books like dialectical behavior therapy",
+        "advice": "Buy books on unorthodox therapies for high prices",
+        "confidence": "High",
+        "source": "No surprise here. Books on very unorthodox or non-mainstream therapies often sell for high prices."
+    },
+    {
+        "id": "strat38",
+        "category": "Buying",
+        "trigger": "Niche art history books",
+        "advice": "Target niche art history books as a strong category",
+        "confidence": "High",
+        "source": "Niche art history books are a strong category."
+    },
+    {
+        "id": "strat39",
+        "category": "Buying",
+        "trigger": "Titles with 'theory' in niche contexts",
+        "advice": "Look for 'theory' in titles for potential value in narrow subjects",
+        "confidence": "High",
+        "source": "In addition to the narrow subject matter, and the likelihood no other book in the world can replace this, I also just like the word \u201c theory.\u201d I\u2019m getting really nuanced here, but I\u2019ve learned to see money when the word \u201c theory\u201d is in the title."
+    },
+    {
+        "id": "strat40",
+        "category": "Buying",
+        "trigger": "Golf books",
+        "advice": "Source golf books due to passionate audience with money",
+        "confidence": "High",
+        "source": "For reasons that should be obvious by now (passionate audience with money), golf books are a strong category."
+    },
+    {
+        "id": "strat41",
+        "category": "Buying",
+        "trigger": "Corporate training or manager books",
+        "advice": "Target books for managers or corporate use where cost is not an issue",
+        "confidence": "High",
+        "source": "This book appears to be for managers at companies. Which probably means their companies are paying for it. Which means money is no object (or less of one). Which means high value."
+    },
+    {
+        "id": "strat42",
+        "category": "Buying",
+        "trigger": "Grade school textbooks",
+        "advice": "Don't ignore grade school textbooks as a strong category like college ones",
+        "confidence": "High",
+        "source": "We haven\u2019t talked much about grade school textbooks. These are almost as strong of a category as college textbooks. Don\u2019t ignore them."
+    },
+    {
+        "id": "strat43",
+        "category": "Buying",
+        "trigger": "Niche folklore or regional topics with low alternatives",
+        "advice": "Source books on niche regional topics with few options for high prices",
+        "confidence": "High",
+        "source": "Safe bet that if you want to learn about french folklore in Missouri, you have no choice but to buy this book. And low options = high prices."
+    },
+    {
+        "id": "strat44",
+        "category": "Pricing",
+        "trigger": "Niche business titles sold only on author websites",
+        "advice": "Create product pages for niche business titles from author sites to sell for big money",
+        "confidence": "High",
+        "source": "There are LOTS of niche business titles that are only sold on the author\u2019s websites. You can create product pages for them, and sell for big $$$."
+    },
+    {
+        "id": "strat45",
+        "category": "General",
+        "trigger": "Bundling older books into sets",
+        "advice": "Bundle older books or leftovers into sets for profit",
+        "confidence": "High",
+        "source": "Yes, you can buy my older books separately, bundle them together, and sell them as a set for a profit. (Yes, I had some leftovers and sold copies of my own books)."
+    },
+    {
+        "id": "s22",
+        "category": "Buying",
+        "trigger": "Extremely niche personal finance topics",
+        "advice": "Apply 'the more niche the better' rule especially to money-related books for $99.99+ sales",
+        "confidence": "High",
+        "source": "\u201cThe more niche the better\u201d is a good general rule with books, but especially with books on subjects related to money."
+    },
+    {
+        "id": "s23",
+        "category": "Buying",
+        "trigger": "Conference proceedings or low-print-run niche publications",
+        "advice": "Prioritize hyper-niche items like conference papers with low supply for optimal value up to $106.98",
+        "confidence": "High",
+        "source": "It\u2019s likely very few copies of this were printed, and the combo of hyper-niche + low supply is the best possible recipe for book value."
+    },
+    {
+        "id": "s24",
+        "category": "General",
+        "trigger": "Scholarly non-fiction titles",
+        "advice": "Most high-value books are scholarly non-fiction; focus sourcing efforts here for $99.99+",
+        "confidence": "High",
+        "source": "Most money in books is in scholarly non-fiction titles, like this one."
+    },
+    {
+        "id": "s25",
+        "category": "Buying",
+        "trigger": "Sealed limited edition Moleskine journals",
+        "advice": "Scan for sealed, new-condition limited edition blank journals amid used books for $99.99 sales",
+        "confidence": "High",
+        "source": "Blank Moleskine journals can be highly collectible. Moleskine publishes limited edition journals with different artwork. ... These only command high prices if they are sealed and in new condition."
+    },
+    {
+        "id": "s26",
+        "category": "Buying",
+        "trigger": "Niche or weird fitness books",
+        "advice": "Include niche fitness titles like breathing systems for potential $99.99 values",
+        "confidence": "High",
+        "source": "Fitness isn\u2019t the most exciting category for books. But it can be valuable when a title is.... very niche and/or \u201cweird.\u201d"
+    },
+    {
+        "id": "s27",
+        "category": "Buying",
+        "trigger": "Books on unorthodox therapies like art therapy sets",
+        "advice": "Target weird therapy topics in sets for $99.99+",
+        "confidence": "High",
+        "source": "Just weird enough to be worth serious money."
+    },
+    {
+        "id": "s28",
+        "category": "Pricing",
+        "trigger": "Books with multiple product pages",
+        "advice": "Exploit duplicate Amazon product pages to price the same book at $99 vs. $15 for higher margins",
+        "confidence": "High",
+        "source": "This title is interesting in that it has two product pages that appear to be for the same book. On one product page it\u2019s selling for $99. On the other, a more modest $15. This is a powerful tip to command more for otherwise low-value books."
+    },
+    {
+        "id": "s29",
+        "category": "Buying",
+        "trigger": "Books on niche hobbies like racing pigeons",
+        "advice": "Source books on passionate niche hobbies for motivated buyers paying $99.99",
+        "confidence": "High",
+        "source": "Apparently the subject of racing pigeons attracts buyers who are motivated enough to spend significant money on books about it."
+    },
+    {
+        "id": "s30",
+        "category": "Buying",
+        "trigger": "Self-published or low production-value books",
+        "advice": "Counterintuitively, prioritize low-production books for scarcity and high value up to $99.99",
+        "confidence": "High",
+        "source": "One thing I recommend sellers pay attention to is any book that appears to be self-published or of low production-value. It\u2019s counterintuitive, but this is important because it means the book was likely published in low quantities and is scarce."
+    },
+    {
+        "id": "s31",
+        "category": "Buying",
+        "trigger": "Out-of-print fiction with cult following",
+        "advice": "Check weird-looking out-of-print fiction for cult appeal and $99.99+ sales",
+        "confidence": "High",
+        "source": "Even if you generally skip fiction, pay attention to \u201cweird\u201d looking titles like this."
+    },
+    {
+        "id": "s32",
+        "category": "General",
+        "trigger": "Timeless subjects like theater or voice training",
+        "advice": "Evaluate if a book's subject is timeless to predict long-term value holding up to $107.99-$110",
+        "confidence": "High",
+        "source": "I\u2019m always looking at a book\u2019s subject and asking: \u201cIs this timeless? Will this hold value over time?\u201d"
+    },
+    {
+        "id": "s33",
+        "category": "Buying",
+        "trigger": "Highly specific scientific subjects like aerosol dynamics",
+        "advice": "Buy niche science titles almost without checking if the subject is extremely specific, for $108.95+",
+        "confidence": "High",
+        "source": "With a title/subject like this, I would almost buy this without looking it up. How many books in the world do you think there are on \u201caerosol dynamics\u201d?"
+    },
+    {
+        "id": "s34",
+        "category": "Buying",
+        "trigger": "Academic or college-appealing books",
+        "advice": "Focus on academia-targeted titles despite student budgets, as they drive high values up to $109.99",
+        "confidence": "High",
+        "source": "Everyone says college students are broke, so why re the majority of high value books titles that only appeal to people in academia?"
+    },
+    {
+        "id": "s35",
+        "category": "Buying",
+        "trigger": "Titles with unfamiliar niche terms like 'bio-dynamic'",
+        "advice": "Source books with obscure terminology for near-guaranteed value up to $110",
+        "confidence": "High",
+        "source": "I don\u2019t know what \u201cbiodynamic approach\u201d means, but if I see those words in a book title, I know its probably worth serious money."
+    },
+    {
+        "id": "s36",
+        "category": "Buying",
+        "trigger": "Advanced math books from Springer",
+        "advice": "Almost automatically acquire Springer math titles for consistent $114.99 values",
+        "confidence": "High",
+        "source": "I\u2019ve said it many times: I love advanced math books. And I love this publisher (Springer). Anytime I see a Springer title (especially one on math), I would almost buy it without looking it up."
+    },
+    {
+        "id": "s37",
+        "category": "Buying",
+        "trigger": "Books for high-net-worth professionals like M&A",
+        "advice": "Target titles appealing to wealthy audiences (e.g., seven-figure net worth) for $114.99 sales",
+        "confidence": "High",
+        "source": "One look at that title and you should know the average buyer has a net worth in the seven figures. Which means they probably don\u2019t care that much about spending $100 on a book."
+    },
+    {
+        "id": "s38",
+        "category": "Buying",
+        "trigger": "Instructional music books",
+        "advice": "Include music instruction titles even if not ultra-niche for frequent high prices up to $114.99",
+        "confidence": "High",
+        "source": "There\u2019s something about instructional music books. They don\u2019t even need to be that niche to command high prices a lot of the time."
+    },
+    {
+        "id": "s39",
+        "category": "Buying",
+        "trigger": "Books on non-mainstream therapies like dialectical behavior therapy",
+        "advice": "Prioritize unorthodox therapy books for $119.95+ values",
+        "confidence": "High",
+        "source": "Books on very unorthodox or non-mainstream therapies often sell for high prices."
+    },
+    {
+        "id": "s40",
+        "category": "Buying",
+        "trigger": "Niche art history books",
+        "advice": "Source specialized art history for strong category performance up to $121.99",
+        "confidence": "High",
+        "source": "Niche art history books are a strong category."
+    },
+    {
+        "id": "s41",
+        "category": "Buying",
+        "trigger": "Titles containing 'theory'",
+        "advice": "Flag books with 'theory' in the title for high likelihood of value up to $122.75",
+        "confidence": "High",
+        "source": "I also just like the word \u201c theory.\u201d I\u2019m getting really nuanced here, but I\u2019ve learned to see money when the word \u201c theory\u201d is in the title."
+    },
+    {
+        "id": "s42",
+        "category": "Buying",
+        "trigger": "Golf books",
+        "advice": "Target golf titles due to passionate, affluent audience for $124.95 sales",
+        "confidence": "High",
+        "source": "For reasons that should be obvious by now (passionate audience with money), golf books are a strong category."
+    },
+    {
+        "id": "s43",
+        "category": "Buying",
+        "trigger": "Professional development books for managers or companies",
+        "advice": "Focus on corporate training books where expense accounts drive $125 values",
+        "confidence": "High",
+        "source": "This book appears to be for managers at companies. Which probably means their companies are paying for it. Which means money is no object (or less of one). Which means high value."
+    },
+    {
+        "id": "s44",
+        "category": "Buying",
+        "trigger": "Grade school textbooks",
+        "advice": "Don't overlook K-12 textbooks as a strong category like college texts, up to $125",
+        "confidence": "High",
+        "source": "We haven\u2019t talked much about grade school textbooks. These are almost as strong of a category as college textbooks. Don\u2019t ignore them."
+    },
+    {
+        "id": "s45",
+        "category": "Buying",
+        "trigger": "Niche business books sold only on author websites",
+        "advice": "Create Amazon product pages for author-direct niche business titles to sell for $99.99+",
+        "confidence": "High",
+        "source": "There are LOTS of niche business titles that are only sold on the author\u2019s websites. You can create product pages for them, and sell for big $$$."
+    },
+    {
+        "id": "s46",
+        "category": "General",
+        "trigger": "Regional or folklore-specific books with low alternatives",
+        "advice": "Source unique regional topics like Missouri French folklore for monopoly pricing up to $99.99",
+        "confidence": "High",
+        "source": "Safe bet that if you want to learn about french folklore in Missouri, you have no choice but to buy this book. And low options = high prices."
     }
 ]

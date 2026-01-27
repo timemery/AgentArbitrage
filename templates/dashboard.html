@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentPage = 1;
     let totalPages = 1;
-    let currentSort = { by: 'id', order: 'asc' };
+    let currentSort = { by: 'last_price_change', order: 'desc' };
     let currentDeals = [];
     let currentMentor = localStorage.getItem('ava_mentor') || 'cfo';
     let currentAsin = null;
@@ -637,18 +637,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (col === 'last_price_change') {
                         let timeAgo = formatTimeAgo(value);
                         let trendArrow = deal.Trend || '';
-                        // Map arrows to HTML entities and colors
+                        let arrowHtml = '';
+
                         if (trendArrow === '⇧') {
-                             trendArrow = '<span style="color: #dd080a; font-weight: bold;">&#x2191;</span>';
+                             arrowHtml = '<img src="/static/Arrow_up.svg" class="trend-icon" alt="Up">';
                         } else if (trendArrow === '⇩') {
-                             trendArrow = '<span style="color: #01be0a; font-weight: bold;">&#x2193;</span>';
+                             arrowHtml = '<img src="/static/Arrow_down.svg" class="trend-icon" alt="Down">';
                         } else if (trendArrow === '⇨') {
-                             trendArrow = '<span style="color: #dc870d; font-weight: bold;">&rightarrow;</span>';
+                             arrowHtml = '<img src="/static/Arrow_level.svg" class="trend-icon" alt="Flat">';
                         }
 
-                        // Only add spacing if there is an arrow
-                        if (trendArrow) {
-                            value = `<span>${trendArrow} ${timeAgo}</span>`;
+                        if (arrowHtml) {
+                            value = `<span>${arrowHtml} ${timeAgo}</span>`;
                         } else {
                             value = timeAgo;
                         }
@@ -739,17 +739,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             // Check for Diagonal Down (Falling/Good) -> Map to Vertical Down
                             if (value.includes('↘')) {
-                                arrow = '<span class="trend-falling-green" style="color: #01be0a;">&#x2193;</span>'; // Green Down
+                                // arrow = '<span class="trend-falling-green" style="color: #01be0a;">&#x2193;</span>'; // Green Down
+                                arrow = '<img src="/static/Arrow_down.svg" class="trend-icon" alt="Down">';
                                 count = value.replace('↘', '').trim();
                             }
                             // Check for Diagonal Up (Rising/Bad) -> Map to Vertical Up
                             else if (value.includes('↗')) {
-                                arrow = '<span class="trend-rising-red" style="color: #dd080a;">&#x2191;</span>'; // Red Up
+                                // arrow = '<span class="trend-rising-red" style="color: #dd080a;">&#x2191;</span>'; // Red Up
+                                arrow = '<img src="/static/Arrow_up.svg" class="trend-icon" alt="Up">';
                                 count = value.replace('↗', '').trim();
                             }
                             // Check for Flat Arrow (Right Hollow) -> Map to Solid Right Arrow
                             else if (value.includes('⇨')) {
-                                arrow = '<span style="color: #dc870d; font-weight: bold;">&rightarrow;</span>'; // Orange Right
+                                // arrow = '<span style="color: #dc870d; font-weight: bold;">&rightarrow;</span>'; // Orange Right
+                                arrow = '<img src="/static/Arrow_level.svg" class="trend-icon" alt="Flat">';
                                 count = value.replace('⇨', '').trim();
                             }
 
@@ -768,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         // Add AMZN icon if needed
                         if (deal.AMZ === '⚠️') {
-                             wrapperEnd += `<img src="/static/AMZN.svg" class="amzn-icon" alt="AMZ">`;
+                             wrapperEnd += `<img src="/static/AMZ_Warn.svg" class="amz-warn-icon" alt="AMZ">`;
                         }
                         wrapperEnd += '</div>';
 
