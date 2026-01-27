@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from keepa_deals.keepa_api import fetch_deals_for_deals
+from keepa_deals.token_manager import TokenManager
 
 def main():
     print("--- Testing Keepa Query (Page 0) ---")
@@ -18,9 +19,12 @@ def main():
 
     print(f"Using API Key: {api_key[:5]}...")
     
+    tm = TokenManager(api_key)
+    tm.sync_tokens()
+
     # Run fetch
     # Note: sort_type=4 is 'Last Update' (Newest)
-    response, consumed, left = fetch_deals_for_deals(0, api_key, sort_type=4)
+    response, consumed, left = fetch_deals_for_deals(0, api_key, sort_type=4, token_manager=tm)
     
     if not response:
         print("ERROR: No response from Keepa API.")
@@ -34,7 +38,15 @@ def main():
     
     if deals:
         first_deal = deals[0]
-        print(f"\nNewest Deal Timestamp (minutes): {first_deal.get('lastUpdate')}")
+        last_update_mins = first_deal.get('lastUpdate')
+
+        # Convert to Human Readable
+        from datetime import datetime, timedelta, timezone
+        epoch = datetime(2011, 1, 1, tzinfo=timezone.utc)
+        dt = epoch + timedelta(minutes=last_update_mins)
+
+        print(f"\nNewest Deal Timestamp (minutes): {last_update_mins}")
+        print(f"Newest Deal Date (ISO): {dt.isoformat()}")
         print(f"ASIN: {first_deal.get('asin')}")
         print(f"Title: {first_deal.get('title')}")
     else:

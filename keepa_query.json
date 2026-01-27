@@ -10,21 +10,21 @@
     ],
     "deltaRange": [
         0,
-        10000
+        2147483647
     ],
     "deltaPercentRange": [
-        20,
+        10,
         2147483647
     ],
     "salesRankRange": [
-        100000,
-        5000000
+        10000,
+        10000000
     ],
     "currentRange": [
         2000,
-        23500
+        45100
     ],
-    "minRating": 50,
+    "minRating": 10,
     "isLowest": false,
     "isLowest90": false,
     "isLowestOffer": false,
@@ -39,7 +39,7 @@
     "mustHaveAmazonOffer": false,
     "mustNotHaveAmazonOffer": false,
     "sortType": 4,
-    "dateRange": 3,
+    "dateRange": 4,
     "warehouseConditions": [
         2,
         3,
@@ -48,6 +48,6 @@
     ],
     "deltaLastRange": [
         0,
-        10000
+        2147483647
     ]
 }
