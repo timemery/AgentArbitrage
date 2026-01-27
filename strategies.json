@@ -28443,5 +28443,445 @@
         "advice": "Win the Buy Box even with a higher price by using FBA, excellent feedback, and reliable inventory, as Amazon prioritizes customer experience",
         "confidence": "High",
         "source": "A seller with FBA, excellent feedback, and reliable inventory can win the Buy Box even with a slightly higher price than competitors"
+    },
+    {
+        "id": "repricing-001",
+        "category": "Pricing",
+        "trigger": "Competitor lowers price by $2",
+        "advice": "Automatically match or undercut by a specified amount to maintain competitiveness",
+        "confidence": "High",
+        "source": "Competitive undercutting: A competitor lowers their price by $2. Your repricer automatically matches or undercuts by a specified amount to maintain competitiveness."
+    },
+    {
+        "id": "repricing-002",
+        "category": "Pricing",
+        "trigger": "Low-priced competitors run out of stock",
+        "advice": "Increase price to maximize profit from reduced competition",
+        "confidence": "High",
+        "source": "Stock shortages: When low-priced competitors run out of stock, your repricer can increase your price to maximize profit from reduced competition."
+    },
+    {
+        "id": "repricing-003",
+        "category": "Pricing",
+        "trigger": "Peak shopping hours",
+        "advice": "Increase prices slightly to capture higher-intent buyers, then decrease during slower periods to maintain sales velocity",
+        "confidence": "High",
+        "source": "Time-based adjustments: During peak shopping hours, prices can increase slightly to capture higher-intent buyers, then decrease during slower periods to maintain sales velocity."
+    },
+    {
+        "id": "repricing-004",
+        "category": "Pricing",
+        "trigger": "Competitor prices drop below minimum profit threshold",
+        "advice": "Hold price at the floor set based on cost of goods sold plus desired minimum profit",
+        "confidence": "High",
+        "source": "Margin protection: If competitor prices drop below your minimum profit threshold, your repricer holds your price at the floor you\u2019ve set rather than engaging in an unprofitable price war."
+    },
+    {
+        "id": "repricing-005",
+        "category": "Pricing",
+        "trigger": "Competitor price changes",
+        "advice": "Evaluate to match, undercut, or hold position based on predefined rules",
+        "confidence": "High",
+        "source": "Competitor price changes: The most common trigger. When a competitor adjusts their price, your repricer evaluates whether to match, undercut, or hold position based on your rules."
+    },
+    {
+        "id": "repricing-006",
+        "category": "Pricing",
+        "trigger": "Buy Box switches to a different seller on Amazon",
+        "advice": "Adjust price to try to win it back",
+        "confidence": "High",
+        "source": "Buy Box changes: On Amazon, when the Buy Box switches to a different seller, your repricer can adjust to try to win it back."
+    },
+    {
+        "id": "repricing-007",
+        "category": "Pricing",
+        "trigger": "Inventory moving too slowly",
+        "advice": "Gradually lower prices to accelerate sales using velocity-based repricing",
+        "confidence": "High",
+        "source": "Sales velocity targets: If your inventory is moving too slowly, velocity-based repricing can gradually lower prices to accelerate sales."
+    },
+    {
+        "id": "repricing-008",
+        "category": "Pricing",
+        "trigger": "Selling in high-volume competitive categories like books",
+        "advice": "Use automated repricing as essential for direct price-based competition",
+        "confidence": "High",
+        "source": "High-volume, competitive categories: Categories like electronics, books, toys, and home goods typically have dozens of sellers per product. In these markets, manual repricing simply can\u2019t keep pace with the competition."
+    },
+    {
+        "id": "repricing-009",
+        "category": "Pricing",
+        "trigger": "Seasonal products with fluctuating demand",
+        "advice": "Automatically adjust prices to market conditions throughout the season",
+        "confidence": "High",
+        "source": "Seasonal products: Items with fluctuating demand benefit enormously from repricing strategies that automatically adjust to market conditions throughout the season."
+    },
+    {
+        "id": "repricing-010",
+        "category": "Pricing",
+        "trigger": "Fast inventory turnover needed due to storage costs or capital needs",
+        "advice": "Optimize balance between speed and profit with repricing",
+        "confidence": "High",
+        "source": "Fast inventory turnover: If you need to move inventory quickly\u2014whether due to storage costs, perishability, or capital needs\u2014repricing helps optimize the balance between speed and profit."
+    },
+    {
+        "id": "repricing-011",
+        "category": "Risk",
+        "trigger": "Razor-thin profit margins",
+        "advice": "Implement repricing with very strict floor prices after improving margins through better sourcing",
+        "confidence": "High",
+        "source": "Extremely low margins: If your profit margins are already razor-thin, automatic repricing that undercuts competitors could push you into unprofitable territory. In such cases, focus first on improving your margins through better sourcing or cost reduction, then implement repricing with very strict floor prices."
+    },
+    {
+        "id": "repricing-012",
+        "category": "Risk",
+        "trigger": "Multiple sellers continually undercutting each other",
+        "advice": "Set firm price floors based on costs and minimum margins to avoid price wars; use features like minimum profit rules and ignore lists",
+        "confidence": "High",
+        "source": "How do I avoid price wars with repricing? Price wars happen when multiple sellers continually undercut each other with no floor limits. Avoiding price wars requires setting firm price floors based on your costs and minimum acceptable margins."
+    },
+    {
+        "id": "repricing-013",
+        "category": "General",
+        "trigger": "Resellers and retail arbitrage selling existing brands",
+        "advice": "Use repricing as one of the most important competitive advantages",
+        "confidence": "High",
+        "source": "Resellers and retail arbitrage: If you\u2019re selling existing brands and products that other sellers also offer, repricing is essential. The competition is direct and price-based, making automated repricing one of your most important competitive advantages."
+    },
+    {
+        "id": "repricing-014",
+        "category": "Pricing",
+        "trigger": "Repricing delays of 15-30 minutes",
+        "advice": "Use repricers that update multiple times per hour to avoid lost sales opportunities",
+        "confidence": "High",
+        "source": "Research shows that repricing delays of even 15-30 minutes can result in lost sales opportunities. This is why the fastest repricers, like Repricer.com, update prices multiple times per hour"
+    },
+    {
+        "id": "repricing-015",
+        "category": "Pricing",
+        "trigger": "Focus on listing price only",
+        "advice": "Consider landed price (product price + shipping) for Buy Box calculations, favoring FBA for lower standardized shipping",
+        "confidence": "High",
+        "source": "Understanding Landed Price vs Listing Price: Many new sellers make the mistake of focusing solely on their listing price. However, Amazon\u2019s algorithm considers the landed price\u2014the total cost to the customer including product price and shipping."
+    },
+    {
+        "id": "repricing-1",
+        "category": "Pricing",
+        "trigger": "Catalog under 50 SKUs",
+        "advice": "Use manual repricing for complete control and flexibility in small catalogs with limited competition.",
+        "confidence": "High",
+        "source": "Manual repricing works best for: Sellers with small catalogs (under 50 SKUs)"
+    },
+    {
+        "id": "repricing-2",
+        "category": "Pricing",
+        "trigger": "Catalog 100+ SKUs",
+        "advice": "Implement automated repricing to handle high volume and ensure real-time competitiveness.",
+        "confidence": "High",
+        "source": "Automated repricing is essential for: High-volume sellers with 100+ SKUs"
+    },
+    {
+        "id": "repricing-3",
+        "category": "General",
+        "trigger": "Business growth stage: Startup with fewer than 50-75 SKUs",
+        "advice": "Start with manual repricing to learn market dynamics, then transition to automation before reaching 50-75 SKUs.",
+        "confidence": "High",
+        "source": "Startup sellers just launching on Amazon might benefit from manual repricing initially... plan to automate before reaching 50-75 SKUs."
+    },
+    {
+        "id": "repricing-4",
+        "category": "Pricing",
+        "trigger": "Managing 100 products manually",
+        "advice": "Allocate 2-3 hours daily for checking and updating prices, but consider automation to free up time for business development.",
+        "confidence": "High",
+        "source": "manually checking and updating just 100 products takes approximately 2-3 hours daily"
+    },
+    {
+        "id": "repricing-5",
+        "category": "Pricing",
+        "trigger": "Highly competitive categories",
+        "advice": "Use automated repricing to keep pace with prices changing dozens of times daily and maintain Buy Box ownership.",
+        "confidence": "High",
+        "source": "In highly competitive categories like electronics, toys, or home goods, prices can change dozens of times daily. Manual repricing simply cannot keep pace"
+    },
+    {
+        "id": "repricing-6",
+        "category": "Risk",
+        "trigger": "Automated repricing setup",
+        "advice": "Configure rules with minimum price floors, maximum ceilings, and profit margin protections to avoid price wars and margin erosion.",
+        "confidence": "High",
+        "source": "The primary risks involve poorly configured rules that trigger price wars... Quality repricing software includes safeguards such as minimum price floors, maximum price ceilings, and profit margin protections."
+    },
+    {
+        "id": "repricing-7",
+        "category": "Pricing",
+        "trigger": "Hybrid strategy implementation",
+        "advice": "Automate 80-90% of catalog with rules, manually manage top 10-20% revenue-generating or strategic products.",
+        "confidence": "High",
+        "source": "automate 80-90% of your catalog, and reserve manual attention for your top 10-20% revenue-generating products"
+    },
+    {
+        "id": "repricing-8",
+        "category": "Seasonality",
+        "trigger": "Peak shopping seasons like Prime Day or Black Friday",
+        "advice": "Use manual adjustments during seasonal or promotional periods to maximize velocity or clear inventory.",
+        "confidence": "High",
+        "source": "Seasonal or promotional periods: During peak shopping seasons like Prime Day or Black Friday, you might manually adjust strategies"
+    },
+    {
+        "id": "repricing-9",
+        "category": "General",
+        "trigger": "Implementing automated repricing",
+        "advice": "Expect measurable improvements in Buy Box percentage and sales within 24-48 hours, full optimization in 2-4 weeks.",
+        "confidence": "High",
+        "source": "Most sellers see measurable improvements within 24-48 hours... Full optimization usually occurs within 2-4 weeks"
+    },
+    {
+        "id": "repricing-10",
+        "category": "Pricing",
+        "trigger": "Dynamic pricing software use",
+        "advice": "Leverage dynamic pricing to increase eCommerce sales by 15-30% through automated optimization.",
+        "confidence": "High",
+        "source": "Dynamic pricing software can increase eCommerce sales by 15-30% through automated price optimization"
+    },
+    {
+        "id": "repricing-11",
+        "category": "Pricing",
+        "trigger": "Automated tool costs",
+        "advice": "Budget $50-500+ monthly for quality repricing software, depending on features and SKU count.",
+        "confidence": "High",
+        "source": "Tool subscription costs: Quality repricing software typically costs $50-500+ monthly depending on features and SKU count."
+    },
+    {
+        "id": "repricing-12",
+        "category": "General",
+        "trigger": "Manual repricing time investment",
+        "advice": "If manual repricing takes 10 hours weekly, that's 520 hours annually\u2014use automation to reclaim time worth more than tool costs.",
+        "confidence": "High",
+        "source": "If manual repricing consumes 10 hours weekly, that\u2019s 520 hours annually\u2014time that could generate far more value"
+    },
+    {
+        "id": "repricing-13",
+        "category": "Pricing",
+        "trigger": "Buy Box ownership",
+        "advice": "Aim to win the Buy Box, which captures approximately 82% of Amazon sales, through competitive repricing.",
+        "confidence": "High",
+        "source": "products featured in the Buy Box capture approximately 82% of Amazon sales."
+    },
+    {
+        "id": "textbook-restrictions-001",
+        "category": "Risk",
+        "trigger": "Planning to sell textbooks on Amazon",
+        "advice": "Be aware that textbooks have restrictions, even if not explicitly listed; review Amazon's policies and ensure compliance before listing to avoid violations",
+        "confidence": "High",
+        "source": "Though the following products aren\u2019t included on Amazon\u2019s current list of restricted products, they have restrictions as well: Ink and toner cartridges Software Textbooks"
+    },
+    {
+        "id": "gated-categories-avoid-002",
+        "category": "General",
+        "trigger": "Product falls into gated categories like Fine Art, Jewelry, Watches",
+        "advice": "Research if your book-related items (e.g., collectible editions) fall into gated categories; apply for approval via Seller Central if needed to sell legally",
+        "confidence": "Medium",
+        "source": "This is a current list of Amazon-gated categories: ... Fine Art ... Jewelry ... Watches ... How to apply to get ungated on Amazon: ... login to your Seller Central account ... click on the \u2018Category\u2019 tab ... select \u2018Add Products\u2019 ... click on \u2018Show limitations\u2019 ... \u2018Request Approval\u2019"
+    },
+    {
+        "id": "prohibited-claims-003",
+        "category": "Risk",
+        "trigger": "Listing books with claims like 'FDA approved' or misleading environmental assertions",
+        "advice": "Avoid prohibited product claims in book descriptions (e.g., health cures without FDA approval); ensure all statements comply with FTC guidelines to prevent listing removal or suspension",
+        "confidence": "High",
+        "source": "Amazon\u2019s \u2018Prohibited Product Claims\u2019 policy ... bans products that say they can \u201ccure, mitigate, treat, or prevent diseases ... without FDA approval.\u201d ... products making environmental claims ... mustn\u2019t mislead customers ... comply with the FTC\u2019s \u201cGreen Guides\u201d"
+    },
+    {
+        "id": "violation-consequences-004",
+        "category": "Risk",
+        "trigger": "Violating Amazon category restrictions with book listings",
+        "advice": "Strictly comply with all rules to avoid consequences like listing cancellation, limits on privileges, suspension, or permanent removal; reinstatement is difficult",
+        "confidence": "High",
+        "source": "What happens if you violate Amazon category restrictions? ... Your listings could be canceled. They may place limits on your listing privileges. Your listing privileges could be suspended. They may remove your listing privileges altogether. And once Amazon takes disciplinary action against you, it can be difficult to get reinstated."
+    },
+    {
+        "id": "opportunity-in-gates-005",
+        "category": "General",
+        "trigger": "Interest in high-potential categories despite gates",
+        "advice": "Pursue ungating in restricted categories for huge sales opportunities, especially where competition is low; use tools like Jungle Scout for research in book-related niches",
+        "confidence": "Medium",
+        "source": "Why go through the trouble of selling in Amazon gated categories? ... many of these categories possess huge sales opportunities. And remember: Look for possibilities where others won\u2019t. It\u2019s the key to your Amazon success. To find your perfect business opportunity, use Jungle Scout to research product ideas"
+    },
+    {
+        "id": "return-fee-books",
+        "category": "Pricing",
+        "trigger": "Book returned within 30-day window with obvious signs of use",
+        "advice": "Charge up to 50% restocking fee of the item's price (excluding shipping)",
+        "confidence": "High",
+        "source": "The buyer returns a book within the return window with obvious signs of use. Yes. Up to 50% of item\u2019s price."
+    },
+    {
+        "id": "holiday-extended-returns",
+        "category": "Seasonality",
+        "trigger": "Items purchased between November 1 and December 31",
+        "advice": "Expect returns accepted through January 31; plan for extended return window impacting cash flow and inventory",
+        "confidence": "High",
+        "source": "All items purchased between November 1, 2023, and December 31, 2023, are returnable through January 31, 2024."
+    },
+    {
+        "id": "high-return-fee",
+        "category": "Risk",
+        "trigger": "Product return rate exceeds category-specific threshold (calculated over shipped units in a month plus next two months)",
+        "advice": "Monitor return rates weekly via FBA Returns dashboard starting May 1, 2024, to avoid processing fees on excess returns from June 1, 2024",
+        "confidence": "High",
+        "source": "Starting on June 1, 2024, Amazon will introduce a returns processing fee for high-return rate products in all categories, excluding apparel and shoes. The fee will only apply to products that have return rates above a threshold specific to each category. Your product\u2019s return rate will be the percent of your product\u2019s shipped units in a given month that\u2019s returned by customers over that month and the subsequent two calendar months."
+    },
+    {
+        "id": "return-insights-monitoring",
+        "category": "General",
+        "trigger": "Recurring returns for specific ASINs",
+        "advice": "Use FBA Return Insights tool to view top return reasons by ASIN, timeframe (30/60/180 days/last year), and category; improve listing descriptions or book condition to reduce returns",
+        "confidence": "High",
+        "source": "In March 2023, Amazon released a new tool under Manage FBA inventory called \u201cReturn insights\u201d that provides sellers with more insights into their returns. You can view trends by Return Rate % or Returned Units, and filter by Timeframe (30/60/180 days/last year) and the Product Category. It also breaks down data for each ASIN, including the top return reason."
+    },
+    {
+        "id": "returnless-refund-lowvalue",
+        "category": "Risk",
+        "trigger": "Low-value products like inexpensive books where return shipping cost exceeds value",
+        "advice": "Prepare for automatic returnless refunds without seller approval; set rules in FBM Return Settings for price range and category to control",
+        "confidence": "Medium",
+        "source": "Amazon decides to do this if the product value is low, if the return cost of shipping is too high, or if the product will be difficult to resell once returned. FBM Sellers can set Amazon Returnless Refund rules to their seller accounts under \u201cReturn Settings\u201d in Seller Central."
+    },
+    {
+        "id": "fba-liquidations-recovery",
+        "category": "General",
+        "trigger": "Unsellable returned or excess book inventory",
+        "advice": "Submit to FBA Liquidations program to recover 5-10% of average selling price from wholesale liquidators, avoiding storage fees and destruction costs",
+        "confidence": "High",
+        "source": "The FBA Liquidations program is designed to help sellers liquidate excess inventory and customer returns versus having the inventory destroyed, and to avoid paying additional storage fees. Wholesale liquidators will pay roughly 5% to 10% of the product\u2019s average selling price."
+    },
+    {
+        "id": "fba-grade-resell",
+        "category": "General",
+        "trigger": "Unfulfillable returned books in usable condition",
+        "advice": "Enroll in FBA Grade and Resell program; Amazon grades as Used \u2013 Like New, Very Good, Good, or Acceptable and creates new listings to resell without destruction",
+        "confidence": "High",
+        "source": "The FBA Grade and Resell program allows sellers to relist and sell unfulfillable returned inventory as used items, instead of paying Amazon to destroy or return the items. Amazon will then evaluate the condition and grade the item for you as either Used \u2013 Like New, Used \u2013 Very Good, Used \u2013 Good, or Used \u2013 Acceptable."
+    },
+    {
+        "id": "fba-donations",
+        "category": "General",
+        "trigger": "Excess or returned books not suitable for resale",
+        "advice": "Donate via FBA Donations program to US charities through Good360 for tax benefits and to reduce waste, avoiding removal or storage fees",
+        "confidence": "High",
+        "source": "Another option for your returned or overstocked items is to donate them through Amazon\u2019s FBA Donations program. This program allows sellers to donate eligible inventory to selected US charities. This planet-friendly alternative gives your products a new life versus destroying them and creating more landfill waste. It may even provide sellers with some tax benefits."
+    },
+    {
+        "id": "unsellable-removal",
+        "category": "Risk",
+        "trigger": "Defective or customer-damaged returned items",
+        "advice": "Submit removal order within 30 days of arrival at fulfillment center; request automatic return or disposal to avoid ongoing fees",
+        "confidence": "High",
+        "source": "For any item that is categorized as \u201cDefective\u201d or \u201cCustomer Damaged,\u201d sellers must submit a removal order within 30 days after the returned item arrives at the fulfillment center. You can also request that Amazon returns or disposes of your unsellable inventory automatically in Seller Central."
+    },
+    {
+        "id": "non-return-reimbursement",
+        "category": "Risk",
+        "trigger": "Customer does not return product within 45 days after refund",
+        "advice": "Expect automatic reimbursement after 45 days; open support case if not received to recover funds on non-returned items",
+        "confidence": "High",
+        "source": "If the customer does not return the product to an Amazon fulfillment center within 45 days of initially receiving it, Amazon will recharge the customer if they were already refunded, and will reimburse the seller for the item. Typically, Amazon automatically reimburses you after 45 days."
+    },
+    {
+        "id": "bookstrat-1",
+        "category": "Buying",
+        "trigger": "Sourcing at thrift stores, book sales, library sales, estate sales",
+        "advice": "Purchase used books for as low as $0.25 apiece; potential resale value up to $25, $50, or $100 on Amazon",
+        "confidence": "High",
+        "source": "You can also find an abundance of used books for very cheap \u2014 as low as $0.25 apiece \u2014 at thrift stores, book sales, library sales, and estate sales. You\u2019d be surprised at how much some used books are worth. A book that you purchase for cents on the dollar can sell for $25, $50, even upwards of $100 on Amazon."
+    },
+    {
+        "id": "bookstrat-2",
+        "category": "General",
+        "trigger": "Starting ecommerce with little to no money",
+        "advice": "Begin by selling used books on Amazon as they are cheap to source, easy to find, and one of the most popular categories",
+        "confidence": "High",
+        "source": "If you\u2019ve been following Jungle Scout for a while, you know we often refer to selling books on Amazon as one of the best ways to get started in ecommerce with little to no money. In 2024, books still comprise one of the most popular categories on Amazon."
+    },
+    {
+        "id": "bookstrat-3",
+        "category": "General",
+        "trigger": "New to selling used items on Amazon",
+        "advice": "Start with used books because they are very cheap to source and easy to find",
+        "confidence": "High",
+        "source": "I personally recommend starting with used books, as they are very cheap to source and easy to find."
+    },
+    {
+        "id": "bookstrat-4",
+        "category": "Pricing",
+        "trigger": "Assessing item condition for listing",
+        "advice": "List the condition below what you believe it to be (e.g., 'Like New' as 'Very Good') to exceed customer expectations and avoid dissatisfaction",
+        "confidence": "High",
+        "source": "Typically, it is a good idea to list something as a condition below what you believe the item to be. For example, if you believe the item is \u201cLike New\u201d, list it as \u201cVery Good.\u201d That way, the customers\u2019 expectations may be exceeded rather than unfulfilled."
+    },
+    {
+        "id": "bookstrat-5",
+        "category": "Risk",
+        "trigger": "Evaluating used book condition",
+        "advice": "Only list books that meet Amazon\u2019s used condition guidelines; reject if dirty with mold, heavy staining, corrosion, damaged in a way that impacts use, missing essential parts, counterfeit, expired, or designated unsellable",
+        "confidence": "High",
+        "source": "According to Amazon, the following conditions are unacceptable to be listed on Amazon: The item is dirty with mold, heavy staining, corrosion, or other signs of uncleanliness; The item has damage that impacts the ability to use it; The item is missing parts or accessories that are essential to use it (excludes instructions); The product needs repairs; The item is a copy, counterfeit, replica, or imitation of an original product; The item was created for promotional purposes, such as a product sample or advance reading copy; The item is expired or close to expiring, per its expiration date (including \u201cbest by\u201d and \u201csell by\u201d dates), or the expiration date has been altered or removed; The item was designated unsellable by its manufacturer."
+    },
+    {
+        "id": "bookstrat-6",
+        "category": "Buying",
+        "trigger": "Thrift shopping for used items including books",
+        "advice": "Ensure purchased books and items are in good working condition; do not buy or list if missing parts or not functioning correctly",
+        "confidence": "High",
+        "source": "Just make sure the items you purchase are in good, working condition. Thrift stores often sell items that wouldn\u2019t be acceptable to sell as used on Amazon. If the item is missing parts or doesn\u2019t work correctly, do not list it on Amazon."
+    },
+    {
+        "id": "fba-inbound-fee-standard",
+        "category": "Pricing",
+        "trigger": "Shipping standard-sized products starting March 1, 2024",
+        "advice": "Expect inbound placement service fee of $0.21 \u2013 $0.68 per unit; split shipment to multiple warehouses to reduce or avoid the fee",
+        "confidence": "High",
+        "source": "2024 Update: Starting March 1, 2024, Amazon will introduce an inbound placement service fee for standard and large bulky-sized products. The fees will range from $0.21 \u2013 $0.68 per unit for standard-sized products... If you split up your shipment to multiple warehouses (you should have this option when creating a shipment in Seller Central), Amazon states you\u2019ll have a reduced inbound placement fee or no fee."
+    },
+    {
+        "id": "fba-inbound-fee-bulky",
+        "category": "Pricing",
+        "trigger": "Shipping large bulky-sized products starting March 1, 2024",
+        "advice": "Expect inbound placement service fee of $2.16 \u2013 $6.00 per unit; split shipment to multiple warehouses to reduce or avoid the fee",
+        "confidence": "High",
+        "source": "2024 Update: Starting March 1, 2024, Amazon will introduce an inbound placement service fee for standard and large bulky-sized products. The fees will range from $0.21 \u2013 $0.68 per unit for standard-sized products, and $2.16 \u2013 $6.00 per unit for large bulky-sized products... If you split up your shipment to multiple warehouses (you should have this option when creating a shipment in Seller Central), Amazon states you\u2019ll have a reduced inbound placement fee or no fee."
+    },
+    {
+        "id": "fba-shipping-cost-per-lb",
+        "category": "Pricing",
+        "trigger": "Shipping products to Amazon FBA warehouse",
+        "advice": "Budget for average shipping cost of $0.25-$0.30 per pound; ship more units at one time to reduce cost per unit",
+        "confidence": "High",
+        "source": "On average, sellers are paying roughly $0.25-$0.30 per pound to ship products to an Amazon FBA warehouse. The more units you ship at one time, the less it will cost you per unit."
+    },
+    {
+        "id": "fba-cheapest-carrier",
+        "category": "Pricing",
+        "trigger": "Creating FBA shipment in Seller Central",
+        "advice": "Use Amazon-partnered carriers such as UPS for the best rates when shipping to fulfillment centers",
+        "confidence": "High",
+        "source": "The cheapest way to ship products to Amazon FBA is by using an Amazon-partnered carrier such as UPS to ship your packages to Amazon\u2019s fulfillment centers. When creating your shipments in Seller Central, you will have the option to use Amazon\u2019s partnered carriers, which will give you the best rates when shipping to Amazon."
+    },
+    {
+        "id": "fba-global-logistics",
+        "category": "General",
+        "trigger": "Ship from address outside marketplace country (e.g., China)",
+        "advice": "Use Amazon Global Logistics program to book ocean shipments directly in Seller Central for easier inventory transport from suppliers to FBA",
+        "confidence": "High",
+        "source": "Amazon now has a program called Amazon Global Logistics that allows sellers to book ocean shipments right in Seller Central. This makes it much easier for sellers to get their inventory from their supplier in China, into Amazon\u2019s fulfillment centers. When creating your shipment in Send to Amazon, if you enter a ship from address from outside your marketplace country, an option for Global Logistics will pop up."
+    },
+    {
+        "id": "fba-reusable-templates",
+        "category": "General",
+        "trigger": "Repeated shipments with same packing details",
+        "advice": "Create reusable case pack templates in Send to Amazon for box content, weight, dimensions, and prep details to save time on future replenishments",
+        "confidence": "High",
+        "source": "Create reusable case pack templates to provide box content information, box weight and dimensions, and prep and labeling details for shipments of single-SKU boxes. The templates are ideal when you use the same box configuration for a SKU because you won\u2019t have to re-enter the details each time you replenish inventory."
     }
 ]

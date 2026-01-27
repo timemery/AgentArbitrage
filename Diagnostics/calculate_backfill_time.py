@@ -1,39 +1,53 @@
 #!/usr/bin/env python3
 import math
 
-# Simulation Constants
-TOTAL_DEALS_TARGET = 10000
+# --- Simulation Constants ---
+TOTAL_DEALS_TARGET = 24000  # Updated to reflect "TONS o Deals" query volume
 DEALS_PER_CHUNK = 20
-COST_PER_DEAL = 12  # Estimated in backfiller.py
-COST_PER_CHUNK = DEALS_PER_CHUNK * COST_PER_DEAL # 240 tokens
 REFILL_RATE_PER_MINUTE = 5
 MAX_TOKENS = 300
 
+# Cost Models
+COST_PER_DEAL_NEW = 20     # High Cost: Full history fetch (3 years)
+COST_PER_DEAL_EXISTING = 1 # Low Cost: "Lightweight" update (Current stats only)
+
 # Upserter Constants
 UPSERTER_MIN_TOKENS = 20
-UPSERTER_COST_PER_MIN = 1 # Minimum cost (1 call). If it processes deals, it's higher.
+UPSERTER_COST_PER_MIN = 2 # Assuming minimal activity
 
-def simulate_backfill(strategy="conservative", with_upserter=True):
-    print(f"\n--- Simulating Strategy: {strategy.upper()} (Upserter: {'ON' if with_upserter else 'OFF'}) ---")
+def simulate_backfill(strategy="standard", maintenance_ratio=0.0):
+    """
+    Simulates time to process deals.
+    maintenance_ratio: Percentage of deals (0.0 to 1.0) that are 'Existing' and eligible for cheap updates.
+    """
+    label = f"{strategy.upper()} (Maintenance: {int(maintenance_ratio*100)}%)"
+    print(f"\n--- Simulating Strategy: {label} ---")
 
-    current_tokens = 300.0 # Start full
+    current_tokens = 300.0
     deals_processed = 0
     minutes_elapsed = 0
 
-    # State for conservative strategy
-    waiting_for_full = False
+    # Calculate Average Cost Per Chunk based on ratio
+    # e.g., if 50% are existing: (10 * 20) + (10 * 1) = 210 tokens per chunk
+    avg_cost_per_chunk = (DEALS_PER_CHUNK * (1 - maintenance_ratio) * COST_PER_DEAL_NEW) + \
+                         (DEALS_PER_CHUNK * maintenance_ratio * COST_PER_DEAL_EXISTING)
 
-    # State for optimized strategy
-    waiting_for_threshold = False
+    # Round up because tokens are integers in practice
+    avg_cost_per_chunk = math.ceil(avg_cost_per_chunk)
+
+    print(f"  > Avg Cost Per Chunk ({DEALS_PER_CHUNK} deals): {avg_cost_per_chunk} tokens")
+
+    # Optimization Thresholds
     OPTIMIZED_THRESHOLD = 50
     OPTIMIZED_REFILL_TARGET = 55
+    waiting_for_threshold = False
 
     MAX_MINUTES = 60 * 24 * 365 # 1 year timeout
 
     while deals_processed < TOTAL_DEALS_TARGET:
         minutes_elapsed += 1
         if minutes_elapsed > MAX_MINUTES:
-            print("TIMEOUT: Simulation exceeded 1 year. System is stuck.")
+            print("TIMEOUT: Simulation exceeded 1 year.")
             return float('inf')
 
         # 1. Refill
@@ -42,54 +56,29 @@ def simulate_backfill(strategy="conservative", with_upserter=True):
             current_tokens = MAX_TOKENS
 
         # 2. Upserter Run (Every minute)
-        if with_upserter:
-            if current_tokens >= UPSERTER_MIN_TOKENS:
-                current_tokens -= UPSERTER_COST_PER_MIN
+        # Prioritize Upserter: It eats first
+        if current_tokens >= UPSERTER_MIN_TOKENS:
+            current_tokens -= UPSERTER_COST_PER_MIN
 
-        # 3. Backfiller Logic
-
-        # Determine effective cost (actual consumption vs estimation logic)
-        # Backfiller logic uses ESTIMATED cost to decide to wait.
-        # But assumes 'deficit spending' allowed by API.
-
-        if strategy == "conservative":
-            # Logic: if tokens < estimated_cost: wait for max
-
-            if waiting_for_full:
-                if current_tokens >= MAX_TOKENS * 0.99: # Allow float tolerance
-                    waiting_for_full = False
-                else:
-                    continue # Keep waiting
-
-            if current_tokens < COST_PER_CHUNK:
-                waiting_for_full = True
+        # 3. Backfiller Logic (Optimized 'Deficit' Strategy)
+        if waiting_for_threshold:
+            if current_tokens >= OPTIMIZED_REFILL_TARGET:
+                waiting_for_threshold = False
+            else:
                 continue
-            else:
-                # Process Chunk
-                # We assume actual cost matches estimated for simplicity, or slightly less
-                # But the DECISION to proceed is based on estimate.
-                current_tokens -= COST_PER_CHUNK
-                deals_processed += DEALS_PER_CHUNK
 
-        elif strategy == "optimized":
-            # Logic: if tokens > 50: allow call
-            # if tokens < 50: wait for 55
+        # Check if we have enough tokens for *ONE* chunk (or are allowed to go into deficit)
+        # The 'Optimized' strategy allows dipping into negative if we are above threshold
+        if current_tokens > OPTIMIZED_THRESHOLD:
+            current_tokens -= avg_cost_per_chunk
+            deals_processed += DEALS_PER_CHUNK
 
-            if waiting_for_threshold:
-                if current_tokens >= OPTIMIZED_REFILL_TARGET:
-                    waiting_for_threshold = False
-                else:
-                    continue
-
-            if current_tokens > OPTIMIZED_THRESHOLD:
-                current_tokens -= COST_PER_CHUNK # Allow going negative
-                deals_processed += DEALS_PER_CHUNK
-
-                if current_tokens < OPTIMIZED_THRESHOLD:
-                    waiting_for_threshold = True
-            else:
+            # If we went below threshold (or negative), trigger wait
+            if current_tokens < OPTIMIZED_THRESHOLD:
                 waiting_for_threshold = True
-                continue
+        else:
+            waiting_for_threshold = True
+            continue
 
     hours = minutes_elapsed / 60
     days = hours / 24
@@ -100,18 +89,22 @@ def simulate_backfill(strategy="conservative", with_upserter=True):
     return minutes_elapsed
 
 if __name__ == "__main__":
-    print("Running Diagnostic Simulation for 10,000 Deals...")
+    print(f"Running Diagnostic Simulation for {TOTAL_DEALS_TARGET} Deals...")
+    print(f"Refill Rate: {REFILL_RATE_PER_MINUTE} tokens/min")
 
-    t_current = simulate_backfill(strategy="conservative", with_upserter=True)
-    t_opt = simulate_backfill(strategy="optimized", with_upserter=True)
+    # Scenario 1: Fresh Start (Everything is New)
+    t_fresh = simulate_backfill(strategy="standard", maintenance_ratio=0.0)
+
+    # Scenario 2: 50% Maintenance (Half the deals are already in DB)
+    t_mixed = simulate_backfill(strategy="optimized", maintenance_ratio=0.5)
+
+    # Scenario 3: 90% Maintenance (Most deals in DB, just refreshing)
+    t_maint = simulate_backfill(strategy="optimized", maintenance_ratio=0.9)
 
     print("\n--- SUMMARY ---")
-    if t_current == float('inf'):
-        print(f"Current Estimated Time: INFINITE (Stuck in Loop)")
-    else:
-        print(f"Current Estimated Time: {t_current/60:.1f} hours ({t_current/60/24:.1f} days)")
+    print(f"1. Fresh Start (0% Existing): {t_fresh/60/24:.1f} days")
+    print(f"2. Mixed Mode (50% Existing): {t_mixed/60/24:.1f} days")
+    print(f"3. Maintenance (90% Existing): {t_maint/60/24:.1f} days")
 
-    print(f"Optimized Estimated Time: {t_opt/60:.1f} hours ({t_opt/60/24:.1f} days)")
-
-    if t_current != float('inf'):
-        print(f"Speedup Factor: {t_current/t_opt:.2f}x")
+    if t_fresh != float('inf') and t_maint != float('inf'):
+        print(f"\nPotential Speedup (Fresh vs Maintenance): {t_fresh/t_maint:.1f}x")
