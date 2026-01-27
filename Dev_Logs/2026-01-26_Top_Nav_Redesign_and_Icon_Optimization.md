@@ -35,7 +35,7 @@ To resolve the sharpness issues, a rigorous optimization process was applied to 
     *   Removed all `<filter>` and `<g filter...>` tags.
     *   Applied the fill color (`#eef2f6`) directly to the path elements.
     *   Set the intrinsic `width` and `height` attributes to match the new `viewBox` dimensions (e.g., `512`x`512`) to ensure a perfect 1:1 aspect ratio during scaling.
-4.  **Sizing Adjustment:** Increased the CSS display height from 16px to **18px** per user feedback, which struck the perfect balance for visual sharpness on the dark background.
+4.  **Sizing Adjustment:** Increased the CSS display height from 16px to **20px** per user feedback. This slightly larger size, combined with the optimized vectors, provided the best visual sharpness and weight balance.
 
 ### B. Structural CSS Refactoring
 *   **Absolute Positioning:** To maintain the fixed height (`134px`) and centering requirements, the three navigation sections were positioned absolutely within the relative header container.

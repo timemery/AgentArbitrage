@@ -435,7 +435,7 @@ button:disabled {
 
 /* Icons */
 .nav-icon {
-    height: 18px;
+    height: 20px;
     width: auto;
     margin-right: 8px; /* Spacing between icon and label */
     display: block;
