@@ -12,63 +12,65 @@
 </head>
 <body class="site-background">
     <header class="main-header">
-        <!-- Left Section -->
-        <div class="nav-section nav-left">
-            <a href="{{ url_for('dashboard') }}" class="header-logo">
-                <img src="{{ url_for('static', filename='AA_Logo.svg') }}" alt="Agent Arbitrage Logo">
-            </a>
-            <div class="nav-spacer-large"></div>
-            <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
-                <img src="{{ url_for('static', filename='Dashboard_Icon.svg') }}" class="nav-icon" alt="Dashboard">
-                <span>Dashboard</span>
-            </a>
-            <div class="nav-spacer"></div>
-            <a href="{{ url_for('tracking') }}" class="nav-item {% if request.endpoint == 'tracking' %}active{% endif %}">
-                <img src="{{ url_for('static', filename='Tracking_Icon.svg') }}" class="nav-icon" alt="Tracking">
-                <span>Tracking</span>
-            </a>
-        </div>
-
-        <!-- Center Section (Admin) -->
-        <nav class="nav-section nav-center">
-             {% if session.role == 'admin' %}
-                <a href="{{ url_for('guided_learning') }}" class="nav-link {% if request.endpoint == 'guided_learning' %}active{% endif %}">Guided Learning</a>
-                <span class="nav-divider">|</span>
-                <a href="{{ url_for('strategies') }}" class="nav-link {% if request.endpoint == 'strategies' %}active{% endif %}">Strategies</a>
-                <span class="nav-divider">|</span>
-                <a href="{{ url_for('intelligence') }}" class="nav-link {% if request.endpoint == 'intelligence' %}active{% endif %}">Intelligence</a>
-                <span class="nav-divider">|</span>
-                <a href="{{ url_for('deals') }}" class="nav-link {% if request.endpoint == 'deals' %}active{% endif %}">Deals</a>
-            {% endif %}
-        </nav>
-
-        <!-- Right Section -->
-        <div class="nav-section nav-right">
-            <div class="nav-item-wrapper" style="position: relative;">
-                <a href="#" class="nav-item" id="mentor-link" onclick="toggleMentorOverlay(event)">
-                    <img src="{{ url_for('static', filename='Mentor_Chat_Icon.svg') }}" class="nav-icon" alt="Mentor">
-                    <span>Mentor</span>
+        <div class="header-content-wrapper">
+            <!-- Left Section -->
+            <div class="nav-section nav-left">
+                <a href="{{ url_for('dashboard') }}" class="header-logo">
+                    <img src="{{ url_for('static', filename='AA_Logo.svg') }}" alt="Agent Arbitrage Logo">
                 </a>
-                <div id="mentor-chat-overlay" class="mentor-chat-overlay">
-                    <div class="mentor-chat-header">
-                        <h3>Mentor Chat</h3>
-                        <span class="close-overlay" onclick="toggleMentorOverlay(event)">&times;</span>
-                    </div>
-                    <div class="mentor-chat-body">
-                        <p>Chat functionality coming soon...</p>
+                <div class="nav-spacer-large"></div>
+                <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='Dashboard_Icon.svg') }}" class="nav-icon" alt="Dashboard">
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-spacer"></div>
+                <a href="{{ url_for('tracking') }}" class="nav-item {% if request.endpoint == 'tracking' %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='Tracking_Icon.svg') }}" class="nav-icon" alt="Tracking">
+                    <span>Tracking</span>
+                </a>
+            </div>
+
+            <!-- Center Section (Admin) -->
+            <nav class="nav-section nav-center">
+                 {% if session.role == 'admin' %}
+                    <a href="{{ url_for('guided_learning') }}" class="nav-link {% if request.endpoint == 'guided_learning' %}active{% endif %}">Guided Learning</a>
+                    <span class="nav-divider">|</span>
+                    <a href="{{ url_for('strategies') }}" class="nav-link {% if request.endpoint == 'strategies' %}active{% endif %}">Strategies</a>
+                    <span class="nav-divider">|</span>
+                    <a href="{{ url_for('intelligence') }}" class="nav-link {% if request.endpoint == 'intelligence' %}active{% endif %}">Intelligence</a>
+                    <span class="nav-divider">|</span>
+                    <a href="{{ url_for('deals') }}" class="nav-link {% if request.endpoint == 'deals' %}active{% endif %}">Deals</a>
+                {% endif %}
+            </nav>
+
+            <!-- Right Section -->
+            <div class="nav-section nav-right">
+                <div class="nav-item-wrapper" style="position: relative;">
+                    <a href="#" class="nav-item" id="mentor-link" onclick="toggleMentorOverlay(event)">
+                        <img src="{{ url_for('static', filename='Mentor_Chat_Icon.svg') }}" class="nav-icon" alt="Mentor">
+                        <span>Mentor</span>
+                    </a>
+                    <div id="mentor-chat-overlay" class="mentor-chat-overlay">
+                        <div class="mentor-chat-header">
+                            <h3>Mentor Chat</h3>
+                            <span class="close-overlay" onclick="toggleMentorOverlay(event)">&times;</span>
+                        </div>
+                        <div class="mentor-chat-body">
+                            <p>Chat functionality coming soon...</p>
+                        </div>
                     </div>
                 </div>
+                <div class="nav-spacer"></div>
+                <a href="{{ url_for('settings') }}" class="nav-item {% if request.endpoint == 'settings' %}active{% endif %}">
+                     <img src="{{ url_for('static', filename='Settings_Icon.svg') }}" class="nav-icon" alt="Settings">
+                     <span>Settings</span>
+                </a>
+                <div class="nav-spacer"></div>
+                <a href="{{ url_for('logout') }}" class="nav-item">
+                     <img src="{{ url_for('static', filename='Logout_Icon.svg') }}" class="nav-icon" alt="Logout">
+                     <span>Logout</span>
+                </a>
             </div>
-            <div class="nav-spacer"></div>
-            <a href="{{ url_for('settings') }}" class="nav-item {% if request.endpoint == 'settings' %}active{% endif %}">
-                 <img src="{{ url_for('static', filename='Settings_Icon.svg') }}" class="nav-icon" alt="Settings">
-                 <span>Settings</span>
-            </a>
-            <div class="nav-spacer"></div>
-            <a href="{{ url_for('logout') }}" class="nav-item">
-                 <img src="{{ url_for('static', filename='Logout_Icon.svg') }}" class="nav-icon" alt="Logout">
-                 <span>Logout</span>
-            </a>
         </div>
     </header>
 

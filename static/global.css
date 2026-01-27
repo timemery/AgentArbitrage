@@ -364,13 +364,22 @@ button:disabled {
     width: 100%;
     /* The padding sets the height and pushes down the .container */
     height: 134px;
-    padding: 0 17px; /* Horizontal padding moved here */
     box-sizing: border-box;
     z-index: 300;
     background-color: #131d39; /* Updated Color */
+    /* Flex logic moved to wrapper */
+}
+
+.header-content-wrapper {
+    max-width: 1550px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 17px; /* Padding for when window < 1550px */
+    box-sizing: border-box;
 }
 
 /* Nav Sections */
