@@ -500,9 +500,11 @@ button:disabled {
 }
 
 .header-logo img {
-    width: 190px;
+    width: 188px;
     height: auto;
     margin-right: 0;
+    position: relative;
+    top: 3px; /* Align text baseline with nav items */
 }
 
 /* Styles for Gated/Restriction Status */
