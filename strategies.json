@@ -26735,5 +26735,1713 @@
         "advice": "List as Collectible - Acceptable only for rare items; otherwise not collectible grade",
         "confidence": "High",
         "source": "Collectible - Acceptable: A readable copy showing significant wear. Dust jacket may be missing. For all but the rarest items, books in Acceptable condition are not considered to be collectible grade."
+    },
+    {
+        "id": "2230a273-1d07-4681-bf75-4358d11f99c3",
+        "advice": "[",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f4b34971-8301-4499-8510-42288ddda2a4",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0fc1b562-6a38-4d48-abeb-d9bc9ca73950",
+        "advice": "\"id\": \"strat-1\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bee1eef3-8e2e-4660-80ea-925e8bd9dd2c",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "840a93f5-fca2-4a77-bad9-da2874864ff2",
+        "advice": "\"trigger\": \"Listings lacking multimedia\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ca10e333-85d4-43d8-8cd0-69888e8fc39f",
+        "advice": "\"advice\": \"Utilize lifestyle images, videos, and infographics to showcase product; focus on benefits over features for 30% increase in conversion rates\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "042eced5-01ec-444b-bfce-6076eb948b5c",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "df8891cb-d1d7-48ff-9de9-e65fdc1fdefb",
+        "advice": "\"source\": \"Effective product listings go beyond mere text. Utilize lifestyle images, videos, and infographics to vividly showcase your product in action. Focus on benefits over features to forge an emotional bond with potential buyers. Research shows that listings featuring multimedia can achieve a 30% increase in conversion rates.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7a1365a9-af38-41bf-ae2d-a812c26558e5",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "abfd1e1b-aed8-417f-bc16-e1736bce6418",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "08459be7-46a9-4bf7-8de6-70d45876ce46",
+        "advice": "\"id\": \"strat-2\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ff5239b0-c061-4ee4-9dff-3fd69c255219",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "deb94fe0-982d-4e1b-bf0e-7faa382a1b5e",
+        "advice": "\"trigger\": \"Using short-tail keywords\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "32ecab7d-bd3d-487e-9698-8e5eb57a2418",
+        "advice": "\"advice\": \"Emphasize long-tail keywords for specific buyer intent; optimize backend keywords without redundancy for 20% improvement in organic search rankings\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8885bd39-0ad8-49c2-a5d5-650466aae31d",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "596a1390-088c-41f6-9750-c6d2d8da72a1",
+        "advice": "\"source\": \"Keywords are pivotal for driving traffic and enhancing conversion rates. Emphasize long-tail keywords that capture specific buyer intent. Strategically optimize backend keywords; avoid redundancy, ensuring your listings accurately represent their categories. Sellers who target high-intent phrases may observe a 20% improvement in organic search rankings.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "02447086-6816-4a1b-9674-2494f723eed1",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fad490f2-5063-4890-9f70-0f6ae048bf83",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e126527e-6925-471d-97d3-6f0953e8aa35",
+        "advice": "\"id\": \"strat-3\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d35729c3-17bb-4647-b6e2-1104c172d46b",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "53b31dc1-5872-43d2-a8be-e70072c5f244",
+        "advice": "\"trigger\": \"Unoptimized product titles and descriptions\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b00cbef3-5eaf-41cc-bbfb-d0f649556fe9",
+        "advice": "\"advice\": \"Incorporate primary keywords in clear, concise titles; blend persuasive elements with crucial information in descriptions to elevate visibility and click-through rates\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fab0bdc3-e483-42b7-90e4-7206ed06f64a",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1f00a6c3-b42d-4776-9c9a-5cdf12150282",
+        "advice": "\"source\": \"Ensure your product titles are clear, concise, and incorporate primary keywords. Descriptions should blend persuasive elements with crucial information. Well-structured titles can elevate visibility in search results, leading to higher click-through rates and positively influencing sales performance.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e80f44d0-5cd9-4b39-9843-5be85924e13e",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "375ceeac-967a-4d35-a816-53821eb10aef",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a86c04f6-0401-4cc0-9194-d6a439a6b678",
+        "advice": "\"id\": \"strat-4\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cc8a7b07-d66c-41a5-89b6-c8bb3ea3c61e",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "744566f4-660a-4087-a76d-0a1557c04d9f",
+        "advice": "\"trigger\": \"No brand store\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "07fe061a-5d97-44a1-b29f-45fe8945006a",
+        "advice": "\"advice\": \"Create and regularly update Brand Stores with new visuals and offers for 40% increase in customer engagement\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7709a84b-bd80-43cd-9564-06e1f6389a5f",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1f2cb30b-f743-43a0-978d-c11295aa3346",
+        "advice": "\"source\": \"Utilize Brand Stores to enrich your brand narrative. This semi-custom storefront enables you to present product ranges in a personalized manner. Regular updates featuring new visuals and offers keep the store dynamic and engaging for returning customers. Sellers who invest in Brand Stores report a 40% increase in customer engagement compared to those who do not.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6e9bcf77-36cb-4761-859e-e11d2ce53bf3",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0182dc29-dc26-49f9-9429-1cbd2a54b817",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ed24932b-e0ee-419f-896e-9a1a36cac6f4",
+        "advice": "\"id\": \"strat-5\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "91953a7d-6f26-469d-beed-6db88dd10a32",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "abcc3b38-2899-4724-b4e7-71f10e70a5fa",
+        "advice": "\"trigger\": \"Unsegmented PPC campaigns\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "55d7fc22-d30f-4046-9181-f68d345d4c00",
+        "advice": "\"advice\": \"Segment PPC into branded, competitor, and generic queries; monitor ACoS and TACoS; use tools for 15% reduction in advertising expenditures\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "54cc3ac7-63a3-4ddb-91de-0a6165440b2d",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7836d9d4-6227-4fc3-9f28-236fa2d3e9e1",
+        "advice": "\"source\": \"Adopt a segmented approach to PPC campaigns. Separate branded, competitor, and generic queries for better performance evaluation. Keep an eye on metrics like ACoS (Advertising Cost of Sale) and TACoS (Total Advertising Cost of Sale). Implementing PPC management tools can lead to a 15% reduction in overall advertising expenditures while boosting visibility.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "705d6dbb-cc10-4b10-8e48-f9ec9bff4240",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fd38ee97-15f9-428a-8f72-76c40e95aee5",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4754264d-fee2-4beb-94e1-7cf661584659",
+        "advice": "\"id\": \"strat-6\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "deb6085f-a59b-4156-98e3-00b84c15f682",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "999aa821-0392-43fe-a52f-6e11db510339",
+        "advice": "\"trigger\": \"Reliance only on Amazon traffic\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5ef1e31a-e5d0-46a1-bd96-5bc2f1b0ebe6",
+        "advice": "\"advice\": \"Drive external traffic from social media, influencers, and email; use Amazon Attribution to track contributions to sales\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "18dc89a6-1655-4e96-b9a5-da19df49c400",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7c17217f-9739-4473-8681-0bd321d5dea3",
+        "advice": "\"source\": \"Expand your outreach by directing traffic from social media, influencer partnerships, and email marketing initiatives. Collaborating with influencers in your niche can significantly enhance reach and credibility. Use Amazon Attribution to track how these external channels contribute to your sales conversion funnel.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8b6a59db-bd06-4917-a6f6-39b490d6b4e3",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d4d34542-c313-4d99-905a-db751895707d",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a646f486-7196-4753-9380-8bc1c2248162",
+        "advice": "\"id\": \"strat-7\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a855fb24-84f3-4f16-a5b1-566804156b7f",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "539f4eb9-7f95-4170-9451-4ba5ce4c3bc9",
+        "advice": "\"trigger\": \"No promotions during peak seasons\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "73970b03-35b2-4ef4-8209-f6e077621232",
+        "advice": "\"advice\": \"Run discounts, coupons, and limited-time promotions during Black Friday or Prime Day for surge in sales velocity\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1b8aa2a1-26bc-43d7-881e-d7bf2fc7f967",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "65acb9da-0d0e-437c-a365-d43efad94c55",
+        "advice": "\"source\": \"Implement discounts, coupons, and limited-time promotions to generate urgency and pique interest. Time-sensitive offers can lead to a temporary surge in sales velocity, especially beneficial during peak shopping seasons like Black Friday or Amazon Prime Day.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ae4b3864-f03c-4e52-97b4-795f308d88b5",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d4b9a14d-a1dc-4bba-9290-b3bafdde7205",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9b724a35-9a78-45d1-b967-56227b023cd8",
+        "advice": "\"id\": \"strat-8\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "86c85954-8a8a-4dc5-a2b5-b3b785b1f530",
+        "advice": "\"category\": \"Risk\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "015d0a4b-314b-459c-9408-522103174e11",
+        "advice": "\"trigger\": \"Poor inventory forecasting\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "dd1973a7-eaeb-474c-a20a-bc6d755b8822",
+        "advice": "\"advice\": \"Use tools for demand forecasting, reorder alerts considering lead times, and seasonal trends to prevent stockouts and protect rankings\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f5f9bc8f-f32d-453b-a412-86aa0db00bdc",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ae466ffb-cd00-4ef5-90c7-06596d7cba35",
+        "advice": "\"source\": \"Effective inventory management is crucial for maintaining sales momentum. Use tools to accurately forecast demand, establish reorder alerts that consider lead times, and strategize around seasonal trends. Proactive inventory protection can prevent stockouts and safeguard category rankings.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "302e13b9-9736-42fb-8069-7b7f0c393d8c",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2f441e8e-05e9-499e-8e05-157557685a14",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2fbd7891-1bfd-489c-81ff-b918d5c3c93a",
+        "advice": "\"id\": \"strat-9\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fea6ad86-ed3d-44bd-bbb6-7e377cfcc125",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ddadf397-55a0-447a-811a-60f077e46b2f",
+        "advice": "\"trigger\": \"Slow review acquisition\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "10db9d18-b409-4d5b-9ae5-29a72251f2db",
+        "advice": "\"advice\": \"Ethically automate review requests for steady positive reviews to increase trust and up to 50% sales enhancement\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0c25def0-9ac0-4c66-baf8-123a649a0254",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e1cef84a-fa6b-41f9-a5f3-69fc871f6a20",
+        "advice": "\"source\": \"Accelerate the acquisition of social proof through ethical automation of review requests. Enhancing your review strategy is likely to increase customer trust and conversion rates. Studies show that sellers who maintain a steady stream of positive reviews can enhance sales by up to 50%.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b7ceb332-3f2c-44fb-92cb-d8244a071640",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0254d20d-087c-411b-b411-75d7faa3eb45",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "78b88b80-72ff-402c-be20-282b7860ce4d",
+        "advice": "\"id\": \"strat-10\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7b1cdc8e-98e9-470a-b1af-4d3b4dfd3293",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4c4668fb-a3a8-4edd-835e-3947b088ec4b",
+        "advice": "\"trigger\": \"Not monitoring Buy Box factors\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c5f94052-da83-4586-85f3-efb55ba58145",
+        "advice": "\"advice\": \"Monitor pricing, availability, and seller metrics; analyze data for adjustments to secure Buy Box consistently\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "17e13e16-d6a4-4e18-9427-460e65361bbb",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "d954af08-b57b-4722-8a36-2e3e03cee33f",
+        "advice": "\"source\": \"Focusing on securing the Buy Box should be a priority for all sellers. Keep monitoring pricing and availability to stay competitive. Analyzing performance data ensures you\u2019re ready for swift adjustments in response to marketplace changes, particularly regarding variations in Amazon\u2019s fee structure or policy updates.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ed295dcf-88ea-4b1e-a74f-18085cb0cc8b",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2296711d-dfe4-49e4-b0c5-cb08b0b1790a",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4ea97fec-c762-402d-9b07-b4a712c2ad47",
+        "advice": "\"id\": \"strat-11\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "51f6bcc9-37c9-4f52-91aa-d4a6f8ae866b",
+        "advice": "\"category\": \"Risk\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1b1d6d0a-4d18-4aee-bc19-e35ea7df4869",
+        "advice": "\"trigger\": \"Excessive or poorly timed discounts\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6810dbb2-297d-46e4-a78a-d3b3ed4230bb",
+        "advice": "\"advice\": \"Balance discounts with pricing strategies; monitor sales velocity post-promotion to avoid eroding profit margins\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f7d88b6c-21c8-4f2c-9bfe-1924068467e3",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5785e726-1418-4dea-9ece-596b7b371c36",
+        "advice": "\"source\": \"While promotions can stimulate sales, excessive or poorly timed discounts may erode profit margins. It\u2019s essential to find a balance between discounts and broader pricing strategies to ensure profitability. Monitoring sales velocity post-promotion is crucial to evaluate effectiveness.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "57860e10-1967-46e9-aeb7-797b2c187566",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cc964ba3-8c1e-449b-8d6a-81fc041deaab",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a84b39e7-fc67-41da-be9f-10b15cdfe41c",
+        "advice": "\"id\": \"strat-12\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "735c712b-aee4-43c4-b2f5-37c6bc038926",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "59aa5166-6ae6-467c-b4ad-4b5f7d9ab59f",
+        "advice": "\"trigger\": \"PPC budgeting\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a7a34532-4204-4303-8483-4d2cde34ab92",
+        "advice": "\"advice\": \"Budget $500-$2,000 monthly for PPC depending on category competitiveness; aim for sales 3-5 times ad spend\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "12964ae5-55d4-4d33-ae55-652a0d233394",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "01e62db1-9269-431f-b83f-99b74f75e860",
+        "advice": "\"source\": \"Average costs can vary widely; however, sellers typically spend around $500-$2,000 per month depending on the competitiveness of their product category. Effective campaigns can generate sales in the range of 3-5 times the ad spend.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "aa15638b-d1ea-420c-ba25-b3cc1adcdfe5",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1db6b752-7ca6-4fef-b7b6-629073812bc2",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b038f917-0919-415b-9ce8-9ff6ad3f5513",
+        "advice": "\"id\": \"strat-13\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "58c11ea5-15e6-442f-a0d4-96be0dbe2308",
+        "advice": "\"category\": \"General\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "19d352a1-a24a-4395-ae3b-3e193467b7d3",
+        "advice": "\"trigger\": \"New strategy implementation\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "67206f9f-33e8-4b31-9498-a6869beff513",
+        "advice": "\"advice\": \"Expect results in 6-12 weeks with consistent monitoring and adjustments\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ca7a5d95-86c0-4257-9189-d764c3681514",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1a964aaa-32f9-4efb-87a5-1725d6c14dee",
+        "advice": "\"source\": \"Most sellers can expect noticeable changes within 6-12 weeks of implementing listing and marketing optimizations, provided they consistently monitor and adjust their approaches.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7a31b15d-8e16-4733-983f-fae5b9a5fb48",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cc4adfcc-03e8-4e5c-b887-db4bf621fdf2",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "4a492d35-68fe-436e-9de2-78e659a9c1d8",
+        "advice": "\"id\": \"strat-14\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "21fe980e-9510-4710-a9f5-98a8091e3c78",
+        "advice": "\"category\": \"Risk\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ce71ca3b-6d00-454c-bc06-978f3b81e7da",
+        "advice": "\"trigger\": \"Securing Buy Box\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a8cdfcd8-b376-4d3f-8892-dec04a5f4483",
+        "advice": "\"advice\": \"Maintain competitive pricing, high seller metrics, and stock availability; regularly analyze competitors\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2af66747-a9c6-444d-914b-f069abc4a051",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1fda4c23-d0f4-4578-b1cd-87d130c6bcfb",
+        "advice": "\"source\": \"Consistency in obtaining the Buy Box requires maintaining competitive pricing, high seller metrics, and adequate stock availability. Regularly analyzing competitors and adjusting your strategy is vital.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1a5a6c02-b478-45a0-9466-8f08f1a0c2dd",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7a7cb5a6-be18-4ef3-9c3f-5016157933cf",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b867a43e-f595-4cff-b7a9-6b2684c24487",
+        "advice": "\"id\": \"strat-15\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5e09f505-3077-41b7-84a1-ee2e88714a04",
+        "advice": "\"category\": \"Seasonality\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "39b43de1-9952-405d-967f-c4334b59f22a",
+        "advice": "\"trigger\": \"Limited budget\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9990f8b6-83cf-43b1-aeca-55a4082b844a",
+        "advice": "\"advice\": \"Focus on organic SEO improvements (low cost, time investment) for increased visibility without ad spend\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8beaa15f-06e0-4e55-a976-0c3d828be14c",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cc8b31d4-f29e-471f-8993-c6a09db467bb",
+        "advice": "\"source\": \"Limited budget\tFocus on organic SEO improvements\tLow (time investment)\tIncreased visibility without ad spend\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fedc2e83-8df5-4437-b9f1-151b265ce943",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "51533930-d5c7-4c8f-8336-7519ae84df68",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "15855bb6-f720-46f9-b92f-2d3df3014bb0",
+        "advice": "\"id\": \"strat-16\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "74e382d3-2676-4d7f-aacc-03d1d7b7da77",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a5bd07de-3544-4d2a-8910-d5c60c7bc41b",
+        "advice": "\"trigger\": \"High-value product with traction\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0395ecdf-461a-4d8e-ac0d-f268b1e5d469",
+        "advice": "\"advice\": \"Invest in PPC ads (medium monthly spend) for higher sales velocity and market share protection\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3ecb8d82-6b3c-4d5b-9b38-413600c7ef5e",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c256d569-c1ed-4fcf-8766-bfd826c0df7f",
+        "advice": "\"source\": \"High-value product with existing traction\tInvest heavily in PPC ads\tMedium (monthly ad spend)\tHigher sales velocity, protecting market share\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "c2fc9b20-0d56-4b77-9d69-fe16e318063b",
+        "advice": "},",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fffcf260-cfba-4a71-b824-88d51843f964",
+        "advice": "{",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b1bdb7cc-a6f3-4ea1-a003-eb7444972bcc",
+        "advice": "\"id\": \"strat-17\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a7f814d6-1ed3-4efa-925d-235ccc82e583",
+        "advice": "\"category\": \"Pricing\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b27c296e-041c-4f1c-9f86-f854ea11ff76",
+        "advice": "\"trigger\": \"New product launch\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8d3fb4ca-c59a-473a-b37f-0314ef971735",
+        "advice": "\"advice\": \"Run initial discounts and promotions (medium discount costs) for fast initial sales momentum\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "74601b52-f0a9-450a-ba83-9b5f6c162c1c",
+        "advice": "\"confidence\": \"High\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6252c2c1-f6a9-4e95-8055-127ca2ee6633",
+        "advice": "\"source\": \"New product launch\tRun initial discounts and promotional offers\tMedium (discount costs)\tFast traction to gain initial sales momentum\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "6d62dfb7-8858-4cfa-91f6-d12c4ae6ee9e",
+        "advice": "}",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "5ac678a8-5ab8-4512-b1ee-243ad2388457",
+        "advice": "]",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fulfillment-fba",
+        "category": "General",
+        "trigger": "Using FBM or SFP fulfillment",
+        "advice": "Prioritize FBA fulfillment to achieve flawless ratings in shipping, on-time delivery, and inventory, making it highly improbable for non-FBA sellers to win the Buy Box",
+        "confidence": "High",
+        "source": "Fulfillment stands out as the foremost crucial factor... Amazon awards FBA a flawless rating across various metrics... Consequently, it becomes highly improbable for merchants to beat FBA sellers."
+    },
+    {
+        "id": "pricing-lower",
+        "category": "Pricing",
+        "trigger": "Competitive pricing scenario",
+        "advice": "Offer a lower price to enhance chances of winning the Buy Box, but combine with superior seller performance to allow pricing flexibility and still secure the Buy Box",
+        "confidence": "High",
+        "source": "Pricing plays a critical role... While offering a lower price can indeed enhance your chances... If your seller performance surpasses that of your competitors... you may have the flexibility to increase your price and still maintain your share of the Buy Box."
+    },
+    {
+        "id": "repricer-tool",
+        "category": "Pricing",
+        "trigger": "Competitors change prices",
+        "advice": "Use a repricer tool to instantly react to competitors\u2019 price changes around the clock, boosting chances of winning more Buy Boxes and driving sales growth",
+        "confidence": "High",
+        "source": "Repricer helps you to instantly react to competitors\u2019 price changes around the clock, boosting your chances of winning more Buy Boxes and consequently driving sales growth."
+    },
+    {
+        "id": "shipping-time-fast",
+        "category": "General",
+        "trigger": "Shipping time in slower brackets (8-13 days or 14+ days)",
+        "advice": "Aim for shipping times of 0-2 days or 3-7 days to be heavily favored by Amazon\u2019s algorithm for winning the Buy Box",
+        "confidence": "High",
+        "source": "Amazon\u2019s algorithm heavily favours sellers with fast shipping times... Shipping time is categorized into the following brackets... 0-2 days, 3-7 days, 8-13 days, 14 or more days."
+    },
+    {
+        "id": "response-time-12h",
+        "category": "General",
+        "trigger": "Customer messages requiring response",
+        "advice": "Respond to customers within 12 hours to enhance likelihood of winning the Buy Box; if over 10% of messages replied after 24 hours or unanswered, mark as 'no response needed' to avoid negative impact",
+        "confidence": "High",
+        "source": "It\u2019s believed that responding to customers within 12 hours enhances the likelihood of winning the Buy Box. If over 10% of messages are replied to after 24 hours or remain unanswered, it may negatively impact ratings. However, sellers can mitigate this by marking messages as \u201cno response needed,\u201d"
+    },
+    {
+        "id": "late-shipment-low",
+        "category": "Risk",
+        "trigger": "Late shipment rate >=4%",
+        "advice": "Maintain late shipment rate below 4% to prioritize eligibility for the Buy Box; exceeding 4% may render sellers ineligible",
+        "confidence": "High",
+        "source": "Amazon prioritizes sellers with low late shipment rates (less than 4%)... However, exceeding the 4% threshold may render sellers ineligible for the Buy Box."
+    },
+    {
+        "id": "tracking-rate-high",
+        "category": "Risk",
+        "trigger": "Valid tracking rate <=95%",
+        "advice": "Achieve over 95% valid tracking rate to indicate reliability and increase Buy Box eligibility ranking",
+        "confidence": "High",
+        "source": "Offering a high valid tracking rate (over 95%) rate... As Amazon considers these sellers more dependable... it pushes them up the rank to be Buy Box eligible."
+    },
+    {
+        "id": "on-time-delivery-97",
+        "category": "Risk",
+        "trigger": "On-time delivery <97%",
+        "advice": "Ensure 97% of orders are delivered on time to demonstrate reliability and be prioritized for the Buy Box",
+        "confidence": "High",
+        "source": "Amazon prioritizes sellers for the Buy Box with a track record of consistently meeting or exceeding delivery expectations where 97% of orders must be delivered on time."
+    },
+    {
+        "id": "odr-low",
+        "category": "Risk",
+        "trigger": "Order Defect Rate >=1%",
+        "advice": "Keep Order Defect Rate (ODR) below 1% to remain Buy Box eligible; exceeding this may impose penalties",
+        "confidence": "High",
+        "source": "The Order Defect Rate (ODR) should remain below 1% for a seller to be Buy Box eligible. If this threshold is exceeded, penalties can be imposed on sellers."
+    },
+    {
+        "id": "cancellation-rate-low",
+        "category": "Risk",
+        "trigger": "Cancellation rate >=2.5%",
+        "advice": "Maintain cancellation rate below 2.5% to increase opportunities for winning the Buy Box and show commitment to customer satisfaction",
+        "confidence": "High",
+        "source": "Having a cancellation rate below 2.5% creates a greater opportunity for sellers to win the Buy Box"
+    },
+    {
+        "id": "margin1",
+        "category": "Pricing",
+        "trigger": "Prices dip below acceptable profit threshold",
+        "advice": "Define minimum acceptable profit margin of 15-25% and set floor prices based on landed costs plus desired margin",
+        "confidence": "High",
+        "source": "Define your minimum acceptable profit margin (typically 15-25% for most categories) Set floor prices based on your landed costs plus desired margin"
+    },
+    {
+        "id": "margin2",
+        "category": "Risk",
+        "trigger": "No margin protection rules",
+        "advice": "Avoid unprofitable pricing wars, as 68% of sellers without margin protection end up eroding their bottom line",
+        "confidence": "High",
+        "source": "68% of sellers who use repricing without margin protection rules end up in unprofitable pricing wars that erode their bottom line"
+    },
+    {
+        "id": "margin3",
+        "category": "Pricing",
+        "trigger": "Tiered product types",
+        "advice": "Apply higher margins on unique products, lower on commodity items, and premium on bundled products",
+        "confidence": "High",
+        "source": "Higher margins on unique or exclusive products Lower acceptable margins on commodity items where volume matters Premium margins on bundled products"
+    },
+    {
+        "id": "time1",
+        "category": "Pricing",
+        "trigger": "Peak shopping hours (6 PM to 11 PM)",
+        "advice": "Maintain higher prices during evenings and weekends, reduce competitiveness during off-peak to protect margins",
+        "confidence": "High",
+        "source": "Maintain more aggressive pricing during high-traffic hours (6 PM to 11 PM) Slightly reduce competitiveness during low-traffic periods to protect margins"
+    },
+    {
+        "id": "event1",
+        "category": "Seasonality",
+        "trigger": "Major sales events (Prime Day, Black Friday)",
+        "advice": "Increase competitiveness during high-opportunity windows like Prime Day, Black Friday, Cyber Monday, back-to-school",
+        "confidence": "High",
+        "source": "Prime Day or major sales events Black Friday and Cyber Monday Back-to-school periods Product launch windows"
+    },
+    {
+        "id": "bb3",
+        "category": "General",
+        "trigger": "Basic price-matching rules",
+        "advice": "Use Buy Box-optimized repricing to win 60-80% of the time compared to 20-30% with basic rules",
+        "confidence": "High",
+        "source": "Sellers using Buy Box-optimized repricing strategies report winning the Buy Box 60-80% of the time, compared to 20-30% for those using basic price-matching rules"
+    },
+    {
+        "id": "dyn-demand-001",
+        "category": "Pricing",
+        "trigger": "Demand indicators (search volume, conversion rates, etc.) move beyond normal ranges",
+        "advice": "Adjust prices by 3-8% upward when demand strengthens; lower prices during slower periods to maintain sales velocity",
+        "confidence": "High",
+        "source": "Set pricing rules that respond proportionally to demand changes, typically adjusting prices by 3-8% when demand indicators move beyond normal ranges."
+    },
+    {
+        "id": "inv-vel-001",
+        "category": "Pricing",
+        "trigger": "Inventory Velocity Score (IVS) above 1.5",
+        "advice": "Trigger aggressive price reductions to move high inventory as season ends",
+        "confidence": "High",
+        "source": "An IVS above 1.5 triggers price reductions, while an IVS below 0.7 enables price increases."
+    },
+    {
+        "id": "inv-vel-002",
+        "category": "Pricing",
+        "trigger": "Inventory Velocity Score (IVS) below 0.7",
+        "advice": "Increase prices to maximize margin with low inventory and strong demand",
+        "confidence": "High",
+        "source": "An IVS above 1.5 triggers price reductions, while an IVS below 0.7 enables price increases."
+    },
+    {
+        "id": "inv-vel-003",
+        "category": "Seasonality",
+        "trigger": "Apparel category, 45-60 days before season end",
+        "advice": "Begin inventory velocity pricing adjustments",
+        "confidence": "High",
+        "source": "Apparel sellers begin inventory velocity pricing 45-60 days before season end"
+    },
+    {
+        "id": "inv-vel-004",
+        "category": "Seasonality",
+        "trigger": "Toy category, after December 20th",
+        "advice": "Implement aggressive velocity pricing",
+        "confidence": "High",
+        "source": "Toy sellers implement aggressive velocity pricing immediately after December 20th"
+    },
+    {
+        "id": "inv-vel-005",
+        "category": "Seasonality",
+        "trigger": "Garden and outdoor category, late August",
+        "advice": "Start velocity-based price reductions",
+        "confidence": "High",
+        "source": "Garden and outdoor sellers start velocity-based reductions in late August"
+    },
+    {
+        "id": "comp-gap-001",
+        "category": "Pricing",
+        "trigger": "Peak season",
+        "advice": "Narrow competitive gap to 0-2% below competitors",
+        "confidence": "High",
+        "source": "Peak Season Strategy: Narrow the competitive gap to 0-2% below competitors."
+    },
+    {
+        "id": "comp-gap-002",
+        "category": "Pricing",
+        "trigger": "Shoulder season",
+        "advice": "Maintain 3-5% gap below competitors",
+        "confidence": "High",
+        "source": "Shoulder Season Strategy: Maintain a 3-5% gap below competitors"
+    },
+    {
+        "id": "comp-gap-003",
+        "category": "Pricing",
+        "trigger": "Off-season",
+        "advice": "Implement 5-10% gap below competitors to drive volume",
+        "confidence": "High",
+        "source": "Off-Season Strategy: Implement a 5-10% gap to drive volume"
+    },
+    {
+        "id": "comp-gap-004",
+        "category": "Pricing",
+        "trigger": "Peak seasons against premium competitors",
+        "advice": "Price 8-12% below premium competitors",
+        "confidence": "High",
+        "source": "Premium competitors: Price 8-12% below during peak seasons"
+    },
+    {
+        "id": "comp-gap-005",
+        "category": "Pricing",
+        "trigger": "Slow periods against premium competitors",
+        "advice": "Price 15-20% below premium competitors",
+        "confidence": "High",
+        "source": "Premium competitors: ...15-20% below during slow periods"
+    },
+    {
+        "id": "comp-gap-006",
+        "category": "Pricing",
+        "trigger": "Year-round against direct competitors",
+        "advice": "Maintain tight gaps of 1-3% to protect market share",
+        "confidence": "High",
+        "source": "Direct competitors: Maintain tight gaps (1-3%) year-round"
+    },
+    {
+        "id": "risk-margin-001",
+        "category": "Risk",
+        "trigger": "Pricing adjustments",
+        "advice": "Set minimum acceptable margins of 15-20% that pricing cannot fall below",
+        "confidence": "High",
+        "source": "Set minimum acceptable margins (typically 15-20%) that pricing cannot fall below"
+    },
+    {
+        "id": "promo-cal-001",
+        "category": "Pricing",
+        "trigger": "Pre-event phase, 2-4 weeks before major events",
+        "advice": "Gradually reduce prices by 5-10% to build momentum and improve sales rank",
+        "confidence": "High",
+        "source": "Pre-Event Phase (2-4 weeks before): Gradually reduce prices by 5-10%"
+    },
+    {
+        "id": "promo-cal-002",
+        "category": "Pricing",
+        "trigger": "Event phase during promotions",
+        "advice": "Implement deepest discounts of 15-30% off to maximize volume and win Buy Box",
+        "confidence": "High",
+        "source": "Event Phase (during the promotion): Implement your deepest discounts (15-30% off)"
+    },
+    {
+        "id": "promo-cal-003",
+        "category": "Pricing",
+        "trigger": "Post-event phase, 1-2 weeks after",
+        "advice": "Gradually restore pricing to normal over 7-10 days to avoid shocking customers",
+        "confidence": "High",
+        "source": "Post-Event Phase (1-2 weeks after): Gradually restore pricing to normal levels over 7-10 days."
+    },
+    {
+        "id": "season-start-001",
+        "category": "Seasonality",
+        "trigger": "Before first major seasonal peak",
+        "advice": "Start implementing seasonal pricing strategies 60-90 days in advance",
+        "confidence": "High",
+        "source": "Start at least 60-90 days before your first major seasonal peak."
+    },
+    {
+        "id": "price-adjust-001",
+        "category": "Pricing",
+        "trigger": "Price changes during seasonal periods",
+        "advice": "Make gradual adjustments of 3-8% per change instead of 20-30% jumps",
+        "confidence": "High",
+        "source": "gradual adjustments (typically 3-8% per change) perform better than shocking the market with 20-30% jumps."
+    },
+    {
+        "id": "risk-race-001",
+        "category": "Risk",
+        "trigger": "Competitive seasonal periods",
+        "advice": "Set firm minimum margins of 15-20% to avoid race to the bottom",
+        "confidence": "High",
+        "source": "Set firm minimum acceptable margins (usually 15-20%)"
+    },
+    {
+        "id": "repricing-freq-001",
+        "category": "Pricing",
+        "trigger": "Peak seasons",
+        "advice": "Adjust prices multiple times per day; automate every 15-30 minutes",
+        "confidence": "High",
+        "source": "During peak seasons, prices can change multiple times per day... automated solutions can reprice every 15-30 minutes"
+    },
+    {
+        "id": "premium_reviews",
+        "category": "Pricing",
+        "trigger": "Products with proprietary features, superior materials, or strong brand",
+        "advice": "Maintain review scores above 4.5 stars consistently to justify premium prices",
+        "confidence": "High",
+        "source": "Key Insight: Premium-priced products on Amazon must maintain review ratings of 4.5 stars or higher to justify their price premium and compete effectively for customer attention."
+    },
+    {
+        "id": "competitive_range",
+        "category": "Pricing",
+        "trigger": "Standard items with multiple sellers or commodity products",
+        "advice": "Target a position within 5-10% of the median competitor price while maintaining profitability",
+        "confidence": "High",
+        "source": "Your competitive pricing strategy should: Target a position within 5-10% of the median competitor price"
+    },
+    {
+        "id": "penetration_launch",
+        "category": "Pricing",
+        "trigger": "New product launches without reviews or sales history",
+        "advice": "Price 15-25% below established competitors during the first 2-4 weeks to generate sales and reviews",
+        "confidence": "High",
+        "source": "Phase 1: Launch Period (First 2-4 Weeks): Price 15-25% below established competitors"
+    },
+    {
+        "id": "penetration_adjust",
+        "category": "Pricing",
+        "trigger": "After accumulating 15-25 reviews in weeks 5-12",
+        "advice": "Gradually increase prices by 3-5% as reviews accumulate",
+        "confidence": "High",
+        "source": "Phase 2: Adjustment Period (Weeks 5-12): Gradually increase prices by 3-5% as reviews accumulate; Target 15-25 reviews before significant price increases"
+    },
+    {
+        "id": "bundle_savings",
+        "category": "Pricing",
+        "trigger": "Complementary products that customers use together",
+        "advice": "Set bundle price to deliver 15-25% savings versus individual purchases",
+        "confidence": "High",
+        "source": "A bundle price that delivers 15-25% savings versus individual purchases"
+    },
+    {
+        "id": "dynamic_revenue",
+        "category": "Pricing",
+        "trigger": "Using dynamic repricing compared to static pricing",
+        "advice": "Expect average revenue increases of 25-35% through improved Buy Box ownership",
+        "confidence": "High",
+        "source": "According to industry research from 2024, sellers using dynamic repricing see average revenue increases of 25-35% compared to static pricing strategies"
+    },
+    {
+        "id": "charm_increase",
+        "category": "Pricing",
+        "trigger": "Mid-market price ranges using charm pricing (.99 endings)",
+        "advice": "Use charm pricing to increase sales by 8-12% compared to round number pricing",
+        "confidence": "High",
+        "source": "Research Finding: Studies show that charm pricing (.99 endings) can increase sales by 8-12% compared to round number pricing for the same products in mid-market price ranges."
+    },
+    {
+        "id": "tier_gaps",
+        "category": "Pricing",
+        "trigger": "Products with variations for different customer segments",
+        "advice": "Maintain appropriate price gaps between tiers to signal value differences, e.g., Basic $12.99, Mid $19.99, Premium $29.99",
+        "confidence": "High",
+        "source": "Example: Electronics Accessories Tiered Pricing: Basic Tier ($12.99), Mid Tier ($19.99), Premium Tier ($29.99)"
+    },
+    {
+        "id": "min_margin",
+        "category": "Pricing",
+        "trigger": "Repricing decisions across all strategies",
+        "advice": "Maintain at least 20-30% gross margins after all costs including Amazon fees, shipping, and product costs",
+        "confidence": "High",
+        "source": "What\u2019s the minimum profit margin I should accept when repricing? Your minimum margin depends on your business model, but most successful Amazon sellers maintain at least 20-30% gross margins"
+    },
+    {
+        "id": "dynamic_sales_boost",
+        "category": "Pricing",
+        "trigger": "Implementing dynamic pricing software",
+        "advice": "Increase eCommerce sales by 15-30% through automated price optimization",
+        "confidence": "High",
+        "source": "How can dynamic pricing software improve eCommerce sales? Dynamic pricing software can increase eCommerce sales by 15-30% through automated price optimization"
+    },
+    {
+        "id": "book_inelastic_demand",
+        "category": "Pricing",
+        "trigger": "Selling academic texts or professional reference books",
+        "advice": "Apply premium pricing strategies to increase profit margins, as demand remains stable despite price increases due to inelastic nature",
+        "confidence": "High",
+        "source": "Books, particularly academic texts and professional references, often show inelastic demand driven by specific requirements rather than discretionary shopping. Students need assigned textbooks regardless of price, and professionals seek specific technical manuals that have no substitutes."
+    },
+    {
+        "id": "elasticity_coefficient_low",
+        "category": "Pricing",
+        "trigger": "Elasticity coefficient below 0.8 for books",
+        "advice": "Maintain premium positioning and raise prices to expand margins without significantly reducing sales volume",
+        "confidence": "High",
+        "source": "Low elasticity products (below 0.8) present opportunities for premium pricing strategies. These goods often feature unique attributes, strong brand loyalty, or limited competition."
+    },
+    {
+        "id": "elasticity_coefficient_optimal",
+        "category": "Pricing",
+        "trigger": "Elasticity coefficient between 0.8 and 1.2 for books",
+        "advice": "Balance pricing flexibility and sales stability by aligning strategies with revenue or margin priorities",
+        "confidence": "High",
+        "source": "Products with coefficients between 0.8 and 1.2 generally offer the best balance between pricing flexibility and sales stability."
+    },
+    {
+        "id": "inelastic_premium_faq",
+        "category": "Pricing",
+        "trigger": "Elasticity coefficient below 0.5 for unique or specialized books",
+        "advice": "Implement premium pricing to support higher margins, as customers prioritize specific needs over cost",
+        "confidence": "High",
+        "source": "Inelastic products (below 0.5) support premium pricing strategies."
+    },
+    {
+        "id": "seasonal_backtoschool",
+        "category": "Seasonality",
+        "trigger": "Back-to-school season (July-August) for educational books",
+        "advice": "Increase prices due to reduced elasticity from necessity-driven purchases by parents",
+        "confidence": "High",
+        "source": "Back-to-school season (July-August) shows category-specific elasticity patterns. School supplies and educational products exhibit reduced elasticity as parents work from necessity-driven shopping lists, while discretionary categories maintain normal elasticity levels."
+    },
+    {
+        "id": "holiday_inelasticity",
+        "category": "Seasonality",
+        "trigger": "Q4 holiday season (October-December) for gift books",
+        "advice": "Raise prices by 10-15% in the final two weeks before Christmas to capture premium willingness to pay for availability",
+        "confidence": "Medium",
+        "source": "The period from October through December represents a unique elasticity environment on Amazon. ... Customers will pay 10-15% premiums during the final two weeks before Christmas simply to ensure delivery, particularly for popular toys, electronics, and gift items."
+    },
+    {
+        "id": "postholiday_elasticity",
+        "category": "Seasonality",
+        "trigger": "January and February post-holiday period",
+        "advice": "Use aggressive pricing to capture market share and improve BSR, accepting temporary reduced margins for long-term velocity gains",
+        "confidence": "High",
+        "source": "January and February consistently rank as the most price-elastic months on Amazon. ... Elasticity coefficients in these months often exceed annual averages by 30-50%, requiring adjusted pricing strategies to maintain sales velocity."
+    },
+    {
+        "id": "taxrefund_season",
+        "category": "Seasonality",
+        "trigger": "Tax refund season (late February through April)",
+        "advice": "Strategically increase prices by leveraging 25% lower price elasticity due to temporary income boosts",
+        "confidence": "High",
+        "source": "Tax refund season (late February through April) demonstrates 25% lower price elasticity than winter months as consumers experience temporary income boosts, creating opportunities for strategic price increases."
+    },
+    {
+        "id": "bsr_pricing_test",
+        "category": "Pricing",
+        "trigger": "Books ranked between 50 and 200 BSR",
+        "advice": "Test 3-5% price reductions for 7-14 days to generate disproportionate BSR improvements and velocity boosts",
+        "confidence": "High",
+        "source": "Small price reductions of 3-5% on products ranked between 50 and 200 often generate disproportionate BSR improvements because they trigger velocity-based algorithm boosts."
+    },
+    {
+        "id": "competitor_gap_books",
+        "category": "Pricing",
+        "trigger": "Price gap under 3% to next-cheapest competitor for sub-$50 books",
+        "advice": "Maintain current pricing without adjustment, as customers rarely notice small differences, allowing pricing flexibility",
+        "confidence": "High",
+        "source": "Research shows that customers rarely notice price differences under 3% on sub-$50 items, meaning you may have more pricing flexibility than assumed."
+    },
+    {
+        "id": "competitor_outstock",
+        "category": "Pricing",
+        "trigger": "Primary competitors out of stock for specific book editions",
+        "advice": "Temporarily increase prices to capture inelastic demand from limited alternatives",
+        "confidence": "High",
+        "source": "Monitoring competitor stock levels reveals temporary inelasticity opportunities. When your primary competitors go out of stock, your product\u2019s elasticity temporarily decreases as you capture demand that has nowhere else to go."
+    },
+    {
+        "id": "buybox_premium",
+        "category": "Pricing",
+        "trigger": "Established seller with 98%+ feedback and Prime fulfillment for books",
+        "advice": "Price 3-5% above low-rated competitors while maintaining Buy Box, reducing effective price elasticity",
+        "confidence": "High",
+        "source": "Sellers with 98%+ feedback ratings and consistent Prime fulfillment can maintain Buy Box positions while pricing 3-5% above low-rated competitors."
+    },
+    {
+        "id": "reviews_elasticity",
+        "category": "General",
+        "trigger": "Books with 100+ reviews and 4.5+ star ratings",
+        "advice": "Leverage reduced price elasticity to justify premium pricing through established trust and perceived value",
+        "confidence": "High",
+        "source": "Products with 100+ reviews and ratings above 4.5 stars demonstrate reduced price elasticity because reviews signal quality that justifies premiums."
+    },
+    {
+        "id": "calculation_frequency",
+        "category": "General",
+        "trigger": "Monthly for stable book categories",
+        "advice": "Recalculate elasticity coefficients monthly by tracking sales changes over 30-day periods across price points",
+        "confidence": "High",
+        "source": "Recalculate elasticity coefficients monthly for stable products ... Calculate elasticity coefficients for your top 20% of products by tracking sales volume changes across different price points over 30-day periods."
+    },
+    {
+        "id": "price_testing",
+        "category": "Risk",
+        "trigger": "Testing price elasticity on low-volume books",
+        "advice": "Conduct 5-7% price increase/decrease tests for 2-week periods on 10-20% of catalog to minimize revenue loss while gathering data",
+        "confidence": "High",
+        "source": "Implement controlled price tests on 10-20% of your catalog ... Test price increases and decreases of 5-7% for two-week periods ... Start with lower-volume SKUs where potential losses are manageable."
+    },
+    {
+        "id": "preseason-positioning-1",
+        "category": "Pricing",
+        "trigger": "6 weeks before peak season",
+        "advice": "Start with competitive baseline pricing to build momentum and visibility",
+        "confidence": "High",
+        "source": "Start with competitive baseline pricing 6 weeks before peak season"
+    },
+    {
+        "id": "preseason-positioning-2",
+        "category": "Pricing",
+        "trigger": "4-6 weeks before major shopping events",
+        "advice": "Gradually reduce prices by 5-10% in 2-3 stages as the season approaches",
+        "confidence": "High",
+        "source": "Gradually reduce prices by 5-10% in 2-3 stages as the season approaches"
+    },
+    {
+        "id": "inventory-high-stock",
+        "category": "Pricing",
+        "trigger": "High stock levels (90%+ of target inventory)",
+        "advice": "Reduce prices by 5-15% to accelerate sales",
+        "confidence": "High",
+        "source": "High stock levels (90%+ of target inventory): Reduce prices by 5-15% to accelerate sales"
+    },
+    {
+        "id": "inventory-optimal-stock",
+        "category": "Pricing",
+        "trigger": "Optimal stock levels (50-90% of target)",
+        "advice": "Maintain competitive positioning",
+        "confidence": "High",
+        "source": "Optimal stock levels (50-90% of target): Maintain competitive positioning"
+    },
+    {
+        "id": "inventory-low-stock",
+        "category": "Pricing",
+        "trigger": "Low stock levels (20-50% of target)",
+        "advice": "Increase prices by 10-20% to maximize profit per unit",
+        "confidence": "High",
+        "source": "Low stock levels (20-50% of target): Increase prices by 10-20% to maximize profit per unit"
+    },
+    {
+        "id": "inventory-critical-stock",
+        "category": "Pricing",
+        "trigger": "Critical stock levels (below 20%)",
+        "advice": "Implement premium pricing to extend availability",
+        "confidence": "High",
+        "source": "Critical stock levels (below 20%): Implement premium pricing to extend availability"
+    },
+    {
+        "id": "competitor-gap-duration",
+        "category": "Pricing",
+        "trigger": "Competitive pricing gaps lasting 4.7 hours",
+        "advice": "Capitalize on gaps to capture 3-5x normal sales velocity at premium prices",
+        "confidence": "High",
+        "source": "During Black Friday 2024, research showed that the average competitive pricing gap lasted only 4.7 hours before being corrected, but sellers who capitalized on these windows during that brief period captured 3-5x their normal sales velocity at premium prices"
+    },
+    {
+        "id": "competitor-gap-timing",
+        "category": "Pricing",
+        "trigger": "First 12-24 hours of high-demand events",
+        "advice": "Maintain adequate inventory and use repricing to capture sales at premium prices while competitors sell out",
+        "confidence": "High",
+        "source": "During high-demand periods, the most profitable gap opportunities typically occur in the first 12-24 hours of an event"
+    },
+    {
+        "id": "surge-pricing-indicator",
+        "category": "Pricing",
+        "trigger": "Sudden 200%+ increase in search volume or impressions",
+        "advice": "Identify as trending product and prepare for surge pricing",
+        "confidence": "High",
+        "source": "Sudden 200%+ increase in search volume or impressions"
+    },
+    {
+        "id": "surge-pricing-phase1",
+        "category": "Pricing",
+        "trigger": "Days 1-2 of trend recognition",
+        "advice": "Implement modest 10-15% price increases to test demand elasticity",
+        "confidence": "High",
+        "source": "First, the recognition phase (days 1-2 of the trend) calls for modest 10-15% price increases to test demand elasticity"
+    },
+    {
+        "id": "surge-pricing-phase2",
+        "category": "Pricing",
+        "trigger": "Days 3-5 of trend exploitation",
+        "advice": "Justify aggressive 25-40% price increases while maintaining Buy Box eligibility",
+        "confidence": "High",
+        "source": "Second, the exploitation phase (days 3-5) justifies aggressive 25-40% price increases as long as you maintain Buy Box eligibility"
+    },
+    {
+        "id": "post-peak-days1-3",
+        "category": "Pricing",
+        "trigger": "Days 1-3 after peak",
+        "advice": "Reduce prices 10-15% from peak levels to capture late shoppers",
+        "confidence": "High",
+        "source": "Days 1-3 after peak: Reduce prices 10-15% from peak levels, capturing late shoppers"
+    },
+    {
+        "id": "post-peak-days4-7",
+        "category": "Pricing",
+        "trigger": "Days 4-7 after peak",
+        "advice": "Reduce prices 25-35% from peak levels to accelerate movement",
+        "confidence": "High",
+        "source": "Days 4-7 after peak: Reduce prices 25-35% from peak levels, accelerating movement"
+    },
+    {
+        "id": "post-peak-days8-14",
+        "category": "Pricing",
+        "trigger": "Days 8-14 after peak",
+        "advice": "Reduce prices 40-50% from peak levels to clear slow-moving SKUs",
+        "confidence": "High",
+        "source": "Days 8-14 after peak: Reduce prices 40-50% from peak levels, clearing slow-moving SKUs"
+    },
+    {
+        "id": "post-peak-days15+",
+        "category": "Pricing",
+        "trigger": "Days 15+ after peak",
+        "advice": "Implement aggressive clearance pricing of 50-70% off for remaining inventory",
+        "confidence": "High",
+        "source": "Days 15+ after peak: Aggressive clearance pricing of 50-70% off for remaining inventory"
+    },
+    {
+        "id": "regional-margins",
+        "category": "Pricing",
+        "trigger": "Products in high-demand regions during peak periods",
+        "advice": "Command premium pricing for products stored in high-demand fulfillment centers",
+        "confidence": "High",
+        "source": "Data from multi-regional sellers shows that those implementing region-specific pricing strategies during 2025 achieved 15-22% higher average margins"
+    },
+    {
+        "id": "flash-sale-timing1",
+        "category": "Pricing",
+        "trigger": "48-72 hours before major shopping events",
+        "advice": "Run flash sales to build momentum",
+        "confidence": "High",
+        "source": "48-72 hours before major shopping events to build momentum"
+    },
+    {
+        "id": "flash-sale-discount",
+        "category": "Pricing",
+        "trigger": "During high-demand periods",
+        "advice": "Use discounts of 20-25% to generate optimal response",
+        "confidence": "High",
+        "source": "Research shows that discounts of 20-25% generate optimal response during high-demand periods"
+    },
+    {
+        "id": "flash-sale-duration",
+        "category": "Pricing",
+        "trigger": "For maximum urgency",
+        "advice": "Run sales lasting 2-4 hours to drive concentrated buying activity",
+        "confidence": "High",
+        "source": "Sales lasting 2-4 hours create maximum urgency and drive concentrated buying activity"
+    },
+    {
+        "id": "faq-adjust-frequency",
+        "category": "Pricing",
+        "trigger": "During peak shopping events like Black Friday or Prime Day",
+        "advice": "Adjust prices every 15-30 minutes to respond to market changes",
+        "confidence": "High",
+        "source": "During peak shopping events like Black Friday or Prime Day, prices should be adjusted every 15-30 minutes"
+    },
+    {
+        "id": "faq-planning-advance",
+        "category": "Seasonality",
+        "trigger": "Major shopping events",
+        "advice": "Begin planning 8-10 weeks before to allow for pre-season positioning and testing",
+        "confidence": "High",
+        "source": "Begin planning 8-10 weeks before major shopping events"
+    },
+    {
+        "id": "faq-premium-pricing",
+        "category": "Pricing",
+        "trigger": "During high-demand periods",
+        "advice": "Maintain slight premiums (5-10% above lowest competitor) while capturing strong sales volume",
+        "confidence": "High",
+        "source": "During high-demand periods, customers are less price-sensitive than normal, creating opportunities to maintain slight premiums (5-10% above lowest competitor)"
+    },
+    {
+        "id": "floor-calculation",
+        "category": "Pricing",
+        "trigger": "Calculating per-SKU floor",
+        "advice": "Start with landed cost (product cost + inbound freight + packaging), add Amazon fees (referral + FBA fulfillment + low-inventory fee if applicable), add variable costs (FBM shipping + customer service + expected return rate), add marketing (ad spend or ACOS) and target net margin, then solve for price by dividing total variable costs plus desired profit by (1 - referral fee rate). Review when costs change.",
+        "confidence": "High",
+        "source": "How to calculate a true floor per SKU Your floor is the price at which you would still accept an order without losing money. Build it once per SKU, then review it when costs change. Here\u2019s how to do it: Start with landed cost by including product cost, inbound freight to your warehouse, and packaging. Add Amazon fees by including the category referral fee and any FBA fulfillment fees, and check whether the low-inventory-level fee applies to the SKU. Add variable costs by accounting for average FBM shipping, customer service costs, and the expected return rate for the category. Add marketing and a margin target by factoring in typical ad spend per order or a defensible average cost of sales (ACOS), then layering on your target net margin. Solve for price by dividing total variable costs plus desired profit by one minus the referral fee rate, then save that floor with the SKU, keep it current, and align it with your repricing strategies."
+    },
+    {
+        "id": "ceiling-setting",
+        "category": "Pricing",
+        "trigger": "Setting per-SKU ceiling",
+        "advice": "Determine highest believable price by analyzing competitor price bands, historical conversion rates, and price elasticity. Round to category-accepted price points. Test small price lifts when holding Featured Offer and roll back if conversion dips.",
+        "confidence": "High",
+        "source": "How to set a smart ceiling without killing conversion A ceiling is the highest believable price that still moves volume. Find it by looking at competitor bands, your historical conversion, and price elasticity (also, round to the price points your category accepts). Test small lifts when you hold the Featured Offer and roll it back if conversion dips."
+    },
+    {
+        "id": "chase-rule-not-featured",
+        "category": "Pricing",
+        "trigger": "Not holding Featured Offer",
+        "advice": "React to top rival's landed price but never go below floor. If rival is below floor, hold position or pause SKU until market improves.",
+        "confidence": "High",
+        "source": "If not Featured Offer, chase within the band When you\u2019re not featured, react to the top rival on landed price, but never cross your floor. If the rival is below your floor, hold position or pause the SKU until the market moves."
+    },
+    {
+        "id": "lift-rule-featured",
+        "category": "Pricing",
+        "trigger": "Holding Featured Offer with steady conversion",
+        "advice": "Nudge price up in small steps to test ceiling. If share or conversion softens, revert to last stable price.",
+        "confidence": "High",
+        "source": "If Featured Offer, lift carefully When you hold the feature and conversion is steady, nudge the price up in small steps to find your ceiling. If share or conversion softens, step back to the last stable price."
+    },
+    {
+        "id": "fba-fbm-separation",
+        "category": "Pricing",
+        "trigger": "FBA vs FBM offers",
+        "advice": "Use separate rules for FBA (supports slightly higher prices due to Prime speed) and FBM (tighter pricing or faster handling to qualify).",
+        "confidence": "High",
+        "source": "FBA vs FBM rules Prime speed often supports a slightly higher price. Keep separate rules for FBA and FBM so each offer plays to its strengths."
+    },
+    {
+        "id": "event-rules-peak",
+        "category": "Seasonality",
+        "trigger": "Peak weeks or promotions",
+        "advice": "Implement temporary ruleset with faster reactions, clearer stock behavior, and caps on price movement per hour to avoid volatility.",
+        "confidence": "High",
+        "source": "Event rules For peak weeks or promos, run a temporary ruleset with faster reactions, clearer stock behavior, and caps on price movement per hour (so you don\u2019t whipsaw)."
+    },
+    {
+        "id": "starter-workflow",
+        "category": "General",
+        "trigger": "Just getting started",
+        "advice": "Select three SKUs with strong reviews and stock cover. Build floors and set ceilings based on recent conversion and category bands. Launch rules: chase when not featured, lift when featured. Review every three days for two weeks, then weekly.",
+        "confidence": "High",
+        "source": "If you\u2019re just getting started Pick three SKUs with strong reviews and stock cover. Build accurate floors, then set ceilings based on recent conversion and category bands. Launch rules: chase when you aren\u2019t featured, lift when you are. Review every three days for two weeks, then weekly once stable."
+    },
+    {
+        "id": "high-velocity-peak",
+        "category": "Seasonality",
+        "trigger": "High-velocity SKU during peak",
+        "advice": "Use event ruleset with tighter floors and faster reactions. Raise lift increments in tiny steps with hard cap on hourly price moves. If stock below buffer, switch to profit hold and stop chasing. Post-surge, revert to normal band and review floor.",
+        "confidence": "High",
+        "source": "If you\u2019re managing a high-velocity SKU during peak Add an event ruleset with tighter floors and faster reactions. Raise lift increments in tiny steps and set a hard cap on price moves per hour. If stock drops below your internal buffer, switch to profit hold mode and stop chasing. After the surge, return to your normal band and review the floor. Use dynamic profit repricing during surges so speed and stock don\u2019t drag you below your floor."
+    },
+    {
+        "id": "map-constrained",
+        "category": "Pricing",
+        "trigger": "Selling MAP-constrained brand",
+        "advice": "Set floor at or above MAP and document exceptions. Compete on shipping speed and page quality, not price cuts. Use rules ignoring MAP violators. Audit regularly to maintain clean price history.",
+        "confidence": "High",
+        "source": "If you\u2019re selling a MAP-constrained brand Set the floor at or above MAP and document exceptions. Compete on shipping speed and page quality rather than price cuts. Use rules that ignore sellers who violate MAP to avoid a spiral. Audit regularly to keep price history clean."
+    },
+    {
+        "id": "monitor-margin",
+        "category": "Risk",
+        "trigger": "Weekly monitoring",
+        "advice": "Track contribution margin per order by SKU and offer type to spot erosion.",
+        "confidence": "High",
+        "source": "Track contribution margin per order by SKU and offer type so you can spot where margin is eroding."
+    },
+    {
+        "id": "monitor-floor-hit",
+        "category": "Risk",
+        "trigger": "Weekly monitoring",
+        "advice": "Measure floor hit rate weekly; high rates indicate shifting costs or tougher market.",
+        "confidence": "High",
+        "source": "Measure floor hit rate weekly to see how often a SKU hits its floor, since high rates signal shifting costs or a tougher market."
+    },
+    {
+        "id": "monitor-featured-share",
+        "category": "Risk",
+        "trigger": "Weekly monitoring, drop in Featured Offer share while price in band",
+        "advice": "Review delivery speed, regional availability, and page quality.",
+        "confidence": "High",
+        "source": "Monitor Featured Offer share and, if it drops while price is inside your band, review delivery speed, regional availability, and page quality."
+    },
+    {
+        "id": "monitor-acos",
+        "category": "Risk",
+        "trigger": "Weekly monitoring, ACOS rises after price cut",
+        "advice": "Align ACOS and ROAS with current prices and tighten bids.",
+        "confidence": "High",
+        "source": "Keep ACOS and return on ad spend (ROAS) aligned with current prices and tighten bids if ACOS rises after a price cut."
+    },
+    {
+        "id": "monitor-returns",
+        "category": "Risk",
+        "trigger": "Weekly monitoring",
+        "advice": "Calculate return-adjusted margin by subtracting return and replacement costs from contribution margin.",
+        "confidence": "High",
+        "source": "Calculate return-adjusted margin by subtracting the real cost of returns and replacements from contribution margin to avoid false wins."
+    },
+    {
+        "id": "target-margin",
+        "category": "General",
+        "trigger": "Setting target margins",
+        "advice": "Aim for profit margins above 15% (58% of sellers achieve this), ideally over 20% (one third report this).",
+        "confidence": "High",
+        "source": "58% of Amazon sellers operate on profit margins above 15%, and over one third report margins over 20%."
+    },
+    {
+        "id": "return-rate",
+        "category": "Risk",
+        "trigger": "Factoring returns in floor",
+        "advice": "Account for 13.21% return rate in variable costs, as US consumers returned $685B (13.21% of retail sales) in 2024.",
+        "confidence": "High",
+        "source": "US consumers returned $685B of merchandise in 2024, equal to 13.21% of retail sales."
+    },
+    {
+        "id": "buy-box-importance",
+        "category": "Pricing",
+        "trigger": "Offers outside Buy Box",
+        "advice": "Prioritize Buy Box as fewer than 3% of purchases come from outside offers.",
+        "confidence": "High",
+        "source": "Fewer than 3% of purchases come from offers outside the Buy Box."
+    },
+    {
+        "id": "next-steps",
+        "category": "General",
+        "trigger": "Initial implementation",
+        "advice": "Build/refresh floors for top ten SKUs including fees and return allowance. Activate two rules per SKU: chase when not featured, lift when featured, within band. Schedule weekly 20-minute review of floor hit rate, Featured share, and return-adjusted margin.",
+        "confidence": "High",
+        "source": "Try these three moves for the next seven days: Build or refresh floors for your top ten SKUs, including fees and a return allowance. Turn on two rules per SKU: chase when not featured, lift when featured, both within your band. Schedule a weekly 20-minute review to check floor hit rate, Featured Offer share, and return-adjusted margin."
+    },
+    {
+        "id": "bb4",
+        "category": "Risk",
+        "trigger": "Pre-fulfillment cancel rate >= 2.5%",
+        "advice": "Keep pre-fulfillment cancel rate below 2.5% to meet Buy Box eligibility requirements",
+        "confidence": "High",
+        "source": "Pre-fulfillment cancel rate below 2.5%"
+    },
+    {
+        "id": "bb5",
+        "category": "Risk",
+        "trigger": "Late shipment rate >= 4%",
+        "advice": "Ensure late shipment rate is below 4% to qualify for Buy Box competition",
+        "confidence": "High",
+        "source": "Late shipment rate below 4%"
+    },
+    {
+        "id": "bb6",
+        "category": "General",
+        "trigger": "New seller with less than 90 days history",
+        "advice": "Build at least 90 days of selling history to become eligible for the Buy Box",
+        "confidence": "High",
+        "source": "At least 90 days of selling history (typically)"
+    },
+    {
+        "id": "bb7",
+        "category": "Pricing",
+        "trigger": "Competitor prices change frequently",
+        "advice": "Implement automated repricing software to adjust prices in real-time and maintain Buy Box ownership",
+        "confidence": "High",
+        "source": "The Buy Box rotates frequently\u2014sometimes multiple times per hour\u2014based on price changes... This is why automated repricing is so valuable"
+    },
+    {
+        "id": "bb8",
+        "category": "Risk",
+        "trigger": "Feedback rating < 95%",
+        "advice": "Aim for at least 95% positive feedback rating to improve Buy Box chances",
+        "confidence": "High",
+        "source": "Aim for at least a 95% positive feedback rating"
+    },
+    {
+        "id": "bb9",
+        "category": "General",
+        "trigger": "Using Individual seller account",
+        "advice": "Upgrade to a Professional Seller account ($39.99/month) to be eligible for the Buy Box in most categories",
+        "confidence": "High",
+        "source": "Amazon typically requires sellers to have a Professional Seller account ($39.99/month) to be eligible for the Buy Box"
+    },
+    {
+        "id": "bb10",
+        "category": "Pricing",
+        "trigger": "Manual pricing adjustments",
+        "advice": "Use dynamic pricing software to automate adjustments, potentially increasing sales by 15-30%",
+        "confidence": "High",
+        "source": "Dynamic pricing software can increase eCommerce sales by 15-30% through automated price optimization"
+    },
+    {
+        "id": "bb11",
+        "category": "General",
+        "trigger": "Buy Box ownership for 12 out of 24 eligible hours",
+        "advice": "Monitor Buy Box percentage (e.g., 50%) in Seller Central to assess competitive position and optimize accordingly",
+        "confidence": "High",
+        "source": "if your product was in stock and eligible for 24 hours, and you owned the Buy Box for 12 of those hours, your Buy Box percentage would be 50%"
+    },
+    {
+        "id": "bb12",
+        "category": "Pricing",
+        "trigger": "Slightly higher price than competitors",
+        "advice": "Win the Buy Box even with a higher price by using FBA, excellent feedback, and reliable inventory, as Amazon prioritizes customer experience",
+        "confidence": "High",
+        "source": "A seller with FBA, excellent feedback, and reliable inventory can win the Buy Box even with a slightly higher price than competitors"
     }
 ]
