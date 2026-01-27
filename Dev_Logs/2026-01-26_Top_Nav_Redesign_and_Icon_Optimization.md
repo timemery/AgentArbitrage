@@ -37,7 +37,13 @@ To resolve the sharpness issues, a rigorous optimization process was applied to 
     *   Set the intrinsic `width` and `height` attributes to match the new `viewBox` dimensions (e.g., `512`x`512`) to ensure a perfect 1:1 aspect ratio during scaling.
 4.  **Sizing Adjustment:** Increased the CSS display height from 16px to **20px** per user feedback. This slightly larger size, combined with the optimized vectors, provided the best visual sharpness and weight balance.
 
-### B. Structural CSS Refactoring
+### B. Logo Optimization
+The main application logo (`AA_Logo.svg`) also required significant optimization to match the mockup's visual size.
+*   **Issue:** The CSS was setting the logo width to `188px`, but the logo appeared visually smaller (~170px) due to approximately 10% invisible horizontal padding in the SVG file.
+*   **Fix:** Calculated the exact content bounding box and updated the SVG `viewBox` from `0 0 7144 1256` to `299 123 6457 991`.
+*   **Result:** This removed the invisible padding, allowing the logo content to fill the entire 188px container width, correcting the visual discrepancy.
+
+### C. Structural CSS Refactoring
 *   **Absolute Positioning:** To maintain the fixed height (`134px`) and centering requirements, the three navigation sections were positioned absolutely within the relative header container.
     *   `.nav-left`: `left: 17px`
     *   `.nav-center`: `left: 50%; transform: translateX(-50%)`
