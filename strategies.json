@@ -32063,5 +32063,605 @@
         "advice": "Cancel if no results after trial period (e.g., 14 days) and switch to tools that deliver quicker results without high costs",
         "confidence": "High",
         "source": "Bqool Testimonial #2: \u201c(NeuroPrice is) leagues better\u201d... Bqool was super expensive and was quickly losing it\u2019s value because i wasn\u2019t winning anything. One Day with NeuroPrice and I was seeing Results Quicker than Bqool could ever make me."
+    },
+    {
+        "id": "p1a",
+        "category": "Pricing",
+        "trigger": "FBA seller, Sales Rank up to 1.5 million",
+        "advice": "Match the lowest FBA price to outperform 90% of sellers",
+        "confidence": "High",
+        "source": "if you\u2019re an FBA seller, match the lowest FBA price. ... For me, I match the lowest FBA price for all Sales Ranks up to 1.5 million."
+    },
+    {
+        "id": "p1b",
+        "category": "Pricing",
+        "trigger": "Sales Rank beyond 1.5 million or low demand (selling less than every 1-2 weeks)",
+        "advice": "Match the lowest FBM price (landed price) to capture infrequent sales",
+        "confidence": "High",
+        "source": "Beyond that, I\u2019m matching the lowest FBM price. ... you want to consider matching the lowest MF price when an item is selling less than every one to two weeks."
+    },
+    {
+        "id": "p1c",
+        "category": "Pricing",
+        "trigger": "Matching lowest price yields below minimum profit (e.g., $3 payout)",
+        "advice": "Do not list or price higher to maintain profit standards",
+        "confidence": "High",
+        "source": "if matching the lowest price will only get you a $2 payout. ... Generally I would not recommend compromising your profit standards, and would advise option #2 or #3."
+    },
+    {
+        "id": "p2a",
+        "category": "Pricing",
+        "trigger": "Medium to strong demand (1 to 0.5 sales per day)",
+        "advice": "Ignore lowest offer and price in relation to 2nd lowest (match or 5 cents below) if gap is significant (e.g., $0.50 or $1+)",
+        "confidence": "High",
+        "source": "Most inventory that has medium\u2013to-strong demand (i.e. selling 1 to 0.5 sales a day). ... When the gap between the lowest and second lowest price is insignificant, then don\u2019t apply this."
+    },
+    {
+        "id": "p3a",
+        "category": "Pricing",
+        "trigger": "Very high demand (multiple units per day), Sales Rank 30,000 or better in Books",
+        "advice": "Ignore lowest two or more offers and price against 3rd lowest or beyond if volatility high and gaps allow dollars of profit",
+        "confidence": "High",
+        "source": "This is for inventory that is selling multiple units a day. In the Books category, I will apply this when the Sales Rank is (roughly) 30,000 or better."
+    },
+    {
+        "id": "p4a",
+        "category": "Pricing",
+        "trigger": "Low demand, generic mass-appeal subject, current lowest price over $100",
+        "advice": "Set own price below lowest offer conservatively only if low confidence in current price; avoid as new seller or if Keepa shows sales at high price",
+        "confidence": "High",
+        "source": "I\u2019ll apply this when an item has low demand, has a generic mass-appeal subject matter, and has a very high listing price (over $100)."
+    },
+    {
+        "id": "p5a",
+        "category": "Pricing",
+        "trigger": "No competing offers",
+        "advice": "Set own price high: $99 for most books, $499 for narrow/irrational passionate subjects, $25 if not niche enough; err on pricing too high",
+        "confidence": "High",
+        "source": "For most books where i am the only seller, I price them at $99. For books that are on a subject matter so narrow ... $499. For books I deem to not be niche enough ... $25."
+    },
+    {
+        "id": "p6a",
+        "category": "Pricing",
+        "trigger": "Competing only with Amazon (e.g., Amazon only seller, FBA with no other Prime, high demand with few FBA/FBM)",
+        "advice": "Underprice Amazon by at least 50 cents, up to $1 maximum",
+        "confidence": "High",
+        "source": "plan on underpricing Amazon by at least 50 cents. And I think underpricing by more than $1 is excessive in most instances."
+    },
+    {
+        "id": "p7a",
+        "category": "Pricing",
+        "trigger": "FBA seller, Best Seller Rank worse than 1.5 million (or 1-2 million subjective)",
+        "advice": "Match the lowest overall price (including FBM) for low demand items",
+        "confidence": "High",
+        "source": "For books specifically, I match the lowest overall price when the Best Seller Rank is worse than 1.5 million. You might choose 1 million. You might choose 2 million."
+    },
+    {
+        "id": "p8a",
+        "category": "Pricing",
+        "trigger": "Following Buy Box strategy (no specific conditions)",
+        "advice": "Match the Buy Box price exactly",
+        "confidence": "High",
+        "source": "If the Buy Box price is $20, you price at $20 If it\u2019s $500, then that\u2019s the price you choose."
+    },
+    {
+        "id": "sr5",
+        "category": "Pricing",
+        "trigger": "Low demand item (e.g., Sales Rank 10 million)",
+        "advice": "Consider dramatically lower price, even below lowest, to stimulate sales.",
+        "confidence": "High",
+        "source": "Now let\u2019s say you have a book ranked 10 million. That book hasn\u2019t sold in years... a dramatically lower price may be called for."
+    },
+    {
+        "id": "sr6",
+        "category": "Pricing",
+        "trigger": "Very high demand",
+        "advice": "Price FBA offer far above all lowest competing offers.",
+        "confidence": "High",
+        "source": "With a very high demand item, it may mean pricing your FBA offer far above all the lowest competing offers."
+    },
+    {
+        "id": "sr7",
+        "category": "Pricing",
+        "trigger": "Very low demand",
+        "advice": "Price below the lowest overall price to increase chances of sale.",
+        "confidence": "High",
+        "source": "With a very low demand item, it may mean pricing below the lowest overall price."
+    },
+    {
+        "id": "srh1",
+        "category": "Pricing",
+        "trigger": "Access to Sales Rank history available",
+        "advice": "Ignore current Sales Rank and base pricing entirely on historical patterns using tools like Keepa.",
+        "confidence": "High",
+        "source": "If you have access to Sales Rank history, ignore current Rank and defer to this entirely... Sales Rank history, however, is a different story. A simple graph showing the sales history for an item is much more useful than current Sales Rank."
+    },
+    {
+        "id": "mfp1",
+        "category": "Pricing",
+        "trigger": "FBA seller pricing high-demand book",
+        "advice": "Use Merchant Fulfilled price as starting point and price $15 or more above it.",
+        "confidence": "High",
+        "source": "If you\u2019re an FBA seller and you plan to price a high-demand book $15 above the lowest FBM price \u2013 you have to know what that FBM is in order to price $15 higher."
+    },
+    {
+        "id": "mfp2",
+        "category": "Pricing",
+        "trigger": "Poorly ranked products (high Sales Rank)",
+        "advice": "Ignore FBA offers and compete only with Merchant Fulfilled offers.",
+        "confidence": "High",
+        "source": "Remember there is a Sales Rank threshold above which you\u2019ll want to consider ignoring FBA offers completely and only competing with FBM offers."
+    },
+    {
+        "id": "ap1",
+        "category": "Pricing",
+        "trigger": "Amazon selling the ASIN directly",
+        "advice": "Set Amazon\u2019s price as the absolute ceiling; do not price higher to avoid losing all sales.",
+        "confidence": "High",
+        "source": "Amazon\u2019s price is always the ceiling. You cannot price higher than Amazon and get a sale."
+    },
+    {
+        "id": "sub1",
+        "category": "Pricing",
+        "trigger": "Product subcategory is Textbooks",
+        "advice": "Command FBA premium as sales are time-sensitive and mostly go to FBA sellers.",
+        "confidence": "High",
+        "source": "Textbooks: the vast majority of textbook sales go to FBA sellers. They are very time sensitive purchases."
+    },
+    {
+        "id": "sub2",
+        "category": "Pricing",
+        "trigger": "Product subcategory is Audiobooks",
+        "advice": "Avoid expecting FBA premium; price conservatively due to poor performance.",
+        "confidence": "High",
+        "source": "Audiobooks: I don\u2019t know what this is, but I\u2019ve had a terrible time commanding an FBA premium for audiobooks."
+    },
+    {
+        "id": "sub3",
+        "category": "Pricing",
+        "trigger": "Product subcategory is Travel books",
+        "advice": "Command FBA premium as purchases are last-minute and require fast delivery.",
+        "confidence": "High",
+        "source": "Travel books: Like the Toys example, people buy these last-minute and need them to arrive by a certain date."
+    },
+    {
+        "id": "pricing-cog-irrelevant",
+        "category": "Pricing",
+        "trigger": "When determining prices for Amazon products",
+        "advice": "Ignore your cost of goods and do not base pricing on what you paid for the inventory",
+        "confidence": "High",
+        "source": "Why your \u201ccost of goods\u201d are irrelevant to pricing By Peter Valley2 Comments WHAT YOU PAID DOESN\u2019T MATTER You should never consider your cost of goods when pricing products on Amazon."
+    },
+    {
+        "id": "pricing-no-competitors",
+        "category": "Pricing",
+        "trigger": "When you are the only seller for a book on Amazon",
+        "advice": "Apply specialized pricing guidelines for listings without competition to maximize profits",
+        "confidence": "Medium",
+        "source": "How to price books when you\u2019re the only seller By Peter Valley1 Comment HOW TO PRICE BOOKS WHEN YOU HAVE NO COMPETITORS Guide to pricing books on Amazon when you have no competitors."
+    },
+    {
+        "id": "general-free-inventory",
+        "category": "Buying",
+        "trigger": "Sourcing inventory for resale",
+        "advice": "Seek out sources for free inventory to reduce acquisition costs",
+        "confidence": "Low",
+        "source": "Download 10 Free Guides: 1. Where to find free inventory."
+    },
+    {
+        "id": "general-profitable-categories",
+        "category": "General",
+        "trigger": "Selecting book categories for arbitrage",
+        "advice": "Focus on the most profitable book categories to improve ROI",
+        "confidence": "Low",
+        "source": "Download 10 Free Guides: 2. The most profitable book categories."
+    },
+    {
+        "id": "pricing-reprice",
+        "category": "Pricing",
+        "trigger": "Managing ongoing inventory prices",
+        "advice": "Implement repricing techniques to stay competitive and optimize sales",
+        "confidence": "Low",
+        "source": "Download 10 Free Guides: 3. How to reprice."
+    },
+    {
+        "id": "buying-tradein-arbitrage",
+        "category": "Buying",
+        "trigger": "Using Amazon's trade-in program",
+        "advice": "Exploit arbitrage opportunities by reselling items bought with trade-in credits for profit",
+        "confidence": "Medium",
+        "source": "Master guide to Amazon trade in arbitrage Every trick to profiting from Amazon trade-in credit arbitrage"
+    },
+    {
+        "id": "pricing-default-no-competitors",
+        "category": "Pricing",
+        "trigger": "No competing offers",
+        "advice": "Set default price at $99 for books where you are the only seller",
+        "confidence": "High",
+        "source": "What\u2019s the best default price when you have no competitors? Here\u2019s the simplest answer to \u201cHow to price when you have no competitors?\u201d $99. That\u2019s the answer."
+    },
+    {
+        "id": "pricing-tier-one-high-demand",
+        "category": "Pricing",
+        "trigger": "Average rank better than 20,000",
+        "advice": "Price high demand books at $299 or $499; use Keepa charts to confirm demand",
+        "confidence": "High",
+        "source": "In the Books category, I would consider \u201chigh demand\u201d to be anything with an average rank of better than 20,00 (arbitrary number here). ... it\u2019s not unreasonable to set a price of $299 or $499 and still get a sale."
+    },
+    {
+        "id": "pricing-tier-two-high-urgency",
+        "category": "Pricing",
+        "trigger": "Unlikely substitute, no close substitute, or buyer irrationally passionate/obscenely wealthy",
+        "advice": "Price high-urgency books at $499",
+        "confidence": "High",
+        "source": "You can deem the demand for a book to be \u201curgent\u201d when any of the three conditions apply: There is unlikely to be any substitute... When any of these conditions apply, I will price that book at $499."
+    },
+    {
+        "id": "pricing-tier-three-average",
+        "category": "Pricing",
+        "trigger": "Little to no urgency, average book with alternatives",
+        "advice": "Price average books at $99",
+        "confidence": "High",
+        "source": "Little to no urgency? In other words, an \u201caverage\u201d book where you are the only seller? I\u2019ll list at $99. And they usually sell."
+    },
+    {
+        "id": "pricing-tier-four-low-urgency",
+        "category": "Pricing",
+        "trigger": "Confirmed low urgency with many substitutes",
+        "advice": "Price low-urgency books at $25; occasionally $49.99 if undecided; never below $25; for every 10 books at $99, list one at $25",
+        "confidence": "High",
+        "source": "These are books for which there are many substitutes... I\u2019ll list books in this category at $25. ... Very occasionally I\u2019m undecided, and price at $49.99. But usually I\u2019m choosing either $25, $99, or $499. But if I\u2019m the only seller, I will never price it below $25."
+    },
+    {
+        "id": "general-hold-high-price",
+        "category": "General",
+        "trigger": "You own the listing with no competition",
+        "advice": "Price high and hold your ground; lower price later if needed",
+        "confidence": "High",
+        "source": "Remember: You can\u2019t get from a customer what you don\u2019t ask for. When you own a listing, price it high and hold your ground. You can always lower your price later."
+    },
+    {
+        "id": "risk-high-price-limit",
+        "category": "Risk",
+        "trigger": "Pricing extremely high like $10,000",
+        "advice": "Avoid prices that trigger Amazon\u2019s high price errors",
+        "confidence": "High",
+        "source": "You can price any book for $10,000 (assuming you don\u2019t get hit with one of Amazon\u2019s \u201chigh price errors\u201d)"
+    },
+    {
+        "id": "ph2",
+        "category": "Pricing",
+        "trigger": "Determining true market value",
+        "advice": "Define the true market value of a book as its 12-month average merchant fulfilled price",
+        "confidence": "High",
+        "source": "For the purpose of this training, I\u2019m going to define the \u201ctrue market value\u201d of any book is it\u2019s 12-month average merchant fulfilled price. This gives a slightly conservative (because we\u2019re not considering FBA prices) but very realistic measure of a book\u2019s value."
+    },
+    {
+        "id": "ph3",
+        "category": "Buying",
+        "trigger": "Random search in Books category yielding 20 results per page",
+        "advice": "Expect to find one severely underpriced book every 5.5 pages of search results",
+        "confidence": "High",
+        "source": "There are around 35 million books on Amazon. Depending on how you search, each page of search results on Amazon will usually have 20 results. That\u2019s one severely underpriced book every 5.5 pages."
+    },
+    {
+        "id": "ph4",
+        "category": "General",
+        "trigger": "Reviewing books systematically",
+        "advice": "Expect to find one profitable book for every 110 books reviewed",
+        "confidence": "High",
+        "source": "But if you apply this formula diligently and consistently, you can expect to find one profitable book for every 110 you review."
+    },
+    {
+        "id": "ph5",
+        "category": "Risk",
+        "trigger": "Book priced 50% below average merchant fulfilled price",
+        "advice": "Use the 50% rule as insurance to ensure profit when reselling either merchant fulfilled or FBA, as it covers costs and fees",
+        "confidence": "High",
+        "source": "Purchasing books priced 50% below their true market value (aka their average price) is the best insurance against ever losing money on a book. You won\u2019t lose money selling a book like this at either Merchant Fufilled OR FBA. The reason is simple: Cutting your costs by 50%, increases your margins by 50%."
+    },
+    {
+        "id": "ph6",
+        "category": "Pricing",
+        "trigger": "After buying underpriced book",
+        "advice": "Relist at the 12-month or 6-month average price, or just below the 2nd lowest current price, or match the lowest FBA price if selling FBA",
+        "confidence": "High",
+        "source": "Your pricing options are: Price at the 12-month or 6-month average price. Price just below the 2nd lowest current price (this will be the lowest once you buy up the lowball offer). Price match the lowest FBA price (for FBA sellers)"
+    },
+    {
+        "id": "ph7",
+        "category": "Buying",
+        "trigger": "Potential underpriced book identified via hover graph",
+        "advice": "Confirm sales rank to ensure the title sells often enough within your comfort zone",
+        "confidence": "High",
+        "source": "Step #5: Check the Amazon \u201cbest seller rank.\u201d You want to confirm this title is selling often enough to be within your comfort zone."
+    },
+    {
+        "id": "ph8",
+        "category": "Risk",
+        "trigger": "Potential underpriced offer",
+        "advice": "Perform due diligence to confirm the offer is sellable: check for water damage, international edition, etc.",
+        "confidence": "High",
+        "source": "Step #6: Confirm the underpriced offer is sellable. Is it water damaged? International edition? Etc. Do some quick due diligence."
+    },
+    {
+        "id": "ph9",
+        "category": "General",
+        "trigger": "Setting up Keepa for price hacking",
+        "advice": "Install Keepa, set graphs to 'Used', range to 3 months, filter extreme values to 'no', enable hover graphs for 180 days used condition to compare current vs historical prices quickly",
+        "confidence": "High",
+        "source": "Step #1: Install Keepa... Graphs to show: Set to \u201cUsed.\u201d Range: Set to \u201c3 months.\u201d Filter extreme values: Set to \u201cno.\u201d... Enable Keepa\u2019s \u201chover graphs\u201d... Check box for \u201cused.\u201d Choose 180 days."
+    },
+    {
+        "id": "ph10",
+        "category": "General",
+        "trigger": "Wanting alerts for price drops",
+        "advice": "Use Keepa's Track Product feature to set email alerts for price drops to 50% of the 180-day average price on promising books",
+        "confidence": "High",
+        "source": "Step Three: Click inside the \u201cused\u201d or \u201cnew\u201d field and set to 50% the 180 day average price... Set up email alerts for anything that is currently below average (but not enough to buy yet)"
+    },
+    {
+        "id": "ph11",
+        "category": "Buying",
+        "trigger": "Hovering over books in search results",
+        "advice": "Look for dramatic drops in the Keepa graph on the far right indicating severe price drops compared to the general average",
+        "confidence": "High",
+        "source": "Hover over every book... What you\u2019re looking for are dramatic drops in the graph on the far right, indicating a highly unusual and severe price drop... compare the current price... to the average price (as generally reflected in the Keepa chart)."
+    },
+    {
+        "id": "rule-of-threes-core",
+        "category": "Buying",
+        "trigger": "Assessing any book for purchase",
+        "advice": "Only buy and list if expected payout is at least 3x the purchase cost (300% ROI) and minimum payout of $3",
+        "confidence": "High",
+        "source": "You should only list something for sale on Amazon if you\u2019ll get a minimum of 3x what you paid for it, and your payout is at least $3. Minimum ROI: 3x. Minimum payout: $3."
+    },
+    {
+        "id": "roi-buffer-explanation",
+        "category": "Risk",
+        "trigger": "Potential price drops or fee increases",
+        "advice": "Set 300% ROI standard to create a buffer ensuring you rarely lose money, even if actual return is closer to 2x",
+        "confidence": "High",
+        "source": "Setting a standard of 300% ROI creates a large buffer than makes it very unlikely you will lose money on that item... even if things go terribly wrong, you\u2019re rarely going to do worse than doubling your money."
+    },
+    {
+        "id": "min-payout-subjective",
+        "category": "General",
+        "trigger": "Evaluating personal time value and enthusiasm",
+        "advice": "Adjust minimum payout from $3 based on what keeps you excited; higher than $3 means passing on more opportunities, lower risks demoralization",
+        "confidence": "High",
+        "source": "A minimum payout of $3 is a good lower boundary... Some will be comfortable with a minimum $2 payout. Others will need to see $4 (or more)... The higher the minimum payout you set, the more money you\u2019re leaving on the table."
+    },
+    {
+        "id": "example-buy-1",
+        "category": "Buying",
+        "trigger": "Cost $0.50, payout $2.05",
+        "advice": "Pass because payout below $3, despite 4x ROI",
+        "confidence": "High",
+        "source": "Cost: 50 cents. Selling price: $10. Payout: $2.05. Buy or pass? Pass. The payout for this book is $2.05. Even though that\u2019s quadruple our investment, it\u2019s still less than a $3 payout."
+    },
+    {
+        "id": "example-pass-2",
+        "category": "Buying",
+        "trigger": "Cost $5, payout $9.10",
+        "advice": "Pass because payout less than 3x cost (1.82x)",
+        "confidence": "High",
+        "source": "Cost: $5. Selling price: $20. Payout: $9.10. Buy or pass? Pass. That\u2019s less than three times our investment."
+    },
+    {
+        "id": "example-buy-3",
+        "category": "Buying",
+        "trigger": "Cost $1, payout $3.10",
+        "advice": "Buy as it meets both 3x ROI and $3 minimum",
+        "confidence": "High",
+        "source": "Cost: $1. Selling price: $12. Payout: $3.10. Buy or pass? Buy. This book comes in just under the wire for both elements of the Rule Of Threes."
+    },
+    {
+        "id": "exception-fast-sale",
+        "category": "Risk",
+        "trigger": "Sales Rank <= 10,000 indicating fast sale",
+        "advice": "Accept payout below $3 (e.g., $2.10) if quick sale is guaranteed to minimize holding risk",
+        "confidence": "High",
+        "source": "I will accept lower profits if I belief an item will sell fast... Sales Rank: 10,000. Purchase price: $1. Listing price: $11.75. Payout: $2.10. At a rank of 10,000, this book is going to sell fast... I may decide to acquire that book and get the quick $2."
+    },
+    {
+        "id": "raise-standards-low-demand",
+        "category": "Risk",
+        "trigger": "Sales Rank >= 4 million indicating low demand",
+        "advice": "Pass on payout of $3.57; require $10+ to compensate for higher risk of not selling",
+        "confidence": "High",
+        "source": "Sales Rank: 4 million. Purchase price: $1. Listing price: $12. Payout: $3.57. I would pass on this book... I would be looking for a payout of $10+ for a book with this rank."
+    },
+    {
+        "id": "high-payout-low-rank-buy",
+        "category": "Buying",
+        "trigger": "Sales Rank 6 million, payout $33.91",
+        "advice": "Buy despite poor rank because high payout compensates for risk",
+        "confidence": "High",
+        "source": "Sales Rank: 6 million. Purchase price: $1. Listing price:$49.99. Payout: $33.91. Even though the rank is worse, I would absolutely buy this book. The payout is $33, which means I\u2019m being adequately compensated for my risk."
+    },
+    {
+        "id": "framework-high-ranks",
+        "category": "Risk",
+        "trigger": "Sales Rank 2-4 million",
+        "advice": "Require minimum $10 payout; for 4-6 million require $15; for 6+ million require $20",
+        "confidence": "High",
+        "source": "Sales Rank 2 to 4 million: Minimum $10 payout. Sales Rank 4 to 6 million: Minimum $15 payout. Sales Rank 6 million and beyond: Minimum $20 payout."
+    },
+    {
+        "id": "principle1",
+        "category": "Pricing",
+        "trigger": "Any pricing decision",
+        "advice": "Strike a balance between highest price and selling within desired time frame to maximize profits and turnover",
+        "confidence": "High",
+        "source": "The entire goal of choosing a price on Amazon revolves around this goal: \u201cGetting the highest amount you can for that item, while still selling it within your desired time frame.\u201d"
+    },
+    {
+        "id": "principle2",
+        "category": "Pricing",
+        "trigger": "Item not repriced in last 24 hours",
+        "advice": "Reprice inventory regularly, preferably every 24 hours, to avoid being buried by competitors and ensure visibility",
+        "confidence": "High",
+        "source": "If you have inventory listed for sale on Amazon, and you haven\u2019t repriced it recently (preferably in the last 24 hours), that inventory may as well not be listed at all."
+    },
+    {
+        "id": "principle3",
+        "category": "Pricing",
+        "trigger": "High or reasonably strong demand and extra profits from higher pricing are worth it",
+        "advice": "Price higher than the lowest competitor instead of always matching or undercutting",
+        "confidence": "High",
+        "source": "You should be pricing higher than the lowest price when the following conditions apply: An item is in high (or reasonably strong) demand. The extra profits you\u2019ll get from pricing higher make pricing higher worth it."
+    },
+    {
+        "id": "principle3-lowdemand",
+        "category": "Pricing",
+        "trigger": "Very low demand or lowest 5 competing prices bunched within $1-2",
+        "advice": "Match the lowest price to get the quickest sale",
+        "confidence": "High",
+        "source": "Have a very low-demand item for sale? Maybe this doesn\u2019t make sense, and you should just aim to get the quickest sale. Have a higher demand item but the lowest 5 competing prices are all bunched up within a dollar or two of the lowest? Maybe it makes sense just to match that lowest price and get the quicker sale."
+    },
+    {
+        "id": "principle4",
+        "category": "Pricing",
+        "trigger": "FBA seller with high or medium demand items",
+        "advice": "Leverage FBA pricing advantage by pricing higher than merchant fulfilled offers, competing only with other FBA offers, as Prime buyers pay more for fast shipping and trust",
+        "confidence": "High",
+        "source": "if you\u2019re an FBA seller, for any items with high or medium demand \u2013 you are competing with other FBA offers only. Price accordingly."
+    },
+    {
+        "id": "principle5",
+        "category": "Pricing",
+        "trigger": "Amazon Sales Rank of 5,000 (high demand, selling hundreds per day)",
+        "advice": "Price aggressively high, e.g., $99 or over $100, even if competitors are at $30-$100, due to frequent price fluctuations ensuring sales",
+        "confidence": "High",
+        "source": "Personally, I would price the book with a 5,000 sales rank at $99. Possibly over $100."
+    },
+    {
+        "id": "principle5-low",
+        "category": "Pricing",
+        "trigger": "Amazon Sales Rank of 3 million (low demand, selling once every couple months)",
+        "advice": "Price at the lowest competitor price, e.g., $30, to capture the infrequent sale and avoid waiting months",
+        "confidence": "High",
+        "source": "Yet I would price the book with a Sales Rank of 3 million at $30. Not even a question."
+    },
+    {
+        "id": "principle7",
+        "category": "Pricing",
+        "trigger": "Competitor price changes 10x a day",
+        "advice": "Avoid reacting to every price change by repricing 10x a day; instead, recognize that the best price doesn't change that frequently",
+        "confidence": "High",
+        "source": "A lot of sellers set up repricers to match (or \u2013 gasp- undercut) competitors 10x a day. It\u2019s pure insanity. It\u2019s as if to say \u201c10x a day the best price for that item changes.\u201d That\u2019s simply not possible."
+    },
+    {
+        "id": "principle7-rebound",
+        "category": "Pricing",
+        "trigger": "Sudden price drop on an item",
+        "advice": "Use Keepa price history charts to assess rebound potential before dropping price rashly, allowing time for prices to fluctuate back up",
+        "confidence": "High",
+        "source": "Allowing time for prices to rebound before panic-dropping. When you understand that prices fluctuate wildly from day to day and week to week, you\u2019re less likely to make rash repricing decisions when a price drops. Maybe with the help of Keepa price history charts, you can more accurately assess the chance of prices rebounding"
+    },
+    {
+        "id": "competitor-constraint",
+        "category": "Pricing",
+        "trigger": "Lowest merchant fulfilled price at $20 with multiple sellers at $29-$30",
+        "advice": "Even if FBA strategy suggests $99, price at $29 or $29.99 to compete, as competitors constrain your options",
+        "confidence": "High",
+        "source": "Let\u2019s say you have a textbook. And the lowest merchant fulfilled price for that textbook is $20. ... There are 20 other sellers who have priced that same book between $29 and $30. ... You\u2019re left with no choice but to price that book at $29 (or $29.99"
+    },
+    {
+        "id": "pricing5",
+        "category": "Pricing",
+        "trigger": "Infrequent repricing (e.g., not daily)",
+        "advice": "Reprice consistently, ideally daily, using a repricing tool to stay competitive and visible",
+        "confidence": "High",
+        "source": "Repricing is not something you do \u201cwhen you get around to it.\u201d It is a central part of running an Amazon business. If you don\u2019t reprice, you aren\u2019t getting sales."
+    },
+    {
+        "id": "pricing6",
+        "category": "Pricing",
+        "trigger": "Expecting quick sales from conservative pricing",
+        "advice": "Align expectations with strategy: conservative pricing may delay sales, aggressive pricing thins margins",
+        "confidence": "High",
+        "source": "pricing above multiple other sellers, then being confused when you don\u2019t get a flood of quick sales... Chasing the lowest price at all times, then being confused when your profit margins are razor thin."
+    },
+    {
+        "id": "pricing7",
+        "category": "Pricing",
+        "trigger": "No sales in unrealistic short timeframe",
+        "advice": "Avoid panic-dropping prices; use Keepa charts to assess if current price is below expected and wait for rebound if undercut",
+        "confidence": "High",
+        "source": "having the lowest price, and dropping it even more when something doesn\u2019t sell right away. This is \u201cpanic price dropping\u201d in it\u2019s purest form... Keepa price charts can help you assess if the current price is well below a reasonably expected sales price."
+    },
+    {
+        "id": "pricing8",
+        "category": "Pricing",
+        "trigger": "Pricing only against same sub-condition (e.g., Very Good vs. only other Very Good)",
+        "advice": "Compete against all used conditions including worse ones like Good or Acceptable, as customers buy them",
+        "confidence": "High",
+        "source": "You should only compare Used to Used and New to New. But that\u2019s where it (mostly) ends. You are still competing against offers in worse condition."
+    },
+    {
+        "id": "pricing9",
+        "category": "Pricing",
+        "trigger": "Using extraneous data like eBay prices, other editions, or rental prices",
+        "advice": "Base pricing solely on Amazon product page data for Used vs. New, ignoring external sites or formats",
+        "confidence": "High",
+        "source": "If you\u2019re pricing based on anything other than \u201cis this Used or New,\u201d you\u2019re probably overthinking it. Here are some example: Looking at eBay prices Looking at prices on other sites (like Bookfinder.com) Looking at prices of other editions"
+    },
+    {
+        "id": "pricing10",
+        "category": "Pricing",
+        "trigger": "Underpricing the lowest price by 1-10 cents",
+        "advice": "Match the lowest price instead of underpricing to avoid race to the bottom; exceptions for conflicting FBA or bad sales rank",
+        "confidence": "High",
+        "source": "Underpricing is a game that no one wins. Don\u2019t engaged in a desperate race to the bottom. Matching a price is almost always better than underpricing. When you underprice, that extra 1 or 10 cents doesn\u2019t matter that much to buyers."
+    },
+    {
+        "id": "sr8",
+        "category": "Risk",
+        "trigger": "High demand (better Sales Rank)",
+        "advice": "Price above lowest offer relying on factors like condition, description, or feedback to still get sales; minimal risk of missing out",
+        "confidence": "High",
+        "source": "The more buyers for a particular item, the less we need to be the lowest price to still get a sale... Here are a few examples where we can price more boldly, not be the lowest price, and still get sales."
+    },
+    {
+        "id": "sr9",
+        "category": "Risk",
+        "trigger": "Low demand (worse Sales Rank, e.g., 3 million)",
+        "advice": "Position listing aggressively to be the next sale, as buyers may come only every 90 days; higher risk of prolonged inventory hold",
+        "confidence": "High",
+        "source": "When a buyer is only coming along once every 90 days (as might be the case with a book ranked 3 million), then you better position your listing to get that next sale."
+    },
+    {
+        "id": "sr10",
+        "category": "Pricing",
+        "trigger": "High-demand items after shipping in",
+        "advice": "Minimize repricing efforts; set loose rules like $2 higher than 3rd lowest FBA offer, as it will sell regardless",
+        "confidence": "High",
+        "source": "Once I ship a high-demand item in, I pretty much forget about. I don\u2019t look at it. I don\u2019t reprice it... like \u201cprice $2 higher than the 3rd lowest FBA offer.\u201d"
+    },
+    {
+        "id": "sr11",
+        "category": "Pricing",
+        "trigger": "Worse Sales Rank",
+        "advice": "Price more conservatively and reprice more frequently to optimize for infrequent sales",
+        "confidence": "High",
+        "source": "The worse the sales rank, the more conservatively we should price... Remember the #1 rule about Sales Rank & Pricing: The worse an item\u2019s Sales Rank, the more conservatively you should price it, and the more frequently you should reprice it."
+    },
+    {
+        "id": "sr12",
+        "category": "General",
+        "trigger": "Any repricing decision",
+        "advice": "Always use Sales Rank as the primary guide; do not reprice without considering it",
+        "confidence": "High",
+        "source": "Bottom line: Don\u2019t reprice an item without using Sales Rank as your guide."
+    },
+    {
+        "id": "spot1",
+        "category": "Buying",
+        "trigger": "Visiting sources but finding little profitable inventory",
+        "advice": "Learn to spot value in potential inventory and correctly read scanning app data to identify profitable items",
+        "confidence": "High",
+        "source": "Not knowing how to spot value: When they encounter a large volume of potential inventory, they don\u2019t know how to identify the items that are likely to be profitable... Not knowing how to read scanning app data: They are encountering profitable items, but are misreading the data on their app."
     }
 ]
