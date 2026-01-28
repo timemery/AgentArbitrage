@@ -32663,5 +32663,405 @@
         "advice": "Learn to spot value in potential inventory and correctly read scanning app data to identify profitable items",
         "confidence": "High",
         "source": "Not knowing how to spot value: When they encounter a large volume of potential inventory, they don\u2019t know how to identify the items that are likely to be profitable... Not knowing how to read scanning app data: They are encountering profitable items, but are misreading the data on their app."
+    },
+    {
+        "id": "ebay-bundle-trigger",
+        "category": "General",
+        "trigger": "Excess books with no value on Amazon",
+        "advice": "Save every excess book regardless of apparent value and store them for potential bundling by subject, genre, or author",
+        "confidence": "High",
+        "source": "Save every excess book you have. It doesn\u2019t matter if its the most worthless-looking romance novel you\u2019ve ever seen. Save it."
+    },
+    {
+        "id": "pattern-identification",
+        "category": "General",
+        "trigger": "At least 10 books on a specific subject, genre, or by a specific author",
+        "advice": "Look for patterns in subject matter or authorship among saved excess books and group them into bundles for eBay sales",
+        "confidence": "High",
+        "source": "wait until you have at least 10 copies of books on a very definable subject or a specific author. 20+ books is ideal, but a group of 10+ will work."
+    },
+    {
+        "id": "niche-bundling",
+        "category": "Pricing",
+        "trigger": "Books grouped by narrow niche subject or author",
+        "advice": "Prioritize the narrowest possible niches for bundling to maximize curation premium and profit, as more niche audiences pay more",
+        "confidence": "High",
+        "source": "You want to get as narrow as you possibly can. ... The more niche the better. There is a buyer for every micro niche subcategory. And the more niche, the more passionate the audience and the more money you\u2019ll get for your eBay bundle."
+    },
+    {
+        "id": "bundle-size-minimum",
+        "category": "General",
+        "trigger": "Fewer than 10 books in a bundle",
+        "advice": "Avoid bundling fewer than 10 books to prevent reducing profit and increasing workload; aim for 20+ for optimal results",
+        "confidence": "High",
+        "source": "I don\u2019t recommend this. I think you\u2019re significantly reducing your profit (and increasing your work load) by listing books in such small quantities."
+    },
+    {
+        "id": "ebay-listing",
+        "category": "General",
+        "trigger": "Identified bundle of 10+ niche books",
+        "advice": "List bundles as 'lots' on eBay with clear photos of covers and descriptive titles conveying the subject matter",
+        "confidence": "High",
+        "source": "List them as a \u201clot\u201d on eBay. This isn\u2019t an \u201ceBay 101\u201d tutorial, but you know the deal: Clear photos showing the covers, subject matter clearly conveyed in the title, etc."
+    },
+    {
+        "id": "broad-grouping-mistake",
+        "category": "Risk",
+        "trigger": "Grouping books by too broad a subject (e.g., 20 hardcover mystery novels)",
+        "advice": "Avoid broad groupings to prevent poor sales results and low premiums; always niche down for better profitability",
+        "confidence": "High",
+        "source": "If you group your books by too broad of a subject, expect your results to suffer. ... you\u2019re not going to get a good premium for a set like that."
+    },
+    {
+        "id": "profit-comparison",
+        "category": "Pricing",
+        "trigger": "Low-value books (e.g., netting 40 cents each on Amazon)",
+        "advice": "Bundle for eBay to achieve $1.50+ profit per book, leveraging lower fees and curation premium over individual Amazon sales",
+        "confidence": "High",
+        "source": "20 low-end books might net you 40 cents each on Amazon ... On eBay, there\u2019s a good chance you\u2019re netting $1.50+ per book."
+    },
+    {
+        "id": "sales-speed-advantage",
+        "category": "General",
+        "trigger": "Books with weak individual Amazon demand",
+        "advice": "Sell bundles on eBay for faster sales (one transaction vs. multiple) compared to individual Amazon listings that may take months",
+        "confidence": "High",
+        "source": "Selling 20 books individually ... could take months (or longer). ... On eBay, you only need to make one sale."
+    },
+    {
+        "id": "sales-rank-irrelevance",
+        "category": "General",
+        "trigger": "Books with poor Amazon Sales Rank (e.g., ranked 5 million)",
+        "advice": "Use eBay bundling where individual sales rank is irrelevant, as buyers search by keyword for subject-based lots",
+        "confidence": "High",
+        "source": "Buyers on eBay don\u2019t care about Amazon Sales Rank ... On Amazon, it\u2019s a different story. ... Buyers aren\u2019t likely to ever see a book ranked 5 million"
+    },
+    {
+        "id": "ebay-fees-advantage",
+        "category": "Pricing",
+        "trigger": "Selling with Fulfillment by Amazon (FBA)",
+        "advice": "Choose eBay for lower fees compared to Amazon FBA, especially for bundled sales",
+        "confidence": "High",
+        "source": "Lower fees. Ebay takes a lower cut of the sale than Amazon \u2013 especially if you\u2019re selling with Fulfillment by Amazon (FBA)."
+    },
+    {
+        "id": "specialty-books-ebay",
+        "category": "General",
+        "trigger": "Specialty books like signed, inscribed, foreign language, or those with poor Amazon listings",
+        "advice": "Sell on eBay instead of Amazon for specialty items, mismatches in editions, or when listings get lost in duplicates",
+        "confidence": "High",
+        "source": "I sell specialty books that a collector might want on eBay, including signed and inscribed copies. Many foreign language books especially those in Spanish do better on eBay. ... If the book title has multiple, duplicate or similar listings on Amazon, I might sell it on eBay"
+    },
+    {
+        "id": "amazon-restriction",
+        "category": "Risk",
+        "trigger": "Amazon won't allow selling a particular book",
+        "advice": "Default to eBay for books restricted on Amazon to avoid sales blocks",
+        "confidence": "High",
+        "source": "Another reason for selling a book ... on eBay vs. Amazon is when Amazon won\u2019t allow you to sell it!"
+    },
+    {
+        "id": "sku1",
+        "category": "Pricing",
+        "trigger": "Manual repricing decisions",
+        "advice": "Include average sales rank in SKU to factor into repricing, as it is the best measure of demand over current BSR.",
+        "confidence": "High",
+        "source": "Average rank is the best measure of an item\u2019s demand (not just better than its current \u201cbest seller rank\u201d/BSR, but better than eScore as well). This is particularly useful when repricing, since you should always factor Amazon sales rank into any repricing decision."
+    },
+    {
+        "id": "sku2",
+        "category": "Pricing",
+        "trigger": "Repricing different book subcategories",
+        "advice": "Apply liberal repricing formula for textbooks and conservative for audiobooks by including subcategory in SKU.",
+        "confidence": "High",
+        "source": "I reprice different subcategories different ways. I have one very liberal repricing formula for textbooks, and another more conservative repricing formula for audiobooks, among other subcategories."
+    },
+    {
+        "id": "sku3",
+        "category": "General",
+        "trigger": "Tracking sourcing performance",
+        "advice": "Add inventory source code to SKU to identify high-selling or slow-selling sources at a glance.",
+        "confidence": "High",
+        "source": "Adding a code for where this item was purchased. Why this is useful: Among others, seeing at a glance where you\u2019re sourcing high-selling or slow-selling inventory."
+    },
+    {
+        "id": "sku4",
+        "category": "Pricing",
+        "trigger": "Repricing dilemmas on price drops",
+        "advice": "Include purchase price in SKU to decide whether to lower price or hold for better ROI.",
+        "confidence": "High",
+        "source": "Knowing what you paid for something can resolve any repricing dilemmas you encounter about whether to drop the price of an item, or hold your ground and wait for it to sell."
+    },
+    {
+        "id": "sku5",
+        "category": "Pricing",
+        "trigger": "Breakeven calculations for repricing",
+        "advice": "Add breakeven sales price to SKU for precise repricing to avoid losses.",
+        "confidence": "High",
+        "source": "Adding the sales price at which you would break even on this item. Why this is useful: For the exact same reasons covered above. The breakeven price is just a more specific and probably useful data point for the same purpose."
+    },
+    {
+        "id": "sku6",
+        "category": "Risk",
+        "trigger": "Online arbitrage condition verification",
+        "advice": "Include item condition from seller description in SKU to detect discrepancies upon receipt.",
+        "confidence": "High",
+        "source": "The most common application for this is for sellers doing the online arbitrage model, where they add the condition of the item as described by the seller they purchased from. This allows them to detect any discrepancies between what they thought they were purchasing, and what they ultimately received and listed."
+    },
+    {
+        "id": "sku7",
+        "category": "General",
+        "trigger": "SKU length limit",
+        "advice": "Limit custom data in SKU to 40 characters to embed useful info without overflow.",
+        "confidence": "High",
+        "source": "embed certain information (up to 40 characters)."
+    },
+    {
+        "id": "sku8",
+        "category": "Pricing",
+        "trigger": "Repricing software rules",
+        "advice": "Set repricing rules based on SKU attributes for category-specific formulas.",
+        "confidence": "High",
+        "source": "Some Amazon repricing software tools let you to set repricing rules based on SKU. This allows you reprice items according to specific formulas, even within product categories and sales rank ranges."
+    },
+    {
+        "id": "sku9",
+        "category": "General",
+        "trigger": "Established Amazon business",
+        "advice": "Customize SKUs with top 3 attributes: average rank, subcategory (for books), purchase price for streamlined management.",
+        "confidence": "High",
+        "source": "I would consider the top 3 most fundamental attributes to be: Average rank, Subcategory (if you\u2019re selling books), Purchase price."
+    },
+    {
+        "id": "sku10",
+        "category": "Seasonality",
+        "trigger": "Differentiating book subcategories",
+        "advice": "Include seasonal demand books (test guides, Christmas) as subcategory for targeted repricing.",
+        "confidence": "High",
+        "source": "Besides textbooks & audio books, what are the other book subcategories you differentiate? ... Distant 3rd and 4th place: seasonal demand books (test guides, Christmas etc), books where I\u2019m the only seller."
+    },
+    {
+        "id": "sku11",
+        "category": "Pricing",
+        "trigger": "Average rank stability",
+        "advice": "Use annual average rank in SKU as it remains stable for a year, sufficient for book sales cycle.",
+        "confidence": "High",
+        "source": "When you\u2019re looking at annual average rank, it really shouldn\u2019t shift dramatically for a year or more. Which is usually enough time for a book to sell."
+    },
+    {
+        "id": "sku12",
+        "category": "General",
+        "trigger": "Spreadsheet-based inventory management",
+        "advice": "Include spreadsheet line number in SKU to quickly locate and update book records.",
+        "confidence": "High",
+        "source": "I\u2019m still managing my OBA on a spreadsheet. Including the spreadsheet line number in each book\u2019s SKU is very helpful in finding that book in the spreadsheet when I need to update the spreadsheet as needed."
+    },
+    {
+        "id": "sku13",
+        "category": "Buying",
+        "trigger": "Sourcing books for arbitrage",
+        "advice": "Embed product type (e.g., BOOK) in SKU for quick category identification in inventory.",
+        "confidence": "High",
+        "source": "Adding the product category to your SKU. For example, Book, Video Game, etc. ... SKU example: BOOK-340908"
+    },
+    {
+        "id": "sku14",
+        "category": "General",
+        "trigger": "Merchant Fulfilled inventory",
+        "advice": "Add warehouse location (e.g., SHELF6) to SKU for easy item retrieval.",
+        "confidence": "High",
+        "source": "Adding the location of an inventory item in your warehouse or storage space (for sellers with Merchant Fulfilled inventory only). ... SKU example: BOOK-TEXT-ALTHRIFT-349k-10.4-VG-SHELF6-4-8-23"
+    },
+    {
+        "id": "sku15",
+        "category": "Accounting",
+        "trigger": "ROI tracking by source",
+        "advice": "Include inventory source and purchase price in SKU for specific ROI calculations per sourcing channel.",
+        "confidence": "High",
+        "source": "Get more specific accounting info for your item, such as the ROI for specific sources or products."
+    },
+    {
+        "id": "ungate-instant-books",
+        "category": "General",
+        "trigger": "Click 'Request Approval' in Books category",
+        "advice": "Expect instant approval most of the time, especially with good seller metrics and account age over 2.5 years; auto-approval occurs over half the time for experienced sellers",
+        "confidence": "High",
+        "source": "Most of the time (at least in the Books category), when you click the \u201cRequest Approval\u201d button, you\u2019ll get instantly approved. ... I get auto-approved well over half the time. ... If you\u2019ve been selling on Amazon for longer than 2.5 years (or so), you may have no idea you can get auto-approved just by clicking the button."
+    },
+    {
+        "id": "ungate-questionnaire",
+        "category": "General",
+        "trigger": "Directed to 'selling application' page after clicking 'Request Approval'",
+        "advice": "Answer multiple-choice questions by checking the last box (most conservative answer) for each, then enter email address to get instant approval",
+        "confidence": "High",
+        "source": "Amazon asks you a bunch of multiple choice questions about your duties and obligations as an Amazon seller (not selling counterfeits, etc). All you do to get approved is check the last box for each question (i.e. the most conservative answer for each). Then you enter an email address, and you get instantly approved."
+    },
+    {
+        "id": "ungate-invoices-distributor",
+        "category": "General",
+        "trigger": "Directed to invoice submission page after clicking 'Request Approval' without invoices from wholesale sourcing",
+        "advice": "Place a real order with a verified distributor to obtain an invoice meeting Amazon's criteria (recent, minimum 10 units, possibly more); ask in Amazon seller Facebook groups for current verified distributors per category/brand",
+        "confidence": "High",
+        "source": "Place an order with a verified distributor. This option involves placing a real order (with real money) with a distributor, just to get the invoices. ... Head over to any Amazon seller Facebook group and ask the question: \u201cHas anyone been approved to sell <category or brand> recently? If so, what invoices did you submit?\u201d ... Amazon provides you with a list of criteria that invoice must adhere to. How recent it must be, minimum number of units, etc. ... the order they created for me was well in excess of the minimum unit amount specified in the application. Since they\u2019re the experts, this tells me Amazon may need to see a number beyond the \u201c10 units\u201d explicitly requested."
+    },
+    {
+        "id": "ungate-service-hire",
+        "category": "General",
+        "trigger": "Need approval for hard-to-ungate brands/categories and lack of invoices",
+        "advice": "Hire an ungating service for $300 or similar rate; ask in Amazon seller Facebook groups for recent recommendations to ensure legitimacy and current effectiveness",
+        "confidence": "High",
+        "source": "Hire an ungating service. These are services that know exactly what Amazon wants to see to get approved for every brand and category, and handles this process for you. ... I paid $300 the one time I used an ungating service. ... go to an active Amazon seller Facebook group and ask the question: \u201cDoes anyone have a recommended ungating services they\u2019ve used recenlty, to get ungated in <brand or category>\u201d?"
+    },
+    {
+        "id": "ungate-info-current",
+        "category": "General",
+        "trigger": "Seeking verified distributors or ungating methods for specific categories/brands",
+        "advice": "Always check Amazon seller Facebook groups for up-to-date information on approved methods, ignoring trolls; avoid relying on dated info as requirements change",
+        "confidence": "High",
+        "source": "It\u2019s important to know what\u2019s working right now and not rely on dated info. ... You should (hopefully) get an answer that will provide you with specific, and up to date info on how to get approved to sell that category or brand. It\u2019s possible you\u2019ll get some trolls jumping in to scold you for talking about \u201cgrey hat\u201d tactics publicly. Ignore them."
+    },
+    {
+        "id": "edition-cycles-buying",
+        "category": "Buying",
+        "trigger": "Sourcing textbooks with multiple editions",
+        "advice": "Check how many editions are out and when the next release is expected. Stick to books within one to two editions of the current version to avoid steep price drops.",
+        "confidence": "High",
+        "source": "Before sourcing, check how many editions are out and when the next release is expected. Stick to books within one to two editions of the current version to avoid steep price drops."
+    },
+    {
+        "id": "editions-risk-three-back",
+        "category": "Risk",
+        "trigger": "Textbook edition three or four behind current",
+        "advice": "Avoid sourcing editions three or four behind, as most buyers won\u2019t look twice and prices tank.",
+        "confidence": "High",
+        "source": "But if you go three or four editions back, most buyers won\u2019t even look twice."
+    },
+    {
+        "id": "profit-fees-calc",
+        "category": "Pricing",
+        "trigger": "Before purchasing heavy textbooks",
+        "advice": "Calculate net profit including Amazon FBA fees, storage fees, and shipping costs by weight and size.",
+        "confidence": "High",
+        "source": "Always calculate net profit before purchasing. This includes fees by weight and size, so you know exactly what you\u2019ll earn before you buy."
+    },
+    {
+        "id": "seasonal-sourcing",
+        "category": "Seasonality",
+        "trigger": "Approaching academic cycles",
+        "advice": "Time sourcing and listing around academic cycles, having books ready before the buying season starts.",
+        "confidence": "High",
+        "source": "Time your sourcing and listing around academic cycles. Have books ready to go before the buying season starts, not after."
+    },
+    {
+        "id": "seasonal-hold-risk",
+        "category": "Risk",
+        "trigger": "Holding inventory outside seasonal window",
+        "advice": "Avoid holding books for six months or longer to prevent new edition releases, storage fees, and low sell-through rates.",
+        "confidence": "High",
+        "source": "If you miss that window, you may end up holding inventory for six months or longer. By then, new editions may be released, further cutting into resale value. On top of that, unsold books expose you to Amazon storage fees."
+    },
+    {
+        "id": "edition-pricing-adjust",
+        "category": "Pricing",
+        "trigger": "Pricing textbooks by edition age",
+        "advice": "Adjust repricing strategy by edition age: one edition behind can sell close to market value; editions three cycles back require aggressive discounting.",
+        "confidence": "High",
+        "source": "A textbook one edition behind the latest can still sell close to market value. But an edition three cycles back might require aggressive discounting to sell. Adjust your repricing strategy by edition age."
+    },
+    {
+        "id": "avoid-price-slash",
+        "category": "Pricing",
+        "trigger": "Competition appears on listing",
+        "advice": "If ROI is strong and demand persists, hold steady or lower price slowly instead of slashing immediately to preserve profit.",
+        "confidence": "High",
+        "source": "If ROI is strong and the book is still in demand, holding steady or lowering your price slowly, can preserve profit. Sometimes that means holding firm for a few days, and other times it means making small undercuts."
+    },
+    {
+        "id": "dynamic-repricing",
+        "category": "General",
+        "trigger": "Managing dynamic textbook market with multiple factors",
+        "advice": "Use repricing tools that automatically adjust prices based on edition age, sales rank, listing age, inventory levels, and Buy Box shifts.",
+        "confidence": "High",
+        "source": "It automatically adjusts your prices based on edition age, sales rank, listing age, inventory levels, and Buy Box shifts. Instead of manually changing prices every week, automation helps keep listings competitive while protecting profit."
+    },
+    {
+        "id": "feedback-response-time",
+        "category": "Risk",
+        "trigger": "Customer inquiries received",
+        "advice": "Reply to customer inquiries within a 24-hour period to prevent negative feedback",
+        "confidence": "High",
+        "source": "Reply to customer inquiries within a 24-hour period."
+    },
+    {
+        "id": "feedback-removal-timeline",
+        "category": "General",
+        "trigger": "Feedback removal request submitted",
+        "advice": "Monitor Amazon's response within 48 hours, though it may take longer",
+        "confidence": "High",
+        "source": "Amazon typically replies within 48 hours, though in some cases it can take longer."
+    },
+    {
+        "id": "book-grading-standards",
+        "category": "General",
+        "trigger": "Grading book conditions",
+        "advice": "Consistently use industry standards for grading book conditions to ensure accuracy",
+        "confidence": "High",
+        "source": "Grade book conditions are consistently use industry standards."
+    },
+    {
+        "id": "isbn-verification",
+        "category": "General",
+        "trigger": "Before listing books",
+        "advice": "Double-check that ISBNs and edition details match before listing to avoid errors",
+        "confidence": "High",
+        "source": "Double-check that ISBNs and edition details match before listing."
+    },
+    {
+        "id": "secure-packaging",
+        "category": "Risk",
+        "trigger": "Preparing shipments",
+        "advice": "Package items securely to avoid shipping damage and related negative feedback",
+        "confidence": "High",
+        "source": "Package items securely to avoid shipping damage."
+    },
+    {
+        "id": "competitive-pricing",
+        "category": "Pricing",
+        "trigger": "Setting book prices",
+        "advice": "Maintain competitive pricing that reflects the true condition of the books",
+        "confidence": "High",
+        "source": "Maintain competitive pricing that reflects the true condition of the books."
+    },
+    {
+        "id": "condition-descriptions",
+        "category": "Risk",
+        "trigger": "Describing book conditions",
+        "advice": "Employ precise descriptions of the condition of books, incorporating information about wear, markings, or any damage",
+        "confidence": "High",
+        "source": "Employ precise descriptions of the condition of books, incorporating information about wear, markings, or any damage."
+    },
+    {
+        "id": "shipping-expectations",
+        "category": "Risk",
+        "trigger": "Setting shipping details",
+        "advice": "Offer accurate shipping estimates and inform customers about any delays to set clear expectations",
+        "confidence": "High",
+        "source": "Offer accurate shipping estimates and inform customers about any delays."
+    },
+    {
+        "id": "automation-tools",
+        "category": "General",
+        "trigger": "Manual processes in grading, pricing, and order management",
+        "advice": "Leverage automated systems to keep grading, pricing, and order management consistent and reduce errors leading to negative feedback",
+        "confidence": "High",
+        "source": "Automated systems help keep grading, pricing, and order management consistent. This reduces mistakes that frustrate customers."
+    },
+    {
+        "id": "feedback-monitoring",
+        "category": "Risk",
+        "trigger": "Recurring negative feedback themes",
+        "advice": "Monitor recurring feedback themes to uncover systemic problems and enhance procedures",
+        "confidence": "High",
+        "source": "Monitor recurring feedback themes to uncover systemic problems. Ongoing grievances regarding shipping durations, condition correctness, or communication highlight aspects that require enhancement."
     }
 ]
