@@ -61,6 +61,7 @@ This page acts as a configuration interface for the Keepa API query used during 
 *   **JSON Editor:** Provides a text area to edit the raw JSON query object.
 *   **Validation:** On submission (`POST /deals`), the backend attempts to parse the JSON. If invalid, an error is flashed, and the file is not saved.
 *   **Persistence:** Valid queries are saved to `keepa_query.json` in the root directory. This file is read by `trigger_backfill_task.py` to determine which products to fetch from Keepa.
+*   **Standards:** The system now supports and recommends `dateRange: 4` (All Combined) to ensure the maximum 3-year history is available for AI analysis. This **must** be paired with `sortType: 4` (Last Update) to ensure data freshness.
 
 ---
 
