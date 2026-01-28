@@ -32015,5 +32015,53 @@
         "advice": "Exclude unsold items from total count; base calculations on products that have sold at least once to avoid overestimating poor ranks",
         "confidence": "High",
         "source": "Most product categories have many products that have never sold a single time. ... You calculate demand by looking at the total number of products that have sold, not the total number of products."
+    },
+    {
+        "id": "price-tanking-1",
+        "category": "Pricing",
+        "trigger": "Using legacy repricers like Bqool",
+        "advice": "Monitor for accelerated price dropping that erodes profits; turn off after 2 days if race to the bottom occurs even with conservative settings",
+        "confidence": "High",
+        "source": "Bqool Testimonial #4: \u201cI turned (Bqool) off after two days\u201d"
+    },
+    {
+        "id": "api-limit-1",
+        "category": "Pricing",
+        "trigger": "Repricer limited to comparing against lowest overall price, lowest FBA price (only if in top 20 offers), and Buy Box price",
+        "advice": "Avoid blind pricing decisions; switch to tools with better API visibility to prevent unnecessary price drops",
+        "confidence": "High",
+        "source": "Why does price tanking happen? It\u2019s very simple: Repricers don\u2019t have any other choice. Repricing tools use Amazon\u2019s API... which forces them to play by Amazon\u2019s rules."
+    },
+    {
+        "id": "raise-above-lowest-1",
+        "category": "Pricing",
+        "trigger": "Setting price $x higher than lowest price without visibility into 2nd lowest competing price",
+        "advice": "This may position you 10th or lower in the offer queue, reducing sales chances; use advanced repricers that can see full competition to raise prices meaningfully",
+        "confidence": "High",
+        "source": "Sure, you could tell your repricer \u201cPrice x$ higher than the lowest price.\u201d That would raise prices, wouldn\u2019t it? Yes, but not in any useful way... Raise your price $1 above the lowest price might put you 10th in line, where you\u2019ll never get a sale."
+    },
+    {
+        "id": "profit-comparison-1",
+        "category": "Pricing",
+        "trigger": "Comparing 12 days of Bqool vs NeuroPrice usage",
+        "advice": "Expect more sales volume with Bqool but 11% lower profits; prioritize tools that maximize profit over volume",
+        "confidence": "High",
+        "source": "Bqool Testimonial #6: Neuroprice increased profits 11% vs Bqool... Comparing my sales from the 2 programs for the 12 active days I found that there were more sales with Bqool but I earned 11% more with NeuroPrice."
+    },
+    {
+        "id": "price-raise-example-1",
+        "category": "Pricing",
+        "trigger": "Book with list price around $7",
+        "advice": "Use advanced repricing to raise price to $26 or higher for approximately $19 extra profit per book",
+        "confidence": "Medium",
+        "source": "Bqool Testimonial #5: \u201cNever had Bqool AI do this well\u201d... The 7.03 was the list price... NeuroPrice raised the price to $26, and got him an extra $19 (appox) from the book."
+    },
+    {
+        "id": "general-repricer-1",
+        "category": "General",
+        "trigger": "Subscription to legacy repricing tools causing lack of sales and profit loss",
+        "advice": "Cancel if no results after trial period (e.g., 14 days) and switch to tools that deliver quicker results without high costs",
+        "confidence": "High",
+        "source": "Bqool Testimonial #2: \u201c(NeuroPrice is) leagues better\u201d... Bqool was super expensive and was quickly losing it\u2019s value because i wasn\u2019t winning anything. One Day with NeuroPrice and I was seeing Results Quicker than Bqool could ever make me."
     }
 ]
