@@ -33183,5 +33183,85 @@
         "advice": "Ensure accurate condition descriptions, fast shipping for students, responsive customer service, and proper handling of returns/exchanges to build credibility for ungating",
         "confidence": "High",
         "source": "Book-specific considerations: Accurate condition descriptions (crucial for textbook buyers) Fast shipping (students need books quickly) Responsive customer service Proper handling of returns and exchanges"
+    },
+    {
+        "id": "restock-1",
+        "category": "Risk",
+        "trigger": "Return due to buyer's remorse, accidental order, or found better price, item in original condition",
+        "advice": "Charge up to 20% of the item's price as restocking fee for FBM returns",
+        "confidence": "High",
+        "source": "Up to 20% of the item\u2019s price may be charged when the return reason is customer-driven, and the item is still in its original condition. Common examples: The buyer changed their mind, Accidental order, Found a better price elsewhere"
+    },
+    {
+        "id": "restock-2",
+        "category": "Risk",
+        "trigger": "Item returned used, worn, altered, missing parts, manuals, or original packaging due to customer handling",
+        "advice": "Charge up to 50% of the item's price as restocking fee for FBM returns",
+        "confidence": "High",
+        "source": "Sellers may charge up to 50% of the item\u2019s price if the return is incomplete or damaged due to customer handling. A restocking fee may apply in situations such as: The item has been used, worn, or altered, The item is missing parts, manuals, or original packaging"
+    },
+    {
+        "id": "restock-3",
+        "category": "Risk",
+        "trigger": "Return due to seller mistake (wrong item, defective product, damaged during shipping)",
+        "advice": "Do not charge restocking fee; issue full refund",
+        "confidence": "High",
+        "source": "Never apply a fee if: The return is due to your mistake (wrong item, defective product, or damaged during shipping)"
+    },
+    {
+        "id": "restock-4",
+        "category": "Risk",
+        "trigger": "Using FBM fulfillment method",
+        "advice": "Apply restocking fees manually via Seller Central after inspection and authorization",
+        "confidence": "High",
+        "source": "For FBM (Fulfilled by Merchant), you have more control over when and how the fee is applied... Step-by-Step: Applying a Restocking Fee: Authorize the Return, Inspect the Returned Item Thoroughly, Determine the Applicable Restocking Fee, Initiate the Refund with the Deduction"
+    },
+    {
+        "id": "restock-5",
+        "category": "Risk",
+        "trigger": "Return outside Amazon's return window without qualifying reason",
+        "advice": "Do not charge restocking fee",
+        "confidence": "High",
+        "source": "Never apply a fee if: It\u2019s outside Amazon\u2019s return window without a qualifying reason"
+    },
+    {
+        "id": "restock-6",
+        "category": "Risk",
+        "trigger": "Any return processed",
+        "advice": "Document condition with photos/videos, notes on missing/damaged items, and keep communications in Amazon's system",
+        "confidence": "High",
+        "source": "Always Document Everything: Take clear photos or videos of the returned item\u2019s condition, Record what\u2019s missing or damaged, Keep communication professional and documented in Amazon\u2019s messaging system"
+    },
+    {
+        "id": "restock-7",
+        "category": "Risk",
+        "trigger": "Issuing refund for FBM return with restocking fee",
+        "advice": "Explain deduction clearly in 'Memo to buyer' field, e.g., 'A 20% restocking fee was applied as the item was returned due to buyer\u2019s remorse and was opened. This restocking fee aligns with Amazon\u2019s return policy.'",
+        "confidence": "High",
+        "source": "Initiate the Refund with the Deduction: Go to \u201cManage Returns\u201d in Seller Central... Adjust the refund amount based on the restocking fee. Explain the deduction clearly and professionally in the \u201cMemo to buyer\u201d field. Example: \u201cA 20% restocking fee was applied...\""
+    },
+    {
+        "id": "restock-8",
+        "category": "General",
+        "trigger": "Frequent similar return reasons",
+        "advice": "Analyze return data to identify patterns and adjust product listings, descriptions, or sourcing to reduce future returns",
+        "confidence": "High",
+        "source": "Leverage Return Data for Smarter Decisions: Keep an eye on when and why restocking fees are being charged. If you\u2019re seeing the same return reasons over and over, it might be a sign that something needs a quick fix\u2014maybe the product, the listing, or even how it\u2019s described."
+    },
+    {
+        "id": "restock-9",
+        "category": "Risk",
+        "trigger": "Applying restocking fee",
+        "advice": "Use dedicated inspection area, return checklist, and clear internal policy to ensure consistency and compliance",
+        "confidence": "High",
+        "source": "Recommended Tools & Best Practices: Dedicated return inspection area... Return inspection checklist... Clear internal policy: Train your team to follow a unified process and know when restocking fees apply."
+    },
+    {
+        "id": "restock-10",
+        "category": "Risk",
+        "trigger": "Multiple returns monthly",
+        "advice": "Apply 10-20% restocking fees to cumulatively improve profitability by recovering costs across returns",
+        "confidence": "High",
+        "source": "A small fee\u2014say 10\u201320%\u2014might not seem like much at first, but across dozens of returns each month, it can make a noticeable difference."
     }
 ]
