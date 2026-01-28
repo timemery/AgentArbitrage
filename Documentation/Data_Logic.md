@@ -214,3 +214,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 ### Keepa Timestamps
 -   **Epoch:** `2011-01-01` (January 1st, 2011).
 -   **Note:** Keepa uses different epochs for different API fields. For the fields used in this system (e.g., `stats.current`, `stats.lastUpdate`), the epoch is 2011. Using the standard Unix epoch (1970) or the Java epoch (2000) will result in incorrect dates.
+
+### Keepa Query Parameters
+-   **Standard:** The system uses `dateRange: 4` (All Combined) to retrieve the maximum deal history.
+-   **Requirement:** This MUST be paired with `sortType: 4` (Last Update) to ensure the API returns deals with recent updates, rather than stale data from 2015.

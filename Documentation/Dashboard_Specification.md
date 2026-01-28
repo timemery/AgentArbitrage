@@ -177,7 +177,10 @@ The action bar adapts based on the user's restriction status:
     -   **Data Row:** 48px target height.
     -   **Action Buttons:** 56px width x 32px height (Total).
 -   **Graphics:**
-    -   **Sort Arrows:** Specific PNG assets (`AscendingOff.png`, etc.).
-    -   **Trend Indicators:** HTML Entities (`&#x2191;`, `&#x2193;`, `&rightarrow;`).
-    -   **Warning Icon:** HTML Entity (`&#x26A0;` ⚠).
--   **Header:** `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.
+    -   **Sort Arrows:** SVG assets (e.g., `Arrow_down.svg`, `Arrow_up.svg`).
+    -   **Trend Indicators:** SVG assets (e.g., `Trend_Up.svg`).
+    -   **Warning Icon:** SVG asset (`AMZ_Warn.svg`).
+    -   **Icons:** SVGs must have `viewBox` cropped to the bounding box (0 internal padding) and be sized to `20px` height.
+-   **Header:**
+    -   `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.
+    -   **Header Height:** The main header container (`.main-header`) has a strictly fixed height of `134px`.
