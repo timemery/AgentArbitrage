@@ -31767,5 +31767,253 @@
         "advice": "Source unique regional topics like Missouri French folklore for monopoly pricing up to $99.99",
         "confidence": "High",
         "source": "Safe bet that if you want to learn about french folklore in Missouri, you have no choice but to buy this book. And low options = high prices."
+    },
+    {
+        "id": "condnotes-importance",
+        "category": "General",
+        "trigger": "When creating Amazon listings",
+        "advice": "Invest time in detailed condition notes as they impact sales by building trust, even if only 10% of customers are influenced, leading to major revenue boosts over time.",
+        "confidence": "High",
+        "source": "Even if only 10% of your customers make a decision based on your condition description, and you consistently have the best one, this adds up to a major revenue boost at the end of the month. Small numbers add up to very big numbers over time."
+    },
+    {
+        "id": "customer-decisions",
+        "category": "General",
+        "trigger": "Understanding buyer behavior",
+        "advice": "Focus condition notes on trust factors like item condition and shipping speed, as purchases are driven by price, convenience (Buy Box), and trust in that order.",
+        "confidence": "High",
+        "source": "At the core, it\u2019s based on three factors: Price. Convenience (aka The Buy Box). Trust. Probably in that order. Under the category of \u201ctrust\u201d are details like condition and shipping speed."
+    },
+    {
+        "id": "address-objections",
+        "category": "General",
+        "trigger": "Customers viewing prices",
+        "advice": "Use condition notes to defeat objections on item condition, receiving the exact item, delivery time, and returns; for FBA Prime, delivery and returns are implicit.",
+        "confidence": "High",
+        "source": "The role of a condition description is to defeat customer objections. Let\u2019s take inventory of the main concerns... 1. Item condition. 2. Getting the item they paid for. 3. Delivery time. 4. Returns. FBA seller? You\u2019ve won half the battle. #3 and #4 are implicit for Prime-eligible offers."
+    },
+    {
+        "id": "three-missions",
+        "category": "General",
+        "trigger": "Writing condition descriptions",
+        "advice": "Ensure notes instill trust, defeat buyer objections, and accomplish this in the first 10 words to optimize sales.",
+        "confidence": "High",
+        "source": "The three missions behind the perfect condition description... 1. Instill trust. 2. Defeat the buyer\u2019s objections. 3. Doing all of this in the first 10 words."
+    },
+    {
+        "id": "notes-vs-feedback",
+        "category": "General",
+        "trigger": "Competing on listings",
+        "advice": "Prioritize strong condition descriptions over feedback score, as they are the top reason buyers choose your offer after price.",
+        "confidence": "High",
+        "source": "Other than price, your condition description is the top reason buyers will purchase your offer over a competitor (arguably, it matters more than feedback score)."
+    },
+    {
+        "id": "acceptable-formula",
+        "category": "General",
+        "trigger": "Books in Acceptable condition",
+        "advice": "Describe specific major damage upfront but emphasize it doesn't affect readability or functionality, e.g., 'Heavy reading wear, but still intact and 100% readable. No writing or highlighting'.",
+        "confidence": "High",
+        "source": "The general formula I advise for Acceptable condition is conveying these two points: The specific damage. That it doesn\u2019t affect reading / functionality of the book. Be upfront with damage, be specific about it, and let them know they\u2019re still getting a usable book."
+    },
+    {
+        "id": "good-condition",
+        "category": "General",
+        "trigger": "Books in Good condition",
+        "advice": "Use generic descriptions emphasizing average wear, inspection, intactness, and readability, e.g., 'Individually inspected: Average reading wear. Good condition, Intact book with light amount of love.'",
+        "confidence": "High",
+        "source": "Good condition is where there starts to be less pressure. Less emphasis on conveying specific damage... Some condition description examples for books in Good condition: Individually inspected: Average reading wear. Good condition, Intact book with light amount of love."
+    },
+    {
+        "id": "verygood-condition",
+        "category": "General",
+        "trigger": "Books in Very Good condition",
+        "advice": "Adapt Good condition templates with lighter wear emphasis, e.g., 'Individually inspected: Light reading wear. Very good condition, Intact book with light amount of love.'",
+        "confidence": "High",
+        "source": "Since Good and Very Good condition are very similar, we can reuse the basic template from Good condition and tweak it slightly... Examples: Individually inspected: Light reading wear. Very good condition, Intact book with light amount of love."
+    },
+    {
+        "id": "likenew-caution",
+        "category": "General",
+        "trigger": "Books nearly new",
+        "advice": "Rarely use Like New; only for single blemish on otherwise new book, describe the blemish then emphasize near-new state, e.g., 'A new condition book with small pen mark to fore-edge. Otherwise flawless, new condition copy.' If multiple blemishes, use Very Good.",
+        "confidence": "High",
+        "source": "Reminder that you should rarely use Like New condition. It is only accurately applied to a small percentage of books... With these, we\u2019re going to mention the specific blemish... If you have more than one (small) blemish to describe, the book is probably not Like New and you should use Very Good."
+    },
+    {
+        "id": "textbook-highlighting",
+        "category": "General",
+        "trigger": "Listing textbooks",
+        "advice": "Always mention absence of writing or highlighting first in condition notes to address top buyer concern and boost sales, e.g., 'No writing or highlighting.'",
+        "confidence": "High",
+        "source": "The best way to increase textbook sales is mention the absence of highlighting or writing in the condition note... Put this first thing, front-and-center of any condition description. Guaranteed to increase textbook sales."
+    },
+    {
+        "id": "usedmedia-guarantee",
+        "category": "General",
+        "trigger": "Listing used media (CDs, vinyl, etc.)",
+        "advice": "Include playability guarantee to ease buyer concerns, e.g., 'Individually inspected: Guaranteed to play perfectly or your money back.' If tested, state 'Tested & confirmed to play perfectly.'",
+        "confidence": "High",
+        "source": "Here\u2019s a few to put them at ease and get sales: Individually inspected: Guaranteed to play perfectly or your money back... Any way you communicate that you inspected... that a used media item is on playable shape, you get a huge advantage."
+    },
+    {
+        "id": "emotional-appeal",
+        "category": "General",
+        "trigger": "Ending condition descriptions",
+        "advice": "Add emotional appeals like 'Support small sellers' or 'Packed & shipped with love' to potentially win over emotion-based buyers.",
+        "confidence": "High",
+        "source": "By mentioning things like 'Support small sellers' 'We are a small family business' 'Packed & shipped with love.' ... this can win over a small number of Amazon customers. Which (again) adds up over time."
+    },
+    {
+        "id": "rule_of_threes",
+        "category": "Buying",
+        "trigger": "Profit calculation during sourcing",
+        "advice": "Only acquire inventory where the profit is at least three times the purchase price, with a minimum Amazon payout of $4",
+        "confidence": "High",
+        "source": "To start, I advise the \u201cRule of Three\u2019s\u201d: Only acquire inventory where the profit is at least three times what you paid for it, with a minimum Amazon payout of $4 (your scanning app will show you this number). This isn\u2019t just a rule to start with - I still practice it after many years."
+    },
+    {
+        "id": "book_selection_criteria",
+        "category": "Buying",
+        "trigger": "Sourcing books in second-hand market",
+        "advice": "Focus on not-too-old books on fringe subjects and avoid big name fiction authors",
+        "confidence": "High",
+        "source": "Scan everything and get to know what to look for (not-tooold books on fringe subjects), and what to avoid (big name fiction authors)."
+    },
+    {
+        "id": "scanning_data_interpretation",
+        "category": "Buying",
+        "trigger": "Interpreting scanning app data",
+        "advice": "Evaluate current sales rank, sales rank history, current non-FBA price, and current FBA price to make buying decisions",
+        "confidence": "High",
+        "source": "The right purchases take into account current sales rank, sales rank history, current non-FBA price, and current FBA price."
+    },
+    {
+        "id": "gated_categories_awareness",
+        "category": "Risk",
+        "trigger": "Selling used media like DVDs and CDs",
+        "advice": "Apply for approval to sell in gated categories, especially DVDs above a certain price and some CDs",
+        "confidence": "High",
+        "source": "If you\u2019re selling used media (books, CDs, etc), the only restriction to be aware of is for DVDs above a certain price, and some CDs. You have to apply to sell these."
+    },
+    {
+        "id": "fba_pricing_leverage",
+        "category": "Pricing",
+        "trigger": "Listing items as FBA seller",
+        "advice": "Price significantly higher than non-FBA sellers to maximize profits while securing the Buy Box",
+        "confidence": "High",
+        "source": "As an FBA seller, you enjoy significant pricing leverage. In English, this means you can price much higher than non-FBA sellers and still get sales. The reasons for this are complex, but the biggest one is that most sales on Amazon happen through the \u201cBuy Box\u201d - the offers Amazon puts front-and-center on the product page - and the Buy Box (generally) only goes to FBA sellers."
+    },
+    {
+        "id": "source_profit_target",
+        "category": "General",
+        "trigger": "Evaluating sourcing locations",
+        "advice": "Aim to extract approximately $100 of profit from each source per month on average, building revenue proportional to the number of sources",
+        "confidence": "High",
+        "source": "Once you get good at this, you should roughly be able to extract $100 of profit from each source per month (this will vary wildly among sources - so this is just an average). Your revenue is thusly in direct proportion to your number of sources."
+    },
+    {
+        "id": "scoutly_app_recommendation",
+        "category": "General",
+        "trigger": "Selecting scanning software",
+        "advice": "Use Scoutly scanning app at $40 per month for instant data by downloading Amazon\u2019s entire database, avoiding reliance on cell signal",
+        "confidence": "High",
+        "source": "I\u2019ve tested all the apps, and I\u2019ll just make this simple for you: I recommend Scoutly. At the time of this writing, it\u2019s $40 a month. The biggest benefit is the ability to download Amazon\u2019s entire database into your phone, and get the data you need returned to you instantly. Most other apps rely on a cell signal, which is a huge liability."
+    },
+    {
+        "id": "pricing-4",
+        "category": "Pricing",
+        "trigger": "Amazon's price is between $25 and $50",
+        "advice": "Price your offer $2 below Amazon's price",
+        "confidence": "High",
+        "source": "If Amazon\u2019s price is between $25 and $50, I\u2019ll price $2 below."
+    },
+    {
+        "id": "pricing-5",
+        "category": "Pricing",
+        "trigger": "Amazon's price is between $50 and $100",
+        "advice": "Price your offer $3 to $5 below Amazon's price",
+        "confidence": "High",
+        "source": "If Amazon\u2019s price is $50 to $100, I\u2019ll price $3 to $5 below."
+    },
+    {
+        "id": "pricing-6",
+        "category": "Pricing",
+        "trigger": "Competing against Amazon's offer",
+        "advice": "Price below Amazon by percentages rather than fixed dollar amounts; the higher Amazon's price, the larger the discount needed",
+        "confidence": "High",
+        "source": "Price below Amazon by percentages, not a dollar amount... The higher Amazon\u2019s price, the further below it you should price. Think in terms of percentages, not a fixed dollar amount."
+    },
+    {
+        "id": "sr-top1-buying-books",
+        "category": "Buying",
+        "trigger": "BSR < 250,000 in Books category",
+        "advice": "Consider this a safe strata for buying; products in top 1% sell frequently",
+        "confidence": "High",
+        "source": "Top 1% Sales Rank chart for each major Amazon category Books: 250,000 ... the top 1% of products are a safe strata for most categories \u2013 you know products in the top 1% are selling frequently."
+    },
+    {
+        "id": "sr-top3-buying-books",
+        "category": "Buying",
+        "trigger": "BSR < 750,000 in Books category",
+        "advice": "Use for inventory buying decisions to assess demand levels beyond top 1%",
+        "confidence": "High",
+        "source": "Top 3% Sales Rank chart for each Amazon category Books: 750,000 ... These charts stratify products into simple demand levels."
+    },
+    {
+        "id": "sr-top5-buying-books",
+        "category": "Buying",
+        "trigger": "BSR < 1,250,000 in Books category",
+        "advice": "Evaluate demand for sourcing; top 5% indicates moderate sales frequency",
+        "confidence": "High",
+        "source": "Top 5% Sales Rank chart for each Amazon category Books: 1,250,000 ... to inform Amazon inventory buying decisions. You can\u2019t know if you should sell an item without knowing it\u2019s demand."
+    },
+    {
+        "id": "sr-top10-buying-books",
+        "category": "Buying",
+        "trigger": "BSR < 2,500,000 in Books category",
+        "advice": "For broader sourcing; top 10% still shows viable demand but lower frequency",
+        "confidence": "High",
+        "source": "Top 10% Sales Rank chart for each Amazon category Books: 2,500,000 ... These charts stratify products into simple demand levels."
+    },
+    {
+        "id": "sr-top1-pricing-books",
+        "category": "Pricing",
+        "trigger": "BSR < 250,000 in Books category",
+        "advice": "Apply aggressive repricing strategies as high demand allows for competitive pricing",
+        "confidence": "High",
+        "source": "Top 1% Sales Rank chart for each major Amazon category Books: 250,000 ... to inform pricing and repricing decisions. Repricing inventory in the top 1% will be an entirely different calculation"
+    },
+    {
+        "id": "sr-top10-pricing-books",
+        "category": "Pricing",
+        "trigger": "BSR > 2,500,000 in Books category (outside top 10%)",
+        "advice": "Use conservative repricing; lower demand requires higher margins or slower sales acceptance",
+        "confidence": "High",
+        "source": "Top 10% Sales Rank chart for each Amazon category Books: 2,500,000 ... Repricing inventory in the top 1% will be an entirely different calculation than a product outside the top 10%."
+    },
+    {
+        "id": "sr-keepa-method-general",
+        "category": "General",
+        "trigger": "When estimating category totals, compare Keepa product total and worst rank",
+        "advice": "Choose the lower number as basis for Sales Rank percentages to ensure accuracy",
+        "confidence": "High",
+        "source": "I chose the the lowest number and used that as the basis for Sales Rank percentages. ... This assumes if the \u201cworst rank\u201d figure is higher than the product category totals figure, then the Sales Rank figure is wrong."
+    },
+    {
+        "id": "sr-app-triggers-general",
+        "category": "General",
+        "trigger": "Setting up scouting app or repricer",
+        "advice": "Plug in accurate BSR thresholds (e.g., Books top 1% at 250,000) for better sourcing and pricing decisions",
+        "confidence": "High",
+        "source": "Plug these into your scouting app triggers. Use these in your repricer rules. ... You now have the data you need for sourcing and pricing"
+    },
+    {
+        "id": "sr-unsold-items-risk",
+        "category": "Risk",
+        "trigger": "Category includes products that have never sold",
+        "advice": "Exclude unsold items from total count; base calculations on products that have sold at least once to avoid overestimating poor ranks",
+        "confidence": "High",
+        "source": "Most product categories have many products that have never sold a single time. ... You calculate demand by looking at the total number of products that have sold, not the total number of products."
     }
 ]

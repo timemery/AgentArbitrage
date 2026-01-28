@@ -40,6 +40,10 @@
   - **AMZ:** Warning icon (⚠️) right-aligned in "Offers" column if Amazon is currently selling.
 - **Ava Advice:** Overlay feature using `grok-4-fast-reasoning` to provide actionable analysis.
 - **Refresh Logic:** Manual "Refresh Deals" button only reloads the grid; it no longer triggers the "Janitor" cleanup process (as of Jan 2026).
+- **Navigation:**
+  - **Structure:** Divided into three sections: Left (Logo, Dashboard, Tracking), Center (Admin Links), and Right (Mentor, Settings, Logout).
+  - **Header Height:** Strictly fixed at **134px** to support the sticky filter panel layout.
+  - **Icons:** SVG icons are optimized to **20px** height with zero internal padding.
 
 ## 5. Strategy Database
 - **Format:** Structured JSON (`id`, `category`, `trigger`, `advice`, `confidence`).

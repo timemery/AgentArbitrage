@@ -137,3 +137,11 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 - **Blocking Wait Strategy:** To prevent API 429 (Too Many Requests) errors, the system employs a "Blocking Wait" strategy.
 - **Implementation:** API wrapper functions (like `fetch_deals_for_deals` in `keepa_deals/keepa_api.py`) accept a `token_manager` argument. If provided, the function calls `token_manager.request_permission_for_call()` which sleeps the thread until sufficient tokens are available, rather than failing immediately.
 - **Rule:** When adding new API calls to high-volume loops, always ensure they are integrated with the `TokenManager` to support this flow.
+
+### UI & SVG Standards
+- **Icons:** Navigation icons are SVGs with their `viewBox` reset to the content bounding box (removing internal padding) and are strictly sized to **20px** height in CSS (`static/global.css`).
+- **Header:** The main header container (`.main-header`) has a strictly fixed height of **134px**. Altering this risks breaking the "sticky" filter panel alignment.
+
+### Keepa Query Standards
+- **Date Range:** `dateRange: 4` (All Combined) is permissible and recommended to capture the maximum 3-year history for AI analysis.
+- **Sorting:** When using `dateRange: 4`, you MUST enforce `sortType: 4` (Last Update) to ensure the API returns fresh data and not stale deals from 2015.
