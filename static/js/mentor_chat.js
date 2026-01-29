@@ -170,7 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (toggleLink) {
         toggleLink.onclick = (e) => {
             e.preventDefault();
-            chatOverlay.style.display = chatOverlay.style.display === 'block' ? 'none' : 'block';
+            // Toggle between 'flex' and 'none' to maintain layout
+            chatOverlay.style.display = chatOverlay.style.display === 'flex' ? 'none' : 'flex';
             updateMentorUI(); // Ensure UI is fresh on open
         };
     }

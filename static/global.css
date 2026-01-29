@@ -473,40 +473,61 @@ button:disabled {
 .mentor-chat-window {
     display: none;
     position: absolute;
-    top: 35px; /* Below the link */
-    right: 0;
-    width: 400px;
-    height: 600px;
+    top: 55px; /* Adjusted to accommodate pointer */
+    right: -20px; /* Shifted slightly to align pointer with link */
+    width: 505px; /* Spec: 505px */
+    height: 685px; /* Spec: 685px */
     background-color: #566e9e; /* Header BG from mocks */
-    border-radius: 20px;
+    border-radius: 18px; /* Spec: 18px */
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     z-index: 1000;
     border: none;
     box-sizing: border-box;
     cursor: default;
-    overflow: hidden; /* Important for inner scroll */
-    display: flex;
     flex-direction: column;
+    /* overflow: hidden; Removed to allow pointer to protrude */
+}
+
+/* Pointer Arrow */
+.mentor-chat-window::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 45px; /* Align with nav item */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #566e9e; /* Match header color */
+    z-index: 1001;
 }
 
 .mentor-window-header {
     background-color: #566e9e; /* Match main BG */
-    padding: 20px;
+    padding: 0; /* Flush for avatar */
     position: relative;
     flex-shrink: 0;
+    height: 186px; /* Spec Height */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row; /* Row layout for Avatar + Info */
+    align-items: flex-start;
+    border-radius: 18px 18px 0 0; /* Round top corners since overflow is visible */
 }
 
 .mentor-profile-section {
     display: flex;
     align-items: flex-start;
-    gap: 15px;
+    gap: 0; /* No gap, padding handled in info block */
+    height: 100%;
+    width: 100%;
 }
 
 .mentor-big-avatar {
     width: 124px;
-    height: 186px;
-    object-fit: contain; /* Or cover depending on asset */
-    border-radius: 12px;
+    height: 186px; /* Full Height */
+    object-fit: cover;
+    border-radius: 18px 0 0 0; /* Spec: 18px Top-Left Only */
 }
 
 .mentor-info-block {
@@ -514,42 +535,48 @@ button:disabled {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    padding: 17px; /* Spec: 17px Padding for text area */
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .mentor-intro {
     font-family: 'Open Sans', sans-serif;
-    font-size: 13px;
+    font-size: 14px; /* Spec: 14px */
+    font-weight: 600; /* SemiBold */
     line-height: 1.4;
-    color: #0d121c; /* Dark text on blue bg */
+    color: #11233e; /* Spec: #11233e */
     margin: 0 0 15px 0;
 }
 
 .mentor-selection-area {
     margin-top: auto;
+    padding-right: 15px; /* Spec: Padding 15px from outer right edge */
 }
 
 .choose-label {
     display: block;
     font-family: 'Open Sans', sans-serif;
-    font-size: 13px;
-    color: #9ab4e4;
+    font-size: 14px; /* Spec: 14px */
+    font-weight: 600; /* SemiBold */
+    color: #b7c9e2; /* Spec: #b7c9e2 */
     margin-bottom: 5px;
-    text-align: center;
+    text-align: right; /* Align right per padding spec */
 }
 
 .mentor-choice-row {
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    justify-content: flex-end; /* Align right */
+    gap: 5px; /* Spec: 5px */
 }
 
 .mentor-choice-tiny {
-    width: 49px;
-    height: 49px;
-    border-radius: 50%;
+    width: 49px; /* Spec: 49px */
+    height: 43px; /* Spec: 43px */
     cursor: pointer;
     transition: transform 0.2s;
     border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 4px; /* Slight rounding for rectangular images */
 }
 
 .mentor-choice-tiny:hover {
@@ -571,7 +598,7 @@ button:disabled {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    max-width: 90%;
+    max-width: 95%; /* Increased width */
 }
 
 .mentor-message {
@@ -584,53 +611,74 @@ button:disabled {
 }
 
 .chat-avatar {
-    width: 35px; /* Assuming small avatar size here approx */
-    height: 35px;
+    width: 77px; /* Spec: 77px for Small */
+    height: 77px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .chat-bubble {
-    background-color: #f1f2f6; /* Light grey bubble */
-    color: #333;
     padding: 12px 16px;
-    border-radius: 12px;
     font-family: 'Open Sans', sans-serif;
-    font-size: 13px;
+    font-size: 14px; /* Spec: 14px */
+    font-weight: 400; /* Regular */
     line-height: 1.4;
     position: relative;
+    border: 1px solid #3e577d; /* Spec: Border */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Spec: Subtle Shadow */
+    color: #3e577d; /* Spec: Text Color */
+    width: 360px; /* Spec: Max width 360px */
 }
 
-/* User Bubble Color Override */
+/* Mentor Bubble Specifics */
+.mentor-message .chat-bubble {
+    background-color: #b7c9e2; /* Spec: #b7c9e2 */
+    border-radius: 0 16px 16px 16px; /* Spec: Squared Top-Left */
+}
+
+/* User Bubble Specifics */
 .user-message .chat-bubble {
-    background-color: #e1f5fe; /* Light blueish tint for user? Or stick to grey */
+    background-color: #678dc6; /* Spec: #678dc6 */
+    border-radius: 16px 0 16px 16px; /* Spec: Squared Top-Right */
 }
 
 .chat-input-area {
-    background-color: #dbe2ef; /* Light grey bar */
-    padding: 10px;
+    background-color: #ffffff; /* Match Input BG or Area */
+    padding: 0 3px 3px 3px; /* Spec: 3px padding left, right, bottom */
     display: flex;
-    align-items: center;
+    align-items: flex-end; /* Align bottom */
     gap: 10px;
     flex-shrink: 0;
+    border-top: none;
+    border-radius: 0 0 18px 18px; /* Round bottom corners since overflow is visible */
 }
 
 #chat-input-field {
     flex: 1;
-    border: none;
-    border-radius: 20px;
+    border: 1px solid #678dc6; /* Spec: Border */
+    border-radius: 0 0 15px 15px; /* Spec: Squared Top, Radius Bottom */
     padding: 10px 15px;
     font-family: 'Open Sans', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
+    color: #3e577d;
     resize: none;
-    height: 40px; /* Fixed height approx */
+    height: 95px; /* Spec: 95px */
     outline: none;
+    background-color: #ffffff; /* Spec: Fill White */
+}
+
+/* Placeholder Text Color */
+#chat-input-field::placeholder {
+    color: #617283; /* Spec: #617283 */
 }
 
 .chat-submit-btn {
-    width: 32px;
-    height: 32px;
+    width: 40px; /* Spec: 40px */
+    height: 40px;
     cursor: pointer;
     transition: transform 0.1s;
+    margin-bottom: 30px; /* Adjust alignment with tall text area */
+    margin-right: 10px;
 }
 
 .chat-submit-btn:active {
@@ -640,7 +688,7 @@ button:disabled {
 /* Typing Animation */
 .italic-pulse {
     font-style: italic;
-    color: #666;
+    color: #3e577d; /* Match Text Color */
     animation: pulseText 1.5s infinite;
 }
 
