@@ -139,13 +139,15 @@ def update_recent_deals():
             # --------------------------
 
             # Sort by newest first (sortType=4: Last Update)
+            SORT_TYPE_LAST_UPDATE = 4
+            logger.info(f"Fetching deals using Sort Type: {SORT_TYPE_LAST_UPDATE} (Last Update). Page: {page}")
             deal_response = None
             max_page_retries = 3
 
             # Retry loop for robustness against 429s/Network blips
             for attempt in range(max_page_retries):
                 try:
-                    deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=4, token_manager=token_manager)
+                    deal_response, tokens_consumed, tokens_left = fetch_deals_for_deals(page, api_key, sort_type=SORT_TYPE_LAST_UPDATE, token_manager=token_manager)
                     if tokens_left is not None:
                         token_manager.update_after_call(tokens_left)
 
