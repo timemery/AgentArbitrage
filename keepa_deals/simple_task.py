@@ -176,6 +176,18 @@ def update_recent_deals():
                 # The very first deal on the first page is the newest overall
                 newest_deal_timestamp = deals_on_page[0].get('lastUpdate', 0)
 
+                # --- SANITY CHECK FOR SORT ORDER ---
+                # Check if the "newest" deal is surprisingly old.
+                # Keepa timestamps are minutes since 2011-01-01.
+                current_time_keepa = _convert_iso_to_keepa_time(datetime.now(timezone.utc).isoformat())
+                age_minutes = current_time_keepa - newest_deal_timestamp
+                # 24 hours = 1440 minutes.
+                if age_minutes > 1440:
+                    logger.warning(f"SORT ORDER WARNING: The top deal on Page 0 is {age_minutes/60:.1f} hours old. "
+                                   f"If you expect live updates, this indicates Sort Type 4 (Last Update) might be failing "
+                                   f"or reverting to Sales Rank (Sort 0). Requested Sort Type: {SORT_TYPE_LAST_UPDATE}.")
+                # -----------------------------------
+
             # Core Delta Logic
             found_older_deal = False
             for deal in deals_on_page:
