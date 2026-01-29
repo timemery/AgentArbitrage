@@ -1092,6 +1092,8 @@ def api_deals():
                     deal['restriction_status'] = 'pending_check'
                 elif is_restricted == 1:
                     deal['restriction_status'] = 'restricted'
+                elif is_restricted == -1:
+                    deal['restriction_status'] = 'error'
                 else:
                     deal['restriction_status'] = 'not_restricted'
 
