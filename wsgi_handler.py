@@ -27,7 +27,7 @@ from keepa_deals.db_utils import (
     create_system_state_table_if_not_exists
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
-from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, query_xai_api
+from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -1526,18 +1526,13 @@ def mentor_chat():
         """
 
         # Load Intelligence Context
+        intelligence_text = load_intelligence()
         intelligence_section = ""
-        if os.path.exists(INTELLIGENCE_FILE):
-             try:
-                with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
-                    intelligence = json.load(f)
-                    intelligence_str = "\\n".join([f"- {i}" for i in intelligence])
-                    intelligence_section = f"""
+        if intelligence_text:
+             intelligence_section = f"""
         **Learned Intelligence/Concepts Knowledge Base:**
-        {intelligence_str}
+        {intelligence_text}
         """
-             except Exception as e:
-                 app.logger.error(f"Error loading intelligence for chat: {e}")
 
         prompt = f"""
         You are {mentor['name']}, {mentor['role']}.
