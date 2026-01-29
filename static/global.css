@@ -469,44 +469,244 @@ button:disabled {
     margin: 0 5px;
 }
 
-/* Mentor Overlay */
-.mentor-chat-overlay {
+/* Mentor Overlay / Chat Window */
+.mentor-chat-window {
     display: none;
     position: absolute;
-    top: 35px; /* Below the link */
-    right: 0; /* Align right edge with wrapper? or center? */
-    width: 400px;
-    height: 600px;
-    background-color: #1f293c; /* Dark background matching theme */
-    border-radius: 20px;
+    top: 55px; /* Adjusted to accommodate pointer */
+    right: -20px; /* Shifted slightly to align pointer with link */
+    width: 505px; /* Spec: 505px */
+    height: 685px; /* Spec: 685px */
+    background-color: #566e9e; /* Header BG from mocks */
+    border-radius: 18px; /* Spec: 18px */
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     z-index: 1000;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 20px;
+    border: none;
     box-sizing: border-box;
     cursor: default;
+    flex-direction: column;
+    /* overflow: hidden; Removed to allow pointer to protrude */
 }
 
-.mentor-chat-header {
+/* Pointer Arrow */
+.mentor-chat-window::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 45px; /* Align with nav item */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #566e9e; /* Match header color */
+    z-index: 1001;
+}
+
+.mentor-window-header {
+    background-color: #566e9e; /* Match main BG */
+    padding: 0; /* Flush for avatar */
+    position: relative;
+    flex-shrink: 0;
+    height: 186px; /* Spec Height */
+    box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    flex-direction: row; /* Row layout for Avatar + Info */
+    align-items: flex-start;
+    border-radius: 18px 18px 0 0; /* Round top corners since overflow is visible */
 }
 
-.mentor-chat-header h3 {
-    margin: 0;
-    font-size: 18px;
-    color: #fff;
+.mentor-profile-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 0; /* No gap, padding handled in info block */
+    height: 100%;
+    width: 100%;
+}
+
+.mentor-big-avatar {
+    width: 124px;
+    height: 186px; /* Full Height */
+    object-fit: cover;
+    border-radius: 18px 0 0 0; /* Spec: 18px Top-Left Only */
+}
+
+.mentor-info-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 17px; /* Spec: 17px Padding for text area */
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.mentor-intro {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px; /* Spec: 14px */
+    font-weight: 600; /* SemiBold */
+    line-height: 1.4;
+    color: #11233e; /* Spec: #11233e */
+    margin: 0 0 15px 0;
+}
+
+.mentor-selection-area {
+    margin-top: auto;
+    padding-right: 15px; /* Spec: Padding 15px from outer right edge */
+}
+
+.choose-label {
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px; /* Spec: 14px */
+    font-weight: 600; /* SemiBold */
+    color: #b7c9e2; /* Spec: #b7c9e2 */
+    margin-bottom: 5px;
+    text-align: right; /* Align right per padding spec */
+}
+
+.mentor-choice-row {
+    display: flex;
+    justify-content: flex-end; /* Align right */
+    gap: 5px; /* Spec: 5px */
+}
+
+.mentor-choice-tiny {
+    width: 49px; /* Spec: 49px */
+    height: 43px; /* Spec: 43px */
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 4px; /* Slight rounding for rectangular images */
+}
+
+.mentor-choice-tiny:hover {
+    transform: scale(1.1);
+    border-color: #fff;
+}
+
+.chat-messages-area {
+    flex: 1;
+    background-color: #ffffff; /* White chat background */
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 95%; /* Increased width */
+}
+
+.mentor-message {
+    align-self: flex-start; /* Left aligned */
+}
+
+.user-message {
+    align-self: flex-end; /* Right aligned */
+    flex-direction: row-reverse; /* Avatar on right */
+}
+
+.chat-avatar {
+    width: 77px; /* Spec: 77px for Small */
+    height: 77px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.chat-bubble {
+    padding: 12px 16px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px; /* Spec: 14px */
+    font-weight: 400; /* Regular */
+    line-height: 1.4;
+    position: relative;
+    border: 1px solid #3e577d; /* Spec: Border */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Spec: Subtle Shadow */
+    color: #3e577d; /* Spec: Text Color */
+    width: 360px; /* Spec: Max width 360px */
+}
+
+/* Mentor Bubble Specifics */
+.mentor-message .chat-bubble {
+    background-color: #b7c9e2; /* Spec: #b7c9e2 */
+    border-radius: 0 16px 16px 16px; /* Spec: Squared Top-Left */
+}
+
+/* User Bubble Specifics */
+.user-message .chat-bubble {
+    background-color: #678dc6; /* Spec: #678dc6 */
+    border-radius: 16px 0 16px 16px; /* Spec: Squared Top-Right */
+}
+
+.chat-input-area {
+    background-color: #ffffff; /* Match Input BG or Area */
+    padding: 0 3px 3px 3px; /* Spec: 3px padding left, right, bottom */
+    display: flex;
+    align-items: flex-end; /* Align bottom */
+    gap: 10px;
+    flex-shrink: 0;
+    border-top: none;
+    border-radius: 0 0 18px 18px; /* Round bottom corners since overflow is visible */
+}
+
+#chat-input-field {
+    flex: 1;
+    border: 1px solid #678dc6; /* Spec: Border */
+    border-radius: 0 0 15px 15px; /* Spec: Squared Top, Radius Bottom */
+    padding: 10px 15px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    color: #3e577d;
+    resize: none;
+    height: 95px; /* Spec: 95px */
+    outline: none;
+    background-color: #ffffff; /* Spec: Fill White */
+}
+
+/* Placeholder Text Color */
+#chat-input-field::placeholder {
+    color: #617283; /* Spec: #617283 */
+}
+
+.chat-submit-btn {
+    width: 40px; /* Spec: 40px */
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    margin-bottom: 30px; /* Adjust alignment with tall text area */
+    margin-right: 10px;
+}
+
+.chat-submit-btn:active {
+    transform: scale(0.95);
+}
+
+/* Typing Animation */
+.italic-pulse {
+    font-style: italic;
+    color: #3e577d; /* Match Text Color */
+    animation: pulseText 1.5s infinite;
+}
+
+@keyframes pulseText {
+    0% { opacity: 0.6; }
+    50% { opacity: 1.0; }
+    100% { opacity: 0.6; }
 }
 
 .close-overlay {
-    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: rgba(255,255,255,0.5);
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
+    z-index: 10;
 }
 .close-overlay:hover {
     color: #fff;
@@ -2237,4 +2437,57 @@ body.home-background::before {
     height: 32px; /* Match button height usually */
     font-family: 'Open Sans', sans-serif;
     font-size: 12px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* DEAL DETAILS / MENTOR UPDATES                                              */
+/* -------------------------------------------------------------------------- */
+.mentor-icons-list {
+    display: flex;
+    gap: 8px;
+}
+
+.mentor-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    object-fit: cover;
+    opacity: 0.8;
+    border: 2px solid transparent;
+}
+.mentor-icon:hover {
+    transform: scale(1.1);
+    border-color: white;
+    opacity: 1.0;
+}
+
+.advice-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Additional space below header */
+    padding-bottom: 5px;
+}
+.advice-title-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.active-mentor-img {
+    width: 77px;
+    height: 77px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.mentor-selector-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.mentor-label {
+    font-size: 12px;
+    color: #a3aec0;
+    font-weight: 700;
 }

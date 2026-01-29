@@ -33263,5 +33263,317 @@
         "advice": "Apply 10-20% restocking fees to cumulatively improve profitability by recovering costs across returns",
         "confidence": "High",
         "source": "A small fee\u2014say 10\u201320%\u2014might not seem like much at first, but across dozens of returns each month, it can make a noticeable difference."
+    },
+    {
+        "id": "repricer-saturation-1",
+        "category": "General",
+        "trigger": "Researching Amazon repricing tools",
+        "advice": "Be aware there are approximately 35 automated repricing tools available, making it the most saturated Amazon software category.",
+        "confidence": "High",
+        "source": "guess how many 35 you guys 35 repricing tools out there Far and Away that is the most saturated corner of the Amazon software space"
+    },
+    {
+        "id": "affiliate-bias-2",
+        "category": "Risk",
+        "trigger": "Reading articles claiming to be complete guides to Amazon repricing tools",
+        "advice": "Be suspicious of incomplete lists (e.g., only 8 tools listed); they are often biased towards tools with affiliate links and do not represent the full market.",
+        "confidence": "High",
+        "source": "the majority of in fact every article I found out there that claims to be like a complete guide to Amazon repricing tools doesn't even come close to listing not even half of them... only publishing the ones that have affiliate links"
+    },
+    {
+        "id": "buybox-claim-3",
+        "category": "Pricing",
+        "trigger": "Repricing tool claims to win the buy box more than competitors",
+        "advice": "Avoid such tools as winning the buy box is mostly unrelated to repricing; matching the lowest price is the bare minimum function all repricers should do.",
+        "confidence": "High",
+        "source": "25 to 30 of them claim they will win you the buy box more than any other repricer they can't all be right... the factors that contribute to an Amazon Seller winning the buy box almost all of them have nothing to do with repricing... every repricer on Earth if it has a pulse this can match the lowest price"
+    },
+    {
+        "id": "ai-claim-4",
+        "category": "Pricing",
+        "trigger": "Repricing tool boasts proprietary AI or machine learning for better prices",
+        "advice": "Demand a clear layperson explanation of how it leads to more sales; avoid if they provide jargon without specifics, as it's likely a hollow marketing claim.",
+        "confidence": "High",
+        "source": "they all boast they have some kind of proprietary artificial intelligence or another term they use is machine learning... I did not get a single answer back that was even remotely satisfying... if all you get back to me with is a bunch of jargon that's just supposed to like this just confuses the issue"
+    },
+    {
+        "id": "speed-claim-5",
+        "category": "Pricing",
+        "trigger": "Repricing tool claims to price inventory faster than competitors",
+        "advice": "Ignore speed claims as Amazon sets limits on third-party repricing frequency, independent of tool quality.",
+        "confidence": "High",
+        "source": "a lot of them claim they will price your inventory faster than other tools... Amazon limits how often third-party repricing tools can reprise it has nothing to do with the quality of your software... Amazon sets the speed"
+    },
+    {
+        "id": "support-check-6",
+        "category": "Risk",
+        "trigger": "Contacting repricing tools for information",
+        "advice": "If a tool does not respond after 3 weeks (check spam), assume it may be out of business or on autopilot with no support; avoid trusting it with your inventory.",
+        "confidence": "High",
+        "source": "there were six that I contacted that literally did not respond... it's been three weeks since I did this... I wouldn't want to trust my money to a tool that had literally no customer support"
+    },
+    {
+        "id": "pricing-small-7",
+        "category": "Pricing",
+        "trigger": "Small seller with under 1,000 items in inventory",
+        "advice": "Expect to pay $10-50 per month for a repricing tool; benefits are marginal above $50/month.",
+        "confidence": "High",
+        "source": "if you're a very small seller you have under a thousand items in your inventory you can expect to pay between 10 and 50 a month... the benefits become pretty marginal once you start paying more than 50 a month"
+    },
+    {
+        "id": "pricing-mid-8",
+        "category": "Pricing",
+        "trigger": "Seller with under 5,000 units in inventory",
+        "advice": "Pricing remains $10-50 per month, similar to smaller inventories; avoid tools with unclear or high pricing structures over $50/month due to esoteric benefits.",
+        "confidence": "High",
+        "source": "actually that's pretty much true if you have under 5 000 units in your inventory the price works out to be pretty much the same... the benefits become esoteric or just not entirely clear"
+    },
+    {
+        "id": "textbook-req-approval",
+        "category": "General",
+        "trigger": "See 'request approval' for a textbook",
+        "advice": "Click request approval; majority of the time you will get approved instantly",
+        "confidence": "High",
+        "source": "a lot of times when you see that you're allowed not allowed to sell a book on Amazon and Amazon says you're restricted and you have to request permission oftentimes like majority of the time if you just click request approval you'll get approved instantly"
+    },
+    {
+        "id": "restrictions-ease-time",
+        "category": "General",
+        "trigger": "Facing textbook restrictions as a seller",
+        "advice": "Sell more books consistently over a long period to ease restrictions and build trust with Amazon",
+        "confidence": "High",
+        "source": "these restrictions actually ease up over time so if you're selling Amazon now and you're like oh I got this textbook I'd love to sell it I can't but the good news is the more you sell the more your restrictions ease up Nobody Knows the formula Amazon uses um but it's very clear that textbooks sell or sellers or booksellers who sell a lot of books over a long period of Time find they have dramatically fewer restrictions"
+    },
+    {
+        "id": "seller-levels",
+        "category": "General",
+        "trigger": "New or low-volume seller",
+        "advice": "Understand restrictions vary by seller trust level; aim to progress through tiers by consistent selling",
+        "confidence": "High",
+        "source": "there are different levels to textbook restrictions you can talk to 10 different sellers about what they're allowed to sell and you'll get 10 different answers so every seller has different metrics every seller is like trusted in the eyes of Amazon different than every other seller so um there are there are many many tiers to this"
+    },
+    {
+        "id": "new-seller-restrictions",
+        "category": "Risk",
+        "trigger": "New seller or international seller",
+        "advice": "Expect severe restrictions initially, especially if international; prove track record to reduce them",
+        "confidence": "High",
+        "source": "newer sellers to face the most severe restrictions now I want to be clear even when these textbook restrictions are severe they're never that severe like I said it's never going to affect more than a microscopic percentage of all books but with that said the sellers that do have the most of your restrictions uh are the newer sellers Amazon doesn't trust you right it's all based on trust so you just sign up for an account you want to sell textbooks uh guess what Amazon's like we don't know you you don't have a track record okay so you're going to prove yourself and I gotta say also um if you're an international seller and you sign up for us account I guess to do like online Arbitrage you're going to face the most severe restrictions of all in fact you're going to be restricted from selling like possibly the majority of textbooks"
+    },
+    {
+        "id": "scanning-app-check",
+        "category": "Buying",
+        "trigger": "Before purchasing a textbook",
+        "advice": "Use a scanning app like Scholarly to check if you are allowed to sell it on Amazon",
+        "confidence": "High",
+        "source": "your scanning app will tell you before you purchase a book if you're allowed to sell it if your scanning app is worth anything at all now as far as I know every scanning app out there has this feature if you're if your scanning app does not tell you in advance if you're allowed to sell something switch to scholarly it's the best app out there"
+    },
+    {
+        "id": "improve-permissions",
+        "category": "General",
+        "trigger": "Want to increase allowed textbooks",
+        "advice": "Focus on selling the most number of books consistently every month to build trust and reduce restrictions",
+        "confidence": "High",
+        "source": "if you're wondering how to actually improve your permission level and actually increase the number of textbooks you're allowed to sell the number of books you sell seems to be the biggest Factor Amazon does not reveal any of this but it's just through observation I'm just from talking to sellers the sellers that sell the most for the longest tend to have the um the least amount of textbook restrictions"
+    },
+    {
+        "id": "low-impact-percentage",
+        "category": "General",
+        "trigger": "Concerned about textbook restrictions affecting business",
+        "advice": "Note that only a microscopic percentage (less than 20,000 out of 2 million, ~0.1%) of textbooks are restricted",
+        "confidence": "High",
+        "source": "a microscopically small percentage of textbooks are actually affected by this so if you've been watching this far and you're like oh shoot like textbook restrictions mean I can't sell most textbooks or whatever absolutely not true okay I would actually pulled this number up Amazon classifies two million books in its catalog as textbooks and of those two million we don't really know how many are subject to any amount of restrictions and it's it varies from seller to seller as we covered but I would estimate less than 20 000 textbooks are actually in any meaning for what any meaningful way restricted for most sellers"
+    },
+    {
+        "id": "sting-operations",
+        "category": "Risk",
+        "trigger": "Receive large textbook order (5+) from DC area",
+        "advice": "Cancel the order immediately if FBA seller; avoid accepting to prevent false counterfeit reports",
+        "confidence": "High",
+        "source": "textbook Publishers actually carry out continues an ongoing thing sting operations against Amazon sellers to try to catch them selling counterfeits now what they do is they Place orders usually from a name Mike candy I have a whole separate video you can go watch that um they Place fake orders they get the book and if they decide the textbook is counterfeit they report to Amazon so if you have ever um one day just woke it up and found that you're restricted from a whole bunch of books you used to be allowed to sell it's probably because you were victimized by The Sting operation now I got some bad news here it doesn't matter if you're selling counterfeit textbooks or not these textbook Publishers are falsely reporting any book they receive is counterfeit absolutely scandalous and basically bottom line is don't ever ever accept a large textbook order from anywhere in the DC area like five or more textbooks um if you're an fpsl you can't really control if you're a Virtual Field seller cancel that immediately that's probably part of this thing operation"
+    },
+    {
+        "id": "high-demand-restrictions",
+        "category": "Buying",
+        "trigger": "Sourcing high-demand textbooks",
+        "advice": "Focus on low-demand textbooks in second-hand market to avoid restrictions, as only high-demand ones are typically restricted",
+        "confidence": "High",
+        "source": "only the most high demand textbooks are restricted and it makes sense right because generally if you're a counterfeiter you're not going to counterfeit in low demand textbooks now it can happen that books that were once in high demand they're now in low demand like they have counterfeit copies that kind of stay in circulation that does happen generally counterfeits get weeded out of circulation so it's not a big risk generally the only books you're going to find that are restricted on any meaningful level are going to be the really really high demand textbooks which if you're sourcing the second hand Market you're probably not going to encounter a whole lot of books like that anyway"
+    },
+    {
+        "id": "restricted-book-options",
+        "category": "General",
+        "trigger": "Stuck with a book not allowed on Amazon",
+        "advice": "Sell on eBay, use bookscatter.com for instant cash buyback, or use consignment services from trusted Amazon sellers for a cut of profits",
+        "confidence": "High",
+        "source": "if you get stuck with the book you're not allowed to sell on Amazon you still have options you can still turn that book Into Cash everyone knows eBay that's the obvious one I'm not going to in time on that yes you can sell it on eBay you've got a second option which is bookscatter.com and that allows you to actually aggregate all the buyback sites cash buyback sites in the world these are sites that'll pay you cash instantly for your book and so you just send the book get free shipping and once they receive the book they'll give you cash instantly it's a very quick and easy way to exit a textbook position that you just want to be done with it now if you can sell a book on Amazon for say fifty dollars the cash buyback sites might give you like 10 or 15. so you always get less than you could otherwise but again if you got a book you can't sell it's a quick way to turn to cash third option which very few people know about are Consignment Services now these are Services they're usually actually larger Amazon sellers that because they sell so much they can pretty much sell anything on Amazon they don't really have textbook restrictions and so they'll take the book for you they'll sell it on your behalf and they'll give you a cut of the sale a pretty generous cut they just take a small percentage usually"
+    },
+    {
+        "id": "ungate-instant",
+        "category": "General",
+        "trigger": "Amazon displays 'Request Approval' button for listing",
+        "advice": "Click the 'Request Approval' button to get auto-approved immediately; occurs 80+ percent of the time",
+        "confidence": "High",
+        "source": "virtually I would say 80 plus percent of the time when I encounter a scenario where I have to request permission to sell something I get improved instantly"
+    },
+    {
+        "id": "ungate-service",
+        "category": "General",
+        "trigger": "Amazon requires invoices for approval and direct purchasing is not feasible",
+        "advice": "Hire an ungating service via recommendations from Amazon Seller Facebook forums; costs a few hundred dollars for approval in the category",
+        "confidence": "High",
+        "source": "find an ungating service... they'll charge you a few hundred bucks or something and you'll get approved totally worth it if you're doing any kind of volume... head over to a Amazon Seller Forum on Facebook... ask people what's worked for them"
+    },
+    {
+        "id": "ungate-history",
+        "category": "General",
+        "trigger": "Seller account older than 2.5-3 years encountering approval requests",
+        "advice": "Do not retreat from 'Request Approval' button; policy changed 2.5 years ago to allow easier approvals without invoices in most cases",
+        "confidence": "High",
+        "source": "if you've been selling longer than like two and a half or three years you may just completely Retreat when you see this button... turns out two and a half years ago Amazon quietly changed things so that you could actually just click a button actually get Auto approved immediately"
+    },
+    {
+        "id": "textbook-december",
+        "category": "Seasonality",
+        "trigger": "December for textbooks",
+        "advice": "Do not panic or slash prices; sales will crater until January 1st when they explode, making up for lost December sales.",
+        "confidence": "High",
+        "source": "sales of textbooks crater during December now they're going to be at a crawl up until about the 10th at which point they become almost entirely non-existent... hold your ground and you'll get to make up for all of it come January"
+    },
+    {
+        "id": "new-condition-holidays",
+        "category": "Pricing",
+        "trigger": "New condition books during holidays (after Thanksgiving)",
+        "advice": "Give extra attention during manual repricing; price outrageously high but always $1 below Amazon's price to ensure sales.",
+        "confidence": "High",
+        "source": "give you extra attention new condition books and price them outrageously high right if they're moderate to high demand... a dollar lower than Amazon it's like a good sort of rough guideline"
+    },
+    {
+        "id": "used-vs-new-rest-of-year",
+        "category": "General",
+        "trigger": "New vs used books outside holidays",
+        "advice": "Used books sell faster than new books year-round except holidays; prioritize used inventory normally.",
+        "confidence": "High",
+        "source": "the rest of the year new books sell less than used books... used books will always sell better than new books"
+    },
+    {
+        "id": "amazon-sold-out",
+        "category": "Pricing",
+        "trigger": "Amazon sold out of book (used price > new price or 'temporarily out of stock' note)",
+        "advice": "Price outrageously high during manual daily inventory checks; can go up to $100 above Amazon's price if demand is high.",
+        "confidence": "High",
+        "source": "when you see a book that Amazon's out of stock of you can price outrageously insanely high... I have sold some books uh like literally a hundred dollars above Amazon's price"
+    },
+    {
+        "id": "manual-repricing-holidays",
+        "category": "General",
+        "trigger": "Holiday season (inventory >100 books)",
+        "advice": "Perform manual repricing every day instead of using software for granularity; focus on high-stakes categories.",
+        "confidence": "High",
+        "source": "when you're going through your pricing your inventory which I recommend you do manually during the holidays... as you're going through your inventory we're pricing manually every single day"
+    },
+    {
+        "id": "gift-box-sets",
+        "category": "Pricing",
+        "trigger": "Box sets in inventory during holidays",
+        "advice": "Price unreasonably high as demand surges; competitors likely to sell out if rank is decent.",
+        "confidence": "High",
+        "source": "box sets right box sets are extremely giftable... these are the demand for these is going to go way up and that means you can price them really high"
+    },
+    {
+        "id": "gift-limited-edition",
+        "category": "Pricing",
+        "trigger": "'Limited edition' in title during holidays",
+        "advice": "Price high as these are highly giftable for fans; demand increases significantly.",
+        "confidence": "High",
+        "source": "books that have the term limited edition in the title that's a small tell that book might be highly giftable"
+    },
+    {
+        "id": "gift-slipcase",
+        "category": "Pricing",
+        "trigger": "Books with slip case or slip cover during holidays",
+        "advice": "Price high due to aesthetic wow factor making them ideal gifts.",
+        "confidence": "High",
+        "source": "anything in this with a slip case or a slip cover again very very giftable... when you think about a gift it's more about the Aesthetics"
+    },
+    {
+        "id": "gift-brands",
+        "category": "Pricing",
+        "trigger": "Big brand gift sets (e.g., Star Wars, Harry Potter) during holidays",
+        "advice": "Price high as these are marketed as gifts with surging demand.",
+        "confidence": "High",
+        "source": "any sort of Big Brand like Star Wars and like Harry Potter all that stuff it's always like these gift sets pay attention to that"
+    },
+    {
+        "id": "gift-deluxe-coffee-table",
+        "category": "Pricing",
+        "trigger": "'Deluxe' in title or coffee table books during holidays",
+        "advice": "Price high as they are presentable gifts, not typically self-purchased.",
+        "confidence": "High",
+        "source": "books have the word Deluxe in the title coffee table books... it's a very presentable type book as a gift"
+    },
+    {
+        "id": "christmas-books-buying",
+        "category": "Buying",
+        "trigger": "Christmas themed books with value outside holidays",
+        "advice": "Purchase leading up to holidays; prices go insane during season.",
+        "confidence": "High",
+        "source": "purchase Christmas themed books if they have any any value at all outside of Christmas the value is going to go way up during Christmas"
+    },
+    {
+        "id": "holiday-golden-rule",
+        "category": "Pricing",
+        "trigger": "Any holiday inventory in top categories",
+        "advice": "Apply golden rule: price unreasonably high across new, sold-out, and gift books to maximize profits.",
+        "confidence": "High",
+        "source": "don't forget the golden rule of holiday sourcing price unreasonably high... reprice them slightly unreasonably high with the expectation that because it's the holidays you can get away with this"
+    },
+    {
+        "id": "avoid-romance-novels",
+        "category": "Buying",
+        "trigger": "Romance novels",
+        "advice": "Avoid romance novels almost all the time, except for niche subcategories like urban romance that appeal to small audiences",
+        "confidence": "High",
+        "source": "number two romance novels I got no love for romance... these are really easy just avoid them almost all the time... I've had a small amount of success in some of the like romance novel niches like uh like Urban romance whatever that means um sometimes you find a romance novel that appeals to a very small Niche um that could be profitable generally avoid romance"
+    },
+    {
+        "id": "avoid-mass-market-pb",
+        "category": "Buying",
+        "trigger": "Mass market paperbacks with dimensions 4.25 x 6.87 inches",
+        "advice": "Avoid mass market paperbacks due to low profitability and scanning difficulties (UPC on back returns no results, ISBN often inside cover); exceptions can be highly valuable but rare",
+        "confidence": "High",
+        "source": "number three Mass Market paperbacks these are those little romanced novel size books... the dimensions to be specific are four and a quarter by 6.87 inches those are the exact dimensions of mass Market paperbacks... the barcode on the back usually scans as a UPC code... the barcode if it exists at all is on the inside cover... they're almost never worth money there are some the one thing one thing I will say about this category is when there is an exception... it can be worth major money"
+    },
+    {
+        "id": "avoid-old-computer-books",
+        "category": "Buying",
+        "trigger": "Computer books more than 2-3 years old",
+        "advice": "Avoid computer books older than 2-3 years as they become obsolete quickly due to rapid technological changes in software and hardware",
+        "confidence": "High",
+        "source": "number four computer books... these books become obsolete so quickly... you can pretty safely dismiss almost not all but almost any computer book that is more than a couple years old um it will say two three years old um you can pretty much consider it obsolete"
+    },
+    {
+        "id": "avoid-old-travel-books",
+        "category": "Buying",
+        "trigger": "Travel books not from the last 2 years",
+        "advice": "Avoid travel books older than the last couple of years, including major guides like Lonely Planet, Moon, Frommer's, and DK, as new editions release annually and demand for older versions plummets",
+        "confidence": "High",
+        "source": "number five travel books... they just release a new version of every travel book every single year at least a big ones so they'll be like 2022 2023 Edition etc etc and last year's Edition the demand just falls off a cliff... just about any travel book that's not for the last couple years you can pretty safely avoid it and that includes Lonely Planet that includes Moon that includes frauders... frommers um the DK guides"
+    },
+    {
+        "id": "avoid-famous-authors",
+        "category": "Buying",
+        "trigger": "Books by famous or celebrity authors not published in the last 1-2 years",
+        "advice": "Avoid books by well-known authors (e.g., John Grisham, Dr. Phil, Anthony Robbins) if not published in the last 1-2 years, as markets saturate quickly after initial sales and value fades",
+        "confidence": "High",
+        "source": "number seven avoid just about any author that you've heard of if you or your parents have heard of an author you can pretty much safely avoid it if it has not been published in the last year or two um all celebrity authors almost always a waste of time... it gets totally saturated and then nobody cares... that goes for John Grisham that goes for uh Dr Phil like all Anthony Robbins"
+    },
+    {
+        "id": "general-avoidance-strategy",
+        "category": "General",
+        "trigger": "Sourcing in categorized or uncategorized environments with limited time",
+        "advice": "Prioritize avoiding least profitable categories to reduce opportunity cost and focus time on high-profit books, potentially saving up to 40% of sourcing effort",
+        "confidence": "High",
+        "source": "knowing what to avoid so important... concept called opportunity cost... this will help you know exactly where to spend your time what sections to dedicate your time to and which ones to avoid... when you're at a source which is probably most sources where the books are not categorized... this will help you identify which titles to dedicate your time to... if you can avoid the least profitable books to resell then that allows you to focus on the most profitable... these seven categories might represent... as much as 40 of the entire used book category so I just saved you a massive amount of time"
     }
 ]

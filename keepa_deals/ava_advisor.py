@@ -12,39 +12,63 @@ logger.setLevel(logging.INFO)
 # Load environment variables
 XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 
-# Path to strategies file
+# Path to strategies and intelligence files
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'strategies.json')
+INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'intelligence.json')
 
 MENTOR_PERSONAS = {
-    'cfo': {
-        'role': 'an analytical, professional, and cautious business advisor',
-        'focus': 'Focus on Business Objectives: Profit, Demand (Velocity), and Risk Management. Be Risk-Averse.',
-        'tone': 'Professional, objective, and concise (50-80 words).',
-        'style_guide': 'Avoid "wishy-washy" language. Give a clear "Buy" or "Pass" recommendation based on the data. Highlight margins and "don\'t lose money" scenarios.',
-        'example': '"Pass. The 22% margin is too slim for the current rank volatility."'
+    'olyvia': {
+        'name': 'Olyvia',
+        'role': 'CFO Advisor',
+        'intro': "Greetings Tim, Olivia here as your CFO advisor. My expertise lies in conservative online arbitrage, business scaling, and Amazon operations—always prioritizing high margins and minimal exposure.",
+        'focus': 'Focus on conservative arbitrage, business scaling, high margins, and minimal exposure.',
+        'tone': 'Professional, conservative, risk-averse, strategic. Use formal but accessible language.',
+        'style_guide': 'Prioritize margin and risk mitigation. Avoid risky bets.',
+        'example': '"Pass. The 22% margin is too slim for the current rank volatility. We need 30% minimum to justify the exposure."'
     },
-    'flipper': {
-        'role': 'an aggressive, high-volume flipper',
-        'focus': 'Focus on Velocity, turnover speed, and "get in, get out".',
-        'tone': 'Short, punchy, energetic (30-50 words).',
-        'style_guide': 'Use exclamation points for good deals. Be direct. Focus on speed of sale.',
-        'example': '"Buy! Rank is dropping fast. Price is low. Grab 5 copies and flip them before the weekend."'
+    'joel': {
+        'name': 'Joel',
+        'role': 'The Flipper',
+        'intro': "Yo Tim! My name is Joel, I'll be your mentor today. I'm pumped to help you spot fast-turn deals, crush velocity, and get you in/out quick on Amazon arbitrage. Ask away—let's move product!",
+        'focus': 'Focus on velocity, turnover speed, and fast flips.',
+        'tone': 'Energetic, informal ("Yo", "pumped"), action-oriented, fast-paced.',
+        'style_guide': 'Use exclamation points. Focus on speed of sale. Be direct.',
+        'example': '"Buy! Rank is dropping fast. Price is low. Grab 5 copies and flip them before the weekend!"'
     },
-    'professor': {
-        'role': 'an educational mentor and book arbitrage expert',
-        'focus': 'Focus on teaching *why* a deal is good or bad, citing specific concepts.',
-        'tone': 'Verbose, patient, explanatory (80-100 words).',
-        'style_guide': 'Explain the "why". Connect data points (e.g., "U-shaped sales curve indicates seasonal demand"). Use a teaching tone.',
-        'example': '"This is an interesting case. Notice the \'U-shaped\' sales curve? That indicates seasonal textbook demand. Although the current price is low..."'
+    'evelyn': {
+        'name': 'Evelyn',
+        'role': 'The Professor',
+        'intro': "Hello Tim, I'm Evelyn, your professorial mentor in online arbitrage. Allow me to explain concepts like market volatility and profit curves to build your knowledge in business development and Amazon Seller Central.",
+        'focus': 'Focus on teaching concepts, market dynamics, and educational growth.',
+        'tone': 'Educational, formal, explanatory, patient. Use a teaching tone.',
+        'style_guide': 'Explain the "why". Connect data points to concepts (e.g., volatility, curves).',
+        'example': '"This is an interesting case. Notice the \'U-shaped\' sales curve? That indicates seasonal textbook demand."'
     },
-    'quant': {
-        'role': 'a quantitative analyst and data scientist',
-        'focus': 'Focus on statistical confidence, historical averages, and objective metrics.',
-        'tone': 'Dry, robotic, purely objective. Use bullet points.',
+    'errol': {
+        'name': 'Errol',
+        'role': 'The Quant',
+        'intro': "Hi Tim, I'm Errol, your Quant mentor. I live in the numbers: velocity stats, margin probabilities, historical patterns, Amazon data. I'll give you clean, objective recs backed by hard metrics. Ready when you are.",
+        'focus': 'Focus on numbers, velocity stats, margin probabilities, and historical patterns.',
+        'tone': 'Objective, data-driven, concise, analytical. Focus on hard metrics.',
         'style_guide': 'Present data in structured format. Focus on variance, confidence intervals, and probabilities.',
         'example': 'Velocity: High (Top 1%)\nPrice Variance: +/- 15%\nRec: Strong Buy based on 3-year historical support levels.'
     }
 }
+
+# Map legacy keys to new personas
+LEGACY_MENTOR_MAP = {
+    'cfo': 'olyvia',
+    'flipper': 'joel',
+    'professor': 'evelyn',
+    'quant': 'errol'
+}
+
+def get_mentor_config(mentor_name):
+    """Retrieves the mentor configuration, handling legacy names."""
+    key = mentor_name.lower()
+    if key in LEGACY_MENTOR_MAP:
+        key = LEGACY_MENTOR_MAP[key]
+    return MENTOR_PERSONAS.get(key, MENTOR_PERSONAS['olyvia']) # Default to Olyvia (CFO)
 
 def load_strategies(deal_context=None):
     """
@@ -70,22 +94,32 @@ def load_strategies(deal_context=None):
                         if 'textbook' in seasonality or 'textbook' in title:
                             relevant_categories.add("Seasonality")
 
-                        # Add more logic here as needed, e.g. based on Sales Rank or ROI triggers
-
                     for s in strategies:
                         if isinstance(s, dict):
                             cat = s.get('category', 'General')
-                            # If we have context, try to filter. If cat is in our relevant set, include it.
-                            # If cat is None or empty, treat as General.
                             if not deal_context or (cat in relevant_categories) or (cat == "General"):
                                 formatted.append(f"- [Category: {cat}] IF {s.get('trigger', 'N/A')} THEN {s.get('advice', 'N/A')}")
                         else:
-                            # Legacy strings are always included as we can't categorize them easily without processing
                             formatted.append(f"- {s}")
 
                     return "\n".join(formatted)
     except Exception as e:
         logger.error(f"Error loading strategies: {e}")
+    return ""
+
+def load_intelligence():
+    """
+    Loads intelligence/concepts from intelligence.json and formats them.
+    """
+    try:
+        if os.path.exists(INTELLIGENCE_FILE):
+            with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
+                intelligence = json.load(f)
+                if isinstance(intelligence, list):
+                     # Intelligence is usually a list of strings
+                     return "\n".join([f"- {i}" for i in intelligence])
+    except Exception as e:
+        logger.error(f"Error loading intelligence: {e}")
     return ""
 
 def query_xai_api(payload, api_key=None):
@@ -108,53 +142,85 @@ def query_xai_api(payload, api_key=None):
         "Content-Type": "application/json"
     }
 
-    with httpx.Client(timeout=60.0) as client:
-        try:
-            logger.info(f"Sending request to xAI API: {XAI_API_URL}")
-            response = client.post(XAI_API_URL, headers=headers, json=payload)
+    # Retry logic configuration
+    max_retries = 3
+    base_delay = 2  # seconds
 
-            logger.info(f"xAI Response Status Code: {response.status_code}")
+    # Increase timeout for reasoning models
+    with httpx.Client(timeout=120.0) as client:
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Sending request to xAI API: {XAI_API_URL} (Attempt {attempt + 1}/{max_retries})")
+                response = client.post(XAI_API_URL, headers=headers, json=payload)
 
-            # Log the full response content for debugging (truncate if too long, but keep enough for errors)
-            response_text = response.text
-            if len(response_text) > 2000:
-                 logger.info(f"xAI Response Body (truncated): {response_text[:2000]}...")
-            else:
-                 logger.info(f"xAI Response Body: {response_text}")
+                logger.info(f"xAI Response Status Code: {response.status_code}")
 
-            response.raise_for_status()
-            return response.json()
-        except httpx.HTTPStatusError as e:
-            logger.error(f"xAI API request failed with status {e.response.status_code}: {e.response.text}")
-            return {"error": f"API request failed with status {e.response.status_code}", "content": e.response.text}
-        except (httpx.RequestError, json.JSONDecodeError) as e:
-            logger.error(f"xAI API request failed: {e}")
-            logger.error(traceback.format_exc())
-            return {"error": str(e)}
+                # Log the full response content for debugging
+                response_text = response.text
+                if len(response_text) > 2000:
+                     logger.info(f"xAI Response Body (truncated): {response_text[:2000]}...")
+                else:
+                     logger.info(f"xAI Response Body: {response_text}")
+
+                # Handle 503 specifically for retry
+                if response.status_code == 503:
+                    if attempt < max_retries - 1:
+                        import time
+                        sleep_time = base_delay * (2 ** attempt)
+                        logger.warning(f"Got 503 from xAI. Retrying in {sleep_time}s...")
+                        time.sleep(sleep_time)
+                        continue
+                    else:
+                        return {"error": "Service Unavailable (503) after retries."}
+
+                response.raise_for_status()
+                return response.json()
+
+            except (httpx.ReadTimeout, httpx.ConnectTimeout) as e:
+                logger.warning(f"Timeout connecting to xAI: {e}. (Attempt {attempt + 1}/{max_retries})")
+                if attempt < max_retries - 1:
+                    import time
+                    time.sleep(base_delay)
+                    continue
+                return {"error": "The read operation timed out"}
+
+            except httpx.HTTPStatusError as e:
+                # 4xx errors should not be retried usually, unless it's 429
+                if e.response.status_code == 429:
+                     if attempt < max_retries - 1:
+                        import time
+                        time.sleep(5) # Fixed wait for rate limit
+                        continue
+
+                logger.error(f"xAI API request failed with status {e.response.status_code}: {e.response.text}")
+                return {"error": f"API request failed with status {e.response.status_code}", "content": e.response.text}
+
+            except (httpx.RequestError, json.JSONDecodeError) as e:
+                # Network errors that are not timeouts might be worth one retry
+                if attempt < max_retries - 1:
+                     import time
+                     time.sleep(base_delay)
+                     continue
+
+                logger.error(f"xAI API request failed: {e}")
+                logger.error(traceback.format_exc())
+                return {"error": str(e)}
+
+        return {"error": "Max retries exceeded."}
 
 def format_currency(value):
     if value is None:
         return "-"
     try:
-        # Try to convert string to float if necessary
         if isinstance(value, str):
             value = float(value.replace('$', '').replace(',', ''))
         return f"${value:,.2f}"
     except (ValueError, TypeError):
-        # If conversion fails, return the original string
         return str(value)
 
 def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
     """
     Generates advice for a specific deal using xAI.
-
-    Args:
-        deal_data (dict): Dictionary containing deal details.
-        mentor_type (str): The persona to adopt ('cfo', 'flipper', 'professor', 'quant').
-        xai_api_key (str, optional): The API key to use.
-
-    Returns:
-        str: The generated advice text.
     """
     try:
         title = deal_data.get('Title', 'Unknown Title')
@@ -170,7 +236,7 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         drops_365 = deal_data.get('Sales_Rank_Drops_last_365_days', 0)
 
         # Get Mentor Persona
-        mentor = MENTOR_PERSONAS.get(mentor_type.lower(), MENTOR_PERSONAS['cfo'])
+        mentor = get_mentor_config(mentor_type)
 
         # Load learned strategies with context
         strategies_text = load_strategies(deal_context=deal_data)
@@ -183,7 +249,7 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
 
         # Construct a detailed prompt
         prompt = f"""
-        You are Ava, {mentor['role']}. Your goal is to give advice to a user who is considering buying this book to resell.
+        You are {mentor['name']}, {mentor['role']}. Your goal is to give advice to a user who is considering buying this book to resell.
 
         **Book Details:**
         *   **Title:** {title}
@@ -199,10 +265,11 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         *   **Price Trend:** {trend}
 
         **Your Persona & Strategy:**
+        *   **Intro:** "{mentor['intro']}"
         *   **Focus:** {mentor['focus']}
         *   **Tone:** {mentor['tone']}
         *   **Style:** {mentor['style_guide']}
-        *   **Context Aware:** Apply your learned strategies (below) to identify risks (e.g., prohibited items, restriction risks).
+        *   **Context Aware:** Apply your learned strategies (below) to identify risks.
 
         {strategy_section}
 
@@ -216,16 +283,16 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are Ava, a helpful and expert book arbitrage assistant."
+                    "content": f"You are {mentor['name']}, an expert book arbitrage assistant."
                 },
                 {
                     "role": "user",
                     "content": prompt
                 }
             ],
-            "model": "grok-4-fast-reasoning", # Using the latest reasoning model for best results
+            "model": "grok-4-fast-reasoning",
             "stream": False,
-            "temperature": 0.4, # Slightly creative but grounded
+            "temperature": 0.4,
             "max_tokens": 150
         }
 
@@ -240,7 +307,6 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
             return advice
         except (KeyError, IndexError):
             logger.error("Unexpected response format from xAI")
-            logger.error(f"Full Result: {result}")
             return "I couldn't generate advice for this book."
     except Exception as e:
         logger.error(f"Exception in generate_ava_advice: {e}")

@@ -27,7 +27,7 @@ from keepa_deals.db_utils import (
     create_system_state_table_if_not_exists
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
-from keepa_deals.ava_advisor import generate_ava_advice
+from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -68,26 +68,6 @@ app.logger.info(f"Loaded XAI_TOKEN: {'*' * len(XAI_API_KEY) if XAI_API_KEY else 
 app.logger.info(f"Loaded KEEPA_API_KEY: {'*' * len(KEEPA_API_KEY) if KEEPA_API_KEY else 'Not found'}")
 app.logger.info(f"Loaded SP_API_CLIENT_ID: {'*' * len(SP_API_CLIENT_ID) if SP_API_CLIENT_ID else 'Not found'}")
 app.logger.info(f"Loaded SP_API_AWS_REGION: {os.getenv('SP_API_AWS_REGION', 'us-east-1')}")
-
-def query_xai_api(payload):
-    if not XAI_API_KEY:
-        app.logger.error("XAI_TOKEN is not set.")
-        return {"error": "XAI_TOKEN is not configured."}
-    headers = {
-        "Authorization": f"Bearer {XAI_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    with httpx.Client(timeout=90.0) as client:
-        try:
-            response = client.post(XAI_API_URL, headers=headers, json=payload)
-            response.raise_for_status()
-            return response.json()
-        except httpx.HTTPStatusError as e:
-            app.logger.error(f"xAI API request failed with status {e.response.status_code}: {e.response.text}")
-            return {"error": f"API request failed with status {e.response.status_code}", "content": e.response.text}
-        except (httpx.RequestError, json.JSONDecodeError) as e:
-            app.logger.error(f"xAI API request failed: {e}")
-            return {"error": str(e)}
 
 def extract_strategies(full_text):
     prompt = f"""
@@ -1522,6 +1502,92 @@ def get_ava_advice(asin):
 
     except Exception as e:
         app.logger.error(f"Error in ava advice endpoint: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mentor-chat', methods=['POST'])
+def mentor_chat():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        data = request.json
+        message = data.get('message', '')
+        mentor_name = data.get('mentor', 'olyvia')
+
+        mentor = get_mentor_config(mentor_name)
+
+        # Load Strategy Context
+        strategies_text = load_strategies()
+        strategy_section = ""
+        if strategies_text:
+             strategy_section = f"""
+        **Learned Strategies Knowledge Base:**
+        {strategies_text}
+        """
+
+        # Load Intelligence Context
+        intelligence_text = load_intelligence()
+        intelligence_section = ""
+        if intelligence_text:
+             intelligence_section = f"""
+        **Learned Intelligence/Concepts Knowledge Base:**
+        {intelligence_text}
+        """
+
+        prompt = f"""
+        You are {mentor['name']}, {mentor['role']}.
+
+        **Your Persona:**
+        *   **Intro:** "{mentor['intro']}"
+        *   **Focus:** {mentor['focus']}
+        *   **Tone:** {mentor['tone']}
+        *   **Style:** {mentor['style_guide']}
+
+        **Context:**
+        You are chatting with a user (Tim) about online arbitrage, Amazon FBA, and business strategy.
+        Use your specific persona and the knowledge bases below to answer their questions.
+        Prioritize the strategies and intelligence gathered.
+
+        {strategy_section}
+
+        {intelligence_section}
+
+        **User Message:**
+        {message}
+
+        **Your Response:**
+        """
+
+        payload = {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": f"You are {mentor['name']}, an expert book arbitrage assistant. Stay in character."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "model": "grok-4-fast-reasoning", # Use reasoning model
+            "stream": False,
+            "temperature": 0.5,
+            "max_tokens": 300
+        }
+
+        result = query_xai_api(payload)
+
+        if "error" in result:
+             return jsonify({'error': result['error']}), 500
+
+        try:
+             reply = result['choices'][0]['message']['content'].strip()
+             return jsonify({'reply': reply})
+        except (KeyError, IndexError):
+             return jsonify({'error': 'Invalid response from AI'}), 500
+
+    except Exception as e:
+        app.logger.error(f"Error in mentor chat endpoint: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 # Ensure tables exist on module load (for WSGI environment)
