@@ -83,7 +83,7 @@ class TokenManager:
             wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
             logger.warning(
                 f"Zero or negative tokens. Have: {self.tokens:.2f}. "
-                f"Waiting for {wait_time_seconds} seconds to recover to 10 tokens."
+                f"Waiting for {wait_time_seconds} seconds to recover {tokens_needed:.2f} tokens at {self.REFILL_RATE_PER_MINUTE} tokens/min."
             )
 
         # Scenario 2: Below Threshold (Recovery Mode)
