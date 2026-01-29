@@ -76,6 +76,14 @@ class TokenManager:
 
         wait_time_seconds = 0
 
+        # --- SYNC CHECK: Verify with API before deciding to wait ---
+        # If our local count suggests a wait, we verify with the server first.
+        # This fixes drift caused by concurrent workers.
+        if self.tokens < self.MIN_TOKEN_THRESHOLD:
+            logger.info(f"Local token count ({self.tokens:.2f}) is low. Syncing with Keepa API to verify...")
+            self.sync_tokens()
+            # Note: self.tokens is now updated to the authoritative value.
+
         # Scenario 1: Hard Stop (Zero or Negative)
         if self.tokens <= 0:
             # Must wait to get back to a safe positive balance (e.g., 10 tokens)
