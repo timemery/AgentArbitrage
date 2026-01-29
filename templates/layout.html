@@ -46,17 +46,38 @@
             <!-- Right Section -->
             <div class="nav-section nav-right">
                 <div class="nav-item-wrapper" style="position: relative;">
-                    <a href="#" class="nav-item" id="mentor-link" onclick="toggleMentorOverlay(event)">
+                    <a href="#" class="nav-item" id="mentor-link">
                         <img src="{{ url_for('static', filename='Mentor_Chat_Icon.svg') }}" class="nav-icon" alt="Mentor">
                         <span>Mentor</span>
                     </a>
-                    <div id="mentor-chat-overlay" class="mentor-chat-overlay">
-                        <div class="mentor-chat-header">
-                            <h3>Mentor Chat</h3>
-                            <span class="close-overlay" onclick="toggleMentorOverlay(event)">&times;</span>
+
+                    <!-- Mentor Chat Window -->
+                    <div id="mentor-chat-overlay" class="mentor-chat-window" style="display: none;">
+                        <div class="mentor-window-header">
+                            <span class="close-overlay">&times;</span>
+                            <div class="mentor-profile-section">
+                                <img id="mentor-profile-avatar" src="" alt="Mentor" class="mentor-big-avatar">
+                                <div class="mentor-info-block">
+                                    <p id="mentor-intro-text" class="mentor-intro">
+                                        <!-- Injected via JS -->
+                                    </p>
+                                    <div class="mentor-selection-area">
+                                        <span class="choose-label">Choose Your Mentor:</span>
+                                        <div id="mentor-choice-row" class="mentor-choice-row">
+                                            <!-- Tiny avatars injected via JS -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mentor-chat-body">
-                            <p>Chat functionality coming soon...</p>
+
+                        <div id="chat-messages-area" class="chat-messages-area">
+                            <!-- Messages injected via JS -->
+                        </div>
+
+                        <div class="chat-input-area">
+                            <textarea id="chat-input-field" placeholder="Ask your mentor anything..."></textarea>
+                            <img id="chat-send-btn" src="{{ url_for('static', filename='SubmitChat.png') }}" alt="Send" class="chat-submit-btn">
                         </div>
                     </div>
                 </div>
@@ -74,17 +95,7 @@
         </div>
     </header>
 
-    <script>
-        function toggleMentorOverlay(event) {
-            if (event) event.preventDefault();
-            const overlay = document.getElementById('mentor-chat-overlay');
-            if (overlay.style.display === 'block') {
-                overlay.style.display = 'none';
-            } else {
-                overlay.style.display = 'block';
-            }
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/mentor_chat.js') }}"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flashes">
