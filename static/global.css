@@ -540,7 +540,8 @@ button:disabled {
 
 .mentor-selection-area {
     margin-top: auto;
-    padding-right: 20px; /* Updated: 20px right padding */
+    padding-right: 0; /* Updated: Removed padding */
+    margin-right: -24px; /* Pull right to align 20px from edge (44px parent - 24px = 20px) */
     display: flex;
     flex-direction: row;
     align-items: center;
