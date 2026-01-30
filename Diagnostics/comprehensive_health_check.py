@@ -185,25 +185,22 @@ def check_token_status():
 def check_celery_processes():
     print_header("CELERY PROCESSES")
     try:
-        # pgrep -af celery
-        cmd = ['pgrep', '-af', 'celery']
+        # Use ps aux for robust detection of all users
+        cmd = ['ps', 'aux']
         result = subprocess.run(cmd, capture_output=True, text=True)
         processes = result.stdout.splitlines()
 
         worker_running = False
         beat_running = False
+        monitor_running = False
 
         for p in processes:
-            # print(f"Process: {p}") # Noisy
-            if 'celery worker' in p or 'celery@' in p:
+            if 'celery' in p and 'worker' in p and not 'grep' in p:
                 worker_running = True
-            if 'celery beat' in p:
+            if 'celery' in p and 'beat' in p and not 'grep' in p:
                 beat_running = True
-
-        # Check monitor specifically
-        monitor_cmd = ['pgrep', '-f', 'monitor_and_restart']
-        monitor_res = subprocess.run(monitor_cmd, capture_output=True, text=True)
-        monitor_running = bool(monitor_res.stdout.strip())
+            if 'monitor_and_restart' in p and not 'grep' in p:
+                monitor_running = True
 
         if monitor_running:
              print("[PASS] Resiliency Monitor (monitor_and_restart) is RUNNING.")
@@ -302,7 +299,7 @@ def check_db_health():
         print(f"[ERROR] DB check failed: {e}")
 
 def main():
-    print("Running Comprehensive Health Check (v2 - Log Logic Fixed)...")
+    print("Running Comprehensive Health Check (v3 - Process Logic Fixed)...")
     print(f"Time (UTC): {datetime.now(timezone.utc)}")
 
     check_code_version()
