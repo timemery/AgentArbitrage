@@ -33999,5 +33999,125 @@
         "advice": "Always use the Seller Central link to check if you are restricted from selling the book to avoid account issues.",
         "confidence": "High",
         "source": "we give you direct links to the keepa Chart the Amazon listing and a button that takes you straight to Seller Central this lets you quickly check if you are restricted from selling the book on Amazon"
+    },
+    {
+        "id": "tip1-sellername",
+        "category": "General",
+        "trigger": "Starting an Amazon seller account",
+        "advice": "Use ChatGPT to generate unique seller names by prompting for lists incorporating elements like 'books' or location; request more options or refinements like separating words with spaces.",
+        "confidence": "High",
+        "source": "Tip 1: Amazon Seller Name so what we'll do is we'll simply type in a question which is also known as a prompt we'll hit that and there we go so we've got a list of names um some of these are okay whatever if you want more you just type in the word more or just say you know add 10 more there we go we've got 10 different ones now I don't know why they're doing it like this where the words are combined I'm going to you know try in plain English to tell it to separate them uh and by the way you know a lot of times you might say please separate um you really remember you're talking to a machine you do not need to be polite you don't need to be rude either but it's not gonna all it's doing is um you know you're just spending more time if you're right please there's no human on the other side of of doing what we're asking and also if you make a mistake with um spelling you don't always need to worry about that either it's very smart and knows what you're talking about so anyway I'll leave it in there say please separate which I spelled wrong uh the the words with a space It should know exactly what I mean and do that there we go excellent all right now now why we call it a chat it knows that we're talking about a seller name on Amazon but as you find out if you start looking into doing what we call prompts I want a better prompt I don't like any of these names I'm a book seller I want to reference books so we're going to ask it to do that now I could have put that in the beginning but I'm going to go ahead here and kind of just tell it I'm going to tell them you know again in natural language but you need to be clear says um let's see what it comes up with there we go and of course if that's not enough we can add more now let's say we can take it further let's say I am from Arizona for whatever reason I want to incorporate that so sort of the same thing okay and there we go all right so hopefully you can see how powerful this can be"
+    },
+    {
+        "id": "tip2-customerservice",
+        "category": "General",
+        "trigger": "Receiving a customer inquiry",
+        "advice": "Input the exact customer question into ChatGPT to generate a professional response; edit for specifics, or prompt to make it shorter if needed.",
+        "confidence": "High",
+        "source": "Tip 2: Customer Service once we're established we start selling some stuff on Amazon what's gonna happen we're going to get some customer inquiries once a while we're going to need to respond to the customer so this is a tool that's going to be very helpful to you if you struggle or you just want another set of eyes or something to help you respond to a customer so here's an example and notice I put the the exact question in quotes or you might want to put it on another line you want to make it easy for it to understand and this is how the system would would go now I'm not going to read this for you but at least you can see it's well written it may not necessarily pertain to the details but you can go in and edit it the other thing or maybe you want to just make it shorter if you wanted to make it shorter you just write make it shorter and they'll make the message a little bit shorter for you"
+    },
+    {
+        "id": "tip3-sellersupport",
+        "category": "General",
+        "trigger": "Needing to contact Amazon Seller Support",
+        "advice": "Provide issue details to ChatGPT, request a sample email, and include 'ask me three questions' to clarify; answer questions for a refined response, then shorten if too long.",
+        "confidence": "High",
+        "source": "Tip 3: Seller Support next is dealing with Seller Support let me give you an example and you see what I did here I did ask for the sample email but I also put in this prompt say ask me three questions so this is a very powerful prompt and you can use it in lots of different things but this makes sure that they understand now I'll go ahead and answer them really quickly I answered their questions and now I expect a response and I'm not going to read it over that's not the purpose of this but at least you can see that we've got a well-written response and it may not be exactly what they need but at least you can edit it and also I would say if you're messaging a Seller Support I would say this just by looking at it without really reading it it's too long so I would just say make it shorter just like that okay and I would also say probably Amazon they don't even want this last stuff I would probably just put you know something like this all right so this might be helpful"
+    },
+    {
+        "id": "tip4-bookcondition",
+        "category": "Pricing",
+        "trigger": "Listing a used book on Amazon",
+        "advice": "Provide Amazon's condition guidelines (Like New, Very Good, Good, Acceptable) and book details to ChatGPT to generate engaging condition notes; review and regenerate if needed, or request fun variations.",
+        "confidence": "High",
+        "source": "Tip 4: Book Condition Notes and I think this is something I haven't done myself and I probably need to revisit and it's book condition notes so as booksellers we need to put in book condition notes for used books actually it's not required but it's highly highly recommended so we're going to ask chat GPT so here's what we're going to do so this is a rather long prompt because what I want to tell is what the condition notes are I don't think they would know that so we're trying to tell them what the guidelines I should say for Amazon so this is like new we've got very good uh good acceptable and then we're going to ask them this and tell them our my requirements and then they give you some examples and of course you're going to want to do want to look these over and if you don't like it you can you can regenerate a response or I did say to make it fun these don't look all that fun to me maybe they are but um and you say and there you go so you've got some things that you know are these better than what I've come up with I don't know but I could probably look at some of these incorporate some of them or use parts of them to maybe you know spice up our condition notes a little bit"
+    },
+    {
+        "id": "tip5-amazonrules",
+        "category": "Pricing",
+        "trigger": "Assessing Amazon fees and rules",
+        "advice": "Prompt ChatGPT for summaries of fees (referral, fulfillment, long-term storage, monthly storage) and policies; verify current details as information may be outdated (up to 2021); use for quick overviews or bullet points.",
+        "confidence": "High",
+        "source": "Tip 5: Amazon Rules all right next is understanding Amazon's rules and fees so this is something chat GPT can help you with so we can just put in a quick prompt like this and there you go now I would not take this at face value regarding the numbers because they can change at any time and chat gpt's information depending on when you're watching this video was done through I believe 2021 so this may be outdated but at least you've got a general sense that they've got something called referral fees fulfillment fees long storage fees and I think they've already changed this term and monthly storage fees so this is a good example where it's going to head you in the right direction but it's not always going to be 100 right however one other cool thing you can do if you head on over to M if you're in Seller Central you can see there's just a ton and ton of information in here on various things and let's say you don't want to read something entirely but you want a summary of it let's just for example we'll use the Amazon anti counterfeiting policy so here it is um now you can go ahead and read it but watch what we can do here and this is sort of something you certainly can't do any other way I'm going to copy all the information here and I'm going to Simply come into chatgpt and ask them to summarize it for me so watch I'm going to put summarize this I'll put it in quotes put all the information and hit enter and there you go it just gave me a quick summary Without Me Maybe having to read the entire thing and if I wanted in bullet points um if you like bullet points you can just ask them for that might be easier to read and understand okay so you can get the gist of of it without having to sit there and you know read through this this is not terribly long but you get the idea of what chat GPT can do so it can summarize information and you can do this with virtually anything so there is a limit I should say there is a limit to how much information you can put into chat GPT I don't really want to tell you what it is because depending on when you're watching this video the industry is changing quickly um it maybe it will handle um tens of thousands of characters or words I don't know but you can just play with it okay"
+    },
+    {
+        "id": "tip6-softwarehelp",
+        "category": "Pricing",
+        "trigger": "Customizing inventory software for calculations",
+        "advice": "Prompt ChatGPT with software details (e.g., Airtable, Excel) and desired calculation (e.g., margin = selling price minus purchase price) for step-by-step instructions; troubleshoot errors by describing them.",
+        "confidence": "High",
+        "source": "Tip 6: Help with Software (Airtable, Excel, etc.) next chat GPT can actually help you with our software that we use airtable but this also applies to Excel or Google Sheets or word or any other thing you can think of when you want some assistance so for example let's say you wanted to add the margin in here we don't have that calculation but with our software you can customize it and look so you didn't know how to do that and but you knew that it had to include the how much you paid for the book and how much you're selling the book for you can have chat gbt help you so we'll put in this prompt and there it is it gives you step by step exactly how to do it and it kind of gives you uh the details of it as well all right so really powerful stuff you would just follow that you'll be able to put the margin in in no time and by the way um if you were to get an error message or something you got stuck you'd simply go back to chat GPT and tell them hey I got this error message and sometimes they'll go back and say okay try this try that so it's very very powerful tool to to assist you along the way"
+    },
+    {
+        "id": "tip7-generalknowledge",
+        "category": "General",
+        "trigger": "Encountering unfamiliar Amazon acronyms or terms",
+        "advice": "Prompt ChatGPT to explain specific terms or acronyms for detailed descriptions to build business knowledge.",
+        "confidence": "High",
+        "source": "Tip 7: General Amazon or Business Knowledge the last thing I'll share today is really some general Amazon and business knowledge so when I first started selling on Amazon I remember going into some Facebook groups and listening to people talk and I was wondering I didn't even know what they were talking about I felt like they were talking a different language now I did start off doing books I was doing private label but um as you become more accustomed we use all kinds of acronyms and things and you may not be familiar and of course you can ask in the Facebook group but maybe uh this might be another resource for you so for example let's say you're new and you see something and you're not sure what it is you could put in something like this and there you go you've got a detailed description of what these acronyms mean so pretty powerful stuff"
+    },
+    {
+        "id": "conclusion-lowrisk",
+        "category": "Risk",
+        "trigger": "New to Amazon selling and choosing products",
+        "advice": "Start with used books as one of the lowest risk products for entering the Amazon marketplace.",
+        "confidence": "High",
+        "source": "Conclusion now if you are selling on Amazon or you're thinking about getting started with Amazon or you're just not sure where you want to go you might want to start with some of the lowest risk products so what are they well let's go to chat EPT top of the list books Used Books it's freaking awesome I've been doing it since 2017"
+    },
+    {
+        "id": "keepa-setup-1",
+        "category": "General",
+        "trigger": "Initial Keepa installation and chart setup",
+        "advice": "Install Keepa Chrome extension from keepa.com for $20/month. On charts, select sales rank (green line), buy box (pink line), Amazon in stock, new price, and third-party FBA (orange triangles). Remove sub-ranks chart. On bottom chart, select new offer count.",
+        "confidence": "High",
+        "source": "keepo costs $20 per month and you can just go ahead and get it installed on keepa.com... clicking the sub ranks button... clicking the new offer count right here"
+    },
+    {
+        "id": "seasonality-consideration",
+        "category": "Seasonality",
+        "trigger": "Products with potential seasonal demand (e.g., hoodies in winter)",
+        "advice": "Items are less seasonal than thought; focus on data showing consistent sales even off-season. Avoid speculation; buy only what's profitable today, but note seasonal peaks (e.g., demand worse in summer for hoodies).",
+        "confidence": "High",
+        "source": "items are typically a lot less seasonal than you think... data doesn't lie... focus on what's profitable today don't buy and hold don't speculate"
+    },
+    {
+        "id": "fbm-friendly-check",
+        "category": "Pricing",
+        "trigger": "Considering merchant fulfilled (FBM) vs FBA",
+        "advice": "If 20%+ buy box share goes to FBM sellers, product is FBM-friendly; price higher if using FBA. Most items FBA-friendly.",
+        "confidence": "High",
+        "source": "you want to make sure that that that their sellers getting 20% plus total of the buy Box share going to fbm sellers... you can actually price a lot higher if you were to sell that item VI Amazon FBA"
+    },
+    {
+        "id": "competing-amazon",
+        "category": "Risk",
+        "trigger": "Amazon in stock on listing",
+        "advice": "Compete if offer count moves well even when Amazon in stock (indicates BB share); avoid if offer count is blocky/straight (Amazon dominates). Validate with BB stats: Amazon <56% share over year.",
+        "confidence": "High",
+        "source": "only compete with Amazon if you can see other people getting sales... offer count is super blocky... Amazon's only gotten 7% of the buybox share"
+    },
+    {
+        "id": "ip-complaint-avoid",
+        "category": "Risk",
+        "trigger": "Sudden drop in offer count (e.g., 24 to 0 sellers in days)",
+        "advice": "Avoid listings with plummeting offer count history (IP complaint sign); check all-time or 1-2 year data, not just 90 days. One IP unlikely to ban established accounts, but avoid.",
+        "confidence": "High",
+        "source": "major red flag... IP complaint... plummeted right it went from 24 sellers... to zero sellers... avoid that because that's a perfect example of an ipain prodct"
+    },
+    {
+        "id": "great-trend-buy",
+        "category": "Buying",
+        "trigger": "Offer count decreasing (e.g., 15 to 2 sellers) and price increasing (e.g., $31 to $49)",
+        "advice": "Pursue items with decreasing competition and increasing prices; price realistically based on recent stable levels (e.g., $34-35), not peak.",
+        "confidence": "High",
+        "source": "an example of an excellent looking keepo chart... competition's also trending down... price is going up"
+    },
+    {
+        "id": "demand-changes",
+        "category": "Seasonality",
+        "trigger": "Seasonal products (e.g., football rank 30k winter to 10k summer) or events (e.g., pool price $300 to $2000 in 2020)",
+        "advice": "Monitor all-time history for natural seasonality or event-driven spikes (e.g., summer demand for pools); 75k winter rank acceptable if summer skyrockets. Focus on data over emotions.",
+        "confidence": "High",
+        "source": "natural seasonality... demand can change throughout the year... every year during the summer the sales rank plummets... focus on what the kear data is showing you"
     }
 ]
