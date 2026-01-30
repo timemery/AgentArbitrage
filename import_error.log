@@ -1,9 +1,0 @@
-
-Import failed. This is the cause of the 500 Internal Server Error.
-
-Traceback:
-Traceback (most recent call last):
-  File "/var/www/agentarbitrage/debug_imports.py", line 16, in <module>
-    from worker import run_keepa_script
-ImportError: cannot import name 'run_keepa_script' from 'worker' (/var/www/agentarbitrage/worker.py)
-
