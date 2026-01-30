@@ -524,7 +524,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 17px 44px 17px 17px; /* Updated: 44px right padding */
+    padding: 17px 44px 0 17px; /* Updated: Removed bottom padding */
     height: 100%;
     box-sizing: border-box;
 }
@@ -556,6 +556,7 @@ button:disabled {
     color: #b7c9e2; /* Spec: #b7c9e2 */
     margin-bottom: 0;
     text-align: right; /* Align right per padding spec */
+    white-space: nowrap; /* Prevent line break */
 }
 
 .mentor-choice-row {
@@ -571,6 +572,7 @@ button:disabled {
     transition: transform 0.2s;
     border: none; /* Updated: Removed border */
     border-radius: 4px; /* Slight rounding for rectangular images */
+    outline: none; /* Ensure no outline */
 }
 
 .mentor-choice-tiny:hover {
@@ -639,7 +641,7 @@ button:disabled {
 
 .chat-input-area {
     background-color: #ffffff; /* Match Input BG or Area */
-    padding: 20px; /* Updated: 20px padding */
+    padding: 20px 20px 20px 20px; /* Explicit padding */
     display: flex;
     align-items: flex-end; /* Align bottom */
     gap: 10px;
@@ -662,6 +664,7 @@ button:disabled {
     outline: none;
     background-color: #ffffff; /* Spec: Fill White */
     box-sizing: border-box; /* Ensure padding doesn't increase height */
+    margin-bottom: 0; /* Remove default textarea margin */
 }
 
 /* Placeholder Text Color */
