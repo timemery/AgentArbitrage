@@ -655,6 +655,7 @@ button:disabled {
     height: 95px; /* Updated: 95px */
     outline: none;
     background-color: #ffffff; /* Spec: Fill White */
+    box-sizing: border-box; /* Ensure padding doesn't increase height */
 }
 
 /* Placeholder Text Color */
