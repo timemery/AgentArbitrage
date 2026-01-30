@@ -30,6 +30,9 @@ logger = getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
+# --- Version Identifier ---
+SIMPLE_TASK_VERSION = "2.10-Sort-Fix-Verified"
+
 # --- Constants ---
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
@@ -80,7 +83,8 @@ def update_recent_deals():
         return
 
     try:
-        logger.info("--- Task: update_recent_deals started ---")
+        logger.info(f"--- Task: update_recent_deals started (Version: {SIMPLE_TASK_VERSION}) ---")
+        logger.info(f"Import Source: fetch_deals_for_deals is imported from {fetch_deals_for_deals.__module__}")
         create_deals_table_if_not_exists()
 
         api_key = os.getenv("KEEPA_API_KEY")
