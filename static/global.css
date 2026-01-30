@@ -472,9 +472,9 @@ button:disabled {
 /* Mentor Overlay / Chat Window */
 .mentor-chat-window {
     display: none;
-    position: absolute;
-    top: 55px; /* Adjusted to accommodate pointer */
-    right: -20px; /* Shifted slightly to align pointer with link */
+    position: fixed;
+    bottom: 20px; /* Anchored to bottom */
+    right: 20px; /* Anchored to right */
     width: 505px; /* Spec: 505px */
     height: 540px; /* Updated Height: 540px */
     background-color: #566e9e; /* Header BG from mocks */
@@ -541,15 +541,20 @@ button:disabled {
 .mentor-selection-area {
     margin-top: auto;
     padding-right: 20px; /* Updated: 20px right padding */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px; /* Space between label and icons */
 }
 
 .choose-label {
-    display: block;
+    display: inline-block;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px; /* Spec: 14px */
     font-weight: 600; /* SemiBold */
     color: #b7c9e2; /* Spec: #b7c9e2 */
-    margin-bottom: 5px;
+    margin-bottom: 0;
     text-align: right; /* Align right per padding spec */
 }
 
