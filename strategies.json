@@ -33575,5 +33575,429 @@
         "advice": "Prioritize avoiding least profitable categories to reduce opportunity cost and focus time on high-profit books, potentially saving up to 40% of sourcing effort",
         "confidence": "High",
         "source": "knowing what to avoid so important... concept called opportunity cost... this will help you know exactly where to spend your time what sections to dedicate your time to and which ones to avoid... when you're at a source which is probably most sources where the books are not categorized... this will help you identify which titles to dedicate your time to... if you can avoid the least profitable books to resell then that allows you to focus on the most profitable... these seven categories might represent... as much as 40 of the entire used book category so I just saved you a massive amount of time"
+    },
+    {
+        "id": "restriction-buying-1",
+        "category": "Buying",
+        "trigger": "Facing restrictions on 60-70% of books",
+        "advice": "Continue sourcing and buying books you can sell, and also buy restricted books if affordable, storing them in a closet for future sale once restrictions lift",
+        "confidence": "High",
+        "source": "I kept buying the books I could sell I kept buying restricted books I kept buying the books I was not allowed to sell and I just stick them in my closet the theory was this can't last forever... Source restricted books the exceptions would be books that very few people are allowed to sell"
+    },
+    {
+        "id": "general-shipping-1",
+        "category": "General",
+        "trigger": "Account restricted from selling most books due to dinged metrics",
+        "advice": "Keep sourcing and shipping the books you are allowed to sell consistently to rebuild trust with Amazon, even under extreme restrictions",
+        "confidence": "High",
+        "source": "I kept sourcing and I kept listing and I did that solid... source and ship source and ship just keep doing it and eventually you'll trip over some invisible wire of like metrics where Amazon's like all right we trust this person"
+    },
+    {
+        "id": "risk-recovery-1",
+        "category": "Risk",
+        "trigger": "Sudden increase in restrictions after canceling multiple orders",
+        "advice": "Do not give up on the business; continue consistent activity for about 4 months to lift restrictions through demonstrated performance",
+        "confidence": "High",
+        "source": "for four months under the most extreme level of restrictions... one day I started noticing I'm allowed to sell most books... due to your seller performance we are allowing you to sell books from this publisher"
+    },
+    {
+        "id": "risk-avoidance-1",
+        "category": "Risk",
+        "trigger": "Accidental live test listings leading to merchant-fulfilled sales and cancellations",
+        "advice": "Avoid creating or leaving test listings live, as they can lead to unwanted sales, cancellations, and severe restrictions even on long-established accounts",
+        "confidence": "High",
+        "source": "one of our developers had been creating some listings in my account for test purposes and he didn't delete them... I got sales for these books that I didn't own... immediately got put under like the banner it's like your count is at risk of deactivation"
+    },
+    {
+        "id": "general-persistence-1",
+        "category": "General",
+        "trigger": "New or existing seller facing high initial or sudden restrictions",
+        "advice": "Persist in building trust from scratch or rebuilding it by sourcing and shipping, as restrictions are not permanent and can be overcome",
+        "confidence": "High",
+        "source": "if you're a newer seller and you're facing that right out of the gate the only solution is to just source and ship... these restrictions do get lifted there's so much doomsday talk... you just have to build your trust up with Amazon"
+    },
+    {
+        "id": "sr-books-top1",
+        "category": "Buying",
+        "trigger": "Books category, aiming for top 1% sellers",
+        "advice": "Target books with sales rank of 250,000 or better, as this represents the actual top 1% based on 25 million books with sales rank",
+        "confidence": "High",
+        "source": "the actual figure would be to take 25 million not 100 million and look at the top 1% of that which bring you to 250,000 a vastly different number than 1 million"
+    },
+    {
+        "id": "sr-general-method",
+        "category": "General",
+        "trigger": "Evaluating or creating sales rank charts for any category",
+        "advice": "Base calculations on the lower number between total products in category and highest rank detected to account for unsold items",
+        "confidence": "High",
+        "source": "I looked at both of those numbers and then I picked the one that was lowest do you see how powerful this is if the sales rank is higher than the total number of products in the category then we know the sales rank figures wrong or we know one of those two is wrong but we should always air on the side of picking the lower number"
+    },
+    {
+        "id": "sr-risk-averse",
+        "category": "Risk",
+        "trigger": "Risk-averse buying strategy",
+        "advice": "Only purchase items in the top 1% of sales rank for the category to minimize risk",
+        "confidence": "High",
+        "source": "if you're really risk averse seller you might be like I'm only going to buy items in the top 1% or if you're like really risk tolerant you might be like you know what top 10% is fine and stick to that number"
+    },
+    {
+        "id": "sr-risk-tolerant",
+        "category": "Risk",
+        "trigger": "Risk-tolerant buying strategy",
+        "advice": "Consider purchasing items up to the top 10% of sales rank for the category",
+        "confidence": "High",
+        "source": "if you're really risk averse seller you might be like I'm only going to buy items in the top 1% or if you're like really risk tolerant you might be like you know what top 10% is fine and stick to that number"
+    },
+    {
+        "id": "sr-chart-flaw",
+        "category": "General",
+        "trigger": "Using standard Amazon sales rank charts",
+        "advice": "Avoid charts that use total products in category (e.g., 100 million for books) as they include unsold items; opt for those using only sold products (approx. 25 million for books)",
+        "confidence": "High",
+        "source": "every chart I've looked at assumes that the total books in Amazon catalog is 100 million and they're using that figure as the basis for everything else so if that figure is wrong everything that follows is wrong"
+    },
+    {
+        "id": "sr-scan-app",
+        "category": "Buying",
+        "trigger": "Scanning books with apps showing percentage rank (e.g., top 1.8% for rank 1.8M)",
+        "advice": "Discount app percentages as they overestimate performance; a rank of 1.8 million in books is actually around top 8%, not top 2%",
+        "confidence": "High",
+        "source": "this is scan... it puts a rank of 1.8 million in the top 1.8% we already know by now why that's so wrong this imputes a total number of products in the category as 100 million which is not accurate... so it's more like what top 8% or something"
+    },
+    {
+        "id": "sr-books-old-chart",
+        "category": "Pricing",
+        "trigger": "Pricing decisions based on old sales rank charts for books",
+        "advice": "Do not treat books with sales rank 1 million or better as top 1%; this threshold is 400% off and should be adjusted to 250,000 for accurate pricing",
+        "confidence": "High",
+        "source": "top 1% in most of the charts I've looked at is roughly 1 million again that assumes... 108 million books... which I believe is very wrong... it's not just wrong it's like 400% wrong literally"
+    },
+    {
+        "id": "rule-3060-roi",
+        "category": "General",
+        "trigger": "After shipping inventory to Amazon",
+        "advice": "Expect to at least double the investment in that shipment within 30 days",
+        "confidence": "High",
+        "source": "you should at at least double your investment in 30 days"
+    },
+    {
+        "id": "rule-3060-sales",
+        "category": "General",
+        "trigger": "After shipping inventory to Amazon",
+        "advice": "Sell at least half of the shipment within 60 days",
+        "confidence": "High",
+        "source": "sell at least half of every shipment in 60 days"
+    },
+    {
+        "id": "adjust-margins-risk",
+        "category": "Pricing",
+        "trigger": "Shipping poorly ranked books (e.g., rank 4 million)",
+        "advice": "Scale profit margins to the risk; avoid low profits like $3-5 per book on slow sellers",
+        "confidence": "High",
+        "source": "adjust and scale The Profit you're going to get for a book your margins to the risk... shipping in poorly ranked books where you're only making like three or5 dollar per book that doesn't make any sense"
+    },
+    {
+        "id": "reprice-issue",
+        "category": "Pricing",
+        "trigger": "Not hitting 3060 targets",
+        "advice": "Check for failure to reprice; reprice diligently but not too aggressively low by chasing downward prices",
+        "confidence": "High",
+        "source": "it's a failure to reprice if you're not repricing at all... if you're pricing things low and you're just like constantly chasing other prices downward then yeah this may not work out"
+    },
+    {
+        "id": "low-margin-high-demand",
+        "category": "Pricing",
+        "trigger": "Shipping high demand books with low margins (e.g., $0.30 per book)",
+        "advice": "Avoid low margins on high demand books unless high volume; ensure sufficient ROI to hit 30-day doubling",
+        "confidence": "High",
+        "source": "if you're shipping in lots of high demand books but the margins are too low like you know you're paying $2 per book and your payout is only $3... you're not going to hit the 30 60 targets if you know the return of your investment is only like you know 30 cents per book"
+    },
+    {
+        "id": "mix-books",
+        "category": "Buying",
+        "trigger": "Shipment skewed heavily to low demand (e.g., 60% rank 4-5 million)",
+        "advice": "Mix in more high demand books to balance and hit 3060 targets; don't scapegoat low rank first",
+        "confidence": "High",
+        "source": "if you're too heavily skewed towards you know you're sipping in like 60% of your books are rank like four or five million... mix in some more highd demand books... it's much more likely to be a repricing problem or a margin problem not a sales rank problem"
+    },
+    {
+        "id": "always-30day",
+        "category": "General",
+        "trigger": "Any business model (high/low volume, margin)",
+        "advice": "Always maintain doubling investment in 30 days; 60-day half sales may not apply to all models like low demand specialization",
+        "confidence": "High",
+        "source": "no matter what your business model is... you should always maintain the 30 part of the 3060 rule... the sell half your shipment part in 60 days the 60 part of the 3060 rule may not always apply"
+    },
+    {
+        "id": "post-60days",
+        "category": "General",
+        "trigger": "After first 60 days of shipment",
+        "advice": "Treat sales beyond 60 days as bonus 'tip jar money' since initial surge tapers off; expect most sales in first 60 days",
+        "confidence": "High",
+        "source": "here's how I look at everything past the first 60 days I kind of look at that as tip jar money... sales will will start out at a surge right you get most of your sales the first week or two and then they slowly Coast downwards"
+    },
+    {
+        "id": "low-demand-1",
+        "category": "General",
+        "trigger": "Average sales rank > 1,000,000 in books category",
+        "advice": "Recognize this as low demand inventory and align expectations for slow sales (e.g., once every two weeks); continue selling if profitable but do not expect quick turnover",
+        "confidence": "High",
+        "source": "if the average rank is worse than a million or whatever you are shipping in tons of low demand inventory which again is fine but you must align your expectations to match the reality that the inventory you have is not selling very often"
+    },
+    {
+        "id": "sales-rank-check-1",
+        "category": "General",
+        "trigger": "Inventory not selling as expected",
+        "advice": "Enable sales rank column in inventory and calculate average sales rank to identify low demand items",
+        "confidence": "High",
+        "source": "you must go into your inventory right now and I want you to look at your sales rank enable the sales rank column head over there right now and I want you to look and see exactly on average what the average sales rank is for the inventory that you're selling"
+    },
+    {
+        "id": "pricing-high-1",
+        "category": "Pricing",
+        "trigger": "Inventory not selling and sales rank is not the issue",
+        "advice": "Lower prices to compete effectively; avoid pricing too high relative to competitors",
+        "confidence": "High",
+        "source": "you're probably pricing your inventory too high and you just don't even realize it okay the second part the second side of this coin so to speak is not repricing"
+    },
+    {
+        "id": "repricing-frequency-1",
+        "category": "Pricing",
+        "trigger": "Prices outdated after shipping (e.g., days or weeks pass)",
+        "advice": "Reprice inventory frequently to stay competitive as other sellers undercut; use automated repricing tools to ensure visibility",
+        "confidence": "High",
+        "source": "if you're not repricing your inventory I can guarantee this is the case with the vast majority of your items they are simply functionally not for sale at all because nobody can see them"
+    },
+    {
+        "id": "sub-condition-pricing-1",
+        "category": "Pricing",
+        "trigger": "Pricing only against very good condition while ignoring good or acceptable",
+        "advice": "Price competitively against all relevant conditions (good, acceptable) to increase sales potential",
+        "confidence": "High",
+        "source": "pricing based on sub condition in other words if you have a book in very good condition if you're ignoring good condition or acceptable condition and only competing against very good condition that is a huge mistake"
+    },
+    {
+        "id": "cost-based-pricing-1",
+        "category": "Pricing",
+        "trigger": "Setting price based on purchase cost instead of competitors",
+        "advice": "Ignore your buy cost entirely when pricing; base price solely on competitor prices to maximize sales speed",
+        "confidence": "High",
+        "source": "pricing by how much you paid for something in other words not looking at your competitors as a basis for how you set your price but just factored in your buy cost into how much you charge your customer does not care how much you paid for an item"
+    },
+    {
+        "id": "low-demand-buying-1",
+        "category": "Buying",
+        "trigger": "Sourcing inventory with poor sales rank",
+        "advice": "Source low demand inventory if it has high value/profit potential, but set realistic sales expectations",
+        "confidence": "High",
+        "source": "I'm a big proponent of selling low demand inventory because that tends to be what's worth the most often times so I'm not saying don't ship in lowand inventory I'm just saying align your expectations to reality"
+    },
+    {
+        "id": "u1",
+        "category": "Buying",
+        "trigger": "Book published by University Press (e.g., University of X Press)",
+        "advice": "Prioritize sourcing older University Press books, especially those on narrow academic niches, as they often fall out of print and command high value due to limited supply.",
+        "confidence": "High",
+        "source": "when I say University press books what I'm referring to is books published by universities... they're on very very narrow subject matter... University presses allow a lot of their catalog to fall out of print"
+    },
+    {
+        "id": "u2",
+        "category": "Buying",
+        "trigger": "University Press book with no barcode",
+        "advice": "Immediately evaluate University Press books without barcodes, as they indicate out-of-print status and potential high value; use OCR or manual ISBN lookup.",
+        "confidence": "High",
+        "source": "if I can see a university press book that has no barcode I I begin salivating immediately"
+    },
+    {
+        "id": "m1",
+        "category": "Buying",
+        "trigger": "Old math book, especially without barcode",
+        "advice": "Source and scan old math books, even if they look plain or incomprehensible, because math content is timeless and out-of-print copies remain relevant and valuable.",
+        "confidence": "High",
+        "source": "old math books that have no barcodes... math is the only subject that is truly literally Timeless... old math books are worth a lot of money"
+    },
+    {
+        "id": "m2",
+        "category": "General",
+        "trigger": "Obscure mathematical topic in old book",
+        "advice": "Lookup ISBN via OCR or scanning for old math books on obscure topics, as they are hard to duplicate and hold value indefinitely.",
+        "confidence": "High",
+        "source": "a book on some obscure math mathematical formula... there's no other book like it in the entire world and it falls out of print and it's just as relevant"
+    },
+    {
+        "id": "n1",
+        "category": "Buying",
+        "trigger": "Non-fiction mass market paperback (small size, niche topic)",
+        "advice": "Scan non-fiction mass market paperbacks, particularly weird or niche topics like UFOs, as they are overlooked and can have high value despite small size.",
+        "confidence": "High",
+        "source": "non-fiction Mass Market paperbacks... if you see a book this size a tiny books and it's non-fiction I'm going to scan that almost all the time particularly if it looks a little bit weird and a little bit Niche"
+    },
+    {
+        "id": "n2",
+        "category": "Buying",
+        "trigger": "Mass market paperback with no results from back barcode scan",
+        "advice": "Check the inside cover for a second barcode containing the ISBN when the back barcode yields no results, as this often reveals valuable listings overlooked by others.",
+        "confidence": "High",
+        "source": "they often have no barcodes... there's actually a second barcode on the inside cover so you open the inside cover you see a barcode that actually has the ISBN on it"
+    },
+    {
+        "id": "n3",
+        "category": "Buying",
+        "trigger": "Old non-fiction mass market paperback on celebrities or limited print topics",
+        "advice": "Target old non-fiction mass market paperbacks on specific celebrities or one-time print topics, as they fall out of print and gain significant value.",
+        "confidence": "High",
+        "source": "this can get really interesting when you find old books again on anything weird... old books on certain celebrities that kind of were published they did one printing or for whatever reason they fell out of print those can command some serious value"
+    },
+    {
+        "id": "g1",
+        "category": "General",
+        "trigger": "Books without barcodes in overlooked categories",
+        "advice": "Focus sourcing efforts on books without barcodes in niche categories, as most sellers ignore them, leaving high-profit opportunities in blind spots.",
+        "confidence": "High",
+        "source": "focus on where other sellers aren't looking... these books just simply don't have barcodes so the sellers just don't give them attention so our profit is in their blind spots"
+    },
+    {
+        "id": "letitride-1",
+        "category": "Seasonality",
+        "trigger": "Textbook season approaching (summer or January)",
+        "advice": "Use Keepa charts set to 1-2 years to identify books that spike during textbook season",
+        "confidence": "High",
+        "source": "we use the historical data as a reference as to what might occur in the upcoming textbook season. So, and by the way, I have this keep a chart set to a year. ... you can pretty much easily see that um this book spikes up quite a bit right in the summertime textbook season."
+    },
+    {
+        "id": "letitride-2",
+        "category": "Pricing",
+        "trigger": "Sourcing a book expected to spike in textbook season",
+        "advice": "Set minimum and maximum prices, a pricing rule, and a future repric date (e.g., August 17th before third week of August) when buying; let it ride without changes until the date",
+        "confidence": "High",
+        "source": "I'm going to set a minimum price. I'm going to set a maximum price. I'm going to set a rule. And I'm also going to set a future repric date. ... I'm going to let it ride all the way up until maybe the third week of August. So right before the second week of August."
+    },
+    {
+        "id": "letitride-3",
+        "category": "Pricing",
+        "trigger": "Using Master Book Repricer for inventory management",
+        "advice": "Establish min/max prices and future repric date at purchase using Master Book Flippers; data carries over to Repricer, hiding the book from searches until the date",
+        "confidence": "High",
+        "source": "we will not do it in July. We want to look at the book once... And when we are using master book flipper software, we're going to establish that price, that future repric date when we bought the book. ... using our system... it'll just carry over. The data will carry over."
+    },
+    {
+        "id": "letitride-4",
+        "category": "Pricing",
+        "trigger": "Future repric date arrives (e.g., August 17th)",
+        "advice": "Re-evaluate min/max prices, rule; adjust based on current Keepa chart and sales; prioritize high-volume or high-cost books",
+        "confidence": "High",
+        "source": "on the 17th um when I go into repric on the 17th or later, it'll show up in my search... Do we change the maximum? Do we change the minimum price?... we will do this for, you know, books that have we got lots of copies... or and or we just spent a lot of money on a book"
+    },
+    {
+        "id": "letitride-5",
+        "category": "Pricing",
+        "trigger": "Book shows no significant spike in historical Keepa data during textbook season",
+        "advice": "Do not let it ride; set max price around current buy box (e.g., $37) and sell as soon as possible",
+        "confidence": "High",
+        "source": "for this book... what happened during textbook season, not a whole lot... I don't want to let it ride. I want to get that book in there and I want to have it sold as soon as possible. ... set a maximum price maybe at, you know, around 37."
+    },
+    {
+        "id": "pricegap-1",
+        "category": "Seasonality",
+        "trigger": "Textbook season (e.g., third week August busiest, but varies by book)",
+        "advice": "Monitor sales by fulfillment type; expect MF sellers to sell out, causing FBA sales velocity to increase and prices to spike",
+        "confidence": "High",
+        "source": "the sales velocity of the FBA sales will increase when merchant fulfillers sell out of all of their copies... something happened on August 25th, there were 13 books sold for FBA and there were 32 sold by FBM. And then the next day on August 26, it went to zero FBM and it went shot up to 48 FBA."
+    },
+    {
+        "id": "pricegap-2",
+        "category": "Pricing",
+        "trigger": "Analyzing offers for FBA books during textbook season",
+        "advice": "Examine both FBA and MF offers; if MF priced close to FBA (e.g., within a few dollars), anticipate quick MF sell-out and raise FBA prices early, especially if lowest FBA",
+        "confidence": "High",
+        "source": "look at both merch and fulfilled... the merchant fulfilled offers are priced very close to the FBA offers... These guys are going to sell out quickly and all of a sudden I'm going to be the lowest... you really need to jack up your price because you know those books are going to sell really quick."
+    },
+    {
+        "id": "pricegap-3",
+        "category": "Pricing",
+        "trigger": "Early textbook season for strong-selling books (July-September)",
+        "advice": "Avoid being the lowest FBA offer early; monitor for MF sell-out to capture price jumps (e.g., from $10.91 to $61 in under 2 weeks)",
+        "confidence": "High",
+        "source": "don't want to be the lowest going into textbook season... especially for a textbook like this that sells pretty strong throughout July, August, all the way into like midepptember... the lowest price on August 14th was $10.91... less than two weeks later, the lowest price is $61."
+    },
+    {
+        "id": "overpricing-1",
+        "category": "Pricing",
+        "trigger": "Books expected to spike during textbook season using automatic repricer",
+        "advice": "Set max price higher than historical peaks (e.g., $100-120 vs. conservative $70-80); set min in expected range; raise all prices to max periodically (daily or every few days)",
+        "confidence": "High",
+        "source": "I'm going to make my maximum price much higher. But I'm going to make my minimum price, you know, in the range we just talked about... we're also going to re raise our price. And we're going to do it all at once... every day you could be doing this or every couple of days"
+    },
+    {
+        "id": "overpricing-2",
+        "category": "Pricing",
+        "trigger": "Using non-automatic or Amazon repricer",
+        "advice": "Avoid strategic overpricing; it requires third-party automatic repricer to handle drops without data blind spots",
+        "confidence": "High",
+        "source": "this does not work if you're doing manually repricing. If you're using a nonautomatic repricer... You're going to want to use an automatic repricer... If you're just using Amazon's repricer, you're probably not going to want to do this. You can't do this."
+    },
+    {
+        "id": "overpricing-3",
+        "category": "Risk",
+        "trigger": "Price set too high during spike evaluation",
+        "advice": "Automatic repricer will lower price to competitive level if overpriced, minimizing downside while capturing upside spikes (e.g., from $63.71 to higher in 10 days)",
+        "confidence": "High",
+        "source": "the automatic repric will just right lower you right to where you need to be. But you want to catch it in one of those days where all of a sudden the price spiked up quite a bit... we're opening ourselves up to the upside with very little to no downside"
+    },
+    {
+        "id": "pw1",
+        "category": "Buying",
+        "trigger": "Price War score = 5",
+        "advice": "Prioritize books with a high Price War score indicating a large price gap between competing merchant sellers to buy at significant discounts.",
+        "confidence": "High",
+        "source": "the price War score from 1 to 5 shows how much the lowest prices vary a five signals a large price Gap while a one indicates minimal variation between the sellers"
+    },
+    {
+        "id": "ds1",
+        "category": "Buying",
+        "trigger": "Demand score = 5",
+        "advice": "Select books with a high Demand score, showing frequent recent sales, to ensure quick turnover and profitability.",
+        "confidence": "High",
+        "source": "the demand score shows how frequently the book has sold recently the faster it sells the higher the score"
+    },
+    {
+        "id": "bps1",
+        "category": "Buying",
+        "trigger": "Buy price score high (significant drop from 6-month average)",
+        "advice": "Only pursue books where the current low price is much lower than the average over the past 6 months to avoid bad flips.",
+        "confidence": "High",
+        "source": "the Buy price score Compares today's low price with the average over the past 6 months a bigger price drop means a higher score if a book's price is too high compared to its average regardless of other factors it won't show up in our system"
+    },
+    {
+        "id": "fs1",
+        "category": "General",
+        "trigger": "Flip score = 5",
+        "advice": "Use the highest Flip score, which combines Price War, supply, demand, and buy price factors, to identify the most comprehensive profitable opportunities.",
+        "confidence": "High",
+        "source": "the flip score combines all these factors into one rating unlike an escore which some Arbitrage users may be familiar with and only tracks the demand of a book our flip score offers a comprehensive view by factoring in the price price Wars supply and demand"
+    },
+    {
+        "id": "f1",
+        "category": "Buying",
+        "trigger": "Lowest price < $10 and Price War score > 3",
+        "advice": "Filter for inexpensive books with moderate to high Price War scores to quickly identify discounted flipping opportunities.",
+        "confidence": "High",
+        "source": "for example you can create one filter to find books priced under $10 with a price War score over 3.3"
+    },
+    {
+        "id": "f2",
+        "category": "Buying",
+        "trigger": "Price between $50 and $250 and category = textbook",
+        "advice": "Target higher-priced textbooks in the $50-$250 range using filters to capture potentially high-margin educational books.",
+        "confidence": "High",
+        "source": "while at the same time also capturing books priced between 50 and $250 that are textbooks"
+    },
+    {
+        "id": "r1",
+        "category": "Risk",
+        "trigger": "Before purchasing any book",
+        "advice": "Always use the Seller Central link to check if you are restricted from selling the book to avoid account issues.",
+        "confidence": "High",
+        "source": "we give you direct links to the keepa Chart the Amazon listing and a button that takes you straight to Seller Central this lets you quickly check if you are restricted from selling the book on Amazon"
     }
 ]
