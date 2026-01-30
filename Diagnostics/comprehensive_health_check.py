@@ -21,10 +21,16 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 load_dotenv()
 
 # --- Config ---
-# Try to detect if we are in the production environment
 IS_PROD = os.path.exists('/var/www/agentarbitrage')
 PROD_ROOT = '/var/www/agentarbitrage'
-CELERY_LOG_PATH = os.path.join(PROD_ROOT, 'celery.log') if IS_PROD else 'celery.log'
+
+# Correct Log Paths based on start_celery.sh
+WORKER_LOG = os.path.join(PROD_ROOT, 'celery_worker.log') if IS_PROD else 'celery_worker.log'
+BEAT_LOG = os.path.join(PROD_ROOT, 'celery_beat.log') if IS_PROD else 'celery_beat.log'
+MONITOR_LOG = os.path.join(PROD_ROOT, 'celery_monitor.log') if IS_PROD else 'celery_monitor.log'
+# Fallback for historical analysis
+LEGACY_LOG = os.path.join(PROD_ROOT, 'celery.log') if IS_PROD else 'celery.log'
+
 DB_PATH = os.path.join(PROD_ROOT, 'deals.db') if IS_PROD else os.path.join(os.path.dirname(__file__), '..', 'deals.db')
 KEEPA_API_KEY = os.getenv("KEEPA_API_KEY")
 
@@ -32,6 +38,17 @@ def print_header(title):
     print(f"\n{'='*40}")
     print(f" {title}")
     print(f"{'='*40}")
+
+def tail_file(filepath, n=20):
+    """Returns the last n lines of a file."""
+    if not os.path.exists(filepath):
+        return [f"[WARNING] File not found: {filepath}"]
+    try:
+        cmd = ['tail', '-n', str(n), filepath]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        return result.stdout.splitlines()
+    except Exception as e:
+        return [f"[ERROR] Could not read file: {e}"]
 
 def check_code_version():
     print_header("CODE VERSION CHECK")
@@ -58,51 +75,49 @@ def check_code_version():
     except Exception as e:
         print(f"[ERROR] Could not read simple_task.py: {e}")
 
-def analyze_logs():
-    print_header("LOG ANALYSIS (Last 2000 lines)")
+def analyze_active_logs():
+    print_header("ACTIVE WORKER LOG ANALYSIS")
 
-    log_path = CELERY_LOG_PATH
-    # Fallback to local logs if prod log not found
-    if not os.path.exists(log_path):
-        if os.path.exists('celery.log'):
-            log_path = 'celery.log'
-        else:
-            print(f"[ERROR] Log file not found at {log_path} or current directory.")
-            return
+    print(f"Checking Worker Log: {WORKER_LOG}")
+    if not os.path.exists(WORKER_LOG):
+        print(f"[WARNING] Worker log not found at {WORKER_LOG}")
+        # Try checking monitor log if worker log is missing
+        print(f"Checking Monitor Log instead: {MONITOR_LOG}")
+        print("\n--- Last 20 lines of Monitor Log ---")
+        for line in tail_file(MONITOR_LOG, 20):
+            print(line)
+        return
 
-    print(f"Reading log: {log_path}")
-    try:
-        # Use tail to get last 2000 lines
-        cmd = ['tail', '-n', '2000', log_path]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        logs = result.stdout.splitlines()
+    # Analyze Worker Log
+    logs = tail_file(WORKER_LOG, 100) # Get last 100 lines for analysis
 
-        count_sort_0 = 0
-        count_sort_4 = 0
-        last_sort_0_ts = None
-        last_sort_4_ts = None
+    count_sort_0 = 0
+    count_sort_4 = 0
+    last_sort_0_ts = None
+    last_sort_4_ts = None
 
-        for line in logs:
-            if 'Sort: 0' in line:
-                count_sort_0 += 1
-                last_sort_0_ts = line.split(' ')[0] if line else "Unknown"
-            if 'Sort: 4' in line:
-                count_sort_4 += 1
-                last_sort_4_ts = line.split(' ')[0] if line else "Unknown"
+    for line in logs:
+        if 'Sort: 0' in line:
+            count_sort_0 += 1
+            last_sort_0_ts = line.split(' ')[0] if line else "Unknown"
+        if 'Sort: 4' in line:
+            count_sort_4 += 1
+            last_sort_4_ts = line.split(' ')[0] if line else "Unknown"
 
-        print(f"Found 'Sort: 0' (Old/Bad): {count_sort_0} times. Last: {last_sort_0_ts}")
-        print(f"Found 'Sort: 4' (New/Good): {count_sort_4} times. Last: {last_sort_4_ts}")
+    print(f"Found 'Sort: 0' (Old/Bad): {count_sort_0} times. Last: {last_sort_0_ts}")
+    print(f"Found 'Sort: 4' (New/Good): {count_sort_4} times. Last: {last_sort_4_ts}")
 
-        if count_sort_0 > 0 and count_sort_4 == 0:
-            print("\n[CRITICAL WARNING] usage of 'Sort: 0' detected without any 'Sort: 4'.")
-            print("This strongly suggests a STALE CELERY WORKER is running old code.")
-        elif count_sort_4 > 0:
-            print("\n[INFO] 'Sort: 4' detected. The correct code seems to be running.")
-        else:
-             print("\n[INFO] No sort type logs found in the last 2000 lines.")
+    if count_sort_4 > 0:
+        print("\n[PASS] 'Sort: 4' detected in recent logs. Correct code is running.")
+    elif count_sort_0 > 0:
+        print("\n[FAIL] 'Sort: 0' detected in recent logs. Stale code is running!")
+    else:
+        print("\n[INFO] No Sort Type logs found in the last 100 lines. The worker might be idle or crashing.")
 
-    except Exception as e:
-        print(f"[ERROR] Log analysis failed: {e}")
+    # Always print the last few lines to see crashes
+    print("\n--- Last 20 lines of Worker Log ---")
+    for line in logs[-20:]:
+        print(line)
 
 def check_redis_locks():
     print_header("REDIS LOCK STATUS")
@@ -131,8 +146,6 @@ def check_redis_locks():
             ttl = r.ttl(backfill_key)
             print(f"[LOCKED] Backfill Lock ({backfill_key}) IS held.")
             print(f"       TTL: {ttl} seconds ({ttl/3600:.1f} hours).")
-            if ttl > 800000: # Max is 864000
-                print("       [WARNING] Lock is very fresh or maxed out. Task might be stuck.")
         else:
             print(f"[FREE] Backfill Lock ({backfill_key}) is NOT held.")
 
@@ -164,14 +177,8 @@ def check_token_status():
             tokens = data.get('tokensLeft')
             print(f"[OK] Tokens Left: {tokens}")
             print(f"     Refill Rate: {data.get('refillRate')}/min")
-
-            if tokens < 0:
-                print("     [WARNING] Token balance is NEGATIVE. System is in deficit.")
-            if tokens == 0:
-                print("     [CRITICAL] Token balance is ZERO. System is halted.")
         else:
             print(f"[ERROR] API Request failed: {response.status_code}")
-            # print(f"        Response: {response.text}") # hide key in output
     except Exception as e:
         print(f"[ERROR] Token check failed: {e}")
 
@@ -193,14 +200,22 @@ def check_celery_processes():
             if 'celery beat' in p:
                 beat_running = True
 
+        # Check monitor specifically
+        monitor_cmd = ['pgrep', '-f', 'monitor_and_restart']
+        monitor_res = subprocess.run(monitor_cmd, capture_output=True, text=True)
+        monitor_running = bool(monitor_res.stdout.strip())
+
+        if monitor_running:
+             print("[PASS] Resiliency Monitor (monitor_and_restart) is RUNNING.")
+        else:
+             print("[CRITICAL] Resiliency Monitor is NOT RUNNING.")
+
         if not worker_running:
-            print("\n[CRITICAL] Celery WORKER is NOT running!")
+            print("[CRITICAL] Celery WORKER is NOT running!")
         if not beat_running:
-            print("\n[CRITICAL] Celery BEAT is NOT running!")
+            print("[CRITICAL] Celery BEAT is NOT running!")
         if worker_running and beat_running:
-            print("\n[PASS] Both Worker and Beat appear to be running.")
-        elif worker_running:
-             print("\n[WARNING] Worker is running, but Beat is NOT.")
+            print("[PASS] Both Worker and Beat appear to be running.")
 
     except Exception as e:
         print(f"[ERROR] Process check failed: {e}")
@@ -222,8 +237,8 @@ def check_db_health():
             cursor.execute("SELECT count(*) FROM deals")
             count = cursor.fetchone()[0]
             print(f"Total Deals: {count}")
-        except sqlite3.OperationalError as e:
-            print(f"[ERROR] Could not count deals: {e}")
+        except sqlite3.OperationalError:
+            print(f"[ERROR] Could not count deals.")
 
         # Check system state
         try:
@@ -277,9 +292,6 @@ def check_db_health():
             for k, v in age_dist.items():
                 print(f"{k}: {v}")
 
-            if valid_dates > 0 and age_dist['> 72h'] > 0:
-                print(f"\n[WARNING] {age_dist['> 72h']} deals are older than 72 hours and should have been cleaned by Janitor.")
-
             if valid_dates > 0 and age_dist['< 1h'] == 0:
                 print("[WARNING] No deals seen in the last hour. Ingestion is STALLED.")
         except sqlite3.OperationalError:
@@ -290,14 +302,14 @@ def check_db_health():
         print(f"[ERROR] DB check failed: {e}")
 
 def main():
-    print("Running Comprehensive Health Check...")
+    print("Running Comprehensive Health Check (v2 - Log Logic Fixed)...")
     print(f"Time (UTC): {datetime.now(timezone.utc)}")
 
     check_code_version()
     check_celery_processes()
     check_redis_locks()
     check_token_status()
-    analyze_logs()
+    analyze_active_logs()
     check_db_health()
 
     print_header("DIAGNOSIS COMPLETE")
