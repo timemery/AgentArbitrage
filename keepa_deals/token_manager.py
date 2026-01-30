@@ -131,17 +131,29 @@ class TokenManager:
         logger.info("Performing authoritative token sync with Keepa API...")
         status_data = get_token_status(self.api_key)
         if status_data and 'tokensLeft' in status_data:
-            self._sync_tokens_from_response(status_data['tokensLeft'])
+            refill_rate = status_data.get('refillRate')
+            self._sync_tokens_from_response(status_data['tokensLeft'], refill_rate=refill_rate)
         else:
             logger.error("Failed to sync tokens. API did not return valid token data.")
 
-    def _sync_tokens_from_response(self, tokens_left_from_api):
+    def _sync_tokens_from_response(self, tokens_left_from_api, refill_rate=None):
         """
         Authoritatively sets the token count from a provided API response value.
+        Also updates the refill rate if provided.
         """
         old_token_count = self.tokens
         self.tokens = float(tokens_left_from_api)
         self.last_refill_timestamp = time.time()
+
+        if refill_rate is not None:
+            try:
+                new_rate = float(refill_rate)
+                if new_rate != self.REFILL_RATE_PER_MINUTE:
+                    logger.info(f"Updating refill rate from {self.REFILL_RATE_PER_MINUTE} to {new_rate} based on API response.")
+                    self.REFILL_RATE_PER_MINUTE = new_rate
+            except (ValueError, TypeError):
+                logger.warning(f"Invalid refill rate received from API: {refill_rate}")
+
         logger.info(
             f"Token count authoritatively synced from API response. "
             f"Previous estimate: {old_token_count:.2f}, New value: {self.tokens:.2f}"
@@ -150,6 +162,8 @@ class TokenManager:
     def update_after_call(self, tokens_left_from_api):
         """
         Updates the token count and timestamp after an API call using the authoritative response.
+        Note: Standard API responses (headers/metadata) typically only give tokensLeft,
+        so we don't update refill_rate here unless we parse the full status object elsewhere.
         """
         self.last_api_call_timestamp = time.time()
         self._sync_tokens_from_response(tokens_left_from_api)
