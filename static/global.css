@@ -653,6 +653,7 @@ button:disabled {
     color: #3e577d;
     resize: none;
     height: 95px; /* Updated: 95px */
+    min-height: 95px; /* Override global textarea min-height */
     outline: none;
     background-color: #ffffff; /* Spec: Fill White */
     box-sizing: border-box; /* Ensure padding doesn't increase height */
