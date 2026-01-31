@@ -265,11 +265,12 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         *   **Price Trend:** {trend}
 
         **Your Persona & Strategy:**
-        *   **Intro:** "{mentor['intro']}"
         *   **Focus:** {mentor['focus']}
         *   **Tone:** {mentor['tone']}
         *   **Style:** {mentor['style_guide']}
         *   **Context Aware:** Apply your learned strategies (below) to identify risks.
+        *   **Constraint:** Do NOT start with an introduction. Jump straight into the analysis.
+        *   **Constraint:** Do NOT use markdown formatting (no bolding, no headers, no bullet points). Use plain text paragraphs only.
 
         {strategy_section}
 
