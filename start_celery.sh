@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script is designed for a production environment.
+# Updated Jan 31 2026: Added PID cleanup check
 # It starts Redis, the Celery worker, and Celery Beat scheduler in a resilient loop.
 
 # Step 1: Set ownership

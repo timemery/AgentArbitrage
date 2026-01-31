@@ -1,4 +1,5 @@
 #!/bin/bash
+# Updated Jan 31 2026: Added PID and Lock cleanup
 echo "--- Starting Forceful Shutdown ---"
 
 # Step 1: Forcefully kill the monitor process
