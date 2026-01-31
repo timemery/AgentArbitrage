@@ -9,7 +9,7 @@ import redis
 
 from worker import celery_app as celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark, DB_PATH
-from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin
+from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_current_stats_batch
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_seller_info_for_single_deal
@@ -21,7 +21,7 @@ from .business_calculations import (
 )
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
-from .processing import _process_single_deal, clean_numeric_values
+from .processing import _process_single_deal, clean_numeric_values, _process_lightweight_update
 
 # Configure logging
 logger = getLogger(__name__)
@@ -218,31 +218,58 @@ def update_recent_deals():
         all_fetched_products = {}
         asin_list = [d['asin'] for d in all_new_deals]
 
-        for i in range(0, len(asin_list), MAX_ASINS_PER_BATCH):
-            batch_asins = asin_list[i:i + MAX_ASINS_PER_BATCH]
+        # --- Check Existing ASINs ---
+        existing_asins_set = set()
+        existing_rows_map = {}
+        try:
+            conn_check = sqlite3.connect(DB_PATH)
+            conn_check.row_factory = sqlite3.Row
+            c_check = conn_check.cursor()
+            placeholders = ','.join('?' * len(asin_list))
+            c_check.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})", asin_list)
+            rows = c_check.fetchall()
+            for r in rows:
+                existing_asins_set.add(r['ASIN'])
+                existing_rows_map[r['ASIN']] = dict(r)
+            conn_check.close()
+        except Exception as e:
+            logger.warning(f"Failed to check existing ASINs in simple_task: {e}")
+        # ----------------------------
 
-            # Estimated cost: ~20 tokens per ASIN for 3 years of history.
-            estimated_cost = 20 * len(batch_asins)
+        # Split batches into New vs Existing
+        new_asins_list = [a for a in asin_list if a not in existing_asins_set]
+        existing_asins_list = [a for a in asin_list if a in existing_asins_set]
 
-            # BLOCKING WAIT STRATEGY:
-            # We use request_permission_for_call() to wait for tokens if we are low.
-            # We do NOT use 'if not has_enough_tokens: break' because that leads to "starvation loops"
-            # where the task starts, sees low tokens, quits, and never processes the pending deals.
-            # By blocking, we ensure we eventually process the batch, even if it takes a few minutes to refill.
-            token_manager.request_permission_for_call(estimated_cost)
-
-            # Fetch 3 years (1095 days) of history to support long-term trend analysis
+        # A. Fetch NEW Deals (Heavy)
+        for i in range(0, len(new_asins_list), MAX_ASINS_PER_BATCH):
+            batch_asins = new_asins_list[i:i + MAX_ASINS_PER_BATCH]
+            # Heavy fetch
+            token_manager.request_permission_for_call(20 * len(batch_asins))
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
                 api_key, batch_asins, days=1095, history=1, offers=20
             )
             token_manager.update_after_call(tokens_left)
 
-            if product_response and 'products' in product_response and not (api_info and api_info.get('error_status_code')):
+            if product_response and 'products' in product_response:
                 for p in product_response['products']:
                     all_fetched_products[p['asin']] = p
+            time.sleep(1)
 
-            # Throttling to prevent burstiness
-            time.sleep(2)
+        # B. Fetch EXISTING Deals (Light)
+        for i in range(0, len(existing_asins_list), MAX_ASINS_PER_BATCH):
+             batch_asins = existing_asins_list[i:i + MAX_ASINS_PER_BATCH]
+             # Light fetch
+             token_manager.request_permission_for_call(2 * len(batch_asins))
+             product_response, api_info, tokens_consumed, tokens_left = fetch_current_stats_batch(
+                 api_key, batch_asins, days=180
+             )
+             token_manager.update_after_call(tokens_left)
+
+             if product_response and 'products' in product_response:
+                for p in product_response['products']:
+                    all_fetched_products[p['asin']] = p
+             time.sleep(0.5)
+
         logger.info(f"Step 3 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
 
         logger.info("Step 4: Processing deals...")
@@ -258,17 +285,25 @@ def update_recent_deals():
             product_data = all_fetched_products[asin]
             product_data.update(deal)
 
-            # --- OPTIMIZATION ---
-            # CRITICAL OPTIMIZATION: Do not revert to fetching 'all' seller IDs. We must ONLY fetch the single seller relevant to the price.
-            seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
-            # --- END OPTIMIZATION ---
-
-            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
+            processed_row = None
+            if asin in existing_asins_set:
+                 # Lightweight Update
+                 processed_row = _process_lightweight_update(existing_rows_map[asin], product_data)
+                 if processed_row:
+                     processed_row = clean_numeric_values(processed_row)
+                     processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                     processed_row['source'] = 'upserter_light'
+            else:
+                 # Heavy Process (New Deal)
+                 # Fetch seller data for ONLY the lowest-priced 'Used' offer.
+                 seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
+                 processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
+                 if processed_row:
+                     processed_row = clean_numeric_values(processed_row)
+                     processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                     processed_row['source'] = 'upserter'
 
             if processed_row:
-                processed_row = clean_numeric_values(processed_row)
-                processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-                processed_row['source'] = 'upserter'
                 rows_to_upsert.append(processed_row)
         logger.info(f"Step 5 Complete: Processed {len(rows_to_upsert)} deals.")
 
