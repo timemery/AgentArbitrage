@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;700&display=swap');
 
 :root {
-    --filter-panel-height: 43px; /* Default closed state */
+    --filter-panel-height: 102px; /* Default open state */
     --filter-panel-z: 200;
 }
 
@@ -2030,11 +2030,11 @@ body.home-background::before {
 }
 
 .panel-content-closed {
-    padding: 0 18px 0 15px;
+    padding: 0 18px 0 18px;
 }
 
 .panel-content-open {
-    padding: 0 23px 0 15px; /* 23px from right edge */
+    padding: 0 23px 0 18px; /* 23px from right edge */
 }
 
 /* Hide content based on state */
@@ -2064,7 +2064,7 @@ body.home-background::before {
     margin-right: 45px; /* Padding of 45px between the filter icon and the first slider */
 }
 .filter-panel-closed .filter-icon-toggle {
-    margin-right: 18px; /* Padding of 18px between the filter icon and the text */
+    margin-right: 16px; /* Padding of 16px between the filter icon and the text */
 }
 
 /* Closed State Text */
