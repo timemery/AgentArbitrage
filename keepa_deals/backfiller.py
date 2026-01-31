@@ -14,9 +14,9 @@ from .db_utils import (
     create_deals_table_if_not_exists, recreate_user_restrictions_table,
     get_deal_count
 )
-from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data
+from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_seller_data, fetch_current_stats_batch
 from .token_manager import TokenManager
-from .processing import _process_single_deal, clean_numeric_values
+from .processing import _process_single_deal, clean_numeric_values, _process_lightweight_update
 from .seller_info import get_seller_info_for_single_deal
 from .stable_calculations import clear_analysis_cache
 
@@ -164,80 +164,54 @@ def backfill_deals(reset=False):
 
                 logger.info(f"--- Processing chunk {i//DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + DEALS_PER_CHUNK - 1)//DEALS_PER_CHUNK} on page {page} ---")
 
-                # --- Lightweight Logic: Check DB for existing ASINs ---
+                # --- Hybrid Ingestion Logic: Check DB for existing ASINs ---
                 all_asins = [d['asin'] for d in chunk_deals]
-                existing_asins = set()
+                existing_asins_set = set()
+                existing_rows_map = {} # Map ASIN to existing row dict
 
                 try:
                     conn_check = sqlite3.connect(DB_PATH)
+                    conn_check.row_factory = sqlite3.Row # Enable dict-like access
                     c_check = conn_check.cursor()
                     placeholders = ','.join('?' * len(all_asins))
-                    c_check.execute(f"SELECT ASIN FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})", all_asins)
-                    existing_asins = {r[0] for r in c_check.fetchall()}
+                    # We need to fetch ALL columns to preserve them
+                    c_check.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})", all_asins)
+                    rows = c_check.fetchall()
+                    for r in rows:
+                        asin_val = r['ASIN']
+                        existing_asins_set.add(asin_val)
+                        existing_rows_map[asin_val] = dict(r) # Convert Row to dict
                     conn_check.close()
                 except Exception as e:
                     logger.warning(f"Failed to check existing ASINs: {e}")
 
-                new_asins = [a for a in all_asins if a not in existing_asins]
+                new_asins = [a for a in all_asins if a not in existing_asins_set]
+                existing_asins_list = list(existing_asins_set)
 
                 all_fetched_products = {}
 
                 # 1. Fetch NEW deals (Heavy: 365 days history, offers=20)
                 if new_asins:
                     logger.info(f"Fetching full history for {len(new_asins)} NEW deals...")
-                    token_manager.request_permission_for_call(20 * len(new_asins)) # ~20 tokens per heavy fetch
+                    token_manager.request_permission_for_call(20 * len(new_asins))
                     prod_resp, _, _, t_left = fetch_product_batch(api_key, new_asins, days=365, history=1, offers=20)
                     if t_left: token_manager.update_after_call(t_left)
 
                     if prod_resp and 'products' in prod_resp:
                          all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
 
-                # 2. Fetch EXISTING deals (Light: stats-only or short history)
-                # Keepa API trick: stats=1, history=0 returns current stats cheaply (~1 token)
-                existing_list = list(existing_asins)
-                if existing_list:
-                    logger.info(f"Fetching lightweight stats for {len(existing_list)} EXISTING deals...")
-                    token_manager.request_permission_for_call(1 * len(existing_list)) # ~1 token per light fetch
+                # 2. Fetch EXISTING deals (Light: stats=180, history=0)
+                if existing_asins_list:
+                    logger.info(f"Fetching lightweight stats for {len(existing_asins_list)} EXISTING deals...")
+                    # Estimated cost is low (~2 tokens/ASIN) but we don't pass token_manager to func
+                    token_manager.request_permission_for_call(2 * len(existing_asins_list))
 
-                    # We still need SOME history for logic (e.g. 90d avg), but maybe less?
-                    # For now, we still fetch history=1 but maybe we can optimize days?
-                    # Actually, if we want to SAVE tokens, we rely on the fact that existing deals
-                    # don't need to re-download 3 years of data if we only care about current price.
-                    # BUT our pipeline needs history for 'stable_calculations'.
-                    # Compromise: We fetch it, but we acknowledge that maintaining is expensive.
-                    # OPTIMIZATION: If we truly want 1-token updates, we can't run full analysis.
-                    # However, to prevent 'Equilibrium Death', we MUST run full analysis to re-confirm the deal is good.
-                    # TRICK: Use `if-none-match` or similar? No, Keepa doesn't support that well.
-                    #
-                    # REALIZATION: The 'Lightweight' strategy requires us to trust the 'stats' object
-                    # and skip the heavy history download if we aren't re-calculating the 1yr avg every time.
-                    #
-                    # CORRECT IMPLEMENTATION:
-                    # We will continue to fetch full data for now because our 'processing' logic REQUIRES history arrays.
-                    # To implement TRUE lightweight updates, we would need to rewrite `_process_single_deal` to handle missing history.
-                    #
-                    # REVISED PLAN (within this block):
-                    # We will stick to the heavy fetch for correctness, BUT we acknowledge that we need to prioritize new deals.
-                    # The simulation showed that 90% maintenance is faster... IF cost is low.
-                    # If cost remains high, we are stuck.
-                    #
-                    # CRITICAL PIVOT: We MUST attempt the fetch. If we are just updating price, we need `stats`.
-                    # Let's try fetching with `days=0` for existing? No, that breaks graphs.
-                    #
-                    # WAIT: The simulation assumed 1 token vs 20.
-                    # Fetching `stats=1` and `history=0` costs 1 token.
-                    # Does `_process_single_deal` crash without history? Yes, `stable_products.py` needs `csv` arrays.
-                    #
-                    # CONCLUSION: We cannot do "Lightweight" updates without refactoring the core logic.
-                    # We must proceed with the "Heavy" update but rely on the User's "Interrupt" strategy.
+                    prod_resp_light, _, _, t_left_light = fetch_current_stats_batch(api_key, existing_asins_list, days=180)
+                    if t_left_light: token_manager.update_after_call(t_left_light)
 
-                    # Fallback to standard fetch for existing for safety, but log it.
-                    token_manager.request_permission_for_call(20 * len(existing_list))
-                    prod_resp, _, _, t_left = fetch_product_batch(api_key, existing_list, days=365, history=1, offers=20)
-                    if t_left: token_manager.update_after_call(t_left)
-
-                    if prod_resp and 'products' in prod_resp:
-                         all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
+                    if prod_resp_light and 'products' in prod_resp_light:
+                         # Merge into all_fetched_products. Logic downstream distinguishes how to process.
+                         all_fetched_products.update({p['asin']: p for p in prod_resp_light['products']})
 
                 logger.info(f"Fetched product data for {len(all_fetched_products)} ASINs in chunk.")
 
@@ -246,21 +220,29 @@ def backfill_deals(reset=False):
                     asin = deal['asin']
                     if asin not in all_fetched_products: continue
                     product_data = all_fetched_products[asin]
-                    product_data.update(deal)
+                    product_data.update(deal) # Merge deal info (like currentSince)
 
-                    # --- OPTIMIZATION ---
-                    # Fetch seller data for ONLY the lowest-priced 'Used' offer.
-                    seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
-                    # --- END OPTIMIZATION ---
+                    # Determine processing path
+                    if asin in existing_asins_set:
+                        # Lightweight Update
+                        processed_row = _process_lightweight_update(existing_rows_map[asin], product_data)
+                        if processed_row:
+                            processed_row = clean_numeric_values(processed_row)
+                            processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                            processed_row['source'] = 'backfiller_light' # Track source
+                            rows_to_upsert.append(processed_row)
+                    else:
+                        # Heavy Process (New Deal)
+                        seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
+                        processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
 
-                    processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
+                        if processed_row:
+                            processed_row = clean_numeric_values(processed_row)
+                            processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                            processed_row['source'] = 'backfiller'
+                            rows_to_upsert.append(processed_row)
 
-                    if processed_row:
-                        processed_row = clean_numeric_values(processed_row)
-                        processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-                        processed_row['source'] = 'backfiller'
-                        rows_to_upsert.append(processed_row)
-                    time.sleep(1)
+                    time.sleep(0.5) # Reduced throttle for hybrid
 
                 if rows_to_upsert:
                     logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")

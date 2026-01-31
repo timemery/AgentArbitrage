@@ -227,6 +227,59 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
         return None, api_info_on_error, 0, None
 
+def fetch_current_stats_batch(api_key, asins_list, days=180):
+    """
+    Fetches lightweight current stats for a batch of ASINs.
+    Returns the response data, API info, tokens consumed, and tokens left.
+    Used for maintaining existing deals at low cost (~1 token/ASIN).
+    """
+    if not asins_list:
+        logger.warning("fetch_current_stats_batch called with empty list.")
+        return None, {'error_status_code': 'EMPTY_ASIN_LIST'}, 0, None
+
+    logger.info(f"Fetching lightweight stats (days={days}) for {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
+
+    comma_separated_asins = ','.join(asins_list)
+    # stats=days controls the stats window. history=0 disables the CSV history.
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&history=0&offers=20&rating=1&only_live_offers=1"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
+
+    try:
+        response = requests.get(url, headers=headers, timeout=60)
+        response.raise_for_status()
+        data = response.json()
+
+        tokens_consumed = data.get('tokensConsumed', 0)
+        tokens_left = data.get('tokensLeft')
+        logger.info(f"Lightweight batch call successful. Tokens consumed: {tokens_consumed}. Tokens left: {tokens_left}")
+
+        api_info = {'error_status_code': None}
+        return data, api_info, tokens_consumed, tokens_left
+
+    except requests.exceptions.RequestException as e:
+        status_code = e.response.status_code if e.response is not None else 'N/A'
+        logger.error(f"HTTP Fetch (Lightweight) failed for batch ASINs {','.join(asins_list[:3])}... with status {status_code}: {str(e)}")
+
+        tokens_consumed_on_error = 0
+        tokens_left_on_error = None
+        if e.response is not None:
+            try:
+                error_data = e.response.json()
+                tokens_consumed_on_error = error_data.get('tokensConsumed', 0)
+                tokens_left_on_error = error_data.get('tokensLeft')
+                if status_code == 429:
+                    logger.error(f"429 ERROR. Keepa reported {tokens_consumed_on_error} tokens consumed. Tokens left: {tokens_left_on_error}")
+            except json.JSONDecodeError:
+                logger.warning(f"HTTP error response (status {status_code}) was not valid JSON.")
+
+        api_info_on_error = {'error_status_code': status_code}
+        return None, api_info_on_error, tokens_consumed_on_error, tokens_left_on_error
+
+    except Exception as e:
+        logger.error(f"Generic Fetch (Lightweight) failed: {str(e)}")
+        api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
+        return None, api_info_on_error, 0, None
+
 def fetch_seller_data(api_key, seller_ids):
     """
     Fetches data for a list of sellers from the Keepa API.
