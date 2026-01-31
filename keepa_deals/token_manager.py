@@ -98,14 +98,23 @@ class TokenManager:
 
         # Scenario 2: Below Threshold (Recovery Mode)
         elif self.tokens < self.MIN_TOKEN_THRESHOLD:
-            # Wait until we are back comfortably above the threshold
-            recovery_target = self.MIN_TOKEN_THRESHOLD + 5 # Buffer
-            tokens_needed = recovery_target - self.tokens
-            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-            logger.warning(
-                f"Low tokens (Below Threshold {self.MIN_TOKEN_THRESHOLD}). Have: {self.tokens:.2f}. "
-                f"Waiting for {wait_time_seconds} seconds to recover to {recovery_target}."
-            )
+            # --- PRIORITY PASS ---
+            # If the request is small (<= 10 tokens) and we have enough tokens to cover it RIGHT NOW,
+            # we skip the recovery wait. This allows the lightweight Upserter to squeeze in
+            # even if the heavy Backfiller is keeping the balance low.
+            if estimated_cost <= 10 and self.tokens >= estimated_cost:
+                logger.info(f"Priority Pass: Allowing small request ({estimated_cost}) despite low tokens ({self.tokens:.2f} < {self.MIN_TOKEN_THRESHOLD}).")
+                # Proceed immediately
+                pass
+            else:
+                # Wait until we are back comfortably above the threshold
+                recovery_target = self.MIN_TOKEN_THRESHOLD + 5 # Buffer
+                tokens_needed = recovery_target - self.tokens
+                wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+                logger.warning(
+                    f"Low tokens (Below Threshold {self.MIN_TOKEN_THRESHOLD}). Have: {self.tokens:.2f}. "
+                    f"Waiting for {wait_time_seconds} seconds to recover to {recovery_target}."
+                )
 
         # Scenario 3: Above Threshold (Proceed, even if deficit spending)
         else:
