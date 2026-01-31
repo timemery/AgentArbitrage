@@ -599,11 +599,12 @@ button:disabled {
 
 .mentor-message {
     align-self: flex-start; /* Left aligned */
+    padding-right: 40px; /* Spec: 40px padding from right edge */
 }
 
 .user-message {
     align-self: flex-end; /* Right aligned */
-    flex-direction: row-reverse; /* Avatar on right */
+    /* flex-direction: row-reverse; Removed to fix Avatar position */
     padding-left: 40px; /* Spec: 40px padding from left edge */
     box-sizing: border-box;
 }
@@ -619,7 +620,7 @@ button:disabled {
     padding: 12px 16px;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px; /* Spec: 14px */
-    font-weight: 600; /* Updated: SemiBold */
+    font-weight: 400; /* Updated: Regular */
     line-height: 1.4;
     position: relative;
     border: none; /* Updated: Removed Border */
@@ -681,7 +682,7 @@ button:disabled {
     cursor: pointer;
     transition: transform 0.1s;
     margin-bottom: 30px; /* Adjust alignment with tall text area */
-    margin-right: 10px;
+    /* margin-right: 10px; Removed to flush with edge */
 }
 
 .chat-submit-btn:active {
