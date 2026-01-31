@@ -604,6 +604,8 @@ button:disabled {
 .user-message {
     align-self: flex-end; /* Right aligned */
     flex-direction: row-reverse; /* Avatar on right */
+    padding-left: 40px; /* Spec: 40px padding from left edge */
+    box-sizing: border-box;
 }
 
 .chat-avatar {
