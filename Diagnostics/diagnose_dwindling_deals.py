@@ -196,28 +196,30 @@ def main():
         print("- [CRITICAL] Celery Beat is DOWN. This is the primary cause of 'Dwindling Deals'.")
         print("  -> Run 'sudo ./start_celery.sh' to restart the scheduler.")
 
-        # Check logs for clues
-        import os
-        beat_log = "/var/www/agentarbitrage/celery_beat.log"
-        if os.path.exists(beat_log):
-            print(f"\n--- TAIL OF {beat_log} ---")
+    # Check logs for clues
+    import os
+    def tail_log(filepath, label):
+        if os.path.exists(filepath):
+            print(f"\n--- TAIL OF {label} ({filepath}) ---")
             try:
-                # Portable way to tail last 15 lines
-                with open(beat_log, 'rb') as f:
-                    # Seek to end
+                with open(filepath, 'rb') as f:
                     f.seek(0, 2)
                     file_size = f.tell()
-                    # Read last 2KB
-                    read_size = min(2048, file_size)
+                    read_size = min(4096, file_size) # Read last 4KB
                     f.seek(-read_size, 2)
                     lines = f.readlines()
-                    # Decode and print last 15
-                    for line in lines[-15:]:
+                    for line in lines[-20:]:
                          print(line.decode('utf-8', errors='replace').strip())
             except Exception as e:
                 print(f"Could not read log file: {e}")
         else:
-            print(f"Log file not found at: {beat_log}")
+            print(f"Log file not found at: {filepath}")
+
+    # Tail Beat Log if down, or just for info
+    tail_log("/var/www/agentarbitrage/celery_beat.log", "Celery Beat Log")
+
+    # Always tail Worker Log to see Upserter errors
+    tail_log("/var/www/agentarbitrage/celery_worker.log", "Celery Worker Log")
 
     print("- If many deals are > 70 hours, the Upserter is not refreshing timestamps fast enough.")
     print("- If 'Backfill Lock' is held for hours/days without 'Current Backfill Page' changing, the Backfiller is stuck.")
