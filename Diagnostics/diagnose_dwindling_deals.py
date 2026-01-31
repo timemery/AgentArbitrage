@@ -62,6 +62,11 @@ def analyze_db_state():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
+        # Check for system_state table
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='system_state'")
+        if not cursor.fetchone():
+            print("WARNING: 'system_state' table does not exist. Cannot check backfill/watermark status.")
+
         # 1. Total Deals
         cursor.execute("SELECT COUNT(*) FROM deals")
         total_deals = cursor.fetchone()[0]
@@ -179,15 +184,18 @@ def main():
 
     if backfill_active:
         print("1. The BACKFILLER is currently RUNNING (Lock held).")
-        print("   -> This blocks the Upserter (Simple Task) from running.")
-        print("   -> New deals will NOT be collected while Backfiller runs.")
+        print("   -> Note: The Upserter is designed to run concurrently with the Backfiller.")
+        print("   -> However, if tokens are low, both tasks may stall waiting for refills.")
     else:
         print("1. The Backfiller is NOT running.")
-        print("   -> The Upserter should be able to run (if scheduled).")
 
     print("\nRECOMMENDATION:")
     print("Check the 'Deal Age' distribution above.")
-    print("- If many deals are > 70 hours, the Backfiller is too slow or stuck, and Janitor will delete them soon.")
+    if not scheduler_running:
+        print("- [CRITICAL] Celery Beat is DOWN. This is the primary cause of 'Dwindling Deals'.")
+        print("  -> Run 'sudo ./start_celery.sh' to restart the scheduler.")
+
+    print("- If many deals are > 70 hours, the Upserter is not refreshing timestamps fast enough.")
     print("- If 'Backfill Lock' is held for hours/days without 'Current Backfill Page' changing, the Backfiller is stuck.")
 
 if __name__ == "__main__":
