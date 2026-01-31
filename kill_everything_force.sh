@@ -25,13 +25,14 @@ echo "[3/7] Terminating Redis server process..."
 sudo fuser -k 6379/tcp || echo "Redis was not running or could not be killed."
 sleep 1
 
-# Step 4: Clear the backfiller's Redis lock to prevent stale lock issue
-echo "[4/7] Clearing stale backfiller Redis lock..."
-redis-cli DEL backfill_deals_lock || echo "Could not clear Redis lock (Redis may not be running)."
+# Step 4: Clear ALL Redis locks to prevent stale lock issues
+echo "[4/7] Clearing stale Redis locks (Backfiller and Upserter)..."
+redis-cli DEL backfill_deals_lock update_recent_deals_lock || echo "Could not clear Redis locks (Redis may not be running)."
 
-# Step 5: Delete the Celery Beat schedule file
-echo "[5/7] Deleting Celery Beat schedule file..."
+# Step 5: Delete the Celery Beat schedule file AND PID file
+echo "[5/7] Deleting Celery Beat schedule and PID files..."
 sudo rm -f celerybeat-schedule
+sudo rm -f celerybeat.pid
 
 # Step 6: Recursively find and delete all __pycache__ directories
 echo "[6/7] Deleting all Python cache directories (__pycache__)..."
