@@ -31,7 +31,7 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Version Identifier ---
-SIMPLE_TASK_VERSION = "2.10-Sort-Fix-Verified"
+SIMPLE_TASK_VERSION = "2.11-Starvation-Fix"
 
 # --- Constants ---
 # DB_PATH is imported from db_utils
