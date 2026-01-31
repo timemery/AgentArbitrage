@@ -97,6 +97,14 @@ There are four primary background tasks that manage the data lifecycle.
 *   **Purpose:** Provides real-time, deal-specific analysis in the dashboard overlay.
 *   **Mechanism:** Queries `grok-4-fast-reasoning` with the deal's metrics and the "Strategies" context to generate a 50-80 word actionable summary.
 
+### Mentor Chat
+*   **Route:** `/api/mentor-chat`
+*   **Purpose:** Persistent, persona-driven chat interface for general business strategy and mentorship.
+*   **Mechanism:**
+    *   **Personas:** Supports 4 distinct personas (Olyvia/CFO, Joel/Flipper, Evelyn/Professor, Errol/Quant) defined in `ava_advisor.py`.
+    *   **Context:** Injects the full "Strategies" and "Intelligence" knowledge base into the system prompt.
+    *   **Model:** Uses `grok-4-fast-reasoning` (Temperature 0.5) for detailed, contextual responses.
+
 ---
 
 ## 5. Infrastructure & Resilience

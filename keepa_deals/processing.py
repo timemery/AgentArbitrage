@@ -269,4 +269,146 @@ def clean_numeric_values(row_data):
             try: row_data[key] = float(cleaned_value)
             except (ValueError, TypeError): row_data[key] = None
     return row_data
-# Refreshed
+
+def _process_lightweight_update(existing_row, product_data):
+    """
+    Updates an existing deal using lightweight stats data (no history).
+    Preserves critical fields like 'List at', '1yr Avg', etc.
+    Returns a dictionary suitable for database update, or None if update failed.
+    """
+    asin = product_data.get('asin')
+    if not asin or not existing_row:
+        return None
+
+    # Start with existing data converted to a dict
+    row_data = dict(existing_row)
+
+    # 1. Update Price Now & Seller Info
+    # Reuse get_used_product_info which works with 'offers' or 'stats'
+    try:
+        used_product_info = get_used_product_info(product_data)
+        if used_product_info and used_product_info[0] is not None:
+            price_now, seller_id, is_fba, condition_code = used_product_info
+            row_data['Price Now'] = price_now / 100.0
+            row_data['Seller'] = seller_id
+            row_data['FBA'] = is_fba
+            row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
+        else:
+             # If price missing, we proceed but log it.
+             # In lightweight mode, offers=20 should catch it if it exists.
+             logger.debug(f"ASIN {asin}: Lightweight update - No Used offer found.")
+             pass
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed to get live price (lightweight): {e}")
+
+    # 2. Update Sales Rank & AMZ
+    try:
+         from .stable_products import sales_rank_current, amazon_current
+         sr_data = sales_rank_current(product_data)
+         if sr_data:
+             row_data.update(sr_data)
+
+         amz_data = amazon_current(product_data)
+         amz_val = amz_data.get('Amazon - Current') if amz_data else '-'
+         if amz_val and amz_val != '-' and amz_val != 'N/A':
+             row_data['AMZ'] = '⚠️'
+         else:
+             row_data['AMZ'] = ''
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed to update rank/AMZ (lightweight): {e}")
+
+    # 3. Update Offers & Drops
+    try:
+        from .stable_products import sales_rank_drops_last_30_days
+        # get_offer_count_trend, etc need to be imported or available.
+        # They are imported at top of file, so we can use them.
+
+        drops_data = sales_rank_drops_last_30_days(product_data)
+        if drops_data:
+             # Ensure the key matches the DB column or internal key
+             if 'Sales Rank - Drops last 30 days' in drops_data:
+                 row_data['Drops'] = drops_data['Sales Rank - Drops last 30 days']
+             else:
+                 row_data.update(drops_data)
+
+        # Update Offers trend
+        offers_data = get_offer_count_trend(product_data)
+        if offers_data:
+            row_data.update(offers_data)
+
+        # Offers 180
+        offers_data_180 = get_offer_count_trend_180(product_data)
+        if offers_data_180:
+             row_data.update(offers_data_180)
+
+        # Offers 365
+        offers_data_365 = get_offer_count_trend_365(product_data)
+        if offers_data_365:
+             row_data.update(offers_data_365)
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed to update offers/drops (lightweight): {e}")
+
+    # 4. Last Price Change (Lightweight Fallback)
+    try:
+        from .stable_deals import last_price_change
+        # Pass product_data as deal_object as well, since it has been merged
+        lpc_data = last_price_change(product_data, logger, product_data)
+        if lpc_data:
+            row_data.update(lpc_data)
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed to update last price change (lightweight): {e}")
+
+    # 5. Recalculate Profit/Margin using Preserved 'List at'
+    try:
+        list_at_val = row_data.get('List at')
+        list_at_price = _parse_price(list_at_val) if list_at_val else 0.0
+        now_price = row_data.get('Price Now', 0.0)
+
+        # FBA Fees - try to extract from stats if available, else fallback default
+        fba_fees_obj = product_data.get('fbaFees') or {}
+        pick_and_pack = fba_fees_obj.get('pickAndPackFee')
+        if pick_and_pack is None or pick_and_pack < 0:
+            pick_and_pack = 550
+        fba_fee = pick_and_pack / 100.0
+
+        referral_percent = product_data.get('referralFeePercentage')
+        if referral_percent is None or referral_percent < 0:
+            referral_percent = 15.0
+
+        business_settings = business_load_settings()
+
+        shipping_included_flag = False
+        if 'offers' in product_data and product_data['offers']:
+            for offer in product_data['offers']:
+                offer_csv = offer.get('offerCSV', [])
+                if len(offer_csv) >=2 and offer_csv[0] + (offer_csv[1] if offer_csv[1] != -1 else 0) == now_price:
+                     shipping_included_flag = (offer_csv[1] == 0)
+                     break
+
+        all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_percent, business_settings, shipping_included_flag)
+        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost)
+        min_listing = calculate_min_listing_price(all_in_cost, business_settings)
+
+        row_data.update({
+            'All-in Cost': all_in_cost,
+            'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
+            'Min. Listing Price': min_listing
+        })
+
+        # Recalculate Percent Down
+        yr_avg = row_data.get('1yr. Avg.')
+        if yr_avg and yr_avg != '-' and now_price > 0:
+             yr_avg_val = _parse_price(yr_avg)
+             if yr_avg_val > 0:
+                 if now_price < yr_avg_val:
+                     pct_down = ((yr_avg_val - now_price) / yr_avg_val) * 100
+                     row_data['Percent Down'] = f"{pct_down:.0f}%"
+                 else:
+                     row_data['Percent Down'] = "0%"
+
+    except Exception as e:
+        logger.error(f"ASIN {asin}: Failed business calculations (lightweight): {e}")
+
+    return row_data
