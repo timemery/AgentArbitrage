@@ -24,7 +24,11 @@ To ensure the stability and performance of the development environment, the foll
        *   To view the beginning of a file: `head -n 100 <filepath>`
        *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
    *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
-   *   **NEVER** assume a log file (like `celery.log`) is safe to read. Always check its size with `ls -lh` first.
+   *   **NEVER** assume a log file is safe to read. Always check its size with `ls -lh` first.
+   *   **LOGGING SOURCE OF TRUTH:**
+       *   **`celery_worker.log`**: This is the ACTIVE log for background tasks. Use this for troubleshooting.
+       *   **`celery_monitor.log`**: Contains resiliency logs.
+       *   **`celery.log`**: This is a **LEGACY/ABANDONED** file. **DO NOT READ IT.** It contains old, irrelevant data and is massive.
 
 2. **Initial Codebase Exploration ("Filesystem Tour"):**
 

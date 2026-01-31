@@ -12,6 +12,12 @@ This document consolidates the API token management strategies for the three cor
 ### The "Why"
 Keepa's API allows the token balance to go negative (deficit spending) as long as the starting balance is positive. A strict "no deficit" policy (waiting until we have *enough* tokens for a batch) causes massive delays. The "Controlled Deficit" strategy maximizes throughput by leveraging this allowance.
 
+### Dynamic Rate Adaptation
+The `TokenManager` dynamically updates its `REFILL_RATE_PER_MINUTE` from the `refillRate` field in Keepa API responses.
+*   **Default:** Starts with a conservative guess (e.g., 5/min).
+*   **Adaptation:** Upon the first API sync, it learns the true rate (e.g., 20/min for upgraded plans).
+*   **Benefit:** Users who upgrade their Keepa plan immediately see faster processing without code changes.
+
 ### The Algorithm
 1.  **Threshold Check:** Defined `MIN_TOKEN_THRESHOLD` (50 tokens).
 2.  **Aggressive Phase:** If `current_tokens > 50`, the system **allows** the request to proceed immediately, even if the estimated cost exceeds the current balance.

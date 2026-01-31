@@ -12,6 +12,7 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
 - **Deals Dashboard**: Real-time arbitrage opportunities with advanced filtering (including "Hide Gated" and "Hide AMZ Offers"), "Janitor" cleanup, and extended historical analytics (180/365-day trends). (User Access)
     - **Unified Experience:** All users (including Admins) are redirected here upon login.
     - **Advice from Ava**: AI-powered analysis overlay with "Choose Your Mentor" personas (CFO, Flipper, Professor, Quant).
+    - **Mentor Chat**: Persistent, persona-driven AI assistant available via the navigation bar. Synchronizes with Ava to provide consistent advice across the platform.
 - **Settings**: Configure business costs, fees, and API credentials. (User Access)
 - **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI. (Admin Only)
 - **Intelligence & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
