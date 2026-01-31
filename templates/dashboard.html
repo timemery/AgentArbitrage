@@ -6,11 +6,11 @@
 </div>
 <div class="dashboard-content-wrapper">
     <div id="sticky-header-shadow-line"></div>
-    <div class="filter-panel filter-panel-closed" id="filter-panel">
+    <div class="filter-panel filter-panel-open" id="filter-panel">
         <!-- CLOSED STATE -->
         <div class="panel-content-closed" id="panel-closed">
             <div class="panel-left">
-                <img src="{{ url_for('static', filename='filter.svg') }}" class="filter-icon-toggle" id="filter-icon-closed" alt="Filter">
+                <img src="{{ url_for('static', filename='filter_Close.svg') }}" class="filter-icon-toggle" id="filter-icon-closed" alt="Filter">
                 <span class="deals-found-text" id="deal-counter-closed">0 Deals Found</span>
             </div>
             <div class="panel-right">
@@ -25,7 +25,7 @@
         <!-- OPEN STATE -->
         <div class="panel-content-open" id="panel-open">
             <div class="panel-left">
-                 <img src="{{ url_for('static', filename='filter.svg') }}" class="filter-icon-toggle" id="filter-icon-open" alt="Filter">
+                 <img src="{{ url_for('static', filename='filter_Open.svg') }}" class="filter-icon-toggle" id="filter-icon-open" alt="Filter">
                  <form id="filter-form-new" class="sliders-wrapper">
                      <!-- Min. Below Avg. -->
                      <div class="filter-item">
@@ -826,6 +826,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function toggleFilterPanel(open) {
+        localStorage.setItem('filterPanelOpen', open);
         if (open) {
             filterPanel.classList.remove('filter-panel-closed');
             filterPanel.classList.add('filter-panel-open');
@@ -837,13 +838,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function initFilterPanelState() {
+        const savedState = localStorage.getItem('filterPanelOpen');
+        // Default to Open (true) if not set, otherwise parse string
+        const isOpen = savedState === null ? true : (savedState === 'true');
+        toggleFilterPanel(isOpen);
+    }
+
     filterIconClosed.addEventListener('click', () => toggleFilterPanel(true));
     filterIconOpen.addEventListener('click', () => toggleFilterPanel(false));
+
+    // Initialize state on load
+    initFilterPanelState();
 
     btnApply.addEventListener('click', () => {
         currentPage = 1;
         fetchDeals(currentPage, currentSort.by, currentSort.order);
-        toggleFilterPanel(false);
+        // Removed toggleFilterPanel(false) to respect user preference
     });
 
     btnReset.addEventListener('click', (e) => {
