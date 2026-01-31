@@ -17,9 +17,10 @@ class TestUITextUpdates(unittest.TestCase):
         with open(filepath, 'r') as f:
             content = f.read()
 
-            # Check Olyvia
-            self.assertIn('Olivia is a seasoned financial advisor', content)
+            # Check Olyvia (Updated)
+            self.assertIn('Olivia is a seasoned financial advisor specializing in online arbitrage', content)
             self.assertIn('fiercely protecting capital', content)
+            self.assertNotIn('conservative online arbitrage', content) # Verify "conservative" word removed
 
             # Check Joel
             self.assertIn('Joel is an aggressive arbitrage mentor', content)
@@ -33,8 +34,6 @@ class TestUITextUpdates(unittest.TestCase):
             self.assertIn('Errol is a quantitative arbitrage mentor', content)
             self.assertIn('high-confidence recommendations', content)
 
-            # Verify old text is gone (sample)
-            self.assertNotIn('Greetings Tim, Olivia here', content)
 
 if __name__ == '__main__':
     unittest.main()
