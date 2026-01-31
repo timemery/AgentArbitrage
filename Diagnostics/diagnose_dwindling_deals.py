@@ -23,8 +23,9 @@ def get_redis_client():
 def check_scheduler_process():
     """Checks if Celery Beat (scheduler) is running."""
     try:
-        # pgrep -f matches the full command line
-        result = subprocess.run(['pgrep', '-f', 'celery beat'], capture_output=True, text=True)
+        # pgrep -f matches the full command line. We use regex 'celery.*beat' to match cases
+        # where arguments (like -A app) appear between 'celery' and 'beat'.
+        result = subprocess.run(['pgrep', '-f', 'celery.*beat'], capture_output=True, text=True)
         return result.returncode == 0
     except Exception:
         return False
@@ -61,6 +62,11 @@ def analyze_db_state():
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
+
+        # Check for system_state table
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='system_state'")
+        if not cursor.fetchone():
+            print("WARNING: 'system_state' table does not exist. Cannot check backfill/watermark status.")
 
         # 1. Total Deals
         cursor.execute("SELECT COUNT(*) FROM deals")
@@ -179,15 +185,43 @@ def main():
 
     if backfill_active:
         print("1. The BACKFILLER is currently RUNNING (Lock held).")
-        print("   -> This blocks the Upserter (Simple Task) from running.")
-        print("   -> New deals will NOT be collected while Backfiller runs.")
+        print("   -> Note: The Upserter is designed to run concurrently with the Backfiller.")
+        print("   -> However, if tokens are low, both tasks may stall waiting for refills.")
     else:
         print("1. The Backfiller is NOT running.")
-        print("   -> The Upserter should be able to run (if scheduled).")
 
     print("\nRECOMMENDATION:")
     print("Check the 'Deal Age' distribution above.")
-    print("- If many deals are > 70 hours, the Backfiller is too slow or stuck, and Janitor will delete them soon.")
+    if not scheduler_running:
+        print("- [CRITICAL] Celery Beat is DOWN. This is the primary cause of 'Dwindling Deals'.")
+        print("  -> Run 'sudo ./start_celery.sh' to restart the scheduler.")
+
+    # Check logs for clues
+    import os
+    def tail_log(filepath, label):
+        if os.path.exists(filepath):
+            print(f"\n--- TAIL OF {label} ({filepath}) ---")
+            try:
+                with open(filepath, 'rb') as f:
+                    f.seek(0, 2)
+                    file_size = f.tell()
+                    read_size = min(4096, file_size) # Read last 4KB
+                    f.seek(-read_size, 2)
+                    lines = f.readlines()
+                    for line in lines[-20:]:
+                         print(line.decode('utf-8', errors='replace').strip())
+            except Exception as e:
+                print(f"Could not read log file: {e}")
+        else:
+            print(f"Log file not found at: {filepath}")
+
+    # Tail Beat Log if down, or just for info
+    tail_log("/var/www/agentarbitrage/celery_beat.log", "Celery Beat Log")
+
+    # Always tail Worker Log to see Upserter errors
+    tail_log("/var/www/agentarbitrage/celery_worker.log", "Celery Worker Log")
+
+    print("- If many deals are > 70 hours, the Upserter is not refreshing timestamps fast enough.")
     print("- If 'Backfill Lock' is held for hours/days without 'Current Backfill Page' changing, the Backfiller is stuck.")
 
 if __name__ == "__main__":

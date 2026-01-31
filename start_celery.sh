@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script is designed for a production environment.
+# Updated Jan 31 2026: Added PID cleanup check
 # It starts Redis, the Celery worker, and Celery Beat scheduler in a resilient loop.
 
 # Step 1: Set ownership
@@ -46,6 +47,7 @@ monitor_and_restart() {
     echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
     su -s /bin/bash -c "$ENV_SETUP && $PURGE_COMMAND" www-data
     sudo rm -f "$APP_DIR/celerybeat-schedule"
+    sudo rm -f "$APP_DIR/celerybeat.pid" # Ensure stale PID doesn't block startup
     touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
     chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
 
