@@ -173,11 +173,7 @@ def check_restriction_for_asins(asins: list[str]):
             # Refresh the access token for the user
             access_token = _refresh_sp_api_token(refresh_token)
 
-            if not access_token:
-                logger.warning(f"Could not refresh token for user {user_id}. Skipping.")
-                continue
-
-            # Fetch conditions for these ASINs from the database
+            # Fetch conditions for these ASINs from the database (Done early to handle both success/failure cases)
             items = []
             with sqlite3.connect(DB_PATH) as conn:
                 cursor = conn.cursor()
@@ -190,6 +186,26 @@ def check_restriction_for_asins(asins: list[str]):
             for asin in asins:
                 if asin not in found_asins:
                     items.append({'asin': asin, 'condition': None})
+
+            if not access_token:
+                logger.warning(f"Could not refresh token for user {user_id}. Marking {len(items)} items as error.")
+                # If auth fails, write error records so the UI shows 'Broken/Error' instead of 'Pending'
+                with sqlite3.connect(DB_PATH) as conn:
+                    cursor = conn.cursor()
+                    for item in items:
+                        cursor.execute("""
+                            INSERT OR REPLACE INTO user_restrictions
+                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, (
+                            user_id,
+                            item['asin'],
+                            -1, # Error State
+                            "ERROR",
+                            datetime.utcnow()
+                        ))
+                    conn.commit()
+                continue
 
             BATCH_SIZE = 5
             for i in range(0, len(items), BATCH_SIZE):
