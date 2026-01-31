@@ -472,13 +472,13 @@ button:disabled {
 /* Mentor Overlay / Chat Window */
 .mentor-chat-window {
     display: none;
-    position: absolute;
-    top: 55px; /* Adjusted to accommodate pointer */
-    right: -20px; /* Shifted slightly to align pointer with link */
+    position: fixed;
+    bottom: 20px; /* Anchored to bottom */
+    right: 20px; /* Anchored to right */
     width: 505px; /* Spec: 505px */
-    height: 685px; /* Spec: 685px */
+    height: 540px; /* Updated Height: 540px */
     background-color: #566e9e; /* Header BG from mocks */
-    border-radius: 18px; /* Spec: 18px */
+    border-radius: 18px 0 18px 18px; /* Spec: Squared Top-Right */
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     z-index: 1000;
     border: none;
@@ -488,19 +488,8 @@ button:disabled {
     /* overflow: hidden; Removed to allow pointer to protrude */
 }
 
-/* Pointer Arrow */
-.mentor-chat-window::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    right: 45px; /* Align with nav item */
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid #566e9e; /* Match header color */
-    z-index: 1001;
-}
+/* Pointer Arrow - Removed per 'Remove the point' request */
+/* .mentor-chat-window::before { ... } */
 
 .mentor-window-header {
     background-color: #566e9e; /* Match main BG */
@@ -512,12 +501,12 @@ button:disabled {
     display: flex;
     flex-direction: row; /* Row layout for Avatar + Info */
     align-items: flex-start;
-    border-radius: 18px 18px 0 0; /* Round top corners since overflow is visible */
+    border-radius: 18px 0 0 0; /* Round top-left corner only */
 }
 
 .mentor-profile-section {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end; /* Align items to bottom */
     gap: 0; /* No gap, padding handled in info block */
     height: 100%;
     width: 100%;
@@ -535,7 +524,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 17px; /* Spec: 17px Padding for text area */
+    padding: 17px 44px 0 17px; /* Updated: Removed bottom padding */
     height: 100%;
     box-sizing: border-box;
 }
@@ -551,17 +540,24 @@ button:disabled {
 
 .mentor-selection-area {
     margin-top: auto;
-    padding-right: 15px; /* Spec: Padding 15px from outer right edge */
+    padding-right: 0; /* Updated: Removed padding */
+    margin-right: -24px; /* Pull right to align 20px from edge (44px parent - 24px = 20px) */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px; /* Space between label and icons */
 }
 
 .choose-label {
-    display: block;
+    display: inline-block;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px; /* Spec: 14px */
     font-weight: 600; /* SemiBold */
     color: #b7c9e2; /* Spec: #b7c9e2 */
-    margin-bottom: 5px;
+    margin-bottom: 0;
     text-align: right; /* Align right per padding spec */
+    white-space: nowrap; /* Prevent line break */
 }
 
 .mentor-choice-row {
@@ -575,13 +571,13 @@ button:disabled {
     height: 43px; /* Spec: 43px */
     cursor: pointer;
     transition: transform 0.2s;
-    border: 2px solid rgba(255,255,255,0.2);
+    border: none; /* Updated: Removed border */
     border-radius: 4px; /* Slight rounding for rectangular images */
+    outline: none; /* Ensure no outline */
 }
 
 .mentor-choice-tiny:hover {
     transform: scale(1.1);
-    border-color: #fff;
 }
 
 .chat-messages-area {
@@ -597,17 +593,20 @@ button:disabled {
 .chat-message {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 14px; /* Updated: 14px gap */
     max-width: 95%; /* Increased width */
 }
 
 .mentor-message {
     align-self: flex-start; /* Left aligned */
+    padding-right: 40px; /* Spec: 40px padding from right edge */
 }
 
 .user-message {
     align-self: flex-end; /* Right aligned */
-    flex-direction: row-reverse; /* Avatar on right */
+    /* flex-direction: row-reverse; Removed to fix Avatar position */
+    padding-left: 40px; /* Spec: 40px padding from left edge */
+    box-sizing: border-box;
 }
 
 .chat-avatar {
@@ -621,30 +620,32 @@ button:disabled {
     padding: 12px 16px;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px; /* Spec: 14px */
-    font-weight: 400; /* Regular */
+    font-weight: 400; /* Updated: Regular */
     line-height: 1.4;
     position: relative;
-    border: 1px solid #3e577d; /* Spec: Border */
+    border: none; /* Updated: Removed Border */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Spec: Subtle Shadow */
-    color: #3e577d; /* Spec: Text Color */
     width: 360px; /* Spec: Max width 360px */
+    margin-top: 12px; /* Updated: Icon 12px above chat box */
 }
 
 /* Mentor Bubble Specifics */
 .mentor-message .chat-bubble {
-    background-color: #b7c9e2; /* Spec: #b7c9e2 */
-    border-radius: 0 16px 16px 16px; /* Spec: Squared Top-Left */
+    background-color: #d4dfee; /* Updated: #d4dfee */
+    border-radius: 0 16px 16px 16px; /* Updated: Squared Top-Left */
+    color: #11233e; /* Updated: #11233e */
 }
 
 /* User Bubble Specifics */
 .user-message .chat-bubble {
-    background-color: #678dc6; /* Spec: #678dc6 */
-    border-radius: 16px 0 16px 16px; /* Spec: Squared Top-Right */
+    background-color: #a4bbdd; /* Updated: #a4bbdd */
+    border-radius: 16px 0 16px 16px; /* Updated: Squared Top-Right */
+    color: #11233e; /* Updated: #11233e */
 }
 
 .chat-input-area {
     background-color: #ffffff; /* Match Input BG or Area */
-    padding: 0 3px 3px 3px; /* Spec: 3px padding left, right, bottom */
+    padding: 20px 20px 20px 20px; /* Explicit padding */
     display: flex;
     align-items: flex-end; /* Align bottom */
     gap: 10px;
@@ -662,9 +663,12 @@ button:disabled {
     font-size: 14px;
     color: #3e577d;
     resize: none;
-    height: 95px; /* Spec: 95px */
+    height: 95px; /* Updated: 95px */
+    min-height: 95px; /* Override global textarea min-height */
     outline: none;
     background-color: #ffffff; /* Spec: Fill White */
+    box-sizing: border-box; /* Ensure padding doesn't increase height */
+    margin-bottom: 0; /* Remove default textarea margin */
 }
 
 /* Placeholder Text Color */
@@ -678,7 +682,7 @@ button:disabled {
     cursor: pointer;
     transition: transform 0.1s;
     margin-bottom: 30px; /* Adjust alignment with tall text area */
-    margin-right: 10px;
+    /* margin-right: 10px; Removed to flush with edge */
 }
 
 .chat-submit-btn:active {
@@ -698,7 +702,29 @@ button:disabled {
     100% { opacity: 0.6; }
 }
 
+/* Mentor specific close button */
+.mentor-window-header .close-overlay {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    cursor: pointer;
+    z-index: 10;
+    width: 24px; /* Explicit width for image */
+    height: 24px; /* Explicit height for image */
+    transition: opacity 0.2s;
+    opacity: 0.8;
+}
+.mentor-window-header .close-overlay:hover {
+    opacity: 1.0;
+}
+
+/* Generic Close Overlay (Preserved for Deal Overlay) */
 .close-overlay {
+    /* Removed redundant generic absolute positioning to avoid conflicts if possible,
+       but keeping for safety if Deal Overlay relies on it.
+       However, Deal Overlay likely uses the float definition later in file.
+       I will leave the generic block but override for Mentor Header above.
+    */
     position: absolute;
     top: 10px;
     right: 15px;

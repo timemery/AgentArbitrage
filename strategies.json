@@ -34119,5 +34119,245 @@
         "advice": "Monitor all-time history for natural seasonality or event-driven spikes (e.g., summer demand for pools); 75k winter rank acceptable if summer skyrockets. Focus on data over emotions.",
         "confidence": "High",
         "source": "natural seasonality... demand can change throughout the year... every year during the summer the sales rank plummets... focus on what the kear data is showing you"
+    },
+    {
+        "id": "variation-sales-2",
+        "category": "General",
+        "trigger": "Products with variations like colors and sizes",
+        "advice": "Use variations tab to check new offer count movement for each variation; sales rank is same across variations but offer count differs; prefer variations with quick movement (jumping up/down).",
+        "confidence": "High",
+        "source": "this specific variation sells quick because I can see the new offer count moving. Other variations... are going to be selling slow. Like this one is blocky and slow. I don't like that."
+    },
+    {
+        "id": "good-keepa-chart-3",
+        "category": "General",
+        "trigger": "Analyzing Keepa chart for product viability",
+        "advice": "Look for offer count movement jumping up and down (bottom chart) and steady buy box price (top chart) over 3-month data; ensure settings match for all relevant tracks.",
+        "confidence": "High",
+        "source": "the first qualifier of something as a good keepa chart is going to be the offer count movement. So the bottom chart right here, the new offer count, which I can see really nicely jumping up and down... the top chart is really, really nice and steady."
+    },
+    {
+        "id": "seasonality-pool-4",
+        "category": "Seasonality",
+        "trigger": "Products like pools with seasonal demand",
+        "advice": "Check all-time data for sales rank plummeting in summer (high demand) and highest in winter (low demand); price shoots up in peak season; trust data over intuition as volume is high year-round but peaks seasonally.",
+        "confidence": "High",
+        "source": "every summer the sales rank plummets... And we see the sales rank is the highest aka demand lowest during the winter... during the summer, the price shoots up... good products sell year round. It's not what you think sells well. It's what the data shows."
+    },
+    {
+        "id": "no-avoid-no-buybox-5",
+        "category": "Risk",
+        "trigger": "Listings with no buy box, no sales rank, or Amazon selling",
+        "advice": "Do not automatically avoid; check Keepa for offer count movement and third-party buy box wins; if movement is good and non-Amazon sellers get buy box, it's viable.",
+        "confidence": "High",
+        "source": "should I automatically avoid something if there's no buy box? ... no... You need to take a look at the Keepa data... a lot of people that aren't Amazon are getting buy box... I've made tons of money selling stuff that doesn't have a buy box."
+    },
+    {
+        "id": "ip-complaint-avoid-6",
+        "category": "Risk",
+        "trigger": "Sudden drop in offer count on Keepa",
+        "advice": "Avoid listings where offer count plummets to zero (e.g., from 23 to 0); indicates IP complaint; even if sellers return later, steer clear.",
+        "confidence": "High",
+        "source": "it's actually really easy to see when that happens... we can see back in 2024... it absolutely just plummets here literally down to zero. And that's an example an IP and plane... personally I'm definitely staying away"
+    },
+    {
+        "id": "increasing-comp-7",
+        "category": "Risk",
+        "trigger": "Competition (offer count) shooting up",
+        "advice": "Avoid listings where new offer count is increasing rapidly, especially if price is dropping; exception for very fast sellers (e.g., 3k sales/month) but generally avoid.",
+        "confidence": "High",
+        "source": "you want to actually avoid is going to be listings where the competition shooting up right here... avoid stuff where the competition's shooting up."
+    },
+    {
+        "id": "roi-beauty-8",
+        "category": "Pricing",
+        "trigger": "Beauty products with 28% ROI",
+        "advice": "Accept 28% ROI for beauty items as returns are low; generally aim for 30%+ ROI.",
+        "confidence": "High",
+        "source": "Typically I recommend only doing 30% ROI plus. But a beauty item like this is not really going to get return super often. So this is not bad whatsoever"
+    },
+    {
+        "id": "tax-exempt-9",
+        "category": "Buying",
+        "trigger": "Sourcing from Walmart, Home Depot, Lowe's",
+        "advice": "Use reseller certificate for tax exempt to save 5% on buy cost; subtract 5% in Seller Amp after initial calculation.",
+        "confidence": "High",
+        "source": "I can use my reseller certificate at Walmart to avoid paying sales tax... now we go ahead and take off 5% from this... it becomes a 46% ROI"
+    },
+    {
+        "id": "fbm-light-items-10",
+        "category": "Pricing",
+        "trigger": "Items under 1 pound and above $20",
+        "advice": "Prefer merchant fulfilled (FBM) over FBA for higher ROI (e.g., 39% vs 28%); input FBM costs in Seller Amp.",
+        "confidence": "High",
+        "source": "items that are under one pound but above 20 bucks tend to be more profitable merchant fulfilled compared to selling them Amazon FBA... toggling to FBM and plugging the FBM cost, it's a 39% ROI"
+    },
+    {
+        "id": "prime-bump-11",
+        "category": "Pricing",
+        "trigger": "Buy box held by FBM sellers",
+        "advice": "As FBA seller, price 5-10% above FBM prices to capture prime bump (e.g., 7% higher for 34% ROI on clothing).",
+        "confidence": "High",
+        "source": "the seller in the buy box is merchant fulfilled... price typically 5 to 10% above the FBM stars as an FBA seller. So, say I price this like 7% above... it becomes $6 profit and a 34% ROI."
+    },
+    {
+        "id": "gift-cards-discount-12",
+        "category": "Buying",
+        "trigger": "Retailers like Dick's Sporting Goods, Best Buy, Walgreens",
+        "advice": "Buy discounted gift cards from cardbear.com (5-12% off) to reduce buy cost; e.g., 8% off boosts ROI to 42%.",
+        "confidence": "High",
+        "source": "we can also use discounted gift cards from cardbear.com where we go ahead and buy like a 10% off discounted gift card... take off 8% from this right here. And now, this becomes $10 profit and a 42% ROI"
+    },
+    {
+        "id": "coupons-multi-13",
+        "category": "Buying",
+        "trigger": "Bulk purchases qualifying for coupons (e.g., $20 off $100)",
+        "advice": "Buy in multiples to hit thresholds (e.g., 4 units for $20 off); divide total cost by units for per-unit buy price in Seller Amp.",
+        "confidence": "High",
+        "source": "I do a cart of like four of these to get it just barely above 100... Now I go ahead and divide this by four... That leaves $8 profit per unit and a 31% ROI."
+    },
+    {
+        "id": "product-criteria-14",
+        "category": "General",
+        "trigger": "Evaluating potential products",
+        "advice": "Sales rank <200,000, >30 sales/month, $3+ profit/unit (flexible for cheap items), 30%+ ROI; Keepa: no IP drops to zero, good offer count movement, competition steady/down, price steady/up.",
+        "confidence": "High",
+        "source": "under 200,000 sales rank above 30 estimated sales per month, $3 profit per unit... 30% plus in ROI... no I peak in plain history... good offer count movement... competition is not shooting up price is not shooting down"
+    },
+    {
+        "id": "avoid-slow-movers-15",
+        "category": "Risk",
+        "trigger": "Blocky or slow Keepa charts even with good sales rank",
+        "advice": "Avoid slow movers with blocky offer count (little movement); check variations as overall rank may hide slow specific ones.",
+        "confidence": "High",
+        "source": "even if something has a good sales rank, it can still be a slow mover... super blocky, super slowmoving. Whenever you see a blocky like mundane keepart that there's not a ton of action on, you definitely want to avoid"
+    },
+    {
+        "id": "avoid-price-tanking-16",
+        "category": "Risk",
+        "trigger": "Price dropping and competition tripling quickly",
+        "advice": "Avoid listings with rapid price drops (e.g., $12 in days) and offer count surges (e.g., 24 to 65); no buy box alone not a red flag if movement good.",
+        "confidence": "High",
+        "source": "items where the competition is shooting up and the price is shooting down, aka price tanking... price has gone down 12 bucks in just a couple days and the competition's almost tripled"
+    },
+    {
+        "id": "avoid-brand-generic-17",
+        "category": "Risk",
+        "trigger": "Listings marked as brand generic",
+        "advice": "Avoid brand generic listings (not under official brand); check brand below title; charts may look good but risky.",
+        "confidence": "High",
+        "source": "stay away from listings that are brand generic right here... you totally want to avoid that. So keep an eye out for that."
+    },
+    {
+        "id": "avoid-amazon-dom-18",
+        "category": "Risk",
+        "trigger": "Amazon selling and not sharing buy box with blocky movement",
+        "advice": "Avoid if Amazon dominates buy box with blocky/slow offer count; viable if good movement and third-parties win buy box.",
+        "confidence": "High",
+        "source": "listings where Amazon's on it and Amazon is not sharing buy box... very blocky and slowm moving, and it's just Amazon in the buy box... totally want to avoid listings like that."
+    },
+    {
+        "id": "storefront-stalking-19",
+        "category": "Buying",
+        "trigger": "Finding new products as beginner",
+        "advice": "Start with proven auto-ungate products; view other sellers' storefronts via Seller Amp for fast-selling items; check BSR <200k, Keepa, then Google for sourcing deals.",
+        "confidence": "High",
+        "source": "storefront stalking is by far the best way... looking inside the storefronts of other sellers... all the other sellers that carry this product... all their fastest selling winning products"
+    },
+    {
+        "id": "walmart-soldby-20",
+        "category": "Buying",
+        "trigger": "Sourcing from Walmart marketplace",
+        "advice": "Only buy items sold and shipped by Walmart.com; avoid third-party sellers on Walmart.",
+        "confidence": "High",
+        "source": "you can only buy items on Walmart... that are sold and shipped by Walmart. Make sure you write that down right there because Walmart's also a marketplace"
+    },
+    {
+        "id": "18",
+        "category": "General",
+        "trigger": "Hiring virtual assistants",
+        "advice": "Hire VAs for sourcing/admin tasks when revenue exceeds $10K/month; pay $4-6/hour starting rate from Philippines via onlinejobs.ph.",
+        "confidence": "High",
+        "source": "I'd recommend starting to look for a virtual assistant if you have bottlenecks... Once you're doing like 10K a month in revenue... If you start out in like the $2 to $4 range, you'll get more beginner VAS... aim to pay between four to six bucks per hour to start... from onlinejob.ph, which is an awesome job board for people located in the Philippines."
+    },
+    {
+        "id": "19",
+        "category": "Risk",
+        "trigger": "Return rates in arbitrage",
+        "advice": "Expect about 4% return rate for arbitrage products; not a major concern as Amazon handles FBA returns.",
+        "confidence": "High",
+        "source": "the refunds, so returns and everything was only about 12,000. So right about a 4% return rate is right there. A little bit below. And what you can expect realistically for all arbitrage... returns are a part of the business with FBA. Amazon handles them."
+    },
+    {
+        "id": "tool-adoption-1",
+        "category": "General",
+        "trigger": "Starting the Amazon business",
+        "advice": "Acquire essential tools like Keeper, SellerAmp, Box, and Repricer from day one to manage inventory, track sales, and automate pricing",
+        "confidence": "High",
+        "source": "I got the most effective ones like the keeper, the seller ham, but I should have gotten like box, the repriser from day one."
+    },
+    {
+        "id": "documentation-1",
+        "category": "Risk",
+        "trigger": "Early stages without proper records",
+        "advice": "Maintain detailed documentation of receipts, invoices, and purchases from the beginning to ensure accurate profit tracking and tax compliance",
+        "confidence": "High",
+        "source": "now that things are really happening really fast it's difficult to now say oh how do you keep track of your receipts you know uh your invoices you know how do you make sure in terms of tax there's not so many areas of the business that I get I'm knowing now and if I had done proper documentation from the beginning I wouldn't have any problem right now"
+    },
+    {
+        "id": "networking-1",
+        "category": "General",
+        "trigger": "Feeling reserved or isolated in business",
+        "advice": "Actively reach out and engage with the online Amazon seller community to share ideas, get support, and accelerate learning and scaling",
+        "confidence": "High",
+        "source": "Number two reach out to more people in the community... create an Instagram you know talk to people... sharing and engaging even though a lot of people are like me they should actually try it. It will go a long way in making your life easier."
+    },
+    {
+        "id": "coaching-1",
+        "category": "General",
+        "trigger": "Exploring Amazon without structured guidance",
+        "advice": "Join a proven coaching program early instead of wasting time on random outreach or unguided exploration to access battle-tested strategies and avoid common pitfalls",
+        "confidence": "High",
+        "source": "all of those were just wasted time I just wasted resources at time I could have just gone ahead for a coaching program which actually changed everything for me"
+    },
+    {
+        "id": "support-scaling-1",
+        "category": "General",
+        "trigger": "Attempting to scale without support",
+        "advice": "Build support from family and online communities to enable scaling, as solo efforts make growth significantly harder",
+        "confidence": "High",
+        "source": "without the support of people in your immediate family and community, you might not uh be able to scale. If you want to be by yourself, it's not going to be easy. But if you do have support, then you are going to really scale."
+    },
+    {
+        "id": "dedication-1",
+        "category": "General",
+        "trigger": "Considering starting Amazon arbitrage",
+        "advice": "Commit to dedication and hard work, as success requires consistent effort beyond the initial rosy perceptions",
+        "confidence": "High",
+        "source": "you need to be dedicated but you know that there's a bit of hard work that you need to put into it it is not all very rosy"
+    },
+    {
+        "id": "ungating-1",
+        "category": "Buying",
+        "trigger": "Needing access to restricted categories",
+        "advice": "Use coaching strategies to get ungated quickly and easily, even without prior sales history",
+        "confidence": "High",
+        "source": "how to get ungated quick and easy, even with no sales history"
+    },
+    {
+        "id": "sourcing-1",
+        "category": "Buying",
+        "trigger": "Sourcing inventory",
+        "advice": "Leverage expert guidance and shared coupons/tips for finding the best deals and sourcing profitable items",
+        "confidence": "High",
+        "source": "how to source the best deals... You'll get directly given all my favorite coupons, tips, tricks, and strategies"
+    },
+    {
+        "id": "trends-1",
+        "category": "General",
+        "trigger": "Navigating market changes",
+        "advice": "Stay updated on cutting-edge market trends and Amazon changes in real time through community and coaching support",
+        "confidence": "High",
+        "source": "cutting edge market trends and changes in real time"
     }
 ]
