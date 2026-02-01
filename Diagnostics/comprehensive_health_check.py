@@ -195,9 +195,10 @@ def check_celery_processes():
 
         for p in processes:
             # print(f"Process: {p}") # Noisy
-            if 'celery worker' in p or 'celery@' in p:
+            # Robust check: look for 'celery' AND 'worker'/'beat' keywords independently
+            if ('celery' in p and 'worker' in p) or 'celery@' in p:
                 worker_running = True
-            if 'celery beat' in p:
+            if 'celery' in p and 'beat' in p:
                 beat_running = True
 
         # Check monitor specifically
