@@ -890,21 +890,6 @@ def deals():
             except Exception as e:
                 flash(f'Error saving Keepa query: {e}', 'error')
 
-        elif action == 'update_limit':
-            try:
-                enabled = request.form.get('backfill_limit_enabled')
-                count = request.form.get('backfill_limit_count')
-
-                # Ensure system state table exists
-                create_system_state_table_if_not_exists()
-
-                set_system_state('backfill_limit_enabled', 'true' if enabled else 'false')
-                set_system_state('backfill_limit_count', str(count))
-                flash('Backfill limiter settings updated!', 'success')
-            except Exception as e:
-                app.logger.error(f"Error updating backfill limit: {e}")
-                flash(f'Error updating limit: {e}', 'error')
-
         return redirect(url_for('deals'))
 
     # GET request
@@ -914,15 +899,7 @@ def deals():
     except (FileNotFoundError, json.JSONDecodeError):
         keepa_query = ''
 
-    # Get Limit State
-    try:
-        limit_enabled = get_system_state('backfill_limit_enabled') == 'true'
-        limit_count = get_system_state('backfill_limit_count', '3000')
-    except Exception:
-        limit_enabled = False
-        limit_count = '3000'
-
-    return render_template('deals.html', keepa_query=keepa_query, limit_enabled=limit_enabled, limit_count=limit_count)
+    return render_template('deals.html', keepa_query=keepa_query)
 
 @app.route('/api/deals')
 def api_deals():
@@ -1131,31 +1108,6 @@ def recalc_status():
         app.logger.error(f"Could not read or parse recalc_status.json: {e}")
         return jsonify({"status": "Error", "message": "Could not read status file."}), 500
 
-@app.route('/api/refresh-all-deals', methods=['POST'])
-def refresh_all_deals():
-    if not session.get('logged_in'):
-        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
-
-    if session.get('role') != 'admin':
-        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
-
-    # Optional: Check if a task is already running
-    # status = get_scan_status()
-    # if status.get('status') == 'Running':
-    #     return jsonify({'status': 'error', 'message': 'A scan is already in progress.'}), 409
-
-    celery_app.send_task('keepa_deals.recalculator.recalculate_deals')
-    return jsonify({'status': 'success', 'message': 'Full data refresh has been initiated.'})
-
-@app.route('/api/reset-database', methods=['POST'])
-def reset_database():
-    if not session.get('logged_in'):
-        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
-
-    # Trigger the task with reset=True
-    celery_app.send_task('keepa_deals.backfiller.backfill_deals', kwargs={'reset': True})
-
-    return jsonify({'status': 'success', 'message': 'Database reset and full backfill initiated.'})
 
 @app.route('/api/debug/deal/<string:asin>')
 def debug_deal(asin):
