@@ -57,7 +57,33 @@ monitor_and_restart() {
     su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
     su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
 
-    echo "Services started. Auto-restart disabled." >> "$MONITOR_LOG_FILE"
+    echo "Services started. Entering monitoring loop..." >> "$MONITOR_LOG_FILE"
+
+    # Infinite Loop to keep services running
+    while true; do
+        sleep 60
+
+        # Check Worker
+        if ! pgrep -f "celery -A worker.celery_app worker" > /dev/null; then
+            echo "$(date): Celery Worker died. Restarting..." >> "$MONITOR_LOG_FILE"
+            su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+        fi
+
+        # Check Beat
+        if ! pgrep -f "celery -A worker.celery_app beat" > /dev/null; then
+            echo "$(date): Celery Beat died. Restarting..." >> "$MONITOR_LOG_FILE"
+            # Cleanup PID before restart
+            sudo rm -f "$APP_DIR/celerybeat.pid"
+            su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+        fi
+
+        # Check Redis
+        redis-cli ping > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+             echo "$(date): Redis died. Restarting..." >> "$MONITOR_LOG_FILE"
+             sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
+        fi
+    done
 }
 
 # --- Script Entry Point ---
