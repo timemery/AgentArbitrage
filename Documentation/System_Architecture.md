@@ -41,7 +41,7 @@ There are four primary background tasks that manage the data lifecycle.
 
 ### A. `backfill_deals` (The Heavy Lifter)
 *   **Purpose:** Populates the database with historical data or rebuilds it from scratch.
-*   **Trigger:** Manual (CLI or "Danger Zone" button in UI).
+*   **Trigger:** Manual via CLI. (The "Danger Zone" button in the UI was removed in Feb 2026).
 *   **Mechanism:**
     1.  Reads the user's query from `keepa_query.json`.
     2.  Iterates through Keepa's result pages (Chunked processing).

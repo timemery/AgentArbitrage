@@ -61,7 +61,7 @@ A persistent, client-side chat interface accessible via the "Mentor" navigation 
 **Storage:** `keepa_query.json`
 
 ### Overview
-This page acts as a configuration interface for the Keepa API query used during the "Data Sourcing" (Backfill) process.
+This page acts as a configuration interface for the Keepa API query used during the "Data Sourcing" (Backfill) process. Note: Previous admin functions like the "Backfill Limiter," "Manual Data Refresh," and "Danger Zone" database reset were removed in Feb 2026 to prevent accidental data loss and system instability.
 
 ### Functionality
 *   **JSON Editor:** Provides a text area to edit the raw JSON query object.
