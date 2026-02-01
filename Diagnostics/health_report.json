@@ -1,0 +1,87 @@
+{
+    "timestamp": "2026-02-01T16:39:36.274685+00:00",
+    "environment": {
+        ".env File": {
+            "status": "FAIL",
+            "message": "Missing"
+        },
+        "Python Version": {
+            "status": "PASS",
+            "message": "3.12.12"
+        },
+        "KEEPA_API_KEY": {
+            "status": "FAIL",
+            "message": "Missing"
+        },
+        "XAI_TOKEN": {
+            "status": "FAIL",
+            "message": "Missing"
+        },
+        "SP_API_CLIENT_ID": {
+            "status": "FAIL",
+            "message": "Missing"
+        },
+        "Disk Space": {
+            "status": "PASS",
+            "message": "92 GB Free"
+        }
+    },
+    "infrastructure": {
+        "Redis Connectivity": {
+            "status": "FAIL",
+            "message": "Error 111 connecting to 127.0.0.1:6379. Connection refused."
+        },
+        "Celery Worker": {
+            "status": "FAIL",
+            "message": "Not Found"
+        },
+        "Celery Beat": {
+            "status": "FAIL",
+            "message": "Not Found"
+        }
+    },
+    "database": {
+        "Integrity Check": {
+            "status": "PASS",
+            "message": "OK"
+        },
+        "Table: deals": {
+            "status": "WARN",
+            "message": "Missing"
+        },
+        "Table: system_state": {
+            "status": "WARN",
+            "message": "Missing"
+        },
+        "Table: user_credentials": {
+            "status": "PASS",
+            "message": "0 rows"
+        },
+        "Table: user_restrictions": {
+            "status": "PASS",
+            "message": "0 rows"
+        }
+    },
+    "api_connectivity": {
+        "Keepa API": {
+            "status": "FAIL",
+            "message": "Key Missing"
+        },
+        "xAI API": {
+            "status": "FAIL",
+            "message": "Key Missing"
+        }
+    },
+    "application_state": {
+        "System State": {
+            "status": "FAIL",
+            "message": "Could not read system_state"
+        }
+    },
+    "logs": {
+        "Worker Log": {
+            "status": "WARN",
+            "message": "File not found"
+        }
+    }
+}
