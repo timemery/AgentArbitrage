@@ -2053,8 +2053,8 @@ body.home-background::before {
 }
 
 .filter-icon-toggle {
-    width: 24px;
-    height: 24px;
+    width: 38px;
+    height: 18px;
     cursor: pointer;
     margin-right: 0;
 }
@@ -2227,8 +2227,8 @@ body.home-background::before {
 }
 
 .filter-icon-toggle {
-    min-width: 24px;
-    min-height: 24px;
+    min-width: 38px;
+    min-height: 18px;
     flex-shrink: 0;
 }
 
