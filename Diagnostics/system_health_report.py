@@ -101,12 +101,14 @@ class HealthChecker:
             res = subprocess.run(['pgrep', '-af', 'celery'], capture_output=True, text=True)
             procs = res.stdout
 
-            if 'celery worker' in procs or 'celery@' in procs:
+            # More robust check: look for 'celery' AND 'worker'/'beat' keywords
+            # This handles cases like 'python -m celery -A app worker' where words are separated
+            if ('celery' in procs and 'worker' in procs) or 'celery@' in procs:
                 self.log_result("infrastructure", "Celery Worker", "PASS", "Running")
             else:
                 self.log_result("infrastructure", "Celery Worker", "FAIL", "Not Found")
 
-            if 'celery beat' in procs:
+            if 'celery' in procs and 'beat' in procs:
                 self.log_result("infrastructure", "Celery Beat", "PASS", "Running")
             else:
                 self.log_result("infrastructure", "Celery Beat", "FAIL", "Not Found")
