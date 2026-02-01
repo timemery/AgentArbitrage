@@ -1,0 +1,103 @@
+{
+    "timestamp": "2026-02-01T18:59:59.612232+00:00",
+    "environment": {
+        ".env File": {
+            "status": "PASS",
+            "message": "Found"
+        },
+        "Python Version": {
+            "status": "PASS",
+            "message": "3.10.12"
+        },
+        "KEEPA_API_KEY": {
+            "status": "PASS",
+            "message": "Present (bg90****)"
+        },
+        "XAI_TOKEN": {
+            "status": "PASS",
+            "message": "Present (xai-****)"
+        },
+        "SP_API_CLIENT_ID": {
+            "status": "PASS",
+            "message": "Present (amzn****)"
+        },
+        "Disk Space": {
+            "status": "PASS",
+            "message": "37 GB Free"
+        }
+    },
+    "infrastructure": {
+        "Redis Connectivity": {
+            "status": "PASS",
+            "message": "Connected"
+        },
+        "Celery Worker": {
+            "status": "FAIL",
+            "message": "Not Found"
+        },
+        "Celery Beat": {
+            "status": "FAIL",
+            "message": "Not Found"
+        },
+        "Monitor Process": {
+            "status": "PASS",
+            "message": "Running"
+        }
+    },
+    "database": {
+        "Integrity Check": {
+            "status": "PASS",
+            "message": "OK"
+        },
+        "Table: deals": {
+            "status": "PASS",
+            "message": "317 rows"
+        },
+        "Table: system_state": {
+            "status": "PASS",
+            "message": "4 rows"
+        },
+        "Table: user_credentials": {
+            "status": "PASS",
+            "message": "1 rows"
+        },
+        "Table: user_restrictions": {
+            "status": "PASS",
+            "message": "1232 rows"
+        }
+    },
+    "api_connectivity": {
+        "Keepa API": {
+            "status": "PASS",
+            "message": "Tokens: -64.0, Rate: 5"
+        },
+        "xAI API": {
+            "status": "PASS",
+            "message": "Connected"
+        }
+    },
+    "application_state": {
+        "Backfill Page": {
+            "status": "PASS",
+            "message": "4"
+        },
+        "Watermark": {
+            "status": "PASS",
+            "message": "2026-01-27T17:28:03.550317+00:00"
+        },
+        "Backfill Lock": {
+            "status": "WARN",
+            "message": "Active (TTL: 863986s)"
+        }
+    },
+    "logs": {
+        "Monitor Log": {
+            "status": "PASS",
+            "message": "0 critical events"
+        },
+        "Recent Errors": {
+            "status": "PASS",
+            "message": "None in last 50 lines"
+        }
+    }
+}

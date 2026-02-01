@@ -983,7 +983,7 @@ def api_deals():
     if filters.get("sales_rank_current_lte") is not None:
         where_clauses.append("\"Sales_Rank_Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
-    if filters.get("margin_gte") is not None:
+    if filters.get("margin_gte") is not None and filters["margin_gte"] > 0:
         where_clauses.append("\"Margin\" >= ?")
         filter_params.append(filters["margin_gte"])
     if filters.get("keyword"):
@@ -1429,7 +1429,7 @@ def deal_count():
             if filters.get("sales_rank_current_lte") is not None:
                 where_clauses.append("\"Sales_Rank_Current\" <= ?")
                 filter_params.append(filters["sales_rank_current_lte"])
-            if filters.get("margin_gte") is not None:
+            if filters.get("margin_gte") is not None and filters["margin_gte"] > 0:
                 where_clauses.append("\"Margin\" >= ?")
                 filter_params.append(filters["margin_gte"])
             if filters.get("keyword"):

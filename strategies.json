@@ -34359,5 +34359,173 @@
         "advice": "Stay updated on cutting-edge market trends and Amazon changes in real time through community and coaching support",
         "confidence": "High",
         "source": "cutting edge market trends and changes in real time"
+    },
+    {
+        "id": "used-book-arbitrage-model",
+        "category": "General",
+        "trigger": "Beginner with no money to invest",
+        "advice": "Use used book arbitrage, similar to retail arbitrage, which requires basically no money but is very difficult to scale.",
+        "confidence": "High",
+        "source": "there's also used book Arbitrage which is pretty similar to Retail Arbitrage which takes basically no money but it's very very difficult to scale"
+    },
+    {
+        "id": "data1",
+        "category": "General",
+        "trigger": "Focus on 90-day averages for sales rank and buy box",
+        "advice": "For beginners, analyze 90-day averages rather than longer periods unless planning seasonal buys; stable 90-day vs. 365-day indicates reliability.",
+        "confidence": "High",
+        "source": "you should mainly be focused focusing on the 90-day data when you're not buying a ton of a specific product... the 90 average the 60 average 30 day average... current average now this is very important data right here"
+    },
+    {
+        "id": "sr-parent-cat",
+        "category": "General",
+        "trigger": "Sales rank in parent category",
+        "advice": "Use only the parent category sales rank to determine sales velocity; ignore subcategories like Nintendo Switch Games.",
+        "confidence": "High",
+        "source": "we only care about the video games when it comes to determining how fast a product is selling you can also find that information over here where it says video games Nintendo switch games but again we are only interested in video games the parent category"
+    },
+    {
+        "id": "sr-low-better",
+        "category": "General",
+        "trigger": "Sales rank closer to 1",
+        "advice": "Lower sales rank (closer to 1) indicates faster selling in the parent category.",
+        "confidence": "High",
+        "source": "sales rank is going to tell you how fast a product is selling on Amazon the lower the sales rank the closer that sales rank is to one the better it is selling in that parent category"
+    },
+    {
+        "id": "sales-est-jungle",
+        "category": "General",
+        "trigger": "Average sales rank over 90 or 365 days",
+        "advice": "Use Jungle Scout estimator with average BSR, marketplace, and parent category to estimate monthly sales (e.g., BSR 395 in Video Games ~1700 units/month).",
+        "confidence": "High",
+        "source": "let's say 395 is the average sales rank for this product for the last 90 days we would come over to junglescout.com estimator and we would enter that information here so we would enter the BSR which is the best sellers rank we would enter the marketplace that we're selling in and we would enter the product category that we are selling in and we would click on estimate sales it's telling us at 3 .95 that product that we're looking at right here is selling 1,700 times per month"
+    },
+    {
+        "id": "bb-amazon-dom",
+        "category": "Risk",
+        "trigger": "Amazon buy box percentage 99-100%",
+        "advice": "Avoid listings where Amazon has 99% or 100% buy box share; they won't share with third-party sellers.",
+        "confidence": "High",
+        "source": "if you were to see Amazon has 99% or 100% you do not want to jump on that listing because they are not going to be sharing the buy box with you and you're going to get stuck with that inventory"
+    },
+    {
+        "id": "bb-history",
+        "category": "Pricing",
+        "trigger": "Buy box line history over 3 months or 1 year",
+        "advice": "Hover over buy box line to check historical prices, trends (up/down/spike), and averages to determine expected selling price.",
+        "confidence": "High",
+        "source": "if we hover over this buy box line we can click on anybody who is selling it so if we click right here we can see that VG 911 got the buy box on this date at this time this is really really important data to know because we want to know if we buy this product at what price can we expect to sell it right are what are the averages what does it usually sell for is it on a price spike is it on its way down"
+    },
+    {
+        "id": "fba-third-party",
+        "category": "Buying",
+        "trigger": "New third party FBA offers present historically",
+        "advice": "Turn on 'New Third Party FBA' to confirm other FBA sellers have sold this product; indicates it's not private label.",
+        "confidence": "High",
+        "source": "if we click on new third party FBA it's going to be a little hidden on this particular listing because the buy box is jumping like crazy so if we just turn off the buy box we can see that new thirdparty FBA offers are always on this listing okay if we can go back they have been on this listing since the beginning of time pretty much okay so it's safe to say okay other FBA sellers are selling this so we're probably pretty good to sell it as well"
+    },
+    {
+        "id": "seller-spike",
+        "category": "Pricing",
+        "trigger": "New offer count sharp spike (e.g., 21 to 5x increase)",
+        "advice": "Rapid increase in sellers (sharp spike in offer count) almost guarantees price drop; avoid or expect lower profits.",
+        "confidence": "High",
+        "source": "if you see the amount of sellers climbing very very rapidly like you see a sharp Spike upwards it is almost guaranteed that that product is going to go down in price so if you see that make sure that you consider that Factor before you decide to invest in it"
+    },
+    {
+        "id": "price-spike-avoid",
+        "category": "Pricing",
+        "trigger": "Current price on spike above historical average (e.g., $49.70 vs. average $37)",
+        "advice": "Avoid buying during price spikes; base purchase on historical average/low (e.g., $37 or below) to avoid losses when it drops.",
+        "confidence": "High",
+        "source": "this product is probably going to drop in price very very soon because it is at that price spike and for the life of that product beforehand it has not even been close to that price so right now it's on a price spike we need to take in account where has it been stable at before what's the average what's the low and the low for this is about 3335 and the average is pretty much $37"
+    },
+    {
+        "id": "price-decline",
+        "category": "Risk",
+        "trigger": "Steady downward price trend over time",
+        "advice": "Avoid products with steady price decline indicating dying demand; unlikely to recover to highs.",
+        "confidence": "High",
+        "source": "sometimes products are going to come in they're going to sell really really well and then the market just dies out for that there's no demand for that product anymore and you can just see a steady decline in price and we need to consider that as well so on this particular product this is a Fallout 76 we can see if we go back to the life of the product we can see that this product has sold pretty well and it's just slowly had a decline in price over time"
+    },
+    {
+        "id": "event-demand",
+        "category": "Seasonality",
+        "trigger": "Event-based demand post-event (e.g., movie release)",
+        "advice": "Avoid buying post-event if demand diminishes (e.g., after Venom movie, price halved); account for anticipation vs. post-event drop.",
+        "confidence": "High",
+        "source": "this is a good example of event-based demand you have the the event that's coming up all of the anticipation so people are getting their the toys that are related to that and then after the event the sales rank and the demand just start to diminish so if you buy a product that is you know has event-based demand and you you buy a ton of inventory you might be holding on to that inventory for longer than you think"
+    },
+    {
+        "id": "seasonal-stock",
+        "category": "Seasonality",
+        "trigger": "Seasonal product (e.g., pools sell in summer)",
+        "advice": "Stock up 2-3 months before peak (e.g., February for summer); avoid buying late in season to prevent holding unsold inventory.",
+        "confidence": "High",
+        "source": "in order to profit from seasonal products you should be stocking up your inventory around here a couple of months before so it's all available for sale as soon as the demand hits its peak so if you're stocked and ready to go roughly around here you know February because you've been sending in the inventory so that when the summer Spike comes you can profit from all of those sales"
+    },
+    {
+        "id": "ip-low-sellers",
+        "category": "Risk",
+        "trigger": "New offer count consistently 1-2 sellers over time",
+        "advice": "Avoid listings with 1-2 sellers historically; likely private label, high IP complaint risk.",
+        "confidence": "High",
+        "source": "if you see that for the life of the product it has been one or two sellers down below right here and every time a seller comes in and then goes out it is most likely a private label product and you should not buy it"
+    },
+    {
+        "id": "ip-sharp-drop",
+        "category": "Risk",
+        "trigger": "Sharp overnight drop in offer count (e.g., 39 to 21 sellers)",
+        "advice": "Sharp drops indicate IP complaints; check historical data (e.g., multiple instances over years) and avoid brands like Milwaukee that file repeatedly.",
+        "confidence": "High",
+        "source": "when you see a keepa drop that's just a sharp drop overnight this is more than than likely the brand coming on to Amazon and filing IP complaints on the sellers that are on that listing in an attempt to kick them off so now that we know that there's one time that they're suspected of filing IP complaints let's see if they're a brand that files them regularly so if we go back to all time we'll highlight a section right around here we can see that they have filed IP complaints from 20021 to 2023 and they filed them 1 2 3 four different times"
+    },
+    {
+        "id": "adv-past-sr",
+        "category": "Buying",
+        "trigger": "No current sales rank or buy box in advanced listing",
+        "advice": "Check historical sales rank and buy box; if present in past (e.g., 2021), use to gauge potential demand, but discount if >1 year old due to market changes.",
+        "confidence": "High",
+        "source": "the first thing that we need to do is we need to look at all of the data that we have at our disposal to see if it has ever had a sales rank if it has ever had a buy box to get an idea of what it's sold like in the past so this product actually has had a sales rank all the way back in 2021 1 the summer of 2021"
+    },
+    {
+        "id": "adv-offer-fluct",
+        "category": "Buying",
+        "trigger": "Fluctuating new offer count (e.g., 1 to 20, down to 6, up to 15)",
+        "advice": "In advanced listings, fluctuating offer count indicates sellers selling through inventory; stable high count suggests unsold stock.",
+        "confidence": "High",
+        "source": "the next thing that we need to look at is the new offer count we want to see that sellers are coming onto the listing but they're not staying they're coming onto the listing and they're leaving this is a sign that they are selling through their inventory"
+    },
+    {
+        "id": "adv-review-inc",
+        "category": "Buying",
+        "trigger": "Increasing review count (e.g., 3 to 14 in 12 months, 9 to 14 in 3 months)",
+        "advice": "Rising reviews in advanced listings suggest sales (estimate ~1% review rate, e.g., 5 reviews in 3 months ~500 units); confirms activity.",
+        "confidence": "High",
+        "source": "the next thing thing that we need to look at is the review count if the review count is increasing chances are that it is selling you're not going to have a situation where one person is buying one product and then that same person is leaving that inventory so you're not having one for one one sale one one review one sale one review Amazon came out a while back and said that usually it's about 1% so out of every hundred people that purchase maybe one or two reviews will come from those 100 purchases"
+    },
+    {
+        "id": "adv-bb-long",
+        "category": "Buying",
+        "trigger": "Sellers with extended buy box share (e.g., 90 days, 6 months, 1 year)",
+        "advice": "In advanced listings, long-term buy box holders (e.g., 1 year) likely restocking due to sales; check their stock history for sell-through.",
+        "confidence": "High",
+        "source": "we want to see that sellers may have been on the listing for an extended period of time if they have been in on the listing and for an extended period of time chances are that they're constantly restocking this product and they would only be restocking this product if they were selling through that inventory"
+    },
+    {
+        "id": "adv-test-order",
+        "category": "Buying",
+        "trigger": "Advanced listing passes initial checks but uncertain sales",
+        "advice": "Do small test order (e.g., 10 units) to verify sales velocity; better than large order risking stuck inventory.",
+        "confidence": "High",
+        "source": "the next step in my personal opinion is to do a test order the reason you do a test order and not just order hundreds and hundreds of units of this product is because these are all guess dations we're making an educated guess based off of the data that we do have but we don't know exactly how much this product is selling the most important data that you can have is your own data"
+    },
+    {
+        "id": "var-most-rev",
+        "category": "Buying",
+        "trigger": "Multiple variations available",
+        "advice": "In variation listings, select variation with most/highest recent reviews; indicates strongest sales activity.",
+        "confidence": "High",
+        "source": "what we're most concerned with is what listings are getting the most ratings or they're just getting ratings in general okay so if we have the option of buying this variation which is the top variation or this variation we would obviously choose the one that's getting the most reviews this is the most important part of looking through variations we want to see that it is actively getting reviews on this particular variation"
     }
 ]
