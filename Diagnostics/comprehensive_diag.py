@@ -99,7 +99,8 @@ def run_diagnostic():
 
     # Check Scheduler
     try:
-        res = subprocess.run(['pgrep', '-f', 'celery beat'], capture_output=True, text=True)
+        # Robust check using strict regex to avoid matching 'tail' commands
+        res = subprocess.run(['pgrep', '-f', 'celery.*-A.*beat'], capture_output=True, text=True)
         scheduler_running = (res.returncode == 0)
     except Exception:
         scheduler_running = False
