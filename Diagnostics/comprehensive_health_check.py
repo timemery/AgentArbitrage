@@ -294,7 +294,20 @@ def check_db_health():
                 print(f"{k}: {v}")
 
             if valid_dates > 0 and age_dist['< 1h'] == 0:
-                print("[WARNING] No deals seen in the last hour. Ingestion is STALLED.")
+                # Check for Backfill Lock to provide context
+                backfill_active = False
+                if REDIS_AVAILABLE:
+                    try:
+                        r = redis.Redis.from_url('redis://127.0.0.1:6379/0', socket_connect_timeout=2)
+                        if r.exists("backfill_deals_lock"):
+                            backfill_active = True
+                    except:
+                        pass
+
+                if backfill_active:
+                    print("[INFO] No deals seen in the last hour, but Backfill Lock is active. Ingestion is paused for backfill (Expected).")
+                else:
+                    print("[WARNING] No deals seen in the last hour. Ingestion is STALLED.")
         except sqlite3.OperationalError:
              print("[WARNING] Could not check deal age.")
 
