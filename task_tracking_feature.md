@@ -1,43 +1,50 @@
 # Feature Specification: Profit & Inventory Tracking
 
 ## 1. Executive Summary
-This feature introduces a "Matched Ledger" system to track Realized Profit. It solves the core problem that Amazon knows the *Sale Price* but not the *Buy Cost*. By capturing the Buy Cost at the moment of decision (via the Dashboard) and syncing Sales automatically from Amazon, we can provide a seamless, semi-automated P&L experience that is superior to retroactive data entry.
+This feature introduces a "Matched Ledger" system to track Realized Profit, with a specific focus on a "Potential Buy" workflow that mirrors industry-standard scouting apps (like InventoryLab's Scoutify). This minimizes friction at the point of decision (the "Buy" button) while ensuring accurate data is captured later when the purchase is confirmed.
 
-## 2. Conceptual Model: The "Matched Ledger"
+## 2. Competitive Analysis & Design Rationale
+A review of competitor workflows (InventoryLab, ScoutIQ, SellerLegend) reveals a standard pattern:
+1.  **Separation of Scouting vs. Inventory:** Scouting apps create a "Buy List" (Potential) which is later "Imported" to become active inventory.
+2.  **Low Friction Capture:** The initial "Add to List" action is nearly instantaneous to avoid slowing down the sourcing workflow.
+3.  **Confirmation Step:** Costs and quantities are finalized only after the physical purchase is made.
 
-The system relies on two primary ledgers and a reconciliation process:
+**Our Approach:** We will integrate this "Buy List" concept directly into the Dashboard. Clicking "Buy" creates a "Potential" record. The user then confirms this record in the Tracking page to move it to "Active Inventory". This removes the need for external CSV exports/imports common in other tools.
 
-1.  **Inventory Ledger (Manual/User Input):** Records items purchased.
-    *   *Source:* "Buy" Button on Dashboard OR Manual "Add Purchase" form.
-    *   *Key Data:* ASIN, Buy Cost, Purchase Date, Quantity.
-2.  **Sales Ledger (Automated/SP-API):** Records items sold on Amazon.
-    *   *Source:* Amazon SP-API (`/orders/v0/orders`).
-    *   *Key Data:* Order ID, SKU/ASIN, Sale Price, Fees, Date.
-3.  **Reconciliation (FIFO Logic):**
-    *   The system runs a background process to match **Sales** to **Inventory** based on ASIN.
-    *   It uses **First-In-First-Out (FIFO)**: The oldest inventory unit for ASIN X is matched to the newest sale of ASIN X.
-    *   *Result:* A "Matched Transaction" that allows calculating `Realized Profit = Sale Price - Amazon Fees - Buy Cost`.
+## 3. Conceptual Model: The "Matched Ledger"
 
-## 3. Database Schema (`deals.db`)
+The system relies on three stages:
 
-The following SQLite tables are required:
+1.  **Potential Buy (Staging):** Items the user clicked "Buy" on.
+    *   *Status:* `POTENTIAL`
+    *   *Data:* Mutable (Price/Qty can change).
+2.  **Active Inventory (Confirmed):** Physical items purchased.
+    *   *Status:* `PURCHASED`
+    *   *Data:* Immutable Cost Basis.
+3.  **Sales Ledger (Automated):** Items sold on Amazon (via SP-API).
+4.  **Reconciliation:** Matching Sales to Active Inventory (FIFO).
+
+## 4. Database Schema (`deals.db`)
 
 ### A. `inventory_ledger`
-Tracks physical items purchased.
+Tracks items from "Potential" to "Sold".
 ```sql
 CREATE TABLE inventory_ledger (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     asin TEXT NOT NULL,
     title TEXT,
-    purchase_date TIMESTAMP NOT NULL,
-    buy_cost REAL NOT NULL, -- Cost per unit
-    quantity_purchased INTEGER NOT NULL,
-    quantity_remaining INTEGER NOT NULL, -- Decrements as items are sold
-    source TEXT, -- e.g., "Dashboard Buy Button", "Manual Entry"
+    sku TEXT, -- Added: Optional at first, required for specific matching later
+    purchase_date TIMESTAMP, -- Nullable for Potential
+    buy_cost REAL, -- Nullable/Estimated for Potential
+    quantity_purchased INTEGER DEFAULT 1,
+    quantity_remaining INTEGER DEFAULT 0,
+    status TEXT DEFAULT 'POTENTIAL', -- 'POTENTIAL', 'PURCHASED', 'SOLD_OUT', 'DISMISSED'
+    source TEXT, -- e.g., "Dashboard Buy Button"
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_inv_asin ON inventory_ledger(asin);
+CREATE INDEX idx_inv_status ON inventory_ledger(status);
 ```
 
 ### B. `sales_ledger`
@@ -45,113 +52,77 @@ Tracks orders fetched from Amazon.
 ```sql
 CREATE TABLE sales_ledger (
     amazon_order_id TEXT PRIMARY KEY,
-    asin TEXT, -- Derived from OrderItems
-    sku TEXT,  -- Derived from OrderItems
+    asin TEXT,
+    sku TEXT,
     sale_date TIMESTAMP NOT NULL,
-    sale_price REAL, -- Total price / quantity
-    amazon_fees REAL, -- Estimated or fetched
+    sale_price REAL,
+    amazon_fees REAL,
     quantity_sold INTEGER NOT NULL,
-    order_status TEXT, -- Pending, Shipped, Canceled
-    reconciliation_status TEXT DEFAULT 'UNMATCHED', -- 'MATCHED', 'PARTIAL', 'UNMATCHED'
+    order_status TEXT,
+    reconciliation_status TEXT DEFAULT 'UNMATCHED',
     fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_sales_asin ON sales_ledger(asin);
 ```
 
 ### C. `reconciliation_log`
-Links specific inventory units to specific orders to lock in profit calculations.
+Links specific inventory units to specific orders.
 ```sql
 CREATE TABLE reconciliation_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sales_ledger_id TEXT NOT NULL, -- FK to sales_ledger.amazon_order_id
-    inventory_ledger_id INTEGER NOT NULL, -- FK to inventory_ledger.id
+    sales_ledger_id TEXT NOT NULL,
+    inventory_ledger_id INTEGER NOT NULL,
     quantity_matched INTEGER NOT NULL,
-    realized_profit REAL, -- Snapshot of profit for this specific match
+    realized_profit REAL,
     match_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(sales_ledger_id) REFERENCES sales_ledger(amazon_order_id),
     FOREIGN KEY(inventory_ledger_id) REFERENCES inventory_ledger(id)
 );
 ```
 
-## 4. Amazon SP-API Integration Requirements
+## 5. Amazon SP-API Integration Requirements
+(No changes from previous design, standard Orders API requirements apply).
+*   **Scopes:** `sellingpartnerapi::orders`.
+*   **Tasks:** `fetch_amazon_orders` (GET /orders/v0/orders), `reconcile_inventory` (Background FIFO matching).
 
-To automate the Sales Ledger, the system must be upgraded to fetch Orders.
+## 6. UI/UX Design
 
-### A. Scope Updates
-*   **Current Scopes:** Likely only `listings:items` (based on `check_restrictions`).
-*   **Required Scopes:** The Developer Profile / App Authorization must include the **Orders** role (`sellingpartnerapi::orders`).
-*   **Action:** User must re-authorize the app with these new permissions.
-
-### B. New Backend Tasks
-1.  **`fetch_amazon_orders` (Celery Task):**
-    *   Frequency: Every 4-6 hours.
-    *   API Endpoint: `GET /orders/v0/orders`.
-    *   Params: `CreatedAfter` (Watermark), `OrderStatuses` (Shipped, Pending).
-    *   Logic:
-        1.  Fetch Orders.
-        2.  For each Order, call `GET /orders/v0/orders/{orderId}/orderItems` to get ASIN/SKU and Price details.
-        3.  Upsert into `sales_ledger`.
-2.  **`reconcile_inventory` (Celery Task):**
-    *   Runs after `fetch_amazon_orders`.
-    *   Iterates through `UNMATCHED` sales.
-    *   Queries `inventory_ledger` for the oldest record with `quantity_remaining > 0` and matching ASIN.
-    *   Creates record in `reconciliation_log`.
-    *   Updates `quantity_remaining` and `reconciliation_status`.
-
-## 5. UI/UX Design
-
-### A. Dashboard "Buy" Workflow (Capture at Source)
-*   **Current Behavior:** "Buy" button links to Amazon.
-*   **New Behavior:** Clicking "Buy" opens a **"Log Purchase" Modal**.
-    *   **Fields:**
-        *   ASIN/Title (Read-only, pre-filled).
-        *   Price/Cost (Pre-filled with `Price Now`, editable).
-        *   Quantity (Default: 1, editable).
-        *   Date (Default: Today).
-    *   **Actions:**
-        *   "Save & Open Amazon" (Primary): Saves to `inventory_ledger` AND opens the Amazon link in new tab.
-        *   "Save Only": Just saves to ledger.
-        *   "Cancel": Closes modal.
+### A. Dashboard "Buy" Workflow (The "Potential" Click)
+*   **Action:** User clicks "Buy" on the Dashboard grid.
+*   **System Behavior:**
+    1.  **Immediate:** Opens Amazon product page in a new tab (non-blocking).
+    2.  **Background:** Sends AJAX POST to `/api/inventory`.
+    3.  **Data Saved:** ASIN, Title, Current Price (as estimated cost), Status = `POTENTIAL`.
+    4.  **Feedback:** Button changes briefly (e.g., "Saved to Tracking") or shows a toast notification, but does *not* show a modal blocking the user.
 
 ### B. Tracking Page (`/tracking`)
-The page should feature three main tabs:
+Features a new "Workflow" based tab structure:
 
-#### Tab 1: Active Inventory
-*   **Display:** Table of `inventory_ledger` items where `quantity_remaining > 0`.
-*   **Columns:** Purchase Date, Title, ASIN, Cost, Qty, Age (Days since purchase).
-*   **Calculations:** "Total Inventory Value" (Sum of Cost * Qty).
-*   **Actions:** Edit Cost, Delete.
+#### Tab 1: Potential Buys (The Inbox)
+*   **Purpose:** Review items clicked on the dashboard.
+*   **Columns:** Image, Title, ASIN, Est. Cost, Date Clicked.
+*   **Actions:**
+    *   **"Confirm Purchase" (Primary):** Opens modal to edit/confirm `Buy Cost`, `Qty`, `SKU`, and `Purchase Date`. Changes status to `PURCHASED`.
+    *   **"Delete/Dismiss" (Secondary):** User decided not to buy. Changes status to `DISMISSED` (soft delete) or deletes row.
 
-#### Tab 2: Sales & Profit
-*   **Display:** Table of `sales_ledger` items joined with `reconciliation_log`.
-*   **Columns:** Sale Date, Order ID, Title, Sale Price, Buy Cost, Fees, **Net Profit**, **ROI %**.
-*   **Highlighting:**
-    *   **Green Profit:** Positive return.
-    *   **Red Profit:** Negative return.
-    *   **Warning Row:** "Unmatched Sale" (Sale exists but no Inventory found). Clicking it prompts to "Add Missing Purchase".
+#### Tab 2: Active Inventory (The Assets)
+*   **Purpose:** Manage confirmed stock.
+*   **Display:** Items with status `PURCHASED` and `quantity_remaining > 0`.
+*   **Calculations:** Total Asset Value.
 
-#### Tab 3: Overview (Analytics)
-*   **Metrics:**
-    *   Total Realized Profit (This Month / All Time).
-    *   Average ROI.
-    *   Inventory Turnover Rate.
-*   **Charts:** Bar chart of Monthly Profit.
+#### Tab 3: Sales & Profit (The Scoreboard)
+*   **Purpose:** View P&L.
+*   **Display:** Matched Sales (Green) and Unmatched Sales (Red warning).
+*   **Action:** Unmatched sales allow "Add Missing Cost" which creates a retroactive `PURCHASED` record.
 
-## 6. Implementation Steps for Agent
+## 7. Implementation Steps for Agent
 
-1.  **Database Migration:**
-    *   Create the 3 new tables in `deals.db`.
-    *   Update `keepa_deals/db_utils.py` to include creation functions.
+1.  **Database Migration:** Implement the updated schema (with `status` and `sku`).
 2.  **Backend - API:**
-    *   Create `keepa_deals/sp_api_orders.py` implementing `get_orders` and `get_order_items`.
-    *   Create `keepa_deals/order_sync_tasks.py` with the Celery tasks.
-    *   Create `keepa_deals/reconciliation.py` with the FIFO logic.
-3.  **Backend - Routes:**
-    *   Add `/api/inventory` (POST/GET/PUT/DELETE) to `wsgi_handler.py`.
-    *   Add `/api/sales` (GET) to `wsgi_handler.py`.
-4.  **Frontend - Dashboard:**
-    *   Add the "Log Purchase" Modal to `dashboard.html`.
-    *   Update `dashboard.js` to handle the "Buy" button click event.
-5.  **Frontend - Tracking:**
-    *   Implement the Tabbed interface in `tracking.html`.
-    *   Write `static/js/tracking.js` to fetch and render the ledgers.
+    *   Update `/api/inventory` to handle status transitions (`POTENTIAL` -> `PURCHASED`).
+    *   Implement SP-API Orders fetcher.
+3.  **Frontend - Dashboard:**
+    *   Modify "Buy" button JS listener to trigger the "Silent Save" AJAX call.
+4.  **Frontend - Tracking:**
+    *   Build the "Potential Buys" table with the "Confirm Purchase" modal form.
+    *   Build the standard Inventory and Sales tables.
