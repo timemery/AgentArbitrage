@@ -19,6 +19,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 # --- Configuration ---
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'deals.db')
 WORKER_LOG = os.path.join(os.path.dirname(__file__), '..', 'celery_worker.log')
+BEAT_LOG = os.path.join(os.path.dirname(__file__), '..', 'celery_beat.log')
 MONITOR_LOG = os.path.join(os.path.dirname(__file__), '..', 'celery_monitor.log')
 REPORT_FILE = os.path.join(os.path.dirname(__file__), 'health_report.json')
 
@@ -257,25 +258,49 @@ class HealthChecker:
             self.log_result("logs", "Monitor Log", "WARN", "File not found")
 
         # 2. Check Worker Log
-        if not os.path.exists(WORKER_LOG):
+        if os.path.exists(WORKER_LOG):
+            try:
+                with open(WORKER_LOG, 'r') as f:
+                    lines = f.readlines()[-50:] # Last 50 lines
+
+                errors = 0
+                for line in lines:
+                    if "ERROR" in line or "CRITICAL" in line or "Traceback" in line:
+                        errors += 1
+
+                if errors == 0:
+                    self.log_result("logs", "Recent Errors", "PASS", "None in last 50 lines")
+                else:
+                    self.log_result("logs", "Recent Errors", "WARN", f"{errors} errors in last 50 lines")
+
+                # If infrastructure is failing, print the log tail
+                if self.results["infrastructure"].get("Celery Worker", {}).get("status") == "FAIL":
+                    print(f"\n{YELLOW}--- Tail of Worker Log ---{RESET}")
+                    for line in lines[-20:]:
+                        print(line.strip())
+                    print(f"{YELLOW}-----------------------------{RESET}\n")
+
+            except Exception as e:
+                self.log_result("logs", "Log Read", "FAIL", str(e))
+        else:
             self.log_result("logs", "Worker Log", "WARN", "File not found")
-            return
 
-        try:
-            with open(WORKER_LOG, 'r') as f:
-                lines = f.readlines()[-50:] # Last 50 lines
-
-            errors = 0
-            for line in lines:
-                if "ERROR" in line or "CRITICAL" in line or "Traceback" in line:
-                    errors += 1
-
-            if errors == 0:
-                self.log_result("logs", "Recent Errors", "PASS", "None in last 50 lines")
+        # 3. Check Beat Log (If infrastructure failing)
+        if self.results["infrastructure"].get("Celery Beat", {}).get("status") == "FAIL":
+            if os.path.exists(BEAT_LOG):
+                try:
+                    with open(BEAT_LOG, 'r') as f:
+                        lines = f.readlines()[-20:]
+                    print(f"\n{YELLOW}--- Tail of Beat Log ---{RESET}")
+                    for line in lines:
+                        print(line.strip())
+                    print(f"{YELLOW}-----------------------------{RESET}\n")
+                except Exception as e:
+                    print(f"Could not read Beat Log: {e}")
             else:
-                self.log_result("logs", "Recent Errors", "WARN", f"{errors} errors in last 50 lines")
-        except Exception as e:
-            self.log_result("logs", "Log Read", "FAIL", str(e))
+                print(f"\n{YELLOW}--- Tail of Beat Log ---{RESET}")
+                print("File not found")
+                print(f"{YELLOW}-----------------------------{RESET}\n")
 
     def run(self):
         print(f"{BOLD}Starting System Health Diagnostic...{RESET}")
