@@ -1,6 +1,12 @@
 
 import unittest
+import sys
+import os
 from datetime import datetime, timedelta
+
+# Ensure local imports work
+sys.path.append(os.getcwd())
+
 from keepa_deals.stable_calculations import infer_sale_events, KEEPA_EPOCH
 
 class TestSynchronousUpdates(unittest.TestCase):
