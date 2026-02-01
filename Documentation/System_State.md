@@ -25,6 +25,7 @@
 ### Backfill & Maintenance
 - **Backfiller:** Runs continuous delta-sync. Uses "Mark and Sweep" to update `last_seen_utc`.
 - **Janitor:** Deletes deals older than **72 hours** (`grace_period_hours`).
+- **Configuration:** The "Artificial Backfill Limiter" was removed in Feb 2026.
 - **Tokens:** `TokenManager` uses a "Controlled Deficit" strategy (allows dips to -50, refills to +5). Refill rate is dynamically learned from API response (supporting plan upgrades).
 - **Concurrency:** Backfiller and Upserter (`simple_task.py`) run concurrently. Upserter requires 20 token buffer.
 
@@ -40,7 +41,7 @@
   - **AMZ:** Warning icon (⚠️) right-aligned in "Offers" column if Amazon is currently selling.
 - **Ava Advice:** Overlay feature using `grok-4-fast-reasoning` to provide actionable analysis.
 - **Mentor Chat:** Persistent overlay (505x540px) accessible from nav. Features 4 personas (Olyvia, Joel, Evelyn, Errol) synchronized via `localStorage`.
-- **Refresh Logic:** Manual "Refresh Deals" button only reloads the grid; it no longer triggers the "Janitor" cleanup process (as of Jan 2026).
+- **Refresh Logic:** Manual "Refresh Deals" button only reloads the grid; it no longer triggers the "Janitor" cleanup process (as of Jan 2026). The admin-side "Manual Data Refresh" (recalculation) feature was also removed in Feb 2026.
 - **Navigation:**
   - **Structure:** Divided into three sections: Left (Logo, Dashboard, Tracking), Center (Admin Links), and Right (Mentor, Settings, Logout).
   - **Header Height:** Strictly fixed at **134px** to support the sticky filter panel layout.
