@@ -34527,5 +34527,525 @@
         "advice": "In variation listings, select variation with most/highest recent reviews; indicates strongest sales activity.",
         "confidence": "High",
         "source": "what we're most concerned with is what listings are getting the most ratings or they're just getting ratings in general okay so if we have the option of buying this variation which is the top variation or this variation we would obviously choose the one that's getting the most reviews this is the most important part of looking through variations we want to see that it is actively getting reviews on this particular variation"
+    },
+    {
+        "id": "keepa-price-stability",
+        "category": "Pricing",
+        "trigger": "Volatile price history with large fluctuations",
+        "advice": "Avoid buying products with very volatile price histories to ensure stable selling prices",
+        "confidence": "High",
+        "source": "We don't want to buy products that have very very volatile price histories because assuming that we buy that product for a specific price, we don't know if that price is going to be really you know a good stable price to sell the product at."
+    },
+    {
+        "id": "keepa-buybox-range",
+        "category": "Pricing",
+        "trigger": "Buy box price stable between $30-$36",
+        "advice": "Prioritize products with stable buy box prices in a narrow range for confidence in sustainable selling",
+        "confidence": "High",
+        "source": "it's fairly stable between that 30 to $36 range, which is really, really nice."
+    },
+    {
+        "id": "keepa-bsr-low",
+        "category": "Buying",
+        "trigger": "BSR around 20,000 in category (top 1%)",
+        "advice": "Target products with low BSR indicating fast sales velocity",
+        "confidence": "High",
+        "source": "This product has a very low BSR, which is uh telling us that this product sells really fast. As you can see, 20k BSR in that 1% of the category."
+    },
+    {
+        "id": "keepa-monthly-sales",
+        "category": "Buying",
+        "trigger": "Monthly sold 300-500 units",
+        "advice": "Use monthly sold estimates to confirm high demand, but take with grain of salt for variation listings",
+        "confidence": "Medium",
+        "source": "in December you can see of last year it was selling about 300 times per month and then throughout the middle of the year it was selling anywhere from 400 to 500 times per month."
+    },
+    {
+        "id": "keepa-offer-fluctuation",
+        "category": "Risk",
+        "trigger": "Offer count fluctuating between 21-36 sellers",
+        "advice": "Look for fluctuating offer counts as indicator of active sales and turnover; avoid flat lines",
+        "confidence": "High",
+        "source": "in the last year, there was tons of fluctuation in the offer count, which is basically telling us that this product is selling really fast and that people are going in and out of stock... right now we're sitting at about 22 um people 21 people selling on this listing right now."
+    },
+    {
+        "id": "keepa-offer-spike",
+        "category": "Risk",
+        "trigger": "High spike in offer count without sales increase",
+        "advice": "Avoid products with sudden high offer count spikes as they indicate potential price tank due to excess supply",
+        "confidence": "High",
+        "source": "if you just see a flat line or a really high increase in this offer count, like a super super um high, you know, offer count spike, that is an identifier of the price is probably going to tank because it's just basic supply and demand."
+    },
+    {
+        "id": "keepa-offer-decrease",
+        "category": "Pricing",
+        "trigger": "Offer count stable or decreasing",
+        "advice": "Buy when offer count is decreasing to capitalize on reduced supply and potential price increases",
+        "confidence": "High",
+        "source": "we want to make sure this bottom chart is fairly stable, either stable or going down. Going down means that people are selling out... Therefore, that price is probably going to go up because there's less supply, more demand."
+    },
+    {
+        "id": "keepa-rating-increase",
+        "category": "General",
+        "trigger": "Increasing rating count on listing",
+        "advice": "Use rising ratings as additional confirmation of strong product sales",
+        "confidence": "Medium",
+        "source": "As you can see, it's going up. That's just another identifier that the product is selling even more because realistically, when was the last time you left a rating on a product? Um, not very many people do it."
+    },
+    {
+        "id": "keepa-timeframe-beginner",
+        "category": "General",
+        "trigger": "Analysis timeframe of 3 months to 1 year",
+        "advice": "For beginners, focus on 3-month and 1-year views to compare recent and historical prices/BSR",
+        "confidence": "High",
+        "source": "if you're a beginner seller, I would definitely stay between the year three month range. Um, that's kind of where you want to see because then in the year range you can go back to where the price was at last year and kind of relate to where it's at right now as well as the three-month you can kind of see what people are selling it in the most recent time range"
+    },
+    {
+        "id": "keepa-track-price",
+        "category": "Buying",
+        "trigger": "Buy box price reaches $35 or higher",
+        "advice": "Set alerts to track products and get notified when price hits $35+ for potential profitable entry",
+        "confidence": "High",
+        "source": "say for example, uh you want to be alerted when this product hits $35 in the buy box. So, $35 or more. So once this price hits $35 or more, people will send you a either text, an email or a message"
+    },
+    {
+        "id": "keepa-seller-stock",
+        "category": "Buying",
+        "trigger": "Other sellers' stock dropping from 332 to near 0 in 90 days",
+        "advice": "Analyze competitors' stock depletion (e.g., 100+ units sold) to estimate sales speed and decide purchase quantity",
+        "confidence": "High",
+        "source": "they're at about 332 units in stock and they just shot way way way down um through August and September... this FBA guy, he had 120 units in stock and then throughout August and July and early September, he sold out 100 units."
+    },
+    {
+        "id": "keepa-buybox-spread",
+        "category": "Risk",
+        "trigger": "Even spread of buy box ownership among multiple sellers (e.g., 40-80% per top sellers)",
+        "advice": "Seek listings with distributed buy box wins across FBA/FBM sellers for better arbitrage entry chances",
+        "confidence": "High",
+        "source": "we want to see a good even spread between all the people on the listing. Like you don't want to see only, you know, one or three people, one to three people just eating up 100% of the buy box"
+    },
+    {
+        "id": "keepa-brand-domination",
+        "category": "Risk",
+        "trigger": "100% buy box owned by brand seller in past 90 days",
+        "advice": "Avoid listings dominated by the brand owner to prevent IP complaints and removal",
+        "confidence": "High",
+        "source": "100% of the buy box in the past 30 days, let's see, the last 90 days, almost 100% has been the brand themselves. So stay away from listings like this."
+    },
+    {
+        "id": "keepa-flat-charts",
+        "category": "Risk",
+        "trigger": "Flat price and offer count lines over 3 months",
+        "advice": "Steer clear of products with flat charts as they indicate private label or non-arbitrageable listings",
+        "confidence": "High",
+        "source": "we can see this only this a really flat line in that price and a really flat line on our offer count. And this is in the past three months. So... this is just giving me red flags that this product is a private label product and we probably can't sell this ourselves."
+    },
+    {
+        "id": "keepa-bsr-seasonal",
+        "category": "Seasonality",
+        "trigger": "BSR fluctuations up/down over year",
+        "advice": "Use BSR spikes/dips to identify peak/off seasons for timing purchases",
+        "confidence": "Medium",
+        "source": "we see fluctuations up and down, up and down in the BSR. And this can kind of give us a quick idea of different seasons that pro products sell faster in and se like offseasons and peak seasons of that product."
+    },
+    {
+        "id": "keepa-rank-1",
+        "category": "General",
+        "trigger": "Sales rank above 200,000",
+        "advice": "Avoid products with sales rank above 200,000 as a beginner; focus on those below 200,000 for better sales velocity.",
+        "confidence": "High",
+        "source": "But as a beginner seller focus on staying below a 200,000 sales rank."
+    },
+    {
+        "id": "keepa-sales-est-1",
+        "category": "General",
+        "trigger": "Estimated sales below 30 per month",
+        "advice": "Only consider products with above 30 estimated sales per month to ensure demand.",
+        "confidence": "High",
+        "source": "basic winning product research criteria guys to write down is under 200k rank above 30 estimated sales per month."
+    },
+    {
+        "id": "keepa-profit-roi-1",
+        "category": "Pricing",
+        "trigger": "Profit below $3 per unit or ROI below 30%",
+        "advice": "Target products with at least $3 profit per unit and 30%+ ROI after all fees, shipping, and taxes.",
+        "confidence": "High",
+        "source": "$3 plus profit per unit and a 30% plus return on investment. And remember guys that's after shipping fees sales tax. Literally everything right here."
+    },
+    {
+        "id": "keepa-buybox-1",
+        "category": "Pricing",
+        "trigger": "Buy box price trending down",
+        "advice": "Look for stable or increasing buy box prices (pink line on Keepa) to indicate positive pricing trends.",
+        "confidence": "High",
+        "source": "the buy box price, the pink line, either stable or going up"
+    },
+    {
+        "id": "keepa-offer-trend-1",
+        "category": "Risk",
+        "trigger": "Offer count (competition) trending up",
+        "advice": "Prioritize products where offer count is trending down, indicating reduced competition and potential price increases.",
+        "confidence": "High",
+        "source": "the competition, aka the new offer count, is the bottom chart right here, which we can see is nicely trending down."
+    },
+    {
+        "id": "keepa-offer-trend-2",
+        "category": "Risk",
+        "trigger": "Offer count shooting up and price trending down",
+        "advice": "Avoid products showing increasing competition and decreasing prices, as trends will likely continue.",
+        "confidence": "High",
+        "source": "red flags on Keepa charts are these sharp drops right here in one day IP complaints as well as examples where you can see the competition trending up and the price trending down."
+    },
+    {
+        "id": "keepa-ip-drop-1",
+        "category": "Risk",
+        "trigger": "Sharp drop in offer count in one day",
+        "advice": "Avoid products with sudden sharp declines in offer count, indicating potential IP complaints.",
+        "confidence": "High",
+        "source": "You always want to avoid listings where you can see a really sharp decline in competition like literally in one day. That's an example of an I peak in plane."
+    },
+    {
+        "id": "keepa-ip-check-1",
+        "category": "Risk",
+        "trigger": "Suspected IP alert on Seller Amp",
+        "advice": "Do not automatically avoid suspected IP alerts; verify by checking Keepa for no huge drop-offs in offer count.",
+        "confidence": "High",
+        "source": "if you see the suspected IP or the suspected private label, don't automatically avoid those items. If it's an IP alert suspected, go ahead and see if the cape charts actually showing in that brand."
+    },
+    {
+        "id": "keepa-private-label-1",
+        "category": "Risk",
+        "trigger": "Suspected private label with brand dominance",
+        "advice": "Pass on suspected private label if the brand dominates and there is low third-party seller activity; check for good offer count.",
+        "confidence": "High",
+        "source": "if it's suspected private label, which automatically shows just based on low competition, you need to check if the brand is dominating it. But we can see in this case there's obviously a bunch of thirdparty sellers right here."
+    },
+    {
+        "id": "sourcing-buy-price-1",
+        "category": "Buying",
+        "trigger": "Purchase price above half of Amazon sell price",
+        "advice": "Aim to buy products for half or less of the Amazon sell price to ensure profitability.",
+        "confidence": "High",
+        "source": "In order to be profitful, we typically have to pay about half or less of what we can sell a product for on Amazon to make money."
+    },
+    {
+        "id": "sourcing-storefront-1",
+        "category": "Buying",
+        "trigger": "Starting from known winning products",
+        "advice": "Use storefront stalking: From winning products, view competitor sellers with high reviews (e.g., 1500+), explore their storefronts for other reseller-friendly brands and fast-selling items.",
+        "confidence": "High",
+        "source": "it's what's called the storefront stalking method. looking inside the storefronts of competitors, literally starting out on winning products you see on my channel, then going ahead and storefront stalking off there, finding sellers we know are making lots of profit, aka that have lots of reviews."
+    },
+    {
+        "id": "sourcing-amazon-avoid-1",
+        "category": "Buying",
+        "trigger": "Listings sold by Amazon",
+        "advice": "As a beginner, avoid listings where Amazon is selling to reduce competition risks.",
+        "confidence": "High",
+        "source": "The ones Amazon is on, I would recommend avoiding as a complete beginner."
+    },
+    {
+        "id": "variations-keepa-1",
+        "category": "General",
+        "trigger": "Multiple colors/sizes available",
+        "advice": "Check each variation's unique Keepa chart; use Keepa variations tab to filter by buy box price and select those with smooth (non-blocky) offer count movement.",
+        "confidence": "High",
+        "source": "every variation has its own unique keepa chart. ... use the variations tab on Keepa to navigate these. ... filter top to bottom by buy box. And then I'm going to look for good offer count movement. So good movement, not blockiness on the offer count movement"
+    },
+    {
+        "id": "sourcing-google-1",
+        "category": "Buying",
+        "trigger": "Identified profitable Amazon listing",
+        "advice": "Search the exact product title on Google to find retail sources, prioritizing brand websites or major retailers for deals and coupons.",
+        "confidence": "High",
+        "source": "we just go ahead and once we find good Amazon listing storefront stocking, we just go ahead and search for product title on Google right here to see what websites actually carry this product."
+    },
+    {
+        "id": "organize-leads-1",
+        "category": "General",
+        "trigger": "Out of stock or almost good leads",
+        "advice": "Use Seller Amp to organize leads into categories like 'out of stock' or 'almost good' for future monitoring, especially ahead of holidays.",
+        "confidence": "High",
+        "source": "You can go ahead and add that to out of stock almost good and different Google sheets on seller to actually organize these leads for the future. ... that might be better for the future especially with the holiday season coming up."
+    },
+    {
+        "id": "data-period-1",
+        "category": "General",
+        "trigger": "Beginner sourcing small quantities (5-10 units)",
+        "advice": "For beginners testing products, focus on 3-month Keepa data to assess recent trends.",
+        "confidence": "High",
+        "source": "when you're a beginner seller, you're just buying test or different products, five to 10 quantities of different items. So just focus on the threemonth data right here by just going ahead and clicking three months."
+    },
+    {
+        "id": "rule-012",
+        "category": "Buying",
+        "trigger": "Brand-specific offer count",
+        "advice": "Filter for at least 3 offers on brand listings to ensure multiple sellers and profitability potential.",
+        "confidence": "High",
+        "source": "go to offer count I'm going to put at least three offers that means it's probably not like a out of thought product there's a few sellers on the listing people are getting it profitably"
+    },
+    {
+        "id": "rule-013",
+        "category": "Pricing",
+        "trigger": "Sourcing from brand websites like Gap",
+        "advice": "Apply signup coupons (e.g., 20% off) and purchase discounted gift cards (e.g., 18% off via Cardbear) to improve margins.",
+        "confidence": "High",
+        "source": "Gab has a signup code on their website which let's see if we can see it down here scroll on to the bot get 20% off for every sale so you can take 20% off that 1749 and like I mentioned in a previous video we have cardbear and cardbear is a great website to buy discounted gift cards and let's see cardbear has 18% off Gap gift cards right now"
+    },
+    {
+        "id": "rule-014",
+        "category": "Risk",
+        "trigger": "Amazon in and out of stock on listing",
+        "advice": "Buy limited quantities and use FBM (Fulfillment by Merchant) if Amazon is sharing the buy box, to capture sales when Amazon is out.",
+        "confidence": "High",
+        "source": "Amazon's coming on and off this listing but when Amazon's off the listing quite often it does sell for $24 so this would not be like a crazy like buy a ton of this type of product but you can definitely snag a few sales like every week at the $24 price no issue... you just buy buy a few from your local Gap get it shipped to your house or whatever list at fbm and just let them sell right horing into Amazon forget about it because you will sell and you will make profit"
+    },
+    {
+        "id": "rule-015",
+        "category": "Buying",
+        "trigger": "Found a potential product",
+        "advice": "Check all variations (sizes, colors) for additional profitable opportunities.",
+        "confidence": "High",
+        "source": "that's why you always got to check the other variations you even check black white like white extra large is at 42 like this is a pretty good product"
+    },
+    {
+        "id": "keepa-009",
+        "category": "General",
+        "trigger": "Amazon stockouts occur periodically (e.g., white areas on orange shadow chart)",
+        "advice": "Consider selling only during Amazon stockout periods if third-party offers can capture buy box; monitor for suppressed buy box (e.g., price >$21 leading to 'see other offers') which reduces sales",
+        "confidence": "High",
+        "source": "we see that they're stocking out when it goes white... during the periods when Amazon stocks out so Amazon's got the buy box here and then on June 1st boom they're out of stock... Amazon's buy box goes suppressed and we can see that the price here is at 21 and change... Amazon suppresses the visibility to a certain extent of the listing and customers buy less therefore the item sells less"
+    },
+    {
+        "id": "keepa-010",
+        "category": "Pricing",
+        "trigger": "Lowest price offer on listing",
+        "advice": "Prioritize lowest price for buy box win; secondary factors include shipping time, inventory levels, Prime status, seller feedback (>99%), and account health",
+        "confidence": "High",
+        "source": "the first factor and most important factor that influences who is going to get that buy box is price so if I'm priced the lowest on Amazon most of the time I will be rewarded the buy box by Amazon... next to price all of those factors are significantly less right the number one factor is price the number two factor is shipping time"
+    },
+    {
+        "id": "keepa-011",
+        "category": "General",
+        "trigger": "eBay prices visible on Keepa chart",
+        "advice": "Ignore eBay prices as competitive threat; focus on Amazon ecosystem only, as customers buy within Amazon regardless of external pricing",
+        "confidence": "High",
+        "source": "generally if you're buying products to sell on Amazon you can ignore eBay um that's not really too much of a concern because Amazon is its own confined Market... a customer buying on Amazon is just going to buy on Amazon regardless of you know eBay prices or whatever"
+    },
+    {
+        "id": "keepa-012",
+        "category": "Buying",
+        "trigger": "Yellow sales estimate line on Keepa (e.g., fluctuating from 500 to 2,000 units/month)",
+        "advice": "Use as rough guide only (introduced 2024, not exact); prefer AMZ Scout for daily historical sales estimates or average Jungle Scout inputs for accuracy",
+        "confidence": "High",
+        "source": "this is a fairly newer tool that keepa introduced in 2024 and it is very much so an estimate... take a look at that yellow line on keepa it doesn't necessarily mean that's exactly what it's selling... for more exact sales data by the day go to AMZ Scout"
+    },
+    {
+        "id": "keepa-013",
+        "category": "Risk",
+        "trigger": "Product in regulated category (e.g., supplements requiring FDA/compliance docs)",
+        "advice": "Avoid if offer count drops indicate compliance removals; request certificates from suppliers to mitigate account suspension risk",
+        "confidence": "High",
+        "source": "the fact that it's a supplement is even more so a compliance red flag because very often Amazon does ask for compliance documents here which would explain why there were 70 sellers one day and 52 the next"
+    },
+    {
+        "id": "keepa-graph-customization-1",
+        "category": "General",
+        "trigger": "Initial Keepa graph setup",
+        "advice": "Customize the Keepa graph by keeping only green (BSR), pink (buy box), and orange (Amazon sales) lines visible to focus on key metrics without clutter.",
+        "confidence": "High",
+        "source": "all I do is just leave the green pink and orange colors on there there so that I can see more um and not see all this nonsense so I'm just taking all of these colors out so then I can see the real colors that I actually am interested in"
+    },
+    {
+        "id": "buy-box-analysis-1",
+        "category": "Pricing",
+        "trigger": "Examining pink buy box line over last 3 months",
+        "advice": "Ensure the pink buy box line is steady or rising within a consistent range (e.g., 35-40, now 40-45); avoid listings where the price is declining (e.g., from 35-40 to 25-30).",
+        "confidence": "High",
+        "source": "you just honestly want to make sure that the pink line is either steady around the same range so you can see here um in the last 3 months it's been about 35 um between 40 so that's perfect so it's been steady it's actually been right in and as you can tell it's rising even more now it's in the 40s to 45s you just don't want to see the buy box line going from like let's say 35 to 40 um in September and then now it's going down to 30 to 35 and then 25 to 30"
+    },
+    {
+        "id": "offer-count-decline-1",
+        "category": "Risk",
+        "trigger": "Rising pink line with offer count",
+        "advice": "Look for declining offer count (e.g., from 21-23 to lower) alongside rising buy box price, indicating sellers selling out and product becoming rarer; avoid rising offer count as it signals saturation.",
+        "confidence": "High",
+        "source": "usually when the pink line is rising the offer count is going down so this is the third graph this is the offer count this basically lets you know how much sellers we're selling this item on a given time so you can see here in the beginning of September when it was around 35 to 40 there was about 21 sellers 20 22 23 and now that you see it's rising you can see the offer count is declining and I love seeing it like that because that means that the price is rising the offer count is declining those offers those sellers are selling out with their units"
+    },
+    {
+        "id": "sales-volume-check-1",
+        "category": "Buying",
+        "trigger": "Past month sales data",
+        "advice": "Target listings with 100+ units bought in the past month to ensure high demand.",
+        "confidence": "High",
+        "source": "100 plus bought in the past month so we can see here price is rising offer count is declining like I said you don't want the price to be declining and you don't want the offer count to be rising"
+    },
+    {
+        "id": "bsr-threshold-1",
+        "category": "General",
+        "trigger": "Green BSR line over last 3 months",
+        "advice": "Prefer BSR under 100K; acceptable if highest is 207K but only reached twice in 3 months, especially if price rising and offer count declining; lower BSR indicates better sales.",
+        "confidence": "High",
+        "source": "the green is the BSR Sal drink line like I said you always want the BSR to be under 100K the highest it's been in the past 3 months is 207k but that's the highest it's been and it's only reached that Point twice out of the the past 3 months so I wouldn't mind selling this item if I found it profitable"
+    },
+    {
+        "id": "seasonal-bsr-1",
+        "category": "Seasonality",
+        "trigger": "BSR trends for seasonal items like toys",
+        "advice": "Expect and target declining BSR for holiday items (e.g., toys before Christmas) as demand increases.",
+        "confidence": "High",
+        "source": "as you can tell now the BSR is going down cuz it is a toy item and you know Christmas is coming up so of course the BSR is going to be going down the lower the BSR the better it is that means it's like you know actually selling there's high demand for it"
+    },
+    {
+        "id": "amazon-competition-1",
+        "category": "Risk",
+        "trigger": "Orange shading on graph",
+        "advice": "Avoid listings where Amazon is currently selling (orange shading present); monitor if they sold recently as they can re-enter anytime, reducing seller opportunities.",
+        "confidence": "High",
+        "source": "the orange shading is what I usually look at but as you can tell here Amazon isn't selling this item you can see in June they were selling it back and they used to sell it more back in like June so you can see the orange shading here they aren't currently selling it anymore but if they were to sell it or hop on of it hop on the listing then you'll see an orange shading I always like keeping the orange shading on the graph just so I know if Amazon's ever sold this item"
+    },
+    {
+        "id": "buy-box-domination-1",
+        "category": "Risk",
+        "trigger": "Pink line too steady (straight)",
+        "advice": "If pink buy box line is perfectly straight, check buy box statistics; avoid if one seller has over 50% wins (e.g., 82% or 45% recently but historically high).",
+        "confidence": "High",
+        "source": "if it's like really steady like literally like straight then that's how you know that a seller or some brand is hogging the buy box because and you can tell here because it's just their price and it's just straight so we can see we can already tell I don't even have to look at the data bybox statistics but I'm going to show you guys how to do that um but I already know that the sliding monkey is getting way over 50% um for the buybox wins"
+    },
+    {
+        "id": "big-seller-avoidance-1",
+        "category": "Risk",
+        "trigger": "Big stores or brands on buy box statistics",
+        "advice": "Stay away from listings dominated by big mall stores (e.g., Hot Topic) or brands, as they consistently win the buy box similar to Amazon.",
+        "confidence": "High",
+        "source": "usually I stay away from like listings that like you know big stores that you see in malls um are on just because like I don't know it just feels like they're always going to be winning the B box it's kind of like if Amazon was selling it"
+    },
+    {
+        "id": "brand-domination-1",
+        "category": "Risk",
+        "trigger": "Brand selling with 100% straight pink line",
+        "advice": "Avoid listings where the brand is selling, indicated by super straight pink line and 99-100% buy box wins in statistics.",
+        "confidence": "High",
+        "source": "this one I wanted to show you guys because the brand is selling it and of course if the brand is selling it they're going to be winning the buy box basically 100% of the time kind of if like Amazon was selling the item so you can see here super straight like super straight... they got 100% buy box wins I already know it buy box statistics... you're not going to want to sell this item"
+    },
+    {
+        "id": "variation-sales-estimate-1",
+        "category": "Buying",
+        "trigger": "Variation listings with multiple options",
+        "advice": "For variation listings, calculate specific variant sales by taking its percentage of reviews/ratings (e.g., 42% of 728 total sales = 305/month) from total estimated sales; avoid low performers (e.g., 1% = 7/month).",
+        "confidence": "High",
+        "source": "once you see that samp has the estimated sales for it so $728 that is based off of whole listing so if you want to sell the Latin Citrus you're going to have to see how much times it actually sells a month you're just going to go down to where it says variations... the L citus says 42% of the time so we're going to take 42% of 728 and it sells about 305 times a month... zesty lemon scr 1% 1% that is bad so let's take 1% of 728 only sell seven times a month you're not going to want to sell the zesty lemon"
+    },
+    {
+        "id": "variation-popularity-1",
+        "category": "General",
+        "trigger": "Trophy icon in variations",
+        "advice": "In variation listings, prioritize variants with the trophy icon indicating highest sales within the listing.",
+        "confidence": "High",
+        "source": "most of the time the the winner of the listing there's going to be a little trophy so it lets you know which product is selling the most out of this whole listing so the spicy pepper is the popular one and the zassy lemon is the Trashy one"
+    },
+    {
+        "id": "offer-count-rise-1",
+        "category": "Risk",
+        "trigger": "Offer count rising quickly",
+        "advice": "Avoid items where offer count is rising rapidly, as it leads to saturation and eventual price decreases.",
+        "confidence": "High",
+        "source": "the offer count graph is really important because if you see the offer count Rising super quickly you're not going to want to sell that item cuz it's eventually it's on the rise to getting saturated with saturation comes decrease in price"
+    },
+    {
+        "id": "steady-line-warning-1",
+        "category": "Pricing",
+        "trigger": "Pink line steady but not too steady",
+        "advice": "Ensure pink line is steady but not perfectly straight, as the latter indicates buy box domination; check statistics if suspicious.",
+        "confidence": "High",
+        "source": "just make sure the pink line is steady but not too steady where it's like this cuz that's how you know that someone is dominating the buy box"
+    },
+    {
+        "id": "sales-rank-low",
+        "category": "Buying",
+        "trigger": "Sales Rank < 1000",
+        "advice": "Consider as fast-moving product, but check for other risks like price trends before buying.",
+        "confidence": "High",
+        "source": "this sales rank is insanely low and has stayed that low for a long time. So this is a very fast moving product, especially because it's within three digits. under a thousand is an insanely low sales rank for a product."
+    },
+    {
+        "id": "price-trending-down",
+        "category": "Risk",
+        "trigger": "Price trending downward quickly with offer count increasing",
+        "advice": "Avoid buying even if currently profitable, as price may continue to drop making future sales unprofitable after inventory arrives.",
+        "confidence": "High",
+        "source": "this product, as you can tell, is trending downward very quickly and the offer count is going up very fast as well. So you'll usually see a correlation in between those two things. seller account rising, offer price going down. If you see something like this that is trending downwards, even if you are profitable at this price, you're probably going to want to stay away from it."
+    },
+    {
+        "id": "volatile-pricing-floor",
+        "category": "Pricing",
+        "trigger": "Volatile buy box price with clear floor",
+        "advice": "Ensure profitability at the floor price (lowest consistent price, e.g., $96 or $20); do not rely on higher peaks for margins.",
+        "confidence": "High",
+        "source": "You're going to want to always make sure that you are profitable at the bottom price because the bottom price is staying very consistent here. ... just always make sure you're good at the floor price. As long as you're good at the floor price, you can always go up. but you can't go down. ... I would even check this $20 price here just to make sure."
+    },
+    {
+        "id": "amazon-competitor",
+        "category": "Risk",
+        "trigger": "Amazon in stock for >3 months and dominates buy box >90%",
+        "advice": "Avoid as new seller; check buy box stats to confirm low share for others (e.g., <5%); price low enough to compete if experienced.",
+        "confidence": "High",
+        "source": "Amazon has been in stock for the last 3 months completely and since September. ... As a new seller, you're probably going to want to avoid something like this ... they've had 93% of the buy box owned and only one person has got 5% 1% less than 1%."
+    },
+    {
+        "id": "no-offer-movement",
+        "category": "Risk",
+        "trigger": "Stable offer count with no fluctuations (e.g., consistently 1-2 offers)",
+        "advice": "Avoid purchasing; indicates low sales velocity, especially if not Amazon-dominated.",
+        "confidence": "High",
+        "source": "If you see something like this where it's consistent, just one across the board or just not moving at all ... this is just not selling. ... If the chart looks like this, and this is a normal seller, not Amazon, you don't want to get into this product because they would sell out."
+    },
+    {
+        "id": "price-tanking-correlation",
+        "category": "Risk",
+        "trigger": "Offer count steadily increasing with price slowly decreasing over time",
+        "advice": "Avoid; correlation suggests continued price decline as competition rises.",
+        "confidence": "High",
+        "source": "this is going to be an example of what potential price tanking can look like because you can see that the offer count is slowly going up over time and the price is slowly going down over time. Again, correlation between those two charts usually happens."
+    },
+    {
+        "id": "ideal-chart",
+        "category": "Buying",
+        "trigger": "Consistent straight price history with fluctuating offer count (up and down frequently)",
+        "advice": "Prioritize buying; indicates stable pricing and strong sales velocity.",
+        "confidence": "High",
+        "source": "this is just completely straight over here on the top and then on the bottom sellers are consistently going up and down and up and down ... an insanely straight across chart for the price. ... good fluctuation through the bottom."
+    },
+    {
+        "id": "sales-rank-averages",
+        "category": "Buying",
+        "trigger": "Compare sales rank averages over 30, 60, 90, 365 days",
+        "advice": "Buy if averages show increasing popularity (lower rank over time) or stability; avoid if worsening (higher rank).",
+        "confidence": "High",
+        "source": "this is going to show us breakdowns of the averages of the sales rank for 30, 60, 90, 100, 365 days. ... You can tell if it has gotten less popular over time, more popular over time, and make a buying decision based off of that data."
+    },
+    {
+        "id": "variations-research",
+        "category": "Buying",
+        "trigger": "Product has multiple variations (colors/sizes)",
+        "advice": "Analyze individual variations for consistent buy box and offer fluctuations; source additional profitable variations from same supplier.",
+        "confidence": "High",
+        "source": "this is helpful because if you have one variation or size slashcolor that is profitable for you, your supplier most likely has other sizes and colors of the same product. ... you can come in and find other good sizes that are selling well just by looking at the buy box history here, making sure it's consistent, and the offer count here."
+    },
+    {
+        "id": "offer-count-fluctuation",
+        "category": "General",
+        "trigger": "Frequent changes in offer count (e.g., 2 to 9 back to lower)",
+        "advice": "Indicates active sales; prioritize products with movement over stable counts.",
+        "confidence": "High",
+        "source": "You just want to see fluctuation down here. See that offers are moving. This is a good example of something that we would assume sells a lot based off this data because offers are coming in and out so fast."
+    },
+    {
+        "id": "ignore-fbm",
+        "category": "General",
+        "trigger": "Presence of FBM (merchant fulfilled) offers",
+        "advice": "Ignore FBM prices and competition as FBA with Prime is preferred by buyers even if slightly higher priced.",
+        "confidence": "High",
+        "source": "the new third-party FBM, which is merchant fulfilled offers, which we don't really need at all to ever pay attention to because they're not really our competition. If you're shipping in FBA, you have prime shipping and they don't."
     }
 ]
