@@ -247,7 +247,7 @@ def infer_sale_events(product):
             start_time = drop['timestamp']
             end_time = start_time + search_window
             
-            rank_changes_in_window = df_rank[(df_rank['timestamp'] > start_time) & (df_rank['timestamp'] <= end_time)]
+            rank_changes_in_window = df_rank[(df_rank['timestamp'] >= start_time) & (df_rank['timestamp'] <= end_time)]
             has_rank_drop = not rank_changes_in_window.empty and (rank_changes_in_window['rank_diff'] < 0).any()
 
             # Near Miss Logging

@@ -35047,5 +35047,285 @@
         "advice": "Ignore FBM prices and competition as FBA with Prime is preferred by buyers even if slightly higher priced.",
         "confidence": "High",
         "source": "the new third-party FBM, which is merchant fulfilled offers, which we don't really need at all to ever pay attention to because they're not really our competition. If you're shipping in FBA, you have prime shipping and they don't."
+    },
+    {
+        "id": "price-history-stable",
+        "category": "Pricing",
+        "trigger": "Price history shows a straight, consistent line over 3+ months",
+        "advice": "Prioritize products with stable pricing history to ensure consistent profitability; avoid iffy or jumping prices that dip below buy cost after fees",
+        "confidence": "High",
+        "source": "You want to be looking for something that has just a pretty straight line on that graph. You know, consistent price history over a long period of time. For instance, if we have a look at this coffee machine here, we can see the pricing is really, really stable. Um, over the past 3 months, it's barely changed."
+    },
+    {
+        "id": "amazon-dominated",
+        "category": "Risk",
+        "trigger": "Amazon wins buy box 100% of the time",
+        "advice": "Avoid listings where Amazon dominates the buy box; check buy box statistics to confirm sharing",
+        "confidence": "High",
+        "source": "if we head into data and we go to buy box statistics, you can see that Amazon are winning the buy box 100% of the time. Now this is despite other sellers being on the list listing previously and being at competitive prices. So because of that, I would probably want to give this one a miss"
+    },
+    {
+        "id": "variation-linked-salesrank",
+        "category": "Risk",
+        "trigger": "Linked variations sharing the same sales rank (e.g., all at 12,970 or 47,000)",
+        "advice": "In linked variation listings, verify specific variation sales by checking historical FBA offers and stock patterns; avoid if no reliable FBA sales history",
+        "confidence": "High",
+        "source": "in this variation listing, this is what is called a linked variation. And that is where all of the other variations on that listing or nearly all of them, they share the same sales rank. Now essentially what this means for us in this case is that all of these products here with this 12,900, they're all linked."
+    },
+    {
+        "id": "no-monthly-sold",
+        "category": "Risk",
+        "trigger": "No monthly sold history chart (indicating <50 units/month)",
+        "advice": "Skip products without a monthly sold history chart, as it confirms at least 50 units sold in past 30 days; use as a quick sales verifier",
+        "confidence": "High",
+        "source": "if you do see this chart, it has sold at least 50 in a month. This line does not appear unless a product is selling at least 50 units. So, if you do see this chart, you can be sure that it probably does sell. There's a complete lack of it on these gloves"
+    },
+    {
+        "id": "rising-offers-decreasing-price",
+        "category": "Risk",
+        "trigger": "Offer count rising (e.g., up to 200 sellers) and price decreasing (e.g., from 90-100 to 75 over months)",
+        "advice": "Avoid listings with increasing sellers and slumping prices; monitor for penny decreases that erode margins, especially on low-margin items",
+        "confidence": "High",
+        "source": "if you're looking at a chart and you're seeing the offer count is rising and the price is decreasing, it's a good sign that it's going to continue and you're probably going to want to avoid it."
+    },
+    {
+        "id": "min-offers-three",
+        "category": "Risk",
+        "trigger": "Minimum 3 offers on listing",
+        "advice": "Filter for at least 3 offers to avoid restricted brand listings; check if manufacturer/brand is selling to prevent account issues",
+        "confidence": "High",
+        "source": "we can also change the offer count settings. So, I'll do a minimum of three offers. Now, this is going to exclude a huge amount of private label products where it's just the brand or the company that owns that brand."
+    },
+    {
+        "id": "buy-box-min-30",
+        "category": "Pricing",
+        "trigger": "Buy box price at least \u00a330",
+        "advice": "Filter for buy box >= \u00a330 to ensure profitability after FBA fees; avoid very cheap items",
+        "confidence": "High",
+        "source": "let's go back to the filter and we'll do a buy box of at least 30 quid, let's say. So, that's slimmed down our list significantly, right? So, now we've got just products that are at least \u00a330"
+    },
+    {
+        "id": "product-match-details",
+        "category": "Buying",
+        "trigger": "Model number, EAN, manufacturer part number mismatch",
+        "advice": "Verify product details like EAN, model number, and part numbers match between retailer and Amazon to avoid sending wrong items and returns",
+        "confidence": "High",
+        "source": "You want to make sure that the model numbers match, the EN number also matches, as well as any like part numbers and stuff like that as well. If it doesn't, probably best to skip over it"
+    },
+    {
+        "id": "price-tracker-high",
+        "category": "Pricing",
+        "trigger": "Buy box price >= \u00a3150 (or desired threshold)",
+        "advice": "Set up Keeper tracker for notifications when buy box exceeds a profitable threshold (e.g., \u00a3150) to capitalize on inflated prices for OA deals",
+        "confidence": "High",
+        "source": "anytime this goes above 150 we want to get a notification from keeper. So we can paste this as into keeper like so. ... We've got the buy box price and the Amazon price. ... let's change this to 150 quid or more."
+    },
+    {
+        "id": "avoid-marketplaces",
+        "category": "Risk",
+        "trigger": "Sourcing from marketplaces like eBay, OnBuy, AliExpress",
+        "advice": "Only source from direct UK retailers, not marketplaces, to avoid fakes and account bans",
+        "confidence": "High",
+        "source": "I would avoid OnB. Ony is not a place you want to be buying from. It's a bit like eBay where it's a marketplace, so you could have fake products... Do not source from marketplaces. You only want to be sourcing from UK retailers, not AliExpress, not on buy, not eBay"
+    },
+    {
+        "id": "seasonal-salesrank",
+        "category": "Seasonality",
+        "trigger": "Improved sales rank in last 30 days vs. 90/180/365 days (e.g., lower rank recently)",
+        "advice": "Check sales rank over multiple periods for seasonal boosts; confirm with price drops or trends, but verify long-term viability",
+        "confidence": "High",
+        "source": "This can be really useful particularly for stuff like seasonal products where it might have sold more recently like really well but over like a longer period of time didn't sell as great. So this coffee machine in particular we can see in the last 30 days the uh sales rank has actually been a lot lower"
+    },
+    {
+        "id": "stock-pattern-staircase",
+        "category": "General",
+        "trigger": "Historical stock counts show staircase pattern (steady decreases)",
+        "advice": "Look for FBA sellers with staircase stock patterns in offers section to confirm steady sales; toggle FBA only and include historical offers",
+        "confidence": "High",
+        "source": "We can have a look at some other sellers, see if there's anyone else that seems to have kind of been selling these or not selling these... we want to be looking for like a staircase pattern realistically to show steady sales going down."
+    },
+    {
+        "id": "roi-min-18-20",
+        "category": "Pricing",
+        "trigger": "Buy price <= \u00a318-20 for \u00a330-40 item after fees/VAT",
+        "advice": "Target buy prices under \u00a320 for items selling at \u00a330+ to achieve profitable ROI; factor in fees, VAT, and potential coupons/cashback",
+        "confidence": "High",
+        "source": "we're going to be aiming for at least 18 quid that we want to buy it for. with a bit less fees, probably 20 quid is is the kind of the maximum we can really be paying for this item to make a profit."
+    },
+    {
+        "id": "bb-001",
+        "category": "Pricing",
+        "trigger": "Buy Box price stable over 3 months",
+        "advice": "Look for flat Buy Box graphs indicating price stability to predict future sell-through profitability when inventory arrives.",
+        "confidence": "High",
+        "source": "ideally we'd like to have a really flat graph so you see the buy box right here this is really flat and what I'm really looking for specifically is that generally a price which is very stable because if it's always stable now I know that when I buy my product and ship it in it will most likely be that price again"
+    },
+    {
+        "id": "lp-001",
+        "category": "Risk",
+        "trigger": "Lowest Buy Box price over past year below profitability threshold",
+        "advice": "Ensure profitability at the lowest historical Buy Box price over the last year; avoid if unprofitable for more than one month in the year.",
+        "confidence": "High",
+        "source": "make sure that you're actually going to be profitable at the lowest price across that time period over the what last year I think that's so important... we cannot lose money for any more than one month and ideally you might lose maybe a dollar for example over the course of that keeper chart if it's been really nice and stable for one out of the last 12 months"
+    },
+    {
+        "id": "noc-001",
+        "category": "Risk",
+        "trigger": "New Offer Count increasing above historical average (e.g., from 2 to 20-24)",
+        "advice": "Avoid buying if new offer count rises significantly, as Buy Box price typically drops within 1-2 weeks due to increased competition.",
+        "confidence": "High",
+        "source": "if you are starting to see an increase in this new seller account new off account this is generally a really big red flag... it takes a week or two before the buy box price starts declining after the new sell account Rises"
+    },
+    {
+        "id": "amazon-bb-001",
+        "category": "Risk",
+        "trigger": "Buy Box graph mostly yellow (Amazon holding >95% of time)",
+        "advice": "Avoid products where Amazon dominates the Buy Box (yellow shading); unlikely to share sales, even if current price seems profitable.",
+        "confidence": "High",
+        "source": "if you just look at the how the buy box literally hovers over the Amazon price... the majority of the time I'd probably say 95 maybe 98% of the time that yellow that top bar is all yellow that means that Amazon is holding the buy box... be super super careful"
+    },
+    {
+        "id": "np-vs-bb-001",
+        "category": "Pricing",
+        "trigger": "New Price significantly lower than Buy Box (e.g., $69.49 vs $90)",
+        "advice": "Be cautious of New Price discrepancies due to slower shipping; focus on Buy Box as 90% of sales occur there, not the lowest new offer.",
+        "confidence": "High",
+        "source": "the new price is cheaper than the buy box... the new is useful but it doesn't necessarily mean that's going to be the sell price on the buy box which is where 90% of the sales come through"
+    },
+    {
+        "id": "eol-001",
+        "category": "Buying",
+        "trigger": "Sales rank trending upward and new offer count decreasing over 6-12 months",
+        "advice": "Identify end-of-line products by upward sales rank trend and falling offers; buy low now and hold for 1-6 months as prices rise with reduced supply.",
+        "confidence": "High",
+        "source": "if you look at this chart here it's time to go up and up and up... these products start having less and less demand but what they might be it End of Line Products... buying it today holding it for a month 3 months 6 months could mean this product is actually a lot lot more profitable"
+    },
+    {
+        "id": "ip-pl-001",
+        "category": "Risk",
+        "trigger": "Straight-line new offer count with very low sellers (e.g., 1 seller over 3 years)",
+        "advice": "Avoid listings with unnaturally straight offer counts and minimal sellers, indicating private label or brand-controlled; high IP complaint risk.",
+        "confidence": "High",
+        "source": "when I see new off accounts push a straight that's an immediately a red flag... that straight line is generally the pricing that you see when brand themselves actually selling the product for a fixed price... I always walk away and say I'm not going to take the risk"
+    },
+    {
+        "id": "ip-drop-001",
+        "category": "Risk",
+        "trigger": "Vertical drops in new offer count (e.g., sudden straight-down lines)",
+        "advice": "Watch for vertical drops in offer count indicating mass IP complaints; avoid brands known for this (e.g., Milwaukee) to prevent account suspension.",
+        "confidence": "High",
+        "source": "when I see vertical lines that's some external Force kicking a lot of people off that listing... these guys are known for issuing IP complaints... spotting these things is going to be key to ensuring the account remains healthy"
+    },
+    {
+        "id": "ms-001",
+        "category": "General",
+        "trigger": "Monthly sold fluctuating between 50-100 over time",
+        "advice": "Use historical monthly sold data to estimate true velocity; if hovering 50-100, assume closer to 50-100 units/month rather than exact Amazon buckets.",
+        "confidence": "High",
+        "source": "if it's always maybe hovering on 50 every now and then popping up to 100 we're probably saying it's closer to 50 or under 100... if it's always going 100 maybe popping up to 200 we'll probably say it's in the high hundreds"
+    },
+    {
+        "id": "time-delay-001",
+        "category": "Pricing",
+        "trigger": "New offer count rising but Buy Box still stable",
+        "advice": "Account for 1-2 week delay in Buy Box reaction to offer count changes; avoid buying during rising competition even if currently profitable.",
+        "confidence": "High",
+        "source": "the buy box takes a period of time before it reacts... it takes a week or two before the buy box price starts declining after the new sell account Rises... things take time to react on Amazon"
+    },
+    {
+        "id": "keepa-deals-settings",
+        "category": "Buying",
+        "trigger": "Price dropped at least 50% in past day with $20 drop, item price over $12, max rank 100K",
+        "advice": "Use Keepa deals tab to find new items with momentary price drops on Amazon, buy low, and flip for profit when price recovers",
+        "confidence": "High",
+        "source": "I'm looking for obviously only new it items I'm looking for just an item that dropped and has dropped at least 50% in the past day I have this set to uh a drop of $20 and um price range items got to be over 12 bucks and Max rank of 100K um those are pretty tight settings"
+    },
+    {
+        "id": "monthly-drop-alternative",
+        "category": "Buying",
+        "trigger": "Slow price drop over a month",
+        "advice": "Adjust Keepa settings to monthly drop to find items with gradual price reductions by Amazon or sellers",
+        "confidence": "High",
+        "source": "sometimes I'll do month the month would give you more of a slow drop sometimes Amazon or you will slowly drop prices and I'll use that to find items as well"
+    },
+    {
+        "id": "avoid-amazon-essentials",
+        "category": "Risk",
+        "trigger": "Item is Amazon Essentials brand",
+        "advice": "Skip Amazon Essentials items due to restrictions and low profitability",
+        "confidence": "High",
+        "source": "I don't want to flip Amazon essential so I don't waste my time... I avoid Amazon essentials as I said... yeah we're restricted on Amazon entral"
+    },
+    {
+        "id": "average-selling-price-threshold",
+        "category": "Pricing",
+        "trigger": "Average selling price around $30 or less",
+        "advice": "Move on from items if average selling price is $30 or below, as profit margins are not worth the time",
+        "confidence": "High",
+        "source": "what's the average selling price you know it's been dropping slowly um you'd probably say you know 30 might be the average selling price and 16 and the 30 is not worth our time so I will move on"
+    },
+    {
+        "id": "roi-profit-threshold",
+        "category": "Pricing",
+        "trigger": "Net profit under $10 or ROI under 40%",
+        "advice": "Only pursue deals with at least $10 net profit and 40% ROI, especially for shoes; calculate including max inventory placement fee but exclude low inventory and inbound shipping for FBA",
+        "confidence": "High",
+        "source": "for shoes I rarely want to go under $10 Roi or under 40 sorry I keep getting these things messed up under $10 for a net profit and um rarely want to be under 40% R... boom 15% Roi 54 or sorry $15 net profit 54 uh% Ro I"
+    },
+    {
+        "id": "next-price-evaluation",
+        "category": "Pricing",
+        "trigger": "Next seller price is $45 or lower",
+        "advice": "Avoid if next price is too low (e.g., $45); ensure potential sell price is at least $56-60 for good margins when buying at $28",
+        "confidence": "High",
+        "source": "obviously if next price is you know 45 it's not going to really work too well so you know let let's see what happens if we could flip this for 60... what happens if we have to trp it down to 56 we're still making 11 bucks and 42% Roi"
+    },
+    {
+        "id": "sales-history-check",
+        "category": "Risk",
+        "trigger": "Poor sales history or frequent low prices (e.g., $30 or $40 sales)",
+        "advice": "Evaluate Keepa sales history for consistent high prices (e.g., $56-60); avoid if history shows too many low sales points",
+        "confidence": "High",
+        "source": "I don't like the $30 history here... this I don't love the $40 sale price uh there... we see the selling history 60 bucks um to me 56... some nice hist for $23"
+    },
+    {
+        "id": "rank-and-movement",
+        "category": "Buying",
+        "trigger": "Rank better than 100K with good movement and out-of-stock events",
+        "advice": "Prioritize items with rank under 100K, consistent sales (e.g., Amazon going out of stock), and strong movement indicators",
+        "confidence": "High",
+        "source": "Max rank of 100K... the rank is good youo it's definitely moving you can see you know Amazon's constantly going out of stock... this moves very well"
+    },
+    {
+        "id": "variation-selection",
+        "category": "Buying",
+        "trigger": "Popular sizes with high reviews (e.g., size 9 with 12 reviews in 30 days)",
+        "advice": "When sourcing variations, choose popular sizes (e.g., avoid size 11 or 5.5 if slower); use RevSeller to check recent reviews and sales velocity",
+        "confidence": "High",
+        "source": "this is size 11 which is a you know a little you know maybe a little bit slower but look number size nine has 12 reviews in the past 30 days... I'm not a huge fan of that size because it's so small"
+    },
+    {
+        "id": "in-stock-sourcing",
+        "category": "Buying",
+        "trigger": "Amazon out of stock on target variation",
+        "advice": "Only source from Amazon if in stock and under $30; avoid out-of-stock variations when trying to buy low",
+        "confidence": "High",
+        "source": "I don't want the ones out of stock because obviously we're trying to Source from Amazon and I want the things under 30 bucks"
+    },
+    {
+        "id": "keepa-tracking",
+        "category": "General",
+        "trigger": "Winning item identified but currently out of stock",
+        "advice": "Track promising items in Keepa for up to 3 years to alert when they restock at low prices (e.g., $30)",
+        "confidence": "High",
+        "source": "what I like to do is then I like to see okay I you know this is Rev seller and I'll look and see... you can track it you know so hey obviously it's gonna be a winner now but hey I want to know anytime this comes back in stock at 30 bucks you can let me know for the next three years"
+    },
+    {
+        "id": "upc-price-matching",
+        "category": "Buying",
+        "trigger": "Amazon price drop suspected to be matching another seller",
+        "advice": "Use UPC in Keepa shopping tab to search for other sources offering the item at the low Amazon price (e.g., $28) for alternative sourcing",
+        "confidence": "High",
+        "source": "another thing you can do is you can take the UPC and you can throw it in here and also beyond that you can do this just try to see is Amazon price matching somebody um that we might be able to buy this for 28 bucks... yeah this PL oh there it is 28 bucks Adidas um so so they were price matching Adidas"
     }
 ]
