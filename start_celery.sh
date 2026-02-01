@@ -63,14 +63,14 @@ monitor_and_restart() {
     while true; do
         sleep 60
 
-        # Check Worker (Relaxed grep)
-        if ! pgrep -f "celery.*worker" > /dev/null; then
+        # Check Worker (Strict grep to avoid catching 'tail -f' logs)
+        if ! pgrep -f "celery.*-A.*worker" > /dev/null; then
             echo "$(date): Celery Worker died. Restarting..." >> "$MONITOR_LOG_FILE"
             su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
         fi
 
-        # Check Beat (Relaxed grep)
-        if ! pgrep -f "celery.*beat" > /dev/null; then
+        # Check Beat (Strict grep to avoid catching 'tail -f' logs)
+        if ! pgrep -f "celery.*-A.*beat" > /dev/null; then
             echo "$(date): Celery Beat died. Restarting..." >> "$MONITOR_LOG_FILE"
             # Cleanup PID before restart
             sudo rm -f "$APP_DIR/celerybeat.pid"
