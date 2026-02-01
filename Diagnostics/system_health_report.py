@@ -19,6 +19,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 # --- Configuration ---
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'deals.db')
 WORKER_LOG = os.path.join(os.path.dirname(__file__), '..', 'celery_worker.log')
+MONITOR_LOG = os.path.join(os.path.dirname(__file__), '..', 'celery_monitor.log')
 REPORT_FILE = os.path.join(os.path.dirname(__file__), 'health_report.json')
 
 # Colors
@@ -108,6 +109,14 @@ class HealthChecker:
                 self.log_result("infrastructure", "Celery Beat", "PASS", "Running")
             else:
                 self.log_result("infrastructure", "Celery Beat", "FAIL", "Not Found")
+
+            # Check Monitor Process
+            monitor_res = subprocess.run(['pgrep', '-f', 'monitor_and_restart'], capture_output=True, text=True)
+            if monitor_res.stdout.strip():
+                self.log_result("infrastructure", "Monitor Process", "PASS", "Running")
+            else:
+                self.log_result("infrastructure", "Monitor Process", "FAIL", "Not Found")
+
         except Exception as e:
             self.log_result("infrastructure", "Process Check", "FAIL", str(e))
 
@@ -219,6 +228,35 @@ class HealthChecker:
 
     def check_logs(self):
         print(f"\n{BOLD}--- Log Analysis ---{RESET}")
+
+        # 1. Check Monitor Log (Priority if infrastructure failed)
+        if os.path.exists(MONITOR_LOG):
+            try:
+                with open(MONITOR_LOG, 'r') as f:
+                    lines = f.readlines()[-20:] # Last 20 lines
+
+                # Check for specific failure keywords
+                monitor_errors = 0
+                for line in lines:
+                    if "CRITICAL" in line or "Failed" in line or "Aborting" in line:
+                        monitor_errors += 1
+
+                status = "WARN" if monitor_errors > 0 else "PASS"
+                self.log_result("logs", "Monitor Log", status, f"{monitor_errors} critical events")
+
+                # If infrastructure is failing, print the log tail
+                if self.results["infrastructure"].get("Celery Worker", {}).get("status") == "FAIL":
+                    print(f"\n{YELLOW}--- Tail of Monitor Log ---{RESET}")
+                    for line in lines:
+                        print(line.strip())
+                    print(f"{YELLOW}-----------------------------{RESET}\n")
+
+            except Exception as e:
+                self.log_result("logs", "Monitor Log Read", "FAIL", str(e))
+        else:
+            self.log_result("logs", "Monitor Log", "WARN", "File not found")
+
+        # 2. Check Worker Log
         if not os.path.exists(WORKER_LOG):
             self.log_result("logs", "Worker Log", "WARN", "File not found")
             return
