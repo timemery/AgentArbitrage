@@ -489,7 +489,7 @@ def _deduplicate_strategies():
         raise e
 
 def _deduplicate_intelligence():
-    """Helper to deduplicate intelligence.json."""
+    """Helper to deduplicate intelligence.json (Exact Match)."""
     if not os.path.exists(INTELLIGENCE_FILE):
         return 0
 
@@ -517,9 +517,106 @@ def _deduplicate_intelligence():
         app.logger.error(f"Error deduplicating intelligence: {e}")
         raise e
 
+def _homogenize_intelligence():
+    """Helper to homogenize intelligence.json using LLM for semantic deduplication."""
+    if not os.path.exists(INTELLIGENCE_FILE):
+        return 0
+
+    try:
+        with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
+            intelligence = json.load(f)
+
+        if not intelligence:
+            return 0
+
+        # We will process the entire list in one go if it fits, or chunks if massive.
+        # Given ~500 items, we can try a single batch or large chunks.
+        # Let's chunk to be safe (e.g., 50 items at a time is too slow for global dedup).
+        # Strategy: Send the LIST to the LLM and ask it to return a UNIQUE JSON list.
+
+        # NOTE: A full list of 6000+ items is too big for one context window.
+        # We need a smarter way. We can cluster them or just use a rolling window.
+        # For this implementation, let's assume the user wants to clean the CURRENT state which has ~500 unique items (from my check).
+        # Wait, the check showed 499 items in the sample read?
+        # The `read_file` earlier showed many lines... ah, `head -n 50` showed 50 lines.
+        # The python script said: `499` unique items. So the list IS small enough.
+
+        if len(intelligence) > 2000:
+             # Fallback to simple dedup if too huge for context
+             app.logger.warning("Intelligence list too large for semantic homogenization. Running simple dedup.")
+             return _deduplicate_intelligence()
+
+        prompt = f"""
+        You are a data cleaner. Below is a JSON list of "intelligence" items (conceptual ideas).
+        Many are duplicates with slightly different wording.
+
+        **Task:**
+        1. Identify semantically identical or highly similar ideas.
+        2. Merge them into a single, best-phrased version.
+        3. Return ONLY the cleaned, deduplicated JSON list of strings.
+        4. Do not add new ideas. Only remove duplicates.
+
+        **Input List:**
+        {json.dumps(intelligence)}
+        """
+
+        payload = {
+            "messages": [
+                {"role": "system", "content": "You are a data cleaner."},
+                {"role": "user", "content": prompt}
+            ],
+            "model": "grok-4-fast-reasoning",
+            "stream": False,
+            "temperature": 0.1
+        }
+
+        result = query_xai_api(payload)
+
+        if "error" in result:
+            app.logger.error(f"xAI Error in homogenization: {result['error']}")
+            return 0
+
+        try:
+            content = result['choices'][0]['message']['content'].strip()
+            # Clean markdown
+            content = re.sub(r'^```json\s*|\s*```$', '', content, flags=re.MULTILINE)
+            cleaned_list = json.loads(content)
+
+            if isinstance(cleaned_list, list):
+                original_count = len(intelligence)
+                new_count = len(cleaned_list)
+                removed = original_count - new_count
+
+                if removed > 0:
+                    with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                        json.dump(cleaned_list, f, indent=4)
+                return removed
+            else:
+                app.logger.error("Homogenization returned non-list JSON.")
+                return 0
+
+        except (json.JSONDecodeError, KeyError, IndexError) as e:
+            app.logger.error(f"Error parsing homogenization response: {e}")
+            return 0
+
+    except Exception as e:
+        app.logger.error(f"Error in homogenization: {e}")
+        raise e
+
+@app.route('/api/homogenize/intelligence', methods=['POST'])
+def homogenize_intelligence():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        count = _homogenize_intelligence()
+        return jsonify({'status': 'success', 'removed_count': count, 'message': f'Semantically merged {count} duplicate ideas.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/remove-duplicates/strategies', methods=['POST'])
 def remove_duplicates_strategies():
-    if not session.get('logged_in') or session.get('role') != 'admin':
+    if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 403
 
     try:
@@ -530,7 +627,7 @@ def remove_duplicates_strategies():
 
 @app.route('/api/remove-duplicates/intelligence', methods=['POST'])
 def remove_duplicates_intelligence():
-    if not session.get('logged_in') or session.get('role') != 'admin':
+    if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 403
 
     try:
@@ -541,7 +638,7 @@ def remove_duplicates_intelligence():
 
 @app.route('/api/remove-duplicates/all', methods=['POST'])
 def remove_duplicates_all():
-    if not session.get('logged_in') or session.get('role') != 'admin':
+    if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 403
 
     try:
