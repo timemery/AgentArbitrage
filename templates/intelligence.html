@@ -2,7 +2,13 @@
 {% block title %}Intelligence - Agent Arbitrage{% endblock %}
 {% block content %}
     <div class="tidy-container">
-        <h2 class="tidy-header">Conceptual Ideas & Methodologies</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="tidy-header">Conceptual Ideas & Methodologies</h2>
+            <div class="button-group">
+                <button id="remove-dupes-btn" class="tidy-button" style="background-color: transparent; border-color: #CC6666; color: white; font-size: 12px; padding: 5px 10px; margin-right: 10px;">Remove Duplicates (Exact)</button>
+                <button id="homogenize-btn" class="tidy-button" style="background-color: transparent; border-color: #4CAF50; color: white; font-size: 12px; padding: 5px 10px;">Homogenize (Semantic)</button>
+            </div>
+        </div>
         <div class="tidy-card">
             <div class="content" style="border: none; background: transparent; padding: 0;">
                 {% if ideas %}
@@ -15,4 +21,86 @@
             </div>
         </div>
     </div>
+
+<script>
+document.getElementById('remove-dupes-btn').addEventListener('click', async () => {
+    if(!confirm("Are you sure you want to scan for and remove exact duplicate ideas?")) return;
+
+    const btn = document.getElementById('remove-dupes-btn');
+    const originalText = btn.textContent;
+    btn.textContent = "Scanning...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/remove-duplicates/intelligence', { method: 'POST' });
+        const data = await response.json();
+
+        if(data.status === 'success') {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    } catch (e) {
+        alert('Request failed: ' + e);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+});
+
+document.getElementById('homogenize-btn').addEventListener('click', async () => {
+    if(!confirm("This will use AI to merge semantically similar ideas. This process takes ~10 minutes and runs in the background. Proceed?")) return;
+
+    const btn = document.getElementById('homogenize-btn');
+    const originalText = btn.textContent;
+    btn.textContent = "Starting...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/homogenize/intelligence', { method: 'POST' });
+        const data = await response.json();
+
+        if(data.status === 'started') {
+            alert(data.message);
+            pollStatus(btn, originalText);
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    } catch (e) {
+        alert('Request failed: ' + e);
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+});
+
+function pollStatus(btn, originalText) {
+    btn.textContent = "Processing (Check Status)";
+    const interval = setInterval(async () => {
+        try {
+            const res = await fetch('/api/homogenize/status');
+            const status = await res.json();
+
+            if (status.status === 'Running') {
+                btn.textContent = status.progress || "Processing...";
+            } else if (status.status === 'Complete') {
+                clearInterval(interval);
+                alert(status.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+                location.reload();
+            } else if (status.status === 'Error') {
+                clearInterval(interval);
+                alert('Task Failed: ' + status.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        } catch (e) {
+            console.error("Polling error", e);
+        }
+    }, 5000); // Poll every 5 seconds
+}
+</script>
 {% endblock %}

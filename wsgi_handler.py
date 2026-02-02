@@ -28,6 +28,8 @@ from keepa_deals.db_utils import (
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
+from keepa_deals.maintenance_tasks import homogenize_intelligence_task
+import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
@@ -448,6 +450,145 @@ def results():
 
     return render_template('results.html', original_input=original_input, scraped_text=scraped_text, extracted_strategies=extracted_strategies, extracted_ideas=extracted_ideas)
 
+def _deduplicate_strategies():
+    """Helper to deduplicate strategies.json."""
+    if not os.path.exists(STRATEGIES_FILE):
+        return 0
+
+    try:
+        with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+            strategies = json.load(f)
+
+        unique_strategies = []
+        seen_content = set()
+
+        # Deduplicate based on content hash/string representation
+        # Strategy can be a dict or a string (legacy)
+        for s in strategies:
+            if isinstance(s, dict):
+                # Create a normalized content string for checking duplicates
+                # We ignore ID for deduplication, we want to remove identical logic
+                content_key = f"{s.get('category')}|{s.get('trigger')}|{s.get('advice')}"
+                if content_key not in seen_content:
+                    seen_content.add(content_key)
+                    unique_strategies.append(s)
+            else:
+                # String case
+                content_key = str(s).strip()
+                if content_key not in seen_content:
+                    seen_content.add(content_key)
+                    unique_strategies.append(s)
+
+        removed_count = len(strategies) - len(unique_strategies)
+
+        if removed_count > 0:
+            with open(STRATEGIES_FILE, 'w', encoding='utf-8') as f:
+                json.dump(unique_strategies, f, indent=4)
+
+        return removed_count
+    except Exception as e:
+        app.logger.error(f"Error deduplicating strategies: {e}")
+        raise e
+
+def _deduplicate_intelligence():
+    """Helper to deduplicate intelligence.json (Exact Match)."""
+    if not os.path.exists(INTELLIGENCE_FILE):
+        return 0
+
+    try:
+        with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
+            intelligence = json.load(f)
+
+        unique_intelligence = []
+        seen_content = set()
+
+        for i in intelligence:
+            content_key = str(i).strip()
+            if content_key not in seen_content:
+                seen_content.add(content_key)
+                unique_intelligence.append(i)
+
+        removed_count = len(intelligence) - len(unique_intelligence)
+
+        if removed_count > 0:
+            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(unique_intelligence, f, indent=4)
+
+        return removed_count
+    except Exception as e:
+        app.logger.error(f"Error deduplicating intelligence: {e}")
+        raise e
+
+@app.route('/api/homogenize/intelligence', methods=['POST'])
+def homogenize_intelligence():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        # Trigger Celery Task Asynchronously
+        homogenize_intelligence_task.delay()
+        return jsonify({'status': 'started', 'message': 'Homogenization started in background.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/homogenize/status')
+def homogenize_status():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        # Connect to Redis using default or env URL
+        redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+        r = redis.from_url(redis_url)
+
+        status_json = r.get("homogenization_status")
+        if status_json:
+            return jsonify(json.loads(status_json))
+        else:
+            return jsonify({"status": "Idle"})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/remove-duplicates/strategies', methods=['POST'])
+def remove_duplicates_strategies():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        count = _deduplicate_strategies()
+        return jsonify({'status': 'success', 'removed_count': count, 'message': f'Removed {count} duplicate strategies.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/remove-duplicates/intelligence', methods=['POST'])
+def remove_duplicates_intelligence():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        count = _deduplicate_intelligence()
+        return jsonify({'status': 'success', 'removed_count': count, 'message': f'Removed {count} duplicate ideas.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/remove-duplicates/all', methods=['POST'])
+def remove_duplicates_all():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        strat_count = _deduplicate_strategies()
+        intel_count = _deduplicate_intelligence()
+        total = strat_count + intel_count
+        return jsonify({
+            'status': 'success',
+            'removed_count': total,
+            'message': f'Removed {strat_count} duplicate strategies and {intel_count} duplicate ideas.'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/approve', methods=['POST'])
 def approve():
     if not session.get('logged_in'):
@@ -491,44 +632,51 @@ def approve():
                 new_strategies = [{"id": str(uuid.uuid4()), "advice": s, "trigger": "Manual Entry", "category": "General"}
                                   for s in clean_lines]
 
-            strategies.extend(new_strategies)
-            
-            # Deduplicate by ID if present, or advice text
-            seen_ids = set()
-            unique_strategies = []
-
-            # Use a list to iterate and build the unique list
-            # We must handle mixed types (dict and str) in 'strategies'
-
+            # Build set of existing content for deduplication
+            existing_content = set()
             for s in strategies:
                 if isinstance(s, dict):
-                    sid = s.get('id')
-                    # Generate ID if missing
-                    if not sid:
-                        sid = str(uuid.uuid4())
-                        s['id'] = sid
-
-                    if sid not in seen_ids:
-                        seen_ids.add(sid)
-                        unique_strategies.append(s)
+                    content_key = f"{s.get('category')}|{s.get('trigger')}|{s.get('advice')}"
                 else:
-                     # Convert legacy string to object
-                     # For legacy strings, we don't have IDs. We can check if the text matches any existing advice?
-                     # For simplicity, we'll wrap it and give it a new ID.
-                     # But we should try to avoid exact duplicates of the text itself.
-                     # However, 'seen_ids' tracks IDs.
-                     # Let's just convert and add.
-                     unique_strategies.append({
+                    content_key = str(s).strip()
+                existing_content.add(content_key)
+
+            added_count = 0
+            skipped_count = 0
+
+            for ns in new_strategies:
+                # Determine content key for the new strategy
+                if isinstance(ns, dict):
+                    # Ensure ID exists
+                    if not ns.get('id'):
+                        ns['id'] = str(uuid.uuid4())
+
+                    ns_content_key = f"{ns.get('category')}|{ns.get('trigger')}|{ns.get('advice')}"
+                else:
+                    # Shouldn't happen given parsing logic above, but handle safely
+                    ns_content_key = str(ns).strip()
+                    ns = {
                          "id": str(uuid.uuid4()),
-                         "advice": str(s),
-                         "trigger": "Legacy",
+                         "advice": str(ns),
+                         "trigger": "Manual Entry",
                          "category": "General"
-                     })
+                    }
+
+                if ns_content_key not in existing_content:
+                    strategies.append(ns)
+                    existing_content.add(ns_content_key)
+                    added_count += 1
+                else:
+                    skipped_count += 1
 
             with open(STRATEGIES_FILE, 'w', encoding='utf-8') as f:
-                json.dump(unique_strategies, f, indent=4)
+                json.dump(strategies, f, indent=4)
             
-            flash(f"{len(new_strategies)} new strategies have been approved and saved.", "success")
+            msg = f"Saved {added_count} new strategies."
+            if skipped_count > 0:
+                msg += f" Skipped {skipped_count} duplicates."
+            flash(msg, "success")
+
         except Exception as e:
             app.logger.error(f"Error saving strategies: {e}", exc_info=True)
             flash("An error occurred while saving the strategies.", "error")
@@ -543,13 +691,29 @@ def approve():
                 ideas = []
             
             new_ideas = [i.strip() for i in approved_ideas.strip().split('\n') if i.strip()]
-            ideas.extend(new_ideas)
             
-            unique_ideas = list(dict.fromkeys(ideas))
-            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(unique_ideas, f, indent=4)
+            added_ideas_count = 0
+            skipped_ideas_count = 0
 
-            flash(f"{len(new_ideas)} new conceptual ideas have been approved and saved to Intelligence.", "success")
+            # Use a set for faster lookup of existing ideas
+            existing_ideas_set = set(ideas)
+
+            for idea in new_ideas:
+                if idea not in existing_ideas_set:
+                    ideas.append(idea)
+                    existing_ideas_set.add(idea)
+                    added_ideas_count += 1
+                else:
+                    skipped_ideas_count += 1
+
+            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(ideas, f, indent=4)
+
+            msg = f"Saved {added_ideas_count} new ideas to Intelligence."
+            if skipped_ideas_count > 0:
+                msg += f" Skipped {skipped_ideas_count} duplicates."
+            flash(msg, "success")
+
         except Exception as e:
             app.logger.error(f"Error saving conceptual ideas: {e}", exc_info=True)
             flash("An error occurred while saving the conceptual ideas.", "error")

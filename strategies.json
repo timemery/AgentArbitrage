@@ -17324,12 +17324,6 @@
         "category": "General"
     },
     {
-        "id": "2f08411b-bfe6-4fe6-87de-37113c86c84e",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b32b4765-91b7-46f6-8a45-2ef73633b845",
         "advice": "\"id\": \"rule2\",",
         "trigger": "Manual Entry",
@@ -17354,38 +17348,14 @@
         "category": "General"
     },
     {
-        "id": "65e223b8-c911-4219-b067-d2b7fb46602b",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "0f52f401-3735-4d7b-afe0-4ddd3368e13a",
         "advice": "\"source\": \"1 seller \u2192 Likely a private label \u2192 Avoid reselling\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "e026ad42-68d2-4836-9cbd-462d92b04e87",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "8f366c68-ce62-48eb-92fd-036caf052e1c",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "c36bc7a8-2cbe-4251-bd09-589679ec0ba6",
         "advice": "\"id\": \"rule3\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c9a2aed0-f8a2-4671-b417-728cf581602d",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17402,38 +17372,14 @@
         "category": "General"
     },
     {
-        "id": "9d995982-7257-42ca-8695-9822ee6cb149",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "12b4f296-d88c-4f50-952c-d06aa7761fc1",
         "advice": "\"source\": \"15+ sellers \u2192 High competition \u2192 May lower margins\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "ef641853-4640-4818-8265-7749290e7984",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fb6ff986-5a41-44b0-849e-902d5c02dcb7",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "d3a80d5c-1321-4758-8642-6e58c0ced80d",
         "advice": "\"id\": \"rule4\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d0376e60-c217-44ff-817a-20f6d634a3eb",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17450,38 +17396,14 @@
         "category": "General"
     },
     {
-        "id": "48ae016e-3e27-431a-a280-a3552497325e",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "11eb5ce0-c8d4-4ce8-95a3-6cd533e1a9ca",
         "advice": "\"source\": \"When Amazon itself is competing, it can be hard to win the Buy Box.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "65482164-639c-45aa-9bbb-ded4718f73c9",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a1288130-a011-4599-91aa-376a37a2abd5",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "855d6665-cf67-48b0-ad80-a12d27d939cb",
         "advice": "\"id\": \"rule5\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "bfee69e9-8d49-40bf-af31-a6fc41c416bd",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17498,38 +17420,14 @@
         "category": "General"
     },
     {
-        "id": "bf65c4bc-b41d-40ab-9b3b-d8913fb559d9",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "6232f777-e8d5-43d9-8184-159edb451c63",
         "advice": "\"source\": \"Ensure projected ROI exceeds 10%\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "0d577c98-ff59-40db-a3f7-ef7c90ff102d",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "256dae82-2e41-43e2-8057-1faed367adb9",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "5880047f-d1a8-458f-922c-45901f199cbb",
         "advice": "\"id\": \"rule6\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e45605c5-203d-4f3a-bf12-3f1bde26161a",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17546,38 +17444,14 @@
         "category": "General"
     },
     {
-        "id": "ebcc45f8-55e9-44b9-a449-30579235076b",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1d0f7a10-144e-43ff-a7a9-f1b652ef870e",
         "advice": "\"source\": \"Ensure it\u2019s not a private label product\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "6ebb90f6-a0f1-494e-b5ea-4e610a218f5d",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "67e19cd3-fdf4-4860-b737-4cfea8c93ff9",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ef66b0b2-a382-4fa1-8820-098773bb7f97",
         "advice": "\"id\": \"rule7\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "41157d37-ee8c-48e7-8787-415f50f76463",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17594,38 +17468,14 @@
         "category": "General"
     },
     {
-        "id": "4ce4b98f-20fa-4fea-b131-5b2462b845ab",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "8afeba77-1fcc-41f6-a898-7d5a00d0dd11",
         "advice": "\"source\": \"Check FBA seller count (3 to 15 is ideal for balanced competition)\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "94eef28e-592b-47e5-a170-8d782e36d413",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d2de3707-8e5d-41bb-88c4-762bba1feb2e",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "28ab6ff8-fc28-4cee-a4e2-5426e9f370cf",
         "advice": "\"id\": \"rule8\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "f2023f46-06ff-48a1-9742-581a9d58b4f2",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17642,38 +17492,14 @@
         "category": "General"
     },
     {
-        "id": "b9dd8461-0162-47a6-8419-db496cea8776",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "83b8ddec-7c45-4d07-b3a3-e8a4388e9df5",
         "advice": "\"source\": \"Goal: Choose listings at least 6 months old to ensure stable sales data.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "2f9f7406-eaf2-406e-9937-1324f6a90144",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c11b7d90-e4a2-41e2-bcab-24d71d21d48b",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "149cdbd1-b8dd-4673-89ab-ef4e40027216",
         "advice": "\"id\": \"rule9\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "f7b36a27-ada7-4ae3-9af1-95c143ff0a12",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17690,38 +17516,14 @@
         "category": "General"
     },
     {
-        "id": "2acffef8-8a33-46c9-8c64-6f75cccb7fae",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "2d713eb4-51d5-494a-95aa-122de802e4d7",
         "advice": "\"source\": \"Review customer feedback and avoid poorly rated products\" and \"Focus on products with 4-5 star ratings and minimal negative feedback.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "4681e07c-1c4c-416f-863c-1fb9d555b6cd",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2f8acd46-fd93-45df-8b11-8dc0f1de0951",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "0e3316a7-7b06-4856-ada3-a09b7acae8b8",
         "advice": "\"id\": \"rule10\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "09dbb6ca-3396-4810-be29-2a7ac9235f77",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17738,26 +17540,8 @@
         "category": "General"
     },
     {
-        "id": "a741717e-b646-49f2-9af0-97a2fd8a74e0",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "9323188f-3bfc-4b97-8718-ef72f4435b1a",
         "advice": "\"source\": \"Identify risk flags (e.g. oversized, fragile, meltable, or adult products)\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d84f2403-fb5b-476b-bc36-1000928b21ce",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "4cc7669c-aff6-4ccb-a489-6841cce1b662",
-        "advice": "{",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17786,38 +17570,14 @@
         "category": "General"
     },
     {
-        "id": "1c1b4249-5586-4c27-a3d8-da03fca99eaa",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "cd640092-a420-4c7a-a6c2-61faaea49f30",
         "advice": "\"source\": \"Focus on brands that offer a large assortment of products, ideally with at least 200 active listings on Amazon.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "c48239e4-7f56-47d8-bfea-8a73d8c35e24",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2b9af221-6d7b-4e32-8558-c6f9e7a9c83a",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "09c476c8-1a29-4295-b58d-1bc49318cc84",
         "advice": "\"id\": \"rule12\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "896a3a57-ddb7-4192-8003-8ee2e814e9e3",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17834,38 +17594,14 @@
         "category": "General"
     },
     {
-        "id": "1da53faf-8edb-4f0a-8de6-f38eb28397b8",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "8f189ba4-3f71-47ee-8556-377ad783109a",
         "advice": "\"source\": \"If Amazon holds more than 30% of the Buy Box share, this signals tough competition\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "6f6aba55-8d65-4a53-8baf-4baecdbad9d2",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "5d78c63d-72c0-4df9-8f59-cd82397b10b6",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "cc5ec7ea-19b6-461c-bf76-80ae7e4107d3",
         "advice": "\"id\": \"rule13\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e4cea66c-41a1-45af-afba-ce09b2066a56",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17882,38 +17618,14 @@
         "category": "General"
     },
     {
-        "id": "3fe4a58a-5b45-433c-84f7-89d83ce96007",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "08ae7677-71ca-479f-a73f-c3860e357599",
         "advice": "\"source\": \"Brands with 15 or more FBA sellers per product typically face saturated competition\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "7bdf6ace-d00d-486a-93a5-4c174476a84a",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9c0be04c-b839-41a3-bad8-25cc058bd713",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "39e17072-dab6-4cf4-92fb-d1fae6c4236d",
         "advice": "\"id\": \"rule14\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "eb76aecd-4b73-4f71-8749-b0ef1ebd1600",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17930,38 +17642,14 @@
         "category": "General"
     },
     {
-        "id": "e3b0581f-4299-470a-95ae-3e88dc60b346",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "be834c12-dadf-4c86-ac67-fce3c81784fc",
         "advice": "\"source\": \"Avoid brands that sell directly through Amazon or through exclusive distributors.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "4c2c1039-17e3-46e3-8f13-973dcb898c91",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1ea74588-0812-4c6c-a698-0d0e66788acf",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "87cd60f1-b38b-461c-8faf-786a8b714bcb",
         "advice": "\"id\": \"rule15\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "4edb911c-bc37-4c34-bdf1-e99651e7e611",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -17978,38 +17666,14 @@
         "category": "General"
     },
     {
-        "id": "b2c1a157-3ab5-4083-a550-0c4fcc3dd346",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "7a4e93be-35b9-469c-832d-afd8678f0212",
         "advice": "\"source\": \"Products with strong ratings (4 stars or higher)\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "ace96d70-6e37-49d6-a555-e16095b0cae4",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "0e744df8-930b-43d3-b9db-986a990c9544",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "371e01c4-7e4f-4d4f-953d-0347e299d50f",
         "advice": "\"id\": \"rule16\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1923a77a-3fc4-43bb-ac11-dabb27ad8f52",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18026,38 +17690,14 @@
         "category": "General"
     },
     {
-        "id": "0949f6be-e8f7-4925-84db-4cbbb86b2077",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "d21f0e06-acfe-41fd-aca3-3dea612f18ea",
         "advice": "\"source\": \"Ideal Range: Between 2 and 15 FBA sellers.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "1cc34a55-88b7-4cc7-8de4-e2379a1f2572",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "182100ff-53a6-4925-b379-3d879d79801a",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "d9e9dee6-9c22-4d05-8c67-4218025a5815",
         "advice": "\"id\": \"rule17\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "44bac661-bb5d-46b3-8bef-5c0db679518c",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18074,38 +17714,14 @@
         "category": "General"
     },
     {
-        "id": "e193e64e-272e-49c6-bd1b-c3acfb1259fa",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "f683c6b3-6b12-443a-94ef-147dfeac9e72",
         "advice": "\"source\": \"0.5% or better = strong seller.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "a8fed4f7-f286-4bd7-b631-1dee07dffb6e",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "6e2790b0-fe90-45de-b2e7-4be906168a4c",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "d6970bd9-dd29-4db2-8925-0c04a6acb89d",
         "advice": "\"id\": \"rule18\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "7cfe6b0d-3c5b-4676-ac48-612bbd23aa42",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18122,38 +17738,14 @@
         "category": "General"
     },
     {
-        "id": "2ef930f8-66ec-4ba0-acbf-bfda8e901962",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b5a403c9-ad2c-4eae-a3a2-0e84efd2cd42",
         "advice": "\"source\": \"Sellers typically monitor key lists such as: Amazon Best Sellers, Movers & Shakers, Hot New Releases, Most Wished For\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "5c550cfa-426d-4dbf-bc02-95871f703c17",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "0b3f8939-e7ae-4eaa-9983-d4409266b846",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "414950d0-2a3d-4bf0-916b-c0d2d488a493",
         "advice": "\"id\": \"rule19\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c2d57cfc-a487-4f9f-9534-3c7669cecbda",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18170,38 +17762,14 @@
         "category": "General"
     },
     {
-        "id": "b2c6519a-b665-40a9-8564-230558f6c41c",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "fc2237ea-8b3f-4e9a-ae9e-075fedbd2f45",
         "advice": "\"source\": \"Categories where listings have 15 or more FBA/FBM sellers are highly competitive.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "f9846afe-2d35-4cbc-bad8-694ecf3f2a09",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "462c6f15-f390-4991-af61-926356b33545",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "9dbf29b0-0f5f-430a-95b3-ef9de69b1d8e",
         "advice": "\"id\": \"rule20\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a9f65f9f-9565-471d-a01d-f77d4bf4474f",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18214,12 +17782,6 @@
     {
         "id": "1e58aaa0-fa64-43ae-bfe6-7a4616a4e899",
         "advice": "\"advice\": \"Consider the Books category which has 14% of sellers, balancing demand and competition for arbitrage opportunities\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d8fa3f58-54a7-4b3c-92f2-da013cb15c2a",
-        "advice": "\"confidence\": \"High\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18826,26 +18388,8 @@
         "source": "BookScouter gives access to real-time buyback prices, which is a huge advantage. Having such information as a part of the payout comparison process helps identify the most suitable sales channel for a book when it\u2019s being processed."
     },
     {
-        "id": "1264d265-939d-4ee9-a028-c9235276424d",
-        "advice": "[",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "8e00b6db-8bec-423f-98f1-3166d2cfcd4d",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "07acd02e-29af-4b19-a07c-fe5f1ba57f98",
         "advice": "\"id\": \"book-strat-1\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1cde04ad-7958-41cd-b4f2-f2f6a11b3f7b",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18862,38 +18406,14 @@
         "category": "General"
     },
     {
-        "id": "8d41448b-0d0a-41d0-bbfa-c0463900c3e3",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "9eef8ab8-fbb0-4e50-8c99-f556fff3256e",
         "advice": "\"source\": \"If books intrigue you (and they\u2019re often the most profitable category for beginners), ScoutIQ is your new best friend.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "2cb29f30-d499-46db-b2fa-4beedcf436d8",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "567e5597-28ba-42c0-850d-79f0e9f9ff8b",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "6a127044-d403-456f-8888-e3c4774ea3bc",
         "advice": "\"id\": \"book-strat-2\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "b1b00242-62ad-4548-94bc-9f7ddb6b9f45",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18910,38 +18430,14 @@
         "category": "General"
     },
     {
-        "id": "cd3348bb-f01f-45d2-8352-0ee7515b400d",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "2421829f-7162-4215-93a1-2e992e276c50",
         "advice": "\"source\": \"This mobile app lets you: Scan books rapidly in thrift stores or library sales See real-time profitability calculations Access sales history with the proprietary eScore system Work offline when cellular service is spotty\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "37a7f13c-6832-4ce3-9992-e2f17e903257",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "333fc753-1345-43d5-86f3-fe2d63ac6743",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "bc0fe95f-932a-4eeb-8a69-c54d7155e826",
         "advice": "\"id\": \"book-strat-3\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "58e86aca-95e4-4274-88eb-e37db950429f",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -18958,38 +18454,14 @@
         "category": "General"
     },
     {
-        "id": "b0046fe7-37af-4043-9981-b5c538640281",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "f25b830a-b10a-45f6-a3e3-4560509dd05f",
         "advice": "\"source\": \"Lastly, thrift stores require more digging but can yield extraordinary returns. This is especially true for books, board games, and discontinued items. Just make sure to use scanning apps like ScoutIQ to rapidly evaluate dozens of items.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "2e8135c4-70e0-4bb4-9fce-cdd7a7b76a19",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fcc8ab19-cc8c-413e-b959-b3b2563cc328",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "d84944f7-50b6-4886-bc41-a6a673c3b290",
         "advice": "\"id\": \"book-strat-4\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "f8669c1d-90db-45dd-b367-9d8dc0589d99",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19006,26 +18478,8 @@
         "category": "General"
     },
     {
-        "id": "c40d6742-cf74-412d-96b9-23a9d8aa9312",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "160321d7-faf9-4fed-ad85-752f1a0b9f0c",
         "advice": "\"source\": \"Other examples include finding discontinued kitchen appliances at TJ Maxx or buying books at thrift stores that sell for much higher prices online.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2d82cb12-d5a3-488d-80c0-8b932376963c",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "f12b0d40-e1d1-4466-9595-b2a9a0cd9def",
-        "advice": "{",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19054,38 +18508,14 @@
         "category": "General"
     },
     {
-        "id": "300e3fa0-1a9a-4cf5-9a3b-f8f2f6e4cf01",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b4d75131-2f59-440f-9279-af37e0a55a87",
         "advice": "\"source\": \"A good rule of thumb: aim for 50%+ ROI for standard items, 100%+ for slower-moving inventory. This buffer protects you from price drops and unexpected costs.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "1cb9557b-5418-4d40-bdae-f31d478cd155",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "22e82a3c-f016-4df3-970d-1b744c1c6c6d",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "594b3796-0f7e-4b48-8027-633c161c4a6c",
         "advice": "\"id\": \"book-strat-6\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e154df94-674b-4c52-9a8d-6442f464a176",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19102,38 +18532,14 @@
         "category": "General"
     },
     {
-        "id": "3df68169-df9f-4ef0-a3a1-2f628576ece3",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "da4f4fed-cf69-4212-997d-439d6c3556cf",
         "advice": "\"source\": \"For beginners, we recommend the 3-5 rule: Buy 3-5 units of any new product to test the waters. If they sell quickly and profitably, return for more.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "bacbd49e-4c38-4dec-996a-2f74fb29d86e",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "535e1844-4f45-4594-9cdb-9461e93dd759",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "111977d4-8dac-48dc-ae88-ded361b52c27",
         "advice": "\"id\": \"book-strat-7\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "6547ab29-2f33-486f-b447-1523f1ca225b",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19150,38 +18556,14 @@
         "category": "General"
     },
     {
-        "id": "c820cea0-cb5b-4964-aa6a-c0a042170dfc",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "54c7a982-9773-4415-b688-61b90dba0d0c",
         "advice": "\"source\": \"Pro tip: Never be the seller who dramatically undercuts the current price! Price within 1-2% of the current Buy Box to maintain market value.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "40e306b8-115e-4fb6-b146-0e8b17de4335",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e8a2c5ee-605b-4c85-85e3-6e3e0f7ad58e",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "3e815cd0-4468-4894-8351-826dde008bd0",
         "advice": "\"id\": \"book-strat-8\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3d633e4f-4431-4042-9369-ac3e77b5592d",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19198,38 +18580,14 @@
         "category": "General"
     },
     {
-        "id": "8a8f47d0-97e5-4f2b-8c56-5cccc043b832",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "61556a19-233b-4631-8d99-fff9c51a3bb1",
         "advice": "\"source\": \"Retail arbitrage\t$500 to $2,000\tDays\t30 to 80%\tLow ... Unlike private label, where you\u2019re betting thousands on product development and inventory before making a single sale, retail arbitrage lets you test the waters $20 at a time. ... Made a bad buy? You might be out $10.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "a17ed4b6-57e5-43a2-b4cc-53e9138e5063",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3167b89b-d9ec-471e-a190-a16dbb921ac9",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "96fb5889-1414-4929-a1b8-01705c7f8455",
         "advice": "\"id\": \"book-strat-9\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "6fee02be-7fe8-40b5-beb3-a15d07b8948f",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19246,38 +18604,14 @@
         "category": "General"
     },
     {
-        "id": "4368e52f-f7fa-4219-aa4e-3a71aeeaefc0",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "a7958b1f-6438-4312-84db-21f499d22d4e",
         "advice": "\"source\": \"Expand into online arbitrage ... Tactical Arbitrage can make this step even more straightforward. It scans thousands of products across 1,400+ websites to find profitable reselling opportunities ... Compare prices across massive product databases Filter by ROI, sales rank, and competition\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "33c69084-7192-4044-a9d5-6c5cabb4380f",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "7d70f4db-ecc5-47ca-b059-2dc0bf65ffe7",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "22d31801-468d-47d4-a808-00b87b599925",
         "advice": "\"id\": \"book-strat-10\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "b7927735-b946-4592-ab08-7dd2b83de87c",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19294,26 +18628,8 @@
         "category": "General"
     },
     {
-        "id": "86e72c67-09aa-4fb7-99d4-20b031b77b3c",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "3916c554-d5e4-4d44-8fe3-0fcf321f802d",
         "advice": "\"source\": \"The only main risks are price volatility after purchase, restricted products you can\u2019t sell, and items that might sit in inventory longer than expected. ... Sales velocity: How quickly will it sell? Check the BSR (Best Sellers Rank). Competition: How many sellers are offering the same item?\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "64db94d1-d825-4498-9bdb-b816d16bc0da",
-        "advice": "}",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "b4925d34-acb1-4c99-934f-a4549a4ecacf",
-        "advice": "]",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19806,26 +19122,8 @@
         "source": "Thrift stores can be a goldmine... Goodwill... Salvation Army... Savers/Value Village... You're unlikely to find anything to buy in bulk, but more so one-off, unique items... books..."
     },
     {
-        "id": "5e9e98d1-45a5-4591-8ef3-c89a2656c44c",
-        "advice": "[",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "001b3a80-c2e9-4c39-a30d-c58340780ae6",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1fd8f1ad-b1c3-4d03-a702-f9716266ed70",
         "advice": "\"id\": \"keepa-1\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1e408e68-b18b-4d83-9ed5-d6a87bdad54f",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19842,38 +19140,14 @@
         "category": "General"
     },
     {
-        "id": "6d83ce40-9fbd-4f55-a440-1dcfd7e4bb72",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "53e850f6-2a9f-44bc-80f5-3c9b1b7203f9",
         "advice": "\"source\": \"New Price \u2013 You can select the Minimum and Maximum current sell price. It\u2019s always advisable to set a high minimum price, to avoid any results that are too cheap & non-profitable.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "f8bfee8f-3f0a-42ad-a373-9f5afada8dd5",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "4c2ed963-d40c-47a1-834a-fe31f9e833ab",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "80b801b2-e86d-4b58-bb3f-feddffd8fdfa",
         "advice": "\"id\": \"keepa-2\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a76d8c60-8cc5-469d-aec3-1fb77345ecbf",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19890,38 +19164,14 @@
         "category": "General"
     },
     {
-        "id": "76224c56-b960-418c-8c6d-635dbcd64f0e",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ccbadb72-4e81-4eec-b13a-d5ce5778b18d",
         "advice": "\"source\": \"Offer Counts \u2013 You can choose how many people are competing on a specific offer.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "6cdb3ffc-9b0a-462e-9937-66b279b99ab7",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1e32021b-9cf4-43b6-8145-261e83d3f6c0",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ee8d6b23-5d70-40a1-88a1-def10153bbbc",
         "advice": "\"id\": \"keepa-3\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "73edaf39-1c6b-49cf-a34f-ecbe26594d33",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19938,38 +19188,14 @@
         "category": "General"
     },
     {
-        "id": "42bebfee-25f2-47e6-8f8c-a6937db3d54f",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "5e28c4f2-7e01-49e9-8901-a5e946a65d40",
         "advice": "\"source\": \"Buy Box Seller \u2013 You can choose whether you want to see Amazon, or 3rd Parties on the Buy Box\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "ef14b042-fd3b-47d5-9f64-50a1cbef89ba",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "ce5c7e01-8c13-4341-9cf7-7c1a32f74d7d",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1f564ade-d041-4397-a6c3-6ca8550c02bb",
         "advice": "\"id\": \"keepa-4\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c1512abe-8dbb-420b-acab-8d4f9fce833c",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -19986,38 +19212,14 @@
         "category": "General"
     },
     {
-        "id": "61cb7344-b767-48a8-baf9-3a8286558e7f",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "9a3827d6-1203-4b06-9c66-cfa1e2e905b8",
         "advice": "\"source\": \"Without this tool, you run the risk of purchasing a product with no demand. You won\u2019t know what your competition are doing and you\u2019ll be buying in blind.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "87ee3ae0-35be-4c46-8b0c-4d7020f54bbc",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "8c62bc87-02b2-45d7-b2ac-a4070cee03ba",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "e7675e05-26d6-4f57-a72c-4b95e4114909",
         "advice": "\"id\": \"keepa-5\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "7a9ba786-ab2a-4913-b98f-4dd649e0f3b8",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -20034,26 +19236,8 @@
         "category": "General"
     },
     {
-        "id": "b6d855e9-d870-4937-92a4-b00c80bf957e",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "fe71a4b0-4cc0-441e-a669-7f52e2f74705",
         "advice": "\"source\": \"This Category tree even shows you how many products are for sale in each sub-category, to help you target your next one to attack.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e44ec7ed-1479-44be-858f-8ca7e9ada661",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1fc17809-c629-4a48-b490-07a4f3f22a56",
-        "advice": "{",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -20082,38 +19266,14 @@
         "category": "General"
     },
     {
-        "id": "783dd74d-29c2-4f8d-9bd4-72dd95f62441",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "984cceb0-f110-4d16-b400-b1fea5d22403",
         "advice": "\"source\": \"you can check which items are peaking in price, or which items aren\u2019t selling huge numbers.\" and \"seasonal items such as easy Christmas presents.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "3756937f-a03f-442f-8ba8-bc5583131123",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "03603e04-7cfc-4adf-915c-389a0bb58cd2",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b129c384-e824-4677-9a1b-172c909b2e98",
         "advice": "\"id\": \"keepa-7\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "8b00e9b3-d009-4d2c-8be2-43225705f089",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -20130,38 +19290,14 @@
         "category": "General"
     },
     {
-        "id": "ab237328-2952-4040-80fa-e4d1a7696166",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "c9b4427a-4260-4a62-baef-8b030b614d48",
         "advice": "\"source\": \"The product viewer is simple, yet very effective. You can use this as a Wish List effectively, or as a monitor for your replenishable items (to track their current prices).\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "e5a1a309-2787-4c9d-a552-f1338e3c8e20",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3d99295b-e00d-4539-945f-b7c10e2b72ff",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "badb730e-ff6c-4347-ae35-a4e145c77ab4",
         "advice": "\"id\": \"keepa-8\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d5a71de7-351a-4f53-802b-f87ea2618ec2",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -20178,38 +19314,14 @@
         "category": "General"
     },
     {
-        "id": "0acf6a8c-ad93-4cb5-af67-a01dc70cb72f",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "8ecf5677-64d6-4db1-bf2e-5b3512593f9a",
         "advice": "\"source\": \"You can also filter this for moving averages, 30 day average up to 180 day average (so you can get a full idea of moving trends).\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "89e49a09-c662-4ef6-b6b4-c75ce8daa046",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "96dd4796-f35d-4028-a121-0607d8d46e96",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "99b3fa85-283a-4799-b9de-b4518efe1d70",
         "advice": "\"id\": \"keepa-9\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d40abf02-0284-4d9c-ac31-1cfd1dad0a39",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -20226,38 +19338,14 @@
         "category": "General"
     },
     {
-        "id": "75d0db64-d35d-4b77-b0f6-9704cd4ea9c7",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "a8136350-6c65-40d5-88d0-f90c93248185",
         "advice": "\"source\": \"The top seller list will allow you to see the best sellers on Amazon, and will advise you if they utilise FBA or not. ... From this point, you could easily see what products they have for sale & then search Google and see if you can also find these.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "9a38b20a-117e-4c8c-bafe-90d870f95604",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "18449953-4f5c-49d7-ba36-904d5e6c1579",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "3b67d347-6d93-40c8-8854-daf8baf9aa3b",
         "advice": "\"id\": \"keepa-10\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3abbedab-53cb-4d26-818b-a7ef7f98b3ed",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -20274,26 +19362,8 @@
         "category": "General"
     },
     {
-        "id": "35a0ac3e-f63a-4b4e-92e0-a0dfd7b71017",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "81d874ac-6fc4-4c14-892b-d1b8b6f56795",
         "advice": "\"source\": \"Additional \u2013 You can remove digital products & other variations from results, in addition to setting your preferred Amazon Out of Stock percentage.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3471a673-0210-4039-94f3-152d6a0f67c2",
-        "advice": "}",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "630f5783-5558-4246-91f0-8f46a79b7964",
-        "advice": "]",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22209,26 +21279,8 @@
         "source": "if you've tried tactical arbitrage and you're seeing results with it stick with it... if you see something that's working for you that's different try it and if it works for you then stick with it"
     },
     {
-        "id": "52041024-c9a8-4d42-9b9c-81252a4e5fab",
-        "advice": "[",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "70595eaf-ce3c-476b-aaf4-9182d89e54af",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "15efc972-7137-41c5-9262-d2ad41f0474d",
         "advice": "\"id\": \"sales-rank-filter\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "57c6a14d-4dc9-4729-b330-6d124e6ea579",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22245,38 +21297,14 @@
         "category": "General"
     },
     {
-        "id": "f8ff7e3f-bf19-4375-a7fb-5a85996c787b",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "4402814d-605c-4477-ba14-9df98a164862",
         "advice": "\"source\": \"saying for the the sales rank is to high let's do sales rank less than 100,000\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "fd8761e3-8d4b-43dd-a824-b4cc950f66a5",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c51f9464-d3a9-4c91-bb86-3a66761db515",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "85164b5e-e00b-4f81-9f06-2c2ffa027522",
         "advice": "\"id\": \"min-profit-margin\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "6fc9240a-4f94-4252-8681-dcd9926f6cb5",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22293,38 +21321,14 @@
         "category": "General"
     },
     {
-        "id": "b959869a-f2d7-414b-93cf-72dc5a855427",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "f1eb4e74-f910-488f-a00c-446c0b9648c0",
         "advice": "\"source\": \"let's do 30% minimum okay now we talking\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "740eacdb-0343-42dc-a2b0-320e13308740",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9f239d21-e200-4da6-8b3a-acf84ab41ad0",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ded0b8a0-18e1-4d89-b403-713a9805be23",
         "advice": "\"id\": \"avg-price-calc\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d8fa2d70-9ada-446d-8473-e1e5d3c09944",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22341,38 +21345,14 @@
         "category": "General"
     },
     {
-        "id": "3f53cee6-7999-44b5-89ac-5434872a73a6",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "49d470cb-18f2-49e6-8f19-68abc63b217f",
         "advice": "\"source\": \"calculated profit by average price 30 days here we go\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "b9f41b07-be14-41d1-beb9-9d71edcde97d",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "223989cf-3e1a-4e9e-9dd9-8657e50764ca",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "52ae8f82-940c-4aa5-abed-e1885abd40e6",
         "advice": "\"id\": \"amazon-instock-avoid\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "230021c4-b8d4-456b-9997-f411afc7bc45",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22389,38 +21369,14 @@
         "category": "General"
     },
     {
-        "id": "73a02861-6d54-44a7-9922-e89cd3fc8e6a",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "3ef04498-c01c-4bee-9f9e-5bf4ca3f8e98",
         "advice": "\"source\": \"Amazon inst stock no\" and \"mismatch and no the ordinary out of stock\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "9cb93634-8ad1-4fbe-9cde-e3b4f54b32eb",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a6be87c4-16b1-402a-ba1b-335892e3a033",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "0a963db7-564c-45f3-bad1-345d48591418",
         "advice": "\"id\": \"roi-evaluation\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "81ca7b06-70c0-417a-98e4-afec52ed3934",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22449,26 +21405,8 @@
         "category": "General"
     },
     {
-        "id": "485949bf-1c45-43c8-887d-25c9af4fb329",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9103edea-efe2-46df-98ab-3ed3101eff78",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "43646a46-2c3d-414f-bb5e-59488a073d96",
         "advice": "\"id\": \"coupon-usage\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "99c2146b-01b4-4b60-ab14-391a9b59cb9e",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22485,38 +21423,14 @@
         "category": "General"
     },
     {
-        "id": "7cefe1cb-6083-4871-aeb3-e85f519753c5",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1e481e0c-2168-4ddd-9453-2d42f3f65b89",
         "advice": "\"source\": \"so we can get a 25% coupon from what I've seen okay so it looks like it's actually profitable\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "7d5297d7-9fed-4c4d-a30b-01274ec0e70e",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e8a3e6d2-8844-4688-96da-5ef13f8dd3d6",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "33fa7426-5e5d-489c-a26a-7379233c09e2",
         "advice": "\"id\": \"quick-picks-skepticism\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c4f01005-cdb1-4293-9199-e882fa803f62",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -22533,26 +21447,8 @@
         "category": "General"
     },
     {
-        "id": "bfef5651-2ae4-4600-830c-1d14b93c046b",
-        "advice": "\"confidence\": \"Medium\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "cb9a1d30-9350-4757-bbcd-d7eeebd1e1e2",
         "advice": "\"source\": \"I don't really know I feel about that feature if I'm being 100% honest\" and \"if from these five products we don't have any profitable products any products that is good enough for us to buy I'm just going to skip it\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c25f8e80-3073-4148-85ac-d6ecfe53fc9c",
-        "advice": "}",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9db813b6-1b01-4608-be6a-911e130e9b31",
-        "advice": "]",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -23213,22 +22109,6 @@
         "source": "Gift Card Percentage: Include savings from discounted gift cards"
     },
     {
-        "id": "provider-shipping-1",
-        "category": "Pricing",
-        "trigger": "Typical shipping cost is about 3% of product cost",
-        "advice": "Enter the percentage (e.g., 3) in the Provider shipping costs field to include in profit calculations",
-        "confidence": "High",
-        "source": "If you know your typical shipping cost is about 3% of your product cost, enter \u201c3\u201d in this field to include it in profit calculations."
-    },
-    {
-        "id": "sales-tax-1",
-        "category": "Pricing",
-        "trigger": "Pay sales tax on wholesale purchases without tax-exempt status",
-        "advice": "Enter your local tax rate in the Sales tax considerations field for accurate profit projections",
-        "confidence": "High",
-        "source": "Unless you have tax-exempt status, you\u2019ll likely pay sales tax on wholesale purchases. Enter your local tax rate to ensure accurate profit projections."
-    },
-    {
         "id": "prep-cost-1",
         "category": "Pricing",
         "trigger": "Costs to prepare each item for Amazon FBA",
@@ -23243,14 +22123,6 @@
         "advice": "Enter the shipping cost per pound in the Shipping Cost Per Pound field",
         "confidence": "High",
         "source": "Shipping Cost Per Pound: Your average cost to ship items to Amazon"
-    },
-    {
-        "id": "inbound-shipping-1",
-        "category": "Pricing",
-        "trigger": "Flat-rate shipping calculation to Amazon",
-        "advice": "Enter the inbound shipping cost per item in the Inbound Shipping Cost Per Item field as an alternative",
-        "confidence": "High",
-        "source": "Inbound Shipping Cost Per Item: Alternative flat-rate shipping calculation"
     },
     {
         "id": "cache-feature-1",
@@ -25069,26 +23941,8 @@
         "source": "Media (DVDs, books, textbooks, games, etc.)... No second-hand clothing items can be sold on Amazon. (inferential from apparel contrast)"
     },
     {
-        "id": "3898d135-0f95-4169-a6c2-e990c745ec82",
-        "advice": "[",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e5e2d1d0-bb3d-4dc5-9da0-63ac753fec1d",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "75bbcce2-25b5-445f-83df-c6d96aaa0a98",
         "advice": "\"id\": \"book-new-condition\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c900fce9-9946-4ea0-a906-1c98de5c886e",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25105,38 +23959,14 @@
         "category": "General"
     },
     {
-        "id": "da327329-8d7e-4ee9-87d6-d4ae98ec5381",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "42d2730e-2a18-4316-8cb2-e91d29e4bcb5",
         "advice": "\"source\": \"New: A brand-new copy with cover and original protective wrapping intact. Books with markings of any kind on the cover or pages, books marked as \"Bargain\" or \"Remainder,\" or with any other labels attached may not be listed as New condition.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "5a2418db-bff8-4901-bc80-8c788c8e8182",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9f3c5bb3-9aab-4a9a-b951-526bcf09073e",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "af637626-5a25-45ec-9085-e2a356b012bd",
         "advice": "\"id\": \"book-used-like-new\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "253dcfbc-79be-464d-9a1b-5226481e837c",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25153,26 +23983,8 @@
         "category": "General"
     },
     {
-        "id": "2d9beda5-4722-4b89-a4d6-354e798579f6",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "534939ed-97d5-4788-b9b2-568818cfdf6c",
         "advice": "\"source\": \"Used - Like New: Item may have minor cosmetic defects (such as marks, wears, cuts, bends, or crushes) on the cover, spine, pages, or dust cover. Dust cover is intact and pages are clean and not marred by notes. Item may contain remainder marks on outside edges. Item may be missing bundled media.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "5ba8df7f-7a19-42ba-a654-016abc5606ba",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3ece7f51-44c0-4a3f-b364-75ce9b7b7b56",
-        "advice": "{",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25183,26 +23995,8 @@
         "category": "General"
     },
     {
-        "id": "89d83f9e-4705-481d-9d5d-30d28ae62a48",
-        "advice": "\"category\": \"General\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c7784fbd-da98-4307-bb59-d45412edb4b5",
-        "advice": "\"trigger\": \"Minor cosmetic defects on cover, spine, pages, or dust cover\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "7a31941a-8515-4805-a629-57ee7cf93541",
         "advice": "\"advice\": \"List as Used - Very Good if shrink wrap, dust covers, or boxed set case may be missing, include remainder marks in comments, and may miss bundled media\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "4a25c70e-7563-4c2e-bb44-2a9097ff7344",
-        "advice": "\"confidence\": \"High\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25213,26 +24007,8 @@
         "category": "General"
     },
     {
-        "id": "5192f3f0-e2e6-4c36-94c4-d70f59476207",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "cd0d02aa-532f-4d03-858b-c87550e21698",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "543a1039-31c4-4ab4-8843-b3e371d071da",
         "advice": "\"id\": \"book-used-good\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "ddc211d0-b578-45d3-ad23-4c3c2d23570b",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25249,38 +24025,14 @@
         "category": "General"
     },
     {
-        "id": "8218522a-24ff-4e65-93b0-7a60f4af6070",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "c7cece2d-4ead-40c6-a214-0964d5d33487",
         "advice": "\"source\": \"Used - Good: All pages and cover are intact (including the dust cover, if applicable). Spine may show signs of wear. Pages may include limited notes and highlighting. May include \"From the library of\" labels. Shrink wrap, dust covers, or boxed set case may be missing. Item may be missing bundled media.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "8a88a5a0-4519-45ab-afd0-1727bc66f3b8",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "73258b18-dc35-401c-9d9d-4b8fa6f73677",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b00c494e-d547-421d-b8fe-3163e2b03543",
         "advice": "\"id\": \"book-used-acceptable\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "8d7c1273-a8f2-4d83-a2cb-0cfee2b1f3df",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25297,38 +24049,14 @@
         "category": "General"
     },
     {
-        "id": "eea3bfe5-ec2f-440d-8795-f53597f33ef8",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "0ab7c18a-f555-47c6-b6b1-db69d8644615",
         "advice": "\"source\": \"Used - Acceptable: All pages and the cover are intact, but shrink wrap, dust covers, or boxed set case may be missing. Pages may include limited notes, highlighting, or minor water damage but the text is readable. Item may be missing bundled media.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "a317d435-81fd-4eb7-ace2-26f20ff011cd",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "dc5b484b-67b0-4fda-9968-29d0fa6b712d",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1713f3e5-18b4-4812-988f-715a6157dbb9",
         "advice": "\"id\": \"book-unacceptable\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9bb1ed5e-eb36-478c-80a8-8d5af8985337",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25345,38 +24073,14 @@
         "category": "General"
     },
     {
-        "id": "bbd9e840-a7f6-4876-a8d6-0e9a2cb3452f",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "fb608adf-03d2-4cba-aa4d-f2d90401f65b",
         "advice": "\"source\": \"Unacceptable: Has missing pages and obscured or unreadable text. We also do not permit the sale of advance reading copies, including uncorrected proofs, of in-print or not-yet-published books.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "f30c9b2a-2f7c-4857-9f3f-f9455ee8983c",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "09fcaf8e-6fc1-46db-9da9-695503e2b89a",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "75044dc8-bc0e-48a9-bb94-06515014af1a",
         "advice": "\"id\": \"book-collectible-criteria\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "7f1c1623-add0-4f3a-a768-8efcb0011115",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25393,38 +24097,14 @@
         "category": "General"
     },
     {
-        "id": "5cf15fab-00a8-4002-87bf-0896259071d6",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "5d57850f-2b46-455c-8ef4-dd9f77455ff7",
         "advice": "\"source\": \"To be considered collectible, a book should be unique in a way that could reasonably be assumed to increase the book's value to a collector: First editions and first printings Signed, inscribed, or scarce copies Advance reading copies and uncorrected proofs of out-of-print books Collectible books do not include the following: Uncorrected proofs of in-print or not-yet-published books Former library books Remaindered books Book club editions\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "8ebe4f34-2c3e-49a4-bcdd-1a3027db5ef3",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "89683556-2e29-4942-b11e-b327fffe79a5",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "43061a0a-d8bb-480c-83c9-72eb741dd415",
         "advice": "\"id\": \"book-collectible-like-new\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "93ea3666-fd6e-4775-a218-91eef848e072",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25441,38 +24121,14 @@
         "category": "General"
     },
     {
-        "id": "1c0d6b1f-5784-4519-8f61-7f6fab4f3451",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "12fcd77e-1337-4e59-9cda-8fe016851496",
         "advice": "\"source\": \"Collectible - Like New: All pages and the cover are intact. The dust jacket is intact, if applicable, with no noticeable or very minor nicks or flaws. Spine has no signs of creasing. Book may have very small but virtually unnoticeable flaws.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "ea221a7d-e633-4afa-bff7-42da58e70a6d",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a85f9e2b-0a7b-4e15-8863-cbe21f8d8112",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "a0491373-0a91-4544-b786-d1eec27a989d",
         "advice": "\"id\": \"book-collectible-very-good\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "80b1b6cf-4686-4fbf-8ac7-c9c2867ed10f",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25489,26 +24145,8 @@
         "category": "General"
     },
     {
-        "id": "acc22614-4b36-4852-b5c8-9897a98ce52f",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "274018f8-3a66-473b-b2da-da87160f87b1",
         "advice": "\"source\": \"Collectible - Very Good: Pages are intact and not marred by notes or highlighting. Spine shows no sign of creasing. Dust jacket, if applicable, shows signs of some rubbing or chipping.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "c5876b69-4ffe-4df3-8d9f-154bbea620bd",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "32f9585f-583e-4918-ab90-201119296172",
-        "advice": "{",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25519,26 +24157,8 @@
         "category": "General"
     },
     {
-        "id": "99ad6c22-09f1-475a-a5b1-5ca30dc9dd87",
-        "advice": "\"category\": \"General\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "5ebf9577-cc0e-413c-8bba-0c7882425001",
-        "advice": "\"trigger\": \"All pages and cover intact, spine shows wear\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "f323d4cd-e4d0-4493-bcc9-f0c6319d4b59",
         "advice": "\"advice\": \"List as Collectible - Good, but note that Good condition books are generally not considered collectible grade\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "ddc82156-6b64-469b-9148-c96de4d1f508",
-        "advice": "\"confidence\": \"High\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25549,26 +24169,8 @@
         "category": "General"
     },
     {
-        "id": "f2a5e76a-10c1-4179-ab0a-9495bc450b8e",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "91b19f49-5e91-4e81-a5d7-653a2d317c58",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "3fb3f905-fb7f-4477-ac39-9e030626c7bc",
         "advice": "\"id\": \"book-collectible-acceptable\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a332378f-be4c-4df9-b7ff-76de5ed7eb71",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -25585,26 +24187,8 @@
         "category": "General"
     },
     {
-        "id": "300204ea-c20f-48ba-919c-214a907aee65",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "93722654-4fe2-4e09-bc2c-d18240be63e9",
         "advice": "\"source\": \"Collectible - Acceptable: A readable copy showing significant wear. Dust jacket may be missing. For all but the rarest items, books in Acceptable condition are not considered to be collectible grade.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "3c106753-31ba-44d9-b11a-85f135cec9bd",
-        "advice": "}",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "8603f396-448e-4233-9938-e83ca81153f4",
-        "advice": "]",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -26737,26 +25321,8 @@
         "source": "Collectible - Acceptable: A readable copy showing significant wear. Dust jacket may be missing. For all but the rarest items, books in Acceptable condition are not considered to be collectible grade."
     },
     {
-        "id": "2230a273-1d07-4681-bf75-4358d11f99c3",
-        "advice": "[",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "f4b34971-8301-4499-8510-42288ddda2a4",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "0fc1b562-6a38-4d48-abeb-d9bc9ca73950",
         "advice": "\"id\": \"strat-1\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "bee1eef3-8e2e-4660-80ea-925e8bd9dd2c",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -26773,38 +25339,14 @@
         "category": "General"
     },
     {
-        "id": "042eced5-01ec-444b-bfce-6076eb948b5c",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "df8891cb-d1d7-48ff-9de9-e65fdc1fdefb",
         "advice": "\"source\": \"Effective product listings go beyond mere text. Utilize lifestyle images, videos, and infographics to vividly showcase your product in action. Focus on benefits over features to forge an emotional bond with potential buyers. Research shows that listings featuring multimedia can achieve a 30% increase in conversion rates.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "7a1365a9-af38-41bf-ae2d-a812c26558e5",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "abfd1e1b-aed8-417f-bc16-e1736bce6418",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "08459be7-46a9-4bf7-8de6-70d45876ce46",
         "advice": "\"id\": \"strat-2\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "ff5239b0-c061-4ee4-9dff-3fd69c255219",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -26821,38 +25363,14 @@
         "category": "General"
     },
     {
-        "id": "8885bd39-0ad8-49c2-a5d5-650466aae31d",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "596a1390-088c-41f6-9750-c6d2d8da72a1",
         "advice": "\"source\": \"Keywords are pivotal for driving traffic and enhancing conversion rates. Emphasize long-tail keywords that capture specific buyer intent. Strategically optimize backend keywords; avoid redundancy, ensuring your listings accurately represent their categories. Sellers who target high-intent phrases may observe a 20% improvement in organic search rankings.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "02447086-6816-4a1b-9674-2494f723eed1",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fad490f2-5063-4890-9f70-0f6ae048bf83",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "e126527e-6925-471d-97d3-6f0953e8aa35",
         "advice": "\"id\": \"strat-3\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d35729c3-17bb-4647-b6e2-1104c172d46b",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -26869,38 +25387,14 @@
         "category": "General"
     },
     {
-        "id": "fab0bdc3-e483-42b7-90e4-7206ed06f64a",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1f00a6c3-b42d-4776-9c9a-5cdf12150282",
         "advice": "\"source\": \"Ensure your product titles are clear, concise, and incorporate primary keywords. Descriptions should blend persuasive elements with crucial information. Well-structured titles can elevate visibility in search results, leading to higher click-through rates and positively influencing sales performance.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "e80f44d0-5cd9-4b39-9843-5be85924e13e",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "375ceeac-967a-4d35-a816-53821eb10aef",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "a86c04f6-0401-4cc0-9194-d6a439a6b678",
         "advice": "\"id\": \"strat-4\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "cc8a7b07-d66c-41a5-89b6-c8bb3ea3c61e",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -26917,38 +25411,14 @@
         "category": "General"
     },
     {
-        "id": "7709a84b-bd80-43cd-9564-06e1f6389a5f",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1f2cb30b-f743-43a0-978d-c11295aa3346",
         "advice": "\"source\": \"Utilize Brand Stores to enrich your brand narrative. This semi-custom storefront enables you to present product ranges in a personalized manner. Regular updates featuring new visuals and offers keep the store dynamic and engaging for returning customers. Sellers who invest in Brand Stores report a 40% increase in customer engagement compared to those who do not.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "6e9bcf77-36cb-4761-859e-e11d2ce53bf3",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "0182dc29-dc26-49f9-9429-1cbd2a54b817",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ed24932b-e0ee-419f-896e-9a1a36cac6f4",
         "advice": "\"id\": \"strat-5\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "91953a7d-6f26-469d-beed-6db88dd10a32",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -26965,38 +25435,14 @@
         "category": "General"
     },
     {
-        "id": "54cc3ac7-63a3-4ddb-91de-0a6165440b2d",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "7836d9d4-6227-4fc3-9f28-236fa2d3e9e1",
         "advice": "\"source\": \"Adopt a segmented approach to PPC campaigns. Separate branded, competitor, and generic queries for better performance evaluation. Keep an eye on metrics like ACoS (Advertising Cost of Sale) and TACoS (Total Advertising Cost of Sale). Implementing PPC management tools can lead to a 15% reduction in overall advertising expenditures while boosting visibility.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "705d6dbb-cc10-4b10-8e48-f9ec9bff4240",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fd38ee97-15f9-428a-8f72-76c40e95aee5",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "4754264d-fee2-4beb-94e1-7cf661584659",
         "advice": "\"id\": \"strat-6\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "deb6085f-a59b-4156-98e3-00b84c15f682",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27013,38 +25459,14 @@
         "category": "General"
     },
     {
-        "id": "18dc89a6-1655-4e96-b9a5-da19df49c400",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "7c17217f-9739-4473-8681-0bd321d5dea3",
         "advice": "\"source\": \"Expand your outreach by directing traffic from social media, influencer partnerships, and email marketing initiatives. Collaborating with influencers in your niche can significantly enhance reach and credibility. Use Amazon Attribution to track how these external channels contribute to your sales conversion funnel.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "8b6a59db-bd06-4917-a6f6-39b490d6b4e3",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d4d34542-c313-4d99-905a-db751895707d",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "a646f486-7196-4753-9380-8bc1c2248162",
         "advice": "\"id\": \"strat-7\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a855fb24-84f3-4f16-a5b1-566804156b7f",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27061,38 +25483,14 @@
         "category": "General"
     },
     {
-        "id": "1b8aa2a1-26bc-43d7-881e-d7bf2fc7f967",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "65acb9da-0d0e-437c-a365-d43efad94c55",
         "advice": "\"source\": \"Implement discounts, coupons, and limited-time promotions to generate urgency and pique interest. Time-sensitive offers can lead to a temporary surge in sales velocity, especially beneficial during peak shopping seasons like Black Friday or Amazon Prime Day.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "ae4b3864-f03c-4e52-97b4-795f308d88b5",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d4b9a14d-a1dc-4bba-9290-b3bafdde7205",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "9b724a35-9a78-45d1-b967-56227b023cd8",
         "advice": "\"id\": \"strat-8\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "86c85954-8a8a-4dc5-a2b5-b3b785b1f530",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27109,38 +25507,14 @@
         "category": "General"
     },
     {
-        "id": "f5f9bc8f-f32d-453b-a412-86aa0db00bdc",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ae466ffb-cd00-4ef5-90c7-06596d7cba35",
         "advice": "\"source\": \"Effective inventory management is crucial for maintaining sales momentum. Use tools to accurately forecast demand, establish reorder alerts that consider lead times, and strategize around seasonal trends. Proactive inventory protection can prevent stockouts and safeguard category rankings.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "302e13b9-9736-42fb-8069-7b7f0c393d8c",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2f441e8e-05e9-499e-8e05-157557685a14",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "2fbd7891-1bfd-489c-81ff-b918d5c3c93a",
         "advice": "\"id\": \"strat-9\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fea6ad86-ed3d-44bd-bbb6-7e377cfcc125",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27157,38 +25531,14 @@
         "category": "General"
     },
     {
-        "id": "0c25def0-9ac0-4c66-baf8-123a649a0254",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "e1cef84a-fa6b-41f9-a5f3-69fc871f6a20",
         "advice": "\"source\": \"Accelerate the acquisition of social proof through ethical automation of review requests. Enhancing your review strategy is likely to increase customer trust and conversion rates. Studies show that sellers who maintain a steady stream of positive reviews can enhance sales by up to 50%.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "b7ceb332-3f2c-44fb-92cb-d8244a071640",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "0254d20d-087c-411b-b411-75d7faa3eb45",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "78b88b80-72ff-402c-be20-282b7860ce4d",
         "advice": "\"id\": \"strat-10\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "7b1cdc8e-98e9-470a-b1af-4d3b4dfd3293",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27205,38 +25555,14 @@
         "category": "General"
     },
     {
-        "id": "17e13e16-d6a4-4e18-9427-460e65361bbb",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "d954af08-b57b-4722-8a36-2e3e03cee33f",
         "advice": "\"source\": \"Focusing on securing the Buy Box should be a priority for all sellers. Keep monitoring pricing and availability to stay competitive. Analyzing performance data ensures you\u2019re ready for swift adjustments in response to marketplace changes, particularly regarding variations in Amazon\u2019s fee structure or policy updates.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "ed295dcf-88ea-4b1e-a74f-18085cb0cc8b",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2296711d-dfe4-49e4-b0c5-cb08b0b1790a",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "4ea97fec-c762-402d-9b07-b4a712c2ad47",
         "advice": "\"id\": \"strat-11\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "51f6bcc9-37c9-4f52-91aa-d4a6f8ae866b",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27253,38 +25579,14 @@
         "category": "General"
     },
     {
-        "id": "f7d88b6c-21c8-4f2c-9bfe-1924068467e3",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "5785e726-1418-4dea-9ece-596b7b371c36",
         "advice": "\"source\": \"While promotions can stimulate sales, excessive or poorly timed discounts may erode profit margins. It\u2019s essential to find a balance between discounts and broader pricing strategies to ensure profitability. Monitoring sales velocity post-promotion is crucial to evaluate effectiveness.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "57860e10-1967-46e9-aeb7-797b2c187566",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "cc964ba3-8c1e-449b-8d6a-81fc041deaab",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "a84b39e7-fc67-41da-be9f-10b15cdfe41c",
         "advice": "\"id\": \"strat-12\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "735c712b-aee4-43c4-b2f5-37c6bc038926",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27301,38 +25603,14 @@
         "category": "General"
     },
     {
-        "id": "12964ae5-55d4-4d33-ae55-652a0d233394",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "01e62db1-9269-431f-b83f-99b74f75e860",
         "advice": "\"source\": \"Average costs can vary widely; however, sellers typically spend around $500-$2,000 per month depending on the competitiveness of their product category. Effective campaigns can generate sales in the range of 3-5 times the ad spend.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "aa15638b-d1ea-420c-ba25-b3cc1adcdfe5",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1db6b752-7ca6-4fef-b7b6-629073812bc2",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b038f917-0919-415b-9ce8-9ff6ad3f5513",
         "advice": "\"id\": \"strat-13\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "58c11ea5-15e6-442f-a0d4-96be0dbe2308",
-        "advice": "\"category\": \"General\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27349,38 +25627,14 @@
         "category": "General"
     },
     {
-        "id": "ca7a5d95-86c0-4257-9189-d764c3681514",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1a964aaa-32f9-4efb-87a5-1725d6c14dee",
         "advice": "\"source\": \"Most sellers can expect noticeable changes within 6-12 weeks of implementing listing and marketing optimizations, provided they consistently monitor and adjust their approaches.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "7a31b15d-8e16-4733-983f-fae5b9a5fb48",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "cc4adfcc-03e8-4e5c-b887-db4bf621fdf2",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "4a492d35-68fe-436e-9de2-78e659a9c1d8",
         "advice": "\"id\": \"strat-14\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "21fe980e-9510-4710-a9f5-98a8091e3c78",
-        "advice": "\"category\": \"Risk\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27397,38 +25651,14 @@
         "category": "General"
     },
     {
-        "id": "2af66747-a9c6-444d-914b-f069abc4a051",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1fda4c23-d0f4-4578-b1cd-87d130c6bcfb",
         "advice": "\"source\": \"Consistency in obtaining the Buy Box requires maintaining competitive pricing, high seller metrics, and adequate stock availability. Regularly analyzing competitors and adjusting your strategy is vital.\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "1a5a6c02-b478-45a0-9466-8f08f1a0c2dd",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "7a7cb5a6-be18-4ef3-9c3f-5016157933cf",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b867a43e-f595-4cff-b7a9-6b2684c24487",
         "advice": "\"id\": \"strat-15\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "5e09f505-3077-41b7-84a1-ee2e88714a04",
-        "advice": "\"category\": \"Seasonality\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27445,38 +25675,14 @@
         "category": "General"
     },
     {
-        "id": "8beaa15f-06e0-4e55-a976-0c3d828be14c",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "cc8b31d4-f29e-471f-8993-c6a09db467bb",
         "advice": "\"source\": \"Limited budget\tFocus on organic SEO improvements\tLow (time investment)\tIncreased visibility without ad spend\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "fedc2e83-8df5-4437-b9f1-151b265ce943",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "51533930-d5c7-4c8f-8336-7519ae84df68",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "15855bb6-f720-46f9-b92f-2d3df3014bb0",
         "advice": "\"id\": \"strat-16\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "74e382d3-2676-4d7f-aacc-03d1d7b7da77",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27493,38 +25699,14 @@
         "category": "General"
     },
     {
-        "id": "3ecb8d82-6b3c-4d5b-9b38-413600c7ef5e",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "c256d569-c1ed-4fcf-8766-bfd826c0df7f",
         "advice": "\"source\": \"High-value product with existing traction\tInvest heavily in PPC ads\tMedium (monthly ad spend)\tHigher sales velocity, protecting market share\"",
         "trigger": "Manual Entry",
         "category": "General"
     },
     {
-        "id": "c2fc9b20-0d56-4b77-9d69-fe16e318063b",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fffcf260-cfba-4a71-b824-88d51843f964",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b1bdb7cc-a6f3-4ea1-a003-eb7444972bcc",
         "advice": "\"id\": \"strat-17\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a7f814d6-1ed3-4efa-925d-235ccc82e583",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -27541,26 +25723,8 @@
         "category": "General"
     },
     {
-        "id": "74601b52-f0a9-450a-ba83-9b5f6c162c1c",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "6252c2c1-f6a9-4e95-8055-127ca2ee6633",
         "advice": "\"source\": \"New product launch\tRun initial discounts and promotional offers\tMedium (discount costs)\tFast traction to gain initial sales momentum\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "6d62dfb7-8858-4cfa-91f6-d12c4ae6ee9e",
-        "advice": "}",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "5ac678a8-5ab8-4512-b1ee-243ad2388457",
-        "advice": "]",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29637,30 +27801,6 @@
         "source": "2,000 books scanned \u2022 6,000 seconds \u2022 100 minutes \u2022 1 hour, 40 minutes."
     },
     {
-        "id": "a2b3d376-9de9-4407-b5b1-2e097ceef7b2",
-        "advice": "[",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2c8bbf24-d4a4-437d-a363-afe9de3816cb",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "732527d2-efe9-4735-bf1e-dfd1aa4e5fe4",
-        "advice": "\"id\": \"rule1\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "360cfc6b-62df-4fd4-a58f-5aa56f4264dc",
-        "advice": "\"category\": \"Buying\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "c5b8e8f1-64e4-4a74-80d3-a7179d1d18c9",
         "advice": "\"trigger\": \"Evaluating large volumes of books (e.g., 10,000 books)\",",
         "trigger": "Manual Entry",
@@ -29673,38 +27813,8 @@
         "category": "General"
     },
     {
-        "id": "35bc3236-82a1-43bf-9c78-6a294ffcb822",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "bd6e42a0-0e79-43c5-a1a3-844d9b619b26",
         "advice": "\"source\": \"Level Three Book Sourcing: The numbers Remember, Level Three sourcing comes with a deep understanding of the factors that drive value \u2013 something totally different than a database of Amazon price values stored in your head. 118 RESELLING FOR REBBest of PeAt this level, we\u2019re scanning about one out of 50 books (super-rough estimate and subject to wide variation depending on quality). Let\u2019s run those numbers: \u2022\t 10,000 books \u2022\t 3 seconds per book \u2022\t 200 books scanned \u2022\t 600 seconds \u2022\t 10 minutes\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "99ee0e53-3223-414d-98dc-5f1f9490afe5",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2787d7d6-219d-47f4-b7f2-49b620f5c6e8",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2282fda4-4ad1-46fb-81dc-96766a3bf94e",
-        "advice": "\"id\": \"rule2\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "84944b6e-0e84-47d6-85f7-cec97a791cc8",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29721,38 +27831,8 @@
         "category": "General"
     },
     {
-        "id": "f3ad2420-57bd-4e1e-86e4-0185f8462b3d",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "ba0d0e78-2cae-4a83-9ceb-de35a045f535",
         "advice": "\"source\": \"#1 Principle of book value: The rule of recency Books published in recent years. The more time that elapses since a book is published, the more time for people to lose interest, and the more time for the used market to be saturated with increasingly cheaper used copies.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1160bec2-115a-4f63-9189-c769c58fd079",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "d4a3014e-2746-4f3e-a2f8-7af399540c66",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e8ea47b8-4d97-419c-9994-8a27a12244c8",
-        "advice": "\"id\": \"rule3\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "fd99e57e-c512-42f6-b253-d5db8e9ba268",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29769,38 +27849,8 @@
         "category": "General"
     },
     {
-        "id": "23282dce-1d55-4b6f-b3cb-334f0c49f618",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "be0dee21-42d9-482c-abfc-4b6db8331542",
         "advice": "\"source\": \"#2 Principle of book value: The rule of relevance Books providing value that have not diminished over time. Very, very few books remain relevant long. Very few subjects do not evolve over time, making past books on the subject irrelevant. Examples on one end of the spectrum: Virtually all computer books, becoming obsolete within 3 years; any book with a year in its title (\u201c2011 RV Park Directory\u201d). On the other end: Advanced math books, which often remain as relevant 50 years later as the day they were published.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "95eeaac9-7264-45d2-8ed7-30b4ad0c69c4",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1904aa31-326b-4951-899d-1ae5b610db33",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "b159defa-12b0-499d-ba72-b9303bf606fd",
-        "advice": "\"id\": \"rule4\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "034d8618-5c38-4385-a9e0-a7d961a2e920",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29817,38 +27867,8 @@
         "category": "General"
     },
     {
-        "id": "4549702e-94c5-4066-b947-4b51127527a1",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "b36f8b36-6df4-4428-9fbe-78842ddc3952",
         "advice": "\"source\": \"#3 Principle of book value: The rule of necessity Books for which there is no substitute, for which no (or few) other books in the world are written. These are the books that are so specialized, it\u2019s likely (or impossible) that no other book on this subject exists anywhere. If someone wants to know about this subject (and they will), they have to buy this book. They simply have no other option.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "26c3e5ac-d207-4f9c-a65c-2f2e38d9aa83",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2710c5a4-66d3-4cae-bce9-afd887ee58f8",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2e31fd1a-9771-4c58-9238-2609ab08f1fc",
-        "advice": "\"id\": \"rule5\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "0da0139f-706f-44a0-882b-6e67f7dfc5d1",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29865,38 +27885,8 @@
         "category": "General"
     },
     {
-        "id": "4d270073-da35-4419-bcaf-26233115fdfe",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "8bf07093-8302-43aa-a657-0eab56600f69",
         "advice": "\"source\": \"#4 Principle of book value: The rule of micro-passion Books for a small and irrationally passionate audience. These are books on the secret reptilian race controlling the planet, and the history of collectible Garbage Pail Kids cards. 122 RESELLING FOR REBBest of PeNote the key element of \u201csmall.\u201d Practitioners of yoga are often irrationally passionate, but they also comprise every third person on the street\u2026 and every fourth book at any book sale.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "aaf302a9-1d8f-4731-81df-b062baa21746",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "6146dab2-13d7-400a-b6be-5ce779fce55a",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "00b01505-4026-4a2c-822e-274c76b2d6c1",
-        "advice": "\"id\": \"rule6\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2a6d845f-4182-46db-9bbf-2697101f1967",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29913,38 +27903,8 @@
         "category": "General"
     },
     {
-        "id": "f3325cdc-1b5b-4a3e-aa12-f8cfb2ace51c",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "787c48d0-4c6a-401d-9b31-ba0d6b7db7e7",
         "advice": "\"source\": \"Five facts that make pre-scanning mastery crucial 1.\t You can almost never scan every book. 2.\t You almost never should scan every book. 3.\t Over 99% of books cannot be sold on Amazon for $10 or more on Amazon. 4.\t Profits are directly tied into speed and quality of your scanning. 5.\t Value is not accidental \u2013 there are patterns.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "43dfd305-6aa3-42b1-85d9-ed6331727f7b",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "4ad5053d-1c60-4bac-af03-ae8f20e905c1",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "31c462f9-f768-4049-a5ee-011d61ba2273",
-        "advice": "\"id\": \"rule7\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9e9b1aee-ad11-44bf-9b87-78cb783cd8ed",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -29961,38 +27921,8 @@
         "category": "General"
     },
     {
-        "id": "6bbdc6fe-8357-41da-96b4-ad0042548b05",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "37003a93-bfa6-481d-9b9f-f7dc99a9e72d",
         "advice": "\"source\": \"1. Click over to Amazon from your scanning app The simple one: When all other data checks out (sales rank, etc), we click through from the app to Amazon\u2019s page to view FBA offers. It\u2019s quite annoying and time consuming, but it\u2019s effective.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "a796b682-a454-4fbb-8a3a-e12f7ca5ec91",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "66fdc457-eb70-4b83-ac11-c742728bfad2",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e4ce218d-01f5-42be-be92-cce7397e008d",
-        "advice": "\"id\": \"rule8\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "efd2cb16-4ed9-4b16-9609-4e292b296b68",
-        "advice": "\"category\": \"Pricing\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -30009,38 +27939,8 @@
         "category": "General"
     },
     {
-        "id": "583bf382-166e-46b2-945c-f4e2339c6f93",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "1a9a0681-8a92-4d09-aaee-3c17985e5183",
         "advice": "\"source\": \"2. Data-driven probability Through trial and error, some sellers have learned a cool trick using some advanced math to determine if a book has a high probability of having no Fulfillment by Amazon offers (or FBA offers priced high enough to make it worth our investment). BELS eter Valley & FBA Mastery 131 The basic idea is: The better the rank and the fewer the merchant fulfilled offers (data Amazon FBA scanning apps still show), the better the likelihood of there being no Fulfillment by Amazon offers (or at least FBA offers that are priced high enough to be in the blindspot).\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "2c31aa4c-1cd3-4553-84e7-99492fc8eec1",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "289dafb9-dcc4-41a1-bfd7-703d234cd969",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "e200e792-b72c-4968-aa80-a6a9baeab393",
-        "advice": "\"id\": \"rule9\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "9f522750-32c6-4adf-bd9a-398b8dd223c1",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -30057,38 +27957,8 @@
         "category": "General"
     },
     {
-        "id": "91a9be82-ae53-4a56-985b-dcd211ff49be",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "89b17c50-9046-430e-8c1a-9a41cc1cc345",
         "advice": "\"source\": \"Blindspot Sourcing: Profiting from what other Amazon sellers can\u2019t see Over Christmas, I was reading a book about the most successful jewel thief in history. He figured out that most balcony doors on the 2nd story or up are left unlocked, because the balconies are perceived by their owners as being inaccessible. And I thought: \u201cThis is how I make most of my money on Amazon.\u201d Not through thievery, but by exploiting blindspots. Money laying around unguarded that other sellers don\u2019t notice. That\u2019s where the money is.\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "04e9f6ce-0747-49e3-82b6-fea7d9a1287e",
-        "advice": "},",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "4f54e7af-4b80-4599-b18f-21c6f061217f",
-        "advice": "{",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "478ade7e-09ea-4972-bf19-be9dc062448c",
-        "advice": "\"id\": \"rule10\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "acce6e0b-50b7-4b63-ace3-ad022b0c2ba5",
-        "advice": "\"category\": \"Buying\",",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -30105,26 +27975,8 @@
         "category": "General"
     },
     {
-        "id": "5314ed9d-43ae-472c-9741-821c083ef42e",
-        "advice": "\"confidence\": \"High\",",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
         "id": "28a73c3c-e5b0-4706-8701-f6484bbc2164",
         "advice": "\"source\": \"2. Social Sourcing: Making bulk buys driven by relationships (aka getting tons of inventory by talking to strangers) Blindspot Sourcing: Profiting from what other Amazon sellers can\u2019t see\"",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "46b44b1a-39db-495e-bb08-49c3c586a457",
-        "advice": "}",
-        "trigger": "Manual Entry",
-        "category": "General"
-    },
-    {
-        "id": "1702b3dc-bf13-4551-9551-6595ccd38427",
-        "advice": "]",
         "trigger": "Manual Entry",
         "category": "General"
     },
@@ -31503,14 +29355,6 @@
         "advice": "Buy books on unorthodox therapies for high prices",
         "confidence": "High",
         "source": "No surprise here. Books on very unorthodox or non-mainstream therapies often sell for high prices."
-    },
-    {
-        "id": "strat38",
-        "category": "Buying",
-        "trigger": "Niche art history books",
-        "advice": "Target niche art history books as a strong category",
-        "confidence": "High",
-        "source": "Niche art history books are a strong category."
     },
     {
         "id": "strat39",
@@ -35327,5 +33171,909 @@
         "advice": "Use UPC in Keepa shopping tab to search for other sources offering the item at the low Amazon price (e.g., $28) for alternative sourcing",
         "confidence": "High",
         "source": "another thing you can do is you can take the UPC and you can throw it in here and also beyond that you can do this just try to see is Amazon price matching somebody um that we might be able to buy this for 28 bucks... yeah this PL oh there it is 28 bucks Adidas um so so they were price matching Adidas"
+    },
+    {
+        "id": "book-buying-1",
+        "category": "Buying",
+        "trigger": "Dead broke with no capital",
+        "advice": "Start by buying used books at thrift stores for $1-2 each",
+        "confidence": "High",
+        "source": "I just started buying one $2 books at thrift stor selling them for 10 20 sometimes hundreds of dollars but this one's really hard to scale if you are dead broke right now used books can be a good option"
+    },
+    {
+        "id": "book-pricing-1",
+        "category": "Pricing",
+        "trigger": "Used books purchased for $1-2",
+        "advice": "Sell used books on Amazon for $10-20 or sometimes hundreds of dollars",
+        "confidence": "High",
+        "source": "I just started buying one $2 books at thrift stor selling them for 10 20 sometimes hundreds of dollars"
+    },
+    {
+        "id": "book-risk-1",
+        "category": "Risk",
+        "trigger": "Attempting to scale used book selling",
+        "advice": "Avoid relying on used books for long-term business as it's difficult to scale by buying one item at a time over and over",
+        "confidence": "High",
+        "source": "but there's no reason to sell used books on Amazon if you have any kind of capital because it's really difficult to build a long-term business buying one item at a time over and over again"
+    },
+    {
+        "id": "book-general-1",
+        "category": "General",
+        "trigger": "Starting Amazon business with zero capital",
+        "advice": "Use used books as an entry point if completely broke, but transition to other methods once capital is available",
+        "confidence": "High",
+        "source": "used books can be a good option but there's no reason to sell used books on Amazon if you have any kind of capital"
+    },
+    {
+        "id": "strat1",
+        "category": "Seasonality",
+        "trigger": "Approaching Christmas, sales rank dipping",
+        "advice": "Monitor sales rank patterns for seasonal dips and potential increases in demand, such as Christmas gifts; look for consistency and predict future trends based on historical data.",
+        "confidence": "High",
+        "source": "it's a pain you might get it as a Christmas gift or something like that and as we went further into the season now it's a more standard sales rank it's been very consistent recently but we might see it start to dip again and that could be something you can keep your eye on as we are getting closer to Christmas"
+    },
+    {
+        "id": "strat2",
+        "category": "Pricing",
+        "trigger": "Year view or 3-month view of buy box price",
+        "advice": "Use year view near Christmas to check if item sold fast last year and if price increased; if price stayed stable, avoid heavy stocking for holidays.",
+        "confidence": "High",
+        "source": "when I'm doing product research I'm typically looking at the year view or a lot of times it's even just the three-month view right now as we're getting closer to Christmas I'm looking at the year view a lot to see was it selling super fast last Christmas did the price go way up and based on how it acted last year A lot of times we're going to know if the price is going to go up so in this case we saw that this item did sell way faster during the Christmas season but the price didn't necessarily go up and so we might not necessarily be super interested in stocking up on this for Christmas"
+    },
+    {
+        "id": "strat3",
+        "category": "Pricing",
+        "trigger": "Amazon selling on listing (orange highlight)",
+        "advice": "If Amazon was selling through December to mid-February, price may not rise even with demand; watch for sell-outs leading to price jumps to $85, indicating willingness to pay more.",
+        "confidence": "High",
+        "source": "this could explain why the price didn't go up last Christmas if it was for sale by third party sellers like you and I on the buy box right here there would be no or highlighted here whenever Amazon is selling the listing or was selling the listing you can see it's going to be highlighted orange here so we can see last year during through December all the way through about middle of February Amazon was selling on this listing as soon as they sold out the sales rank went up which makes sense because the price went up but it was also still selling because that sales rank was still are still seeing some drops during this period which shows me that people are still buying this item for $85"
+    },
+    {
+        "id": "strat4",
+        "category": "Pricing",
+        "trigger": "New price low (e.g., $32.99) but buy box higher",
+        "advice": "Ignore lowest new price if it's FBM with shipping; focus on buy box where sales occur, as you can sell above lowest offers.",
+        "confidence": "High",
+        "source": "a seller has been on these recently for about $32.99 imagine that this is a merchant filled seller and they're charging shipping typically you don't see this big of a difference between the new price being low and the buy box price where people are actually buying the item so I bet this is like a merchant field seller there's some shipping cost we're not thinking about"
+    },
+    {
+        "id": "strat5",
+        "category": "General",
+        "trigger": "Selling used products like books",
+        "advice": "Toggle used prices on Keepa charts for book arbitrage; focus on new products personally, but check used for books.",
+        "confidence": "High",
+        "source": "you can also toggle the used prices on a lot of these items personally I only flip new products I used to do a ton of used products though so if you're someone who's doing books or any of those other business models where you might be selling more used products definitely look into that"
+    },
+    {
+        "id": "strat6",
+        "category": "Risk",
+        "trigger": "Increase in sellers (e.g., from 12 to over 20 in months)",
+        "advice": "Watch new offer count; rapid seller increase without price drop is red flag, but if selling >1000/month, price may hold.",
+        "confidence": "High",
+        "source": "back here in June there was was like 12 FBA sellers on it or just 12 sellers in general but as we've been getting recently the past couple months there's been upwards of over 20 sellers on these listings which has dropped the price by just a couple bucks in this case because this listing is selling so fast selling over a thousand times a month"
+    },
+    {
+        "id": "strat7",
+        "category": "General",
+        "trigger": "Review count increase (e.g., 15-20 in last month)",
+        "advice": "Estimate sales by multiplying review gains by 50-100 due to low review rate (<1-2%); use for listings with unclear sales data.",
+        "confidence": "High",
+        "source": "we've gone from about 2617 reviews to 2631 reviews and the review rate on Amazon is super super low it's a couple percentage points sometimes even lower than 1% and so if this item has gained 15 to 20 reviews over the last last month he multiplied that by at least 50 to 100"
+    },
+    {
+        "id": "strat8",
+        "category": "Risk",
+        "trigger": "Buy box bars rotating between sellers (orange/blue)",
+        "advice": "Safer to buy if buy box rotates among many sellers; avoid solid orange bars indicating Amazon or exclusive seller hogging sales.",
+        "confidence": "High",
+        "source": "the more you see this chart up here at the top the more you see these bars rotating back and forth between sellers the safer I feel about buying these items because that's showing me that Amazon is sharing the sales between a ton of different sellers if you ever go to a listing and you Mouse over and you see just a solid orange bar all along the top probably means that it's either the brand themselves is selling it a distributor has some exclusive relationship"
+    },
+    {
+        "id": "strat9",
+        "category": "Pricing",
+        "trigger": "Price threshold (e.g., >$60)",
+        "advice": "Use Keepa product tracker to alert on price rises (e.g., from $50-55 to $80 last Christmas); source when alerted for higher profits.",
+        "confidence": "High",
+        "source": "last Christmas the price went way up on this item and right from about 50 bucks 55 bucks all the way up to $80 and so something that's interesting we can do on these products is we can go to track product down here and then we can start tracking it where it reaches a certain threshold so in this case 60 bucks might be the threshold where usually like $50 to $55"
+    },
+    {
+        "id": "strat10",
+        "category": "Pricing",
+        "trigger": "90 or 180 day average buy box price",
+        "advice": "Check averages for profitability; ensure average > purchase price (e.g., buy at $20, average $53) not just current price.",
+        "confidence": "High",
+        "source": "I want to make sure that my products are profitable on average right not just today if the product price was 50 bucks today and it was usually 30 bucks I'd want to know that so I can go in here and check out the 90 or even 180 day average buy box price I can say hey I found this item for you know 20 bucks and on average it's 53 bucks"
+    },
+    {
+        "id": "strat11",
+        "category": "Risk",
+        "trigger": "Average sellers 19-20, current 16",
+        "advice": "If current sellers < average, listing less competitive; use for better entry opportunities.",
+        "confidence": "High",
+        "source": "what I'm noticing here is on average there's about 19 or 20 sellers on this listing right now there's only 16 sellers though so this listing is a little bit less competitive than it usually is on average"
+    },
+    {
+        "id": "strat12",
+        "category": "Buying",
+        "trigger": "Seller inventory drop (e.g., 250 to 185 in week at $51.49)",
+        "advice": "Use offers tab to validate sell-through; confirms customers pay higher prices if rapid sales post-price change.",
+        "confidence": "High",
+        "source": "September 23rd is when he changed his price and September 23rd right there he had about 250 in stock and now about a week later he's got about 185 in stock right and they haven't changed the price they haven't done anything different besides lower their price initially they were about 80 bucks and now they just want to lower it back down and then they started making really rapid sales"
+    },
+    {
+        "id": "strat13",
+        "category": "Risk",
+        "trigger": "Buy box won by multiple sellers (e.g., 12% by new seller vs. big ones)",
+        "advice": "Look for buy box rotating among sellers; indicates opportunity to compete even against large sellers.",
+        "confidence": "High",
+        "source": "over the last 90 days Park Slope Outlet right here they are winning the buy box the most followed by this seller right here and they've got 12% of the sales and what's really interesting is this seller right here has 45,000 ratings they've been selling on Amazon for forever they're a multi multi-million dollar business and this seller right here with eight feedback probably just like you and I they started their business last month two months ago they're making 12% of the sales"
+    },
+    {
+        "id": "strat14",
+        "category": "Buying",
+        "trigger": "FBM sales 4-10% during peak (e.g., Christmas)",
+        "advice": "Validate FBM viability with buy box stats; opportunities increase when FBA warehouses back up during holidays.",
+        "confidence": "High",
+        "source": "you can start to see I I to make sales on this item as a Merchant fied seller or am I have to send it into FBA because the buybox does prioritize FBA sellers but it's not always going to be the case now if the FBA is selling really fast that the warehouses are backed up they can actually switch and especially during Christmas which is coming up there's going to be a ton of opportunity in those products to ship directly to customers"
+    },
+    {
+        "id": "strat15",
+        "category": "Risk",
+        "trigger": "Rapid seller increase (e.g., 2 to 46 in 6 weeks)",
+        "advice": "Avoid if price not yet dropped; check historical max sellers (e.g., 16 at $16) to predict further drops to $6-20 range.",
+        "confidence": "High",
+        "source": "in September 9th about you know month and a half ago we about two sellers on this listing and now like I said 6 weeks later not even 6 weeks later we have about 50 sellers on the listing 46 sellers so something's got to give right we can I see that the price is already dropping pretty quickly but the more and more sellers hop on this listing the more and more the price is going to go down"
+    },
+    {
+        "id": "strat16",
+        "category": "Risk",
+        "trigger": "Buy box phasing in/out recently",
+        "advice": "Skip if buy box recently lost (e.g., price drop $20 overnight); only buy no-buy-box items if consistently absent with steady sales.",
+        "confidence": "High",
+        "source": "if an item does not have a buy box it does still sell you can still sell items that consistently have no buy box but super common red flag I want you guys to be on the lookout for Less common than the last one but you are going to see this is if you see an item where it consistently had buy box was looking super super profitable looked pretty good the price was standing relatively stable buy box was there all the time and then bang the buy box went away overnight we can see immediately the effects of this listing losing the buy box was that the price dropped by almost $20 overnight"
+    },
+    {
+        "id": "strat17",
+        "category": "Risk",
+        "trigger": "Steep drop in sellers (e.g., 17 to 1 overnight)",
+        "advice": "Indicates IP complaint; avoid if cliff without sell-outs; differentiate from natural sell-outs where sales rank dips gradually.",
+        "confidence": "High",
+        "source": "what happened here right we went from 17 sellers to over night we have now suddenly one seller on the listing and another pattern that you want to be on the lookout for if you're avoiding IP complaints is it doesn't necessarily have to be every seller got kicked off the listing but if you ever see a steep cliff in the number of new sellers so let's say it went from 16 and then over it dropped all the way down to one that probably another sign of an IP complaint"
+    },
+    {
+        "id": "strat18",
+        "category": "Seasonality",
+        "trigger": "Christmas preparation, sales rank dipping (e.g., >150/month)",
+        "advice": "Buy seasonal items like gifts early; e.g., Stanley Cup at $35, sell $72; history shows $60-110 range, safe even at $60.",
+        "confidence": "High",
+        "source": "people started selling this product again in preparation of Christmas I would imagine about a month ago and then the sales rank immediately just started dipping down it's already selling over 150 times a month and what makes this even more interesting is when I zoom out to the alltime view we can see that last March February assuming this color dropped it wasn't even Christmas we didn't even see any kind of Christmas sales Rush this product has consistently been in the range of you're anywhere from 60 bucks all the way up to $89 80 80 bucks right there up there somebody made a sale at $110 on this product so we're buying these for $ 35 Bucks"
+    },
+    {
+        "id": "bsr-under-150k",
+        "category": "Buying",
+        "trigger": "BSR under 150,000",
+        "advice": "Ensure the Best Sellers Rank (BSR) is under 150,000 in most categories before purchasing; go higher only if ROI is strong.",
+        "confidence": "High",
+        "source": "most categories I like to make sure the BSR is under 150,000 sometimes I'll go over if the ROI is pretty good though"
+    },
+    {
+        "id": "toy-bsr-68k",
+        "category": "Buying",
+        "trigger": "BSR at 68,000 for toys, selling 70 times/month",
+        "advice": "For toys, target BSR around 68,000 with at least 70 sales per month, expecting increased sales near Christmas.",
+        "confidence": "High",
+        "source": "the BSR on this one's pretty good it's at 68,000 for toys and most categories I like to make sure the BSR is under 150,000 sometimes I'll go over if the ROI is pretty good though and in this case with toys it's already selling 70 times a month"
+    },
+    {
+        "id": "bsr-exception-250k",
+        "category": "Buying",
+        "trigger": "BSR at 250,000 but sells 40 times/month with solid profit",
+        "advice": "Make exceptions to BSR rules for items with BSR up to 250,000 if they sell at least 40 times per month and offer strong profit.",
+        "confidence": "High",
+        "source": "this is one of those exceptions to the BSR rule that I like to follow this is actually a 250,000 rank but since it sells 40 times a month and the profit was really solid"
+    },
+    {
+        "id": "profit-3-dollar",
+        "category": "Pricing",
+        "trigger": "Profit at least $3 per unit",
+        "advice": "Only purchase items that yield at least $3 in profit per unit according to Seller Amp.",
+        "confidence": "High",
+        "source": "the most important things I'm looking for on every item that I sell on Amazon is that I'm going to make at least $3 in profit according to seller amp"
+    },
+    {
+        "id": "roi-30-percent",
+        "category": "Pricing",
+        "trigger": "ROI at least 30%",
+        "advice": "Target items with at least 30% ROI, meaning $3 profit on every $10 spent.",
+        "confidence": "High",
+        "source": "I want my Roi to be at least 30% basically what that means is every time I spend $10 on products I'm going to make $3 in profit back"
+    },
+    {
+        "id": "sales-30-month",
+        "category": "Buying",
+        "trigger": "Estimated sales at least 30 per month",
+        "advice": "Verify estimated monthly sales are at least 30; higher sales allow flexibility on other criteria, while lower requires higher profit to offset risk.",
+        "confidence": "High",
+        "source": "I want this estimated sales number to be at least 30 sales per month and the higher that number is the less strict we can be with a lot of the smaller things"
+    },
+    {
+        "id": "price-consistency-keepa",
+        "category": "Pricing",
+        "trigger": "Consistent price over time via Keepa chart",
+        "advice": "Use Keepa to check price history and ensure consistency; FBA sellers can charge premiums like $55-$58 on items currently at $53.",
+        "confidence": "High",
+        "source": "keepa is going to show us exactly what price this item has been over time and for us as Amazon FBA sellers we're going to be shipping these items into Amazon's Warehouse... this FBA seller here they're able to charge $56 this FBA seller again is able to charge about $58"
+    },
+    {
+        "id": "historical-profit-check",
+        "category": "Risk",
+        "trigger": "Check 3-month price history; worst case $50 sell price",
+        "advice": "Review 3-month Keepa history for consistent profitability; ensure ROI remains at least 20-25% even in worst-case scenarios like price drops to $50.",
+        "confidence": "High",
+        "source": "over the last 3mon history of this item the price has almost always been super profitable see looks like our worst case scenario is this item would be about $50 so let's see what happens if it's $50 we're still making $6.40 profit that's why it's really important to stick to an Roi threshold so that if anything goes wrong with your items maybe it drops a little bit in this case we're still making 20% on our money"
+    },
+    {
+        "id": "average-price-roi",
+        "category": "Pricing",
+        "trigger": "30-day or 90-day average price; ROI at least 30% or 25% worst case",
+        "advice": "Calculate ROI based on 30-day and 90-day average buybox prices; ensure at least 30% ROI, or 25% in worst case, to avoid artificially inflated prices.",
+        "confidence": "High",
+        "source": "based on the average 30-day and 90day price at your cost price make sure that the ROI is at least 30% or worst case scenario it's 25% why because if you go into an item and the price is artificially inflated"
+    },
+    {
+        "id": "bsr-under-200k-final",
+        "category": "Buying",
+        "trigger": "BSR under 200,000",
+        "advice": "Limit purchases to items with BSR under 200,000 for reduced risk.",
+        "confidence": "High",
+        "source": "the BSR is under 200,000 that tends to be the highest that I like to look for"
+    },
+    {
+        "id": "increasing-seller-count",
+        "category": "Risk",
+        "trigger": "Rapidly increasing new seller count (e.g., from 20 to 47)",
+        "advice": "Avoid items with rapidly rising seller counts on Keepa, as supply increase without demand growth leads to price drops.",
+        "confidence": "High",
+        "source": "the more that you see the new seller count Rising the more likely it is to tank and so whenever you're sourcing a product keep in mind that if you see a rapidly increasing seller count like this typically the only thing that's going to end up happening to that item is the price drops"
+    },
+    {
+        "id": "brand-selling-check",
+        "category": "Risk",
+        "trigger": "Brand has sold the item recently (e.g., within weeks)",
+        "advice": "Check Keepa for brand sales history; avoid items where the brand has sold recently to prevent IP or inauthentic complaints.",
+        "confidence": "High",
+        "source": "making sure that the brand themselves has never sold this item so we can see down here on keep we can see that locks thermostats which is the same as the brand right so Lux right there Lux thermostats actually sold this item and the reason why you typically don't want to sell items that the brand themselves are selling"
+    },
+    {
+        "id": "amazon-buybox-hog",
+        "category": "Risk",
+        "trigger": "Amazon hogs 100% of buybox sales over 90 days",
+        "advice": "Avoid items where Amazon dominates the buybox (100% sales share); look for healthy rotation among multiple sellers.",
+        "confidence": "High",
+        "source": "Amazon over the last 90 days here has hogged 100% of the sales on this listing so even if you were able to find this item super profitably Amazon is going to continue to hog a lot of the sales"
+    },
+    {
+        "id": "variations-sales-check",
+        "category": "Buying",
+        "trigger": "Low ratings/sales in specific variation (e.g., 2 ratings over a year)",
+        "advice": "For items with variations, use Keepa variations tab to check sales and ratings for the specific variation; avoid if under 2-3 recent sales.",
+        "confidence": "High",
+        "source": "this item only has two ratings over the entire history of this product and we can even zoom out there so like over the last entire year of this product no one has rated this product which means that there's a very slim chance that this item is even selling"
+    },
+    {
+        "id": "seasonal-toys-christmas",
+        "category": "Seasonality",
+        "trigger": "Toys approaching Christmas",
+        "advice": "Increase purchases of toys as Christmas nears, as sales velocity rises (e.g., from 70 to more per month).",
+        "confidence": "High",
+        "source": "it's only going to sell sell more and more as we get closer to Christmas so I picked up several of these... I'm not worried about making sales especially with Christmas on the horizon"
+    },
+    {
+        "id": "reverse-sourcing-sellers",
+        "category": "General",
+        "trigger": "Sellers with 5-23 feedback on listing",
+        "advice": "Use Seller Amp to reverse source from low-feedback sellers (5-150); check their inventory for profitable items under max cost.",
+        "confidence": "High",
+        "source": "I usually like to look at Sellers that have maybe like a couple feedback or not too many so 5 or 23 those are great examples... using this example product we can go down and see what the other sellers on this listing have already done the work of finding"
+    },
+    {
+        "id": "clearance-sales-adjacent",
+        "category": "Buying",
+        "trigger": "Item on clearance or sale (e.g., $4-$6)",
+        "advice": "Scan for adjacent opportunities in video game franchises or similar categories during sales/clearance to find multiple profitable items.",
+        "confidence": "High",
+        "source": "sourcing products on Amazon is all about finding adjacent opportunity so I knew we probably were on to something with this particular video game franchise finding some deals these were also on sale for 4 bucks"
+    },
+    {
+        "id": "coupon-email-trick",
+        "category": "Buying",
+        "trigger": "20% off coupon requiring email signup",
+        "advice": "Use Gmail alias trick (e.g., email+1@gmail.com) to generate infinite emails for repeated coupon applications without multiple accounts.",
+        "confidence": "High",
+        "source": "this right here we can get 20% when you sign up with your email... to make a bunch of email addresses so you can infinitely Loop coupon codes... just use like an email redirect like this see there's a new email address there's a new email address you can just do that infinitely"
+    },
+    {
+        "id": "cashback-giftcards",
+        "category": "Pricing",
+        "trigger": "Purchasing from sites like Walmart or Carter's",
+        "advice": "Stack cashback via portals like Rakuten (up to 8%) and buy discounted gift cards (e.g., $50 for $42) to boost margins by 10-15% on total spend.",
+        "confidence": "High",
+        "source": "stack cash back so I can go to cashbackmonitor.com... you'll get 8% back... buy discounted gift cards so looking again like Carter gift cards right here I just punch that into card bear.com... you can buy a $50 gift card for 42 bucks right there that's great we can squeeze an extra $14 in profit for every $100 we're spending"
+    },
+    {
+        "id": "slow-sales-greedier",
+        "category": "Risk",
+        "trigger": "Sells 41 times/month with increasing supply (2 to 14 sellers)",
+        "advice": "For slow-selling items (under 50/month), be greedier on margins due to higher risk of price drops from competing sellers.",
+        "confidence": "High",
+        "source": "on items that sell slow you need to be even greedier when you're looking into these items so since it is 7x in Supply... an item that only sells 41 times per month there's almost an entire day in between each sale"
+    },
+    {
+        "id": "ip-avoid1",
+        "category": "Risk",
+        "trigger": "Brand has IP alerts on SellerAmp or Seller Journal Green Light",
+        "advice": "Avoid sourcing brands with IP complaint history; check free tools like Seller Journal Green Light before selling a new brand",
+        "confidence": "High",
+        "source": "if you've never sourced a brand before sometimes seller amp will have an IP alert there it'll let you know that brand is maybe IP complained in the past... another thing you can check here is called seller Journal green light so in this case that glow wasn't showing up there but if you see Brands like Kong that are notorious IP complainers if you've never sold a certain brand before literally a free website just go check it make sure that brand is not going to you know come after you basically"
+    },
+    {
+        "id": "ip-avoid2",
+        "category": "Risk",
+        "trigger": "Rapid drop in number of sellers on a listing (e.g., from 25 to 20 in hours)",
+        "advice": "Avoid brands showing sudden mass seller removals, indicating IP complaints; look for natural sell-outs instead of cliffs",
+        "confidence": "High",
+        "source": "you'll see examples like that on Amazon if you ever see like a lot of people just rapidly selling out that's not neily an IP complaint it's when it happens all at once right so back here it doesn't seem like they were IP complaining it was like 57 sellers you can see how naturally one by one people just sell out people stock back in that kind of stuff but when you see that Big Cliff several people getting kicked off all at once that's probably a good sign that you want to avoid that brand"
+    },
+    {
+        "id": "buy-source1",
+        "category": "Buying",
+        "trigger": "Sourcing from major retailers like Walmart.com",
+        "advice": "Buy from big major retailers or distributors to have documentation proving legitimacy if IP issues arise",
+        "confidence": "High",
+        "source": "buying from Big major retailers big major Distributors so that if there were any time where a brand said hey where are you getting this we don't know who you are you can at the very least submit your documentation it says hey we bought it at walmart.com it's obviously legit"
+    },
+    {
+        "id": "amazon-dominate",
+        "category": "Risk",
+        "trigger": "Amazon has >90% of sales on a listing (e.g., 94% in last 90 days)",
+        "advice": "Avoid competing on listings where Amazon dominates sales; look for listings with multiple third-party sellers",
+        "confidence": "High",
+        "source": "competing with Amazon is a pretty classic example of when you probably won't be able to make too many sales on an item... for example you can see here in the last 90 days Amazon has 94% of the sales on this product not super healthy if you compare that to that example we started the video with you see how there's lots of small third party sellers"
+    },
+    {
+        "id": "brand-seller",
+        "category": "Risk",
+        "trigger": "Brand name appears as the seller on the listing",
+        "advice": "Avoid products where the brand itself is the primary seller, as they dominate and may issue IP complaints to others",
+        "confidence": "High",
+        "source": "if you ever see the brand name as a seller you can see this nature l or however they say it there the product title and then it's also the name of the seller on this listing those are going to be classic examples of products where they generally are only going to have one seller on it and it's going to be them right... this poor new seller right here he's probably going to get an IP complaint unfortunately"
+    },
+    {
+        "id": "roi-highreturn",
+        "category": "Pricing",
+        "trigger": "High return categories (e.g., shoes, clothes, electronics)",
+        "advice": "Require at least 35% ROI for high return items, preferably 45% for women's shoes; factor in extra $2.50-$3 per unit for returns",
+        "confidence": "High",
+        "source": "for women's shoes specifically I like to look for at least 45% Roi on average if you factor in like the risk of How likely someone is to return... I factor in about an extra $2.50 to $3 per unit especially in shoes... I'm generally never going to buy anything below a 35% Roi for those High return categories... I like 40 or 45% for high return items"
+    },
+    {
+        "id": "roi-lowreturn",
+        "category": "Pricing",
+        "trigger": "Low return categories (e.g., grocery, non-returnable items)",
+        "advice": "Accept 25% ROI for low/no return items like groceries, as return risk is zero",
+        "confidence": "High",
+        "source": "on something like this you know I might hop in and buy A2 5% Roi... you're going to be super set I know a lot of new sellers they'll come in and they'll buy like 20 25% Roi shoes... get a little less greedy on items that can't be returned so that's going to be grocery some vitamin products"
+    },
+    {
+        "id": "meltable-season",
+        "category": "Seasonality",
+        "trigger": "Meltable items (e.g., chocolate) during April 15 - October 15",
+        "advice": "Avoid sending meltables to FBA during summer (April 15-Oct 15); sell out by April 15 when prices drop; buy in early October for holiday FBA",
+        "confidence": "High",
+        "source": "you're able to sell meltable items during the summer you just can't send them to Amazon FBA... April 15th to October 15th you cannot send to Amazon FBA if it's a multiple item... everyone has to sell out of all their like meltables and stuff in April April 15th was the date right... so if you just want some like chocolates or meltable vitamins... it's always cheapest like the week before April 15th... maybe you start buying some meltables in early October have a big shipment of them ready to go out on October 15th"
+    },
+    {
+        "id": "hazmat-approval",
+        "category": "Risk",
+        "trigger": "Hazmat items (e.g., aerosols, perfumes)",
+        "advice": "Get special FBA approval for hazmat; start with FBM sales to climb waitlist; check Seller Central alerts",
+        "confidence": "High",
+        "source": "Hazmat items so that's going to be stuff like aerosol cans perfumes... you can see something like this it's going to be Hazmat... not that you can't sell these items via FBA you just have to have special approval to sell Hazmat items via FBA... you just go up to the top search like dangerous goods it'll walk you through how to get on the weight list there and then if you do go ahead and list any of those items fbm make some fbm sales... it'll generally cheat you up the wait list"
+    },
+    {
+        "id": "ai-sourcing1",
+        "category": "Buying",
+        "trigger": "Using AI to list private labels from major retailers (e.g., Target, Walmart) not sold by Amazon",
+        "advice": "Prompt AI for retailer private label brands excluding Amazon sellers; source from that retailer for known supply",
+        "confidence": "High",
+        "source": "one of my favorite things to start with is the private labels of some major online retailers... give me a bunch of brands that these different retailers already sell and Amazon themselves doesn't sell... we obviously know exactly where they're getting sourced from"
+    },
+    {
+        "id": "ai-sourcing2",
+        "category": "Buying",
+        "trigger": "Brands commonly sold by third-party sellers on Amazon",
+        "advice": "Use AI to find brands popular among third-party sellers (e.g., Nature's Path, Annie's); explore their other products for opportunities",
+        "confidence": "High",
+        "source": "give me a list of brands that are commonly sold by a lot of other third party Sellers and they're also selling these good and gather products and then again we still want to exclude that Amazon as a seller... Nature's Path Annie's homegrown Back To Nature"
+    },
+    {
+        "id": "ai-sales",
+        "category": "Buying",
+        "trigger": "Sales/coupons on retailer sites (e.g., Walgreens BOGO on vitamins)",
+        "advice": "Prompt AI to scan retailer sites for highest discount sales; focus on brands that sell well on Amazon without Amazon competition",
+        "confidence": "High",
+        "source": "search the homepage and category pages of Walgreens collect any data about sales... show me the ones that have the highest discount rates... What vitamin brands are on sale at Walgreens that also sell super well on Amazon I'm also going to have exclude brands that Amazon also sells pretty often"
+    },
+    {
+        "id": "fbm-fba-test",
+        "category": "General",
+        "trigger": "New products needing quick testing",
+        "advice": "Use FBM for faster testing (2-4 weeks earlier sales); switch to FBA for scaling and more sales once proven",
+        "confidence": "High",
+        "source": "fbm in the early days as an Amazon seller is a no-brainer because right now like we've talked about you need that proof of concept as soon as possible... you've also bought yourself an extra 2 to 4 weeks where you can make sales earlier as as an fbm seller... you're typically going to make more sales than an fbm seller you can be anywhere in the world as well"
+    },
+    {
+        "id": "fbm-flex",
+        "category": "General",
+        "trigger": "Multiple pack sizes available (e.g., 2-pack, 3-pack)",
+        "advice": "With FBM, flexibly move inventory between pack listings to optimize sales; FBA locks you into specific SKUs",
+        "confidence": "High",
+        "source": "with fbm though you can move the items between the different listings the three-pack sells out you take some away from the two pack and put it on the three-pack"
+    },
+    {
+        "id": "fba-time",
+        "category": "General",
+        "trigger": "Shipping to FBA",
+        "advice": "Expect 1-2 weeks to first sales, 2-4 weeks for full check-in; use Boxum 2D barcodes for 2-3 days faster processing",
+        "confidence": "High",
+        "source": "it costs about 60 cents per pound to ship products to Amazon FBA it also usually takes about 1 to 2 weeks to make your first sales... after you've gone through the process it typically takes about 2 to 4 weeks for everything to check in completely... using boxum you can automatically add things called 2D barcodes to your FBA shipments... I make sales using boxum a couple days faster on average... make sales on my items about 2 to three days faster on average"
+    },
+    {
+        "id": "pricing-auto",
+        "category": "Pricing",
+        "trigger": "Creating FBA shipment",
+        "advice": "Use auto-pricing at 25% above current buy box to avoid underpricing after check-in delays",
+        "confidence": "High",
+        "source": "take advantage of the auto pricing feature this is going to automatically change the price based on the buy box in my case I like using 25% higher than the current buy box that way when that price actually checks in I'm not accidentally selling it too cheap"
+    },
+    {
+        "id": "roi-grocery",
+        "category": "Pricing",
+        "trigger": "Grocery category products",
+        "advice": "Aim for 20-25% ROI in grocery due to no returns; lower threshold acceptable if per-unit profit is strong",
+        "confidence": "High",
+        "source": "usually I'll buy a 20 to 25% return on investment if I'm in the grocery category where I don't have to really another good hack... in grocery we don't ever have any returns"
+    },
+    {
+        "id": "pricing-max-1",
+        "category": "Pricing",
+        "trigger": "Only seller left on item",
+        "advice": "Set maximum price based on highest historical sales price from seller amp charts, not arbitrary high like $1000",
+        "confidence": "High",
+        "source": "look back on the seller amp charts and see what the highest price ever that item actually sold for was and set that as your max price don't just click a r number"
+    },
+    {
+        "id": "pricing-safety-2",
+        "category": "Pricing",
+        "trigger": "Using repricers and concerned about margin loss",
+        "advice": "Set price change safety net to limit repricer from lowering price by more than 50%",
+        "confidence": "High",
+        "source": "you can set a maximum for how much the repricer is actually going to let the price change by hey I don't want to repricer to lower my price by more than 50% or whatever it is right"
+    },
+    {
+        "id": "pricing-fbm-3",
+        "category": "Pricing",
+        "trigger": "Competing with FBM sellers while using FBA",
+        "advice": "Set price 1% to 5% higher than FBM competitors to charge a premium",
+        "confidence": "High",
+        "source": "buy box price when my listing is FBA and my competitor's fbm it make my price 1% higher or 5% higher or whatever it is right"
+    },
+    {
+        "id": "pricing-amazon-4",
+        "category": "Pricing",
+        "trigger": "Competing against Amazon listings",
+        "advice": "Undercut Amazon slightly to win sales since they hog sales",
+        "confidence": "High",
+        "source": "when you're competing against Amazon maybe you want to undercut Amazon just ever so slightly so you can actually make sales since they tend to hog a lot of the sales on listings"
+    },
+    {
+        "id": "pricing-buybox-5",
+        "category": "Pricing",
+        "trigger": "Own the buy box on fast-selling items with multiple sellers",
+        "advice": "Raise buy box price by 10 to 25 cents to test if competitors follow",
+        "confidence": "High",
+        "source": "when you own the buy box raise my buy box price by 10 cents or 25 cents and that can be a really good idea on items that sell super fast where there's plenty of different sellers"
+    },
+    {
+        "id": "pricing-automated-6",
+        "category": "Pricing",
+        "trigger": "Daily repricing on all listings",
+        "advice": "Automate 10% price increase from 2am to 4am when shopping is low, then allow minor drops after to gain extra revenue",
+        "confidence": "High",
+        "source": "every morning at 2 a.m. ... every day from 2: to 4:00 a.m. my prices go up automatically by 10% on pretty much every listing ... we already bought ourselves an extra 10% in Revenue"
+    },
+    {
+        "id": "general-tax-7",
+        "category": "General",
+        "trigger": "Buying inventory in high sales tax states",
+        "advice": "Get sales tax exemption (resale permit) to save money at retailers, applicable even for sole proprietors",
+        "confidence": "High",
+        "source": "get a sales tax exemption so that's just usually called like a resale permit or reseller's license ... you can use this as a no-brainer way to save some money at different retailers"
+    },
+    {
+        "id": "general-credit-8",
+        "category": "General",
+        "trigger": "No business credit established",
+        "advice": "Use American Express Blue Business Cash card, approves new LLCs quickly with good credit line",
+        "confidence": "High",
+        "source": "use the MX business blue cash if you have no business credit buil I've literally seen them approve llc's that were formed an hour ago"
+    },
+    {
+        "id": "general-credit-9",
+        "category": "General",
+        "trigger": "Established business credit needing high limit",
+        "advice": "Use American Express Business Gold card for limits over $100,000",
+        "confidence": "High",
+        "source": "if you already have a little bit of credit built with your business and you're looking for a high limit card then use the MX business gold card that was the first one that was really giv me over 100,000 bucks"
+    },
+    {
+        "id": "general-cashback-10",
+        "category": "General",
+        "trigger": "High inventory spend (e.g., $100k/month)",
+        "advice": "Use Capital One Spark card for 2% cash back on everything, yielding $2,000/month on $100k spend",
+        "confidence": "High",
+        "source": "I spend basically all of my money now on a Capital One spark this is a credit card with a 2% cash back rate on literally everything ... we spend at least 100,000 bucks a month on inventory so that is an extra $2,000 a month"
+    },
+    {
+        "id": "buying-tracking-11",
+        "category": "Buying",
+        "trigger": "Ongoing purchases and potential account issues",
+        "advice": "Track all purchases in SellerAmp Google Sheets with ROI, title, purchase number for easy documentation in IP complaints",
+        "confidence": "High",
+        "source": "I have a button on my seller and Google Sheets where anytime I place a purchase I mark it on my Google Sheets ... if I ever have any IP complaints ... I can go in and search for that as I see all the purchase numbers"
+    },
+    {
+        "id": "buying-notes-12",
+        "category": "Buying",
+        "trigger": "Early stage buying decisions",
+        "advice": "Write down reasons for each buy including price, seller count, expected future price to learn from successes and mistakes",
+        "confidence": "High",
+        "source": "write down every on every product that you're buying right now write down I like this because the price is here the seller count is here I think the price will be here when I'm able to sell it in the next couple weeks"
+    },
+    {
+        "id": "risk-ip-13",
+        "category": "Risk",
+        "trigger": "Product with dropping seller count (e.g., from 20-30 to 1)",
+        "advice": "Avoid products where sellers are selling out, leading to authorized seller only, to prevent IP complaints",
+        "confidence": "High",
+        "source": "you can see there was a good amount of sellers Right There Was You Know 30 20 sellers somewhere in that range and then eventually everyone started selling out and since then there's only been one authorized seller"
+    },
+    {
+        "id": "risk-brand-14",
+        "category": "Risk",
+        "trigger": "Brand name matches seller name",
+        "advice": "Avoid selling such products as brand owners can force authenticity proof",
+        "confidence": "High",
+        "source": "selling products where the brand name you can see here is ritual also matches the seller name it's well within the rights of a brand owner on Amazon to kick you off the listing"
+    },
+    {
+        "id": "risk-generic-15",
+        "category": "Risk",
+        "trigger": "Listing shows brand as 'generic'",
+        "advice": "Avoid generic branded products as they imply unauthorized creation and lead to serious issues",
+        "confidence": "High",
+        "source": "if you ever see a product like this where it says that the brand is generic that means that this listing was created by a thirdparty seller when they probably weren't authorized ... avoid anything that says that the brand brand is generic"
+    },
+    {
+        "id": "risk-alerts-16",
+        "category": "Risk",
+        "trigger": "Unsure about new brand safety",
+        "advice": "Check SellerAmp alerts panel for IP warnings before buying",
+        "confidence": "High",
+        "source": "if you're ever unsure when you're looking at new products new brands if that brand is safe to sell ... seller amp will tell you on the alerts panel right here if it is an IP complaining brand there'd be a little badge that says IP"
+    },
+    {
+        "id": "risk-greenlight-17",
+        "category": "Risk",
+        "trigger": "Checking new brands for IP risks",
+        "advice": "Use free Seller Journal Greenlight website to verify brands, e.g., avoid Kong as it takes legal action",
+        "confidence": "High",
+        "source": "a free website I always check these seller amp alerts and this website here it's called seller Journal Greenlight if I plug in a brand that's like notoriously IP complaining like Kong it's going to tell me to avoid at all costs"
+    },
+    {
+        "id": "risk-appeal-18",
+        "category": "Risk",
+        "trigger": "Received IP or inauthentic complaint",
+        "advice": "Appeal with invoices, order confirmations, tracking proof; use business address as billing; keep account health above 200",
+        "confidence": "High",
+        "source": "submit information to appeal these intellectual property complaints ... I have an invoice ... select all of these right here so basically when it comes to purchasing products you want to make sure that you have all of this on your invoicing ... proof with Amazon that item actually showed up ... the goal is to keep your account Health score above 200"
+    },
+    {
+        "id": "risk-csm-19",
+        "category": "Risk",
+        "trigger": "CSM brand review email received",
+        "advice": "Submit documentation for all units sold within 1 week via email template including supplier details, order/tracking numbers; provide invoices for every unit",
+        "confidence": "High",
+        "source": "they give you a week to submit your documents ... provide the invoicing that shows every single unit that you've sold ... for each a that they asked for I listed out the as the supplier name the address the phone number and the website ... Asin order confirmation number and then also type out the as shipping confirmation and delivery confirmation"
+    },
+    {
+        "id": "general-prep-20",
+        "category": "General",
+        "trigger": "High sales tax state (e.g., 10%) and scaling prep/shipping",
+        "advice": "Use prep centers in tax-free states like Montana, Delaware, New Hampshire, Oregon at $1-2 per unit to save time and tax",
+        "confidence": "High",
+        "source": "unless you live in one of these states right here you are currently paying sales tax for me I was paying almost 10% ... working with prep centers in States like Montana Delaware New Hampshire ... this is typically going to cost about $1 to $2 per unit"
+    },
+    {
+        "id": "general-prep-questions-21",
+        "category": "General",
+        "trigger": "Selecting a prep center",
+        "advice": "Ask about turnaround time, process (e.g., shared Google sheet), bundling fees, minimums (50-100 items or per ASIN), extra fees like carton or detagging",
+        "confidence": "High",
+        "source": "what is your turnaround time ... how does the process work with you right every prep Center kind of does things differently my prep Center ... shared Google sheet ... bundling fees ... minimum items you need to send a lot of prep centers will require you to send 50 or 100 ... minimum per as ... carton fees"
+    },
+    {
+        "id": "general-va-hire-22",
+        "category": "General",
+        "trigger": "Revenue at $20-30k/month and need sourcing help",
+        "advice": "Hire VAs from onlinejobs.ph at $4-5/hour when you know exactly how to delegate; use trial week, sample project",
+        "confidence": "High",
+        "source": "for me I was doing about 20 to $30,000 a month in revenue ... hire these virtual assistants on a website called onlinejobs.ph ... average hourly pay is relatively affordable ... $4 an hour $5 an hour ... interview ... sample project ... trial week"
+    },
+    {
+        "id": "general-va-pay-23",
+        "category": "General",
+        "trigger": "Incentivizing VAs for sourcing",
+        "advice": "Use profit share (0-6% of generated profit) instead of per lead or spend; full-time cost $400-1000/month",
+        "confidence": "High",
+        "source": "the only thing that works is profit share ... in my company this is something that's going to increase so the more profit they make the higher percentage ... anywhere from 0 to 6% of the profit ... $400 to $1,000 per month is pretty typical for a full-time job"
+    },
+    {
+        "id": "general-network-24",
+        "category": "General",
+        "trigger": "Scaling long-term and needing opportunities/connections",
+        "advice": "Network with other sellers by documenting journey on social media (Twitter/Instagram), join lives, share leads to unlock secrets like ungating",
+        "confidence": "High",
+        "source": "the connected seller wins ... start documenting your journey as a seller right if you go on Twitter or Instagram ... hey I've got some boxes going out today or hey I had this issue ... the majority of the Amazon listings you're going to sell on are going to have 5 10 20 Amazon sellers so sharing it with one other person"
+    },
+    {
+        "id": "fba-cost-reduction-1",
+        "category": "General",
+        "trigger": "Using FBA for shipping",
+        "advice": "Ship with FBA to reduce costs by 70% per unit compared to other major US carriers.",
+        "confidence": "High",
+        "source": "Lower costs: Shipping with FBA costs 70% less per unit than comparable premium options offered by other major US carriers."
+    },
+    {
+        "id": "sales-increase-prime-1",
+        "category": "Pricing",
+        "trigger": "Offering Buy with Prime off-Amazon",
+        "advice": "Use Buy with Prime to increase off-Amazon customer purchase chance by 25%.",
+        "confidence": "High",
+        "source": "On average, Buy with Prime increases the chance of an off-Amazon customer purchase by 25%."
+    },
+    {
+        "id": "sales-increase-subscribe-1",
+        "category": "Pricing",
+        "trigger": "Products eligible for Subscribe & Save with 10%-15% discount",
+        "advice": "Enroll in Subscribe & Save to drive up to 1.8X increase in sales conversion.",
+        "confidence": "High",
+        "source": "Subscribe & Save products with a 10%-15% discount can drive up to a 1.8X increase in sales conversion on average."
+    },
+    {
+        "id": "inventory-aged-1",
+        "category": "Risk",
+        "trigger": "Items stored >181 days",
+        "advice": "Maintain sound inventory health to avoid monthly aged inventory charges for items stored over 181 days.",
+        "confidence": "High",
+        "source": "Aged inventory: Charged monthly for all items stored in a fulfillment center for more than 181 days. Pro tip: maintaining sound inventory health can help you avoid this cost."
+    },
+    {
+        "id": "inventory-management-1",
+        "category": "General",
+        "trigger": "Ongoing inventory management",
+        "advice": "Keep about 2 months of inventory at fulfillment centers to ensure stock availability.",
+        "confidence": "High",
+        "source": "Keeping about 2 months of inventory at fulfillment centers"
+    },
+    {
+        "id": "new-seller-incentives-1",
+        "category": "General",
+        "trigger": "New sellers signing up for FBA",
+        "advice": "Sign up for FBA to access over $50K in potential incentives on shipping, returns, and more.",
+        "confidence": "High",
+        "source": "Get over $50K in potential incentives when you start selling with Amazon."
+    },
+    {
+        "id": "rule-001",
+        "category": "General",
+        "trigger": "Sales volume under 40 items per month",
+        "advice": "Choose the Individual selling plan to pay $0.99 per item sold with no monthly fee, ideal for new sellers with lower volumes or limited product range like books",
+        "confidence": "High",
+        "source": "This plan is tailored to new sellers with lower sales volumes, under 40 items per month. It\u2019s also ideal for casual sellers or those with a limited product range who want to manage costs."
+    },
+    {
+        "id": "rule-002",
+        "category": "General",
+        "trigger": "Expecting to sell more than 40 items per month",
+        "advice": "Opt for the Professional selling plan at $39.99 per month to access advanced tools like bulk listings, inventory management, and advertising, suitable for scaling book arbitrage operations",
+        "confidence": "High",
+        "source": "However, if you expect to sell more than 40 items per month, your strategy involves scaling quickly, and you want robust tools for managing and growing your business, the Professional selling plan may be more suitable."
+    },
+    {
+        "id": "rule-003",
+        "category": "General",
+        "trigger": "Starting with limited inventory or budget constraints",
+        "advice": "Begin with the Individual selling plan to pay only for items sold, minimizing upfront costs for book arbitrage beginners",
+        "confidence": "High",
+        "source": "If you\u2019re starting with limited inventory, the Individual selling plan may be a good place to start as it allows you to pay based on sales activity."
+    },
+    {
+        "id": "rule-004",
+        "category": "Risk",
+        "trigger": "Planning to switch selling plans",
+        "advice": "Switch plans without additional fees, but review enrolled services as some require Professional plan; time the switch with billing cycle to avoid prorated charges",
+        "confidence": "High",
+        "source": "No, there are no additional fees for switching between the Individual and Professional selling plans. ... Effective date: If possible, plan the transition to coincide with your billing cycle to avoid unexpected prorated charges."
+    },
+    {
+        "id": "rule-005",
+        "category": "General",
+        "trigger": "Business growth or changing sales volume",
+        "advice": "Monitor sales performance and switch from Individual to Professional plan as volumes increase beyond 40 items per month to unlock growth tools without affecting existing product listings",
+        "confidence": "High",
+        "source": "No matter which plan you start with, you can always switch if your business requirements change in the future. ... No, product listings will remain unchanged when switching between Individual and Professional selling plans."
+    },
+    {
+        "id": "strat1",
+        "category": "Seasonality",
+        "trigger": "Beginning of new semester (August for fall, January for winter)",
+        "advice": "Plan inventory to meet highest demand spikes at semester starts; use slower months to prepare and source books",
+        "confidence": "High",
+        "source": "The highest demand can come at the beginning of a new semester, usually in August before the fall semester, or in January at the beginning of the winter semester. This is why it\u2019s important to plan your inventory accordingly and use the slower months to prepare for seasonal spikes in demand."
+    },
+    {
+        "id": "strat2",
+        "category": "Buying",
+        "trigger": "Access to used textbooks in good condition",
+        "advice": "Source books from library sales, auctions, used bookstores, yard sales, estate sales, and thrift stores; ensure they meet Amazon's condition guidelines (New, Used-Like New, Used-Very Good, Used-Good, Used-Acceptable)",
+        "confidence": "High",
+        "source": "To build your inventory, you\u2019ll need to source books. You may be able to start with your own library, but other options for sourcing include library sales, auctions, used bookstores, yard sales, estate sales, and thrift stores. Just make sure the books you\u2019re offering are in good condition. Check the condition guidelines of any selling site you use. For example, Amazon has condition guidelines for books."
+    },
+    {
+        "id": "strat3",
+        "category": "Pricing",
+        "trigger": "Setting prices for used textbooks",
+        "advice": "Research competitor prices for similar textbooks based on condition, size, and edition; adjust prices competitively while factoring in packing, shipping, and Amazon fees",
+        "confidence": "High",
+        "source": "Used textbook prices can depend on what kind of textbook you\u2019re selling, its condition, and even its size or edition. To price your textbooks competitively, you can research how other used textbook sellers are pricing their inventory, then adjust your prices. Make sure to factor in costs and fees for packing and shipping."
+    },
+    {
+        "id": "strat4",
+        "category": "Risk",
+        "trigger": "Textbooks with incorrect ISBN, promotional/instructor editions, or solutions manuals not for public sale",
+        "advice": "Avoid listing prohibited items like wrong editions, promotional copies marked 'Not for Sale', teacher's editions, annotated instructor\u2019s editions, or non-student solutions manuals to prevent violations",
+        "confidence": "High",
+        "source": "There are some textbooks that are prohibited from sale in the Amazon store, including: Edition attached to the incorrect ISBN... Promotional instructor\u2019s editions... Teacher\u2019s editions and annotated instructor\u2019s editions... Solutions manuals..."
+    },
+    {
+        "id": "strat5",
+        "category": "General",
+        "trigger": "Creating product listings for textbooks",
+        "advice": "Use accurate details including book name, images, description, and condition; take great product photos; list international editions with separate ASINs from domestic versions",
+        "confidence": "High",
+        "source": "A product detail page should showcase your textbooks and include the book\u2019s name, images, description, and more... To help your textbooks stand out online, make sure you take great product photos... Remember that international editions of textbooks must be listed using separate ASINs from the domestic product."
+    },
+    {
+        "id": "strat6",
+        "category": "Buying",
+        "trigger": "Selecting textbooks to sell",
+        "advice": "Research subjects and editions in demand; check Best Seller Ranking (BSR) on Amazon to identify high-selling textbooks in categories",
+        "confidence": "High",
+        "source": "To choose which textbooks to sell, you can do research on the subjects and editions that are in demand by students. You can also do research within the Amazon store by checking a textbook\u2019s Best Seller Ranking (BSR), a which is a metric that appears on a product detail page and indicates how it\u2019s selling compared to other products in the same category."
+    },
+    {
+        "id": "strat7",
+        "category": "Risk",
+        "trigger": "Selling used textbooks before new editions release",
+        "advice": "Sell used textbooks quickly as new editions are released periodically, reducing value of older versions",
+        "confidence": "High",
+        "source": "Additionally, remember that new editions of textbooks are released as they become updated\u2014so if your textbooks are used, the sooner you sell them, the better."
+    },
+    {
+        "id": "strat8",
+        "category": "General",
+        "trigger": "Starting Amazon selling account",
+        "advice": "Sign up for Professional selling plan at $39.99 per month plus fees to access tools for selling textbooks",
+        "confidence": "High",
+        "source": "A Professional selling plan costs $39.99 per month plus applicable selling fees."
+    },
+    {
+        "id": "pricing1",
+        "category": "Pricing",
+        "trigger": "Competing FBA or MFN seller offers exist",
+        "advice": "Create rules to price products based on other sellers' offers for competitive positioning",
+        "confidence": "High",
+        "source": "Create rules that price products based on other FBA or MFN seller offers"
+    },
+    {
+        "id": "pricing2",
+        "category": "Pricing",
+        "trigger": "No Featured Offer exists for a product",
+        "advice": "Optimize pricing to capture the buy box and maximize sales",
+        "confidence": "High",
+        "source": "or optimize pricing when no Featured Offer exists for a product"
+    },
+    {
+        "id": "pricing3",
+        "category": "Pricing",
+        "trigger": "You are the sole seller for a particular ASIN",
+        "advice": "Adjust pricing strategy to leverage exclusivity, potentially setting higher prices",
+        "confidence": "High",
+        "source": "The application handles scenarios where you\u2019re the sole seller for a particular ASIN"
+    },
+    {
+        "id": "general1",
+        "category": "General",
+        "trigger": "Need to assess product performance",
+        "advice": "Use pricing data visualization and filtering to view profits, margins, and costs for quick identification of high-performing and underperforming listings",
+        "confidence": "High",
+        "source": "The platform includes pricing data visualization and filtering capabilities. View profits, margins, and costs associated with each product to identify high-performing and underperforming listings quickly"
+    },
+    {
+        "id": "pricing4",
+        "category": "Pricing",
+        "trigger": "Products in different conditions (new or used)",
+        "advice": "Create specific pricing rules tailored to new or used items",
+        "confidence": "High",
+        "source": "Create specific rules for new or used items"
+    },
+    {
+        "id": "pricing5",
+        "category": "Pricing",
+        "trigger": "Individual products do not fit broader inventory rules",
+        "advice": "Exclude specific products from general pricing rules to customize strategy",
+        "confidence": "High",
+        "source": "or exclude individual products from broader inventory rules"
+    },
+    {
+        "id": "seasonality1",
+        "category": "Seasonality",
+        "trigger": "Major shopping events like Prime Day",
+        "advice": "Use pricing schedules to synchronize and optimize revenue during high-traffic periods",
+        "confidence": "High",
+        "source": "Specialized scheduling features allow synchronization with major shopping events like Prime Day, optimizing revenue during high-traffic periods"
+    },
+    {
+        "id": "seasonality2",
+        "category": "Seasonality",
+        "trigger": "Amazon shopping events approaching",
+        "advice": "Align pricing schedules with events for strategic pricing during peak periods",
+        "confidence": "High",
+        "source": "The application supports pricing schedules aligned with Amazon shopping events for strategic pricing during peak periods"
+    },
+    {
+        "id": "pricing6",
+        "category": "Pricing",
+        "trigger": "Standard update intervals of 10-15 minutes",
+        "advice": "Opt for real-time pricing optimization to respond faster to market changes",
+        "confidence": "High",
+        "source": "SellerEngine focuses on real-time pricing optimization rather than standard 10-15 minute update intervals"
+    },
+    {
+        "id": "pricing7",
+        "category": "Pricing",
+        "trigger": "Setting minimum prices to ensure profitability",
+        "advice": "Calculate minimum prices using associated costs and fees, adding minimum markup percentages",
+        "confidence": "High",
+        "source": "The application calculates minimum prices using associated costs and fees, with options to add minimum markup percentages to ensure profitability"
+    },
+    {
+        "id": "pricing8",
+        "category": "Pricing",
+        "trigger": "You are the only seller for a product",
+        "advice": "Use cross-checking to identify similar listings and inform pricing strategy",
+        "confidence": "High",
+        "source": "When you\u2019re the only seller for a product, SellerEngine identifies similar listings to inform pricing strategy development"
     }
 ]
