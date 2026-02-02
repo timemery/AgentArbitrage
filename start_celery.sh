@@ -74,6 +74,8 @@ monitor_and_restart() {
             echo "$(date): Celery Beat died. Restarting..." >> "$MONITOR_LOG_FILE"
             # Cleanup PID before restart
             sudo rm -f "$APP_DIR/celerybeat.pid"
+            # Cleanup Schedule file to prevent crash loops from corruption
+            sudo rm -f "$APP_DIR/celerybeat-schedule"*
             su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
         fi
 

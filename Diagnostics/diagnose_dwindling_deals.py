@@ -23,9 +23,9 @@ def get_redis_client():
 def check_scheduler_process():
     """Checks if Celery Beat (scheduler) is running."""
     try:
-        # pgrep -f matches the full command line. We use regex 'celery.*beat' to match cases
-        # where arguments (like -A app) appear between 'celery' and 'beat'.
-        result = subprocess.run(['pgrep', '-f', 'celery.*beat'], capture_output=True, text=True)
+        # pgrep -f matches the full command line. We use strict regex 'celery.*-A.*beat'
+        # to match the actual process and avoid 'tail' or other false positives.
+        result = subprocess.run(['pgrep', '-f', 'celery.*-A.*beat'], capture_output=True, text=True)
         return result.returncode == 0
     except Exception:
         return False
