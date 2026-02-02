@@ -334,15 +334,15 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
 
         if "error" in result:
             logger.error(f"Error generating advice: {result['error']}")
-            return "I'm having trouble analyzing this book right now. Please check the data yourself."
+            return "Mentor unexpectedly failed ... Please try again"
 
         try:
             advice = result['choices'][0]['message']['content'].strip()
             return advice
         except (KeyError, IndexError):
             logger.error("Unexpected response format from xAI")
-            return "I couldn't generate advice for this book."
+            return "Mentor unexpectedly failed ... Please try again"
     except Exception as e:
         logger.error(f"Exception in generate_ava_advice: {e}")
         logger.error(traceback.format_exc())
-        return "An unexpected error occurred while generating advice."
+        return "Mentor unexpectedly failed ... Please try again"
