@@ -28,6 +28,7 @@ def homogenize_intelligence_task():
         return 0
 
     try:
+        # Reload from disk to ensure freshness (avoid stale memory state)
         with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
             intelligence = json.load(f)
 
@@ -39,7 +40,7 @@ def homogenize_intelligence_task():
         total_original = len(intelligence)
         all_cleaned_items = []
 
-        logger.info(f"Starting homogenization for {total_original} items in chunks of {CHUNK_SIZE}...")
+        logger.info(f"Starting homogenization for {total_original} items in chunks of {CHUNK_SIZE}. File: {INTELLIGENCE_FILE}")
 
         for i in range(0, total_original, CHUNK_SIZE):
             chunk = intelligence[i:i + CHUNK_SIZE]
@@ -103,9 +104,19 @@ def homogenize_intelligence_task():
         final_count = len(all_cleaned_items)
         removed = total_original - final_count
 
+        logger.info(f"Homogenization complete. Original: {total_original}, Final: {final_count}, Removed: {removed}")
+        logger.info(f"Writing to file: {INTELLIGENCE_FILE}")
+
         if removed > 0:
-            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(all_cleaned_items, f, indent=4)
+            try:
+                with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(all_cleaned_items, f, indent=4)
+                logger.info("File write successful.")
+            except Exception as write_err:
+                logger.error(f"Failed to write intelligence file: {write_err}")
+                raise write_err
+        else:
+            logger.info("No items removed. File not updated.")
 
         redis_client.set(HOMOGENIZATION_STATUS_KEY, json.dumps({
             "status": "Complete",
