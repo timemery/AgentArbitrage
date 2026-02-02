@@ -63,6 +63,12 @@ LEGACY_MENTOR_MAP = {
     'quant': 'errol'
 }
 
+# Global cache variables
+STRATEGIES_CACHE = None
+STRATEGIES_MTIME = 0
+INTELLIGENCE_CACHE = None
+INTELLIGENCE_MTIME = 0
+
 def get_mentor_config(mentor_name):
     """Retrieves the mentor configuration, handling legacy names."""
     key = mentor_name.lower()
@@ -73,36 +79,50 @@ def get_mentor_config(mentor_name):
 def load_strategies(deal_context=None):
     """
     Loads strategies from strategies.json and formats them for the prompt.
+    Uses caching to avoid re-reading file on every request.
 
     Args:
         deal_context (dict, optional): Context about the deal (e.g., category, seasonality) to filter strategies.
     """
+    global STRATEGIES_CACHE, STRATEGIES_MTIME
     try:
         if os.path.exists(STRATEGIES_FILE):
-            with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
-                strategies = json.load(f)
-                if isinstance(strategies, list):
-                    formatted = []
+            current_mtime = os.path.getmtime(STRATEGIES_FILE)
 
-                    # Determine relevant categories based on deal_context
-                    relevant_categories = set(["General", "Buying", "Risk"]) # Always include these
+            # Reload if cache is empty or file changed
+            if STRATEGIES_CACHE is None or current_mtime > STRATEGIES_MTIME:
+                # logger.info(f"Loading strategies from disk (mtime: {current_mtime})")
+                with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+                    strategies = json.load(f)
+                    if isinstance(strategies, list):
+                        STRATEGIES_CACHE = strategies
+                        STRATEGIES_MTIME = current_mtime
+                    else:
+                        STRATEGIES_CACHE = [] # Fallback
 
-                    if deal_context:
-                        seasonality = deal_context.get('Detailed_Seasonality', '').lower()
-                        title = deal_context.get('Title', '').lower()
+            strategies = STRATEGIES_CACHE
+            if strategies:
+                formatted = []
 
-                        if 'textbook' in seasonality or 'textbook' in title:
-                            relevant_categories.add("Seasonality")
+                # Determine relevant categories based on deal_context
+                relevant_categories = set(["General", "Buying", "Risk"]) # Always include these
 
-                    for s in strategies:
-                        if isinstance(s, dict):
-                            cat = s.get('category', 'General')
-                            if not deal_context or (cat in relevant_categories) or (cat == "General"):
-                                formatted.append(f"- [Category: {cat}] IF {s.get('trigger', 'N/A')} THEN {s.get('advice', 'N/A')}")
-                        else:
-                            formatted.append(f"- {s}")
+                if deal_context:
+                    seasonality = deal_context.get('Detailed_Seasonality', '').lower()
+                    title = deal_context.get('Title', '').lower()
 
-                    return "\n".join(formatted)
+                    if 'textbook' in seasonality or 'textbook' in title:
+                        relevant_categories.add("Seasonality")
+
+                for s in strategies:
+                    if isinstance(s, dict):
+                        cat = s.get('category', 'General')
+                        if not deal_context or (cat in relevant_categories) or (cat == "General"):
+                            formatted.append(f"- [Category: {cat}] IF {s.get('trigger', 'N/A')} THEN {s.get('advice', 'N/A')}")
+                    else:
+                        formatted.append(f"- {s}")
+
+                return "\n".join(formatted)
     except Exception as e:
         logger.error(f"Error loading strategies: {e}")
     return ""
@@ -110,14 +130,27 @@ def load_strategies(deal_context=None):
 def load_intelligence():
     """
     Loads intelligence/concepts from intelligence.json and formats them.
+    Uses caching to avoid re-reading file on every request.
     """
+    global INTELLIGENCE_CACHE, INTELLIGENCE_MTIME
     try:
         if os.path.exists(INTELLIGENCE_FILE):
-            with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
-                intelligence = json.load(f)
-                if isinstance(intelligence, list):
-                     # Intelligence is usually a list of strings
-                     return "\n".join([f"- {i}" for i in intelligence])
+            current_mtime = os.path.getmtime(INTELLIGENCE_FILE)
+
+            if INTELLIGENCE_CACHE is None or current_mtime > INTELLIGENCE_MTIME:
+                # logger.info(f"Loading intelligence from disk (mtime: {current_mtime})")
+                with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
+                    intelligence = json.load(f)
+                    if isinstance(intelligence, list):
+                        INTELLIGENCE_CACHE = intelligence
+                        INTELLIGENCE_MTIME = current_mtime
+                    else:
+                         INTELLIGENCE_CACHE = []
+
+            intelligence = INTELLIGENCE_CACHE
+            if intelligence:
+                 # Intelligence is usually a list of strings
+                 return "\n".join([f"- {i}" for i in intelligence])
     except Exception as e:
         logger.error(f"Error loading intelligence: {e}")
     return ""

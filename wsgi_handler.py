@@ -448,6 +448,114 @@ def results():
 
     return render_template('results.html', original_input=original_input, scraped_text=scraped_text, extracted_strategies=extracted_strategies, extracted_ideas=extracted_ideas)
 
+def _deduplicate_strategies():
+    """Helper to deduplicate strategies.json."""
+    if not os.path.exists(STRATEGIES_FILE):
+        return 0
+
+    try:
+        with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+            strategies = json.load(f)
+
+        unique_strategies = []
+        seen_content = set()
+
+        # Deduplicate based on content hash/string representation
+        # Strategy can be a dict or a string (legacy)
+        for s in strategies:
+            if isinstance(s, dict):
+                # Create a normalized content string for checking duplicates
+                # We ignore ID for deduplication, we want to remove identical logic
+                content_key = f"{s.get('category')}|{s.get('trigger')}|{s.get('advice')}"
+                if content_key not in seen_content:
+                    seen_content.add(content_key)
+                    unique_strategies.append(s)
+            else:
+                # String case
+                content_key = str(s).strip()
+                if content_key not in seen_content:
+                    seen_content.add(content_key)
+                    unique_strategies.append(s)
+
+        removed_count = len(strategies) - len(unique_strategies)
+
+        if removed_count > 0:
+            with open(STRATEGIES_FILE, 'w', encoding='utf-8') as f:
+                json.dump(unique_strategies, f, indent=4)
+
+        return removed_count
+    except Exception as e:
+        app.logger.error(f"Error deduplicating strategies: {e}")
+        raise e
+
+def _deduplicate_intelligence():
+    """Helper to deduplicate intelligence.json."""
+    if not os.path.exists(INTELLIGENCE_FILE):
+        return 0
+
+    try:
+        with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
+            intelligence = json.load(f)
+
+        unique_intelligence = []
+        seen_content = set()
+
+        for i in intelligence:
+            content_key = str(i).strip()
+            if content_key not in seen_content:
+                seen_content.add(content_key)
+                unique_intelligence.append(i)
+
+        removed_count = len(intelligence) - len(unique_intelligence)
+
+        if removed_count > 0:
+            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(unique_intelligence, f, indent=4)
+
+        return removed_count
+    except Exception as e:
+        app.logger.error(f"Error deduplicating intelligence: {e}")
+        raise e
+
+@app.route('/api/remove-duplicates/strategies', methods=['POST'])
+def remove_duplicates_strategies():
+    if not session.get('logged_in') or session.get('role') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        count = _deduplicate_strategies()
+        return jsonify({'status': 'success', 'removed_count': count, 'message': f'Removed {count} duplicate strategies.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/remove-duplicates/intelligence', methods=['POST'])
+def remove_duplicates_intelligence():
+    if not session.get('logged_in') or session.get('role') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        count = _deduplicate_intelligence()
+        return jsonify({'status': 'success', 'removed_count': count, 'message': f'Removed {count} duplicate ideas.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/remove-duplicates/all', methods=['POST'])
+def remove_duplicates_all():
+    if not session.get('logged_in') or session.get('role') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        strat_count = _deduplicate_strategies()
+        intel_count = _deduplicate_intelligence()
+        total = strat_count + intel_count
+        return jsonify({
+            'status': 'success',
+            'removed_count': total,
+            'message': f'Removed {strat_count} duplicate strategies and {intel_count} duplicate ideas.'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/approve', methods=['POST'])
 def approve():
     if not session.get('logged_in'):

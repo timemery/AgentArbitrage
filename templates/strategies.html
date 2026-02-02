@@ -2,7 +2,10 @@
 {% block title %}Strategies - Agent Arbitrage{% endblock %}
 {% block content %}
     <div class="tidy-container">
-        <h2 class="tidy-header">Strategy Database</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="tidy-header">Strategy Database</h2>
+            <button id="remove-dupes-btn" class="tidy-button" style="background-color: transparent; border-color: #CC6666; color: white; font-size: 12px; padding: 5px 10px;">Remove Duplicates</button>
+        </div>
         <div class="tidy-card">
             <div class="content" style="border: none; background: transparent; padding: 0;">
                 {% if strategies %}
@@ -41,4 +44,32 @@
             </div>
         </div>
     </div>
+
+<script>
+document.getElementById('remove-dupes-btn').addEventListener('click', async () => {
+    if(!confirm("Are you sure you want to scan for and remove duplicate strategies?")) return;
+
+    const btn = document.getElementById('remove-dupes-btn');
+    const originalText = btn.textContent;
+    btn.textContent = "Scanning...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/remove-duplicates/strategies', { method: 'POST' });
+        const data = await response.json();
+
+        if(data.status === 'success') {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    } catch (e) {
+        alert('Request failed: ' + e);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+});
+</script>
 {% endblock %}
