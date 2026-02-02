@@ -50,29 +50,57 @@ document.getElementById('remove-dupes-btn').addEventListener('click', async () =
 });
 
 document.getElementById('homogenize-btn').addEventListener('click', async () => {
-    if(!confirm("This will use AI to merge semantically similar ideas. It may take a moment. Proceed?")) return;
+    if(!confirm("This will use AI to merge semantically similar ideas. This process takes ~10 minutes and runs in the background. Proceed?")) return;
 
     const btn = document.getElementById('homogenize-btn');
     const originalText = btn.textContent;
-    btn.textContent = "Processing...";
+    btn.textContent = "Starting...";
     btn.disabled = true;
 
     try {
         const response = await fetch('/api/homogenize/intelligence', { method: 'POST' });
         const data = await response.json();
 
-        if(data.status === 'success') {
+        if(data.status === 'started') {
             alert(data.message);
-            location.reload();
+            pollStatus(btn, originalText);
         } else {
             alert('Error: ' + (data.error || 'Unknown error'));
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
     } catch (e) {
         alert('Request failed: ' + e);
-    } finally {
         btn.textContent = originalText;
         btn.disabled = false;
     }
 });
+
+function pollStatus(btn, originalText) {
+    btn.textContent = "Processing (Check Status)";
+    const interval = setInterval(async () => {
+        try {
+            const res = await fetch('/api/homogenize/status');
+            const status = await res.json();
+
+            if (status.status === 'Running') {
+                btn.textContent = status.progress || "Processing...";
+            } else if (status.status === 'Complete') {
+                clearInterval(interval);
+                alert(status.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+                location.reload();
+            } else if (status.status === 'Error') {
+                clearInterval(interval);
+                alert('Task Failed: ' + status.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        } catch (e) {
+            console.error("Polling error", e);
+        }
+    }, 5000); // Poll every 5 seconds
+}
 </script>
 {% endblock %}

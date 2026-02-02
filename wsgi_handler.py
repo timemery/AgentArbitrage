@@ -28,6 +28,7 @@ from keepa_deals.db_utils import (
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
+import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
 
