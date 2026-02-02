@@ -76,10 +76,11 @@ def run_diagnostic():
         cursor.execute("SELECT COUNT(*) FROM deals")
         raw_db_count = cursor.fetchone()[0]
 
-        # Filtered Count (Dashboard Logic: Margin >= 0)
-        # Note: We check if Margin column exists first to be safe, though it should.
+        # Filtered Count (Test Logic: Margin >= 5%)
+        # Note: We use 5% because the API treats 0 as "Any" (No Filter), so testing 0 would just return Total.
+        # By testing 5, we verify that the API's filtering logic is actually working.
         try:
-            cursor.execute("SELECT COUNT(*) FROM deals WHERE Margin >= 0")
+            cursor.execute("SELECT COUNT(*) FROM deals WHERE Margin >= 5")
             dashboard_visible_count = cursor.fetchone()[0]
         except sqlite3.OperationalError:
             # Fallback if Margin column is missing (old DB schema)
@@ -113,7 +114,7 @@ def run_diagnostic():
 
     print(f"Total Processed:       {total_processed}")
     print(f"Successfully Saved:    {raw_db_count}")
-    print(f"Dashboard Visible:     {dashboard_visible_count}  <-- (Margin >= 0%)")
+    print(f"Filtered Count:        {dashboard_visible_count}  <-- (Margin >= 5%)")
     print(f"Total Rejected:        {rejected_count}")
     print(f"Rejection Rate:        {rejection_rate:.2f}%")
     print("")
@@ -163,7 +164,7 @@ def run_diagnostic():
                 print(f"Error checking API raw count: {e}")
 
         # Verify Filtered Count
-        with app.test_request_context('/api/deal-count?margin_gte=0'):
+        with app.test_request_context('/api/deal-count?margin_gte=5'):
             session['logged_in'] = True
             try:
                 response = deal_count()
