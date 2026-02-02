@@ -599,44 +599,51 @@ def approve():
                 new_strategies = [{"id": str(uuid.uuid4()), "advice": s, "trigger": "Manual Entry", "category": "General"}
                                   for s in clean_lines]
 
-            strategies.extend(new_strategies)
-            
-            # Deduplicate by ID if present, or advice text
-            seen_ids = set()
-            unique_strategies = []
-
-            # Use a list to iterate and build the unique list
-            # We must handle mixed types (dict and str) in 'strategies'
-
+            # Build set of existing content for deduplication
+            existing_content = set()
             for s in strategies:
                 if isinstance(s, dict):
-                    sid = s.get('id')
-                    # Generate ID if missing
-                    if not sid:
-                        sid = str(uuid.uuid4())
-                        s['id'] = sid
-
-                    if sid not in seen_ids:
-                        seen_ids.add(sid)
-                        unique_strategies.append(s)
+                    content_key = f"{s.get('category')}|{s.get('trigger')}|{s.get('advice')}"
                 else:
-                     # Convert legacy string to object
-                     # For legacy strings, we don't have IDs. We can check if the text matches any existing advice?
-                     # For simplicity, we'll wrap it and give it a new ID.
-                     # But we should try to avoid exact duplicates of the text itself.
-                     # However, 'seen_ids' tracks IDs.
-                     # Let's just convert and add.
-                     unique_strategies.append({
+                    content_key = str(s).strip()
+                existing_content.add(content_key)
+
+            added_count = 0
+            skipped_count = 0
+
+            for ns in new_strategies:
+                # Determine content key for the new strategy
+                if isinstance(ns, dict):
+                    # Ensure ID exists
+                    if not ns.get('id'):
+                        ns['id'] = str(uuid.uuid4())
+
+                    ns_content_key = f"{ns.get('category')}|{ns.get('trigger')}|{ns.get('advice')}"
+                else:
+                    # Shouldn't happen given parsing logic above, but handle safely
+                    ns_content_key = str(ns).strip()
+                    ns = {
                          "id": str(uuid.uuid4()),
-                         "advice": str(s),
-                         "trigger": "Legacy",
+                         "advice": str(ns),
+                         "trigger": "Manual Entry",
                          "category": "General"
-                     })
+                    }
+
+                if ns_content_key not in existing_content:
+                    strategies.append(ns)
+                    existing_content.add(ns_content_key)
+                    added_count += 1
+                else:
+                    skipped_count += 1
 
             with open(STRATEGIES_FILE, 'w', encoding='utf-8') as f:
-                json.dump(unique_strategies, f, indent=4)
+                json.dump(strategies, f, indent=4)
             
-            flash(f"{len(new_strategies)} new strategies have been approved and saved.", "success")
+            msg = f"Saved {added_count} new strategies."
+            if skipped_count > 0:
+                msg += f" Skipped {skipped_count} duplicates."
+            flash(msg, "success")
+
         except Exception as e:
             app.logger.error(f"Error saving strategies: {e}", exc_info=True)
             flash("An error occurred while saving the strategies.", "error")
@@ -651,13 +658,29 @@ def approve():
                 ideas = []
             
             new_ideas = [i.strip() for i in approved_ideas.strip().split('\n') if i.strip()]
-            ideas.extend(new_ideas)
             
-            unique_ideas = list(dict.fromkeys(ideas))
-            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(unique_ideas, f, indent=4)
+            added_ideas_count = 0
+            skipped_ideas_count = 0
 
-            flash(f"{len(new_ideas)} new conceptual ideas have been approved and saved to Intelligence.", "success")
+            # Use a set for faster lookup of existing ideas
+            existing_ideas_set = set(ideas)
+
+            for idea in new_ideas:
+                if idea not in existing_ideas_set:
+                    ideas.append(idea)
+                    existing_ideas_set.add(idea)
+                    added_ideas_count += 1
+                else:
+                    skipped_ideas_count += 1
+
+            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(ideas, f, indent=4)
+
+            msg = f"Saved {added_ideas_count} new ideas to Intelligence."
+            if skipped_ideas_count > 0:
+                msg += f" Skipped {skipped_ideas_count} duplicates."
+            flash(msg, "success")
+
         except Exception as e:
             app.logger.error(f"Error saving conceptual ideas: {e}", exc_info=True)
             flash("An error occurred while saving the conceptual ideas.", "error")
