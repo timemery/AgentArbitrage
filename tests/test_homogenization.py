@@ -1,7 +1,11 @@
 import json
 import os
+import sys
 import unittest
 from unittest.mock import patch, MagicMock
+
+# Fix path for import
+sys.path.append(os.getcwd())
 import wsgi_handler
 
 class TestHomogenization(unittest.TestCase):

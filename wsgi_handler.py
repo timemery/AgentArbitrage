@@ -547,14 +547,14 @@ def _homogenize_intelligence():
              return _deduplicate_intelligence()
 
         prompt = f"""
-        You are a data cleaner. Below is a JSON list of "intelligence" items (conceptual ideas).
-        Many are duplicates with slightly different wording.
+        You are a strict data cleaner. Below is a JSON list of "intelligence" items.
 
-        **Task:**
-        1. Identify semantically identical or highly similar ideas.
-        2. Merge them into a single, best-phrased version.
-        3. Return ONLY the cleaned, deduplicated JSON list of strings.
-        4. Do not add new ideas. Only remove duplicates.
+        **CRITICAL INSTRUCTIONS:**
+        1. Aggressively identify concepts that mean the same thing, even if phrased differently.
+        2. Merge them into a SINGLE, concise entry.
+        3. If two items share >50% conceptual overlap, KEEP ONLY THE BEST ONE.
+        4. Your goal is to REDUCE the list size by removing redundancy.
+        5. Return ONLY the final JSON list of strings. No markdown, no intro.
 
         **Input List:**
         {json.dumps(intelligence)}
@@ -578,6 +578,8 @@ def _homogenize_intelligence():
 
         try:
             content = result['choices'][0]['message']['content'].strip()
+            app.logger.info(f"Homogenization raw response preview: {content[:500]}...") # Log preview
+
             # Clean markdown
             content = re.sub(r'^```json\s*|\s*```$', '', content, flags=re.MULTILINE)
             cleaned_list = json.loads(content)
@@ -586,6 +588,8 @@ def _homogenize_intelligence():
                 original_count = len(intelligence)
                 new_count = len(cleaned_list)
                 removed = original_count - new_count
+
+                app.logger.info(f"Homogenization: Original {original_count}, New {new_count}, Removed {removed}")
 
                 if removed > 0:
                     with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
