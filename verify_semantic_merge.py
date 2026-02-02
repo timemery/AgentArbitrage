@@ -8,6 +8,8 @@ logging.basicConfig(level=logging.INFO)
 # Append cwd to path so we can import wsgi_handler
 sys.path.append(os.getcwd())
 
+import json
+from keepa_deals.maintenance_tasks import homogenize_intelligence_task
 import wsgi_handler
 
 def main():
@@ -18,11 +20,9 @@ def main():
             data = json.load(f)
             print(f"Current Intelligence List Size: {len(data)}")
 
-        # We call the function directly. It will use the real 'intelligence.json'
-        # and the real 'query_xai_api' (which uses the env var XAI_TOKEN).
-        # BE CAREFUL: This consumes tokens and modifies the file if successful.
-        # However, since the user reported "0 removed", running it again here allows us to see the logs.
-        removed = wsgi_handler._homogenize_intelligence()
+        # Call the Celery task synchronously
+        print("Triggering task...")
+        removed = homogenize_intelligence_task()
         print(f"Homogenization complete. Removed: {removed}")
     except Exception as e:
         print(f"Error during homogenization: {e}")
