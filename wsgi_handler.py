@@ -28,6 +28,7 @@ from keepa_deals.db_utils import (
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
+from keepa_deals.maintenance_tasks import homogenize_intelligence_task
 import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
@@ -518,114 +519,34 @@ def _deduplicate_intelligence():
         app.logger.error(f"Error deduplicating intelligence: {e}")
         raise e
 
-def _homogenize_intelligence():
-    """Helper to homogenize intelligence.json using LLM for semantic deduplication."""
-    if not os.path.exists(INTELLIGENCE_FILE):
-        return 0
-
-    try:
-        with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
-            intelligence = json.load(f)
-
-        if not intelligence:
-            return 0
-
-        # We will process the entire list in one go if it fits, or chunks if massive.
-        # Given ~500 items, we can try a single batch or large chunks.
-        # Let's chunk to be safe (e.g., 50 items at a time is too slow for global dedup).
-        # Strategy: Send the LIST to the LLM and ask it to return a UNIQUE JSON list.
-
-        # NOTE: A full list of 6000+ items is too big for one context window.
-        # We need a smarter way. We can cluster them or just use a rolling window.
-        # For this implementation, let's assume the user wants to clean the CURRENT state which has ~500 unique items (from my check).
-        # Wait, the check showed 499 items in the sample read?
-        # The `read_file` earlier showed many lines... ah, `head -n 50` showed 50 lines.
-        # The python script said: `499` unique items. So the list IS small enough.
-
-        # Chunking strategy to handle large lists
-        CHUNK_SIZE = 500
-        total_original = len(intelligence)
-        all_cleaned_items = []
-
-        app.logger.info(f"Starting homogenization for {total_original} items in chunks of {CHUNK_SIZE}...")
-
-        # Process in chunks
-        for i in range(0, total_original, CHUNK_SIZE):
-            chunk = intelligence[i:i + CHUNK_SIZE]
-
-            prompt = f"""
-            You are a strict data cleaner. Below is a JSON list of "intelligence" items.
-
-            **CRITICAL INSTRUCTIONS:**
-            1. Aggressively identify concepts that mean the same thing, even if phrased differently.
-            2. Merge them into a SINGLE, concise entry.
-            3. If two items share >50% conceptual overlap, KEEP ONLY THE BEST ONE.
-            4. Your goal is to REDUCE the list size by removing redundancy.
-            5. Return ONLY the final JSON list of strings. No markdown, no intro.
-
-            **Input List:**
-            {json.dumps(chunk)}
-            """
-
-            payload = {
-                "messages": [
-                    {"role": "system", "content": "You are a data cleaner."},
-                    {"role": "user", "content": prompt}
-                ],
-                "model": "grok-4-fast-reasoning",
-                "stream": False,
-                "temperature": 0.1
-            }
-
-            result = query_xai_api(payload)
-
-            if "error" in result:
-                app.logger.error(f"xAI Error in homogenization chunk {i}: {result['error']}")
-                # If a chunk fails, keep original items for safety
-                all_cleaned_items.extend(chunk)
-                continue
-
-            try:
-                content = result['choices'][0]['message']['content'].strip()
-                # Clean markdown
-                content = re.sub(r'^```json\s*|\s*```$', '', content, flags=re.MULTILINE)
-                cleaned_chunk = json.loads(content)
-
-                if isinstance(cleaned_chunk, list):
-                    all_cleaned_items.extend(cleaned_chunk)
-                    app.logger.info(f"Chunk {i}: Reduced {len(chunk)} -> {len(cleaned_chunk)}")
-                else:
-                    app.logger.error(f"Homogenization returned non-list JSON for chunk {i}.")
-                    all_cleaned_items.extend(chunk)
-
-            except (json.JSONDecodeError, KeyError, IndexError) as e:
-                app.logger.error(f"Error parsing homogenization response for chunk {i}: {e}")
-                all_cleaned_items.extend(chunk)
-
-        # Calculate total removed
-        final_count = len(all_cleaned_items)
-        removed = total_original - final_count
-
-        app.logger.info(f"Homogenization Complete: Original {total_original}, New {final_count}, Removed {removed}")
-
-        if removed > 0:
-            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(all_cleaned_items, f, indent=4)
-
-        return removed
-
-    except Exception as e:
-        app.logger.error(f"Error in homogenization: {e}")
-        raise e
-
 @app.route('/api/homogenize/intelligence', methods=['POST'])
 def homogenize_intelligence():
     if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 403
 
     try:
-        count = _homogenize_intelligence()
-        return jsonify({'status': 'success', 'removed_count': count, 'message': f'Semantically merged {count} duplicate ideas.'})
+        # Trigger Celery Task Asynchronously
+        homogenize_intelligence_task.delay()
+        return jsonify({'status': 'started', 'message': 'Homogenization started in background.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/homogenize/status')
+def homogenize_status():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        # Connect to Redis using default or env URL
+        redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+        r = redis.from_url(redis_url)
+
+        status_json = r.get("homogenization_status")
+        if status_json:
+            return jsonify(json.loads(status_json))
+        else:
+            return jsonify({"status": "Idle"})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
