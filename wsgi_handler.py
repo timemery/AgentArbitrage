@@ -541,67 +541,77 @@ def _homogenize_intelligence():
         # The `read_file` earlier showed many lines... ah, `head -n 50` showed 50 lines.
         # The python script said: `499` unique items. So the list IS small enough.
 
-        if len(intelligence) > 2000:
-             # Fallback to simple dedup if too huge for context
-             app.logger.warning("Intelligence list too large for semantic homogenization. Running simple dedup.")
-             return _deduplicate_intelligence()
+        # Chunking strategy to handle large lists
+        CHUNK_SIZE = 500
+        total_original = len(intelligence)
+        all_cleaned_items = []
 
-        prompt = f"""
-        You are a strict data cleaner. Below is a JSON list of "intelligence" items.
+        app.logger.info(f"Starting homogenization for {total_original} items in chunks of {CHUNK_SIZE}...")
 
-        **CRITICAL INSTRUCTIONS:**
-        1. Aggressively identify concepts that mean the same thing, even if phrased differently.
-        2. Merge them into a SINGLE, concise entry.
-        3. If two items share >50% conceptual overlap, KEEP ONLY THE BEST ONE.
-        4. Your goal is to REDUCE the list size by removing redundancy.
-        5. Return ONLY the final JSON list of strings. No markdown, no intro.
+        # Process in chunks
+        for i in range(0, total_original, CHUNK_SIZE):
+            chunk = intelligence[i:i + CHUNK_SIZE]
 
-        **Input List:**
-        {json.dumps(intelligence)}
-        """
+            prompt = f"""
+            You are a strict data cleaner. Below is a JSON list of "intelligence" items.
 
-        payload = {
-            "messages": [
-                {"role": "system", "content": "You are a data cleaner."},
-                {"role": "user", "content": prompt}
-            ],
-            "model": "grok-4-fast-reasoning",
-            "stream": False,
-            "temperature": 0.1
-        }
+            **CRITICAL INSTRUCTIONS:**
+            1. Aggressively identify concepts that mean the same thing, even if phrased differently.
+            2. Merge them into a SINGLE, concise entry.
+            3. If two items share >50% conceptual overlap, KEEP ONLY THE BEST ONE.
+            4. Your goal is to REDUCE the list size by removing redundancy.
+            5. Return ONLY the final JSON list of strings. No markdown, no intro.
 
-        result = query_xai_api(payload)
+            **Input List:**
+            {json.dumps(chunk)}
+            """
 
-        if "error" in result:
-            app.logger.error(f"xAI Error in homogenization: {result['error']}")
-            return 0
+            payload = {
+                "messages": [
+                    {"role": "system", "content": "You are a data cleaner."},
+                    {"role": "user", "content": prompt}
+                ],
+                "model": "grok-4-fast-reasoning",
+                "stream": False,
+                "temperature": 0.1
+            }
 
-        try:
-            content = result['choices'][0]['message']['content'].strip()
-            app.logger.info(f"Homogenization raw response preview: {content[:500]}...") # Log preview
+            result = query_xai_api(payload)
 
-            # Clean markdown
-            content = re.sub(r'^```json\s*|\s*```$', '', content, flags=re.MULTILINE)
-            cleaned_list = json.loads(content)
+            if "error" in result:
+                app.logger.error(f"xAI Error in homogenization chunk {i}: {result['error']}")
+                # If a chunk fails, keep original items for safety
+                all_cleaned_items.extend(chunk)
+                continue
 
-            if isinstance(cleaned_list, list):
-                original_count = len(intelligence)
-                new_count = len(cleaned_list)
-                removed = original_count - new_count
+            try:
+                content = result['choices'][0]['message']['content'].strip()
+                # Clean markdown
+                content = re.sub(r'^```json\s*|\s*```$', '', content, flags=re.MULTILINE)
+                cleaned_chunk = json.loads(content)
 
-                app.logger.info(f"Homogenization: Original {original_count}, New {new_count}, Removed {removed}")
+                if isinstance(cleaned_chunk, list):
+                    all_cleaned_items.extend(cleaned_chunk)
+                    app.logger.info(f"Chunk {i}: Reduced {len(chunk)} -> {len(cleaned_chunk)}")
+                else:
+                    app.logger.error(f"Homogenization returned non-list JSON for chunk {i}.")
+                    all_cleaned_items.extend(chunk)
 
-                if removed > 0:
-                    with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                        json.dump(cleaned_list, f, indent=4)
-                return removed
-            else:
-                app.logger.error("Homogenization returned non-list JSON.")
-                return 0
+            except (json.JSONDecodeError, KeyError, IndexError) as e:
+                app.logger.error(f"Error parsing homogenization response for chunk {i}: {e}")
+                all_cleaned_items.extend(chunk)
 
-        except (json.JSONDecodeError, KeyError, IndexError) as e:
-            app.logger.error(f"Error parsing homogenization response: {e}")
-            return 0
+        # Calculate total removed
+        final_count = len(all_cleaned_items)
+        removed = total_original - final_count
+
+        app.logger.info(f"Homogenization Complete: Original {total_original}, New {final_count}, Removed {removed}")
+
+        if removed > 0:
+            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(all_cleaned_items, f, indent=4)
+
+        return removed
 
     except Exception as e:
         app.logger.error(f"Error in homogenization: {e}")

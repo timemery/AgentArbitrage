@@ -13,6 +13,11 @@ import wsgi_handler
 def main():
     print("Starting homogenization verification...")
     try:
+        # Check list size first
+        with open(wsgi_handler.INTELLIGENCE_FILE, 'r') as f:
+            data = json.load(f)
+            print(f"Current Intelligence List Size: {len(data)}")
+
         # We call the function directly. It will use the real 'intelligence.json'
         # and the real 'query_xai_api' (which uses the env var XAI_TOKEN).
         # BE CAREFUL: This consumes tokens and modifies the file if successful.
