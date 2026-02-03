@@ -1,5 +1,5 @@
 #!/bin/bash
-# Updated Feb 3 2026: Fixed order of operations AND added nuclear persistence wipe
+# Updated Feb 3 2026: Fixed order of operations AND added targeted nuclear persistence wipe
 echo "--- Starting Forceful Shutdown ---"
 
 # Step 1: Forcefully kill the monitor process
@@ -33,13 +33,11 @@ sleep 2
 
 # Step 5: NUCLEAR OPTION - Delete Redis Persistence Files
 # This ensures that even if Step 3 failed, the locks cannot reload from disk on restart.
+# We target the files explicitly found on the user's server.
 echo "[5/8] Deleting Redis persistence files (dump.rdb) to prevent zombie lock reload..."
-if [ -d "/var/lib/redis" ]; then
-    sudo find /var/lib/redis -name "dump.rdb" -delete
-    echo "Redis dump files deleted."
-else
-    echo "Redis directory /var/lib/redis not found. Skipping dump deletion."
-fi
+sudo rm -f /var/lib/redis/dump.rdb
+sudo rm -f /var/www/agentarbitrage/dump.rdb
+echo "Redis persistence files deleted (if they existed)."
 
 # Step 6: Delete the Celery Beat schedule file AND PID file
 echo "[6/8] Deleting Celery Beat schedule and PID files..."
