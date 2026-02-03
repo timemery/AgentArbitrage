@@ -6,7 +6,12 @@ from unittest.mock import patch, MagicMock
 
 # Fix path for import
 sys.path.append(os.getcwd())
-import wsgi_handler
+
+# Do NOT mock the entire redis module, just the client
+# sys.modules['redis'] = MagicMock()
+
+from keepa_deals.maintenance_tasks import homogenize_intelligence_task
+import keepa_deals.maintenance_tasks
 
 class TestHomogenization(unittest.TestCase):
     def setUp(self):
@@ -22,7 +27,8 @@ class TestHomogenization(unittest.TestCase):
         with open(self.test_file, 'w') as f:
             json.dump(self.data, f)
 
-        self.file_patcher = patch('wsgi_handler.INTELLIGENCE_FILE', self.test_file)
+        # Patch the constant in the module where it is used
+        self.file_patcher = patch('keepa_deals.maintenance_tasks.INTELLIGENCE_FILE', self.test_file)
         self.file_patcher.start()
 
     def tearDown(self):
@@ -30,8 +36,13 @@ class TestHomogenization(unittest.TestCase):
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
 
-    @patch('wsgi_handler.query_xai_api')
-    def test_homogenize_intelligence(self, mock_query):
+    @patch('keepa_deals.maintenance_tasks.query_xai_api')
+    @patch('keepa_deals.maintenance_tasks.redis.Redis')
+    def test_homogenize_intelligence(self, mock_redis_cls, mock_query):
+        # Mock Redis client instance
+        mock_redis_client = MagicMock()
+        mock_redis_cls.from_url.return_value = mock_redis_client
+
         # Mock the LLM response to return a merged list
         # Expected: 2 unique concepts from the 5 items
         mock_response = {
@@ -43,7 +54,23 @@ class TestHomogenization(unittest.TestCase):
         }
         mock_query.return_value = mock_response
 
-        removed_count = wsgi_handler._homogenize_intelligence()
+        # Use .apply() to execute the task synchronously (Celery feature)
+        # However, .apply() will try to use the configured backend (Redis) to store results.
+        # If Redis server is not running, this might fail unless we configure Celery to use a different backend or None.
+
+        # Alternative: Unwrap the task function.
+        # The underlying function is available via .__wrapped__ if it was a simple decorator,
+        # but Celery tasks are classes.
+
+        # Best bet: Mock celery_app.conf.broker_url so redis.Redis.from_url works?
+        # But we mocked redis.Redis in the module.
+
+        # If we execute the task *directly* as a function?
+        # Celery tasks are callable.
+        removed_count = homogenize_intelligence_task()
+
+        # But calling it directly might skip the decorator logic? No, calling a task calls its run method usually,
+        # but in Celery < 5 it was different. In Celery 5, calling the task instance calls the body.
 
         # Original 5, New 2 -> Removed 3
         self.assertEqual(removed_count, 3)

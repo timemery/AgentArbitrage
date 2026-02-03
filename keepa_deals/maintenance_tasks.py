@@ -8,7 +8,8 @@ from .ava_advisor import query_xai_api
 
 logger = getLogger(__name__)
 
-INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'intelligence.json')
+# Use CWD to ensure we target the deployment directory, avoiding issues with module location
+INTELLIGENCE_FILE = os.path.join(os.getcwd(), 'intelligence.json')
 HOMOGENIZATION_STATUS_KEY = "homogenization_status"
 
 @celery.task(name='keepa_deals.maintenance_tasks.homogenize_intelligence_task')
@@ -23,11 +24,17 @@ def homogenize_intelligence_task():
         "removed_count": 0
     }))
 
+    logger.info(f"Homogenization Task Started. CWD: {os.getcwd()}")
+    logger.info(f"Target Intelligence File: {INTELLIGENCE_FILE}")
+
     if not os.path.exists(INTELLIGENCE_FILE):
-        redis_client.set(HOMOGENIZATION_STATUS_KEY, json.dumps({"status": "Error", "message": "File not found"}))
+        error_msg = f"File not found: {INTELLIGENCE_FILE}"
+        logger.error(error_msg)
+        redis_client.set(HOMOGENIZATION_STATUS_KEY, json.dumps({"status": "Error", "message": error_msg}))
         return 0
 
     try:
+        # Reload from disk to ensure freshness (avoid stale memory state)
         with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
             intelligence = json.load(f)
 
@@ -39,7 +46,7 @@ def homogenize_intelligence_task():
         total_original = len(intelligence)
         all_cleaned_items = []
 
-        logger.info(f"Starting homogenization for {total_original} items in chunks of {CHUNK_SIZE}...")
+        logger.info(f"Starting processing for {total_original} items...")
 
         for i in range(0, total_original, CHUNK_SIZE):
             chunk = intelligence[i:i + CHUNK_SIZE]
@@ -103,9 +110,23 @@ def homogenize_intelligence_task():
         final_count = len(all_cleaned_items)
         removed = total_original - final_count
 
+        logger.info(f"Homogenization complete. Original: {total_original}, Final: {final_count}, Removed: {removed}")
+
         if removed > 0:
-            with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(all_cleaned_items, f, indent=4)
+            # Log removed items for debugging (limited to first 3)
+            # Since we didn't track *which* items were removed explicitly, we can infer by set difference if they were strings
+            # But the list might contain duplicates of the same string.
+            # Simple heuristic: Just log that we are updating.
+            logger.info(f"Writing updated list to file: {INTELLIGENCE_FILE}")
+            try:
+                with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(all_cleaned_items, f, indent=4)
+                logger.info("File write successful.")
+            except Exception as write_err:
+                logger.error(f"Failed to write intelligence file: {write_err}")
+                raise write_err
+        else:
+            logger.info("No items removed. File not updated.")
 
         redis_client.set(HOMOGENIZATION_STATUS_KEY, json.dumps({
             "status": "Complete",
