@@ -1796,7 +1796,6 @@ body.home-background::before {
     max-width: 130px;
     display: inline-block;
     vertical-align: bottom;
-    cursor: help;
 }
 
 .trend-up { color: #ff4d4d; font-weight: bold; }
