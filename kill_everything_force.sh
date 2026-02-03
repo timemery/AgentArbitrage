@@ -23,8 +23,9 @@ fi
 
 # Step 3: Clear ALL Redis locks (Soft Clear)
 echo "[3/8] Attempting to clear Redis locks via CLI..."
-# We attempt to clear locks. If Redis is already dead/unresponsive, this might fail.
-redis-cli DEL backfill_deals_lock update_recent_deals_lock || echo "Redis soft clear failed. Proceeding to hard kill."
+# We explicitly clear known task locks.
+# Adding -h 127.0.0.1 to ensure local connection if binding is restrictive.
+redis-cli -h 127.0.0.1 DEL backfill_deals_lock update_recent_deals_lock homogenization_status || echo "Redis soft clear failed (Redis might be down). Proceeding to hard kill."
 
 # Step 4: Kill any process listening on the Redis port (6379)
 echo "[4/8] Terminating Redis server process..."
@@ -34,11 +35,23 @@ sleep 2
 # Step 5: NUCLEAR OPTION - Delete Redis Persistence Files
 # This ensures that even if Step 3 failed, the locks cannot reload from disk on restart.
 echo "[5/8] Deleting Redis persistence files (dump.rdb) to prevent zombie lock reload..."
-if [ -d "/var/lib/redis" ]; then
-    sudo find /var/lib/redis -name "dump.rdb" -delete
-    echo "Redis dump files deleted."
-else
-    echo "Redis directory /var/lib/redis not found. Skipping dump deletion."
+# Search in common Redis directories
+REDIS_DIRS="/var/lib/redis /etc/redis /var/www/agentarbitrage"
+FOUND_DUMP=false
+
+for dir in $REDIS_DIRS; do
+    if [ -d "$dir" ]; then
+        echo "Checking $dir for dump.rdb..."
+        if sudo find "$dir" -name "dump.rdb" -delete; then
+             echo "Deleted dump.rdb in $dir"
+             FOUND_DUMP=true
+        fi
+    fi
+done
+
+if [ "$FOUND_DUMP" = false ]; then
+    echo "WARNING: Could not find dump.rdb in standard locations. Searching entire /var/lib..."
+    sudo find /var/lib -name "dump.rdb" -delete || echo "No dump.rdb found in /var/lib."
 fi
 
 # Step 6: Delete the Celery Beat schedule file AND PID file
