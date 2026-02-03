@@ -1,5 +1,11 @@
 import unittest
+import sys
+import os
 from datetime import datetime, timedelta
+
+# Add project root to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from keepa_deals.seller_info import get_used_product_info
 
 class TestStatsPriority(unittest.TestCase):
