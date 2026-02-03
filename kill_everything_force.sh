@@ -27,21 +27,40 @@ echo "[3/8] Attempting to clear Redis locks via CLI..."
 # Adding -h 127.0.0.1 to ensure local connection if binding is restrictive.
 redis-cli -h 127.0.0.1 DEL backfill_deals_lock update_recent_deals_lock homogenization_status || echo "Redis soft clear failed (Redis might be down). Proceeding to hard kill."
 
-# Step 4: Kill any process listening on the Redis port (6379)
-echo "[4/8] Terminating Redis server process..."
+# Step 4: DYNAMICALLY FIND REDIS DATA DIR (New!)
+# Before we kill Redis, let's ask it where it lives.
+echo "[4/8] Querying Redis for data directory..."
+REDIS_DIR=$(redis-cli -h 127.0.0.1 config get dir | tail -n 1)
+REDIS_FILE=$(redis-cli -h 127.0.0.1 config get dbfilename | tail -n 1)
+
+if [ -n "$REDIS_DIR" ] && [ -n "$REDIS_FILE" ]; then
+    REDIS_DUMP_PATH="$REDIS_DIR/$REDIS_FILE"
+    echo "Identified Redis dump file at: $REDIS_DUMP_PATH"
+else
+    echo "Could not query Redis config (maybe auth required or down). Will check standard paths."
+    REDIS_DUMP_PATH=""
+fi
+
+# Step 5: Kill any process listening on the Redis port (6379)
+echo "[5/8] Terminating Redis server process..."
 sudo fuser -k 6379/tcp || echo "Redis was not running or could not be killed."
 sleep 2
 
-# Step 5: NUCLEAR OPTION - Delete Redis Persistence Files
-# This ensures that even if Step 3 failed, the locks cannot reload from disk on restart.
-echo "[5/8] Deleting Redis persistence files (dump.rdb) to prevent zombie lock reload..."
-# Search in common Redis directories
+# Step 6: NUCLEAR OPTION - Delete Redis Persistence Files
+echo "[6/8] Deleting Redis persistence files to prevent zombie lock reload..."
+
+# A. Delete the dynamically found path
+if [ -n "$REDIS_DUMP_PATH" ] && [ -f "$REDIS_DUMP_PATH" ]; then
+    echo "Deleting dynamic dump path: $REDIS_DUMP_PATH"
+    sudo rm -f "$REDIS_DUMP_PATH"
+fi
+
+# B. Search common paths (backup)
 REDIS_DIRS="/var/lib/redis /etc/redis /var/www/agentarbitrage"
 FOUND_DUMP=false
 
 for dir in $REDIS_DIRS; do
     if [ -d "$dir" ]; then
-        echo "Checking $dir for dump.rdb..."
         if sudo find "$dir" -name "dump.rdb" -delete; then
              echo "Deleted dump.rdb in $dir"
              FOUND_DUMP=true
@@ -49,23 +68,23 @@ for dir in $REDIS_DIRS; do
     fi
 done
 
-if [ "$FOUND_DUMP" = false ]; then
+if [ "$FOUND_DUMP" = false ] && [ ! -f "$REDIS_DUMP_PATH" ]; then
     echo "WARNING: Could not find dump.rdb in standard locations. Searching entire /var/lib..."
     sudo find /var/lib -name "dump.rdb" -delete || echo "No dump.rdb found in /var/lib."
 fi
 
-# Step 6: Delete the Celery Beat schedule file AND PID file
-echo "[6/8] Deleting Celery Beat schedule and PID files..."
+# Step 7: Delete the Celery Beat schedule file AND PID file
+echo "[7/8] Deleting Celery Beat schedule and PID files..."
 sudo rm -f celerybeat-schedule
 sudo rm -f celerybeat.pid
 
-# Step 7: Recursively find and delete all __pycache__ directories
-echo "[7/8] Deleting all Python cache directories (__pycache__)..."
+# Step 8: Recursively find and delete all __pycache__ directories
+echo "[8/8] Deleting all Python cache directories (__pycache__)..."
 sudo find . -type d -name "__pycache__" -exec rm -r {} +
 echo "Cache cleared."
 
-# Step 8: Restarting Redis server for a clean slate
-echo "[8/8] Restarting Redis server..."
+# Step 9: Restarting Redis server for a clean slate
+echo "[9/9] Restarting Redis server..."
 sudo service redis-server start
 
 echo "--- Forceful Shutdown Complete ---"
