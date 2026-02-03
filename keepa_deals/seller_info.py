@@ -1,10 +1,14 @@
 import logging
 from keepa_deals.keepa_api import fetch_seller_data
 from keepa_deals.token_manager import TokenManager
+from keepa_deals.business_calculations import load_settings
+from datetime import datetime
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+KEEPA_EPOCH = datetime(2011, 1, 1)
 
 CONDITION_CODE_MAP = {
     0: 'New, unopened',
@@ -92,53 +96,96 @@ def get_all_seller_info(product_list, api_key, token_manager: TokenManager):
 
 def get_used_product_info(product):
     """
-    Extracts information about the lowest-priced used offer from a product's data
-    by correctly parsing the `offerCSV` field from live offer data.
+    Extracts price and seller information using a 'Stats-First' strategy.
+
+    1. Determines the base price from `stats.current` (guaranteed availability).
+    2. Searches the `offers` array for an entry matching that price to enrich with Seller ID/FBA data.
+    3. If no match is found in offers, returns the Stats price with generic Seller info.
 
     Returns a tuple: (price_in_cents, seller_id, is_fba, condition_code)
-    or (None, None, None, None) if no used offer is found.
+    or (None, None, None, None) if the product is effectively unavailable.
     """
-    offers = product.get('offers')
-    if not offers:
+    stats = product.get('stats', {})
+    current = stats.get('current', [])
+
+    # --- Step 1: Establish the "Source of Truth" Price from Stats ---
+    target_price = None
+    condition_code = 4 # Default to Used - Good
+
+    # Priority A: Used Price (Index 2)
+    if len(current) > 2 and current[2] > 0:
+        target_price = current[2]
+    # Priority B: New Price (Index 1) - Only if Used is missing
+    elif len(current) > 1 and current[1] > 0:
+        target_price = current[1]
+        condition_code = 0 # New, unopened
+
+    # If no valid price in stats, the item is unavailable.
+    # Do NOT fallback to old offers.
+    if not target_price or target_price <= 0:
         return None, None, None, None
 
-    min_price = float('inf')
-    best_offer = None
-    used_condition_codes = {2, 3, 4, 5}
+    # --- Step 2: Attempt to Match with Seller Details in Offers ---
+    offers = product.get('offers')
+    best_match = None
 
-    for offer in offers:
-        try:
-            condition_val = offer.get('condition')
-            condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
+    # Load settings for shipping logic
+    settings = load_settings()
+    default_shipping = settings.get('estimated_shipping_per_book', 0.0) * 100 # Convert to cents
 
-            if condition_code in used_condition_codes:
-                # When using the `offers` parameter, price info is in `offerCSV`.
-                # The most recent entry is at the END of the list.
-                # Format is [..., timestamp, price_cents, shipping_cents]
-                offer_csv = offer.get('offerCSV', [])
-                if len(offer_csv) < 2: # Need at least price and shipping
-                    logger.warning(f"Malformed offerCSV for ASIN {product.get('asin')}: {offer_csv}")
+    # Calculate freshness cutoff (e.g., 365 days) just to avoid matching ancient duplicates
+    now_keepa_minutes = int((datetime.now() - KEEPA_EPOCH).total_seconds() / 60)
+    freshness_cutoff = now_keepa_minutes - (365 * 24 * 60)
+
+    if offers:
+        for offer in offers:
+            try:
+                offer_cond_val = offer.get('condition')
+                offer_cond = offer_cond_val.get('value') if isinstance(offer_cond_val, dict) else offer_cond_val
+
+                # Loose condition matching: If target is Used, accept any Used. If New, accept New.
+                is_target_used = (condition_code == 4)
+                is_offer_used = (offer_cond in {2, 3, 4, 5})
+
+                if is_target_used != is_offer_used:
                     continue
 
-                price = offer_csv[-2]
-                shipping_cost = offer_csv[-1] if offer_csv[-1] != -1 else 0
-                total_price = price + shipping_cost
+                offer_csv = offer.get('offerCSV', [])
+                if len(offer_csv) < 3: continue
 
-                if total_price < min_price:
-                    min_price = total_price
-                    best_offer = offer
-        except (AttributeError, KeyError, TypeError, IndexError) as e:
-            logger.error(f"Malformed offer found for ASIN {product.get('asin')}: {offer}. Error: {e}")
-            continue
+                ts = offer_csv[-3]
+                item_price = offer_csv[-2]
+                shipping_raw = offer_csv[-1]
 
-    if best_offer:
-        price_now = min_price
-        seller_id = best_offer.get('sellerId')
-        is_fba = best_offer.get('isFBA', False)
+                # Skip zombies when matching
+                if ts < freshness_cutoff:
+                    continue
 
-        condition_val = best_offer.get('condition')
-        condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
+                # Match Logic: stats.current is ITEM PRICE
+                if item_price == target_price:
+                    # Calculate Total Price (Landed)
+                    is_fba_offer = offer.get('isFBA', False)
+                    if shipping_raw == -1:
+                        shipping_cost = 0 if is_fba_offer else default_shipping
+                    else:
+                        shipping_cost = shipping_raw
 
-        return price_now, seller_id, is_fba, condition_code
-    else:
-        return None, None, None, None
+                    total_match_price = item_price + shipping_cost
+
+                    # Save this as a candidate.
+                    # If we find multiple matches, maybe pick the freshest?
+                    # For now, first valid match is good enough.
+                    return total_match_price, offer.get('sellerId'), is_fba_offer, offer_cond
+
+            except (AttributeError, KeyError, TypeError, IndexError):
+                continue
+
+    # --- Step 3: No Match Found - Return Stats Price (Unknown Seller) ---
+    # We must add default shipping since stats.current is just Item Price
+    # Assumption: If we don't know the seller, we assume MFN + Default Shipping to be safe/conservative cost-wise.
+    final_price = target_price + default_shipping
+
+    # Log the fallback for debugging
+    # logger.info(f"ASIN {product.get('asin')}: Using Stats price {target_price} + Def.Ship {default_shipping}. No offer match found.")
+
+    return final_price, "Unknown", False, condition_code

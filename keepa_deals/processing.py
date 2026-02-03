@@ -58,6 +58,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
 
         row_data['Price Now'] = price_now / 100.0
         row_data['Seller'] = seller_id # Default to ID
+        row_data['Seller ID'] = seller_id # Ensure ID is saved for future checks
         row_data['FBA'] = is_fba
         row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
 
@@ -290,7 +291,21 @@ def _process_lightweight_update(existing_row, product_data):
         if used_product_info and used_product_info[0] is not None:
             price_now, seller_id, is_fba, condition_code = used_product_info
             row_data['Price Now'] = price_now / 100.0
-            row_data['Seller'] = seller_id
+
+            # Seller Logic: Preserve Name if ID matches
+            current_seller_id = row_data.get('Seller ID')
+            if current_seller_id == seller_id:
+                 # ID is unchanged, so we assume the existing 'Seller' (Name) is still valid.
+                 # Do not overwrite it.
+                 pass
+            else:
+                 # ID changed (or was missing), so we must update 'Seller'.
+                 # Since lightweight update doesn't fetch names, we fallback to ID.
+                 row_data['Seller'] = seller_id
+
+            # Always update the ID reference
+            row_data['Seller ID'] = seller_id
+
             row_data['FBA'] = is_fba
             row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
         else:
