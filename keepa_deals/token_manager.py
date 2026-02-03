@@ -79,6 +79,20 @@ class TokenManager:
         except Exception as e:
             logger.error(f"Redis load state error: {e}")
 
+    def has_enough_tokens(self, estimated_cost):
+        """
+        Checks if there are enough tokens to proceed with an operation of the given cost,
+        respecting the minimum token threshold.
+        This is a non-blocking check.
+        """
+        # Ensure we have the latest shared state
+        self._load_state_from_redis()
+
+        if self.tokens < self.MIN_TOKEN_THRESHOLD:
+            return False
+
+        return self.tokens >= estimated_cost
+
     def request_permission_for_call(self, estimated_cost):
         """
         Checks if an API call can be made and waits if necessary.
@@ -99,7 +113,9 @@ class TokenManager:
             if self.redis_client:
                 try:
                     # Optimistically decrement
-                    new_val = self.redis_client.decrby(self.REDIS_KEY_TOKENS, cost_int)
+                    # Use incrbyfloat with negative value because Keepa tokens can be floats (e.g. 50.5)
+                    # and standard Redis DECRBY expects integer values.
+                    new_val = self.redis_client.incrbyfloat(self.REDIS_KEY_TOKENS, -cost_int)
                     self.tokens = float(new_val)
 
                     # --- CHECK CONSTRAINTS ---
@@ -121,7 +137,7 @@ class TokenManager:
 
                     # --- FAILURE: REVERT ---
                     # We decremented, but didn't meet criteria. Undo.
-                    self.redis_client.incrby(self.REDIS_KEY_TOKENS, cost_int)
+                    self.redis_client.incrbyfloat(self.REDIS_KEY_TOKENS, cost_int)
 
                     # Restore local view for wait calculation (approximate)
                     # We add cost back because we just incremented.
@@ -152,9 +168,22 @@ class TokenManager:
             wait_time = 0
             recovery_target = 0
 
+            # Determine required tokens to pass checks
+            # Case A: Standard Check (Tokens >= Threshold + Cost)
+            # We need enough so that (tokens - cost) >= Threshold
+            required_standard = self.MIN_TOKEN_THRESHOLD + cost_int
+
+            # Case B: Priority Pass (Cost <= 10 AND Tokens >= 0)
+            # If cost is small, we just need to be non-negative.
+            required_priority = 0
+
+            target = required_standard
+            if cost_int <= 10:
+                target = required_priority
+
             if self.tokens <= 0:
-                recovery_target = 10 # Wait until positive
-            elif self.tokens < self.MIN_TOKEN_THRESHOLD:
+                recovery_target = 10 # Wait until positive buffer
+            elif self.tokens < target:
                 # If we are here, we failed priority pass (if redis)
                 # Or we are local and low.
                 if not self.redis_client and cost_int <= 10 and self.tokens >= cost_int:
@@ -162,7 +191,8 @@ class TokenManager:
                     self.tokens -= cost_int
                     return
 
-                recovery_target = self.MIN_TOKEN_THRESHOLD + 5
+                # Wait until we have enough to pass the check + small buffer
+                recovery_target = target + 5
 
             if recovery_target > 0:
                 tokens_needed = recovery_target - self.tokens
