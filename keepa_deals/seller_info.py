@@ -96,167 +96,96 @@ def get_all_seller_info(product_list, api_key, token_manager: TokenManager):
 
 def get_used_product_info(product):
     """
-    Extracts information about the lowest-priced used offer from a product's data
-    by correctly parsing the `offerCSV` field from live offer data.
+    Extracts price and seller information using a 'Stats-First' strategy.
+
+    1. Determines the base price from `stats.current` (guaranteed availability).
+    2. Searches the `offers` array for an entry matching that price to enrich with Seller ID/FBA data.
+    3. If no match is found in offers, returns the Stats price with generic Seller info.
 
     Returns a tuple: (price_in_cents, seller_id, is_fba, condition_code)
-    or (None, None, None, None) if no used offer is found.
+    or (None, None, None, None) if the product is effectively unavailable.
     """
-    min_price = float('inf')
-    best_offer = None
-    used_condition_codes = {2, 3, 4, 5}
+    stats = product.get('stats', {})
+    current = stats.get('current', [])
 
+    # --- Step 1: Establish the "Source of Truth" Price from Stats ---
+    target_price = None
+    condition_code = 4 # Default to Used - Good
+
+    # Priority A: Used Price (Index 2)
+    if len(current) > 2 and current[2] > 0:
+        target_price = current[2]
+    # Priority B: New Price (Index 1) - Only if Used is missing
+    elif len(current) > 1 and current[1] > 0:
+        target_price = current[1]
+        condition_code = 0 # New, unopened
+
+    # If no valid price in stats, the item is unavailable.
+    # Do NOT fallback to old offers.
+    if not target_price or target_price <= 0:
+        return None, None, None, None
+
+    # --- Step 2: Attempt to Match with Seller Details in Offers ---
     offers = product.get('offers')
-    if offers:
-        # Load settings once for default shipping logic
-        settings = load_settings()
-        default_shipping = settings.get('estimated_shipping_per_book', 0.0) * 100 # Convert to cents
+    best_match = None
 
-        # Calculate freshness cutoff (e.g., 365 days)
-        # Keepa timestamps are minutes since 2011-01-01
-        now_keepa_minutes = int((datetime.now() - KEEPA_EPOCH).total_seconds() / 60)
-        freshness_cutoff = now_keepa_minutes - (365 * 24 * 60) # 1 year ago
-
-        for offer in offers:
-            try:
-                condition_val = offer.get('condition')
-                condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
-
-                if condition_code in used_condition_codes:
-                    # When using the `offers` parameter, price info is in `offerCSV`.
-                    # The most recent entry is at the END of the list.
-                    # Format is [..., timestamp, price_cents, shipping_cents]
-                    offer_csv = offer.get('offerCSV', [])
-                    if len(offer_csv) < 3: # Need timestamp, price, shipping
-                        if len(offer_csv) == 2: # Legacy/Malformed?
-                             pass # Proceed with caution if we assume missing TS? No, unsafe.
-                        else:
-                            logger.warning(f"Malformed offerCSV for ASIN {product.get('asin')}: {offer_csv}")
-                            continue
-
-                    ts = offer_csv[-3]
-                    price = offer_csv[-2]
-                    shipping_raw = offer_csv[-1]
-
-                    # Freshness Check: Skip Zombie Offers (> 1 year old)
-                    if ts < freshness_cutoff:
-                        continue
-
-                    # Check for FBA
-                    is_fba_offer = offer.get('isFBA', False)
-
-                    if shipping_raw == -1:
-                        if is_fba_offer:
-                            shipping_cost = 0 # FBA typically implies free shipping for Prime/threshold
-                        else:
-                            # Unknown shipping for MFN. User requested using default setting.
-                            shipping_cost = default_shipping
-                    else:
-                        shipping_cost = shipping_raw
-
-                    total_price = price + shipping_cost
-
-                    if total_price < min_price:
-                        min_price = total_price
-                        best_offer = offer
-            except (AttributeError, KeyError, TypeError, IndexError) as e:
-                logger.error(f"Malformed offer found for ASIN {product.get('asin')}: {offer}. Error: {e}")
-                continue
-
-    # Load settings once for default shipping logic
+    # Load settings for shipping logic
     settings = load_settings()
     default_shipping = settings.get('estimated_shipping_per_book', 0.0) * 100 # Convert to cents
 
-    # Calculate freshness cutoff (e.g., 365 days)
-    # Keepa timestamps are minutes since 2011-01-01
+    # Calculate freshness cutoff (e.g., 365 days) just to avoid matching ancient duplicates
     now_keepa_minutes = int((datetime.now() - KEEPA_EPOCH).total_seconds() / 60)
-    freshness_cutoff = now_keepa_minutes - (365 * 24 * 60) # 1 year ago
+    freshness_cutoff = now_keepa_minutes - (365 * 24 * 60)
 
-    for offer in offers:
-        try:
-            condition_val = offer.get('condition')
-            condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
+    if offers:
+        for offer in offers:
+            try:
+                offer_cond_val = offer.get('condition')
+                offer_cond = offer_cond_val.get('value') if isinstance(offer_cond_val, dict) else offer_cond_val
 
-            if condition_code in used_condition_codes:
-                # When using the `offers` parameter, price info is in `offerCSV`.
-                # The most recent entry is at the END of the list.
-                # Format is [..., timestamp, price_cents, shipping_cents]
+                # Loose condition matching: If target is Used, accept any Used. If New, accept New.
+                is_target_used = (condition_code == 4)
+                is_offer_used = (offer_cond in {2, 3, 4, 5})
+
+                if is_target_used != is_offer_used:
+                    continue
+
                 offer_csv = offer.get('offerCSV', [])
-                if len(offer_csv) < 3: # Need timestamp, price, shipping
-                    if len(offer_csv) == 2: # Legacy/Malformed?
-                         pass # Proceed with caution if we assume missing TS? No, unsafe.
-                    else:
-                        logger.warning(f"Malformed offerCSV for ASIN {product.get('asin')}: {offer_csv}")
-                        continue
+                if len(offer_csv) < 3: continue
 
                 ts = offer_csv[-3]
-                price = offer_csv[-2]
+                item_price = offer_csv[-2]
                 shipping_raw = offer_csv[-1]
 
-                # Freshness Check: Skip Zombie Offers (> 1 year old)
+                # Skip zombies when matching
                 if ts < freshness_cutoff:
                     continue
 
-                # Check for FBA
-                is_fba_offer = offer.get('isFBA', False)
-
-                if shipping_raw == -1:
-                    if is_fba_offer:
-                        shipping_cost = 0 # FBA typically implies free shipping for Prime/threshold
+                # Match Logic: stats.current is ITEM PRICE
+                if item_price == target_price:
+                    # Calculate Total Price (Landed)
+                    is_fba_offer = offer.get('isFBA', False)
+                    if shipping_raw == -1:
+                        shipping_cost = 0 if is_fba_offer else default_shipping
                     else:
-                        # Unknown shipping for MFN. User requested using default setting.
-                        shipping_cost = default_shipping
-                else:
-                    shipping_cost = shipping_raw
+                        shipping_cost = shipping_raw
 
-                total_price = price + shipping_cost
+                    total_match_price = item_price + shipping_cost
 
-                if total_price < min_price:
-                    min_price = total_price
-                    best_offer = offer
-        except (AttributeError, KeyError, TypeError, IndexError) as e:
-            logger.error(f"Malformed offer found for ASIN {product.get('asin')}: {offer}. Error: {e}")
-            continue
+                    # Save this as a candidate.
+                    # If we find multiple matches, maybe pick the freshest?
+                    # For now, first valid match is good enough.
+                    return total_match_price, offer.get('sellerId'), is_fba_offer, offer_cond
 
-    if best_offer:
-        price_now = min_price
-        seller_id = best_offer.get('sellerId')
-        is_fba = best_offer.get('isFBA', False)
+            except (AttributeError, KeyError, TypeError, IndexError):
+                continue
 
-        condition_val = best_offer.get('condition')
-        condition_code = condition_val.get('value') if isinstance(condition_val, dict) else condition_val
+    # --- Step 3: No Match Found - Return Stats Price (Unknown Seller) ---
+    # We must add default shipping since stats.current is just Item Price
+    # Assumption: If we don't know the seller, we assume MFN + Default Shipping to be safe/conservative cost-wise.
+    final_price = target_price + default_shipping
 
-        return price_now, seller_id, is_fba, condition_code
+    # Log the fallback for debugging
+    # logger.info(f"ASIN {product.get('asin')}: Using Stats price {target_price} + Def.Ship {default_shipping}. No offer match found.")
 
-    # Fallback: Check 'stats.current' if no valid offer was found in 'offers' array
-    # This handles cases where 'offers' is stale/empty but 'stats' has a fresh price.
-    try:
-        stats = product.get('stats', {})
-        current = stats.get('current', [])
-
-        fallback_price = None
-        condition = 4 # Default to Used - Good
-
-        # 1. Try Used Price (Index 2)
-        if len(current) > 2 and current[2] > 0:
-            fallback_price = current[2]
-
-        # 2. If Used Price is missing/invalid, check New Price (Index 1)
-        # but only if competitive (User prefers Used First strategy)
-        if (fallback_price is None or fallback_price <= 0) and len(current) > 1 and current[1] > 0:
-            new_price = current[1]
-            logger.info(f"ASIN {product.get('asin')}: Used price missing in stats. Checking New price: {new_price}")
-            # Implicitly acceptable since we found no Used option
-            fallback_price = new_price
-            condition = 0 # New, unopened
-
-        if fallback_price and fallback_price > 0:
-            logger.info(f"ASIN {product.get('asin')}: Using stats fallback price: {fallback_price} (Condition: {condition})")
-            # Return placeholders for unknown metadata
-            # Seller ID "Unknown" prevents lookup failure but displays clearly
-            return fallback_price, "Unknown", False, condition
-
-    except Exception as e:
-        logger.warning(f"ASIN {product.get('asin')}: Stats fallback check failed: {e}")
-
-    return None, None, None, None
+    return final_price, "Unknown", False, condition_code

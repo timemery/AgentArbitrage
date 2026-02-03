@@ -1,0 +1,263 @@
+INFO:keepa_deals.keepa_api:Fetching batch of 1 ASINs: 013335587X...
+INFO:keepa_deals.keepa_api:Batch API call successful. Tokens consumed: 6. Tokens left: 230
+Fetching full data for: 013335587X
+
+--- Stats.Current ---
+Used Price (Index 2): 2671 cents (26.71)
+
+--- Offers (Used - Good/VeryGood/LikeNew) ---
+Seller: A26J4EGYVYR3QM | Cond: 5
+  Time: 2026-02-03 22:06:00 | Price: 2671 | Ship: 463 | Total: 3134
+  >>> MATCH FOUND on Price Component! Stats(2671) == OfferPrice(2671)
+Seller: A27EK23NIPUXRO | Cond: 4
+  Time: 2026-02-03 19:28:00 | Price: 2737 | Ship: 398 | Total: 3135
+Seller: A2HQNOTMFBGUMP | Cond: 4
+  Time: 2026-02-03 19:28:00 | Price: 2737 | Ship: 399 | Total: 3136
+Seller: A3B0WB55WEPZWW | Cond: 4
+  Time: 2026-02-02 22:36:00 | Price: 4756 | Ship: 0 | Total: 4756
+Seller: A1E3Q3IXSLVMLQ | Cond: 5
+  Time: 2026-02-03 19:28:00 | Price: 4757 | Ship: 0 | Total: 4757
+Seller: A38GRXZ51AOG5P | Cond: 4
+  Time: 2026-01-19 14:26:00 | Price: 5159 | Ship: 0 | Total: 5159
+Seller: A72O0IQ0YG425 | Cond: 4
+  Time: 2026-01-18 13:24:00 | Price: 5160 | Ship: 0 | Total: 5160
+Seller: A3VKZMFCLLJQVF | Cond: 4
+  Time: 2026-01-18 00:24:00 | Price: 5165 | Ship: 0 | Total: 5165
+Seller: AUZJSQR6VRGEU | Cond: 4
+  Time: 2025-06-12 15:28:00 | Price: 5250 | Ship: 0 | Total: 5250
+Seller: A1OVE6SOYPPH9T | Cond: 4
+  Time: 2026-02-03 22:06:00 | Price: 7812 | Ship: 0 | Total: 7812
+Seller: A2O7EMZ4FQPVA | Cond: 5
+  Time: 2026-02-03 19:28:00 | Price: 13136 | Ship: 399 | Total: 13535
+Seller: A12OBG8132X2Y0 | Cond: 4
+  Time: 2026-02-03 05:38:00 | Price: 17384 | Ship: 0 | Total: 17384
+Seller: ANREF9LRCQO2O | Cond: 4
+  Time: 2025-04-08 04:24:00 | Price: 1989 | Ship: 410 | Total: 2399
+Seller: A2GZF0C7U9J61X | Cond: 4
+  Time: 2025-08-14 12:46:00 | Price: 3495 | Ship: 0 | Total: 3495
+Seller: AC0KB4UXN2Z79 | Cond: 3
+  Time: 2025-08-21 14:00:00 | Price: 5600 | Ship: 0 | Total: 5600
+Seller: A2H6NH4SQYFZ4M | Cond: 4
+  Time: 2025-07-09 19:04:00 | Price: 2920 | Ship: 399 | Total: 3319
+Seller: A3EQQ3S325EM9R | Cond: 4
+  Time: 2026-01-06 16:54:00 | Price: 5195 | Ship: 0 | Total: 5195
+Seller: AH0JQD8MHZSFB | Cond: 4
+  Time: 2025-04-09 07:48:00 | Price: 3995 | Ship: 0 | Total: 3995
+Seller: A1YF2PESGKL3NT | Cond: 5
+  Time: 2025-10-12 13:48:00 | Price: 3742 | Ship: 399 | Total: 4141
+Seller: A2H6NH4SQYFZ4M | Cond: 2
+  Time: 2025-10-11 01:40:00 | Price: 20130 | Ship: 399 | Total: 20529
+Seller: ANV7MFI5RGXMD | Cond: 2
+  Time: 2025-11-13 21:44:00 | Price: 2600 | Ship: 0 | Total: 2600
+Seller: A365C2XG0O7B0H | Cond: 5
+  Time: 2025-03-16 02:28:00 | Price: 2808 | Ship: 0 | Total: 2808
+Seller: A2CZGVOSNOEU5Z | Cond: 4
+  Time: 2026-01-04 13:52:00 | Price: 2742 | Ship: 0 | Total: 2742
+Seller: A17SEJLC54RD69 | Cond: 4
+  Time: 2025-08-28 15:04:00 | Price: 4199 | Ship: 0 | Total: 4199
+Seller: A8WQK441N0GV4 | Cond: 4
+  Time: 2025-07-17 17:04:00 | Price: 3711 | Ship: 0 | Total: 3711
+Seller: ANV7MFI5RGXMD | Cond: 2
+  Time: 2025-11-03 23:22:00 | Price: 2600 | Ship: 399 | Total: 2999
+Seller: A1FBYQ3JNALHOB | Cond: 4
+  Time: 2025-02-06 17:32:00 | Price: 4399 | Ship: 0 | Total: 4399
+Seller: A1N6N293DE946C | Cond: 4
+  Time: 2025-06-23 09:00:00 | Price: 4493 | Ship: 0 | Total: 4493
+Seller: A1ZMSWN8P7M5C4 | Cond: 5
+  Time: 2025-12-16 14:46:00 | Price: 2207 | Ship: 0 | Total: 2207
+Seller: A2QVWT0ESGUXPH | Cond: 4
+  Time: 2025-08-15 12:32:00 | Price: 2408 | Ship: 0 | Total: 2408
+Seller: A27EK23NIPUXRO | Cond: 5
+  Time: 2025-05-08 19:30:00 | Price: 1482 | Ship: 398 | Total: 1880
+Seller: AQ4EZE4TLG2D9 | Cond: 4
+  Time: 2025-04-19 21:48:00 | Price: 5135 | Ship: 0 | Total: 5135
+Seller: A3FQQNEXOORA7W | Cond: 5
+  Time: 2025-08-10 22:48:00 | Price: 1795 | Ship: 695 | Total: 2490
+Seller: AFJSFHKSHU1G7 | Cond: 5
+  Time: 2025-11-26 20:04:00 | Price: 1711 | Ship: 0 | Total: 1711
+Seller: A3GZHL2PUM5SR9 | Cond: 4
+  Time: 2025-08-07 23:44:00 | Price: 3750 | Ship: 0 | Total: 3750
+Seller: A38TY4IEMCJ5IH | Cond: 4
+  Time: 2025-07-10 23:00:00 | Price: 4189 | Ship: 0 | Total: 4189
+Seller: A1JKVWH22E85VP | Cond: 4
+  Time: 2025-10-05 21:16:00 | Price: 8500 | Ship: 399 | Total: 8899
+Seller: AJW4XZAMSF7LA | Cond: 3
+  Time: 2025-08-12 03:08:00 | Price: 5999 | Ship: 0 | Total: 5999
+Seller: AED0QB6PPI0Z | Cond: 4
+  Time: 2025-12-09 15:22:00 | Price: 2252 | Ship: 0 | Total: 2252
+Seller: A1YMD2OOQMUGZP | Cond: 5
+  Time: 2025-08-04 14:40:00 | Price: 3485 | Ship: 0 | Total: 3485
+Seller: A3FF2IEBLWONBI | Cond: 5
+  Time: 2025-03-17 16:16:00 | Price: 2770 | Ship: 0 | Total: 2770
+Seller: A23JQ9YN78PR2T | Cond: 5
+  Time: 2025-08-23 16:06:00 | Price: 6000 | Ship: 0 | Total: 6000
+Seller: AL2VRA0C3JC8U | Cond: 5
+  Time: 2025-06-10 16:16:00 | Price: 1995 | Ship: 464 | Total: 2459
+Seller: AS5N39BUWBSDR | Cond: 5
+  Time: 2025-06-11 21:24:00 | Price: 2459 | Ship: 0 | Total: 2459
+Seller: A3JN30BF78JYAL | Cond: 3
+  Time: 2025-02-14 04:48:00 | Price: 4900 | Ship: 0 | Total: 4900
+Seller: A17ODOXDEBDO4D | Cond: 5
+  Time: 2025-09-02 21:52:00 | Price: 5300 | Ship: 399 | Total: 5699
+Seller: AH0JQD8MHZSFB | Cond: 5
+  Time: 2025-07-24 03:12:00 | Price: 3495 | Ship: 0 | Total: 3495
+Seller: A36CJVMV49GMKC | Cond: 4
+  Time: 2025-07-13 06:12:00 | Price: 3844 | Ship: 0 | Total: 3844
+Seller: AL7B2GAXLW1X4 | Cond: 4
+  Time: 2025-04-10 08:04:00 | Price: 2259 | Ship: 0 | Total: 2259
+Seller: AJVRJJ9RFZDME | Cond: 4
+  Time: 2025-06-09 20:58:00 | Price: 1962 | Ship: 399 | Total: 2361
+Seller: A9Y1QYAQEP32C | Cond: 4
+  Time: 2025-08-16 23:34:00 | Price: 3700 | Ship: 0 | Total: 3700
+Seller: A1GCEX854K9Z7X | Cond: 5
+  Time: 2021-05-01 01:48:00 | Price: 6969 | Ship: 0 | Total: 6969
+Seller: A1E3Q3IXSLVMLQ | Cond: 4
+  Time: 2025-12-23 13:58:00 | Price: 3162 | Ship: 0 | Total: 3162
+Seller: A27EK23NIPUXRO | Cond: 3
+  Time: 2025-11-09 18:26:00 | Price: 2028 | Ship: 398 | Total: 2426
+Seller: A2ZNEJOMGMUT9V | Cond: 4
+  Time: 2025-02-13 23:48:00 | Price: 4500 | Ship: 0 | Total: 4500
+Seller: A3CBWZATBVC0S4 | Cond: 4
+  Time: 2025-11-06 22:50:00 | Price: 5200 | Ship: 0 | Total: 5200
+Seller: AKLNCVN11IEYP | Cond: 4
+  Time: 2025-11-25 15:36:00 | Price: 1331 | Ship: 399 | Total: 1730
+Seller: A1PHOWENHYGGRQ | Cond: 4
+  Time: 2025-08-20 20:14:00 | Price: 3749 | Ship: 0 | Total: 3749
+Seller: A1KU5VMU83Q22A | Cond: 4
+  Time: 2025-10-17 11:36:00 | Price: 6723 | Ship: 0 | Total: 6723
+Seller: A19STHRQVFXE98 | Cond: 4
+  Time: 2025-03-30 16:30:00 | Price: 2365 | Ship: 0 | Total: 2365
+Seller: A1OT198W5YVKKM | Cond: 5
+  Time: 2025-05-08 15:12:00 | Price: 1483 | Ship: 399 | Total: 1882
+Seller: A263RIO308P3G8 | Cond: 4
+  Time: 2025-04-20 04:44:00 | Price: 1667 | Ship: 449 | Total: 2116
+Seller: A1QJ4UH6FW3UH1 | Cond: 5
+  Time: 2025-05-08 02:48:00 | Price: 1882 | Ship: 0 | Total: 1882
+Seller: A1ZMSWN8P7M5C4 | Cond: 4
+  Time: 2025-03-30 16:30:00 | Price: 2365 | Ship: 0 | Total: 2365
+Seller: A1KU5VMU83Q22A | Cond: 2
+  Time: 2025-05-23 22:16:00 | Price: 2293 | Ship: 0 | Total: 2293
+Seller: A1QJ4UH6FW3UH1 | Cond: 4
+  Time: 2025-11-25 15:36:00 | Price: 1729 | Ship: 0 | Total: 1729
+Seller: A34BMBVKYMFPWL | Cond: 5
+  Time: 2025-06-02 16:24:00 | Price: 2494 | Ship: 399 | Total: 2893
+Seller: ADY3PHPN2NZS0 | Cond: 3
+  Time: 2025-06-30 21:20:00 | Price: 5500 | Ship: 0 | Total: 5500
+Seller: A1OVE6SOYPPH9T | Cond: 4
+  Time: 2025-11-11 17:16:00 | Price: 2398 | Ship: 0 | Total: 2398
+Seller: A38Z42U3MYEGZQ | Cond: 2
+  Time: 2025-11-13 09:56:00 | Price: 12502 | Ship: 0 | Total: 12502
+Seller: A263RIO308P3G8 | Cond: 5
+  Time: 2025-08-19 15:40:00 | Price: 2444 | Ship: 449 | Total: 2893
+Seller: A2A6UJBU2SRBU3 | Cond: 4
+  Time: 2025-07-08 09:56:00 | Price: 3800 | Ship: 399 | Total: 4199
+Seller: A196XAV6ZKOZNP | Cond: 3
+  Time: 2025-12-15 11:18:00 | Price: 5200 | Ship: 0 | Total: 5200
+Seller: A2H6NH4SQYFZ4M | Cond: 3
+  Time: 2026-01-01 15:02:00 | Price: 7920 | Ship: 399 | Total: 8319
+Seller: A1WF3VMX4SHZZ5 | Cond: 2
+  Time: 2025-12-16 19:26:00 | Price: 3228 | Ship: 0 | Total: 3228
+Seller: A1MGU1GJG9UVEF | Cond: 4
+  Time: 2025-04-29 23:52:00 | Price: 5800 | Ship: 0 | Total: 5800
+Seller: A1LR3KCF2EGP0V | Cond: 4
+  Time: 2025-12-04 10:48:00 | Price: 5149 | Ship: 0 | Total: 5149
+Seller: A2A6UJBU2SRBU3 | Cond: 4
+  Time: 2025-08-14 23:10:00 | Price: 2699 | Ship: 0 | Total: 2699
+Seller: A22BP3AVP6XYFE | Cond: 4
+  Time: 2025-03-04 20:08:00 | Price: 2800 | Ship: 399 | Total: 3199
+Seller: AE1I6GWQDIJNL | Cond: 4
+  Time: 2025-02-14 04:48:00 | Price: 4500 | Ship: 0 | Total: 4500
+Seller: A1USDSNAWSP25C | Cond: 4
+  Time: 2025-07-09 19:04:00 | Price: 1094 | Ship: 399 | Total: 1493
+Seller: A1HI3XZUT2C6TO | Cond: 4
+  Time: 2025-02-05 23:24:00 | Price: 4104 | Ship: 0 | Total: 4104
+Seller: AJYLR0RXWWCF3 | Cond: 5
+  Time: 2025-08-24 23:42:00 | Price: 1465 | Ship: 530 | Total: 1995
+Seller: A1VOGLP69DZ9OF | Cond: 4
+  Time: 2025-03-28 19:36:00 | Price: 2400 | Ship: 0 | Total: 2400
+Seller: A14OXRT9ALKB8Z | Cond: 4
+  Time: 2025-02-11 09:48:00 | Price: 3329 | Ship: 399 | Total: 3728
+Seller: A2O8L22ZUA6BA2 | Cond: 3
+  Time: 2025-08-08 13:50:00 | Price: 3775 | Ship: 0 | Total: 3775
+Seller: A1EYO3JPR2I6C0 | Cond: 4
+  Time: 2025-02-08 23:02:00 | Price: 4900 | Ship: 0 | Total: 4900
+Seller: A14MPLZZF570E5 | Cond: 3
+  Time: 2025-05-01 12:36:00 | Price: 3603 | Ship: 399 | Total: 4002
+Seller: A2L77EE7U53NWQ | Cond: 2
+  Time: 2025-03-13 14:10:00 | Price: 5391 | Ship: 0 | Total: 5391
+Seller: A2QVWT0ESGUXPH | Cond: 5
+  Time: 2025-11-03 07:34:00 | Price: 3073 | Ship: 0 | Total: 3073
+Seller: A1K0EQV56H4PM3 | Cond: 4
+  Time: 2025-02-21 05:40:00 | Price: 5025 | Ship: 0 | Total: 5025
+Seller: AKGKQA81PEM1M | Cond: 3
+  Time: 2025-12-19 18:14:00 | Price: 5908 | Ship: 425 | Total: 6333
+Seller: A365C2XG0O7B0H | Cond: 4
+  Time: 2025-04-18 10:00:00 | Price: 2144 | Ship: 0 | Total: 2144
+Seller: A38LNDFCYTLX6G | Cond: 4
+  Time: 2025-08-09 03:38:00 | Price: 3972 | Ship: 0 | Total: 3972
+Seller: AFJSFHKSHU1G7 | Cond: 4
+  Time: 2025-04-03 11:20:00 | Price: 2299 | Ship: 0 | Total: 2299
+Seller: A3PHEANIQLJLFR | Cond: 4
+  Time: 2025-08-06 22:04:00 | Price: 3799 | Ship: 0 | Total: 3799
+Seller: A32UWF11CYXVV6 | Cond: 4
+  Time: 2025-12-31 14:20:00 | Price: 2374 | Ship: 399 | Total: 2773
+Seller: AUKWG54A9NE15 | Cond: 4
+  Time: 2025-08-08 18:32:00 | Price: 7769 | Ship: 0 | Total: 7769
+Seller: A2EDZL75U2QDXW | Cond: 5
+  Time: 2024-09-08 15:56:00 | Price: 1499 | Ship: 399 | Total: 1898
+Seller: AXXJIIN6V31P8 | Cond: 4
+  Time: 2026-01-08 00:28:00 | Price: 5354 | Ship: 0 | Total: 5354
+Seller: AHNEEZ9CVAP3Q | Cond: 4
+  Time: 2025-06-01 02:44:00 | Price: 8621 | Ship: 399 | Total: 9020
+Seller: A26Z7S8U7BYZ7R | Cond: 4
+  Time: 2025-09-15 13:46:00 | Price: 5239 | Ship: 0 | Total: 5239
+Seller: ARPY8MQ56F2J | Cond: 4
+  Time: 2026-01-27 00:22:00 | Price: 4516 | Ship: 0 | Total: 4516
+Seller: A1PVUFJQTWANX4 | Cond: 4
+  Time: 2025-10-08 18:48:00 | Price: 4145 | Ship: 0 | Total: 4145
+Seller: A19ZA5P10HX48B | Cond: 5
+  Time: 2025-05-31 01:32:00 | Price: 2495 | Ship: 399 | Total: 2894
+Seller: AAUBJ67OMMFSP | Cond: 5
+  Time: 2025-04-03 11:20:00 | Price: 1900 | Ship: 398 | Total: 2298
+Seller: A3ADN03F2ABAVW | Cond: 4
+  Time: 2025-01-15 06:32:00 | Price: 8500 | Ship: 399 | Total: 8899
+Seller: A1FN97TIA51BN1 | Cond: 4
+  Time: 2025-10-28 02:04:00 | Price: 5405 | Ship: 0 | Total: 5405
+Seller: A3RP5TVA288GDJ | Cond: 3
+  Time: 2025-09-16 06:54:00 | Price: 6092 | Ship: 0 | Total: 6092
+Seller: ARPY8MQ56F2J | Cond: 3
+  Time: 2026-01-01 04:42:00 | Price: 2774 | Ship: 0 | Total: 2774
+Seller: AFJSFHKSHU1G7 | Cond: 3
+  Time: 2025-11-17 01:00:00 | Price: 1932 | Ship: 0 | Total: 1932
+Seller: A3HJDJ4JSJ78BW | Cond: 4
+  Time: 2025-09-28 21:28:00 | Price: 5207 | Ship: 0 | Total: 5207
+Seller: A2QVWT0ESGUXPH | Cond: 3
+  Time: 2025-08-04 14:40:00 | Price: 2256 | Ship: 0 | Total: 2256
+Seller: A3LZ11L01JDMH8 | Cond: 5
+  Time: 2026-01-05 14:26:00 | Price: 2065 | Ship: 399 | Total: 2464
+Seller: A1DQP54F5O7EM0 | Cond: 4
+  Time: 2025-08-14 17:20:00 | Price: 3495 | Ship: 0 | Total: 3495
+Seller: A17OI7X29PUF19 | Cond: 4
+  Time: 2026-01-06 02:58:00 | Price: 5195 | Ship: 0 | Total: 5195
+Seller: A18X7XOPPOZVLQ | Cond: 3
+  Time: 2025-11-24 16:48:00 | Price: 1338 | Ship: 399 | Total: 1737
+Seller: A1YF2PESGKL3NT | Cond: 4
+  Time: 2025-11-25 15:36:00 | Price: 1330 | Ship: 399 | Total: 1729
+Seller: A1U7GAXNN78DLE | Cond: 4
+  Time: 2026-01-04 19:34:00 | Price: 2740 | Ship: 0 | Total: 2740
+Seller: A1UGPK7B395H7C | Cond: 5
+  Time: 2025-08-04 18:44:00 | Price: 1700 | Ship: 499 | Total: 2199
+Seller: A3IHWHW38Z0N1B | Cond: 4
+  Time: 2025-07-22 11:04:00 | Price: 8500 | Ship: 399 | Total: 8899
+Seller: A26J4EGYVYR3QM | Cond: 4
+  Time: 2025-10-18 05:58:00 | Price: 4716 | Ship: 463 | Total: 5179
+Seller: A1BVRQ57RIZZGD | Cond: 4
+  Time: 2025-07-16 06:34:00 | Price: 6500 | Ship: 0 | Total: 6500
+Seller: A1L5ZKRZ8VS139 | Cond: 5
+  Time: 2025-06-11 15:12:00 | Price: 2459 | Ship: 0 | Total: 2459
+Seller: AE4VY3SCUNM8N | Cond: 4
+  Time: 2025-06-01 02:44:00 | Price: 5798 | Ship: 0 | Total: 5798
+Seller: A2PLL13PH1FP5Z | Cond: 4
+  Time: 2025-08-22 00:24:00 | Price: 1494 | Ship: 399 | Total: 1893
+Seller: ARPY8MQ56F2J | Cond: 5
+  Time: 2025-12-25 00:30:00 | Price: 2204 | Ship: 0 | Total: 2204
