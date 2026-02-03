@@ -47,7 +47,8 @@ There are four primary background tasks that manage the data lifecycle.
     2.  Iterates through Keepa's result pages (Chunked processing).
     3.  **Constraints:**
         *   **Chunk Size:** Hardcoded to **20** (`DEALS_PER_CHUNK`). Increasing this causes token starvation (bucket empties faster than refill) and must not be changed.
-        *   **Locking:** Protected by a Redis Lock (`backfill_deals_lock`) with a **10-day timeout**. This prevents concurrent backfills (which would crash the token manager) while ensuring the lock persists through long-running jobs.
+        *   **Locking:** Protected by a Redis Lock (`backfill_deals_lock`) with a **10-day timeout**. This prevents concurrent backfills while ensuring the lock persists through long-running jobs.
+        *   **Concurrency:** The Backfill task runs **concurrently** with the `update_recent_deals` (Upserter) task. The Upserter explicitly ignores the backfill lock, allowing freshness updates to proceed even during heavy historical indexing.
     4.  **Resiliency:** Persists its progress (page number) to the `system_state` table. If the server crashes, it resumes from the last checkpoint.
     5.  **Watermark Initialization:** When processing **Page 0**, it explicitly updates the `watermark_iso` to the timestamp of the newest deal found. This ensures the Upserter knows where to pick up once the Backfill is complete.
     6.  **Optimized Fetching:** Fetches seller details *only* for the specific seller winning the Buy Box/Lowest Used price to save tokens.
@@ -118,10 +119,12 @@ We do not rely on local files (JSON) for state tracking, as they can be lost dur
 The background processes are orchestrated to be resilient:
 *   **Worker:** Executes the tasks. Configured with `--concurrency=4` to ensure short tasks (like Janitor or Restriction Checks) are not blocked by long-running Backfills.
 *   **Beat:** The scheduler that triggers `update_recent_deals` and `clean_stale_deals`.
+*   **Zombie Locks:** The `kill_everything_force.sh` script invokes `Diagnostics/kill_redis_safely.py` to perform a "Brain Wipe" (FLUSHALL + SAVE) on Redis during restarts. This prevents stale locks from persisting and causing "Task already running" errors.
 *   **Logs:** `celery_worker.log` and `celery_beat.log` are the primary sources for debugging background failures.
 
 ### Token Management ("Controlled Deficit")
 *   **Strategy:** The system allows the Keepa token balance to dip into the negative (using the bucket allowance) to maximize throughput.
+*   **Architecture:** **Distributed Token Bucket (Redis-backed)**. Uses a shared Redis key to coordinate token usage across multiple concurrent workers.
 *   **Logic:** If tokens > `MIN_TOKEN_THRESHOLD` (50), requests are allowed even if they cause a deficit. If tokens drop below 50, the system pauses until they refill to 55. This avoids long "refill to max" pauses.
 *   **Implementation:** `keepa_deals/token_manager.py`.
 

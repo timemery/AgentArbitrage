@@ -181,6 +181,7 @@ The action bar adapts based on the user's restriction status:
     -   **Trend Indicators:** SVG assets (e.g., `Trend_Up.svg`).
     -   **Warning Icon:** SVG asset (`AMZ_Warn.svg`).
     -   **Icons:** SVGs must have `viewBox` cropped to the bounding box (0 internal padding) and be sized to `20px` height.
+    -   **Truncated Text:** Elements with `.truncated` class (e.g., Title, Binding) do **not** use the `cursor: help` property to avoid user confusion (as they are not clickable help elements).
 -   **Header:**
     -   `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.
     -   **Header Height:** The main header container (`.main-header`) has a strictly fixed height of `134px`.
