@@ -132,16 +132,16 @@ class TokenManager:
 
                 remaining_wait = wait_time_seconds
 
-                while remaining_wait > 0:
+                while True:
                     # Sleep for 30s or the remaining time, whichever is smaller
-                    sleep_chunk = min(remaining_wait, 30)
+                    # Ensure we sleep at least 1 second to prevent tight loops
+                    sleep_chunk = max(1, min(remaining_wait, 30))
                     time.sleep(sleep_chunk)
 
                     # Update local estimate (linear refill fallback)
                     self._refill_tokens()
 
                     # Force sync every chunk (30s) to be authoritative.
-                    # This call is free (0 tokens) and fixes the "Out of Sync" user perception.
                     self.sync_tokens()
 
                     # Check if we have recovered enough to proceed early
@@ -152,15 +152,17 @@ class TokenManager:
 
                     # Re-calculate needed wait time based on NEW authoritative token count
                     tokens_needed = recovery_target - self.tokens
+
+                    # If we somehow have enough now, break
                     if tokens_needed <= 0:
                         break
 
                     new_wait_total = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
 
-                    # We have already slept 'sleep_chunk'. The 'new_wait_total' is the estimated time FROM NOW
-                    # required to reach the recovery target, based on the *current* rate and token count.
-                    # We update 'remaining_wait' to this new authoritative estimate.
-                    # This handles both rate increases (shortening wait) and rate decreases (extending wait).
+                    # Safety check: If waiting doesn't seem to help (e.g. rate 0), break loop or warn
+                    if new_wait_total > 3600: # Waiting > 1 hour
+                        logger.error("Wait time is excessive (>1h). Something is wrong with rate or token count.")
+
                     if new_wait_total != remaining_wait:
                          logger.info(f"Wait time updated: Tokens={self.tokens:.2f}/{recovery_target}, Rate={self.REFILL_RATE_PER_MINUTE}, New Wait={new_wait_total}s (was {remaining_wait}s)")
                     else:
@@ -181,7 +183,8 @@ class TokenManager:
         and updates the internal state.
         """
         from .keepa_api import get_token_status
-        logger.info("Performing authoritative token sync with Keepa API...")
+        # logger.info("Performing authoritative token sync with Keepa API...")
+        # Reduced log noise for sync calls inside wait loops
         status_data = get_token_status(self.api_key)
         if status_data and 'tokensLeft' in status_data:
             refill_rate = status_data.get('refillRate')
@@ -207,10 +210,10 @@ class TokenManager:
             except (ValueError, TypeError):
                 logger.warning(f"Invalid refill rate received from API: {refill_rate}")
 
-        logger.info(
-            f"Token count authoritatively synced from API response. "
-            f"Previous estimate: {old_token_count:.2f}, New value: {self.tokens:.2f}"
-        )
+        # logger.info(
+        #    f"Token count authoritatively synced from API response. "
+        #    f"Previous estimate: {old_token_count:.2f}, New value: {self.tokens:.2f}"
+        # )
 
     def update_after_call(self, tokens_left_from_api):
         """

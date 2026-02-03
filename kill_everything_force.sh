@@ -1,5 +1,5 @@
 #!/bin/bash
-# Updated Jan 31 2026: Added PID and Lock cleanup
+# Updated Feb 3 2026: Fixed order of operations to ensure Redis locks are cleared BEFORE killing Redis
 echo "--- Starting Forceful Shutdown ---"
 
 # Step 1: Forcefully kill the monitor process
@@ -21,14 +21,16 @@ else
     echo "All Celery processes terminated successfully."
 fi
 
-# Step 3: Kill any process listening on the Redis port (6379)
-echo "[3/7] Terminating Redis server process..."
+# Step 3: Clear ALL Redis locks to prevent stale lock issues (MUST be done before killing Redis)
+echo "[3/7] Clearing stale Redis locks (Backfiller and Upserter)..."
+# We attempt to clear locks. If Redis is already dead/unresponsive, this fails,
+# but we will nuke the persistence file in Step 4.5 to be sure.
+redis-cli DEL backfill_deals_lock update_recent_deals_lock || echo "Redis command failed (Redis might be down). Proceeding to nuke persistence."
+
+# Step 4: Kill any process listening on the Redis port (6379)
+echo "[4/7] Terminating Redis server process..."
 sudo fuser -k 6379/tcp || echo "Redis was not running or could not be killed."
 sleep 1
-
-# Step 4: Clear ALL Redis locks to prevent stale lock issues
-echo "[4/7] Clearing stale Redis locks (Backfiller and Upserter)..."
-redis-cli DEL backfill_deals_lock update_recent_deals_lock || echo "Could not clear Redis locks (Redis may not be running)."
 
 # Step 5: Delete the Celery Beat schedule file AND PID file
 echo "[5/7] Deleting Celery Beat schedule and PID files..."
