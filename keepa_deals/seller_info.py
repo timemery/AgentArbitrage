@@ -121,7 +121,21 @@ def get_used_product_info(product):
                     continue
 
                 price = offer_csv[-2]
-                shipping_cost = offer_csv[-1] if offer_csv[-1] != -1 else 0
+                shipping_raw = offer_csv[-1]
+
+                # Check for FBA
+                is_fba_offer = offer.get('isFBA', False)
+
+                if shipping_raw == -1:
+                    if is_fba_offer:
+                        shipping_cost = 0 # FBA typically implies free shipping for Prime/threshold
+                    else:
+                        # Unknown shipping for MFN is risky (could be international/high)
+                        # Skip this offer to prevent "Ghost Deals"
+                        continue
+                else:
+                    shipping_cost = shipping_raw
+
                 total_price = price + shipping_cost
 
                 if total_price < min_price:
