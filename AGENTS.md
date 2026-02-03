@@ -147,3 +147,8 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 ### Keepa Query Standards
 - **Date Range:** `dateRange: 4` (All Combined) is permissible and recommended to capture the maximum 3-year history for AI analysis.
 - **Sorting:** When using `dateRange: 4`, you MUST enforce `sortType: 4` (Last Update) to ensure the API returns fresh data and not stale deals from 2015.
+
+### Critical Fixes & Stability (Feb 2026)
+- **Token Starvation & Zombie Locks:** The system uses a **Shared Redis Token Bucket** (`keepa_deals/token_manager.py`) to coordinate API usage. To prevent locks from persisting after a crash, the kill script (`kill_everything_force.sh`) now performs a "Brain Wipe" (FLUSHALL + SAVE) on Redis. **Do not remove this cleanup logic.**
+- **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not attempt to "guess" shipping costs for MFN sellers.
+- **Seller Name Preservation:** To save tokens, the system performs "Lightweight Updates" that lack seller names. It uses the `Seller ID` to preserve the existing human-readable name. If you modify `processing.py`, ensure this logic remains intact to avoid overwriting names with raw IDs.

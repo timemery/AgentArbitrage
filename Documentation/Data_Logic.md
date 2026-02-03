@@ -18,6 +18,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 2.  **Seller & Price Analysis**:
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
     *   **Selection:** It finds the "Used" offer (Conditions: Like New, Very Good, Good, Acceptable) with the **lowest total price** (Price + Shipping).
+    *   **Ghost Deal Prevention:** Strictly **rejects** Merchant Fulfilled (MFN) offers where the shipping cost is Unknown (`-1`), as these often mask high actual costs. FBA offers with unknown shipping default to $0.
     *   **Exclusion:** If no valid "Used" offer is found, the deal is dropped.
     *   **Optimization:** Fetches seller details **only** for this single winning seller ID to minimize API calls.
     *   **Output:** `Price Now`, `Seller`, `Seller ID`, `Seller_Quality_Score`.
@@ -75,6 +76,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Seller`**:
     -   **Source**: `keepa_deals/processing.py` (via `seller_info`).
     -   **Logic**: The `sellerName` of the winning offer. Falls back to `sellerId` if name is missing.
+    -   **Smart Preservation:** During lightweight updates (where name is unavailable), the system checks the winning `sellerId`. If it matches the existing record's `Seller ID`, the existing human-readable name is **preserved**. If IDs differ, the field is updated to the new ID.
 
 -   **`Seller_Quality_Score` (Trust)**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
