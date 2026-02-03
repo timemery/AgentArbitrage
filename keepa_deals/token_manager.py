@@ -1,190 +1,223 @@
 import time
 import math
 import logging
+import os
+import redis
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
 class TokenManager:
     """
-    Manages Keepa API tokens, rate limiting, and refills.
+    Manages Keepa API tokens, rate limiting, and refills using Redis for shared state.
+    Uses Atomic Reservation (Check-Then-Act mitigation) to prevent race conditions.
     """
+    REDIS_KEY_TOKENS = "keepa_tokens_left"
+    REDIS_KEY_RATE = "keepa_refill_rate"
+
     def __init__(self, api_key):
         self.api_key = api_key
 
         # Constants
-        self.REFILL_RATE_PER_MINUTE = 5
+        self.REFILL_RATE_PER_MINUTE = 5.0 # Default, will be updated from Redis/API
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
-        self.MIN_TOKEN_THRESHOLD = 50 # New aggressive threshold
+        self.MIN_TOKEN_THRESHOLD = 50
 
         # State variables
-        self.tokens = 100 # Start with a reasonable guess, will be corrected on first response
+        self.tokens = 100 # Local cache/fallback
         self.max_tokens = 300
         self.last_api_call_timestamp = time.time() - self.MIN_TIME_BETWEEN_CALLS_SECONDS
         self.last_refill_timestamp = time.time()
 
-        logger.info("TokenManager initialized without a blocking API call.")
+        # Redis Setup
+        redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')
+        try:
+            self.redis_client = redis.Redis.from_url(redis_url, decode_responses=True)
+            # Verify connection
+            self.redis_client.ping()
+        except Exception as e:
+            logger.error(f"Failed to connect to Redis: {e}. Falling back to local token management.")
+            self.redis_client = None
 
-    def _refill_tokens(self):
-        """
-        Calculates and adds tokens that have been refilled since the last check.
-        """
-        now = time.time()
-        seconds_elapsed = now - self.last_refill_timestamp
+        logger.info("TokenManager initialized with Redis shared state.")
+        # Try to load initial state from Redis
+        self._load_state_from_redis()
 
-        if seconds_elapsed > 0:
-            refill_amount = (seconds_elapsed / 60) * self.REFILL_RATE_PER_MINUTE
+    def _get_shared_tokens(self):
+        if not self.redis_client:
+            return None
+        try:
+            val = self.redis_client.get(self.REDIS_KEY_TOKENS)
+            return float(val) if val is not None else None
+        except Exception as e:
+            logger.error(f"Redis get error: {e}")
+            return None
 
-            if refill_amount > 0:
-                self.tokens = min(self.max_tokens, self.tokens + refill_amount)
-                self.last_refill_timestamp = now
-                logger.debug(f"Refilled {refill_amount:.2f} tokens. Current tokens: {self.tokens:.2f}")
+    def _set_shared_tokens(self, tokens, rate=None):
+        if not self.redis_client:
+            return
+        try:
+            self.redis_client.set(self.REDIS_KEY_TOKENS, str(tokens))
+            if rate:
+                self.redis_client.set(self.REDIS_KEY_RATE, str(rate))
+        except Exception as e:
+            logger.error(f"Redis set error: {e}")
 
-    def has_enough_tokens(self, estimated_cost):
-        """
-        Checks if there are enough tokens for a call without waiting.
-        Also triggers a refill check.
-        """
-        self._refill_tokens()
-        return self.tokens >= estimated_cost
+    def _load_state_from_redis(self):
+        if not self.redis_client:
+            return
+        try:
+            tokens = self._get_shared_tokens()
+            if tokens is not None:
+                self.tokens = tokens
+
+            rate = self.redis_client.get(self.REDIS_KEY_RATE)
+            if rate:
+                self.REFILL_RATE_PER_MINUTE = float(rate)
+        except Exception as e:
+            logger.error(f"Redis load state error: {e}")
 
     def request_permission_for_call(self, estimated_cost):
         """
-        Checks if an API call can be made and waits if necessary. This method
-        implements a "controlled deficit" strategy based on Keepa API behavior.
-
-        Keepa API Rule: A call can be made as long as the token balance is positive.
-        The call is allowed to drive the balance into a negative value.
-
-        Our Strategy (Optimized):
-        1.  **Hard Stop at Zero:** If tokens are <= 0, we must wait until they
-            refill to a positive number.
-        2.  **Aggressive Consumption:** If `current_tokens` > `MIN_TOKEN_THRESHOLD` (50),
-            we allow the call immediately, even if it creates a deficit. We do NOT wait
-            for a full bucket. This prevents "starvation" when an upserter task is
-            simultaneously consuming the refill trickle.
-        3.  **Smart Recovery:** If `current_tokens` drops below the threshold, we wait
-            only until it recovers to (`threshold + buffer`), not `max_tokens`.
+        Checks if an API call can be made and waits if necessary.
+        Uses optimistic atomic reservation (decrby) to handle concurrency.
         """
-        now = time.time()
-        time_since_last_call = now - self.last_api_call_timestamp
-        if time_since_last_call < self.MIN_TIME_BETWEEN_CALLS_SECONDS:
-            wait_duration = self.MIN_TIME_BETWEEN_CALLS_SECONDS - time_since_last_call
-            logger.info(f"Rate limit: Pausing for {wait_duration:.2f} seconds.")
-            time.sleep(wait_duration)
+        cost_int = math.ceil(estimated_cost)
 
-        self._refill_tokens()
+        while True:
+            # 1. Rate Limit Sleep (Local) - Prevent spamming API even if tokens exist
+            now = time.time()
+            time_since_last = now - self.last_api_call_timestamp
+            if time_since_last < self.MIN_TIME_BETWEEN_CALLS_SECONDS:
+                wait = self.MIN_TIME_BETWEEN_CALLS_SECONDS - time_since_last
+                # logger.info(f"Rate limit: Pausing for {wait:.2f} seconds.")
+                time.sleep(wait)
 
-        wait_time_seconds = 0
-        recovery_target = 0 # Target token count to reach before resuming
+            # 2. Atomic Reservation (Redis)
+            if self.redis_client:
+                try:
+                    # Optimistically decrement
+                    new_val = self.redis_client.decrby(self.REDIS_KEY_TOKENS, cost_int)
+                    self.tokens = float(new_val)
 
-        # --- SYNC CHECK: Verify with API before deciding to wait ---
-        # If our local count suggests a wait, we verify with the server first.
-        # This fixes drift caused by concurrent workers.
-        if self.tokens < self.MIN_TOKEN_THRESHOLD:
-            logger.info(f"Local token count ({self.tokens:.2f}) is low. Syncing with Keepa API to verify...")
-            self.sync_tokens()
-            # Note: self.tokens is now updated to the authoritative value.
+                    # --- CHECK CONSTRAINTS ---
+                    allowed = False
 
-        # Scenario 1: Hard Stop (Zero or Negative)
-        if self.tokens <= 0:
-            # Must wait to get back to a safe positive balance (e.g., 10 tokens)
-            recovery_target = 10
-            tokens_needed = recovery_target - self.tokens
-            wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-            logger.warning(
-                f"Zero or negative tokens. Have: {self.tokens:.2f}. "
-                f"Waiting for {wait_time_seconds} seconds to recover {tokens_needed:.2f} tokens at {self.REFILL_RATE_PER_MINUTE} tokens/min."
-            )
+                    # Case A: Above threshold - Always OK
+                    if self.tokens >= self.MIN_TOKEN_THRESHOLD:
+                        allowed = True
 
-        # Scenario 2: Below Threshold (Recovery Mode)
-        elif self.tokens < self.MIN_TOKEN_THRESHOLD:
-            # --- PRIORITY PASS ---
-            # If the request is small (<= 10 tokens) and we have enough tokens to cover it RIGHT NOW,
-            # we skip the recovery wait. This allows the lightweight Upserter to squeeze in
-            # even if the heavy Backfiller is keeping the balance low.
-            if estimated_cost <= 10 and self.tokens >= estimated_cost:
-                logger.info(f"Priority Pass: Allowing small request ({estimated_cost}) despite low tokens ({self.tokens:.2f} < {self.MIN_TOKEN_THRESHOLD}).")
-                # Proceed immediately
-                pass
-            else:
-                # Wait until we are back comfortably above the threshold
-                recovery_target = self.MIN_TOKEN_THRESHOLD + 5 # Buffer
+                    # Case B: Priority Pass - Low cost, and strictly NOT negative
+                    elif cost_int <= 10 and self.tokens >= 0:
+                        logger.info(f"Priority Pass: allowing small cost {cost_int}. Balance: {self.tokens:.2f}")
+                        allowed = True
+
+                    if allowed:
+                        # Success! We hold the reservation.
+                        # logger.info(f"Permission granted (Redis). Balance: {self.tokens:.2f}")
+                        return
+
+                    # --- FAILURE: REVERT ---
+                    # We decremented, but didn't meet criteria. Undo.
+                    self.redis_client.incrby(self.REDIS_KEY_TOKENS, cost_int)
+
+                    # Restore local view for wait calculation (approximate)
+                    # We add cost back because we just incremented.
+                    self.tokens = float(new_val + cost_int)
+                    # logger.warning(f"Tokens low ({self.tokens:.2f}). Reverted reservation. Waiting.")
+
+                except Exception as e:
+                    logger.error(f"Redis error during reservation: {e}. Falling back to local.")
+                    self.redis_client = None # Disable Redis for this session
+
+            # 3. Local / Fallback / Wait Logic
+            # If we are here, we either:
+            # a) Have no Redis
+            # b) Had Redis, tried to reserve, failed, and reverted.
+
+            # If local mode (no redis), just check local state
+            if not self.redis_client:
+                 # Refill local logic
+                 # (Simplified for brevity as Redis is primary)
+                 pass
+
+            # Check if we are critically low - Force Sync
+            if self.tokens < self.MIN_TOKEN_THRESHOLD:
+                 # logger.info(f"Local/Shared token count ({self.tokens:.2f}) is low. Syncing...")
+                 self.sync_tokens()
+
+            # Calculate Wait Time
+            wait_time = 0
+            recovery_target = 0
+
+            if self.tokens <= 0:
+                recovery_target = 10 # Wait until positive
+            elif self.tokens < self.MIN_TOKEN_THRESHOLD:
+                # If we are here, we failed priority pass (if redis)
+                # Or we are local and low.
+                if not self.redis_client and cost_int <= 10 and self.tokens >= cost_int:
+                    # Local priority pass
+                    self.tokens -= cost_int
+                    return
+
+                recovery_target = self.MIN_TOKEN_THRESHOLD + 5
+
+            if recovery_target > 0:
                 tokens_needed = recovery_target - self.tokens
-                wait_time_seconds = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-                logger.warning(
-                    f"Low tokens (Below Threshold {self.MIN_TOKEN_THRESHOLD}). Have: {self.tokens:.2f}. "
-                    f"Waiting for {wait_time_seconds} seconds to recover to {recovery_target}."
-                )
+                if tokens_needed > 0:
+                    wait_time = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
 
-        # Scenario 3: Above Threshold (Proceed, even if deficit spending)
-        else:
-            # We have > 50 tokens. Even if estimated cost is 100, we proceed.
-            # Keepa allows negative balance.
-            pass
+            if wait_time > 0:
+                logger.warning(f"Zero/Neg tokens ({self.tokens:.2f}). Waiting for {wait_time}s.")
+                self._wait_for_tokens(wait_time, recovery_target)
+                continue # Retry reservation loop
 
-        if wait_time_seconds > 0:
-            if self.REFILL_RATE_PER_MINUTE > 0:
-                # Optimized Wait Loop: Smart Polling
-                # Instead of sleeping the full duration blindly, we sleep in chunks and re-sync.
-                # This prevents "Drift" where the app thinks it has fewer tokens than reality
-                # (e.g., if the user upgraded their plan or another process stopped).
-                # It also provides frequent log updates to the user.
-
-                remaining_wait = wait_time_seconds
-
-                while True:
-                    # Sleep for 30s or the remaining time, whichever is smaller
-                    # Ensure we sleep at least 1 second to prevent tight loops
-                    sleep_chunk = max(1, min(remaining_wait, 30))
-                    time.sleep(sleep_chunk)
-
-                    # Update local estimate (linear refill fallback)
-                    self._refill_tokens()
-
-                    # Force sync every chunk (30s) to be authoritative.
-                    self.sync_tokens()
-
-                    # Check if we have recovered enough to proceed early
-                    # Use the dynamically set recovery_target from above
-                    if self.tokens >= recovery_target:
-                         logger.info(f"Tokens recovered sufficiently ({self.tokens:.2f} >= {recovery_target}). Resuming operation early.")
-                         break
-
-                    # Re-calculate needed wait time based on NEW authoritative token count
-                    tokens_needed = recovery_target - self.tokens
-
-                    # If we somehow have enough now, break
-                    if tokens_needed <= 0:
-                        break
-
-                    new_wait_total = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-
-                    # Safety check: If waiting doesn't seem to help (e.g. rate 0), break loop or warn
-                    if new_wait_total > 3600: # Waiting > 1 hour
-                        logger.error("Wait time is excessive (>1h). Something is wrong with rate or token count.")
-
-                    if new_wait_total != remaining_wait:
-                         logger.info(f"Wait time updated: Tokens={self.tokens:.2f}/{recovery_target}, Rate={self.REFILL_RATE_PER_MINUTE}, New Wait={new_wait_total}s (was {remaining_wait}s)")
-                    else:
-                         logger.info(f"Still waiting for tokens... Current: {self.tokens:.2f}/{recovery_target}. Remaining wait: ~{new_wait_total}s")
-
-                    remaining_wait = new_wait_total
-
+            # If wait_time is 0, it means we are ostensibly good.
+            # If Redis, we loop back to try reservation again.
+            if self.redis_client:
+                continue
             else:
-                logger.error("Zero refill rate, cannot wait for tokens. Pausing for 15 minutes as a fallback.")
-                time.sleep(900)
-                self._refill_tokens()
+                # Local success
+                self.tokens -= cost_int
+                return
 
-        logger.info(f"Permission granted for API call. Estimated cost: {estimated_cost}. Current tokens: {self.tokens:.2f}")
+    def _wait_for_tokens(self, initial_wait, target):
+        """
+        Sleeps in chunks, checking for refill/sync updates.
+        """
+        remaining = initial_wait
+        while remaining > 0:
+            sleep_chunk = max(1, min(remaining, 30))
+            time.sleep(sleep_chunk)
+
+            # Sync to check progress (updates self.tokens)
+            self.sync_tokens()
+            if self.tokens >= target:
+                logger.info(f"Tokens recovered ({self.tokens:.2f} >= {target}). Resuming.")
+                return
+
+            # Recalc
+            tokens_needed = target - self.tokens
+            if tokens_needed <= 0: return
+
+            # Refill rate might have changed
+            if self.REFILL_RATE_PER_MINUTE <= 0:
+                logger.error("Refill rate 0. Sleeping 15m.")
+                time.sleep(900)
+                self.sync_tokens()
+                continue
+
+            new_wait = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+            remaining = new_wait
 
     def sync_tokens(self):
         """
         Authoritatively fetches the current token status from the Keepa API
-        and updates the internal state.
+        and updates the internal state and Redis.
         """
         from .keepa_api import get_token_status
-        # logger.info("Performing authoritative token sync with Keepa API...")
-        # Reduced log noise for sync calls inside wait loops
         status_data = get_token_status(self.api_key)
         if status_data and 'tokensLeft' in status_data:
             refill_rate = status_data.get('refillRate')
@@ -195,31 +228,23 @@ class TokenManager:
     def _sync_tokens_from_response(self, tokens_left_from_api, refill_rate=None):
         """
         Authoritatively sets the token count from a provided API response value.
-        Also updates the refill rate if provided.
+        Updates Redis.
         """
-        old_token_count = self.tokens
         self.tokens = float(tokens_left_from_api)
         self.last_refill_timestamp = time.time()
 
         if refill_rate is not None:
             try:
-                new_rate = float(refill_rate)
-                if new_rate != self.REFILL_RATE_PER_MINUTE:
-                    logger.info(f"Updating refill rate from {self.REFILL_RATE_PER_MINUTE} to {new_rate} based on API response.")
-                    self.REFILL_RATE_PER_MINUTE = new_rate
+                self.REFILL_RATE_PER_MINUTE = float(refill_rate)
             except (ValueError, TypeError):
-                logger.warning(f"Invalid refill rate received from API: {refill_rate}")
+                pass
 
-        # logger.info(
-        #    f"Token count authoritatively synced from API response. "
-        #    f"Previous estimate: {old_token_count:.2f}, New value: {self.tokens:.2f}"
-        # )
+        # Update Redis with authoritative value
+        self._set_shared_tokens(self.tokens, self.REFILL_RATE_PER_MINUTE)
 
     def update_after_call(self, tokens_left_from_api):
         """
         Updates the token count and timestamp after an API call using the authoritative response.
-        Note: Standard API responses (headers/metadata) typically only give tokensLeft,
-        so we don't update refill_rate here unless we parse the full status object elsewhere.
         """
         self.last_api_call_timestamp = time.time()
         self._sync_tokens_from_response(tokens_left_from_api)

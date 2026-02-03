@@ -34075,5 +34075,2429 @@
         "advice": "Use cross-checking to identify similar listings and inform pricing strategy",
         "confidence": "High",
         "source": "When you\u2019re the only seller for a product, SellerEngine identifies similar listings to inform pricing strategy development"
+    },
+    {
+        "id": "pricing2",
+        "category": "Pricing",
+        "trigger": "No Featured Offer exists for a product",
+        "advice": "Optimize pricing to capture the Featured Offer position",
+        "confidence": "High",
+        "source": "or optimize pricing when no Featured Offer exists for a product"
+    },
+    {
+        "id": "pricing3",
+        "category": "Pricing",
+        "trigger": "Sole seller for a particular ASIN",
+        "advice": "Set pricing rules to handle scenarios where you are the only seller",
+        "confidence": "High",
+        "source": "The application handles scenarios where you\u2019re the sole seller for a particular ASIN"
+    },
+    {
+        "id": "pricing4",
+        "category": "Pricing",
+        "trigger": "Different product conditions (new or used)",
+        "advice": "Create specific pricing rules tailored to new or used items",
+        "confidence": "High",
+        "source": "Create specific rules for new or used items"
+    },
+    {
+        "id": "pricing5",
+        "category": "Pricing",
+        "trigger": "Individual products need exclusion from broader rules",
+        "advice": "Exclude specific products from inventory-wide pricing rules",
+        "confidence": "High",
+        "source": "or exclude individual products from broader inventory rules"
+    },
+    {
+        "id": "pricing6",
+        "category": "Pricing",
+        "trigger": "Standard update intervals (10-15 minutes)",
+        "advice": "Opt for real-time pricing optimization instead of 10-15 minute updates for faster adjustments",
+        "confidence": "High",
+        "source": "SellerEngine focuses on real-time pricing optimization rather than standard 10-15 minute update intervals"
+    },
+    {
+        "id": "pricing7",
+        "category": "Pricing",
+        "trigger": "Calculating minimum prices",
+        "advice": "Calculate minimum prices using associated costs and fees, with options to add minimum markup percentages to ensure profitability",
+        "confidence": "High",
+        "source": "The application calculates minimum prices using associated costs and fees, with options to add minimum markup percentages to ensure profitability"
+    },
+    {
+        "id": "pricing8",
+        "category": "Pricing",
+        "trigger": "Sole seller for a product",
+        "advice": "Identify similar listings to inform pricing strategy when you are the only seller",
+        "confidence": "High",
+        "source": "When you\u2019re the only seller for a product, SellerEngine identifies similar listings to inform pricing strategy development"
+    },
+    {
+        "id": "general1",
+        "category": "General",
+        "trigger": "Need for pricing data visualization",
+        "advice": "Use platforms with visualization and filtering to view profits, margins, and costs for quick identification of high-performing listings",
+        "confidence": "High",
+        "source": "The platform includes pricing data visualization and filtering capabilities. View profits, margins, and costs associated with each product to identify high-performing and underperforming listings quickly"
+    },
+    {
+        "id": "general2",
+        "category": "General",
+        "trigger": "Tracking pricing performance",
+        "advice": "Utilize detailed reporting to track pricing history fluctuations and gain insights into market dynamics",
+        "confidence": "High",
+        "source": "Detailed reporting features help track pricing history fluctuations, providing insights into pricing performance and market dynamics"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Products with strong velocity over 20-25 units per month",
+        "advice": "Use FBA for these products to leverage the Prime badge, which increases sales by about 25%",
+        "confidence": "High",
+        "source": "Strong velocity to us is probably anything over 20 to 25 units a month. ... Put the Prime badge on there, which by the way gets about a 25% increase of sales just for having the Prime badge on there alone."
+    },
+    {
+        "id": "strat-002",
+        "category": "Risk",
+        "trigger": "Products that are heavy (over 50 pounds), ship in two boxes, or need refrigeration",
+        "advice": "Fulfill these yourself via FBM as they are not a good fit for FBA and may be more profitable that way",
+        "confidence": "High",
+        "source": "Things like units that ship in two boxes, not a good fit for FBA right now. Products that need refrigeration, FBA can't handle that. Also, I would say even looking down into products that are really heavy. So think um for us, heavy bulky might be anything that's over 50 pounds. those might actually more profitable fulfilling it yourself."
+    },
+    {
+        "id": "strat-003",
+        "category": "General",
+        "trigger": "Evaluating fulfillment costs and sales potential",
+        "advice": "Use the FBA revenue calculator to compare FBA vs FBM costs, including fulfillment fees based on dimensions and weight, and factor in sales increase from Prime badge",
+        "confidence": "High",
+        "source": "One of the tools that Amazon provides is called the um FBA revenue calculator. ... you can actually put in what your fulfillment cost would be and compare between the two. ... it's also going to tell you how many other prime offers are on there or how many prime offers there are not. So maybe that could be something you look for as well as co cost and calculating uh the increase of sales again that you're going to get just by adding that prime badge on there"
+    },
+    {
+        "id": "strat-004",
+        "category": "General",
+        "trigger": "Assessing current products for FBA suitability",
+        "advice": "Use the FBA opportunities dashboard in Seller Central to identify which products are good fits for FBA based on fulfillment fees, Prime offer competition, and potential sales uplift",
+        "confidence": "High",
+        "source": "using that tool, um there's another one that we like to push and push sellers to is called the FBA opportunities dashboard. That's going to show you of the products you have currently what may be a good fit to FBA. It's going to include the fulfillment fee that of course is always based just on the dimensions and the weight of your products, but it's also going to tell you how many other prime offers are on there"
+    },
+    {
+        "id": "strat-005",
+        "category": "General",
+        "trigger": "Inbounding new products to FBA (takes 2-4 weeks, longer in peak season)",
+        "advice": "Launch an FBM (MFN) offer immediately to start sales while waiting for FBA inventory to arrive, avoiding lost sales; can switch between FBA and FBM per ASIN",
+        "confidence": "High",
+        "source": "there's a lead time for FBA, right? You create a shipment, you inbound it. That could take two weeks, three weeks. Sometimes in peak season that we're coming up on could be four weeks. With MFN, you can get your product live in 15 minutes, right? And so, one thing that we really try to stress is maybe do both. Maybe inbound to FBA, but while you're waiting on that product to become available, have an MFN offer that's ready to go so you never lose sales."
+    },
+    {
+        "id": "strat-006",
+        "category": "Risk",
+        "trigger": "Running out of FBA inventory (e.g., during sales or Prime Big Deal Days)",
+        "advice": "Quickly switch to FBM to maintain availability and avoid missing sales",
+        "confidence": "High",
+        "source": "It's also a good pro tip if you run out of inventory on FBA. Let's say that you have a sale or you're doing prime big deal days that we just heard about today, right? Like sometimes you run out of inventory. Put that offer on MFN real quick. You can have both. That way you never miss out on the sales."
+    },
+    {
+        "id": "strat-007",
+        "category": "Seasonality",
+        "trigger": "Highly seasonal categories (e.g., Halloween costumes)",
+        "advice": "Use FBM as a hedge to avoid leftover inventory after peak season; consider multi-channel fulfillment closer to holidays for nimbleness",
+        "confidence": "High",
+        "source": "FBM can also be a great hedge in highly seasonal categories. So kind of similar to what you just spoke about, you know, we don't nobody wants to have too many Halloween costumes left over in November 1st. ... Being nimble and going back and forth, I think that's key."
+    },
+    {
+        "id": "strat-008",
+        "category": "General",
+        "trigger": "FBM sellers monitoring delivery performance",
+        "advice": "Use the Fulfillments Insights dashboard in Seller Central to track actual delivery vs. promised delivery dates, prioritizing promise accuracy over speed",
+        "confidence": "High",
+        "source": "the fulfillments inside dashboard is going to be critical for you to keep a really good eye on, not only to monitor what your actual delivery is, but your delivery promise, which sometimes we even say might be a little bit more important even than just the actual delivery."
+    },
+    {
+        "id": "strat-009",
+        "category": "General",
+        "trigger": "FBM operations with multiple shipping locations",
+        "advice": "Implement multilocation inventory via Seller Central or API to enable location-aware delivery promises, improving speed (e.g., 1-day delivery for nearby customers)",
+        "confidence": "High",
+        "source": "multilocation inventory. So, your business has gotten big enough. You're now shipping out of multiple locations across the US. you can uh upload again through seller central or through an API what inventory you have in each location. And what that allows us to do is naturally make delivery promises that are location aware both for where your product is and where your customers are. So if you have product in Kansas City and you're shipping it to St. Louis, you can probably do that in one day"
+    },
+    {
+        "id": "strat-010",
+        "category": "Pricing",
+        "trigger": "FBM sellers offering accelerated 1-2 day shipping",
+        "advice": "Use Premium Shipping Options (PSO) to show 1-2 day free shipping promises regionally where feasible, leading to up to 55% sales increase without changing logistics",
+        "confidence": "High",
+        "source": "premium shipping options. ... What premium shipping options allows you to do is tell us where you can make accelerated one and two day shipping promises. ... we have a heavy and bulky shipper, for example, that I talked to a little while ago who wound up with a 55% increase once they turned on PSO."
+    },
+    {
+        "id": "strat-011",
+        "category": "General",
+        "trigger": "Established FBM sellers meeting high delivery standards",
+        "advice": "Pursue Seller Fulfilled Prime (SFP) to get Prime badge and visibility for Prime members, after mastering basics like delivery accuracy; includes OTDR protection",
+        "confidence": "High",
+        "source": "The top of the pyramid is going to be seller fulfilled prime. ... you can actually get a Prime badge on FBA and FBM if you use this advanced tier of seller fulfilled prime. ... the on-time delivery rate protection that I mentioned earlier today, that does apply to Prime orders."
+    },
+    {
+        "id": "strat-012",
+        "category": "Risk",
+        "trigger": "Using Buy Shipping for FBM labels",
+        "advice": "Opt for claims-protected labels via Buy Shipping (free, supports own rates) to avoid responsibility for delivery issues and recoup funds if problems occur",
+        "confidence": "High",
+        "source": "if you use by shipping especially and you get one of those claims protected labels, you will not be responsible if something goes wrong with the um delivery, right? you know, you're going to be able to recoup your funds on that."
+    },
+    {
+        "id": "strat-013",
+        "category": "General",
+        "trigger": "Improving FBM delivery promise accuracy by 1 day",
+        "advice": "Each day of improved accuracy (without speeding up actual delivery) yields a 5% sales uplift; up to 15% for multiple days",
+        "confidence": "High",
+        "source": "with every day of accuracy that improves you get a 5% sales uplift ... So, you could easily have a 15% increase of sales just by having a more accurate delivery if you have a couple of days of gap."
+    },
+    {
+        "id": "strat-014",
+        "category": "Seasonality",
+        "trigger": "Changes in costs or inventory needs throughout the year",
+        "advice": "Revisit fulfillment strategy regularly (e.g., via dashboards), adjusting between FBA/FBM based on peak season demands and inventory depth to maintain sales",
+        "confidence": "High",
+        "source": "revisit your strategy for fulfillment and do it often. ... continue to evaluate your fulfillment strategy. Let it change throughout the year. That's totally normal. ... looking at the FBA dashboard to make sure the depth of inventory that you keep is really key as well."
+    },
+    {
+        "id": "strat-015",
+        "category": "General",
+        "trigger": "Testing new fulfillment approaches",
+        "advice": "Treat fulfillment testing like marketing or listings (e.g., try PSO regionally for a month); use two-way door principle to experiment and revert if needed without penalty",
+        "confidence": "High",
+        "source": "testing fulfillment the same way that you're testing your marketing or testing your product photography ... the concept of a two-way door, right? Two-way door decisions are decisions that you can make quickly in order to say, 'Okay, I'm going to try this out, and if it doesn't work out, no harm, no foul. I can come straight back through the door'"
+    },
+    {
+        "id": "fbanew-eligibility-ipi",
+        "category": "General",
+        "trigger": "IPI score below 300",
+        "advice": "Maintain an IPI score of 300 or higher with a Professional selling account to qualify for FBA New Selection Program benefits; new sellers without IPI can receive benefits initially until scored",
+        "confidence": "High",
+        "source": "You\u2019re eligible for the FBA New Selection Program\u2019s other benefits if you have a Professional selling account and an Inventory Performance Index, or IPI, score of 300 or higher. ... If you\u2019re new to selling in the Amazon store, you might not have received an IPI score yet. You can receive the program\u2019s benefits in the meantime."
+    },
+    {
+        "id": "fbanew-check-eligibility",
+        "category": "General",
+        "trigger": "Before first new-to-FBA ASIN received at fulfillment center",
+        "advice": "Check eligibility on or before the date your first new-to-FBA ASIN is received at a fulfillment center to ensure it qualifies for program benefits",
+        "confidence": "High",
+        "source": "It\u2019s important to check your eligibility on or before the date your first new-to-FBA ASIN is received at a fulfillment center. Otherwise, the ASIN won\u2019t qualify for the program\u2019s benefits."
+    },
+    {
+        "id": "fbanew-free-storage",
+        "category": "Risk",
+        "trigger": "Sending first units of new-to-FBA standard-size parent ASIN",
+        "advice": "Enroll in FBA New Selection to get free monthly storage for 120 days on the first 100 units of each new-to-FBA standard-size parent ASIN, starting from receipt of first unit",
+        "confidence": "High",
+        "source": "If you\u2019re eligible for the program, you\u2019ll get free monthly storage in an Amazon fulfillment center for 120 days for eligible products. ... This benefit applies to your first 100 units of each new-to-FBA standard-size parent ASINs"
+    },
+    {
+        "id": "fbanew-return-fees-waive",
+        "category": "Risk",
+        "trigger": "Returns on standard-size new-to-FBA parent ASIN within 180 days",
+        "advice": "Qualify for waived return processing fees on up to 20 units per standard-size parent ASIN if returns are received at fulfillment center within 180 days of first unit receipt",
+        "confidence": "High",
+        "source": "If you sell a standard-size parent ASIN we\u2019ll waive return processing fees for up to 20 units of each of these parent ASINs. To qualify, the fulfillment center must receive the returned items within 180 days of when the first unit was received."
+    },
+    {
+        "id": "fbanew-liquidation-free",
+        "category": "Risk",
+        "trigger": "First 100 units of new standard-size parent ASIN within 180 days",
+        "advice": "Use free US liquidation fees for the first 100 units of each new standard-size parent ASIN within 180 days of first inventory receipt to recover value from excess or returned inventory",
+        "confidence": "High",
+        "source": "With FBA New Selection, we\u2019ll cover your US liquidation fees for the first 100 units of each new standard-size parent ASIN within 180 days of the first inventory received date."
+    },
+    {
+        "id": "fbanew-auto-liquidation",
+        "category": "Risk",
+        "trigger": "No orders for new-to-FBA ASIN within 180 days of receipt",
+        "advice": "Allow automatic liquidation after 180 days if no sales to recover average 10% of item's average selling price and avoid storage fees; opt out if preferring manual control",
+        "confidence": "High",
+        "source": "We\u2019ll automatically liquidate eligible parent ASINs if no orders are placed for them within the first 180 days. ... Automatic liquidations are intended to help you recover costs when your ASINs aren\u2019t selling. You can opt out of automatic liquidations if you\u2019d prefer to let us know when to liquidate your inventory."
+    },
+    {
+        "id": "fbanew-rebate",
+        "category": "Pricing",
+        "trigger": "Sales of new-to-FBA standard-size parent ASIN for 120 days",
+        "advice": "Receive a 10% monthly average rebate on eligible sales applied against FBA fulfillment fees, up to 100 units per parent ASIN for 120 days",
+        "confidence": "High",
+        "source": "Enrolled sellers can also take advantage of another program benefit: a monthly average rebate of 10% of your eligible sales. We\u2019ll apply this rebate against your FBA fulfillment fees. ... This rebate will apply to 100 units for eligible standard-size products for 120 days. These unit limits apply per parent ASIN."
+    },
+    {
+        "id": "fbanew-unlimited-asins",
+        "category": "General",
+        "trigger": "Enrolled in FBA New Selection",
+        "advice": "Apply program benefits to an unlimited number of new parent ASINs each year to scale inventory addition without limits",
+        "confidence": "High",
+        "source": "Once you\u2019re enrolled, you can use the FBA New Selection Program\u2019s benefits for an unlimited number of new parent ASINs each year."
+    },
+    {
+        "id": "fbanew-new-seller-enroll",
+        "category": "General",
+        "trigger": "New seller creating first shipment within 90 days of listing first buyable ASIN",
+        "advice": "Get automatic enrollment in FBA New Selection if you create your first shipment within 90 days of listing your first buyable ASIN",
+        "confidence": "High",
+        "source": "If you\u2019re a new seller, you\u2019ll be enrolled automatically if you create your first shipment within 90 days of listing your first buyable ASIN."
+    },
+    {
+        "id": "fbanew-maintain-ipi",
+        "category": "Risk",
+        "trigger": "Enrolled but IPI drops below 300",
+        "advice": "Monitor and maintain IPI score daily at 300 or higher to continue receiving program benefits, as it is assessed daily",
+        "confidence": "High",
+        "source": "We assess this score daily, which means you\u2019ll also need to maintain your IPI score to continue receiving the program\u2019s benefits."
+    },
+    {
+        "id": "odr-target-1",
+        "category": "Risk",
+        "trigger": "Order Defect Rate >= 1%",
+        "advice": "Maintain Order Defect Rate (ODR) below 1% of total orders over 60 days by preventing negative feedback (2 stars or less), A-to-Z claims, and chargebacks",
+        "confidence": "High",
+        "source": "your overall odr target should be less than one percent of total orders during a given 60-day period"
+    },
+    {
+        "id": "product-condition-desc-2",
+        "category": "General",
+        "trigger": "Customer expects new item but receives used",
+        "advice": "Accurately describe the condition of products, using clear images and descriptions to avoid negative experiences from mismatched expectations",
+        "confidence": "High",
+        "source": "accurately describe the condition of your products for example if a customer expects to receive a new item in its original packaging getting a used item in excellent condition would still result in a negative customer experience"
+    },
+    {
+        "id": "shipment-confirm-3",
+        "category": "Risk",
+        "trigger": "Shipment confirmation after expected shipping date",
+        "advice": "Confirm shipments in Seller Central as soon as you ship an order to keep late shipment rate below 4%",
+        "confidence": "High",
+        "source": "confirm your shipments in seller central as soon as you ship an order... your shipping performance targets should be to keep your late shipment rate below four percent"
+    },
+    {
+        "id": "cancel-rate-4",
+        "category": "Risk",
+        "trigger": "Pre-fulfillment cancel rate >= 2.5%",
+        "advice": "Keep available inventory up to date and cancel out-of-stock orders promptly, contacting customers, to maintain pre-fulfillment cancel rate below 2.5%",
+        "confidence": "High",
+        "source": "we recommend you keep your available inventory up to date to help avoid order cancellations... your pre-fulfillment cancel rate below 2.5 percent"
+    },
+    {
+        "id": "tracking-rate-5",
+        "category": "General",
+        "trigger": "Valid Tracking Rate <= 95%",
+        "advice": "Use trackable shipping methods and integrated carriers to provide valid tracking numbers, aiming for Valid Tracking Rate above 95%",
+        "confidence": "High",
+        "source": "the valid tracking rate metric or vtr represents the total percentage of packages with a valid tracking number during a given 30-day period... vtr above 95 percent"
+    },
+    {
+        "id": "policy-violations-6",
+        "category": "Risk",
+        "trigger": "Any policy violations",
+        "advice": "Monitor policy compliance regularly and respond to warnings with documentation like invoices to achieve zero policy violations",
+        "confidence": "High",
+        "source": "your policy compliance target should be zero meaning you should aim to avoid all policy violations... monitor the policy compliance section of your account health dashboard regularly and respond to policy violation warnings"
+    },
+    {
+        "id": "customer-response-7",
+        "category": "General",
+        "trigger": "Customer messages not responded within 24 hours",
+        "advice": "Respond to customer messages within 24 hours to resolve issues and prevent negative feedback or claims",
+        "confidence": "High",
+        "source": "respond to customer messages within 24 hours and do your best to resolve any issues"
+    },
+    {
+        "id": "inventory-update-8",
+        "category": "General",
+        "trigger": "Out-of-stock orders leading to cancellations",
+        "advice": "Update inventory levels regularly to avoid pre-fulfillment cancellations and maintain low cancel rates",
+        "confidence": "High",
+        "source": "keep your available inventory up to date to help avoid order cancellations... cancel out of stock orders and contact customers"
+    },
+    {
+        "id": "account-monitoring-9",
+        "category": "General",
+        "trigger": "Infrequent account health checks",
+        "advice": "Check account health performance at least once a week using the Account Health dashboard to ensure compliance with targets",
+        "confidence": "High",
+        "source": "check your account health performance at least once a week and as often as possible"
+    },
+    {
+        "id": "plan-selection-individual",
+        "category": "General",
+        "trigger": "Expected sales fewer than 40 per month",
+        "advice": "Choose the Individual selling plan at 99 cents per sale for access to essential selling tools without a monthly fee",
+        "confidence": "High",
+        "source": "with an individual plan you pay 99 cents per sale and have access to essential selling tools"
+    },
+    {
+        "id": "plan-selection-professional",
+        "category": "General",
+        "trigger": "Expected sales more than 40 per month",
+        "advice": "Opt for the Professional selling plan at $39.99 per month to access advanced tools for advertising, listing, and pricing",
+        "confidence": "High",
+        "source": "with a professional plan you pay 39.99 per month and enjoy access to Advanced tools for advertising listing and pricing"
+    },
+    {
+        "id": "fulfillment-fba",
+        "category": "General",
+        "trigger": "Selling products eligible for Prime shipping",
+        "advice": "Use Fulfillment by Amazon (FBA) to store products in fulfillment centers, enabling Amazon to handle picking, packing, shipping, customer service, and returns, making products eligible for Amazon Prime free two-day shipping",
+        "confidence": "High",
+        "source": "fulfillment by Amazon or FBA lets sellers send products to Amazon for processing the products you send are stored in our network of fulfillment centers when a customer places an order we pick pack and ship it and we take care of customer service and returns one of fba's benefits is that products are eligible for Amazon Prime free two-day shipping"
+    },
+    {
+        "id": "product-id-isbn",
+        "category": "Buying",
+        "trigger": "Listing books or products with ISBN",
+        "advice": "Use ISBN as the product ID when listing books, as it is one of the common product IDs paired with a scannable barcode",
+        "confidence": "Medium",
+        "source": "the most common product ID in the Amazon store is a UPC but you might also use an ISBN Ean or j-a-n each product ID is paired with a barcode which makes it scannable"
+    },
+    {
+        "id": "payments-schedule",
+        "category": "General",
+        "trigger": "After starting to receive orders",
+        "advice": "Expect payments settled every two weeks via automated Clearinghouse to your bank account; monitor using the payments dashboard in Seller Central",
+        "confidence": "High",
+        "source": "in general Amazon settles seller accounts every two weeks your payments are transferred to your bank account through an automated Clearinghouse if you'd like more information about an upcoming payment or a recent payout use the payments dashboard in Seller Central"
+    },
+    {
+        "id": "account-health-odr",
+        "category": "Risk",
+        "trigger": "Ongoing selling operations",
+        "advice": "Regularly monitor the Account Health dashboard to track Order Defect Rate (ODR) for customer service performance, policy compliance, and shipping performance to ensure smooth selling",
+        "confidence": "High",
+        "source": "this resource helps sellers quickly understand Amazon policies and performance targets you can use it to understand your customer service performance which we measure using a metric called the order defect rate or odr you can also use it to check your compliance with various policies and your shipping performance for mfn orders by monitoring your account Health regularly you help ensure a smooth selling experience"
+    },
+    {
+        "id": "listing_isbn_search",
+        "category": "General",
+        "trigger": "Product is a book with ISBN",
+        "advice": "Search for the product using ISBN to match existing product detail page and avoid creating duplicates",
+        "confidence": "High",
+        "source": "search for your product using a product ID like a UPC ISBN Ean or j-a-n these product IDs are all types of g-tins or global trade item numbers each G10 is paired with a unique barcode which makes products scannable locate the product you want to sell in the results"
+    },
+    {
+        "id": "pricing_competitive_external",
+        "category": "Pricing",
+        "trigger": "Setting standard price for listing",
+        "advice": "Ensure standard item price plus shipping is less than or equal to the competitive external price shared by Amazon",
+        "confidence": "High",
+        "source": "for your own price to be considered competitive in the Amazon store your standard item price plus shipping must be less than or equal to the competitive external price we share"
+    },
+    {
+        "id": "featured_offer_eligibility",
+        "category": "Pricing",
+        "trigger": "Aiming for featured offer position",
+        "advice": "Set a competitive price, ensure product is in new condition, and use a professional selling account to compete for featured offer",
+        "confidence": "High",
+        "source": "to compete for the featured offer a seller must set a competitive price their product also needs to be in new condition and they need to have a professional selling account"
+    },
+    {
+        "id": "lowest_amazon_price_match",
+        "category": "Pricing",
+        "trigger": "Viewing pricing for listed product",
+        "advice": "Check the current lowest Amazon price in Seller Central and set your price to match or beat it to increase competitiveness",
+        "confidence": "High",
+        "source": "we share the current lowest Amazon price for each product with the sellers who list it to give them the opportunity to match or Beat It to view the lowest Amazon price for a product you sell open The Seller Central main menu hover over inventory and click manage all inventory"
+    },
+    {
+        "id": "lsr_threshold",
+        "category": "Risk",
+        "trigger": "Monitoring MFN shipping performance",
+        "advice": "Keep Late Shipment Rate (LSR) below 4% in 10 and 30-day periods to maintain account health",
+        "confidence": "High",
+        "source": "your LSR is the percentage of your seller fulfilled orders that have a shipping confirmation after their expected shipping date we calculate LSR in both 10 and 30 day periods you should aim to keep it below four percent"
+    },
+    {
+        "id": "cr_threshold",
+        "category": "Risk",
+        "trigger": "Monitoring order cancellations",
+        "advice": "Keep Pre-fulfillment Cancel Rate (CR) below 2.5% in 7-day periods to avoid account issues",
+        "confidence": "High",
+        "source": "your CR is the percentage of your seller fulfilled orders you cancel we calculate CR in seven day periods you should aim to keep it below two and a half percent"
+    },
+    {
+        "id": "vtr_threshold",
+        "category": "Risk",
+        "trigger": "Providing tracking for shipments",
+        "advice": "Ensure Valid Tracking Rate (VTR) above 95% in 30-day periods by using valid tracking numbers",
+        "confidence": "High",
+        "source": "your VTR is the percentage of packages from your seller fulfilled orders with a valid tracking number we calculate VTR in 30-day periods you should aim to keep it above 95 percent"
+    },
+    {
+        "id": "odr_threshold",
+        "category": "Risk",
+        "trigger": "Monitoring customer service performance",
+        "advice": "Maintain Order Defect Rate (ODR) under 1% in 60-day periods to comply with Amazon requirements",
+        "confidence": "High",
+        "source": "your odr is the percentage of your orders with one or more indicators of poor customer service we calculate odr in 60-day periods and require sellers to maintain an odr under one percent in order to sell in the Amazon store"
+    },
+    {
+        "id": "return_policy_30days",
+        "category": "General",
+        "trigger": "Handling customer returns",
+        "advice": "Provide refunds for products returned within 30 days of purchase to improve customer satisfaction and reviews",
+        "confidence": "High",
+        "source": "five provide customer refunds for products returned within 30 days of purchase"
+    },
+    {
+        "id": "message_response_24hours",
+        "category": "General",
+        "trigger": "Receiving customer messages",
+        "advice": "Respond to customer messages within 24 hours using buyer-seller messaging to maintain good service",
+        "confidence": "High",
+        "source": "six respond to customer messages within 24 hours"
+    },
+    {
+        "id": "rule-001",
+        "category": "General",
+        "trigger": "Sell less than 40 units monthly",
+        "advice": "Use Individual selling plan at $0.99 per sale",
+        "confidence": "High",
+        "source": "Individual: $0.99 per sale\u2014ideal if you sell less than 40 units monthly"
+    },
+    {
+        "id": "rule-002",
+        "category": "General",
+        "trigger": "Sell more than 40 units monthly",
+        "advice": "Use Professional selling plan at $39.99 per month",
+        "confidence": "High",
+        "source": "Professional: $39.99 per month, no matter how many products you sell\u2014ideal if you sell more than 40 units monthly"
+    },
+    {
+        "id": "rule-003",
+        "category": "Pricing",
+        "trigger": "New products without reviews",
+        "advice": "Set lower starter prices to encourage first purchases",
+        "confidence": "High",
+        "source": "New products without reviews can often sell better with lower starter prices to encourage first purchases."
+    },
+    {
+        "id": "rule-004",
+        "category": "Seasonality",
+        "trigger": "Products that sell better at certain times of the year",
+        "advice": "Plan inventory and adjust for seasonal changes",
+        "confidence": "High",
+        "source": "Seasons: Plan for products that sell better at certain times. Adjust inventory for seasonal changes."
+    },
+    {
+        "id": "rule-005",
+        "category": "Buying",
+        "trigger": "Sourcing products from suppliers",
+        "advice": "Select suppliers offering good quality products, fair prices, quick delivery, easy returns, and bulk discounts; consider dropshipping to avoid inventory storage",
+        "confidence": "High",
+        "source": "Look for suppliers who offer: Good quality products Fair prices Quick delivery Easy returns Bulk discounts"
+    },
+    {
+        "id": "rule-006",
+        "category": "Pricing",
+        "trigger": "Competitor analysis",
+        "advice": "Research competitor prices using Amazon store or Seller app, and match low price or Featured Offer price",
+        "confidence": "High",
+        "source": "You can research competitor prices in the Amazon store or through the Amazon Seller app, where you can use comparison points like match low price and Featured Offer price."
+    },
+    {
+        "id": "rule-007",
+        "category": "Risk",
+        "trigger": "Large or heavy products",
+        "advice": "Factor in higher shipping costs and plan appropriate packaging",
+        "confidence": "High",
+        "source": "Size and weight: Consider shipping costs for large items. Plan packaging for fragile products."
+    },
+    {
+        "id": "rule-008",
+        "category": "General",
+        "trigger": "Using Fulfillment by Amazon (FBA)",
+        "advice": "Account for fulfillment costs based on product size and weight; use Revenue Calculator to compare with self-fulfillment",
+        "confidence": "High",
+        "source": "Fulfillment costs: If using services like Fulfillment by Amazon (FBA), fulfillment costs are based on size and weight. You can use our Revenue Calculator to compare estimates for FBA and your own fulfillment method."
+    },
+    {
+        "id": "rule-009",
+        "category": "Buying",
+        "trigger": "Product selection",
+        "advice": "Check Amazon Best Sellers list to identify popular products actively purchased by customers",
+        "confidence": "High",
+        "source": "Check the Amazon Best Sellers list to discover popular products that customers are actively purchasing."
+    },
+    {
+        "id": "rule-010",
+        "category": "Pricing",
+        "trigger": "Market conditions and seasons",
+        "advice": "Adjust pricing dynamically and offer special deals or coupons to attract customers or clear inventory",
+        "confidence": "High",
+        "source": "A good pricing plan changes with the seasons and market conditions. Watch what your competitors charge. Try offering special deals and coupons to attract new customers or sell extra inventory faster."
+    },
+    {
+        "id": "inv1",
+        "category": "Risk",
+        "trigger": "Over 90 days of supply",
+        "advice": "Reduce the price to increase sales or liquidate to avoid storage fees and improve ROI",
+        "confidence": "High",
+        "source": "Amazon considers you to have excess inventory if you have: Over 90 days of supply"
+    },
+    {
+        "id": "inv2",
+        "category": "Risk",
+        "trigger": "At least one unit aged over 90 days",
+        "advice": "Monitor and sell aged inventory promptly to prevent dead stock and tied-up cash",
+        "confidence": "High",
+        "source": "Amazon considers you to have excess inventory if you have: At least one unit aged over 90 days"
+    },
+    {
+        "id": "inv3",
+        "category": "Buying",
+        "trigger": "Less than two months of supply available",
+        "advice": "Maintain about two months of supply by replenishing stock to meet demand and avoid stockouts",
+        "confidence": "High",
+        "source": "Ensure you have about two months of supply available, are selling products in a timely manner"
+    },
+    {
+        "id": "inv4",
+        "category": "Risk",
+        "trigger": "Stock sits on the shelf for over three months",
+        "advice": "Liquidate or discount items to recover sunk costs and avoid unrecoverable expenses",
+        "confidence": "High",
+        "source": "If stock sits on the shelf for over three months, you may not be able to recover the expenses you\u2019ve incurred in acquiring and storing the item"
+    },
+    {
+        "id": "inv5",
+        "category": "General",
+        "trigger": "Annually or quarterly",
+        "advice": "Conduct inventory audits at least one to two times a year, or quarterly for better accuracy, using cycle counting to catch issues early",
+        "confidence": "High",
+        "source": "As a rule of thumb, you should conduct inventory audits at least one to two times a year. If you can audit quarterly, even better. Cycle counting is a process that requires you to count a small amount of your inventory"
+    },
+    {
+        "id": "inv6",
+        "category": "Seasonality",
+        "trigger": "Upcoming holidays or key sales moments like Black Friday",
+        "advice": "Plan inventory by reviewing past sales data, communicate with suppliers early, and send inventory to FBA ahead of time to meet increased demand",
+        "confidence": "High",
+        "source": "Plan for seasonal inventory demands... look back at sales data from previous years... With sales data, you\u2019ll know which products to stock up on... If you use FBA, it\u2019s a good idea to start early"
+    },
+    {
+        "id": "inv7",
+        "category": "Risk",
+        "trigger": "Low sell-through rate",
+        "advice": "Monitor FBA sell-through rate daily in Seller Central to balance inventory and ensure fast-selling items, indicating popular products",
+        "confidence": "High",
+        "source": "The FBA sell-through rate is a measure of how well you balance FBA inventory. For Amazon sellers, it\u2019s updated daily in a Seller Central dashboard"
+    },
+    {
+        "id": "inv8",
+        "category": "General",
+        "trigger": "Stranded inventory in fulfillment center",
+        "advice": "Track and fix stranded inventory through Seller Central to list it for sale and avoid lost sales and storage costs",
+        "confidence": "High",
+        "source": "Stranded inventory: Sellable inventory that may be in a fulfillment center or warehouse, but isn\u2019t listed for sale on your site... As an Amazon seller, you can easily track and fix stranded inventory through Seller Central"
+    },
+    {
+        "id": "inv9",
+        "category": "Pricing",
+        "trigger": "Aging inventory or overstock",
+        "advice": "Mark down prices or create special deals to liquidate excess or aging inventory and avoid sunk costs",
+        "confidence": "High",
+        "source": "Avoid sunk costs by marking down prices or creating special deals to liquidate aging inventory or overstock products"
+    },
+    {
+        "id": "inv10",
+        "category": "Risk",
+        "trigger": "Low Inventory Performance Index (IPI) score",
+        "advice": "Improve IPI score by replenishing popular products, maintaining optimal levels, and fixing listing problems to minimize storage costs",
+        "confidence": "High",
+        "source": "Your Inventory Performance Index (IPI) score is based on how well you: Replenish popular products, Maintain optimal inventory levels, Fix listing problems... keep your IPI score high to lower storage costs"
+    },
+    {
+        "id": "strategy1",
+        "category": "Pricing",
+        "trigger": "Buying used books",
+        "advice": "Do pricing research before buying; used books often sell for around half the price of a new edition, but adjust for quality factors that can drive down prices",
+        "confidence": "High",
+        "source": "Used books Compared to new books, secondhand books can be easier to find and cheaper to acquire. They can also be profitable if you find good deals locally or online. Here are some tips for selling used books: Do pricing research before you buy. Used books can often sell for around half the price of a new edition, but factors like quality can drive down prices."
+    },
+    {
+        "id": "strategy2",
+        "category": "Risk",
+        "trigger": "Assessing book condition",
+        "advice": "Pay close attention to book condition; if not acceptable, avoid listing to prevent unhappy customers and returns",
+        "confidence": "High",
+        "source": "Pay close attention to the book condition. If the condition isn\u2019t acceptable, you could end up with unhappy customers."
+    },
+    {
+        "id": "strategy3",
+        "category": "Seasonality",
+        "trigger": "Selling textbooks",
+        "advice": "Time sales for highest demand at the start of new semesters; don't get discouraged by slow periods outside peak times",
+        "confidence": "High",
+        "source": "Textbook sales tend to be seasonal with the highest demand at the start of a new semester, so don\u2019t get discouraged if you don\u2019t sell any right away."
+    },
+    {
+        "id": "strategy4",
+        "category": "Buying",
+        "trigger": "Sourcing books",
+        "advice": "Evaluate condition of each book against selling site guidelines, such as Amazon's condition guidelines",
+        "confidence": "High",
+        "source": "While procuring books, be sure to evaluate the condition of each one. Check the condition guidelines of any selling site you use. For example, Amazon has condition guidelines for books."
+    },
+    {
+        "id": "strategy5",
+        "category": "Pricing",
+        "trigger": "Setting book prices",
+        "advice": "Monitor prices of other booksellers and adjust competitively; account for costs and fees like packing and shipping; use Amazon\u2019s Revenue Calculator for net profit estimates",
+        "confidence": "High",
+        "source": "One way to set prices is to monitor the prices of other booksellers and adjust your prices accordingly to make sure they\u2019re competitive. Don't forget to take costs and fees related to things like packing and shipping into account when you set your prices. Try Amazon\u2019s Revenue Calculator to compare fees, costs, and estimated net profits for different scenarios."
+    },
+    {
+        "id": "strategy6",
+        "category": "Pricing",
+        "trigger": "Managing prices dynamically",
+        "advice": "Use Amazon\u2019s Automate Pricing tool to adjust prices based on real-time demand with customized repricing rules",
+        "confidence": "High",
+        "source": "Amazon\u2019s Automate Pricing tool lets you adjust prices based on real-time demand with customized repricing rules."
+    },
+    {
+        "id": "strategy7",
+        "category": "General",
+        "trigger": "Low volume sales",
+        "advice": "Choose Individual selling plan at $0.99 per item sold plus fees for occasional sales",
+        "confidence": "High",
+        "source": "If you\u2019re only planning to sell a few books here and there, the Individual plan might be the best fit at $0.99 per item sold plus applicable selling fees."
+    },
+    {
+        "id": "strategy8",
+        "category": "General",
+        "trigger": "Establishing a book-selling business",
+        "advice": "Choose Professional selling plan at $39.99 per month plus fees for unlimited sales and access to more tools",
+        "confidence": "High",
+        "source": "If you want to establish a book-selling business, we\u2019d recommend the Professional plan. It allows you to sell as many books as you want for $39.99 per month plus applicable selling fees."
+    },
+    {
+        "id": "strategy9",
+        "category": "Buying",
+        "trigger": "Locating high-demand books",
+        "advice": "Research using Best Sellers in Books list for trending items and check a book\u2019s Best Seller Ranking (BSR) on the product detail page to gauge sales performance in category",
+        "confidence": "High",
+        "source": "If you\u2019re looking for a quick way to locate high-demand books, try the Best Sellers in Books list for a ranking based on what\u2019s trending right now. You can also check a book\u2019s Best Seller Ranking (BSR). BSR is a metric that appears on a product detail page and indicates how it\u2019s selling in the Amazon store compared to other products in the same category."
+    },
+    {
+        "id": "strategy10",
+        "category": "Buying",
+        "trigger": "Product research without barcode",
+        "advice": "Use Amazon Seller app to scan barcodes or use visual search to look up products and view details in the Amazon store",
+        "confidence": "High",
+        "source": "Another way to do product research is to use the Amazon Seller app to scan barcodes or use visual search to look up a product without a barcode and see details about it in the Amazon store. Just tap the camera icon in the app and point your phone at the product to pull up information."
+    },
+    {
+        "id": "strategy11",
+        "category": "Risk",
+        "trigger": "Listing books",
+        "advice": "Be fully transparent and honest about book condition, including important details, to set expectations and avoid returns and negative feedback; reference Amazon's condition guidelines",
+        "confidence": "High",
+        "source": "Make sure to include accurate information about each book so customers can make informed purchasing decisions. Be fully transparent and share important details to set appropriate expectations and avoid issues like returns and negative feedback. Reference our conditions guidelines for books."
+    },
+    {
+        "id": "strategy12",
+        "category": "Risk",
+        "trigger": "Selling textbooks",
+        "advice": "Double-check ISBN to ensure correct edition; avoid prohibited types like teacher\u2019s editions and solutions manuals; reference guidelines for selling textbooks",
+        "confidence": "High",
+        "source": "To sell textbooks in the Amazon store, double check the ISBN to make sure you aren\u2019t selling the wrong edition. Some types of textbooks might be prohibited, like teacher\u2019s editions and solutions manuals. Reference our guidelines for selling textbooks."
+    },
+    {
+        "id": "strategy13",
+        "category": "Pricing",
+        "trigger": "Monitoring sales performance",
+        "advice": "Adjust prices to be more competitive if needed, as it could lead to sales spikes; use free sales estimators to calculate margins and profitability",
+        "confidence": "High",
+        "source": "A pricing strategy might help you be more competitive. For example, adjusting prices could lead to a spike in sales. Free sales estimators can help you calculate your margins and grow profitability."
+    },
+    {
+        "id": "1",
+        "category": "Seasonality",
+        "trigger": "Beginning of new semester (August for fall, January for winter)",
+        "advice": "Plan inventory to meet highest demand during these periods; use slower months to prepare for seasonal spikes",
+        "confidence": "High",
+        "source": "Keep in mind that textbook sales tend to be seasonal. The highest demand can come at the beginning of a new semester, usually in August before the fall semester, or in January at the beginning of the winter semester. This is why it\u2019s important to plan your inventory accordingly and use the slower months to prepare for seasonal spikes in demand."
+    },
+    {
+        "id": "2",
+        "category": "Buying",
+        "trigger": "Books in good condition per Amazon guidelines (New, Used - Like New, Used - Very Good, Used - Good, Used - Acceptable)",
+        "advice": "Source from own library, library sales, auctions, used bookstores, yard sales, estate sales, thrift stores; ensure condition meets guidelines by asking if you would be satisfied with it",
+        "confidence": "High",
+        "source": "To build your inventory, you\u2019ll need to source books. You may be able to start with your own library, but other options for sourcing include library sales, auctions, used bookstores, yard sales, estate sales, and thrift stores. Just make sure the books you\u2019re offering are in good condition. Check the condition guidelines of any selling site you use. For example, Amazon has condition guidelines for books. ... Amazon book condition categories include: New, Used - Like new, Used - Very good, Used - Good, Used - Acceptable. To determine if a book\u2019s condition is acceptable, ask yourself if you would be satisfied with it."
+    },
+    {
+        "id": "3",
+        "category": "Pricing",
+        "trigger": "Competitor pricing for similar used textbooks",
+        "advice": "Research how other used textbook sellers price their inventory, then adjust prices; factor in costs and fees for packing and shipping",
+        "confidence": "High",
+        "source": "To price your textbooks competitively, you can research how other used textbook sellers are pricing their inventory, then adjust your prices. Make sure to factor in costs and fees for packing and shipping. Used textbook prices can depend on what kind of textbook you\u2019re selling, its condition, and even its size or edition."
+    },
+    {
+        "id": "4",
+        "category": "Buying",
+        "trigger": "High demand subjects and editions indicated by Best Seller Ranking (BSR)",
+        "advice": "Research subjects and editions in demand by students; check BSR on Amazon product detail pages to select textbooks that sell well compared to others in the category",
+        "confidence": "High",
+        "source": "To choose which textbooks to sell, you can do research on the subjects and editions that are in demand by students. You can also do research within the Amazon store by checking a textbook\u2019s Best Seller Ranking (BSR), a which is a metric that appears on a product detail page and indicates how it\u2019s selling compared to other products in the same category."
+    },
+    {
+        "id": "5",
+        "category": "Risk",
+        "trigger": "Textbooks with incorrect ISBN, wrong editions, promotional instructor\u2019s editions, teacher\u2019s editions, annotated instructor\u2019s editions, or non-student solutions manuals",
+        "advice": "Avoid listing prohibited items to prevent violations; verify authenticity and quality; use separate ASINs for international editions",
+        "confidence": "High",
+        "source": "There are some textbooks that are prohibited from sale in the Amazon store, including: Edition attached to the incorrect ISBN... Promotional instructor\u2019s editions... Teacher\u2019s editions and annotated instructor\u2019s editions... Solutions manuals... Follow reselling guidelines. For example, you\u2019ll need to research your suppliers and verify the authenticity and quality of your textbooks. ... Remember that international editions of textbooks must be listed using separate ASINs from the domestic product."
+    },
+    {
+        "id": "6",
+        "category": "General",
+        "trigger": "Selling used textbooks before new editions release",
+        "advice": "Sell used textbooks sooner to capitalize on value before updates reduce demand",
+        "confidence": "High",
+        "source": "Additionally, remember that new editions of textbooks are released as they become updated\u2014so if your textbooks are used, the sooner you sell them, the better."
+    },
+    {
+        "id": "7",
+        "category": "General",
+        "trigger": "Professional selling plan required for Amazon",
+        "advice": "Sign up for Professional plan at $39.99 per month plus selling fees to access tools and sell textbooks",
+        "confidence": "High",
+        "source": "If you choose to sell your textbooks in the Amazon store, you\u2019ll need to sign up for an Amazon selling plan. A Professional selling plan costs $39.99 per month plus applicable selling fees."
+    },
+    {
+        "id": "8",
+        "category": "Risk",
+        "trigger": "Inaccurate product listings or unclear condition explanations",
+        "advice": "Create accurate and detailed listings with clear condition explanations, great photos, and full transparency to avoid returns and negative feedback",
+        "confidence": "High",
+        "source": "Make sure you have accurate product listings, including a clear explanation of textbook conditions, so customers can make informed purchasing decisions. Be fully transparent and share important details to set appropriate expectations and avoid issues like returns and negative feedback. ... To help your textbooks stand out online, make sure you take great product photos to help customers make informed purchasing decisions."
+    },
+    {
+        "id": "9",
+        "category": "General",
+        "trigger": "Fulfillment choice between FBA and FBM",
+        "advice": "Use FBA to save time, reduce operational costs, and handle fulfillment; consider FBM if preferring self-handling with Amazon tools",
+        "confidence": "High",
+        "source": "Amazon offers two fulfillment options: Fulfillment by Amazon (FBA) and Fulfilled by Merchant. ... FBA allows you to send inventory into Amazon\u2019s global fulfillment network, and we pick, pack, ship orders, and handle customer service on your behalf. FBA can help you save time, reduce operational costs, and grow your business."
+    },
+    {
+        "id": "10",
+        "category": "Buying",
+        "trigger": "Different textbook genres and categories",
+        "advice": "Research various genres and categories to expand inventory and find new selling opportunities",
+        "confidence": "High",
+        "source": "To expand your inventory and reach more customers, do research on different textbook genres and categories to find new selling opportunities."
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Researching customer demand for expansion",
+        "advice": "Look for consistent demand patterns over time, not just short-term sales spikes",
+        "confidence": "High",
+        "source": "Look for consistent demand patterns over time, not just short-term sales spikes"
+    },
+    {
+        "id": "strat-002",
+        "category": "General",
+        "trigger": "Researching customer demand for expansion",
+        "advice": "Research what customers in different countries prefer and how they shop",
+        "confidence": "High",
+        "source": "Research what customers in different countries prefer and how they shop"
+    },
+    {
+        "id": "strat-003",
+        "category": "General",
+        "trigger": "Researching customer demand for expansion",
+        "advice": "Identify which of your products have features or benefits that appeal across regions",
+        "confidence": "High",
+        "source": "Identify which of your products have features or benefits that appeal across regions"
+    },
+    {
+        "id": "strat-004",
+        "category": "Risk",
+        "trigger": "Calculating operational costs for expansion",
+        "advice": "Start by listing every possible expense, from initial setup to daily operations",
+        "confidence": "High",
+        "source": "Start by listing every possible expense, from initial setup to daily operations"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "Calculating operational costs for expansion",
+        "advice": "Research country-specific requirements that could affect your costs, like taxes, compliance, and shipping",
+        "confidence": "High",
+        "source": "Research country-specific requirements that could affect your costs, like taxes, compliance, and shipping"
+    },
+    {
+        "id": "strat-006",
+        "category": "Risk",
+        "trigger": "Calculating operational costs for expansion",
+        "advice": "Consider both your startup investment and long-term operating budget",
+        "confidence": "High",
+        "source": "Consider both your startup investment and long-term operating budget"
+    },
+    {
+        "id": "strat-007",
+        "category": "Seasonality",
+        "trigger": "Determining launch timing for expansion",
+        "advice": "Study how seasons affect buying habits in your target countries",
+        "confidence": "High",
+        "source": "Study how seasons affect buying habits in your target countries"
+    },
+    {
+        "id": "strat-008",
+        "category": "Seasonality",
+        "trigger": "Determining launch timing for expansion",
+        "advice": "Consider holidays or other shopping events that drive interest in new products",
+        "confidence": "High",
+        "source": "Consider holidays or other shopping events that drive interest in new products"
+    },
+    {
+        "id": "strat-009",
+        "category": "Seasonality",
+        "trigger": "Determining launch timing for expansion",
+        "advice": "Research local shopping trends and popular shopping periods",
+        "confidence": "High",
+        "source": "Research local shopping trends and popular shopping periods"
+    },
+    {
+        "id": "strat-010",
+        "category": "General",
+        "trigger": "Accessing global demand insights",
+        "advice": "Use the Global demand for your products tab in Marketplace Product Guidance to get bi-weekly recommendations for FBA products in different countries",
+        "confidence": "High",
+        "source": "The Global demand for your products tab in Amazon\u2019s Marketplace Product Guidance tool provides recommendations every two weeks about products enrolled in Fulfillment by Amazon (FBA) that could succeed in different countries."
+    },
+    {
+        "id": "strat-011",
+        "category": "General",
+        "trigger": "Building historical demand data",
+        "advice": "Download bi-weekly recommendations to build a historical data set for spotting consistent opportunities",
+        "confidence": "High",
+        "source": "You can download these recommendations to build a historical data set, helping you spot consistent opportunities over time."
+    },
+    {
+        "id": "strat-012",
+        "category": "Risk",
+        "trigger": "Analyzing expansion costs",
+        "advice": "Use the Cost analysis tab in Sell Globally to review estimated first-year sales potential, one-time setup costs like VAT registration, ongoing costs like fulfillment and storage, and category-specific requirements",
+        "confidence": "High",
+        "source": "The Cost analysis tab in Amazon\u2019s Sell Globally experience can help you understand what expansion could cost in different countries. The tool provides detailed breakdowns of: Estimated first-year sales potential, One-time setup costs like VAT registration and product compliance, Ongoing costs like fulfillment, storage, and shipping, Category-specific requirements and associated costs"
+    },
+    {
+        "id": "strat-013",
+        "category": "Seasonality",
+        "trigger": "Analyzing buying patterns for timing",
+        "advice": "Use the Sales insights tab in Sell Globally to visualize category sales trends over the past 12 months, top ASINs, sales distribution, return rates, and monthly/seasonal changes across countries",
+        "confidence": "High",
+        "source": "The Sales insights tab in Amazon\u2019s Sell Globally experience can help you understand overall buying patterns and market trends... The tool provides visualizations of: Category sales trends over the past 12 months, Top-performing ASINs in your categories, Sales distribution across price ranges, Return rates and advertising metrics, You can analyze monthly and seasonal changes across different countries"
+    },
+    {
+        "id": "strat-014",
+        "category": "General",
+        "trigger": "Understanding category performance",
+        "advice": "Use the Category insights tab in Marketplace Product Guidance to view top 10 products by revenue, successful new launches, performance metrics like units sold and conversion rates, common features, and seasonal patterns in categories",
+        "confidence": "High",
+        "source": "The Category insights tab in Amazon\u2019s Marketplace Product Guidance tool can help you understand how specific types of products perform in different countries. The tool shows: Top 10 products by revenue in each category, Most successful new product launches, Performance metrics like units sold, page views, and conversion rates, Common product features driving purchases, You can see seasonal patterns within your product categories."
+    },
+    {
+        "id": "strat-015",
+        "category": "General",
+        "trigger": "Accessing expansion tools",
+        "advice": "Ensure you are a Professional seller who has completed at least one sale in the past 12 months to access these tools (waived if selling less than 12 months)",
+        "confidence": "High",
+        "source": "These tools are available to Professional sellers who have completed at least one sale in the past 12 months. This requirement doesn\u2019t apply to sellers who have been selling for less than 12 months."
+    },
+    {
+        "id": "strat-016",
+        "category": "General",
+        "trigger": "Monitoring tool updates",
+        "advice": "Check Amazon\u2019s expansion tools every two weeks for fresh insights and patterns",
+        "confidence": "High",
+        "source": "Check these tools every two weeks to gather fresh insights and watch for patterns over time... Global demand for your products is updated every two weeks with fresh recommendations. Download these recommendations regularly to track opportunities over time."
+    },
+    {
+        "id": "strat-017",
+        "category": "Risk",
+        "trigger": "Global selling costs",
+        "advice": "Global selling requires only one monthly Professional fee of $39.99 that is split across international stores, no separate plans needed",
+        "confidence": "High",
+        "source": "No. Global selling only requires one monthly fee that\u2019s split across the international stores you operate. *A Professional selling plan is $39.99 a month + selling fees."
+    },
+    {
+        "id": "strat-018",
+        "category": "General",
+        "trigger": "Eligibility for tools",
+        "advice": "Tools apply to FBA-enrolled products only; most categories qualify except groceries and perishables",
+        "confidence": "High",
+        "source": "No. These tools work with products enrolled in FBA only, and some categories like groceries and perishable goods aren\u2019t eligible for recommendations. Most other product categories qualify for tool analysis."
+    },
+    {
+        "id": "strat-019",
+        "category": "General",
+        "trigger": "Expansion regions",
+        "advice": "From the US, expand to countries in Europe, the Asia-Pacific, and the Middle East and North Africa",
+        "confidence": "High",
+        "source": "You can expand to countries in Europe, the Asia-Pacific, and the Middle East and North Africa."
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "Service-related chargeback for seller-fulfilled orders",
+        "advice": "Monitor Order Defect Rate (ODR) to keep it below 1% over 60-day period; for 300 orders, aim for fewer than 3 defects including chargebacks",
+        "confidence": "High",
+        "source": "Your overall ODR target should be less than 1% of total orders during a given 60-day period. For example, if you received 300 orders over the past 60 days, you should aim to receive fewer than three one- or two-star ratings, A-to-z Guarantee claims, or chargeback claims."
+    },
+    {
+        "id": "risk-002",
+        "category": "Risk",
+        "trigger": "Receipt of Amazon chargeback alert",
+        "advice": "Respond within seven calendar days of the email date and provide evidence such as shipping details, tracking, communications, and product info to dispute",
+        "confidence": "High",
+        "source": "If you receive an Amazon chargeback alert by email, be sure to respond within seven calendar days of the email date."
+    },
+    {
+        "id": "risk-003",
+        "category": "Risk",
+        "trigger": "Chargeback process initiation",
+        "advice": "Be prepared for the process to take 90 days or longer; use Seller Central's Chargebacks tool to represent your case",
+        "confidence": "High",
+        "source": "The length of the entire process can vary, with the final outcome potentially taking 90 days or longer from the date that the customer initiates the chargeback with their bank."
+    },
+    {
+        "id": "risk-004",
+        "category": "Risk",
+        "trigger": "Seller-fulfilled orders at risk of chargebacks",
+        "advice": "Use Fulfillment by Amazon (FBA) to handle orders, as FBA chargebacks do not impact account health or ODR",
+        "confidence": "High",
+        "source": "Note that FBA orders don\u2019t impact your shipping performance or overall account health\u2014only seller-fulfilled orders do."
+    },
+    {
+        "id": "general-001",
+        "category": "General",
+        "trigger": "Potential for chargebacks due to customer dissatisfaction",
+        "advice": "Accurately represent products with clear images and descriptions, provide accurate delivery estimates, use trackable shipping with confirmation for high-value orders, and maintain records of tracking information",
+        "confidence": "High",
+        "source": "Accurately represent your offerings using clear images and descriptions. Provide accurate delivery estimates. Fulfill orders using appropriate packaging materials and methods. Use trackable shipping methods and delivery confirmation (signature required) for high-value orders. Keep a record of tracking information like the date the order was shipped and the shipping method."
+    },
+    {
+        "id": "general-002",
+        "category": "General",
+        "trigger": "Issues escalating to chargebacks",
+        "advice": "Communicate proactively with customers using Buyer-Seller Messaging to address issues like out-of-stock items or questions before they lead to disputes",
+        "confidence": "High",
+        "source": "Amazon sellers can proactively reduce chargebacks and other issues by using Buyer-Seller Messaging. For example, sellers can contact customers to let them know a product is out of stock, or respond to customer questions about products."
+    },
+    {
+        "id": "risk-005",
+        "category": "Risk",
+        "trigger": "Fraud-related chargebacks",
+        "advice": "Amazon handles fraud-related chargebacks, so focus on service-related prevention; do not count against ODR",
+        "confidence": "High",
+        "source": "Fraud-related chargebacks don\u2019t count against your ODR."
+    },
+    {
+        "id": "ltl-cost-saving",
+        "category": "General",
+        "trigger": "Shipping larger volumes of inventory (e.g., multiple pallets not filling a truck)",
+        "advice": "Use Less-than-Truckload (LTL) shipping via Amazon's Partner Carrier program to pay only for the space used, saving money compared to Full Truckload (FTL) for partial loads.",
+        "confidence": "High",
+        "source": "When you ship LTL, you only pay for the space your products use in the truck, nothing more. With full truckload (FTL) shipping, you get an entire truck for your products alone. You pay for the whole truck, even if you don\u2019t fill it completely."
+    },
+    {
+        "id": "pallet-requirements",
+        "category": "General",
+        "trigger": "Preparing palletized shipments for LTL",
+        "advice": "Use 40 \u00d7 48 inches wooden pallets with four-way access (GMA Standard B Grade or higher); stack boxes evenly with FBA box ID labels facing outward; wrap in clear plastic stretch wrap; label all four sides; do not exceed 5,000 boxes per shipment.",
+        "confidence": "High",
+        "source": "For palletized shipments, your pallets must be 40 \u00d7 48 inches and made of wood with four-way access. Stack boxes evenly and squarely on pallets, with FBA box ID labels facing outward. Wrap pallets in clear plastic stretch wrap. Each pallet requires labels on all four sides. Keep in mind that shipments can\u2019t exceed 5,000 boxes."
+    },
+    {
+        "id": "lift-gate-service",
+        "category": "General",
+        "trigger": "Shipments under 12 pallets and 20,000 lb from locations without forklift or loading dock (e.g., residential addresses)",
+        "advice": "Request lift-gate service to safely load/unload pallets without a dock; available for smaller LTL shipments.",
+        "confidence": "High",
+        "source": "Make sure you have a forklift or request lift-gate service for shipments under 12 pallets and 20,000 lb. Yes, you can send an LTL shipment to Amazon\u2019s network from a residential address, but you must request lift-gate service when selecting your carrier."
+    },
+    {
+        "id": "shipping-location-prep",
+        "category": "General",
+        "trigger": "Preparing pickup location for LTL carrier",
+        "advice": "Clear space for a 53-foot trailer or request a box truck; have dock ready or alternative loading area; provide contact info, business hours, and pickup details at booking.",
+        "confidence": "High",
+        "source": "Clear space for a 53-foot trailer or request a box truck. Have your dock ready or arrange an alternative loading area. When shipping with a partner carrier, you\u2019ll need to provide the following information at booking for your carrier pickup appointment: Contact information, Business hours, Pickup location details."
+    },
+    {
+        "id": "non-partner-carrier-risk",
+        "category": "Risk",
+        "trigger": "Using non-partner carriers for LTL shipments",
+        "advice": "Schedule delivery appointment in advance and provide bill of lading with Amazon reference IDs, Shipment IDs, and carrier tracking numbers to avoid rejection at Amazon facility.",
+        "confidence": "High",
+        "source": "If you choose to use a non-partner carrier, you or your carrier must schedule a delivery appointment at the receiving Amazon facility in advance. You\u2019ll also need additional documentation, including a bill of lading (BOL) with: Amazon reference IDs, Shipment IDs, Carrier tracking numbers. Carriers without a scheduled delivery appointment will be rejected upon arrival."
+    },
+    {
+        "id": "shipment-combination-limit",
+        "category": "Risk",
+        "trigger": "Attempting to combine FBA, MCF, and AWD inventory",
+        "advice": "Create separate shipments for FBA/MCF and AWD as they go to different networks; do not combine to avoid issues.",
+        "confidence": "High",
+        "source": "No, FBA and AWD shipments can\u2019t be combined because they don\u2019t share the same destination. FBA inventory is sent to Amazon\u2019s fulfillment network, and AWD inventory is sent to Amazon\u2019s distribution network. So you\u2019ll need to create separate shipments for each."
+    },
+    {
+        "id": "ltl-vs-spd-selection",
+        "category": "General",
+        "trigger": "Smaller shipments (individual boxes, max 150 lb, 165 inches per package)",
+        "advice": "Use Small Parcel Delivery (SPD) for simplicity and no special equipment; switch to LTL for cost-effective larger volumes (multiple pallets up to 5,000 boxes).",
+        "confidence": "High",
+        "source": "Shipping method: Small parcel delivery (SPD) \u2013 Best for: Individual boxes, Smaller shipments, Max 150 lb, 165 inches per package. Less than truckload (LTL) \u2013 Best for: Multiple pallets that don\u2019t fill a truck, Up to 5,000 boxes."
+    },
+    {
+        "id": "pricing-001",
+        "category": "Pricing",
+        "trigger": "When suggesting a List Price for a product",
+        "advice": "Base the List Price on recent sales data within the last 12 months to ensure relevance and accuracy",
+        "confidence": "High",
+        "source": "If you\u2019re suggesting a new or updated List Price, base it on recent sales data\u2014ideally within the last 12 months. This strategy can help ensure the List Price stays relevant."
+    },
+    {
+        "id": "pricing-002",
+        "category": "Pricing",
+        "trigger": "List Price suggestion required",
+        "advice": "Ensure the List Price represents the price at which you or other retailers have recently made or intend to make substantial sales of the product",
+        "confidence": "High",
+        "source": "Any List Price you suggest should represent the price at which you, or other retailers or sellers, have recently made or intend to make substantial sales of the product."
+    },
+    {
+        "id": "pricing-003",
+        "category": "Pricing",
+        "trigger": "Updating List Price for accuracy",
+        "advice": "Reflect the manufacturer\u2019s current suggested retail price (MSRP) and update when it changes to maintain accuracy and customer trust",
+        "confidence": "High",
+        "source": "While List Prices don\u2019t change as often as offer prices, they should reflect the manufacturer\u2019s current suggested retail price (MSRP). Suggesting updates to a List Price that reflect changes in the MSRP can help you maintain accuracy and customer trust."
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "Temptation to suggest an artificially high List Price",
+        "advice": "Avoid inflating List Prices as Amazon validates against store and competitor prices; inflation can lead to display disablement, account flagging, and loss of selling privileges",
+        "confidence": "High",
+        "source": "Avoid the temptation to suggest an artificially high List Price to try to make your offer look like a better deal. Amazon validates List Prices against sales in our store and external competitor prices... If Amazon identifies an inflated List Price, not only will the display be disabled, but your account may be flagged for a violation of Amazon policy. This can affect your selling privileges and account health."
+    },
+    {
+        "id": "general-001",
+        "category": "General",
+        "trigger": "Available suggested List Price for products",
+        "advice": "Always provide a suggested List Price to Amazon when available to help customers view savings, understand offer value, and drive engagement",
+        "confidence": "High",
+        "source": "If you have a suggested List Price available, it\u2019s important to provide it to Amazon. If displayed, the List Price can help customers view savings and understand the value of your offer, which can help drive engagement."
+    },
+    {
+        "id": "pricing-004",
+        "category": "Pricing",
+        "trigger": "Typical Price computation",
+        "advice": "Understand that Typical Price is the median price paid over the past 90 days, excluding promotions, to set realistic reference benchmarks",
+        "confidence": "High",
+        "source": "It\u2019s automatically computed using the median price customers have paid for a product in the Amazon store over the past 90 days, not including prices paid during any limited-time promotions."
+    },
+    {
+        "id": "general-002",
+        "category": "General",
+        "trigger": "Reference prices display",
+        "advice": "Use List Prices as strikethrough prices to leverage the anchoring effect, highlighting savings and influencing customer purchasing behavior",
+        "confidence": "High",
+        "source": "When reference prices are displayed as strikethrough prices, they can influence purchasing behavior. Seeing savings can help customers understand whether they\u2019re getting a good deal and increase the chance that they\u2019ll buy. This is called the \u201canchoring effect\u201d and is a common marketing strategy."
+    },
+    {
+        "id": "book-uuid-001",
+        "category": "General",
+        "trigger": "Product is a book",
+        "advice": "Identify books using ISBN number instead of creating a new ASIN; match to existing ASIN via GTIN search",
+        "confidence": "High",
+        "source": "The only exception is for books, which are identified using their ISBN number."
+    },
+    {
+        "id": "book-uuid-002",
+        "category": "General",
+        "trigger": "Selling books as reseller",
+        "advice": "Search for existing product using ISBN as GTIN in Add Products tool to match ASIN and add offer",
+        "confidence": "High",
+        "source": "On the Add Products page, click Product IDs, then enter the product\u2019s GTIN and click Submit. If your product does appear in the search results, it means it\u2019s already part of the Amazon catalog. Instead of creating a new ASIN, you can match your product to the existing one."
+    },
+    {
+        "id": "book-uuid-003",
+        "category": "Pricing",
+        "trigger": "Low volume book sales (<40 items/month)",
+        "advice": "Use Individual selling plan at $0.99 per item sold to minimize upfront costs",
+        "confidence": "Medium",
+        "source": "An Individual plan that costs $0.99 per item sold and a Professional plan that costs $39.99 per month no matter how many items you sell."
+    },
+    {
+        "id": "book-uuid-004",
+        "category": "Pricing",
+        "trigger": "High volume book sales (>40 items/month)",
+        "advice": "Opt for Professional selling plan at $39.99/month for unlimited sales and access to advanced tools",
+        "confidence": "Medium",
+        "source": "A Professional plan that costs $39.99 per month no matter how many items you sell. Each plan comes with access to a selection of tools and services to support your selling journey."
+    },
+    {
+        "id": "book-uuid-005",
+        "category": "General",
+        "trigger": "Listing books for sale",
+        "advice": "Enroll products in Fulfillment by Amazon (FBA) to offer Prime shipping and outsource fulfillment",
+        "confidence": "High",
+        "source": "Enroll your products in Fulfillment by Amazon (FBA) when you list. FBA lets you outsource fulfillment and is a great way to offer fast, free shipping through Prime."
+    },
+    {
+        "id": "book-uuid-006",
+        "category": "Risk",
+        "trigger": "New seller creating listings",
+        "advice": "Limit on new ASIN creations per week until sales history is established; focus on matching existing ASINs for books to avoid restrictions",
+        "confidence": "High",
+        "source": "There\u2019s no limit to the number of ASINs you can have in the Amazon store for unique products. To protect the customer shopping experience, however, we limit the number of new ASINs you can create in a given week until you establish a sales history with Amazon."
+    },
+    {
+        "id": "book-cond-new",
+        "category": "General",
+        "trigger": "Book arrives fresh off printer with cover, all pages, and protective wrapping",
+        "advice": "List as New only if no markings, additional labels, or remaindered; required for Featured Offer in some cases",
+        "confidence": "High",
+        "source": "New: These are the books that arrive fresh off the printer with a cover, all their pages and protective wrapping. Books with markings, additional labels, or that are considered \u201cremaindered\u201d don\u2019t count as New."
+    },
+    {
+        "id": "book-cond-like-new",
+        "category": "General",
+        "trigger": "Light cosmetic issues like minor marks or bends on cover, spine, pages, or dust cover",
+        "advice": "List as Used - Like New if dust cover intact and no notes or tears on pages",
+        "confidence": "High",
+        "source": "Used - Like New: Books with light cosmetic issues can be considered Like New even with minor marks or bends on the cover, spine, pages or dust cover, as long as the dust cover is intact and the pages aren\u2019t marred with notes or tears."
+    },
+    {
+        "id": "book-cond-very-good",
+        "category": "General",
+        "trigger": "Minor cosmetic damage like regular wear and tear, missing shrink wrap, dust covers, or boxed set cases",
+        "advice": "List as Used - Very Good building on Like New allowances",
+        "confidence": "High",
+        "source": "Used - Very Good: This category builds on the Like New category with room for minor cosmetic damage like regular wear and tear, with additional allowances like missing shrink wrap, dust covers, or boxed set cases."
+    },
+    {
+        "id": "book-cond-good",
+        "category": "General",
+        "trigger": "All pages and cover intact, spine showing wear, limited notes or highlighting",
+        "advice": "List as Used - Good for books suitable for thrift store sourcing",
+        "confidence": "High",
+        "source": "Used - Good: Books in this category should still have all their pages and the cover should be intact. But it\u2019s okay if the spine is showing some wear and tear, and if pages have limited notes or highlighting."
+    },
+    {
+        "id": "book-cond-acceptable",
+        "category": "General",
+        "trigger": "Wear from previous categories plus minor water damage not impacting readability",
+        "advice": "List as Used - Acceptable for worn books still readable",
+        "confidence": "High",
+        "source": "Used - Acceptable: Include the wear and tear highlighted from all the previous categories to books that fall under Acceptable, and add in minor water damage that doesn\u2019t impact the readability of the text."
+    },
+    {
+        "id": "book-cond-unacceptable",
+        "category": "Risk",
+        "trigger": "Missing pages, obscured or unreadable text, advance reading copies or uncorrected proofs",
+        "advice": "Do not sell; avoid sourcing or listing such books to prevent violations",
+        "confidence": "High",
+        "source": "Unacceptable: Books that fall under this category are basically impossible to read\u2014think books that have missing pages, obscured text, or unreadable text. Other books that fall under this category include advance reading copies or uncorrected proofs of in-print or not-yet-published books."
+    },
+    {
+        "id": "collectible-cond-like-new",
+        "category": "General",
+        "trigger": "Very small flaws mostly unnoticeable, pages and cover intact, dust cover if applicable, no creased spine",
+        "advice": "List as Collectible - Like New for books with added value like vintage significance",
+        "confidence": "High",
+        "source": "Collectible - Like New: Books in this condition can have very small flaws as long as they\u2019re mostly unnoticeable. But for the most part, the pages and cover must be intact (along with the dust cover, if applicable). The spine should also not be creased."
+    },
+    {
+        "id": "collectible-cond-very-good",
+        "category": "General",
+        "trigger": "Intact pages without notes or highlighting, spine no wear, dust cover may show rubbing or chipping",
+        "advice": "List as Collectible - Very Good for culturally significant books",
+        "confidence": "High",
+        "source": "Collectible - Very Good: These books have pages that are intact and don\u2019t include notes or highlighting, and the spine shouldn\u2019t show signs of wear. However, if the book has a dust cover, it\u2019s okay if it shows signs of some rubbing or chipping."
+    },
+    {
+        "id": "collectible-cond-good",
+        "category": "General",
+        "trigger": "Intact pages and covers, dust cover if present, worn spine but generally not collectible grade",
+        "advice": "List as Collectible - Good only if rare; detail significance on product page",
+        "confidence": "High",
+        "source": "Collectible - Good: The pages and covers of these books should be intact, as well as the dust cover, if there is one. The spine may look worn, but generally, Good condition books aren\u2019t collectible grade."
+    },
+    {
+        "id": "collectible-cond-acceptable",
+        "category": "Risk",
+        "trigger": "Readable but significant wear, missing dust jacket unless incredibly rare",
+        "advice": "Avoid listing as Collectible - Acceptable unless extremely rare; not typically collectible grade",
+        "confidence": "High",
+        "source": "Collectible - Acceptable: Basically, these books are readable but have significant signs of wear, and if they had a dust jacket, it may be missing. Unless it\u2019s incredibly rare, a book in Acceptable condition isn\u2019t collectible grade."
+    },
+    {
+        "id": "inspection-tip",
+        "category": "Risk",
+        "trigger": "Before listing any book",
+        "advice": "Perform thorough inspection beyond visual to accurately determine condition and avoid negative feedback or returns",
+        "confidence": "High",
+        "source": "Do a thorough inspection of your products: Go beyond just eyeballing your units when they come in\u2014give them a really good going over to make sure you know exactly what kind of shape they\u2019re in. If you miss something in your inspection and list your product incorrectly, that could have a negative effect on a customer\u2019s shopping experience."
+    },
+    {
+        "id": "recall-check",
+        "category": "Risk",
+        "trigger": "Before listing books or products",
+        "advice": "Check for product recalls to avoid safety issues and negative feedback",
+        "confidence": "High",
+        "source": "Don\u2019t forget about product recalls: Before you list your product, make sure it hasn\u2019t been subject to a recall. Not only could this be a safety violation, but customers could leave negative feedback if they find out the product they just bought has been recalled."
+    },
+    {
+        "id": "description-detail",
+        "category": "General",
+        "trigger": "When listing books with blemishes like scratches or dings",
+        "advice": "Provide detailed descriptions including measurements and locations to set clear expectations and reduce returns",
+        "confidence": "High",
+        "source": "Be detailed in your descriptions: If an item you\u2019re selling has a scratch in it, try to offer a measurement. If there\u2019s a ding, explain where the ding is. Try to paint a complete picture of the item and where customers can expect to see blemishes so they know exactly what they\u2019re purchasing."
+    },
+    {
+        "id": "honesty-policy",
+        "category": "Risk",
+        "trigger": "Condition mismatch between listing and actual item",
+        "advice": "Always be honest about condition to prevent negative feedback upon customer receipt",
+        "confidence": "High",
+        "source": "Honesty is the best policy: Telling the truth about the condition of your item is important\u2014especially since the customer is going to see its condition when you ship it to them. If the condition they get doesn\u2019t match the condition described in the listing, that could result in negative feedback."
+    },
+    {
+        "id": "packaging-tip",
+        "category": "Risk",
+        "trigger": "After sale of books",
+        "advice": "Package and ship with care using bubble wrap or special materials to prevent damage in transit",
+        "confidence": "High",
+        "source": "Package and ship with care: Once you\u2019ve made the sale, ensure that your product is well packaged to guard against any damage. This could mean using special boxes or packing materials like bubble wrap, and if you have a particularly fragile or large product, consider going with a specialty shipper who is skilled at handling delicate or oversized items."
+    },
+    {
+        "id": "unacceptable-dirty",
+        "category": "Risk",
+        "trigger": "Books that are dirty, corroded, heavily stained, or moldy",
+        "advice": "Do not sell; inspect and discard to avoid returns and policy violations",
+        "confidence": "High",
+        "source": "They\u2019re dirty, corroded, heavily stained or moldy"
+    },
+    {
+        "id": "unacceptable-damaged",
+        "category": "Risk",
+        "trigger": "Books damaged to the point they can't be used or are difficult to use",
+        "advice": "Do not sell; source only functional items",
+        "confidence": "High",
+        "source": "They\u2019re damaged to the point where they can\u2019t be used, or they\u2019re difficult to use"
+    },
+    {
+        "id": "unacceptable-missing-parts",
+        "category": "Risk",
+        "trigger": "Books missing essential parts or materials",
+        "advice": "Do not sell; ensure completeness before purchase",
+        "confidence": "High",
+        "source": "They\u2019re missing essential parts or materials"
+    },
+    {
+        "id": "unacceptable-repair",
+        "category": "Risk",
+        "trigger": "Books needing repair or service",
+        "advice": "Do not sell; avoid items requiring fixes",
+        "confidence": "High",
+        "source": "They need repair or service"
+    },
+    {
+        "id": "unacceptable-fake",
+        "category": "Risk",
+        "trigger": "Fake, copied, or non-original manufacturer books",
+        "advice": "Do not sell; verify authenticity in sourcing",
+        "confidence": "High",
+        "source": "They\u2019re fake, copied, or don\u2019t come from the original manufacturer"
+    },
+    {
+        "id": "unacceptable-promo",
+        "category": "Risk",
+        "trigger": "Promotional, advanced copies, or samples like unproofed galleys",
+        "advice": "Do not sell; especially for in-print or unpublished books",
+        "confidence": "High",
+        "source": "They\u2019re a promotional or advanced copy, or a sample, like galley copies of books that haven\u2019t been proofed"
+    },
+    {
+        "id": "unacceptable-expiration",
+        "category": "Risk",
+        "trigger": "Books at or near expiration or altered dates (if applicable, e.g., supplements but infer for dated materials)",
+        "advice": "Do not sell; check dates on any time-sensitive books",
+        "confidence": "High",
+        "source": "They\u2019re at or near their expiration date, or the expiration date has been altered or removed"
+    },
+    {
+        "id": "unacceptable-unsellable",
+        "category": "Risk",
+        "trigger": "Marked unsellable, for destruction, or disposal",
+        "advice": "Do not sell; avoid slashed or marked items",
+        "confidence": "High",
+        "source": "They\u2019re marked unsellable or marked for destruction or disposal"
+    },
+    {
+        "id": "listing-new-condition",
+        "category": "General",
+        "trigger": "Creating new book listing in Seller Central",
+        "advice": "Select condition on the Offer tab after logging into Seller Central > Catalog > Add Products",
+        "confidence": "High",
+        "source": "If you\u2019re creating a new listing, select the condition for your item on the Offer tab."
+    },
+    {
+        "id": "listing-existing-condition",
+        "category": "General",
+        "trigger": "Matching offer to existing book listing",
+        "advice": "Select best matching condition from drop-down in search results via Seller Central > Catalog > Add Products",
+        "confidence": "High",
+        "source": "If you\u2019re matching an offer to an existing listing, select the condition that best matches your item from the drop-down menu in the search results."
+    },
+    {
+        "id": "multiple-conditions",
+        "category": "General",
+        "trigger": "Selling same book in multiple conditions",
+        "advice": "In Seller Central > Inventory > Manage All Inventory, find product and select 'Add another condition'",
+        "confidence": "High",
+        "source": "To offer a product in more than one condition, log into Seller Central and from the main menu, select Inventory, then Manage All Inventory. From there, find the product on the Manage All inventory page and use the options at the end of the row to select Add another condition."
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "New to reselling",
+        "advice": "Sign up for an Amazon seller account and choose between Individual plan ($0.99 per product sold) or Professional plan ($39.99 per month) based on expected inventory volume and storage needs.",
+        "confidence": "High",
+        "source": "You can get started reselling in Amazon stores by signing up for a seller account. Choose between an Individual or Professional selling plan: Individual plan: $0.99 per product sold plus applicable selling fees... Professional plan: $39.99 per month plus applicable selling fees. To decide on a plan, consider how much inventory you intend to process, storage needs, and other factors."
+    },
+    {
+        "id": "strat-002",
+        "category": "Buying",
+        "trigger": "Sourcing products",
+        "advice": "Research manufacturers, resellers, and suppliers; verify authenticity, quality, and compliance; keep documentation like invoices; request samples before bulk orders.",
+        "confidence": "High",
+        "source": "Research manufacturers, resellers, and suppliers before purchasing products to reduce the risk of complaints. Verify the authenticity and quality of products before selling them. Check that products and associated parts work properly and are undamaged. Research safety testing and compliance requirements for the products. Keep documentation and records of transactions, such as purchase orders and invoices."
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Retail arbitrage opportunity",
+        "advice": "Purchase products from retail stores at lower prices (e.g., clearance or discounts) and resell for profit; ensure invoices for documentation and check selling fees.",
+        "confidence": "High",
+        "source": "Retail arbitrage refers to purchasing products from retail stores at lower prices and reselling them for a profit... For example, when you resell a product from a retailer you might need additional documents, such as invoices, to sell the products. Before you try retail arbitrage, check to see what selling fees might apply. Then, calculate your margins to ensure you can turn a profit."
+    },
+    {
+        "id": "strat-004",
+        "category": "Pricing",
+        "trigger": "Listing products",
+        "advice": "Use Amazon\u2019s Automate Pricing tool to set competitive prices automatically; create rules based on factors like feedback rating or fulfillment; set minimum price to maintain healthy margins.",
+        "confidence": "High",
+        "source": "To find the ideal rate to price items, try Amazon\u2019s free Automate Pricing tool... Create a rule or choose a pre-defined rule. Start with the pre-configured \u201ccompetitive price rule\u201d or customize your own strategy... Set a minimum price to make sure you can maintain healthy margins."
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "Potential IP issues",
+        "advice": "Familiarize with Amazon\u2019s intellectual property policies and anti-counterfeiting policy to avoid trademark infringement.",
+        "confidence": "High",
+        "source": "You can also learn more about Amazon\u2019s intellectual property policies to avoid infringing on a brand\u2019s trademarks and familiarize yourself with Amazon\u2019s anti-counterfeiting policy."
+    },
+    {
+        "id": "strat-006",
+        "category": "Seasonality",
+        "trigger": "High demand periods for seasonal products",
+        "advice": "Sell seasonal products like holiday decorations or costumes during months of high demand to capitalize on lucrative opportunities.",
+        "confidence": "High",
+        "source": "Seasonal products: Selling seasonal products, such as holiday decorations, costumes, or outdoor equipment, can be lucrative during months when demand is high."
+    },
+    {
+        "id": "strat-007",
+        "category": "General",
+        "trigger": "Gauging demand",
+        "advice": "Use Best Seller Rankings (BSR), ecommerce tools, and product research to identify low-competition, high-potential products; monitor trends quarterly.",
+        "confidence": "High",
+        "source": "Browse through best seller rankings (BSR) to learn about top-selling products. Use ecommerce tools to find low-competition, high-potential products... Keep a pulse on trends as demand shifts. What sells well this month might change the next quarter."
+    },
+    {
+        "id": "strat-008",
+        "category": "Risk",
+        "trigger": "High competition in popular categories",
+        "advice": "Avoid race to the bottom pricing; differentiate using strengths, audience insights, and tools like Product Opportunity Explorer to monitor competition.",
+        "confidence": "High",
+        "source": "Some sellers find themselves in a race to the bottom with prices, which can hurt your profitability. Instead, strategic pricing can be key... Product Opportunity Explorer: Keep an eye on your competition and avoid being blindsided by reduced sales."
+    },
+    {
+        "id": "strat-009",
+        "category": "General",
+        "trigger": "Fulfillment decisions",
+        "advice": "Use Fulfillment by Amazon (FBA) for storage, packing, shipping, returns, and customer service to simplify operations, especially with varying demand.",
+        "confidence": "High",
+        "source": "As an alternative, Amazon offers fulfillment services through FBA. Enroll some or all of your inventory into this program if you\u2019d like Amazon to handle storage, packing, shipping, returns, customer service, and other aspects."
+    },
+    {
+        "id": "strat-010",
+        "category": "Buying",
+        "trigger": "Products with limited availability or high demand",
+        "advice": "Target limited-availability, exclusive/rare, clearance, or high-demand items (e.g., electronics, fashion) for profit by securing steady supply.",
+        "confidence": "High",
+        "source": "Limited-availability items: If a product is in high demand but has limited availability... Exclusive or rare items... Clearance or discounted items... High-demand products: Products in high demand, such as popular electronics, fashion items."
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "Evaluating book viability using ISBN",
+        "advice": "Enter the ISBN into the Amazon Revenue Calculator to estimate fees, costs, net profits, and margins for FBA versus own fulfillment method",
+        "confidence": "High",
+        "source": "Enter the SKU, ISBN, UPC, EAN, ASIN, or title of the product and select Search."
+    },
+    {
+        "id": "strat2",
+        "category": "Pricing",
+        "trigger": "Assessing potential sales volume for a book",
+        "advice": "Use BSR from the book's detail page to estimate monthly sales; lower BSR indicates higher sales relative to category",
+        "confidence": "High",
+        "source": "Estimate sales based on a product\u2019s Amazon rank... Best Sellers Rank (BSR) is a metric that indicates how well a product is selling compared to other products within the same category."
+    },
+    {
+        "id": "strat3",
+        "category": "Risk",
+        "trigger": "Checking competition and trends for book niches",
+        "advice": "In Product Opportunity Explorer, filter for niches with low total products and high search volume to identify low-competition book opportunities",
+        "confidence": "Medium",
+        "source": "For example, filtering to show only niches with a low number of total products and a high search volume could signal an opportunity for you to offer a new product."
+    },
+    {
+        "id": "strat4",
+        "category": "Seasonality",
+        "trigger": "Analyzing demand fluctuations for books",
+        "advice": "Use Product Opportunity Explorer to spot trends related to seasonality, holidays, and shopping events, such as back-to-school for textbooks",
+        "confidence": "Medium",
+        "source": "Spot trends related to seasonality, holidays, and shopping events."
+    },
+    {
+        "id": "strat5",
+        "category": "Buying",
+        "trigger": "Estimating sales for potential book purchases",
+        "advice": "Input book's category and BSR into Jungle Scout\u2019s Amazon Sales Estimator for average monthly sales estimate; up to 10 free daily uses",
+        "confidence": "High",
+        "source": "Look up the product\u2019s category and BSR score. Then you can enter this info into Jungle Scout\u2019s calculator, which will give you an estimate for average monthly sales... You can run up to 10 free daily estimates."
+    },
+    {
+        "id": "strat6",
+        "category": "Pricing",
+        "trigger": "Determining rough sales volume from listing",
+        "advice": "Check the book listing for sales estimates like \u201c200+ bought in the past month\u201d to gauge demand",
+        "confidence": "High",
+        "source": "To find the number of sales a product has had in the Amazon store, check the product\u2019s listing for sales estimates that show a rough range like \u201c200+ bought in the past month.\u201d"
+    },
+    {
+        "id": "strat7",
+        "category": "General",
+        "trigger": "Optimizing fulfillment for book inventory",
+        "advice": "Use FBA Enrollment Opportunities to estimate 90-day sales lift from switching to FBA for books you sell directly",
+        "confidence": "High",
+        "source": "FBA Enrollment Opportunities... shows an estimate for the potential sales lift you might see over a 90-day period"
+    },
+    {
+        "id": "oa1",
+        "category": "Buying",
+        "trigger": "Procuring from online sources",
+        "advice": "Source products via online arbitrage by buying from online retailers and reselling on Amazon for profit, ensuring high-quality products and compliance with policies",
+        "confidence": "Medium",
+        "source": "With online arbitrage, you get products from online sources. Note that some forms of reselling aren\u2019t permitted in the Amazon store, but reselling can be lucrative if you find high-quality products, maintain high customer satisfaction rates, and follow applicable policies for success."
+    },
+    {
+        "id": "oa2",
+        "category": "Pricing",
+        "trigger": "Finding pricing sweet spot",
+        "advice": "Identify optimal pricing to maximize profit margins after expenses, considering competition and demand",
+        "confidence": "Low",
+        "source": "Learn more about reselling, including how to find your pricing sweet spot and get customer reviews."
+    },
+    {
+        "id": "oa3",
+        "category": "General",
+        "trigger": "Specializing in books niche",
+        "advice": "Focus on books as a niche to manage inventory, assess demand, competition, and profit margins effectively",
+        "confidence": "Medium",
+        "source": "Starting with one product or a few offerings in a single niche can help you focus your efforts... Inventory management: How much volume do you expect to move? Demand: Is there an audience for what you want to sell? What\u2019s the competition like? Price points and margins: Will you be able to turn a profit after covering all your expenses?"
+    },
+    {
+        "id": "sb1",
+        "category": "General",
+        "trigger": "Selling books without inventory",
+        "advice": "Use self-publishing via Kindle Direct Publishing (KDP) for ebooks and print books to earn passive income without upfront inventory for arbitrage-style reselling",
+        "confidence": "Low",
+        "source": "Write and sell ebooks, print books, and audiobooks. Self-publishing can be a great way to earn passive income... Kindle Direct Publishing (KDP) allows you to create print books and ebooks..."
+    },
+    {
+        "id": "acc-type-prof",
+        "category": "General",
+        "trigger": "Beginner starting Amazon FBA",
+        "advice": "Sign up for professional account ($39.99/month) instead of individual ($1 per unit, <40 units/month) to win buy box, access more brands, and ease ungating.",
+        "confidence": "High",
+        "source": "with a professional account you're going to be charged a straight $339.99 every single month but you're able to sell as much units as as you want now if you're a beginner and you know 100% that you are going to be doing this business... I highly recommend just signing up for the professional account... you aren't even able to win the buy box if you're an individual seller"
+    },
+    {
+        "id": "ungate-units",
+        "category": "Buying",
+        "trigger": "Applying for ungating in brands/categories",
+        "advice": "Purchase 10 units from wholesaler/distributor/authorized reseller for invoice and pictures; try using existing 10-unit invoices even if recently requiring 100 units; reapply multiple times (up to 4th, 10th, or 20th attempt).",
+        "confidence": "High",
+        "source": "you do have to purchase 10 units from a wholeseller or distributor or an authorized reseller so then you can get that invoice... as recently they've been requiring 100 units instead of the 10 what I want you guys to do is try and just use those 10 unit invoices... I got approve within the grocery category my fourth application... after their 10th application 20th application"
+    },
+    {
+        "id": "software-timing",
+        "category": "General",
+        "trigger": "After getting approved in 10-15 brands/categories",
+        "advice": "Purchase softwares like SellerAmp (sourcing data: sales/month, competition, stock, prices, IP/PL alerts, buy box), Keepa (trends, price history), Sellerboard (inventory tracking, reimbursements, reviews, fees) only after ungating to avoid unnecessary monthly costs.",
+        "confidence": "High",
+        "source": "after you get approved in at least 10 to 15 different brands and categories you are going to want to start purchasing your softwares... these softwares they are going to bill you monthly... no point in already buying the softwares... when you are going through the whole buying materials phases"
+    },
+    {
+        "id": "sourcing-method-ra",
+        "category": "Buying",
+        "trigger": "Beginner sourcing products",
+        "advice": "Start with Retail Arbitrage (scan in stores using SellerAmp) for better deals and less competition; beginner-friendly but not scalable; transition to Online Arbitrage for scalability once experienced.",
+        "confidence": "High",
+        "source": "there's two different methods of sourcing... Retail Arbitrage which is basically going into the stores and scanning everything using your seller amp app or you can do online Arbitrage... retail I personally feel like I find a lot of better deals in store and there's also way less competition... it is really beginner friendly... but once you are ready to scale... you are going to want to start scaling your business and that's why I am doing a lot of more OA right now but OA is a way more scalable business model"
+    },
+    {
+        "id": "sourcing-speed-oa",
+        "category": "Buying",
+        "trigger": "Finding products via Online Arbitrage",
+        "advice": "Act quickly on profitable products found online (within first 5 minutes of sourcing session) to avoid saturation; if product devalues by $10-20 during shipping, improve sourcing diligence and avoid laziness.",
+        "confidence": "High",
+        "source": "with online sourcing there's a little more competition... the quicker you find a product online the quicker someone else is going to to find a product online... let's say I just sit down... within my first 5 minutes I found a profitable product most likely someone else is going to be able to find that same exact one... if you get your product shipped to your house and then by the time it get shipped... it's already tank and saturated and it devalued... $10 $20 lower... you just have to do the extra mile 75% of people won't do"
+    },
+    {
+        "id": "prep-relabel",
+        "category": "Buying",
+        "trigger": "Products purchased for resale (e.g., $5 sale price, $20 Amazon price)",
+        "advice": "Remove all pricing stickers (e.g., clearance labels) to avoid returns; print and apply 2x1 FNSKU labels to cover UPC codes.",
+        "confidence": "High",
+        "source": "you're going to take them home and you're going to relabel the units... take off any pricing that you see on the product... print out your free 2x1 FN skew labels from Amazon Seller Central... with those 2x1 FN skew labels you are just going to want to cover the UPC code of the actual product... you don't want to leave that $5 clearance label on that product because if the customer sees that you bought it for $5 and they bought it for $20 you're most likely going to want to return it"
+    },
+    {
+        "id": "inventory-checkin",
+        "category": "Risk",
+        "trigger": "After shipping to Amazon",
+        "advice": "Monitor FBA inventory breakdown in Seller Central for FC processing/transfer; expect 1-2 weeks for check-in normally, up to 1 month in Q4 (Oct-Dec); use Sellerboard for tracking and reimbursements if <100% received.",
+        "confidence": "High",
+        "source": "usually I would say... it gets sent to Amazon within like a few days I want to say like 3 4 days... as long as your products have gotten checked in after you shipped it out at least like one to 2 weeks then you should be good anything over 2 weeks... you should start looking into how to get reimbursed... especially in Q4 the check-in times are way longer... up to a month around Q4 which is October November and December"
+    },
+    {
+        "id": "repricing-daily",
+        "category": "Pricing",
+        "trigger": "Listings become active on Amazon",
+        "advice": "Check and reprice listings daily to stay profitable as market fluctuates (e.g., from $50 to $30); after 25+ active listings, invest in repricing software like BQ to automate competitiveness.",
+        "confidence": "High",
+        "source": "you are going to want to check on your listings every so often... when they actually do become active that's when you are going to want to check on them like every day... when it comes to a point when you have so much listings at least like over 25 active products... invest in a software a repricing software I personally use BQ... let's say it's selling on Amazon for $50 and then eventually once your units finally get checked in they're now valued at $30 and you're just not profitable"
+    },
+    {
+        "id": "outsource-va",
+        "category": "General",
+        "trigger": "Business settled (know sourcing, ungating, etc.)",
+        "advice": "Outsource sourcing to trained VA ($3-4/hour, 40 hours/week, e.g., from FastTracks program) after mastering processes; outsource prepping to center in tax-free state to avoid sales tax in costs.",
+        "confidence": "High",
+        "source": "eventually when you do have everything settle down... you are going to start Outsourcing... I've actually invested into fastracks VA program... with my VA at the moment I pay her like around $3 $4 an hour... she works for me 40 hours a week... I have spent over $3,000 just this month just from the the products that the VA has provided... next you are going to want to Outsource the prepping... looking for a prep center that is in a tax-free state so then anytime that I am having my VA source for product she doesn't have to add that tax into my cost price"
+    },
+    {
+        "id": "commitment-period",
+        "category": "General",
+        "trigger": "Starting the business",
+        "advice": "Commit head down for at least 6 months without quitting mindset to succeed.",
+        "confidence": "High",
+        "source": "every single business model... it's not going to be easy in the beginning... keep your head down for at least 6 months and try your best... you're not going to be successful within any business if you do have that quitting mindset"
+    },
+    {
+        "id": "llc-threshold",
+        "category": "General",
+        "trigger": "Surpassing $10K in monthly sales",
+        "advice": "Form LLC after reaching $10K monthly sales (e.g., after 5 months) for tax benefits.",
+        "confidence": "High",
+        "source": "I got my LLC after I surpassed 10K in monthly sales which was my fifth month selling on Amazon so I just decided to get that LLC within my 6th month selling on Amazon... an LLC is not required but it is great to have"
+    },
+    {
+        "id": "oa-buy-001",
+        "category": "Buying",
+        "trigger": "Product price on retail site significantly lower than Amazon median price (e.g., $9.97 vs $25)",
+        "advice": "Purchase up to 10 units if lightweight and not gated; prioritize in-store pickup to avoid double shipping costs",
+        "confidence": "High",
+        "source": "this 15piece poclon playalong puzzle. And I really like the look of this because this is $9.97. ... And it's selling on Amazon for $20.92. But not only that, the typical price we can see right here using the 90-day median price is over $25."
+    },
+    {
+        "id": "oa-buy-002",
+        "category": "Buying",
+        "trigger": "Low stock on Amazon (e.g., only 3 left in stock)",
+        "advice": "Act quickly to buy before price reverts to higher median; scan barcode with Amazon seller app to confirm not gated",
+        "confidence": "High",
+        "source": "super important, only three left in stock. This seller only has three left. So, as soon as they sell out, this price is going back to probably $25.92."
+    },
+    {
+        "id": "oa-buy-003",
+        "category": "Buying",
+        "trigger": "Lightweight items under 1 pound, non-bulky dimensions (e.g., 12.5x4x5.75 inches)",
+        "advice": "Focus on such items to minimize shipping costs; use FBA calculator to estimate fulfillment fees around $3-4",
+        "confidence": "High",
+        "source": "we're thinking for items that are lightweight, not super bulky. ... One pound. Not terrible. the dimensions of the product. It's a little bit long, so it may cost a little bit to ship"
+    },
+    {
+        "id": "oa-buy-004",
+        "category": "Buying",
+        "trigger": "Monthly sales volume 20+ units on Amazon via Helium 10",
+        "advice": "Proceed with purchase if profit margin covers shipping (e.g., $7 available after fees for $9.97 buy at $20+ sell)",
+        "confidence": "High",
+        "source": "we can see 21 sales a month. That's not very high, but given that there's only three left in stock, I can work with that. ... $17.89. So if we're purchasing the item at $9.97, we have about a $7 to work with"
+    },
+    {
+        "id": "oa-pricing-001",
+        "category": "Pricing",
+        "trigger": "Competitor low stock or sell-out",
+        "advice": "Raise price to maximum profitable level (e.g., $4 higher per unit) once competitors deplete stock to capture buy box",
+        "confidence": "High",
+        "source": "sellers in the space could sell out and you'd be able to raise the price ... Probably could have made an extra three $4 per profit on each item"
+    },
+    {
+        "id": "oa-pricing-002",
+        "category": "Pricing",
+        "trigger": "Current buy box price set by competitor",
+        "advice": "Set price 1-2 cents lower than competitor to win buy box; use min/max pricing (e.g., min $36.99, max $44.99) for automatic adjustments",
+        "confidence": "High",
+        "source": "you can make it just a scent or two cheaper than the current best offer. ... set a minimum of $36.99 and we can set a maximum of $44.99"
+    },
+    {
+        "id": "oa-risk-001",
+        "category": "Risk",
+        "trigger": "Product is gated on Amazon",
+        "advice": "Avoid purchase; use seller app to check gating before buying",
+        "confidence": "High",
+        "source": "I want to get our Amazon seller app open. ... And we're going to scan a picture of this puzzle ... make sure this product is not gated. Luckily, this product is not gated."
+    },
+    {
+        "id": "oa-risk-002",
+        "category": "Risk",
+        "trigger": "Running low on inventory (e.g., sold out after 2 months)",
+        "advice": "Order extra inventory upfront (e.g., plan for 2-3x initial sales velocity) to avoid losing ranking and sales momentum",
+        "confidence": "High",
+        "source": "not to run out of inventory because it will affect your sales dramatically. ... running out of inventory was a major setback. It caused me to lose my ranking"
+    },
+    {
+        "id": "oa-seasonality-001",
+        "category": "Seasonality",
+        "trigger": "Seasonal items like Halloween decorations during peak season",
+        "advice": "Buy and sell for short-term profit during season; time shipments to arrive before demand peaks",
+        "confidence": "High",
+        "source": "A lot of Halloween decorations. It is a seasonal item, but if you just want to sell for a certain period of time, this can work super well in your advantage."
+    },
+    {
+        "id": "oa-general-001",
+        "category": "General",
+        "trigger": "Deals on sites like Big Lots weekly ad (e.g., 65% off)",
+        "advice": "Scan deals sections on Target, Walmart, Big Lots; cross-check with Amazon prices using browser tabs or plugins",
+        "confidence": "High",
+        "source": "we can go to the weekly ad right here ... some things that are about 65% off. ... finding websites online that are selling products at a better deal than are available on Amazon."
+    },
+    {
+        "id": "oa-general-002",
+        "category": "General",
+        "trigger": "Shipping cost estimate $8-10 for 4-5 units",
+        "advice": "Batch shipments (e.g., 4-5 units per box) to keep per-unit shipping under $2; use existing boxes to save costs",
+        "confidence": "High",
+        "source": "it's only going to cost us a$160 to send in. So let's go. So, it's costing us about $8 to send in this package. ... if you do not have a label printer ... print it out on a regular p piece of paper"
+    },
+    {
+        "id": "oa-general-003",
+        "category": "General",
+        "trigger": "High page views and quick sales (e.g., 2000 views, 4 sales immediately)",
+        "advice": "Monitor listings post-launch to adjust prices upward if demand exceeds expectations; restock quickly if selling fast",
+        "confidence": "High",
+        "source": "This product sold almost immediately. ... page views right here. 2,000 page views and four sales. We could have sold this for much higher."
+    },
+    {
+        "id": "rule-001",
+        "category": "General",
+        "trigger": "Creating case pack template for shipments",
+        "advice": "Ensure no side of the box exceeds 25 inches in length",
+        "confidence": "High",
+        "source": "You need to make sure that the case that you're shipping in has no side that is longer than 25 in. So every side needs to be under 25 in."
+    },
+    {
+        "id": "rule-002",
+        "category": "General",
+        "trigger": "Preparing boxes for Amazon FBA shipment",
+        "advice": "Limit each box weight to under 50 lbs after packing units",
+        "confidence": "High",
+        "source": "once you put all your units, all your product into the box, you need to make sure that that box does not weigh over 50 lbs."
+    },
+    {
+        "id": "rule-003",
+        "category": "General",
+        "trigger": "Setting up shipment with multiple units per case",
+        "advice": "Pack around 40-45 units per case for efficiency, using dimensions like 11in x 18in x 10in weighing approx 37 lbs",
+        "confidence": "High",
+        "source": "We have a big box where we put around 40 plus of our tubs in... And we put 45 tubs... And our box was 11 in x 18 in by 10 in. And each case weighed 37.35 lb."
+    },
+    {
+        "id": "rule-004",
+        "category": "Risk",
+        "trigger": "Products requiring special prep (e.g., adult items, baby products, fragile, liquids)",
+        "advice": "Research and apply specific prep requirements for the category to avoid delays",
+        "confidence": "High",
+        "source": "if your product falls under one of the categories we talked about where prep is needed, I recommend you do research and find out what you need to do to prep your specific item."
+    },
+    {
+        "id": "rule-005",
+        "category": "General",
+        "trigger": "Labeling individual units for retail or wholesale arbitrage",
+        "advice": "Apply FNSKU sticker over the UPC code on each unit; avoid Amazon labeling to save 50 cents per unit",
+        "confidence": "High",
+        "source": "If you're selling a product that was created by someone else, let's say you're doing retail arbitrage or wholesale, you're going to want to put your FN SQ sticker over top of the UPC code... Just do not have Amazon label the units for you because they're going to charge you 50 cents per unit just to put on the FN SKQ sticker."
+    },
+    {
+        "id": "rule-006",
+        "category": "General",
+        "trigger": "Sourcing labels for FNSKU",
+        "advice": "Print FNSKU labels yourself using sticker paper or have manufacturer print directly on packaging to save time and cost",
+        "confidence": "High",
+        "source": "you can print your FN skew directly on your product, saving you the cost of having to create the stickers... We just had our manufacturer print the FN skew directly on the packaging for us."
+    },
+    {
+        "id": "rule-007",
+        "category": "General",
+        "trigger": "Shipping small quantities of inventory",
+        "advice": "Use small parcel delivery via UPS for boxes; suitable for small amounts",
+        "confidence": "High",
+        "source": "With small parcel delivery, you're going to use this option if you're planning on putting your units into boxes and then going to UPS and dropping off that those boxes... And this is most common if you're sending a small amount of inventory."
+    },
+    {
+        "id": "rule-008",
+        "category": "General",
+        "trigger": "Shipping large quantities (e.g., pallets)",
+        "advice": "Switch to less than truckload (LTL) for entire pallets to cut shipping costs in half; confirm manufacturer can handle truck pickup and pallet wrapping",
+        "confidence": "High",
+        "source": "If you're sending in a lot of products into the Amazon warehouse, don't keep doing small parcel delivery. Start doing less than truckload... this will cut your shipping cost in half."
+    },
+    {
+        "id": "rule-009",
+        "category": "Risk",
+        "trigger": "Potential inventory loss during shipment",
+        "advice": "Split large shipments into multiple (e.g., half now, half later) to mitigate total loss if one shipment fails",
+        "confidence": "High",
+        "source": "sometimes I also recommend only sending in half your inventory and then sending in the other half a couple days later. That way, it's two different shipments. So, if one gets lost, the other one's still going to arrive."
+    },
+    {
+        "id": "rule-010",
+        "category": "Risk",
+        "trigger": "Amazon loses inventory",
+        "advice": "Track closely and claim reimbursement; Amazon pays full product price if proven shipped, but requires documentation like receipts",
+        "confidence": "High",
+        "source": "if Amazon does lose some of your inventory, they will pay you the full price of your products. But sometimes if you don't catch them, they won't ever pay you... keep track of all your paperwork. Every receipt..."
+    },
+    {
+        "id": "rule-011",
+        "category": "General",
+        "trigger": "Planning shipment timeline",
+        "advice": "Ship inventory at least 3 weeks before expected check-in, up to 6 weeks to account for processing delays",
+        "confidence": "High",
+        "source": "at a minimum, I like to ship my products in 3 weeks before I expect them to be checked in, but sometimes it'll take as long as 6 weeks."
+    },
+    {
+        "id": "rule-012",
+        "category": "Seasonality",
+        "trigger": "Shipping during holiday season",
+        "advice": "Plan for longer wait times beyond 6 weeks due to increased volume",
+        "confidence": "High",
+        "source": "You're also going to want to be aware that during the holiday season, sometimes wait times are going to be even longer."
+    },
+    {
+        "id": "rule-013",
+        "category": "Risk",
+        "trigger": "LTL shipment to residential address without forklift",
+        "advice": "Call trucking company day before to specify residential pickup, request liftgate truck, and confirm arrival time",
+        "confidence": "High",
+        "source": "I highly recommend calling that trucking company the day before... you're going to need to let them know that it's a residential address... let them know that they need to bring a truck that has a lift gate."
+    },
+    {
+        "id": "rule-014",
+        "category": "Risk",
+        "trigger": "Inventory management for storage fees",
+        "advice": "Send only 3-6 months worth of inventory at a time to avoid long-term storage fees (LTSF) after 6 months",
+        "confidence": "High",
+        "source": "I always recommend only sending in about six months worth of inventory at a time... you're always going to want to send in around 3 to six months worth of inventory."
+    },
+    {
+        "id": "rule-015",
+        "category": "Risk",
+        "trigger": "Running low on inventory",
+        "advice": "Replenish when at 2-3 months supply left; ship immediately to prevent stockouts that can lower rankings",
+        "confidence": "High",
+        "source": "when you start to get around that three month or two month mark, it's time to start sending in more inventory... send in the shipment as soon as possible because you don't want to run out of inventory on Amazon."
+    },
+    {
+        "id": "lt-storage-avoid",
+        "category": "Risk",
+        "trigger": "Inventory in warehouse >365 days",
+        "advice": "Monitor inventory closely; if not selling and approaching one-year mark, request Amazon to return it and resend to reset the clock. Send only the exact amount of inventory needed to avoid accumulation.",
+        "confidence": "High",
+        "source": "if you keep inventory in their warehouse for longer than 365 days, they're going to charge you $6.90 per cubic foot or 15 cents per item... one hack that you can use to avoid long-term storage fees is watch your inventory. And if you see it's not selling and you see it's getting close to that one-year mark, ask Amazon to send you back your inventory... the best way to avoid long-term storage fees is to figure out exactly how much inventory you should send into Amazon."
+    },
+    {
+        "id": "storage-seasonal",
+        "category": "Seasonality",
+        "trigger": "Storage during October through December",
+        "advice": "Account for higher storage costs during peak holiday months when planning inventory levels.",
+        "confidence": "High",
+        "source": "it would cost a little bit more if the product was stored during the months of October through December."
+    },
+    {
+        "id": "return-fee-manage",
+        "category": "Risk",
+        "trigger": "Customer return within 30 days",
+        "advice": "Pay return shipping and processing fee based on size/weight; if product in good condition, instruct Amazon to return to inventory for resale; dispose for ~50 cents/unit if not.",
+        "confidence": "High",
+        "source": "if your customer decides within 30 days that they want to return the product, you have to pay another fee... this fee basically covers the cost of the return shipping and the processing... if your product is in good condition, you can actually tell Amazon just to put it back into your inventory... Or you can ask Amazon to dispose of the product. And that's going to cost around 50 cents per unit."
+    },
+    {
+        "id": "prep-fee-avoid",
+        "category": "Buying",
+        "trigger": "Sending products without FNSKU barcode",
+        "advice": "Have manufacturer apply FNSKU stickers inexpensively or print barcode directly on packaging; avoid Amazon labeling at 30 cents/unit or other prep like bagging at 50 cents to $2/unit.",
+        "confidence": "High",
+        "source": "every product that you send needs to have an FNSKU barcode sticker on it... you can have your manufacturer put these stickers on the product for really inexpensive or you can even have your manufacturer print the barcode on the actual box... or you can pay Amazon 30 cents per unit to put the FNSKU sticker... There's also other preparation... putting your products in plastic bags... They're going to charge you between 50 cents to $2... just make sure that it's prepped correctly."
+    },
+    {
+        "id": "referral-bonus",
+        "category": "Pricing",
+        "trigger": "Generating own traffic to listing",
+        "advice": "Use brand referral bonus program to reduce referral fee from 15% to 5% on self-generated sales traffic.",
+        "confidence": "High",
+        "source": "You want to use the brand referral bonus program to send traffic to your listing so you can lower the referral fee from 15% down to 5% on all that traffic and all those sales that you generate on your own."
+    },
+    {
+        "id": "account-upgrade",
+        "category": "General",
+        "trigger": "Before sending inventory to Amazon",
+        "advice": "Start with individual selling account (free); upgrade to professional plan ($39.99/month) only when ready to send inventory and use FBA for Prime eligibility.",
+        "confidence": "High",
+        "source": "make sure you start with the individual selling account and only upgrade your account once you're ready to actually send inventory into Amazon... A lot of people make the mistake of spending that $39.99 a month every single month and they're not even selling a product on Amazon."
+    },
+    {
+        "id": "packaging-size",
+        "category": "Buying",
+        "trigger": "Product packaging >10 ounces",
+        "advice": "Design smaller packaging (e.g., under 10 ounces) to qualify for lower FBA pick and pack fees.",
+        "confidence": "High",
+        "source": "make your product packaging smaller. For instance... most people would probably sell a 16oz jar... but I realized that I'd have to pay a lot more in fees. So instead, we made a smaller jar and made it under 10 ounces so we could save money on the Amazon FBA pick and pack fees."
+    },
+    {
+        "id": "small-light-program",
+        "category": "Pricing",
+        "trigger": "Low-priced lightweight product qualifying for Small and Light program",
+        "advice": "Enroll in Amazon FBA Small and Light program to reduce fees (e.g., $2.16/unit vs. $2.70/unit, saving ~64 cents/unit).",
+        "confidence": "High",
+        "source": "if you're selling a lowpriced lightweight product, you can use the Amazon FBA small and light program to save a lot of money... you would pay reduced fees. For example, you might pay $216 per unit once your product is approved for the small and light program instead of $2.70 per unit. That is a savings of 64 per unit."
+    },
+    {
+        "id": "undeliverable-remove",
+        "category": "Risk",
+        "trigger": "Undeliverable products in warehouse",
+        "advice": "Remove undeliverable products from Amazon warehouse to avoid ongoing fees.",
+        "confidence": "High",
+        "source": "removing undeliverable products from the Amazon warehouse."
+    },
+    {
+        "id": "size-tier-correct",
+        "category": "Risk",
+        "trigger": "Amazon misclassifies product size tier",
+        "advice": "Verify and contact Amazon immediately if product is placed in higher fee tier; request correction and possible reimbursement for overcharges.",
+        "confidence": "High",
+        "source": "make sure that Amazon has the correct size of your product. Sometimes what they do is they put your product in a higher tier than it's supposed to be. You want to catch this as soon as possible and contact them and let them know that they made a mistake. And sometimes they'll even reimburse you for the charges."
+    },
+    {
+        "id": "retail-arbitrage-cost",
+        "category": "General",
+        "trigger": "Starting retail arbitrage model",
+        "advice": "Budget ~$200 to start retail arbitrage on Amazon.",
+        "confidence": "High",
+        "source": "around $200 to start selling on Amazon if you want to use the retail arbitrage model."
+    },
+    {
+        "id": "ra-flip-example",
+        "category": "Buying",
+        "trigger": "Product on deep discount (e.g., 50% off retail)",
+        "advice": "Buy discounted items (e.g., $150 retail for $150 cost) and resell on Amazon at full price ($300) for ~$100 profit after fees.",
+        "confidence": "High",
+        "source": "this coffee machine retails for $300, but we got it for $150... we could sell this coffee machine... for $300 on Amazon, get $150 in profit... there are some Amazon fees, so it would probably only be about $100 in profit... you can go find things that are on a deep discount and be able to flip it on Amazon... This is called retail arbitrage."
+    },
+    {
+        "id": "online-arbitrage",
+        "category": "Buying",
+        "trigger": "Online deals with coupons or discounts",
+        "advice": "Use online arbitrage: find deals online using coupons and flip to Amazon for profit.",
+        "confidence": "High",
+        "source": "There's also online arbitrage where you use coupons and find things online that are a really good deal and then flip them on to Amazon."
+    },
+    {
+        "id": "inventory-months",
+        "category": "Buying",
+        "trigger": "Initial inventory ordering",
+        "advice": "Order 3-6 months worth of inventory (closer to 6 months) to avoid stockouts; aim for 400 units at ~$6/unit for private label, adjust for arbitrage based on sales velocity.",
+        "confidence": "High",
+        "source": "I'd recommend buying at least at least 3 to 6 months worth of inventory. Probably in my opinion closer to that 6 month mark... you do not want to run out of inventory on Amazon... for one of the companies I launched recently, it was about $6 [per unit]... at about $6 a unit to buy 400 units."
+    },
+    {
+        "id": "ra-buy-001",
+        "category": "Buying",
+        "trigger": "Deeply discounted products in local stores",
+        "advice": "Source products from local stores like Walmart that are on clearance or discounted, then resell them on Amazon at a higher price to capitalize on Amazon's convenience and search traffic.",
+        "confidence": "High",
+        "source": "retail arbitrage, where you find products that are deeply discounted, buy them, and then flip them on Amazon at a higher price. If you're tight on cash, this is a good way to make some side income. For example, this freezer is selling on walmart.com for $159.99, but then on Amazon, it's selling for $45."
+    },
+    {
+        "id": "ra-buy-002",
+        "category": "Buying",
+        "trigger": "Local store deals not widely available online",
+        "advice": "Focus on physical local stores to find unique discounts that aren't accessible to all sellers, reducing competition from online sourcers.",
+        "confidence": "High",
+        "source": "Yes, it's easy for anyone to find a product at a discount and sell it on Amazon, but the reality is not everyone will be finding the same discounts as you because you can go to your local stores and find these."
+    },
+    {
+        "id": "ra-pricing-001",
+        "category": "Pricing",
+        "trigger": "Profit margins of $3 to $15 per item",
+        "advice": "Aim for items with at least $3-15 profit per unit after fees; scale by purchasing higher volumes to achieve meaningful income.",
+        "confidence": "High",
+        "source": "the profit margins on each product you make will only be around $3 to $15 max. So, you'll need the capital to buy a lot if you want to make some money."
+    },
+    {
+        "id": "ra-risk-001",
+        "category": "Risk",
+        "trigger": "Oversaturation in retail arbitrage",
+        "advice": "Rate oversaturation risk at 4/10; mitigate by sourcing from local stores to avoid competing with nationwide online finders.",
+        "confidence": "High",
+        "source": "if you're doing retail arbitrage. I would rate oversaturation to be a four out of 10. ... not everyone will be finding the same discounts as you because you can go to your local stores and find these. So unless you live in an area where the entire neighborhood is doing Amazon FBA, it's fairly unlikely that you'll need to worry about competition."
+    },
+    {
+        "id": "ra-risk-002",
+        "category": "Risk",
+        "trigger": "Temu competition for retail arbitrage",
+        "advice": "Rate Temu risk at 2/10; unaffected since sourcing is from local stores, not online Chinese retailers.",
+        "confidence": "High",
+        "source": "Now for retail arbitrage, Teimu is a two out of 10 risk. This has pretty much no effect on this because all the products that you're finding are from local stores. So there's no involvement from online retailers like Teimu."
+    },
+    {
+        "id": "ra-risk-003",
+        "category": "Risk",
+        "trigger": "Startup costs for retail arbitrage",
+        "advice": "Rate startup capital risk at 6/10; start small with low-capital items, but scale requires buying larger quantities for $3-15 margins.",
+        "confidence": "High",
+        "source": "with retail arbitrage, I would rate the issue of capital a 6 out of 10. If you want to make serious money, you're going to have to buy a lot of inventory from your local stores because the profit margins on each product you make will only be around $3 to $15 max."
+    },
+    {
+        "id": "ra-risk-004",
+        "category": "Risk",
+        "trigger": "Amazon Haul competition",
+        "advice": "Rate Haul risk at 2/10; no impact as products are sourced locally, not competing with Amazon's low-cost Chinese imports.",
+        "confidence": "High",
+        "source": "But what about retail arbitrage? Similar to the team analysis from earlier, this is a 2 out of 10 risk. Hall has pretty much no effect on this way of selling on Amazon because all the products you're finding are from local stores."
+    },
+    {
+        "id": "ra-risk-005",
+        "category": "Risk",
+        "trigger": "Amazon fees impact",
+        "advice": "Rate fees risk at 7/10; ensure buy-sell price difference covers 30%+ fee increases by selecting high-margin local deals.",
+        "confidence": "High",
+        "source": "with retail arbitrage, this is a 7 out of 10 risk. When it comes to retail arbitrage, the determining point to whether or not you make money comes down to the difference between how much you bought the product for on walmart.com and how much you can sell it for on Amazon.com. But if you can't make as much money when selling your product on Amazon's website, then this is going to hurt your chances."
+    },
+    {
+        "id": "ra-risk-006",
+        "category": "Risk",
+        "trigger": "TikTok Shop competition",
+        "advice": "Rate TikTok risk at 1/10; low threat as retail arbitrage focuses on branded, discounted local products, not unbranded generics on TikTok.",
+        "confidence": "High",
+        "source": "What about retail arbitrage, though? Well, Tik Tok shop doesn't really impact retail arbitrage sellers. Why? Because retail arbitrage relies on sourcing discounted branding products from local stores. Tik Tok shop on the other hand is filled with unbranded generic products that don't compete against what you're selling."
+    },
+    {
+        "id": "ra-risk-007",
+        "category": "Risk",
+        "trigger": "Recession and inflation",
+        "advice": "Rate recession risk at 4/10; limited ability to raise prices due to competition, but local sourcing avoids international cost fluctuations.",
+        "confidence": "High",
+        "source": "For retail arbitrage, because you don't have to worry about sellers in different countries, the risk is a little bit lower at a 4 out of 10."
+    },
+    {
+        "id": "ra-risk-008",
+        "category": "Risk",
+        "trigger": "China manufacturing copies",
+        "advice": "Rate China risk at 1/10; unaffected as products are pre-branded from local retail, not custom or wholesale from China.",
+        "confidence": "High",
+        "source": "But does the same go with selling a passion product? ... like retail arbitrage for example like mentioned above with Timu Trump and Hall whatever happens overseas has little to no effect on retail arbitrage because the amount of money that you make depends significantly on what deals are going on in your local stores like Walmart. That's why China is a 1 out of 10 risk for retail arbitrage."
+    },
+    {
+        "id": "ra-general-001",
+        "category": "General",
+        "trigger": "Seeking side income with low cash",
+        "advice": "Use retail arbitrage for initial side income without building inventory stock; hunt deals regularly but avoid for passive business.",
+        "confidence": "High",
+        "source": "If you're tight on cash, this is a good way to make some side income. ... the downside of this business model, and why I don't recommend it, is that you're not really building a business, nor will you ever be able to make passive income. Every time you want to make money, you have to hunt for those deals"
+    },
+    {
+        "id": "ra-general-002",
+        "category": "General",
+        "trigger": "Overall risk assessment",
+        "advice": "Total risk for retail arbitrage is 29/100; viable for making money but labor-intensive, suitable if willing to source daily.",
+        "confidence": "High",
+        "source": "with retail arbitrage, this is a 29 out of 100 risk. Funny enough, I do not think that it's too late to start making money with doing retail arbitrage. There's still a good opportunity to make money here. The only issue as to why I would never do this is because it's tiring."
+    },
+    {
+        "id": "ra-general-003",
+        "category": "General",
+        "trigger": "Startup capital distribution",
+        "advice": "11% start with < $500, 13% with $500-1000; leverage low entry for arbitrage by starting with small batches of discounted items.",
+        "confidence": "Medium",
+        "source": "according to Amazon themselves, around 11% of people were able to start on Amazon for less than $500. 13% of people were able to start their Amazon business with between $500 to $1,000."
+    },
+    {
+        "id": "ra-001",
+        "category": "Buying",
+        "trigger": "Product found at discount (e.g., $10 for normally $30 item)",
+        "advice": "Buy discounted products from stores or online and resell on Amazon at full retail price to capture profit; suitable for beginners to make extra cash but not scalable or passive.",
+        "confidence": "High",
+        "source": "retail arbitrage is basically where you find a product that's at a discount, whether that's online or in a store. So let's say you find a product that normally is $30, you find it for $10, you buy a bunch of those, you flip it on Amazon for the full retail price, and you keep the profit."
+    },
+    {
+        "id": "wh-001",
+        "category": "Buying",
+        "trigger": "Access to wholesale supplier offering 50% discount",
+        "advice": "Purchase products in bulk (e.g., 100 or 1,000 units) at wholesale discount and resell on Amazon at full retail; avoid due to high competition and risk of suppliers cutting out resellers.",
+        "confidence": "High",
+        "source": "Wholesale is where you find someone that's making a product. You buy a hundred, a thousand of their products with a wholesale discount, usually 50% off, and then you flip it on Amazon for the full retail price. Now, the problem with this is it's very competitive."
+    },
+    {
+        "id": "fee-001",
+        "category": "Pricing",
+        "trigger": "Selling on Amazon website",
+        "advice": "Account for 15% Amazon selling fee on sales; negotiate or structure to reduce to 5% where possible.",
+        "confidence": "High",
+        "source": "when you sell on Amazon's website, they charge you a fee of 15% in order to sell on their site. Now, you can get that lower to 5%, and that's something I talk about in other videos, but on average, it's usually going to be around 15%."
+    },
+    {
+        "id": "fba-001",
+        "category": "General",
+        "trigger": "Using FBA for fulfillment",
+        "advice": "Ship products to Amazon warehouses for pick, pack, and ship services, making products Prime eligible to increase sales; covers shipping and handling costs.",
+        "confidence": "High",
+        "source": "the Amazon FBA pick and pack fee. And I spent over $125,000 on the Amazon FBA pick and pack fee. This is the fee that you have to pay Amazon if you want to take your products, ship them into the Amazon warehouse, and when you get a sale, Amazon will pick, pack, and ship the products out for you. And this fee covers the shipping and the handling"
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "Entering retail arbitrage or wholesale",
+        "advice": "Avoid over-reliance on these methods as they require significant time, are not scalable, highly competitive, and suppliers may bypass resellers by selling directly on Amazon.",
+        "confidence": "High",
+        "source": "it's not really scalable and it's definitely not passive income. It it requires a lot of time and a lot of work. ... it's very competitive. there's a lot of other people doing the same thing as you. ... a lot of the people selling these products wholesale, once they find out that you're just selling them on Amazon and making money, they're going to cut you out"
+    },
+    {
+        "id": "gen-001",
+        "category": "General",
+        "trigger": "Starting Amazon FBA in 2026",
+        "advice": "Focus on niche branding or flywheel method instead of generic private label or arbitrage; market is saturated with over 10 million sellers, but opportunities exist in targeted niches.",
+        "confidence": "High",
+        "source": "Amazon FBA is not worth starting in 2026 unless you are niche branding or using the flywheel method. And that's because there are over 10 million Amazon sellers ... Selling on Amazon is getting really saturated."
+    },
+    {
+        "id": "ra-001",
+        "category": "Buying",
+        "trigger": "Products on sale at other retailers like Walmart",
+        "advice": "Buy discounted products (e.g., $139 on Walmart) and resell on Amazon at higher price (e.g., $321) using FBA",
+        "confidence": "High",
+        "source": "this outdoor storage cabinet is being sold on walmart.com for $139. And this exact same product is being sold on Amazon for $321. So what you can do is you can buy this product on walmart.com, send it into the Amazon warehouse, and flip it on Amazon for $321"
+    },
+    {
+        "id": "ra-002",
+        "category": "General",
+        "trigger": "Low startup capital needed",
+        "advice": "Start with retail arbitrage as it requires only the cost of products bought, ideal for testing Amazon selling",
+        "confidence": "High",
+        "source": "it doesn't take a lot of money to get started. In fact, you only need the amount of money for the products that you're going to be buying"
+    },
+    {
+        "id": "ra-003",
+        "category": "Risk",
+        "trigger": "Easy deals for you are easy for others",
+        "advice": "Expect high competition in retail arbitrage, making it hard to scale into passive six-figure income",
+        "confidence": "High",
+        "source": "if it's simple for you, it's going to be simple for other people to find the same product. So, you're going to end up getting a lot of competition. It's also very hard to scale and grow this kind of business"
+    },
+    {
+        "id": "wh-001",
+        "category": "Buying",
+        "trigger": "Wholesale sites like globalsources.com offering bulk discounts",
+        "advice": "Buy in bulk (e.g., 12, 24, or 100 units) at wholesale price (e.g., $15.30 for baby high chair) and resell on Amazon (e.g., $86)",
+        "confidence": "High",
+        "source": "this baby high chair is being sold on globalsources.com for $15.30. this exact same product is being sold on Amazon.com for $86. ... you're going to have to buy more than one product, oftentimes 12, 24, or a 100 units"
+    },
+    {
+        "id": "wh-002",
+        "category": "Risk",
+        "trigger": "Manufacturers discovering direct Amazon sales",
+        "advice": "In wholesale, risk being cut out as middleman if manufacturer sells directly on Amazon, potentially evaporating business overnight",
+        "confidence": "High",
+        "source": "eventually the manufacturer is going to find out that they could sell the product directly on Amazon themselves and then they can cut you out as the middleman"
+    },
+    {
+        "id": "pl-001",
+        "category": "Pricing",
+        "trigger": "Products selling $15-$85 on Amazon",
+        "advice": "Target products in $15-$85 range for profitability after fees; avoid under $15 due to high relative fees, over $85 reduces impulse buys",
+        "confidence": "High",
+        "source": "you want to find a product that you can sell for between $15 and $85. Because any product that you're selling for under $15 is going to be very hard to make it profitable. ... if you're selling a product that's over $85, people are generally going to have to do some research. It's not an impulse buy"
+    },
+    {
+        "id": "gen-001",
+        "category": "Seasonality",
+        "trigger": "Seasonal products like Christmas lights",
+        "advice": "Avoid seasonal items; focus on evergreen products that sell year-round to ensure consistent sales",
+        "confidence": "High",
+        "source": "ideally you don't want a seasonal product. You don't want to sell Christmas lights because that's only going to be popular like for a couple months out of the year. You want something that can be sold all year round"
+    },
+    {
+        "id": "gen-002",
+        "category": "General",
+        "trigger": "High search volume with low competition (e.g., 2,000-3,000 monthly searches, no products on Amazon)",
+        "advice": "Use tools like Helium 10 or Jungle Scout to find searches with demand but no competition; create or source product to fill the gap",
+        "confidence": "High",
+        "source": "if we can find that 3,000 people per month are searching for some product, but when we go to Amazon, no one is selling that product ... I pasted it into Helium 10 and I saw in Helium 10 that over 2,000 people per month are searching for carnivore electrolytes, but no one was selling the product"
+    },
+    {
+        "id": "gen-003",
+        "category": "Pricing",
+        "trigger": "Bestseller rank available on product page",
+        "advice": "Estimate sales using Jungle Scout: input rank, category, and marketplace to calculate units/month, then multiply by price for revenue estimate",
+        "confidence": "High",
+        "source": "You just go to the product page that you want to know how much it's making. Scroll down to the bestseller rank number. Copy that and then paste it into the free Jungle Scout sales estimator tool. ... We can see that this product is selling over 31,000 units per month. ... multiply that by the cost of the product, which is $138. We can then see that this product is doing over $400,000 in revenue"
+    },
+    {
+        "id": "75bccb32-83a1-45ee-bf10-cdd7d7754712",
+        "advice": "\"trigger\": \"Beginner seller with minimal investment\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "21e5e5d4-e162-46c6-bc00-a6626a56d6e6",
+        "advice": "\"advice\": \"Opt for Retail Arbitrage or Online Arbitrage business models for low startup costs, quick start, and part-time compatibility, suitable for sourcing books from retail or online deals.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "cede0275-d10a-4a6e-853b-60ceeae532f7",
+        "advice": "\"source\": \"Retail Arbitrage\tBeginners with minimal investment\tLow to moderate\tLow startup costs, quick to start, part-time friendly... Online Arbitrage\tSellers who prefer online deal sourcing\tLow to moderate\tRemote-friendly, no physical stores, lower costs\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f4c4f10f-a4e5-4b5f-bf5c-e4104f4b50a7",
+        "advice": "\"trigger\": \"Products priced between $10 and $50\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1047118a-8aaa-4488-8e3a-2dd9755db0de",
+        "advice": "\"advice\": \"Target books in the $10-$50 price range as they represent good opportunities due to common customer purchase patterns.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "f809434d-a5dc-4615-a42d-fdaf1cad6672",
+        "advice": "\"source\": \"If you find products sold between $10 \u2013 $50, it is a good opportunity because customers usually buy products between these price points.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a9a49a7a-b3e0-4888-80d7-fbad8ead25fc",
+        "advice": "\"trigger\": \"Mid-level Best Sellers Rank (BSR)\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1f9df4f6-a1b0-42c6-9199-cb90cfbebf39",
+        "advice": "\"advice\": \"Select books with a mid-level BSR to identify steady demand without overwhelming competition, using tools like opportunity score finders.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "04d3140d-716c-4788-99f6-32ce1cf7a0a8",
+        "advice": "\"source\": \"Look for products with steady demand but not overly saturated with sellers. A mid-level Best Sellers Rank (BSR) can indicate potential without overwhelming competition. Use the opportunity score finder of the SellerApp Chrome extension\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "9e071ca0-da9d-4b00-8026-65c16ff19647",
+        "advice": "\"trigger\": \"Inventory levels approaching stockout\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2d6bf039-4c8f-439f-ad8d-78d23aafa13b",
+        "advice": "\"advice\": \"Consistently monitor inventory levels in Seller Central and plan restocks 2\u20134 weeks in advance based on lead times to prevent stockouts and maintain sales velocity.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bab95dec-327a-45ee-980f-833febb57c46",
+        "advice": "\"source\": \"An Amazon FBA seller should consistently monitor inventory levels in Seller Central and plan restocks 2\u20134 weeks in advance, depending on lead times, to avoid going out of stock.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "91e35e8b-98c7-4c2a-bd98-da8f29692ad1",
+        "advice": "\"trigger\": \"Assessing product profitability\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "b78006a6-a22a-44e6-bd8e-55e2dc65b7ce",
+        "advice": "\"advice\": \"Use a profit calculator to estimate net profits after fees, ensuring a fair profit margin for book listings.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "05871bbf-26ea-4bbf-b056-56e97bd184ce",
+        "advice": "\"source\": \"use the Profit Calculator from the SellerApp Chrome extension for the best estimates. Success with Amazon FBA depends on how well you calculate your profits and keep a fair profit margin\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "07856043-890b-44de-81ad-19bb91fcb1bb",
+        "advice": "\"trigger\": \"High-demand periods like Q4\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "22428992-c030-43fb-90b5-57b646c175c8",
+        "advice": "\"advice\": \"Prepare for potential storage limits by maintaining a strong Inventory Performance Index (IPI) during peak seasons like Q4 to avoid restrictions on book inventory.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ec9c97fc-cc5a-4db8-80a2-b1d66c7f867d",
+        "advice": "\"source\": \"Amazon may impose storage limits based on your Inventory Performance Index (IPI), especially during high-demand periods like Q4.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "433bbfd5-42e0-4457-9531-6b4cbd9e5494",
+        "advice": "\"trigger\": \"New seller enrolling in FBA\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "decbbc36-2094-4070-b158-65bbbb06da87",
+        "advice": "\"advice\": \"Enroll in the New Seller Incentives (NSI) program to access free storage for up to 50 units per ASIN for 90 days (120 days for non-standard sizes) and $100 shipping credits to reduce initial costs for book inventory.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "05749bb4-58f9-4518-bee9-b07b0f72a94a",
+        "advice": "\"source\": \"Amazon\u2019s New Seller Incentives (NSI) program... Free FBA Storage New sellers enrolled in the Amazon FBA program receive free storage for 50 units per new-to-FBA parent ASIN for 90 days... $100 in Amazon Partnered Carrier shipping credits\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "7796e528-db3d-43e3-8450-5970f061be39",
+        "advice": "\"trigger\": \"Commingling enabled for identical products\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "ccb03cf8-2cde-44c5-9e7e-304423fd1739",
+        "advice": "\"advice\": \"Disable commingling in Seller Central settings to prevent risks from counterfeit or mislabeled books damaging reputation, opting instead for individual FNSKU labeling.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "2bfe5d1b-c4b8-4b92-ab47-c0113d420b0c",
+        "advice": "\"source\": \"Commingling is a fulfillment option... If your competitor or a dishonest seller is sending a counterfeit version of your product, then it can harm your reputation... Navigate to \u2018Settings\u2019 on your Seller Central account Select \u2018Fulfillment by Amazon\u2019... Edit \u2018Amazon barcode\u2019 to remove commingling\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fc7a61b3-9a75-4d22-9b93-c35431388ff4",
+        "advice": "\"trigger\": \"Lightweight, compact, fast-moving products\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bd571951-2879-46ba-8956-187b802da15f",
+        "advice": "\"advice\": \"Prioritize lightweight and compact books that are fast-moving to optimize FBA suitability, minimizing fulfillment and storage fees while reducing long-term storage risks.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "bc26463e-8dc5-4388-9d26-08ccb75f832f",
+        "advice": "\"source\": \"Your products are lightweight, compact, and fast-moving Categories such as electronics accessories, beauty products, and small gadgets are among the ones that get sold the fastest... Amazon FBA fees are well-optimized for items under 3 lbs. A faster-moving inventory can lower your risk of paying long-term storage fees\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "0221d318-e17d-44d8-a8ab-1cdd3ea972c8",
+        "advice": "\"trigger\": \"Thin margins unable to absorb fees\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3839ae35-277b-4859-a40a-ec8616e6bf0d",
+        "advice": "\"advice\": \"Ensure book margins can cover FBA fees (e.g., aim for selling price at least 3-4x cost like $55 sell on $15 cost) to maintain profitability after fulfillment, referral (8-15%), and storage fees.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "a014177e-0f4a-462c-9f51-790e33259650",
+        "advice": "\"source\": \"Your margins can absorb FBA fees... If you sell a product at $55 and its price is $15, you can still afford Amazon FBA services while keeping a significant profit margin... referral fees... varies between 8% to 15%\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "8c4ad0df-1242-4f67-b783-673d37fdffc7",
+        "advice": "\"trigger\": \"Standard-size products in non-peak (Jan-Sep)\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "fab3f82c-6a1a-4d4d-bf36-a90219d07751",
+        "advice": "\"advice\": \"Factor in reduced storage fees of $0.78 per cubic foot for standard-size books during non-peak periods to improve margins on slower-moving inventory.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "13a0bb74-8d33-4504-8ebe-15f95ccde6e9",
+        "advice": "\"source\": \"For standard-size products, the standard storage fee will decrease by $0.09 per cubic foot during the non-peak period (i.e., from January to September), reducing the fee from $0.87 to $0.78 per cubic foot.\"",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "3fd5fc38-79eb-4fc7-b65f-971cdbeeb036",
+        "advice": "\"trigger\": \"Inventory stored over 365 days\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "1195f252-6f17-496c-b9ed-3c0e0fecedd7",
+        "advice": "\"advice\": \"Avoid long-term storage fees of $6.90 per cubic foot or $0.15 per unit (whichever greater) by regularly rotating book stock and monitoring for slow-movers.\",",
+        "trigger": "Manual Entry",
+        "category": "General"
+    },
+    {
+        "id": "e79f9d11-8f67-4756-8900-c5d96a6f77cb",
+        "advice": "\"source\": \"Items stored for over 365 Days are subject to a long-term storage fee of $6.90 per cubic foot or $0.15 per unit (whichever is greater will be considered).\"",
+        "trigger": "Manual Entry",
+        "category": "General"
     }
 ]
