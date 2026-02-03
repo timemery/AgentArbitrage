@@ -1,10 +1,14 @@
 import logging
 from keepa_deals.keepa_api import fetch_seller_data
 from keepa_deals.token_manager import TokenManager
+from keepa_deals.business_calculations import load_settings
+from datetime import datetime
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+KEEPA_EPOCH = datetime(2011, 1, 1)
 
 CONDITION_CODE_MAP = {
     0: 'New, unopened',
@@ -106,6 +110,15 @@ def get_used_product_info(product):
     best_offer = None
     used_condition_codes = {2, 3, 4, 5}
 
+    # Load settings once for default shipping logic
+    settings = load_settings()
+    default_shipping = settings.get('estimated_shipping_per_book', 0.0) * 100 # Convert to cents
+
+    # Calculate freshness cutoff (e.g., 365 days)
+    # Keepa timestamps are minutes since 2011-01-01
+    now_keepa_minutes = int((datetime.now() - KEEPA_EPOCH).total_seconds() / 60)
+    freshness_cutoff = now_keepa_minutes - (365 * 24 * 60) # 1 year ago
+
     for offer in offers:
         try:
             condition_val = offer.get('condition')
@@ -116,12 +129,20 @@ def get_used_product_info(product):
                 # The most recent entry is at the END of the list.
                 # Format is [..., timestamp, price_cents, shipping_cents]
                 offer_csv = offer.get('offerCSV', [])
-                if len(offer_csv) < 2: # Need at least price and shipping
-                    logger.warning(f"Malformed offerCSV for ASIN {product.get('asin')}: {offer_csv}")
-                    continue
+                if len(offer_csv) < 3: # Need timestamp, price, shipping
+                    if len(offer_csv) == 2: # Legacy/Malformed?
+                         pass # Proceed with caution if we assume missing TS? No, unsafe.
+                    else:
+                        logger.warning(f"Malformed offerCSV for ASIN {product.get('asin')}: {offer_csv}")
+                        continue
 
+                ts = offer_csv[-3]
                 price = offer_csv[-2]
                 shipping_raw = offer_csv[-1]
+
+                # Freshness Check: Skip Zombie Offers (> 1 year old)
+                if ts < freshness_cutoff:
+                    continue
 
                 # Check for FBA
                 is_fba_offer = offer.get('isFBA', False)
@@ -130,9 +151,8 @@ def get_used_product_info(product):
                     if is_fba_offer:
                         shipping_cost = 0 # FBA typically implies free shipping for Prime/threshold
                     else:
-                        # Unknown shipping for MFN is risky (could be international/high)
-                        # Skip this offer to prevent "Ghost Deals"
-                        continue
+                        # Unknown shipping for MFN. User requested using default setting.
+                        shipping_cost = default_shipping
                 else:
                     shipping_cost = shipping_raw
 
