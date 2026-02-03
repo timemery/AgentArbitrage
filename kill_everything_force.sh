@@ -1,14 +1,14 @@
 #!/bin/bash
-# Updated Jan 31 2026: Added PID and Lock cleanup
+# Updated Feb 3 2026: Fixed order of operations AND added nuclear persistence wipe
 echo "--- Starting Forceful Shutdown ---"
 
 # Step 1: Forcefully kill the monitor process
-echo "[1/7] Forcefully terminating the monitor process..."
+echo "[1/8] Forcefully terminating the monitor process..."
 sudo pkill -f "monitor_and_restart"
 sleep 2 # Give a moment for the process to die
 
 # Step 2: Forcefully kill all processes with 'celery' in their command line
-echo "[2/7] Forcefully terminating all Celery processes (worker, beat, etc.)..."
+echo "[2/8] Forcefully terminating all Celery processes (worker, beat, etc.)..."
 sudo pkill -9 -f celery
 sleep 2 # Give a moment for processes to die
 
@@ -21,27 +21,38 @@ else
     echo "All Celery processes terminated successfully."
 fi
 
-# Step 3: Kill any process listening on the Redis port (6379)
-echo "[3/7] Terminating Redis server process..."
+# Step 3: Clear ALL Redis locks (Soft Clear)
+echo "[3/8] Attempting to clear Redis locks via CLI..."
+# We attempt to clear locks. If Redis is already dead/unresponsive, this might fail.
+redis-cli DEL backfill_deals_lock update_recent_deals_lock || echo "Redis soft clear failed. Proceeding to hard kill."
+
+# Step 4: Kill any process listening on the Redis port (6379)
+echo "[4/8] Terminating Redis server process..."
 sudo fuser -k 6379/tcp || echo "Redis was not running or could not be killed."
-sleep 1
+sleep 2
 
-# Step 4: Clear ALL Redis locks to prevent stale lock issues
-echo "[4/7] Clearing stale Redis locks (Backfiller and Upserter)..."
-redis-cli DEL backfill_deals_lock update_recent_deals_lock || echo "Could not clear Redis locks (Redis may not be running)."
+# Step 5: NUCLEAR OPTION - Delete Redis Persistence Files
+# This ensures that even if Step 3 failed, the locks cannot reload from disk on restart.
+echo "[5/8] Deleting Redis persistence files (dump.rdb) to prevent zombie lock reload..."
+if [ -d "/var/lib/redis" ]; then
+    sudo find /var/lib/redis -name "dump.rdb" -delete
+    echo "Redis dump files deleted."
+else
+    echo "Redis directory /var/lib/redis not found. Skipping dump deletion."
+fi
 
-# Step 5: Delete the Celery Beat schedule file AND PID file
-echo "[5/7] Deleting Celery Beat schedule and PID files..."
+# Step 6: Delete the Celery Beat schedule file AND PID file
+echo "[6/8] Deleting Celery Beat schedule and PID files..."
 sudo rm -f celerybeat-schedule
 sudo rm -f celerybeat.pid
 
-# Step 6: Recursively find and delete all __pycache__ directories
-echo "[6/7] Deleting all Python cache directories (__pycache__)..."
+# Step 7: Recursively find and delete all __pycache__ directories
+echo "[7/8] Deleting all Python cache directories (__pycache__)..."
 sudo find . -type d -name "__pycache__" -exec rm -r {} +
 echo "Cache cleared."
 
-# Step 7: Restarting Redis server for a clean slate
-echo "[7/7] Restarting Redis server..."
+# Step 8: Restarting Redis server for a clean slate
+echo "[8/8] Restarting Redis server..."
 sudo service redis-server start
 
 echo "--- Forceful Shutdown Complete ---"
