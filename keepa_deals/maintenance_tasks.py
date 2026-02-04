@@ -3,6 +3,7 @@ import os
 import json
 import redis
 import re
+from datetime import datetime
 from worker import celery_app as celery
 from .ava_advisor import query_xai_api
 
@@ -42,14 +43,31 @@ def homogenize_intelligence_task():
             redis_client.set(HOMOGENIZATION_STATUS_KEY, json.dumps({"status": "Complete", "removed_count": 0}))
             return 0
 
+        # Create mapping of content -> date_added to preserve dates
+        content_date_map = {}
+        for item in intelligence:
+            if isinstance(item, dict) and 'content' in item:
+                content_date_map[str(item['content']).strip()] = item.get('date_added')
+            elif isinstance(item, str):
+                # Fallback for strings (should be rare after migration)
+                content_date_map[str(item).strip()] = None
+
+        # Extract just the content strings for LLM processing
+        intelligence_content_list = []
+        for item in intelligence:
+            if isinstance(item, dict) and 'content' in item:
+                intelligence_content_list.append(str(item['content']).strip())
+            else:
+                intelligence_content_list.append(str(item).strip())
+
         CHUNK_SIZE = 500
-        total_original = len(intelligence)
-        all_cleaned_items = []
+        total_original = len(intelligence_content_list)
+        all_cleaned_strings = []
 
         logger.info(f"Starting processing for {total_original} items...")
 
         for i in range(0, total_original, CHUNK_SIZE):
-            chunk = intelligence[i:i + CHUNK_SIZE]
+            chunk = intelligence_content_list[i:i + CHUNK_SIZE]
             current_chunk_num = (i // CHUNK_SIZE) + 1
             total_chunks = (total_original + CHUNK_SIZE - 1) // CHUNK_SIZE
 
@@ -88,7 +106,7 @@ def homogenize_intelligence_task():
 
             if "error" in result:
                 logger.error(f"xAI Error in homogenization chunk {i}: {result['error']}")
-                all_cleaned_items.extend(chunk)
+                all_cleaned_strings.extend(chunk)
                 continue
 
             try:
@@ -97,17 +115,31 @@ def homogenize_intelligence_task():
                 cleaned_chunk = json.loads(content)
 
                 if isinstance(cleaned_chunk, list):
-                    all_cleaned_items.extend(cleaned_chunk)
+                    all_cleaned_strings.extend(cleaned_chunk)
                     logger.info(f"Chunk {i}: Reduced {len(chunk)} -> {len(cleaned_chunk)}")
                 else:
                     logger.error(f"Homogenization returned non-list JSON for chunk {i}.")
-                    all_cleaned_items.extend(chunk)
+                    all_cleaned_strings.extend(chunk)
 
             except (json.JSONDecodeError, KeyError, IndexError) as e:
                 logger.error(f"Error parsing homogenization response for chunk {i}: {e}")
-                all_cleaned_items.extend(chunk)
+                all_cleaned_strings.extend(chunk)
 
-        final_count = len(all_cleaned_items)
+        # Reconstruct Objects with Dates
+        final_objects_list = []
+        today_str = datetime.now().strftime('%Y-%m-%d')
+
+        for s in all_cleaned_strings:
+            s_clean = str(s).strip()
+            # If exists in map, reuse date. If not, it's new/merged.
+            original_date = content_date_map.get(s_clean)
+
+            final_objects_list.append({
+                "content": s_clean,
+                "date_added": original_date if original_date else today_str
+            })
+
+        final_count = len(final_objects_list)
         removed = total_original - final_count
 
         logger.info(f"Homogenization complete. Original: {total_original}, Final: {final_count}, Removed: {removed}")
@@ -120,7 +152,7 @@ def homogenize_intelligence_task():
             logger.info(f"Writing updated list to file: {INTELLIGENCE_FILE}")
             try:
                 with open(INTELLIGENCE_FILE, 'w', encoding='utf-8') as f:
-                    json.dump(all_cleaned_items, f, indent=4)
+                    json.dump(final_objects_list, f, indent=4)
                 logger.info("File write successful.")
             except Exception as write_err:
                 logger.error(f"Failed to write intelligence file: {write_err}")

@@ -264,12 +264,23 @@ def strategies():
         return redirect(url_for('dashboard'))
 
     strategies_list = []
+    total_count = 0
+    new_today_count = 0
+    today_str = datetime.now().strftime('%Y-%m-%d')
+
     app.logger.info(f"Attempting to read strategies from: {STRATEGIES_FILE}")
     if os.path.exists(STRATEGIES_FILE):
         app.logger.info(f"Strategies file found.")
         try:
             with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
                 strategies_list = json.load(f)
+
+            total_count = len(strategies_list)
+            for s in strategies_list:
+                if isinstance(s, dict) and s.get('date_added') == today_str:
+                    new_today_count += 1
+                # If s is string (legacy), it has no date, so not new today unless converted.
+
             app.logger.info(f"Successfully loaded {len(strategies_list)} strategies.")
         except (IOError, json.JSONDecodeError) as e:
             app.logger.error(f"Error reading strategies file: {e}", exc_info=True)
@@ -277,7 +288,7 @@ def strategies():
     else:
         app.logger.warning(f"Strategies file not found at: {STRATEGIES_FILE}")
 
-    return render_template('strategies.html', strategies=strategies_list)
+    return render_template('strategies.html', strategies=strategies_list, total_count=total_count, new_today_count=new_today_count)
 
 
 @app.route('/intelligence')
@@ -290,12 +301,26 @@ def intelligence():
         return redirect(url_for('dashboard'))
     
     ideas_list = []
+    total_count = 0
+    new_today_count = 0
+    today_str = datetime.now().strftime('%Y-%m-%d')
+
     app.logger.info(f"Attempting to read Intelligence from: {INTELLIGENCE_FILE}")
     if os.path.exists(INTELLIGENCE_FILE):
         app.logger.info(f"Intelligence file found.")
         try:
             with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
                 ideas_list = json.load(f)
+
+            total_count = len(ideas_list)
+            for i in ideas_list:
+                # Intelligence items are now objects with date_added
+                if isinstance(i, dict) and i.get('date_added') == today_str:
+                    new_today_count += 1
+                # Fallback for unexpected strings if migration didn't catch something
+                elif not isinstance(i, dict):
+                    pass
+
             app.logger.info(f"Successfully loaded {len(ideas_list)} ideas from Intelligence.")
         except (IOError, json.JSONDecodeError) as e:
             app.logger.error(f"Error reading Intelligence file: {e}", exc_info=True)
@@ -303,7 +328,7 @@ def intelligence():
     else:
         app.logger.warning(f"Intelligence file not found at: {INTELLIGENCE_FILE}")
 
-    return render_template('intelligence.html', ideas=ideas_list)
+    return render_template('intelligence.html', ideas=ideas_list, total_count=total_count, new_today_count=new_today_count)
 
 @app.route('/dashboard')
 def dashboard():
@@ -503,7 +528,12 @@ def _deduplicate_intelligence():
         seen_content = set()
 
         for i in intelligence:
-            content_key = str(i).strip()
+            # Check if intelligence is an object (new format) or string (old format/fallback)
+            if isinstance(i, dict) and 'content' in i:
+                content_key = str(i['content']).strip()
+            else:
+                content_key = str(i).strip()
+
             if content_key not in seen_content:
                 seen_content.add(content_key)
                 unique_intelligence.append(i)
@@ -643,6 +673,7 @@ def approve():
 
             added_count = 0
             skipped_count = 0
+            today_str = datetime.now().strftime('%Y-%m-%d')
 
             for ns in new_strategies:
                 # Determine content key for the new strategy
@@ -650,6 +681,10 @@ def approve():
                     # Ensure ID exists
                     if not ns.get('id'):
                         ns['id'] = str(uuid.uuid4())
+
+                    # Ensure date_added exists for new items
+                    if not ns.get('date_added'):
+                        ns['date_added'] = today_str
 
                     ns_content_key = f"{ns.get('category')}|{ns.get('trigger')}|{ns.get('advice')}"
                 else:
@@ -659,7 +694,8 @@ def approve():
                          "id": str(uuid.uuid4()),
                          "advice": str(ns),
                          "trigger": "Manual Entry",
-                         "category": "General"
+                         "category": "General",
+                         "date_added": today_str
                     }
 
                 if ns_content_key not in existing_content:
@@ -694,14 +730,25 @@ def approve():
             
             added_ideas_count = 0
             skipped_ideas_count = 0
+            today_str = datetime.now().strftime('%Y-%m-%d')
 
             # Use a set for faster lookup of existing ideas
-            existing_ideas_set = set(ideas)
+            # ideas list now contains objects after migration, but might contain strings if fresh DB
+            existing_ideas_set = set()
+            for i in ideas:
+                if isinstance(i, dict) and 'content' in i:
+                    existing_ideas_set.add(str(i['content']).strip())
+                else:
+                    existing_ideas_set.add(str(i).strip())
 
-            for idea in new_ideas:
-                if idea not in existing_ideas_set:
-                    ideas.append(idea)
-                    existing_ideas_set.add(idea)
+            for idea_content in new_ideas:
+                if idea_content not in existing_ideas_set:
+                    new_idea_obj = {
+                        "content": idea_content,
+                        "date_added": today_str
+                    }
+                    ideas.append(new_idea_obj)
+                    existing_ideas_set.add(idea_content)
                     added_ideas_count += 1
                 else:
                     skipped_ideas_count += 1
