@@ -12,7 +12,16 @@ echo "Ensuring www-data owns the entire application directory..."
 monitor_and_restart() {
     # Define constants INSIDE the function to ensure they are available in the subshell
     APP_DIR=$(pwd)
-    VENV_PYTHON="python3"
+
+    # Dynamic Python Path Logic
+    if [ -f "$APP_DIR/venv/bin/python" ]; then
+        VENV_PYTHON="$APP_DIR/venv/bin/python"
+    elif [ -f "$APP_DIR/venv/bin/python3" ]; then
+        VENV_PYTHON="$APP_DIR/venv/bin/python3"
+    else
+        VENV_PYTHON="python3"
+    fi
+
     WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
     BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
     MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"

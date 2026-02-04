@@ -24,12 +24,25 @@ fi
 # Step 3: BRAIN WIPE - Python Execution
 # We use the app's python environment to ensure we have the correct credentials/library to wipe Redis.
 echo "[3/8] Executing Python-based Redis Wipe..."
-# Ensure we are using the venv python
-VENV_PYTHON="/var/www/agentarbitrage/venv/bin/python3"
-SCRIPT_PATH="/var/www/agentarbitrage/Diagnostics/kill_redis_safely.py"
+
+APP_DIR=$(pwd)
+# Dynamic Python Path Logic
+if [ -f "$APP_DIR/venv/bin/python" ]; then
+    VENV_PYTHON="$APP_DIR/venv/bin/python"
+elif [ -f "$APP_DIR/venv/bin/python3" ]; then
+    VENV_PYTHON="$APP_DIR/venv/bin/python3"
+else
+    VENV_PYTHON="python3"
+fi
+
+SCRIPT_PATH="$APP_DIR/Diagnostics/kill_redis_safely.py"
 
 if [ -f "$SCRIPT_PATH" ]; then
-    sudo $VENV_PYTHON $SCRIPT_PATH || echo "Python wipe script failed."
+    if [[ "$VENV_PYTHON" == "python3" ]]; then
+        $VENV_PYTHON $SCRIPT_PATH || echo "Python wipe script failed."
+    else
+        sudo $VENV_PYTHON $SCRIPT_PATH || echo "Python wipe script failed."
+    fi
 else
     echo "Warning: Python wipe script not found at $SCRIPT_PATH. Falling back to redis-cli."
     redis-cli -h 127.0.0.1 FLUSHALL || echo "Redis FLUSHALL failed."
