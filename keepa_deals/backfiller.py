@@ -196,14 +196,25 @@ def backfill_deals(reset=False):
                 all_fetched_products = {}
 
                 # 1. Fetch NEW deals (Heavy: 365 days history, offers=20)
+                # Batching: Split into smaller chunks (5) to avoid requesting >300 tokens at once (Deadlock Fix)
+                # Cost per batch of 5 is ~100 tokens. Target = 80 + 100 = 180 (Safe for 300 bucket).
+                BACKFILL_BATCH_SIZE = 5
                 if new_asins:
-                    logger.info(f"Fetching full history for {len(new_asins)} NEW deals...")
-                    token_manager.request_permission_for_call(20 * len(new_asins))
-                    prod_resp, _, _, t_left = fetch_product_batch(api_key, new_asins, days=365, history=1, offers=20)
-                    if t_left: token_manager.update_after_call(t_left)
+                    logger.info(f"Fetching full history for {len(new_asins)} NEW deals (Batched by {BACKFILL_BATCH_SIZE})...")
+                    for k in range(0, len(new_asins), BACKFILL_BATCH_SIZE):
+                        batch_asins = new_asins[k:k + BACKFILL_BATCH_SIZE]
 
-                    if prod_resp and 'products' in prod_resp:
-                         all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
+                        # Request tokens for this specific batch
+                        token_manager.request_permission_for_call(20 * len(batch_asins))
+
+                        prod_resp, _, _, t_left = fetch_product_batch(api_key, batch_asins, days=365, history=1, offers=20)
+                        if t_left: token_manager.update_after_call(t_left)
+
+                        if prod_resp and 'products' in prod_resp:
+                             all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
+
+                        # Small sleep between API batches to be polite
+                        time.sleep(0.5)
 
                 # 2. Fetch EXISTING deals (Light: stats=180, history=0)
                 if existing_asins_list:
