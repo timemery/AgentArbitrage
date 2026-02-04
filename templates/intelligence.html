@@ -3,7 +3,13 @@
 {% block content %}
     <div class="tidy-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 class="tidy-header">Conceptual Ideas & Methodologies</h2>
+            <div>
+                <h2 class="tidy-header" style="margin-bottom: 5px;">Conceptual Ideas & Methodologies</h2>
+                <div style="color: #6699CC; font-size: 14px; margin-bottom: 10px;">
+                    <span style="margin-right: 15px;">{{ total_count }} Intelligence</span>
+                    <span>{{ new_today_count }} New Today</span>
+                </div>
+            </div>
             <div class="button-group">
                 <button id="remove-dupes-btn" class="tidy-button" style="background-color: transparent; border-color: #CC6666; color: white; font-size: 12px; padding: 5px 10px; margin-right: 10px;">Remove Duplicates (Exact)</button>
                 <button id="homogenize-btn" class="tidy-button" style="background-color: transparent; border-color: #4CAF50; color: white; font-size: 12px; padding: 5px 10px;">Homogenize (Semantic)</button>
@@ -13,7 +19,11 @@
             <div class="content" style="border: none; background: transparent; padding: 0;">
                 {% if ideas %}
                     {% for idea in ideas %}
-                        <p class="tidy-text" style="margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">{{ idea }}</p>
+                        {% if idea is mapping and idea.content %}
+                            <p class="tidy-text" style="margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">{{ idea.content }}</p>
+                        {% else %}
+                            <p class="tidy-text" style="margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">{{ idea }}</p>
+                        {% endif %}
                     {% endfor %}
                 {% else %}
                     <p class="tidy-text">No conceptual ideas have been saved to Intelligence yet.</p>
