@@ -6,13 +6,13 @@
 
 # Step 1: Set ownership
 echo "Ensuring www-data owns the entire application directory..."
-chown -R www-data:www-data /var/www/agentarbitrage
+# chown -R www-data:www-data /var/www/agentarbitrage
 
 # --- Main Resiliency Loop (to be run in the background) ---
 monitor_and_restart() {
     # Define constants INSIDE the function to ensure they are available in the subshell
-    APP_DIR="/var/www/agentarbitrage"
-    VENV_PYTHON="$APP_DIR/venv/bin/python"
+    APP_DIR=$(pwd)
+    VENV_PYTHON="python3"
     WORKER_LOG_FILE="$APP_DIR/celery_worker.log"
     BEAT_LOG_FILE="$APP_DIR/celery_beat.log"
     MONITOR_LOG_FILE="$APP_DIR/celery_monitor.log"
@@ -26,7 +26,7 @@ monitor_and_restart() {
     redis-cli ping > /dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo "Redis not responding. Starting Redis server..." >> "$MONITOR_LOG_FILE"
-        sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
+        sudo redis-server > "$APP_DIR/redis-server.log" 2>&1 &
         sleep 5
         redis-cli ping > /dev/null 2>&1
         if [ $? -ne 0 ]; then
@@ -45,17 +45,18 @@ monitor_and_restart() {
 
     # Purge tasks and clean up state
     echo "Purging tasks and cleaning state..." >> "$MONITOR_LOG_FILE"
-    su -s /bin/bash -c "$ENV_SETUP && $PURGE_COMMAND" www-data
+    # su -s /bin/bash -c "$ENV_SETUP && $PURGE_COMMAND" www-data
+    bash -c "$ENV_SETUP && $PURGE_COMMAND"
     sudo rm -f "$APP_DIR/celerybeat-schedule"
     sudo rm -f "$APP_DIR/celerybeat.pid" # Ensure stale PID doesn't block startup
     touch "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
-    chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
+    # chown www-data:www-data "$WORKER_LOG_FILE" "$BEAT_LOG_FILE" "$APP_DIR/deals.db"
 
     # Start the daemons using the 'su' command for reliability in this environment
     # The inner 'nohup' is removed as the parent monitor is already nohup'd.
     echo "Starting Celery worker and beat scheduler daemons..." >> "$MONITOR_LOG_FILE"
-    su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
-    su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+    bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &"
+    bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &"
 
     echo "Services started. Entering monitoring loop..." >> "$MONITOR_LOG_FILE"
 
@@ -66,7 +67,7 @@ monitor_and_restart() {
         # Check Worker (Strict grep to avoid catching 'tail -f' logs)
         if ! pgrep -f "celery.*-A.*worker" > /dev/null; then
             echo "$(date): Celery Worker died. Restarting..." >> "$MONITOR_LOG_FILE"
-            su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &" www-data
+            bash -c "cd $APP_DIR && $ENV_SETUP && $WORKER_COMMAND >> $WORKER_LOG_FILE 2>&1 &"
         fi
 
         # Check Beat (Strict grep to avoid catching 'tail -f' logs)
@@ -76,14 +77,14 @@ monitor_and_restart() {
             sudo rm -f "$APP_DIR/celerybeat.pid"
             # Cleanup Schedule file to prevent crash loops from corruption
             sudo rm -f "$APP_DIR/celerybeat-schedule"*
-            su -s /bin/bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &" www-data
+            bash -c "cd $APP_DIR && $ENV_SETUP && $BEAT_COMMAND >> $BEAT_LOG_FILE 2>&1 &"
         fi
 
         # Check Redis
         redis-cli ping > /dev/null 2>&1
         if [ $? -ne 0 ]; then
              echo "$(date): Redis died. Restarting..." >> "$MONITOR_LOG_FILE"
-             sudo redis-server > /var/log/redis/redis-server.log 2>&1 &
+             sudo redis-server > "$APP_DIR/redis-server.log" 2>&1 &
         fi
     done
 }
@@ -105,7 +106,7 @@ fi
 export -f monitor_and_restart
 
 # Define MONITOR_LOG_FILE here just for the initial nohup redirection
-MONITOR_LOG_FILE="/var/www/agentarbitrage/celery_monitor.log"
+MONITOR_LOG_FILE="$(pwd)/celery_monitor.log"
 
 # Launch the monitor function in the background and disown it
 nohup bash -c 'monitor_and_restart' >> "$MONITOR_LOG_FILE" 2>&1 &
@@ -115,5 +116,5 @@ echo "The resilient Celery service monitor has been started in the background."
 echo "You can now safely close this terminal. To see the monitor's logs, run:"
 echo "tail -f $MONITOR_LOG_FILE"
 echo "To see worker/beat logs, run:"
-echo "tail -f /var/www/agentarbitrage/celery_worker.log"
-echo "tail -f /var/www/agentarbitrage/celery_beat.log"
+echo "tail -f $(pwd)/celery_worker.log"
+echo "tail -f $(pwd)/celery_beat.log"
