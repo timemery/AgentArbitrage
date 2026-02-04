@@ -200,7 +200,7 @@ class TokenManager:
                     wait_time = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
 
             if wait_time > 0:
-                logger.warning(f"Zero/Neg tokens ({self.tokens:.2f}). Waiting for {wait_time}s.")
+                logger.warning(f"Insufficient tokens (Current: {self.tokens:.2f}, Target: {target}). Waiting for {wait_time}s.")
                 self._wait_for_tokens(wait_time, recovery_target)
                 continue # Retry reservation loop
 
@@ -217,6 +217,7 @@ class TokenManager:
         """
         Sleeps in chunks, checking for refill/sync updates.
         """
+        logger.info(f"Entered wait loop. Initial Wait: {initial_wait}s. Target: {target}")
         remaining = initial_wait
         while remaining > 0:
             sleep_chunk = max(1, min(remaining, 30))

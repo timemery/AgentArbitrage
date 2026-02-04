@@ -124,9 +124,10 @@ def backfill_deals(reset=False):
 
         token_manager = TokenManager(api_key)
         # STARVATION FIX: Increase threshold for backfiller to prioritize upserter (simple_task)
-        # The upserter uses the default threshold of 50. By making the backfiller wait for 150,
-        # we create a protected window [50, 150] where the upserter can run without competition.
-        token_manager.MIN_TOKEN_THRESHOLD = 150
+        # The upserter uses the default threshold of 50. By making the backfiller wait for 80,
+        # we create a protected window [50, 80] where the upserter can run without competition,
+        # but avoid the 'livelock' where a slow refill rate prevents reaching 150.
+        token_manager.MIN_TOKEN_THRESHOLD = 80
         token_manager.sync_tokens()
 
         page = load_backfill_state()
