@@ -36499,5 +36499,389 @@
         "advice": "\"source\": \"Items stored for over 365 Days are subject to a long-term storage fee of $6.90 per cubic foot or $0.15 per unit (whichever is greater will be considered).\"",
         "trigger": "Manual Entry",
         "category": "General"
+    },
+    {
+        "id": "ra-001",
+        "category": "Buying",
+        "trigger": "Products deeply discounted in stores (e.g., going out of business sales)",
+        "advice": "Buy low quantities of discounted products and resell on Amazon at normal retail price after subtracting purchase cost and Amazon fees to calculate profit",
+        "confidence": "High",
+        "source": "Retail Arbitrage is where you go and you buy a product that's deeply discounted on a store maybe they're going out of business you buy a bunch of these products and then you flip it on Amazon for the higher normal retail price and after you subtract how much you paid for the product and all of Amazon's fees you're left over with the profit"
+    },
+    {
+        "id": "ra-002",
+        "category": "General",
+        "trigger": "Low starting capital available",
+        "advice": "Use retail arbitrage as entry method by buying small amounts of products from stores and flipping on Amazon for decent profit, but note it requires constant hunting and is not passive",
+        "confidence": "High",
+        "source": "this is a great business model if you don't have a lot of money because you can go and buy a small amount of products flip them on Amazon and you can make a decent amount of profit the problem with Retail Arbitrage is that it's not a passive income business model you constantly have to go out to stores hunt for New Deals"
+    },
+    {
+        "id": "sp-001",
+        "category": "General",
+        "trigger": "Planning to sell 40 or more items per month",
+        "advice": "Sign up for the Professional selling plan at $39.99/month instead of Individual plan to avoid $0.99 per item fee and access additional features, making it cheaper long-term",
+        "confidence": "High",
+        "source": "if you're planning on selling 40 or more items I would recommend signing up with the professional selling plan because it comes with a ton of other features and it'll actually be cheaper in the long run"
+    },
+    {
+        "id": "sp-002",
+        "category": "General",
+        "trigger": "Selling fewer than 40 items per month",
+        "advice": "Use the free Individual selling plan, but pay $0.99 additional fee per item sold; scroll to bottom of signup page to select it",
+        "confidence": "High",
+        "source": "there's the individual selling plan which is free but they hide this feature in order to sign up for the individual selling plan you're going to have to scroll all the way down to the bottom and click on sign up as an individual seller but if you sign up with this plan you're going to have to pay an additional 99 for every item you sell"
+    },
+    {
+        "id": "pr-001",
+        "category": "Pricing",
+        "trigger": "Product selling price below $15",
+        "advice": "Avoid selling products priced under $15 as it's hard to achieve profit after Amazon FBA fees and product costs",
+        "confidence": "High",
+        "source": "the product you're trying to sell is below $15 it's really hard to make a profit because of all the different Amazon FBA fees the cost of your product it's kind of hard to make a profit on any product that's below $15"
+    },
+    {
+        "id": "pr-002",
+        "category": "Pricing",
+        "trigger": "Product selling price above $85",
+        "advice": "Avoid products priced over $85 due to lower sales volume and additional complications",
+        "confidence": "High",
+        "source": "any product that's above $85 or so you're probably not going to get a lot of sales for and there's other complications that come in if a product's too high of a price"
+    },
+    {
+        "id": "pm-001",
+        "category": "Pricing",
+        "trigger": "Evaluating product profitability",
+        "advice": "Aim for at least 25-33% profit margin: one-third for manufacturing cost, one-third for Amazon FBA fees, one-third as profit",
+        "confidence": "High",
+        "source": "generally I like to shoot for a 33% profit margin meaning whatever the price of your product is you can think about a third of the cost should go to manufacturing the product and then another third of the cost should go to the Amazon FBA fees and the last third is for you... but generally I try to go for a minimum of somewhere between 25 to 33% profit margins"
+    },
+    {
+        "id": "bsr-001",
+        "category": "Buying",
+        "trigger": "Assessing demand for a product listing",
+        "advice": "Copy the Best Sellers Rank (BSR) from the product page, paste into free Jungle Scout sales estimator to get monthly units sold, then multiply by product price to estimate monthly revenue",
+        "confidence": "High",
+        "source": "you can find out how much any product on Amazon is making all you have to do is go to that product listing page scroll down to the bestselling rank number copy this and paste it into the free jungle Scout sales estimator tool and it will tell you how many units per month that product is selling then from there all you do is multiply that number by the cost of the product"
+    },
+    {
+        "id": "fba-001",
+        "category": "General",
+        "trigger": "Using FBA for fulfillment",
+        "advice": "Ship products to Amazon warehouse to make them Prime eligible, enabling 2-day shipping for over 200 million Prime customers and higher search ranking, increasing sales",
+        "confidence": "High",
+        "source": "when you have a product shipped into the Amazon warehouse and you list it for sale on Amazon it makes it so that your product is Prime eligible meaning that Prime customers shopping on Amazon can get the product delivered to them in 2 days or less and Amazon is more likely to put Prime products at the top of the Amazon search results"
+    },
+    {
+        "id": "comp-001",
+        "category": "Risk",
+        "trigger": "High competition in product category",
+        "advice": "Avoid categories with many sellers (e.g., wholesale or private label) due to saturation from over 4,000 new sellers daily; seek niches with low or no competition for better success",
+        "confidence": "High",
+        "source": "Amazon has become very saturated recently there's over 4,000 new sellers joining Amazon every day... the problem with this business model is that if it's easy for you to find that wholesaler there's no nothing stopping other people from coming and buying from that same wholesaler and competing with you"
+    },
+    {
+        "id": "ship-001",
+        "category": "Buying",
+        "trigger": "Selecting products for shipping",
+        "advice": "Choose lightweight, non-breakable, non-leaking products that are easy to ship to avoid high Amazon fees for heavy or fragile items",
+        "confidence": "High",
+        "source": "you want to make sure that it's going to be a product that's easy to ship you want to make sure it's not going to break during shipping that it's not going to leak during shipping that it's not going to be too heavy to ship because if it's really heavy Amazon's going to charge you a lot of fees"
+    },
+    {
+        "id": "arb-001",
+        "category": "Buying",
+        "trigger": "Arbitrage product from local retailer",
+        "advice": "Buy products like newborn nappies from supermarkets or retailers (e.g., \u00a33.60 per unit) and resell on Amazon as packs (e.g., pack of three for \u00a326.50) if selling over 500 units/month with \u00a36 profit per unit.",
+        "confidence": "High",
+        "source": "As you can see, I can buy these newborn nappies from Joy Buy for \u00a3360 per unit. And I can resell it on Amazon as a pack of three for \u00a326.50 and is selling over 500 times a month, which is like 13,000 in sales. This product would give you a profit of around \u00a36 per unit."
+    },
+    {
+        "id": "arb-002",
+        "category": "General",
+        "trigger": "Starting with arbitrage or wholesale",
+        "advice": "Focus on arbitrage and wholesale products initially, as they use existing Amazon listings without needing marketing or ads, unlike private label.",
+        "confidence": "High",
+        "source": "the type of products that you are going to look for are going to be arbitrage and wholesale. This is because these products are already selling on Amazon. So, you don't need to do any sort of marketing, Amazon ads, or making your own product."
+    },
+    {
+        "id": "arb-003",
+        "category": "Pricing",
+        "trigger": "Profit margin calculation",
+        "advice": "Aim for at least 30% ROI; for example, if spending \u00a310 on a product, target \u00a313 return (\u00a33 profit). Use online ROI calculators.",
+        "confidence": "High",
+        "source": "What I consider to be a good profit margin is being able to make at least 30% return on your investment. Meaning, you can make 30% more than what you spend on buying the actual product. ... If I'm spending \u00a310 on a product, then I want to return at least 30% more on the \u00a310 I'm spending to buying that product, which will be my \u00a310 plus \u00a33, which is 30% more, which will equal to \u00a313 in return in total."
+    },
+    {
+        "id": "arb-004",
+        "category": "Buying",
+        "trigger": "Multiple sellers on listing",
+        "advice": "Ensure at least more than three sellers on the Amazon listing to confirm it's not a private label product.",
+        "confidence": "High",
+        "source": "the way you make sure that this is not a private label product is by making sure there are at least more than three sellers selling this product which you can check right here."
+    },
+    {
+        "id": "arb-005",
+        "category": "Buying",
+        "trigger": "Initial purchase quantity",
+        "advice": "Start with low quantities like 100 units to test, scaling to 1,000 units for better cost per unit (e.g., \u00a33.1 per unit).",
+        "confidence": "High",
+        "source": "I bought this product multiple times at low quantity of just 100 units as well as a,000 units. and a,000 unit. I was able to get the cost per unit at just \u00a331."
+    },
+    {
+        "id": "arb-006",
+        "category": "Pricing",
+        "trigger": "Sales volume and profit",
+        "advice": "Target products selling around 200 times a month with \u00a35 profit per unit and ROI over 150%.",
+        "confidence": "High",
+        "source": "this product is selling around 200 times a month and has an ROI of over 150%."
+    },
+    {
+        "id": "arb-007",
+        "category": "Buying",
+        "trigger": "Finding suppliers",
+        "advice": "Google 'wholesalers UK' or 'US', open accounts, and review product catalogs to find resellable items.",
+        "confidence": "High",
+        "source": "the simplest way to find products like this is by simply going to Google, typing in wholesalers UK or US if you're in the US, and then open an account with each one of them and go through their entire product catalog to find products that you can resell on Amazon for a profit."
+    },
+    {
+        "id": "arb-008",
+        "category": "Risk",
+        "trigger": "Best Sellers Rank (BSR)",
+        "advice": "Only consider products with BSR less than 100,000, as lower BSR indicates higher sales volume.",
+        "confidence": "High",
+        "source": "The best products which will actually sell are the ones that have less than 100,000 BSR. The way you should think is that the lesser the BSR, the more the product sells."
+    },
+    {
+        "id": "arb-009",
+        "category": "Risk",
+        "trigger": "Product weight",
+        "advice": "Prioritize lightweight products; avoid those over 2 pounds to minimize FBA fees and shipping costs.",
+        "confidence": "High",
+        "source": "something lightweight. This is because the heavier the product, the heavier the FBA fees. ... the shipping costs can get very high if the product weighs more than two pounds."
+    },
+    {
+        "id": "arb-010",
+        "category": "Seasonality",
+        "trigger": "Potential seasonal product",
+        "advice": "Check Google Trends for the main product keyword to ensure consistent demand year-round; avoid spikes limited to specific months like December for Christmas items.",
+        "confidence": "High",
+        "source": "you need to make sure that the product you sell is not a seasonal product ... the best way to determine this is to go to Google Trends and type in the main keyword for the product. For example, if it's a product related to reindeers, then go on Google Trends and type in reindeers and you might see there's a spike in December because of Christmas reindeers."
+    },
+    {
+        "id": "arb-011",
+        "category": "Buying",
+        "trigger": "Supplier selection",
+        "advice": "Choose the cheapest reliable supplier; prefer large suppliers for reliability or small ones for better relationships and flexibility like rush orders.",
+        "confidence": "High",
+        "source": "finding the cheapest one will make you the most profit. ... making more profit is great, but another thing you should always consider is reliability ... large suppliers are generally reliable ... you can build closer relationships with smaller suppliers."
+    },
+    {
+        "id": "arb-012",
+        "category": "General",
+        "trigger": "Contacting suppliers",
+        "advice": "Call suppliers by phone instead of emailing to build better connections and get faster responses.",
+        "confidence": "High",
+        "source": "try and speak to your suppliers via the phone rather than always emailing them because not only is faster and you can also build a better connection over the phone."
+    },
+    {
+        "id": "arb-013",
+        "category": "General",
+        "trigger": "Scaling business",
+        "advice": "Delegate time-consuming tasks like packing; recycle profits back into buying more products instead of withdrawing; start with \u00a32-5K investment.",
+        "confidence": "High",
+        "source": "start delegating. ... figure out what is taking most of your time ... recycle the money within your business rather than taking profits out. ... you might be starting with 3 to 5K or maybe 2 to 3K when starting off."
+    },
+    {
+        "id": "arb-001",
+        "category": "Buying",
+        "trigger": "Products in clearance section discounted 50-60%",
+        "advice": "Buy discounted products from retailers or supermarkets and resell on Amazon for profit; start with as little as \u00a3200-300",
+        "confidence": "High",
+        "source": "you walk into the clearance section of the store and look for products that are 50 or 60% discounted and you can see that they're selling for more on Amazon. So, you're going to buy as many as you can and then resell it on Amazon for a profit... you can start with as little as 200300."
+    },
+    {
+        "id": "arb-002",
+        "category": "General",
+        "trigger": "Beginner with low capital (< \u00a31000)",
+        "advice": "Start with arbitrage model to build initial capital before moving to wholesale; ideal for making extra \u00a3 few hundred per month without managing inventory",
+        "confidence": "High",
+        "source": "if you have less than \u00a31,000, start arbitrage, build your initial capital to at least \u00a31,000, then do wholesale... if you're a person who's just looking to make an extra few hundred pounds every single month, then the arbitrage model is perfectly for you"
+    },
+    {
+        "id": "arb-003",
+        "category": "Buying",
+        "trigger": "Online sourcing preferred",
+        "advice": "Use online arbitrage by checking retailer's website clearance sections (e.g., Argos) and verify selling price on Amazon; use subscription tools to scan and find deals from home",
+        "confidence": "High",
+        "source": "Online arbitrage is basically go to the retailer's website then they have a clearance section. Like if you go to Argos right now you can go to the clearance section... Plus, you can also use tools out there that will help you find arbitrage deals by just having a subscription with them"
+    },
+    {
+        "id": "arb-004",
+        "category": "Risk",
+        "trigger": "Scaling arbitrage business",
+        "advice": "Be aware arbitrage is hard to scale as it requires constant sourcing of new discounted products; not sustainable without VA or employees for international operations",
+        "confidence": "High",
+        "source": "with the arbitrage model, the main problem is that it's hard to scale because you have to constantly keep looking for products that are discounted... if you're in a different country and you don't have a virtual assistant or you don't have employees, you will definitely not be able to sustain this model"
+    },
+    {
+        "id": "arb-005",
+        "category": "Buying",
+        "trigger": "Product price check",
+        "advice": "Only consider products priced above \u00a310 for easier ROI and margins; possible below \u00a310 but takes longer; never below \u00a35 due to low margins and competition",
+        "confidence": "High",
+        "source": "The product should be more than \u00a310... finding products with higher ROI and good margins below \u00a310 is possible... but never go below5 because the margins are going to get really lower."
+    },
+    {
+        "id": "arb-006",
+        "category": "Risk",
+        "trigger": "Amazon or brand on listing",
+        "advice": "Filter listings by Prime and new; avoid if Amazon is selling (dispatched/sold by Amazon); check sellers manually and Google business names to ensure brand isn't present",
+        "confidence": "High",
+        "source": "make sure Amazon or the brand is not on the listing... filter by Prime and new... if this sold by was Amazon... that's no good... check if Sarah V is on this listing... copy this name and go on Google"
+    },
+    {
+        "id": "arb-007",
+        "category": "Risk",
+        "trigger": "Fewer than 3 sellers on listing",
+        "advice": "Ensure more than three sellers on the listing to confirm it's not a private label product; avoid listings with 1-2 sellers",
+        "confidence": "High",
+        "source": "the third and last check was pretty simple, which was to make sure it's more than three sellers and to confirm that it's not a private label product."
+    },
+    {
+        "id": "arb-008",
+        "category": "Buying",
+        "trigger": "Using Amazon bestsellers",
+        "advice": "Go to Amazon bestsellers, select category (e.g., health), set min price \u00a310, open products in new tabs, apply three checks; focus on subcategories for less competition",
+        "confidence": "High",
+        "source": "go to Amazon and then click on this bestsellers... put minimum as \u00a310... click on open on each one... do the three checks... go subcategories from here."
+    },
+    {
+        "id": "arb-009",
+        "category": "Buying",
+        "trigger": "Frequently bought together/related products",
+        "advice": "On a product listing without Amazon, scroll to frequently bought together and related products; open in new tabs and apply three checks; chain to find more opportunities",
+        "confidence": "High",
+        "source": "under every single product listing there is a frequently bought together and related product... click on them and open in a different tab and I just look at them and I do the three checks... you can keep going and you'll find new products."
+    },
+    {
+        "id": "arb-010",
+        "category": "Buying",
+        "trigger": "Store scouting on Amazon",
+        "advice": "On a listing, click FBA sellers with <500 ratings (smaller sellers); visit their storefront, apply three checks to products >\u00a310; focus on FBA only, avoid FBM; chain from one store to others",
+        "confidence": "High",
+        "source": "on Amazon you can go and view a product and in the buy box you can see sellers... click on the seller you can see their storefront... look at FBA sellers with less than 500 ratings... only look at FBA sellers."
+    },
+    {
+        "id": "arb-011",
+        "category": "Buying",
+        "trigger": "Amazon search engine",
+        "advice": "Search keywords/niches (e.g., 'dry shampoo', 'birthday banner'); set min \u00a310, browse results, apply three checks; use autocomplete suggestions for popular searches",
+        "confidence": "High",
+        "source": "go on Amazon search and you're going to put a product name or a niche name... put this to minimum \u00a310... keep going through all products... there is unlimited stuff you can search in the actual uh search engine"
+    },
+    {
+        "id": "arb-012",
+        "category": "Pricing",
+        "trigger": "Bestseller rank check",
+        "advice": "Check product information for bestseller rank; only proceed if <100,000 (lower rank = higher sales volume)",
+        "confidence": "High",
+        "source": "look at the products bestseller rank. You want to make sure that the bestseller rank is below 100,000... The lower the bestseller rank, the more it sells."
+    },
+    {
+        "id": "arb-013",
+        "category": "Pricing",
+        "trigger": "ROI calculation",
+        "advice": "Calculate ROI using free online calculators; target at least 30% ROI after fees (e.g., buy \u00a34, sell \u00a38, fees \u00a32 = 50% ROI); aim higher like 300-400% possible",
+        "confidence": "High",
+        "source": "you should consider a product to have at least 30% ROI... If you don't know how to calculate ROI, you can Google ROI calculators... Right now, I sell products with like 300 400% ROI."
+    },
+    {
+        "id": "arb-014",
+        "category": "Risk",
+        "trigger": "Recent reviews check",
+        "advice": "Click on customer ratings, sort by most recent; ensure there are reviews within last month (e.g., January 2024) to confirm ongoing sales",
+        "confidence": "High",
+        "source": "the product should have some recent reviews... change this to most recent. You want to make sure there are recent reviews. So you can see there is one in January 2024"
+    },
+    {
+        "id": "arb-015",
+        "category": "Risk",
+        "trigger": "Amazon competition",
+        "advice": "Always avoid listings where Amazon is selling; they undercut prices (e.g., Amazon \u00a34.86 vs others \u00a37.14); check buy box for 'sold by Amazon'",
+        "confidence": "High",
+        "source": "avoid competing with Amazon. Always, always, always check if Amazon is selling that product... Amazon is selling this product for \u00a3486 while the next FBM seller is selling for \u00a37.14."
+    },
+    {
+        "id": "arb-016",
+        "category": "General",
+        "trigger": "Account setup for beginners",
+        "advice": "Choose Professional plan (\u00a325 + VAT/month) over Individual (free but \u00a30.75/sale + limits); use real ID/address for verification call within 72 hours",
+        "confidence": "High",
+        "source": "the professional plan which is \u00a325 plus VAT every month which comes to \u00a330 a month I recommend... make sure you create your Amazon seller account under your name... verification call with an Amazon's employee... within 72 hours"
+    },
+    {
+        "id": "profit-calc-manual",
+        "category": "General",
+        "trigger": "Monthly performance review",
+        "advice": "Download payments report from Seller Central (Payments > Reports Repository, select date range) and advertising report (Campaign Manager > Sponsored Ads Reports, last 30 days); filter by product description, sum total payouts after Amazon fees, promotions, and gift wrapping; subtract PPC spend, COGS from supplier, inbound shipping costs, returns, refunds, and storage fees to calculate real profit.",
+        "confidence": "High",
+        "source": "So the manual way is first you go to your seller central and then you're going to simply go to payments and payments reports... filter it by the description of that and then you'll be able to know, okay, this is how much I've paid in shipping."
+    },
+    {
+        "id": "tool-automation",
+        "category": "General",
+        "trigger": "Selling multiple products (e.g., 30+)",
+        "advice": "Use Sellerboard tool ($15/month annually for up to 3,000 orders) to automate profit calculation; connect Amazon account to pull real data on fees, PPC, refunds; enter product costs and VAT for accurate per-unit profit; monitor dashboard for daily/monthly gross profit, trends, and forecasts.",
+        "confidence": "High",
+        "source": "Now this is how you can go about doing it a lot more faster... by using a tool called seller board... it's only if you go annually, it's only $15 a month for your first for basically 3,000 orders per month."
+    },
+    {
+        "id": "refund-monitoring",
+        "category": "Risk",
+        "trigger": "Refund percentage rising (e.g., higher than majority of products)",
+        "advice": "Use Sellerboard trends feature to track refund rates per product; if refunds are high, investigate product quality issues and consider stopping sales to avoid losses.",
+        "confidence": "High",
+        "source": "this trend feature... allow you to see trends in a product... in terms of your refund trends... if the trend has been rising for this product then there is definitely issues with the actual product quality... I need to make sure either I check the product quality or I stop selling this product fully."
+    },
+    {
+        "id": "shipment-reimbursement",
+        "category": "Risk",
+        "trigger": "FBA shipment receipt rate <100% (e.g., 95%)",
+        "advice": "Monitor FBA shipments in Sellerboard or Seller Central; if units received are less than shipped, contact Amazon support to investigate and request reimbursement for missing inventory.",
+        "confidence": "High",
+        "source": "You want to make sure you look at this because if it's only 95%, then where is the 5% gone? So you can contact Amazon regarding to that and then even get reimbursement for that."
+    },
+    {
+        "id": "ppc-healthy",
+        "category": "General",
+        "trigger": "Running PPC campaigns",
+        "advice": "Track ACOS in Sellerboard; aim for healthy ACOS (e.g., not specified but implied low for profitability) to ensure PPC spend contributes positively to overall P&L.",
+        "confidence": "High",
+        "source": "we can also see what the A cost is which we running on a healthy a cost and that is a great sign."
+    },
+    {
+        "id": "ltv-consideration",
+        "category": "General",
+        "trigger": "Selling recurring purchase products",
+        "advice": "Calculate lifetime value (LTV) per buyer in Sellerboard; for products with high LTV (e.g., \u00a330), allocate up to \u00a310 in ads even if per-unit profitability is low, as averaged LTV ensures overall profit.",
+        "confidence": "Medium",
+        "source": "if you're selling a product that is recurring, then your lifetime value for that product might be \u00a330, which means you can spend up to \u00a310 in ads even if your profitability is low because if you when you average out your lifetime value of the customer, you're actually profitable."
+    },
+    {
+        "id": "profit-per-unit-adjust",
+        "category": "General",
+        "trigger": "Calculating profit per unit (e.g., sell \u00a33, cost \u00a31, fees \u00a31 = \u00a31 profit)",
+        "advice": "Adjust for all hidden fees (e.g., other Amazon charges, indirect expenses); actual profit may be lower (e.g., 50p per unit); use Sellerboard's average profit per unit based on real data for accuracy.",
+        "confidence": "High",
+        "source": "you might be only making 50p per profit per unit after all the other expenses that you might be occurring every month for that product. So, this is the average profit per unit that is calculated by seller board."
+    },
+    {
+        "id": "inventory-planning",
+        "category": "General",
+        "trigger": "Scaling inventory (e.g., warehouse stock)",
+        "advice": "Use Sellerboard's inventory planner to forecast sales, track Amazon stock levels, and calculate total stock value across locations to manage cash flow effectively.",
+        "confidence": "High",
+        "source": "inventory planner is another great tool... to sort of check how much stock you have at Amazon and what are going to be the potential sales. And if you are storing any stock at your warehouse... you can also see how much the stock value is."
     }
 ]
