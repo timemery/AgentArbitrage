@@ -121,8 +121,12 @@ class TokenManager:
                     # --- CHECK CONSTRAINTS ---
                     allowed = False
 
-                    # Case A: Above threshold - Always OK
-                    if self.tokens >= self.MIN_TOKEN_THRESHOLD:
+                    # Calculate starting balance (approximate)
+                    old_balance = self.tokens + cost_int
+
+                    # Case A: Above threshold - Always OK (Controlled Deficit)
+                    # We allow the operation if we started with a healthy balance, even if the result is negative.
+                    if old_balance >= self.MIN_TOKEN_THRESHOLD:
                         allowed = True
 
                     # Case B: Priority Pass - Low cost, and strictly NOT negative
