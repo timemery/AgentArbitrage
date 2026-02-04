@@ -37859,5 +37859,477 @@
         "advice": "Stack multiple discounts like coupons, gift cards, and tax exemptions to make products profitable",
         "confidence": "High",
         "source": "Stacking these opportunities together, gift card plus coupon, tax exempt plus gift card, sale plus tax exempt"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "FBA fulfillment fee increase",
+        "advice": "Expect an average increase of 8 cents per unit; use Seller Amp profit calculator to automatically compute all fees including this change",
+        "confidence": "High",
+        "source": "FBA fulfillment fees are going to see an average increase of 8 cents per unit."
+    },
+    {
+        "id": "strat-002",
+        "category": "Pricing",
+        "trigger": "Referral fee calculation",
+        "advice": "Apply 8 to 15% referral fee based on category for every product sold; no changes in 2026",
+        "confidence": "High",
+        "source": "The Amazon referral fee, which is an 8 to 15% fee you pay based on category for every product you sell on Amazon"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Product sales velocity",
+        "advice": "Focus on products with 5 to 20 orders per unit; avoid longtail products by checking Keepa charts",
+        "confidence": "High",
+        "source": "focus on inventory that's actually selling by especially taking a look at the keepa chart and buying test orders of products. Typically 5 to 20 orders per unit."
+    },
+    {
+        "id": "strat-004",
+        "category": "Risk",
+        "trigger": "Inventory holding period",
+        "advice": "Avoid holding products for 80 to 270 days to prevent long-term storage fees; aim to sell within 30 to 90 days, faster during holidays",
+        "confidence": "High",
+        "source": "If you hold bad buys for 80 to 270 days, Amazon fees eat you alive. If your product won't sell within 30 to 90 days, and this time year, even quicker with the holiday season, don't buy it."
+    },
+    {
+        "id": "strat-005",
+        "category": "Buying",
+        "trigger": "Test order sizing",
+        "advice": "Place 5 to 20 unit orders per product to test and diversify; avoid going deep on unproven inventory",
+        "confidence": "High",
+        "source": "focus on placing five to 20 unit orders per product to remain nice and diversified."
+    },
+    {
+        "id": "strat-006",
+        "category": "General",
+        "trigger": "Product dimensions and weight",
+        "advice": "Avoid oversized or heavy items as they incur higher fees; use Seller Amp to check thresholds during research",
+        "confidence": "High",
+        "source": "For beginners, just make sure items aren't oversized or heavy, and Salam's going to calculate that for you"
+    },
+    {
+        "id": "strat-007",
+        "category": "Pricing",
+        "trigger": "Shipping cost to Amazon",
+        "advice": "Budget 80 cents per pound for shipping to Amazon; optimize using Boxom software to reduce costs",
+        "confidence": "High",
+        "source": "Your shipping cost to Amazon that Stellar also calculates is going to be about 80 cents per pound on average. You can totally get that down over time using optimized shipments on Boxom."
+    },
+    {
+        "id": "strat-008",
+        "category": "Risk",
+        "trigger": "Prep and packaging errors",
+        "advice": "Ensure correct labeling, packaging, and weight declarations to avoid prep mistake fees; use Seller Amp and Keepa to minimize risks",
+        "confidence": "High",
+        "source": "prep mistakes. Wrong labeling, bad packaging, damaged units, and oversized packages that you told Amazon weren't above the weight limit cost way more than 8 cents per unit. Using Seller Amp and Keepa eliminates 90% of the risk."
+    },
+    {
+        "id": "strat-009",
+        "category": "Buying",
+        "trigger": "Product selection criteria",
+        "advice": "Buy products with strong Keepa data showing proven profitable history; use data over intuition to outperform others",
+        "confidence": "High",
+        "source": "If you're buying products with strong Keepa data in proven profitable history and paying as little as possible using all the all-in arbitrage discounting methods"
+    },
+    {
+        "id": "strat-010",
+        "category": "Seasonality",
+        "trigger": "Holiday season timing",
+        "advice": "Sell inventory quicker during holiday season to avoid storage fees; adjust buying to ensure turnover within shorter periods",
+        "confidence": "High",
+        "source": "and this time year, even quicker with the holiday season, don't buy it."
+    },
+    {
+        "id": "1",
+        "category": "General",
+        "trigger": "BSR under 200k and estimated sales >30 per month",
+        "advice": "Target products with BSR below 200k and more than 30 estimated monthly sales for viability",
+        "confidence": "High",
+        "source": "for the most part stay below a 200k BSR and make sure you're buying stuff that has above 30 estimated sales per month"
+    },
+    {
+        "id": "2",
+        "category": "Pricing",
+        "trigger": "$3 profit per sale and 30%+ ROI",
+        "advice": "Ensure each sale yields at least $3 profit and over 30% ROI after fees",
+        "confidence": "High",
+        "source": "basic winning product criteria guys under a 200k BSR above 30 estimated sales per month $3 profit per sale 30% plus an ROI"
+    },
+    {
+        "id": "3",
+        "category": "Risk",
+        "trigger": "Price steady or trending up on Keepa pink line",
+        "advice": "Select products where the buy box price is stable or increasing over the past 3 months",
+        "confidence": "High",
+        "source": "the price the top chart the pink line on Keipa the buy box either steady or going up in this case it's nice and steady"
+    },
+    {
+        "id": "4",
+        "category": "Risk",
+        "trigger": "Competition trending down or steady on Keepa",
+        "advice": "Avoid products with rapidly increasing competition; prefer those with declining or stable offer counts",
+        "confidence": "High",
+        "source": "the competition either trending down or nice steady in this case nicely trending down here"
+    },
+    {
+        "id": "5",
+        "category": "General",
+        "trigger": "3-month data on Keepa",
+        "advice": "Analyze the past 3 months of Keepa data for sales rank, price, and competition trends",
+        "confidence": "High",
+        "source": "you just want to take a look at the three-month data to start"
+    },
+    {
+        "id": "6",
+        "category": "Buying",
+        "trigger": "New or ungated product",
+        "advice": "Start with 5-10 units; buy 10 units for ungating purposes",
+        "confidence": "High",
+        "source": "when you actually find a winning product, buy 10 if it needs to ungate... if it's already an ungated product for you, just start out with five to 10"
+    },
+    {
+        "id": "7",
+        "category": "General",
+        "trigger": "Gated category like Tommy Hilfiger",
+        "advice": "Get ungated by purchasing 10 units from retail sites (Target, Kohl's, Walmart) and submitting order confirmation emails",
+        "confidence": "High",
+        "source": "You could get ungated using an order confirmation email just from the Tommy Hilfiger website... Buy 10 of it. Then immediately you have that order confirmation email"
+    },
+    {
+        "id": "8",
+        "category": "Risk",
+        "trigger": "Ungating denial",
+        "advice": "Expect and resubmit after 10-15 denials; no penalty, add more documentation if needed",
+        "confidence": "High",
+        "source": "Getting denied 10 to 15 times is typically normal. There's no penalty for getting declined more than that"
+    },
+    {
+        "id": "9",
+        "category": "General",
+        "trigger": "Auto-ungate brands",
+        "advice": "Apply directly in Seller Central for auto-ungate brands like Stuffer, Danner; if it asks for price/quantity, approved",
+        "confidence": "High",
+        "source": "there's a ton of small brands that'll automatically approve you... If it starts to ask for the price and the quantity it means you're automatically approved"
+    },
+    {
+        "id": "10",
+        "category": "Risk",
+        "trigger": "IP complaint history on Keepa",
+        "advice": "Avoid products with sudden drops to zero offers on Keepa offer count chart",
+        "confidence": "High",
+        "source": "avoid listings that you can see the competition randomly drop down to zero, which is an example of an IP complained product"
+    },
+    {
+        "id": "11",
+        "category": "Pricing",
+        "trigger": "Price tanking on Keepa",
+        "advice": "Skip products where price is decreasing over time; prefer stable or rising prices",
+        "confidence": "High",
+        "source": "avoid products you see tanking in price... We want products where the price is either stable or trending up"
+    },
+    {
+        "id": "12",
+        "category": "Risk",
+        "trigger": "Competition shooting up on Keepa",
+        "advice": "Avoid listings where new offer count doubles or rapidly increases recently",
+        "confidence": "High",
+        "source": "avoid listings like this that we can see the competition shooting up... the competition literally doubled right here"
+    },
+    {
+        "id": "13",
+        "category": "Risk",
+        "trigger": "Blocky offer count on Keepa",
+        "advice": "Seek products with fluctuating offer counts (up and down movement) indicating healthy market turnover",
+        "confidence": "High",
+        "source": "you want to avoid blocky items. We want items where there's people selling out, there's people restocking. It's a healthy market"
+    },
+    {
+        "id": "14",
+        "category": "Buying",
+        "trigger": "Website discounts/coupons",
+        "advice": "Stack coupons like 40% off sales and email signups to manufacture margin; e.g., reduce cost by 40% + 20%",
+        "confidence": "High",
+        "source": "manufacturing margin... Like we can see on Gap Factory here, it's this 20% code... there's actually a 20% email signup code here, too. And I can actually use both of those coupons"
+    },
+    {
+        "id": "15",
+        "category": "Pricing",
+        "trigger": "FBM buy box winner",
+        "advice": "Price 5-10% higher than FBM sellers when using FBA for Prime advantage",
+        "confidence": "High",
+        "source": "when you see a listing that is an FBM buy box... we can go ahead and actually price this higher. So, I know I'm be able to price this up like 21 or 22 right here. Typically 5 to 10% higher"
+    },
+    {
+        "id": "16",
+        "category": "General",
+        "trigger": "No sales rank but offer movement",
+        "advice": "Consider products with no BSR if Keepa shows steady price and offer count fluctuations",
+        "confidence": "High",
+        "source": "even if there's no sales rank or there's a high sales rank... If we take a look down here on the Cuba chart and we can still see there's some offer count movement, the price is nice and steady"
+    },
+    {
+        "id": "17",
+        "category": "Buying",
+        "trigger": "Discounted gift cards",
+        "advice": "Buy discounted gift cards from cardbear.com (e.g., 8% off Nordstrom) to boost margin by 8%",
+        "confidence": "High",
+        "source": "Buying discounted gift cards... We can go on sites like cardar.com... if I buy a $100 gift card for 92 bucks, I go ahead and add 8% to my margin"
+    },
+    {
+        "id": "18",
+        "category": "Pricing",
+        "trigger": "ROI below 30% but good profit",
+        "advice": "Occasionally accept below 30% ROI if profit is solid and other criteria met, especially with Prime bump",
+        "confidence": "High",
+        "source": "occasionally you can go below 30% ROI right here... we can go ahead and add in, you know, 7 10% here"
+    },
+    {
+        "id": "19",
+        "category": "Buying",
+        "trigger": "Replenishable products",
+        "advice": "Prioritize steady-selling items like tank tops for repeat purchases",
+        "confidence": "High",
+        "source": "an example of what's called a replenishable product that's just really good that TB you can reby and sell again and again"
+    },
+    {
+        "id": "20",
+        "category": "General",
+        "trigger": "Storefront stalking",
+        "advice": "Stalk storefronts of sellers with 70+ reviews to find brands and fast-selling products",
+        "confidence": "High",
+        "source": "using what's called the storefront stalking method to look inside the storefronts of sellers we know are making money... 71 reviews right there"
+    },
+    {
+        "id": "21",
+        "category": "Risk",
+        "trigger": "Hard gated brands like Nike, Adidas",
+        "advice": "Avoid hard-gated brands as a beginner; focus on ungatable like Tommy Hilfiger, Calvin Klein",
+        "confidence": "High",
+        "source": "Nike Adidas Puma and Under Armour what's called hardgated for beginners... stuff like Tommy Hilfiger and Calvin Klein"
+    },
+    {
+        "id": "22",
+        "category": "General",
+        "trigger": "Product variations",
+        "advice": "Use Keepa variations tab to identify profitable sizes/colors with good offer movement",
+        "confidence": "High",
+        "source": "the variations tab on Keepa... look for offer count movement"
+    },
+    {
+        "id": "23",
+        "category": "Pricing",
+        "trigger": "Max cost for profitability",
+        "advice": "Aim to buy at 50% or less of Amazon sell price for profitability",
+        "confidence": "High",
+        "source": "We're going to have to pay like 18 to be profitable. Typically have to pay like 50% or less"
+    },
+    {
+        "id": "24",
+        "category": "Pricing",
+        "trigger": "Items $20+ under 1lb",
+        "advice": "For lightweight items over $20, use FBM to improve margins by avoiding FBA fees",
+        "confidence": "High",
+        "source": "Items that are above 20 bucks but below one pound... tend to be more profitable FBM compared to FBA"
+    },
+    {
+        "id": "25",
+        "category": "Seasonality",
+        "trigger": "Holiday periods",
+        "advice": "Target sales during October Prime Day, Halloween, early Black Friday, Black Friday for better deals",
+        "confidence": "High",
+        "source": "holiday sales like October Prime Day, Halloween, early Black Friday, Black Friday"
+    },
+    {
+        "id": "26",
+        "category": "Buying",
+        "trigger": "Sales tax on retail sites",
+        "advice": "Use resale certificate on sites like Walmart to avoid sales tax",
+        "confidence": "High",
+        "source": "getting a resource certificate, which is not required, but is very helpful to avoid paying sales tax on websites that accept it like Walmart"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Starting capital requirements",
+        "advice": "Start with only 1 to 2K in capital for online arbitrage, avoiding the 5 to 10K needed for private label or wholesale.",
+        "confidence": "High",
+        "source": "You only need 1 to 2K with online arbitrage."
+    },
+    {
+        "id": "strat-002",
+        "category": "Pricing",
+        "trigger": "Target profit margins",
+        "advice": "Aim for 10-20% profit margins; 15-20% if doing most work yourself, 10-15% when delegating tasks.",
+        "confidence": "High",
+        "source": "You should aim for between 10 or 20% profit margins, 15 to 20% if you're doing a lot of the work yourself. Eventually... 10 to 15%."
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Sales rank for product selection",
+        "advice": "Select products with sales rank below 150,000 or 200,000; lower rank indicates higher demand.",
+        "confidence": "High",
+        "source": "We primarily want to stay below like a 150,000 or 200,000 sales rank for the most part."
+    },
+    {
+        "id": "strat-004",
+        "category": "Buying",
+        "trigger": "Product research criteria",
+        "advice": "Look for products under 200K sales rank, above 30 estimated sales per month, $3+ profit per sale, and 30%+ ROI.",
+        "confidence": "High",
+        "source": "Basic product research criteria, under 200k rank, above 30 estimated sales per month, $3 plus profit per sale, a 30% plus ROI."
+    },
+    {
+        "id": "strat-005",
+        "category": "Seasonality",
+        "trigger": "Holiday season timing",
+        "advice": "Focus on Q4 (October-December), especially December 5th to 20th, when demand peaks after Black Friday and Cyber Monday.",
+        "confidence": "High",
+        "source": "The best time of the year specifically is December 5th to the 20th when demand goes absolutely nuts... Q4 is an absolute movie."
+    },
+    {
+        "id": "strat-006",
+        "category": "Risk",
+        "trigger": "Business model selection for beginners",
+        "advice": "Avoid private label (requires 10K+ capital, risky) and wholesale (30-60 day lead times, cold calling); start with online arbitrage for least risk and highest upside.",
+        "confidence": "High",
+        "source": "Unless you have 10K plus... do not start with Amazon private label... Amazon wholesale... significantly harder... Online and retail arbitrage has the least risk, highest upside."
+    },
+    {
+        "id": "strat-007",
+        "category": "General",
+        "trigger": "FBA vs FBM selection",
+        "advice": "Use FBA for scaling and items below $20 or above $20 and 1lb; use FBM for quick demand periods like Q4, items above $20 but below 1lb, to sell immediately without 2-3 week check-in.",
+        "confidence": "High",
+        "source": "Items below 20 bucks are better for FBA and items above $20 but below one pound are better for FBM. Meanwhile, items above 20 bucks and above one pound are better for FBA... FBM... you can sell stuff immediately."
+    },
+    {
+        "id": "strat-008",
+        "category": "Buying",
+        "trigger": "Ungating brands/categories",
+        "advice": "For gated brands, buy 10 units from retailers like Target/Walmart, submit order confirmation PDF (expect 10-15 denials, keep resubmitting with more docs like shipping email, photos); use auto-ungate list for immediate approvals like Stafford, Danner.",
+        "confidence": "High",
+        "source": "Buy 10 of it and then you immediately get that order confirmation... You will typically get denied 10 to 15 times per brand... Couple examples of quick wins guys. Stafford, Danner, Redard, Athletic Works."
+    },
+    {
+        "id": "strat-009",
+        "category": "Buying",
+        "trigger": "Sourcing used books",
+        "advice": "Buy used books for 50 cents, $1, or $2 from thrift stores and library sales to sell on Amazon; low capital but difficult to scale.",
+        "confidence": "High",
+        "source": "Used book arbitrage... buy for 50 cents, a dollar, $2 to sell on Amazon... takes basically no money, but is really, really difficult to scale."
+    },
+    {
+        "id": "strat-010",
+        "category": "Pricing",
+        "trigger": "Pricing strategy for FBA vs FBM",
+        "advice": "Price FBA items 8-10% above FBM buy box to leverage Prime preference; match buy box for FBM.",
+        "confidence": "High",
+        "source": "We can price above FBA sellers as an FBA seller... say I go ahead and add in 8% on this item... when you FBM products, you just match the buy box."
+    },
+    {
+        "id": "strat-011",
+        "category": "Buying",
+        "trigger": "Competition analysis via Keepa",
+        "advice": "Avoid products with sudden drops in competition to 0 (indicates IP complaints); prefer steady or declining competition trends with consistent sales.",
+        "confidence": "High",
+        "source": "If we scroll down... the competition went from 24 to... zero. So, this is an example of an IP complaint product you totally want to avoid... there's great listings with a 100 sellers that have really steady or really declining competition."
+    },
+    {
+        "id": "strat-012",
+        "category": "Buying",
+        "trick": "Using discounted gift cards and coupons",
+        "advice": "Buy discounted gift cards (e.g., 10% off Nordstrom via CardCash) and apply site coupons (e.g., 20% off Tommy Hilfiger) to lower buy cost and increase ROI.",
+        "confidence": "High",
+        "source": "I can buy a $100 discounted gift card for 90 bucks... take off 10% from this... tons of websites are going to have additional coupons... take off 20% from this."
+    },
+    {
+        "id": "strat-013",
+        "category": "General",
+        "trigger": "Scaling with delegation",
+        "advice": "Hire virtual assistants ($3-10/hour) at 20-30K monthly sales for sourcing/admin; use prep centers at 500 units/month for inventory processing in tax-free states.",
+        "confidence": "High",
+        "source": "Virtual assistance... $3 to $10 an hour... makes sense around 20 to 30K a month in sales. A prep center... around 500 units per month."
+    },
+    {
+        "id": "strat-014",
+        "category": "Seasonality",
+        "trigger": "BOLO products",
+        "advice": "Target seasonal BOLOs like Halloween/Thanksgiving items in Oct/Nov, hot toys, or trends like Stanley Cups/Lululemon for quick profits.",
+        "confidence": "High",
+        "source": "B aka bolo is a hot product... think like Halloween products right before Halloween, Thanksgiving products... the hot toy each year... Stanley Cups... Lululemon fanny packs."
+    },
+    {
+        "id": "strat-015",
+        "category": "Risk",
+        "trigger": "Avoid drop shipping",
+        "advice": "Do not drop ship on Amazon as it's against rules and leads to poor customer experience (slow shipping, receipts included); always receive and ship inventory yourself.",
+        "confidence": "High",
+        "source": "The problem with this is it's not allowed on Amazon... you got a product a week later with a $15 receipt from Walmart in it. You would obviously be mad."
+    },
+    {
+        "id": "ra-001",
+        "category": "Buying",
+        "trigger": "Discontinued products available in multiple stores",
+        "advice": "Use inventory checkers to locate stock nationwide, drive or fly to stores like Walmart, Target, Home Depot, Lowe's to bulk purchase, aiming for $15-20 profit per unit like Google Nest Minis",
+        "confidence": "High",
+        "source": "I had found uh an actually I can say it a discontinued product. Um Google Nest Minis... netting me anywhere from 15 to $20 profit per unit... every store had them... I used like a inventory checker to be able to see stores basically nationwide"
+    },
+    {
+        "id": "ra-002",
+        "category": "Buying",
+        "trigger": "Good item found with high margins",
+        "advice": "Go all in on the product by checking multiple retailers (Walmart, Lowe's, Home Depot, Target) and sourcing large quantities, up to 4-5,000 units total",
+        "confidence": "High",
+        "source": "when you find a good item, you kind of have to go all in on it... know what stores have it... I flew to Florida. I flew to DC... sold probably over four to 5,000 of those"
+    },
+    {
+        "id": "ra-003",
+        "category": "Buying",
+        "trigger": "Local store scans showing $5+ profit",
+        "advice": "Start with retail arbitrage by scanning items in stores, buy at $9 sell at $23-25 for $5-6 profit per unit via FBA or FBM",
+        "confidence": "High",
+        "source": "I had found this product... lacrosse balls. So basically that was like the first product. I think they were like $9 in store. I think I was selling them for anywhere from like 23 to like 25. So they were an enemy anywhere from like you know $5 profit fbaing them"
+    },
+    {
+        "id": "ra-004",
+        "category": "Pricing",
+        "trigger": "Inventory sent to FBA",
+        "advice": "Leverage prime bump by pricing 5-10% higher than FBM sellers to win buy box, potentially selling 10-12% over buy box multiple times a day for $20-30 net profit daily",
+        "confidence": "High",
+        "source": "the prime bumps are so big... able to sometimes get, you know, sales 10 and 12 over the buy box... earn you 20 to $30... net profit per day... with FBA, you could typically go five or tent percent higher"
+    },
+    {
+        "id": "ra-005",
+        "category": "Buying",
+        "trigger": "Discontinued items not showing on retailer websites",
+        "advice": "Use Discord tools or inventory trackers to find hidden stock in stores, as websites may not display availability for discontinued products",
+        "confidence": "High",
+        "source": "I use like a Discord tool that allows me to see the inventory. The reason being is because with discontinued products, they don't always show on their website... nobody like if you went to Walmart's website, no one would ever know that they're in stock"
+    },
+    {
+        "id": "ra-006",
+        "category": "General",
+        "trigger": "80-90% of inventory is auto-ungated",
+        "advice": "Focus on auto-ungated categories and brands like Cuddle Duds or Stafford to quickly source and flip without approval hassles",
+        "confidence": "High",
+        "source": "80 to 90% of my inventory is auto ungated stuff... an auto ungate brand, it's so easy to just buy it, flip it right away... go plug in Cuddle Duds... Stafford, it's going to let you list it right away"
+    },
+    {
+        "id": "ra-007",
+        "category": "Risk",
+        "trigger": "Low startup capital",
+        "advice": "Start with personal credit card limits like $1,000 if trusting the model, but scale to business accounts for sustainability",
+        "confidence": "Medium",
+        "source": "I had a limit of $1,000 on my personal credit card and I got away with that... typically wouldn't recommend that for most people"
+    },
+    {
+        "id": "ra-008",
+        "category": "General",
+        "trigger": "Mix of FBA and FBM",
+        "advice": "Maintain 60-70% FBM for higher margins in retail arbitrage, but send portions to FBA for prime advantages on fast-selling items",
+        "confidence": "High",
+        "source": "even now I'm still like 60 to 70% FBM... getting units in FBA. I think it's super important... being in stock on them FBM, but also sending them in FBA"
     }
 ]

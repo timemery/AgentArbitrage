@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-02-04T17:36:01.800422+00:00",
+    "timestamp": "2026-02-04T18:12:06.704047+00:00",
     "environment": {
         ".env File": {
             "status": "PASS",
@@ -69,7 +69,7 @@
     "api_connectivity": {
         "Keepa API": {
             "status": "PASS",
-            "message": "Tokens: 153.0, Rate: 5.0"
+            "message": "Tokens: 92.0, Rate: 5.0"
         },
         "xAI API": {
             "status": "PASS",
@@ -87,7 +87,7 @@
         },
         "Backfill Lock": {
             "status": "WARN",
-            "message": "Active (TTL: 860454s)"
+            "message": "Active (TTL: 863875s)"
         }
     },
     "logs": {
