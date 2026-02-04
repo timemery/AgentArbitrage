@@ -1,103 +1,79 @@
 {
-    "timestamp": "2026-02-04T16:23:22.531219+00:00",
+    "timestamp": "2026-02-04T16:57:42.069862+00:00",
     "environment": {
         ".env File": {
-            "status": "PASS",
-            "message": "Found"
+            "status": "FAIL",
+            "message": "Missing"
         },
         "Python Version": {
             "status": "PASS",
-            "message": "3.10.12"
+            "message": "3.12.12"
         },
         "KEEPA_API_KEY": {
-            "status": "PASS",
-            "message": "Present (bg90****)"
+            "status": "FAIL",
+            "message": "Missing"
         },
         "XAI_TOKEN": {
-            "status": "PASS",
-            "message": "Present (xai-****)"
+            "status": "FAIL",
+            "message": "Missing"
         },
         "SP_API_CLIENT_ID": {
-            "status": "PASS",
-            "message": "Present (amzn****)"
+            "status": "FAIL",
+            "message": "Missing"
         },
         "Disk Space": {
             "status": "PASS",
-            "message": "37 GB Free"
+            "message": "92 GB Free"
         }
     },
     "infrastructure": {
         "Redis Connectivity": {
-            "status": "PASS",
-            "message": "Connected"
+            "status": "FAIL",
+            "message": "Error 111 connecting to 127.0.0.1:6379. Connection refused."
         },
         "Celery Worker": {
-            "status": "PASS",
-            "message": "Running"
+            "status": "FAIL",
+            "message": "Not Found"
         },
         "Celery Beat": {
-            "status": "PASS",
-            "message": "Running"
+            "status": "FAIL",
+            "message": "Not Found"
         },
         "Monitor Process": {
-            "status": "PASS",
-            "message": "Running"
+            "status": "FAIL",
+            "message": "Not Found"
         }
     },
     "database": {
-        "Integrity Check": {
-            "status": "PASS",
-            "message": "OK"
-        },
-        "Table: deals": {
-            "status": "PASS",
-            "message": "62 rows"
-        },
-        "Table: system_state": {
-            "status": "PASS",
-            "message": "4 rows"
-        },
-        "Table: user_credentials": {
-            "status": "PASS",
-            "message": "1 rows"
-        },
-        "Table: user_restrictions": {
-            "status": "PASS",
-            "message": "1294 rows"
+        "DB File Existence": {
+            "status": "FAIL",
+            "message": "Not found at /app/Diagnostics/../deals.db"
         }
     },
     "api_connectivity": {
         "Keepa API": {
-            "status": "PASS",
-            "message": "Tokens: 156.0, Rate: 5.0"
+            "status": "FAIL",
+            "message": "Key Missing"
         },
         "xAI API": {
-            "status": "PASS",
-            "message": "Connected"
+            "status": "FAIL",
+            "message": "Key Missing"
         }
     },
     "application_state": {
-        "Backfill Page": {
-            "status": "PASS",
-            "message": "4"
-        },
-        "Watermark": {
-            "status": "PASS",
-            "message": "2026-01-27T17:28:03.550317+00:00"
-        },
-        "Backfill Lock": {
-            "status": "WARN",
-            "message": "Active (TTL: 863871s)"
+        "System State": {
+            "status": "FAIL",
+            "message": "Could not read system_state"
         }
     },
     "logs": {
         "Monitor Log": {
-            "status": "PASS",
-            "message": "0 critical events"
+            "status": "WARN",
+            "message": "File not found"
         },
-        "Recent Errors": {
-            "status": "PASS",
-            "message": "None in last 50 lines"
+        "Worker Log": {
+            "status": "WARN",
+            "message": "File not found"
         }
     }
 }
