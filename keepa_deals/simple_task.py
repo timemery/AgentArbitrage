@@ -138,10 +138,12 @@ def update_recent_deals():
                 hit_new_deal_limit = True
                 break
 
-            if not token_manager.has_enough_tokens(5):
-                logger.warning(f"Low tokens during pagination ({token_manager.tokens}). Stopping fetch loop.")
-                incomplete_run = True
-                break
+            # WAITING LOGIC FIX: Instead of aborting, wait for tokens.
+            # if not token_manager.has_enough_tokens(5):
+            #     logger.warning(f"Low tokens during pagination ({token_manager.tokens}). Stopping fetch loop.")
+            #     incomplete_run = True
+            #     break
+            token_manager.request_permission_for_call(5)
             # --------------------------
 
             # Sort by newest first (sortType=4: Last Update)
