@@ -36883,5 +36883,981 @@
         "advice": "Use Sellerboard's inventory planner to forecast sales, track Amazon stock levels, and calculate total stock value across locations to manage cash flow effectively.",
         "confidence": "High",
         "source": "inventory planner is another great tool... to sort of check how much stock you have at Amazon and what are going to be the potential sales. And if you are storing any stock at your warehouse... you can also see how much the stock value is."
+    },
+    {
+        "id": "arb1",
+        "category": "Buying",
+        "trigger": "Local supermarket clearance section with 50-60% discount",
+        "advice": "Buy 5-10 units of reduced products and sell on Amazon at retail price",
+        "confidence": "High",
+        "source": "This is a product that you're buying from a local supermarket which has been reduced for 50 or 60% and sell it on Amazon at the retail price. ... you can buy 5 10 units and sell it on Amazon."
+    },
+    {
+        "id": "wh1",
+        "category": "Buying",
+        "trigger": "Brand name products available in bulk from wholesaler or brand",
+        "advice": "Buy in bulk at wholesale price and sell at retail on Amazon, leveraging brand trust",
+        "confidence": "High",
+        "source": "These are brand name products ... that you buy in bulk from a wholesale supply or the brand directly and then you sell them at the retail price on Amazon."
+    },
+    {
+        "id": "pl1",
+        "category": "General",
+        "trigger": "Starting private label requires \u00a35,000-\u00a310,000",
+        "advice": "Avoid private label as beginner; opt for arbitrage or wholesale starting with \u00a31,000-\u00a33,000",
+        "confidence": "High",
+        "source": "to actually start getting sales, build the trust, and scale this, it will take you a lot of money. I'm talking about anywhere from \u00a35 to \u00a310,000 just to get started. Whereas with arbitrage and wholesale, you can get started with anywhere from \u00a31,000 to \u00a33,000."
+    },
+    {
+        "id": "rec1",
+        "category": "General",
+        "trigger": "First-time seller",
+        "advice": "Stick to wholesale products to piggyback on established brand trust without creating listings",
+        "confidence": "High",
+        "source": "if you're a first-time seller, I highly recommend you stick to wholesale products. ... You can literally piggyback off the trust of brands that people have been buying for years."
+    },
+    {
+        "id": "risk1",
+        "category": "Risk",
+        "trigger": "Fragile products like glass",
+        "advice": "Avoid due to high return rates, account suspension risk, and need for extensive prep like bubble wrapping",
+        "confidence": "High",
+        "source": "fragile products. Products that can easily break will have a high return rate ... you need to bubble wrap it and then you need to make sure it's secured"
+    },
+    {
+        "id": "risk2",
+        "category": "Risk",
+        "trigger": "Electronic products",
+        "advice": "Avoid as beginner due to high return rates from potential defects",
+        "confidence": "High",
+        "source": "electronic products. ... this is another product which has high return rates because you can't really control the quality"
+    },
+    {
+        "id": "risk3",
+        "category": "Risk",
+        "trigger": "Heavy and large products",
+        "advice": "Avoid due to higher Amazon fees and storage costs; prefer tiny products to optimize warehouse space",
+        "confidence": "High",
+        "source": "heavy and large products. See, the heavier the product, the heavier the Amazon fees. And the larger the product, the more the Amazon storage fees. ... ideally you want to sell products which are tiny."
+    },
+    {
+        "id": "buy1",
+        "category": "Buying",
+        "trigger": "Searching for local wholesalers",
+        "advice": "Use Google Maps to find local wholesalers, register trade account after setting up professional email and website",
+        "confidence": "High",
+        "source": "go to Google Maps, type in wholesalers name me, and you'll get a list of all your local wholesalers. ... open a trade account with them."
+    },
+    {
+        "id": "prof1",
+        "category": "General",
+        "trigger": "Contacting wholesalers",
+        "advice": "Use professional email (business@domain.com via ionos ~\u00a31/month) and simple website (homepage, about, contact via wix.com drag-and-drop)",
+        "confidence": "High",
+        "source": "you need a professional email address. ... go to ionos ... cost you around a pound a month. ... go on this website which is wix.com and you can simply use a drag and drop feature"
+    },
+    {
+        "id": "check1",
+        "category": "Buying",
+        "trigger": "Reviewing wholesaler price list",
+        "advice": "Apply 5-point check: Ensure Amazon not selling, >3 sellers, BSR <100,000, recent reviews (last 30-60 days), \u226530% ROI",
+        "confidence": "High",
+        "source": "once you get access to this, this is when you start applying my five point check."
+    },
+    {
+        "id": "check2",
+        "category": "Pricing",
+        "trigger": "Amazon is selling the product on the listing",
+        "advice": "Avoid; Amazon's low prices from bulk buying will outcompete you",
+        "confidence": "High",
+        "source": "The first check is to make sure Amazon is not on the listing. ... Amazon is going to keep the price so low"
+    },
+    {
+        "id": "check3",
+        "category": "Buying",
+        "trigger": "Listing has fewer than 3 sellers",
+        "advice": "Avoid; indicates private label product where you can't sell",
+        "confidence": "High",
+        "source": "the listing should have more than three different sellers. ... if a listing has less than three sellers then it simply means that product is a private label product."
+    },
+    {
+        "id": "check4",
+        "category": "Buying",
+        "trigger": "Bestselling rank >100,000",
+        "advice": "Avoid; product doesn't sell fast enough (aim for <100,000 for 50-70+ units/month)",
+        "confidence": "High",
+        "source": "the bestselling rank of that listing is below 100,000. ... if it's above 100,000 then this product does not sell as fast as we wanted to. ... anything below 100,000 usually sells anywhere from 50 to 70."
+    },
+    {
+        "id": "check5",
+        "category": "Buying",
+        "trigger": "No recent reviews in last 30-60 days",
+        "advice": "Avoid; indicates low sales volume (check 'most recent' reviews for at least one)",
+        "confidence": "High",
+        "source": "it should have recent reviews on the listing. ... If there is at least one recent review in the last 30 to 60 days, it's a good sign"
+    },
+    {
+        "id": "check6",
+        "category": "Pricing",
+        "trigger": "ROI <30% (profit/cost *100)",
+        "advice": "Avoid unless high volume (1,000-2,000 units/month), then \u226520% acceptable; use online ROI calculator",
+        "confidence": "High",
+        "source": "the product should have a minimum of 30% return on investment. ... Profit divided by cost of unit multiply by 100. ... if the product sells really fast ... you can go as low as 20% return on investment"
+    },
+    {
+        "id": "ra-start1",
+        "category": "General",
+        "trigger": "Starting with low capital ($100 or less)",
+        "advice": "Begin with retail arbitrage by sourcing name-brand products like toys, shoes, clothing, and pet supplies from discount stores such as Ross, Marshalls, TJ Maxx, and Kohl's, scanning with Seller Amp app to find profitable items without needing bulk purchases.",
+        "confidence": "High",
+        "source": "retail arbitrage is where you go into discount stores like Kohl's, Marshalls, your local outlet, TJ Maxx and Ross and find profitable products to resell on Amazon for a profit... we can get started just buying a few of this, a few of that. so we can get started with a lot less capital."
+    },
+    {
+        "id": "account1",
+        "category": "General",
+        "trigger": "No upfront costs for seller account",
+        "advice": "Create an individual Amazon seller account (free monthly, $1 per sale) instead of professional ($40/month) to start without initial fees; upgrade later as sales grow.",
+        "confidence": "High",
+        "source": "create an individual seller account so that way you do pay an extra dollar per sale, but you pay nothing upfront. So, it costs no money to get the seller account open."
+    },
+    {
+        "id": "app1",
+        "category": "Buying",
+        "trigger": "Need product research tool",
+        "advice": "Download Seller Amp app ($20/month, 2-week free trial) to scan barcodes, calculate profits after fees and shipping, and check sales velocity; use alongside free Amazon Seller app to verify listing eligibility.",
+        "confidence": "High",
+        "source": "downloading the scanning app... Seller Amp does cost $20 per month, but it's incredibly cheap because it saves you so much time and it tells you how fast a product sells and if it's actually profitable."
+    },
+    {
+        "id": "criteria1",
+        "category": "Pricing",
+        "trigger": "Scanning a product",
+        "advice": "Only buy if Best Sellers Rank (BSR) < 200,000, estimated sales > 30 per month, profit > $3 per unit, and ROI > 30%; ignore if below these thresholds even if it scans.",
+        "confidence": "High",
+        "source": "the basic product research criteria, guys, is under a 200,000 sales rank, 30 plus estimated sales per month, and $3 plus profit per unit and a 30% plus ROI."
+    },
+    {
+        "id": "sourcing1",
+        "category": "Buying",
+        "trigger": "Beginner sourcing locations",
+        "advice": "Target discount stores like Ross, Marshalls, TJ Maxx, Grocery Outlet, and Ali's for discounted products; avoid full retail like Walmart/Target unless on clearance; focus on January, February, and August for big clearances.",
+        "confidence": "High",
+        "source": "places like Grocery Outlet, Ali's, Ross, Marshalls, TJ Maxx. Those are the spots to do retail arbitrage at because it's actually discounted products... especially January, February, and August during the big clearance seasons."
+    },
+    {
+        "id": "nosellers1",
+        "category": "Pricing",
+        "trigger": "No current sellers on listing",
+        "advice": "Check historical sales data and price charts in Seller Amp; price slightly above past averages (e.g., 10% higher) if profitable, but verify demand history to avoid losses.",
+        "confidence": "High",
+        "source": "when something has no sellers, what you need to do is scroll down here on seller to see the actual chart here over time. And we can see historically it's gone for like 13. So, you know, maybe we could go a little bit higher... And the keep a chart data on seller is how you go ahead and do that."
+    },
+    {
+        "id": "competition1",
+        "category": "Risk",
+        "trigger": "Amazon is on the listing",
+        "advice": "Avoid listings where Amazon holds the Buy Box price as a beginner; consider if Amazon is priced above Buy Box and competition is low, but pass if price has recently dropped due to increased sellers.",
+        "confidence": "High",
+        "source": "typically for beginners, I'd recommend avoiding listings Amazon's on, but we can see in this case, Amazon's actually not at the buy box price... This item just has gone down in price because the competition's gone up."
+    },
+    {
+        "id": "nobsr1",
+        "category": "Risk",
+        "trigger": "No Best Sellers Rank or sales history",
+        "advice": "Scroll to sales history in Seller Amp; if recent sales exist but low current price, test pricing at 20-25% above cost for potential profit with low competition; use AI image search for unscannable items.",
+        "confidence": "Medium",
+        "source": "Now there's no best sellers rank though. So we need to figure out if this is a false positive or not... We need to scroll down here and see if there's any actual sales history... Um, so this is actually, you know, we're not going to be able to sell it for 50, but probably something we do want to take due to the low competition... You can use the AI image search on seller amp to actually go ahead and identify um you know just image recognition."
+    },
+    {
+        "id": "fulfill1",
+        "category": "General",
+        "trigger": "Small quantities and beginner budget",
+        "advice": "Start with FBM (merchant fulfilled) by shipping directly to customers for small buys (1-5 units); avoid FBA bulk shipping until scaling; buy 5-10 units max per item, or 1-2 if high FBM competition.",
+        "confidence": "High",
+        "source": "you really want to make sure you're buying small quantities of things and just FBMing it, which is merchant fulfilling something rather than selling something Amazon FBA... Um typically 5 to 10, but it can even be a couple units if there's a lot of merchant fulfilled people on it."
+    },
+    {
+        "id": "categories1",
+        "category": "Buying",
+        "trigger": "Ungated categories for beginners",
+        "advice": "Focus on auto-ungated categories like beauty, grocery, shoes, clothing, and pet supplies; avoid gated ones like toys initially; use Amazon Seller app to test listing approval without invoice.",
+        "confidence": "High",
+        "source": "you want to focus on products that are automatically open... Beauty the category is autoengate... shoes and clothing is really nice... pet supplies are really nice as well... Toys is a gated category."
+    },
+    {
+        "id": "book-buy1",
+        "category": "Buying",
+        "trigger": "Very low budget startup (<$100)",
+        "advice": "Source used books from thrift stores and library sales for $1-2 each to resell as used items on Amazon.",
+        "confidence": "High",
+        "source": "I made a lot of money when I was brand new buying used books from thrift stores for like a dollar or two a piece. Literally just used items on uh on Amazon from thrift stores as well as library sales."
+    },
+    {
+        "id": "book-free1",
+        "category": "Buying",
+        "trigger": "Seeking zero-cost inventory",
+        "advice": "Use ChatGPT to create a free book pickup service flyer and post in local Facebook groups and social media to acquire free books for resale.",
+        "confidence": "High",
+        "source": "you could make a free book flyer like a free book pickup service flyer using ChachiBT and post it in all like your your area's local Facebook groups and on your social media and everything. I actually got a ton of uh ton of free inventory like that"
+    },
+    {
+        "id": "book-consign1",
+        "category": "General",
+        "trigger": "Textbook opportunities",
+        "advice": "Sell textbooks on consignment to start with minimal personal investment and low risk.",
+        "confidence": "Medium",
+        "source": "even selling textbooks on consignment too."
+    },
+    {
+        "id": "shipping1",
+        "category": "General",
+        "trigger": "Preparing for FBM shipments",
+        "advice": "Use free boxes from USPS and labels from UPS; buy poly mailers (9x12, 12x15) from Amazon and basic boxes (12x10x8) from Walmart; print labels via Seller Central without advanced software.",
+        "confidence": "High",
+        "source": "there's a bunch of free shipping supplies on the UPS website, specifically shipping labels and free boxes on the USPS website... poly mailers from Amazon. So 9 by 12 and 12x 15 just gray ones... get some boxes from Walmart, something around the 12 by 10 by8 range."
+    },
+    {
+        "id": "scan-all1",
+        "category": "General",
+        "trigger": "Learning the business",
+        "advice": "Scan every product in store to build experience, identify profitable items, and develop intuition for good deals over time; be patient as mastery takes time.",
+        "confidence": "High",
+        "source": "the playbook really guys is to just scan everything. Scan as much as you can and that's how you're going to go ahead and learn... You just got to scan everything when you're a beginner... This doesn't work if you don't go and scan tons of products. And then over time, you build the spidey sense of what to look for."
+    },
+    {
+        "id": "arb1",
+        "category": "General",
+        "trigger": "Starting with no capital",
+        "advice": "Create an individual Amazon seller account for $0 upfront and $1 per sale",
+        "confidence": "High",
+        "source": "The one that takes no money is going to be an individual seller account where you pay $0 upfront and then an extra $1 per sale."
+    },
+    {
+        "id": "arb2",
+        "category": "General",
+        "trigger": "Selling over 40 units per month",
+        "advice": "Upgrade to professional seller account for $40 per month with no per-sale fee",
+        "confidence": "High",
+        "source": "Where it makes sense to upgrade to a professional account is once you're selling over 40 units per month."
+    },
+    {
+        "id": "arb3",
+        "category": "Pricing",
+        "trigger": "Sales rank under 1 million and used price over $10",
+        "advice": "Scan books with Amazon Seller app to confirm profitability using revenue calculator",
+        "confidence": "High",
+        "source": "if it has a sales rank, aka best sellers rank, which is how fast the product sells on Amazon, under 1 million, and if the used price is over $10."
+    },
+    {
+        "id": "arb4",
+        "category": "Pricing",
+        "trigger": "Book priced at $11 in used condition",
+        "advice": "Use revenue calculator to verify $2.50 profit after fees and shipping for free inventory",
+        "confidence": "High",
+        "source": "say this is going for like you know 11 bucks right here which tons of used books do now we can go ahead and see plugging this guy in we would make $2.50 profit after everything after shipping all that."
+    },
+    {
+        "id": "arb5",
+        "category": "Buying",
+        "trigger": "Need free inventory",
+        "advice": "Use ChatGPT to create a free book pickup flyer and post on Facebook Marketplace, Offer Up, and local groups",
+        "confidence": "High",
+        "source": "using Chatb2 to create a free book pickup flyer right here, and then just posting that on all your local free apps. So, stuff like Facebook Marketplace, if you have a local Facebook yard sale group, stuff like Offer Up, LetGo"
+    },
+    {
+        "id": "arb6",
+        "category": "Buying",
+        "trigger": "Selecting book types",
+        "advice": "Target textbooks, non-fiction, self-help, and collectibles; avoid romance novels and specialty fiction",
+        "confidence": "High",
+        "source": "the best types of books to sell are definitely going to be textbooks. Those sell for the most expensive ... anything that's just non-fiction. So like textbooks, self-help books are super super popular. Anything except like romance novels, any types of really specialty stuff."
+    },
+    {
+        "id": "arb7",
+        "category": "Buying",
+        "trigger": "Sourcing from thrift stores",
+        "advice": "Visit Goodwill, Salvation Army for cheap books; scan with app, build employee relationships for backroom access",
+        "confidence": "High",
+        "source": "from thrift stores like Goodwill, Salvation Army, and places like that where they might not quite be free ... they're incredibly incredibly cheap ... get to know the employees really well, too, and get the books they've just gotten or backroom access"
+    },
+    {
+        "id": "arb8",
+        "category": "Buying",
+        "trigger": "Library sales and giveaways",
+        "advice": "Use booksfinder.com to locate sales; volunteer or contact for free access to inventory",
+        "confidence": "High",
+        "source": "library sales. Now, some library sales will totally give away inventory for free. And I've heard of people doing really well contacting them in advance ... booksfinder.com then you can go ahead and click your states"
+    },
+    {
+        "id": "arb9",
+        "category": "Seasonality",
+        "trigger": "End of semesters in December and May",
+        "advice": "Offer textbook consignment via social media; buy in Dec/May, sell in Jan/Aug on Amazon after checking prices from photos",
+        "confidence": "High",
+        "source": "textbook consignment, especially if you're in college during December and May when the semester ends ... buying stuff in December, then selling it in January, and buying stuff in May, then selling it in August when the semester actually starts."
+    },
+    {
+        "id": "arb10",
+        "category": "General",
+        "trigger": "No upfront shipping costs",
+        "advice": "Use Merchant Fulfilled (FBM) to ship directly to customers after sale",
+        "confidence": "High",
+        "source": "Merchant fulfilled is what's going to take no money upfront besides the packaging ... you're only going to pay for shipping after you've actually sold something on Amazon."
+    },
+    {
+        "id": "arb11",
+        "category": "Risk",
+        "trigger": "Free or low-cost inventory",
+        "advice": "Accept sales within months to a year as a win due to zero capital risk",
+        "confidence": "High",
+        "source": "with used books you're taking significantly less risk in many cases risking no capital. That's why you can wait a lot longer for stuff to sell. A used book selling within a few months or six months or even a year depending on the sales rank is a win because you're paying nothing"
+    },
+    {
+        "id": "arb12",
+        "category": "General",
+        "trigger": "Accumulated few hundred to $1,000 capital",
+        "advice": "Transition to online arbitrage for higher scalability and faster sales",
+        "confidence": "High",
+        "source": "Eventually, online arbitrage is better option once you have a few hundred bucks or a,000 bucks. There's just significantly more scalability"
+    },
+    {
+        "id": "strategy-1",
+        "category": "Buying",
+        "trigger": "Sourcing session limited to 45 minutes at stores like Ross or TJ Maxx",
+        "advice": "Aim to find products that yield at least $100 in profit within that time to consider it a successful outing",
+        "confidence": "High",
+        "source": "I'll just run by Ross or TJ Maxx or whatever, and I'll I got to where I would put myself on a on a timer that if I can go in there and start a timer for 45 minutes and come out with at least $100 profit in that 45 minutes and it was a good day."
+    },
+    {
+        "id": "strategy-2",
+        "category": "General",
+        "trigger": "Balancing full-time job of 40-50 hours per week with family",
+        "advice": "Dedicate 20-30 hours per week to Amazon activities like sourcing and retail arbitrage to achieve significant growth",
+        "confidence": "High",
+        "source": "having to you know work 40 to 50 hours a week you know on my normal job and then coming home and doing another 20 you know starting out you know it's it's a lot of time like you said like as much as you want to put into it is what you'll get out of it and you know so it was yeah about 20 or 30 hours a week you know dedicated to Amazon whether it was sourcing or you know going out and doing RA"
+    },
+    {
+        "id": "strategy-3",
+        "category": "Buying",
+        "trigger": "Attempting to get ungated for restricted categories or ASINs",
+        "advice": "Scan every single item during retail arbitrage and request approval repeatedly, persisting through up to 150 denials until approval is granted",
+        "confidence": "High",
+        "source": "just go do some retail arbitrage and scan every single item and just, you know, shoot your shot, see if you can get ungated for it. Um, but that's what that's what we did was we go to Ali's and we scan so many things. ... you just got to keep keep submitting and you will eventually get ungated. It may be 150 denials for very rarely but occasionally."
+    },
+    {
+        "id": "strategy-4",
+        "category": "General",
+        "trigger": "After 3-4 months of consistent submitting shipments",
+        "advice": "Build up to 400 active ASINs in FBA by sending frequent shipments to gain trust and approvals faster",
+        "confidence": "Medium",
+        "source": "by August or September we were sending in we had like 400 active asens FBA and so I don't know if they trusted us sooner or what but you know we just kept on"
+    },
+    {
+        "id": "strategy-5",
+        "category": "Pricing",
+        "trigger": "Calculating overall business profitability",
+        "advice": "Target a net margin of 10-20% on sales, improving over time with efficiency gains",
+        "confidence": "High",
+        "source": "Typically depending on how much work you want to do versus how much work you want to delegate and just how good you are at the business, you expect anywhere from a 10 to 20% net margin for selling on Amazon. And the nice thing is like over time that margin on time gets a lot better too because you get better at the business, you get more efficient"
+    },
+    {
+        "id": "strategy-6",
+        "category": "Buying",
+        "trigger": "Researching products via storefront stalking on Seller Amp or similar tools",
+        "advice": "Check for autogating by selecting condition and hitting 'apply to sell' and 'request approval' to identify sellable items without full ungating process",
+        "confidence": "High",
+        "source": "the whole storefront stalking like it works and the you know the the whole you know getting with a group of guys that you are making a list together of auto engage you're going through ... Just make sure y'all watching, make sure you select condition and hit apply to sell and request approval because a lot of you guys accidentally forget that part"
+    },
+    {
+        "id": "strategy-7",
+        "category": "Pricing",
+        "trigger": "Items not initially profitable at retail price",
+        "advice": "Use discounted gift cards from cardbear.com, signup coupons (e.g., 10% off), or tax-exempt status to reduce costs and make deals profitable",
+        "confidence": "High",
+        "source": "you don't find good products like you you make them good and you know, the discounted gift cards and stuff like that are just such so key for making for making profit ... always checking for discounted gift cards on cardbear.com and there's a variety of other ways too but the nice thing is once you learn the discount for a certain website or brand like most products only come from one website and then you just have to learn how to make that website cheaper discounted basically"
+    },
+    {
+        "id": "strategy-8",
+        "category": "Risk",
+        "trigger": "Monthly revenue exceeding $10,000",
+        "advice": "Outsource prep and shipping to a prep center to reduce workload and scale efficiently, shipping inventory in bulk to them for handling",
+        "confidence": "High",
+        "source": "once you're above like 10k a month in your revenue or even sooner for some folks it makes sense to get a prep center set up where you ship the inventory to them and they ship it off to Amazon on your behalf too as well."
+    },
+    {
+        "id": "strategy-9",
+        "category": "General",
+        "trigger": "Solo operation leading to motivation issues",
+        "advice": "Form a group chat or team with other sellers across locations to share opportunities, learn from mistakes, provide motivation, and multiply success without saturating the market",
+        "confidence": "High",
+        "source": "having that group because ... now it's turned into a friendship. It's not just a group of guys that are sourcing. ... we're there to motivate each other ... you know, we share some asens together ... having a few guys you're working with isn't going to take much out of your pocket, but it actually significantly multiplies your success because it's way more fun when you're doing it with people you like."
+    },
+    {
+        "id": "start-cap-1",
+        "category": "General",
+        "trigger": "Beginner starting online arbitrage",
+        "advice": "Budget 1-3K total to start, including 1-2K for inventory in small quantities (e.g., 5-10 units per product)",
+        "confidence": "High",
+        "source": "for online arbitrage, you don't have to buy 100 of this thing and 200 of this thing... All you need to do that guys is 1 to two grand to get started. bringing the total cost to start an online arbitrage business in uh 2026 to really just 1 to 3k"
+    },
+    {
+        "id": "account-setup-1",
+        "category": "General",
+        "trigger": "Setting up Amazon selling",
+        "advice": "Sign up for Amazon Seller Central account at $40 per month recurring",
+        "confidence": "High",
+        "source": "you're going to need an Amazon seller account... that does cost $40 per month and is a recurring cost"
+    },
+    {
+        "id": "tool-selleramp-1",
+        "category": "Buying",
+        "trigger": "Researching product profitability",
+        "advice": "Use Seller Amp software at $20 per month for profit calculations including fees, shipping, and sales speed via Chrome extension and mobile app",
+        "confidence": "High",
+        "source": "a piece of product research software. The first one being seller, which costs $20 per month... it is the profit calculator... calculates what the profit is going to be on an item after shipping, after Amazon fees"
+    },
+    {
+        "id": "tool-keepa-1",
+        "category": "Buying",
+        "trigger": "Evaluating historical profitability",
+        "advice": "Subscribe to Keepa at $20 per month to analyze 3-month price, supply, and demand charts for products",
+        "confidence": "High",
+        "source": "Keepa, which is also $20 per month... Keepa shows you what's actually been profitable over time... look at the 3mon data right here... stock charts... supply, the demand, and the price action over time"
+    },
+    {
+        "id": "tool-boxom-1",
+        "category": "General",
+        "trigger": "Managing business operations",
+        "advice": "Use Boxom at $50 per month for listing, shipping, analytics, and feedback to organize and defend the business",
+        "confidence": "High",
+        "source": "the third software... Boxom... costs $50 per month. So Boxom's a platform to run your business through which makes it significantly easier... listing, shipping, analytics"
+    },
+    {
+        "id": "shipping-method-1",
+        "category": "General",
+        "trigger": "Starting with limited funds",
+        "advice": "Begin with Amazon FBM (Fulfilled by Merchant) for cheaper startup, transition to FBA after a few weeks; can use both simultaneously",
+        "confidence": "High",
+        "source": "when you're starting, you don't want to be doing Amazon FBA. Typically, you want to be doing Amazon FBM... recommend doing mostly FEM to start and then transitioning to FBA once you're comfortable... after a few weeks"
+    },
+    {
+        "id": "shipping-supplies-1",
+        "category": "Buying",
+        "trigger": "Preparing shipping setup",
+        "advice": "Budget $20 without printer or $100 with (e.g., Palono laser printer ~$60); use 9x12 poly mailers, unbranded boxes from Walmart/Amazon/Staples for FBM",
+        "confidence": "High",
+        "source": "All you need for that is really 20 bucks without a printer and 100 bucks if you want to use a printer. I think a PON is like 60 bucks... shipping supplies... 9 by 12 or if you're doing bigger products, 12x 15 or 19x4. There's a bunch of different options here. Poly mailers and then also unbranded boxes"
+    },
+    {
+        "id": "cashback-tools-1",
+        "category": "Buying",
+        "trigger": "Sourcing from retailers like Walmart, Target",
+        "advice": "Install free cashback Chrome extensions: Be Frugal, Rakuten, Top Cash Back, Retail Me Not, Capital One Shopping, Coupon Birds to maximize margins with coupons and cashback (e.g., 10-15%)",
+        "confidence": "High",
+        "source": "cashback Chrome extensions. So, these are all completely free... Be Frugal, Rakutin, Top Cash Back, Retail Me Not, Capital One Shopping, and Coupon Birds... offer different cash back and coupons... increasing your profit margin... if there's a 15% coupon"
+    },
+    {
+        "id": "free-supplies-1",
+        "category": "Buying",
+        "trigger": "Reducing shipping costs",
+        "advice": "Google 'UPS free shipping supplies' and 'USPS free shipping supplies' to get free boxes and labels; use USPS for priority mail boxes (service-specific), UPS labels for any shipment",
+        "confidence": "High",
+        "source": "Free shipping supplies... Google UPS free shipping supplies and USPS free shipping supplies... get a bunch of free shipping supplies... USPS priority mail $0... UPS, you can actually get shipping labels completely free"
+    },
+    {
+        "id": "avoid-methods-1",
+        "category": "Risk",
+        "trigger": "Beginner considering wholesale or private label",
+        "advice": "Avoid saturated wholesale and private label methods requiring 5-10K and China sourcing; focus on online arbitrage from US retailers",
+        "confidence": "High",
+        "source": "those common methods of private label and wholesale are completely saturated and outdated for beginners. The best way to get started is Amazon online arbitrage. Buying discounted name brand products from big websites like Kohl's, Walmart, and Target... You don't need 5 to 10K to get started"
+    },
+    {
+        "id": "general_start_ra",
+        "category": "General",
+        "trigger": "New seller with limited capital",
+        "advice": "Start with retail arbitrage for simplicity and higher margins (20-30% initially, up to 50-60% ROI when skilled); aim for one-third buy cost, one-third Amazon fees, one-third profit.",
+        "confidence": "High",
+        "source": "I think when I was in like retail arbitrage, this is also a while ago too, like I would run like 20 to 30% margins like versus like a lot of this stuff these days like even like my ROI like it's like was double everything of like profit margins and stuff... Yeah. I remember I think like this was like early on where I didn't have as much capital and I had to be very particular about what I was buying. I was like I remember like a third was Amazon's profit, a third was uh buy cost and a third was my profit."
+    },
+    {
+        "id": "seasonality_q4",
+        "category": "Seasonality",
+        "trigger": "Q4 (October to December)",
+        "advice": "Prepare for peak demand during holiday shopping; expect 30-50% of annual revenue, with potential for high daily sales (e.g., over $250,000 in a single day).",
+        "confidence": "High",
+        "source": "Q4 is October to December which is the biggest time of the year for holiday shopping. So, October, November, December, ton of holidays and everything. So, demand cranks up. It's where a lot of people make 30 to 50% of their revenue for the entire year... the biggest day was like over $250,000 in revenue."
+    },
+    {
+        "id": "seasonality_january",
+        "category": "Seasonality",
+        "trigger": "January (post-holidays)",
+        "advice": "Leverage clearance season for retail arbitrage by scanning all items in local stores; also strong for online arbitrage as people shop indoors.",
+        "confidence": "High",
+        "source": "that's during the clearance season for retail arbitrage when pretty much every big retailer in America post holidays has clearance. So, it's a really good opportunity to go out and just scan everything in your local retail stores... January is usually one of like the top two or three months of the year for a lot of OA sellers."
+    },
+    {
+        "id": "risk_new_seller",
+        "category": "Risk",
+        "trigger": "First 1-2 months as new seller",
+        "advice": "Accept break-even or small losses to learn basics (e.g., Seller Amp, Keepa, shipments); avoid quitting early as compounding starts after learning phase.",
+        "confidence": "High",
+        "source": "expect like if you break even for the first part like you're you're making you're learning like you have like no matter what you do you have to take some little bit of losses or like break even like cuz you're learning but then once you learn you don't remake that mistake... good things take time... so many people will start this online business and then they'll quit after two months or 60 days or or 30 days or whatever."
+    },
+    {
+        "id": "general_first_year",
+        "category": "General",
+        "trigger": "First year in business",
+        "advice": "Aim for average $10,000 monthly revenue; focus on sticking around to double revenue year-over-year through learning and compounding.",
+        "confidence": "High",
+        "source": "the average for someone in their first year, I think, ended up being around like 10k a month rev... on Amazon a good rule of thumb is you usually want to double your money every year is usually a good rule of thumb."
+    },
+    {
+        "id": "general_community_active",
+        "category": "General",
+        "trigger": "Revenue under $10k/month",
+        "advice": "Be active in Amazon communities on social media (e.g., Instagram, Twitter, Facebook groups) to accelerate growth; 80% of sellers at $50k+ and $100k+ monthly are active, vs. 16% below $10k.",
+        "confidence": "High",
+        "source": "of people between zero and 10k a month... only like I think it was 16% of people were active in the community... but 80% of people 50 to 100k a month were active and 80% of people 100k a month plus were active too."
+    },
+    {
+        "id": "buying_va_hiring",
+        "category": "Buying",
+        "trigger": "Scaling to $5k-10k monthly sales",
+        "advice": "Hire virtual assistants from Philippines, India, Pakistan via sites like OnlineJobs.ph for sourcing, purchasing, and admin tasks; start with repetitive tasks, train coachable candidates, and grow with them over time.",
+        "confidence": "High",
+        "source": "once you're at like you know 5 6 7k 10k a month in sales... hiring people to like help me you know on the you go like from the front they start like you know they help on the sourcing side... these are people in like India, Pakistan, the Philippines... Online jobs.ph is a good site to hire VAS from... It takes training. It takes time."
+    },
+    {
+        "id": "risk_inventory_scale",
+        "category": "Risk",
+        "trigger": "Scaling to large operations",
+        "advice": "Maintain at least $1 million in inventory COGS for sustained growth; use FBM for quick pivots during issues like account suspensions.",
+        "confidence": "High",
+        "source": "usually holding at least a million dollars of inventory cogs at all times which takes years big operation... big FBM's where you ship directly to the customer rather than in bulk to Amazon and it allows you to pivot and move super quick."
+    },
+    {
+        "id": "general_networking",
+        "category": "General",
+        "trigger": "Starting or scaling OA",
+        "advice": "Network with other sellers via social media, group chats, or local meetups to share leads, reduce sourcing time, and group buy; document progress to build credibility and attract partners.",
+        "confidence": "High",
+        "source": "you have a group of people who all work together... everybody shares a buy box... you find like a bolo, you send it to them... finding your guys or your gals is actually way less work than not doing it... I put together group chats of people... share the same leads cuz we're not on each other's turf."
+    },
+    {
+        "id": "buying_sources",
+        "category": "Buying",
+        "trigger": "Daily sourcing for OA",
+        "advice": "Source discounted name-brand products from online sites like Walmart, Target, Best Buy, GameStop; focus on niches you're skilled in and double down on core brands to maintain stock.",
+        "confidence": "High",
+        "source": "buying discounted name brand stuff, big websites, Walmart, Target, Best Buy, GameStop... double down on what you're good at... have like a couple brands and like they could double their revenue if they just stayed in stock and just like focused on it."
+    },
+    {
+        "id": "strategy-1",
+        "category": "General",
+        "trigger": "Beginner Amazon seller",
+        "advice": "Start with the 'Getting Started' plan at $200 annually or $20 monthly with 14-day free trial; upgrade to 'Getting Serious' for unlimited lookups at $300 annually or $30 monthly.",
+        "confidence": "High",
+        "source": "The getting started annual plan is 200 bucks a year. The getting serious annual plan is 300 bucks a year and then on a monthly basis it's incredibly cheap and you can get a twoe free trial guys. You can pay just $20 per month or $30 per month to get the unlimited lookups with the getting serious plan."
+    },
+    {
+        "id": "strategy-2",
+        "category": "General",
+        "trigger": "Setting up Seller Amp",
+        "advice": "Set inbound FBA shipping to 80 cents per pound; enable all five quick info options including profit margin, break even, and offer summary; set additional costs to $0 prep fee, $0 misc fee, and state sales tax (e.g., 8.25% Texas, 6.5% Florida); ensure buy cost excludes sales tax to avoid double-counting.",
+        "confidence": "High",
+        "source": "The first one is going to be making your inbound FBA shipping 80 cents per pound. This is the standard for 2026. ... making sure that you have all five options selected here on the quick info. ... All you should have as a beginner seller is $0 for the prep fee, $0 for the MISK fee, and then the specific sales tax for your state. ... when you have it in in your settings here, you have to make sure the buy cost you include in the cost price section does not include sales tax."
+    },
+    {
+        "id": "strategy-3",
+        "category": "Pricing",
+        "trigger": "Evaluating product profitability",
+        "advice": "Target sales rank under 200,000 and estimated sales over 30 per month; aim for at least $3 profit per unit and 30% ROI after fees, shipping, and taxes; use max cost to determine maximum buy price.",
+        "confidence": "High",
+        "source": "you want to make sure you're staying under a 200,000 sales rank. ... above 30 estimated sales per month. ... which for most people should be $3 plus profit per unit and a 30% plus ROI. And remember guys, this is after shipping. This is after Amazon fees. This is after sales tax, everything."
+    },
+    {
+        "id": "strategy-4",
+        "category": "Risk",
+        "trigger": "Suspected private label or IP alerts",
+        "advice": "Do not automatically avoid products with suspected private label or IP alerts; check if the brand is selling it, review seller count (e.g., 15 sellers indicates low risk), and examine Keepa chart for sudden seller drops.",
+        "confidence": "High",
+        "source": "It's really important if you see that suspected private label alert, you don't automatically think that that's private label. Same thing with IP. You need to take a look if the brand is the one selling it or not. In we see in this case there's 15 sellers and it doesn't have that private label alert. ... sometimes they'll have suspected IP. You need to take a look at the chart and see if there's any random huge drop in sellers."
+    },
+    {
+        "id": "strategy-5",
+        "category": "Pricing",
+        "trigger": "Analyzing price trends",
+        "advice": "Select products where buy box price is stable or increasing (e.g., from $40 to $50) and competition (offer count) is stable or decreasing; focus on 3-month data for beginners, glance at year-long data.",
+        "confidence": "High",
+        "source": "you want to make sure the products you're taking a look at the top chart here on seller amp that the buy box price is either stable or going up. We can see November 16th it was 40. Now it's all the way up at almost 50 right there ... also want to make sure that the competition the offer count is either stable or going down. ... when you're a beginner you're not buying huge quantity of things. So I'd primarily recommend just taking a look at the three-month data. Although some people like to take a glance at the year-long data as well"
+    },
+    {
+        "id": "strategy-6",
+        "category": "Risk",
+        "trigger": "Assessing competition levels",
+        "advice": "Evaluate competition based on trends, not absolute numbers; high sales (e.g., 2,000/month) with decreasing sellers (e.g., 100) is low risk; avoid low sales (e.g., 17/month) even with few sellers (e.g., 10).",
+        "confidence": "High",
+        "source": "how much competition is too much competition on a specific product. And truth be told, it's all about the trend. There's amazing listings that sell 2,000 times per month that have 100 sellers that are low competition because the competition is going down. And then there's terrible listings that have 10 sellers because they only sell 17 times per month."
+    },
+    {
+        "id": "strategy-7",
+        "category": "Pricing",
+        "trigger": "Considering FBM fulfillment",
+        "advice": "For products over $20 and under 1 pound (e.g., clothing), toggle to FBM in profit calculator and add shipping cost (e.g., $4 based on weight from howtofbm.com); compare profitability to FBA.",
+        "confidence": "High",
+        "source": "When you're calculating whether or not you should merchant fulfill a product ... toggle it from fulfillment type FBA to fulfillment type FBM. And then you have to make sure you plug in the merchant fulfilled cost right here, which we can go ahead and calculate that by scrolling up and taking a look at the weight ... estimated cost to ship this FBM, which in this case is going to be like four bucks ... especially items that are above 20 bucks and below one pound. Sometimes you'll see significant extra profitability doing listings FBM"
+    },
+    {
+        "id": "strategy-8",
+        "category": "Buying",
+        "trigger": "Products with no buy box or suppressed listings",
+        "advice": "Consider suppressed or no buy box listings as they can still sell; lowest price does not guarantee buy box win.",
+        "confidence": "High",
+        "source": "if you see listings with no buy box, those listings can still totally sell as well. Those are called like suppressed and no buy box mean the same thing ... This is a good example of how the lowest price doesn't necessarily automatically get the buy box."
+    },
+    {
+        "id": "strategy-9",
+        "category": "General",
+        "trigger": "Tracking potentially profitable products",
+        "advice": "Use Google Sheets export for products that are historically profitable (e.g., $39.99) but currently not (e.g., $3 profit at $19.99 buy); track until price hits threshold (e.g., $40+).",
+        "confidence": "High",
+        "source": "historically this listing was actually up at 40 bucks for a while ... if I plug in $39.99, this is actually good ... we can go ahead and one-click export this to an almost good Google sheet ... when this hits 40 plus or 39 plus it's good from Best Buy."
+    },
+    {
+        "id": "strategy-10",
+        "category": "Buying",
+        "trigger": "Sourcing from successful sellers",
+        "advice": "Use storefront stalking: identify sellers with 25+ reviews, browse their brands/categories, and check their fast-selling products (e.g., under 200k rank, 100+ sales/month); avoid high ungating like 100-unit.",
+        "confidence": "High",
+        "source": "what you can do using seller amp is what's called the storefront stalking method where we scroll down here and take a look at the other sellers and then we can open up all these sellers that we know are making money aka have 25 plus reviews ... we can see all the brands these sellers carry as well as all the categories these sellers carry and we can see all their fastests selling winning products here. So we can see like okay this is 150k rank ... 124k rank ... 7k rank"
+    },
+    {
+        "id": "strategy-11",
+        "category": "Pricing",
+        "trigger": "Sourcing from Walmart",
+        "advice": "For beginner ROI, accept 25%+; submit tax exempt permit to avoid sales tax (e.g., 8.25%), increasing profitability (e.g., from 26% to higher).",
+        "confidence": "High",
+        "source": "If you're a beginner, you take a 25% ROI on something like that. ... Walmart, we can actually use our tax exempt permit on. So, I can submit what's called my resource certificate or my tax exempt permit to this website. And now I can go ahead and avoid paying sales tax. So, I can take off that 8.25% right here. And now this listing gets even more profitable"
+    },
+    {
+        "id": "oa-model-1",
+        "category": "General",
+        "trigger": "Limited startup capital and part-time seller",
+        "advice": "Choose online arbitrage (OA) business model over private label; buy discounted name-brand products from sites like Kohl's, Walmart, Target to flip on Amazon; requires no ads, no China sourcing, products arrive in 3-5 days, test a product for $40 by buying 5-10 units.",
+        "confidence": "High",
+        "source": "What makes significantly more sense on a budget, especially as a part-time seller in 2026, is the online arbitrage business model... we can test a product for 40 bucks just buying five to 10 units of it depending on its cost."
+    },
+    {
+        "id": "tools-1",
+        "category": "General",
+        "trigger": "Need for product research software",
+        "advice": "Use Seller Amp Chrome extension ($20/month) for profitability calculations after fees and Keepa Chrome extension (free) for historical sales data and stock charts.",
+        "confidence": "High",
+        "source": "All you need guys is two pieces of super super cheap software for product research, which is going to be Seller Amp, which is $20 per month... And the next one is going to be the Keepa Chrome extension as well."
+    },
+    {
+        "id": "product-criteria-1",
+        "category": "Pricing",
+        "trigger": "Evaluating potential winning product",
+        "advice": "Look for products with BSR under 200,000 (lower is better), above 30 estimated sales per month, three plus profit per unit, and 30% plus ROI; use Seller Amp to input buy cost and verify.",
+        "confidence": "High",
+        "source": "Basic product research criteria for a winning product is going to be under a 200,000 sales rank... Above 30 estimated sales per month, three plus profit per unit, and a 30% plus ROI."
+    },
+    {
+        "id": "keepa-analysis-1",
+        "category": "Pricing",
+        "trigger": "Analyzing product history as beginner",
+        "advice": "Focus on 3-month Keepa data; ensure competition (bottom chart) is stable or decreasing, and buy box price (top chart, pink line) is stable or increasing; select subranks, offer counts, and ratings in graph settings.",
+        "confidence": "High",
+        "source": "When you're a beginner, you're probably going to initially show three Keepa charts right here... we want to take a look at the three-month data on Keepa. And then the big things we want to take a look at... is making sure that the competition is either stable or going down... And that the price is either stable or going up."
+    },
+    {
+        "id": "sourcing-method-1",
+        "category": "Buying",
+        "trigger": "Finding winning products as beginner",
+        "advice": "Use storefront stalking: scroll Seller Amp to find proven sellers with 1-500 reviews (avoid wholesalers with high reviews or new sellers with 1 review); examine their brands, categories, and fast-selling products by sales rank; avoid manual sourcing from clearance sections.",
+        "confidence": "High",
+        "source": "What makes significantly more sense is what's called storefront stalking. So, where you look inside the storefronts of other sellers... We want to focus on people that have like one to like 500 reviews... And now we can see inside these seller storefronts and we can track down all their best winning products."
+    },
+    {
+        "id": "competition-avoid-1",
+        "category": "Risk",
+        "trigger": "Product with good sales rank but Amazon selling",
+        "advice": "Avoid competing with Amazon as a beginner, even if sales rank is good (e.g., 200+ sales/month).",
+        "confidence": "High",
+        "source": "We can see right here. So it's a really good sales rank, 200 plus per month, but Amazon's on it. I don't want to compete with Amazon when I'm beginner."
+    },
+    {
+        "id": "initial-buy-1",
+        "category": "Buying",
+        "trigger": "Beginner sourcing products",
+        "advice": "Buy 5-10 units of different products initially to test; search product title on Google to find deals on big websites.",
+        "confidence": "High",
+        "source": "Nice thing is when you're a beginner, you're just buying five to 10 of different things, right?... Then we go ahead and search for product title on Google because we're all we're doing is buying from big websites."
+    },
+    {
+        "id": "keepa-offers-1",
+        "category": "Pricing",
+        "trigger": "Assessing sales velocity",
+        "advice": "Use offer count movement on Keepa bottom chart as the best sign of strong sales; profitable even if out of stock temporarily.",
+        "confidence": "High",
+        "source": "The best sign that something sells well is going to be the offer count movement here on the bottom. Keep a chart right there... You'll find these listings that are profitable that are nice and good listings, but they're out of stock here."
+    },
+    {
+        "id": "variations-check-1",
+        "category": "Pricing",
+        "trigger": "Products with colors and sizes",
+        "advice": "Check variations to see which sell best; filter by buy box price top to bottom; even low sales estimates can be viable if on a well-selling listing.",
+        "confidence": "High",
+        "source": "When there's different colors and sizes, you need to go ahead and check the variations here to see which variations sell best. I like just filtering top to bottom by buy box here... It is a little bit low estimated sales per month, but someone's going to buy the size. It's on a listing that sells well."
+    },
+    {
+        "id": "ungating-process-1",
+        "category": "Risk",
+        "trigger": "Brand or category requires approval",
+        "advice": "Add product in Seller Central, check if 10-unit ungating required or autogate; submit order confirmations/invoices from big retailers (Kohl's, Walmart, Target, brand sites); avoid eBay, StockX, etc.; normal to get declined 10-15 times per brand, keep submitting with 10+ units across invoices; ignore denial reasons.",
+        "confidence": "High",
+        "source": "All you need to do to get ungated for a specific brand is plug it in in the ad product on Amazon SAR central... I would recommend only doing 10 unit ungate required... submit order confirmation emails or invoices from big websites like any brand website's going to work. Any big retailer like Kohl's, Walmart, Target's going to work... it's completely normal to get declined like 10 to 15 times per brand. Just keep submitting."
+    },
+    {
+        "id": "autogate-brands-1",
+        "category": "Risk",
+        "trigger": "Beginner needing quick approvals",
+        "advice": "Target autogate brands like Athletic Works, Bella Skin, Vimma, Tree Topper; in Seller Central, add ASIN, set condition new, apply to sell; if asks for price/quantity without documents, it's autogate; use provided list for quick wins.",
+        "confidence": "High",
+        "source": "There's some quick wins here that tend to be autogate, like Athletic Works, Bella Skin, Vimma, and Tree Totopper... All you have to do is grab a specification, put it in on Amazon seller central, then put condition new, then hit apply to sell and request approval. And if it asks for documents, it's gated. And if it is asking for like price and quantity and stuff like that, it's an autogate."
+    },
+    {
+        "id": "shipping-tool-1",
+        "category": "General",
+        "trigger": "Handling listing and shipping",
+        "advice": "Use Boxom software for listing, shipping, and profit analytics (better than Seller Central); start with 2-week free trial once products are sourced.",
+        "confidence": "High",
+        "source": "What's a lot better is our Boxom shipment software... So Boxom's really good for listing, shipping, and knowing all your profit analytics... I'd recommend getting a twoe free trial of Boxom."
+    },
+    {
+        "id": "seasonality-1",
+        "trigger": "Higher sales rank during holidays (e.g., 260K during Christmas)",
+        "category": "Seasonality",
+        "advice": "Consider seasonal products even with slightly higher sales ranks (e.g., 260K) if data supports, as they can perform well during peak times like Christmas.",
+        "confidence": "High",
+        "source": "260K. It is during Christmas time. So we can take a look at that even though the rank's a little bit high right there."
+    },
+    {
+        "id": "book-strat-1",
+        "category": "General",
+        "trigger": "No or very little capital (couple hundred bucks)",
+        "advice": "Start with the used book model on Amazon to enter e-commerce with minimal upfront investment.",
+        "confidence": "High",
+        "source": "the resurgence of the used book model, especially for sellers that are getting started with no or very, very little capital. If you have no money or just a couple hundred bucks, it's pretty much the way that I got started back in the day, selling used books."
+    },
+    {
+        "id": "book-strat-2",
+        "category": "Buying",
+        "trigger": "Sourcing used books cheaply",
+        "advice": "Sell textbooks on consignment from college friends, offer free book pickup services on Facebook Marketplace, LetGo, Offer Up, and source from thrift stores and library sales.",
+        "confidence": "High",
+        "source": "Basically what I would do back in the day is sell textbooks on consignment from my friends in college. do a free book pickup service on Facebook Marketplace, LetGo, Offer Up, and these other free local apps, as well as hunt down books from thrift stores and library sales."
+    },
+    {
+        "id": "book-strat-3",
+        "category": "Pricing",
+        "trigger": "Books acquired for $1-2 or free",
+        "advice": "Target books that sell for a minimum of $10 on Amazon, up to tens of dollars, to achieve high profit margins.",
+        "confidence": "High",
+        "source": "Basically, just buying books for one to two bucks that sell for a minimum of like 10 bucks on Amazon, as high as even tens of dollars, and I'm literally getting them for free or just a couple bucks. So, the profit margins are super super high."
+    },
+    {
+        "id": "book-strat-4",
+        "category": "Risk",
+        "trigger": "Acquiring books for free or low cost",
+        "advice": "Minimize risk by sourcing many books for free, reducing financial exposure in the used book model.",
+        "confidence": "High",
+        "source": "And it's really easy and cheap to actually get into. And the nice thing is there's way less risk, too, because a lot of these products you're actually getting for free."
+    },
+    {
+        "id": "book-strat-5",
+        "category": "General",
+        "trigger": "Promoting free pickup service",
+        "advice": "Use ChatGPT to create a free book flyer to advertise pickup services and attract free book sources.",
+        "confidence": "High",
+        "source": "Chat GBT can make you a free book flyer that's really really helpful too."
+    },
+    {
+        "id": "rule1",
+        "category": "General",
+        "trigger": "BSR under 200,000 and above 30 estimated sales per month",
+        "advice": "Target products with BSR under 200,000 and above 30 estimated sales per month to ensure velocity",
+        "confidence": "High",
+        "source": "we want to make sure we're staying under a 200,000 best sellers rank right here... and above 30 estimated sales per month."
+    },
+    {
+        "id": "rule2",
+        "category": "Buying",
+        "trigger": "Profit over $3 per unit and ROI over 30%",
+        "advice": "Only buy products that yield over $3 profit per unit and over 30% ROI after fees and shipping",
+        "confidence": "High",
+        "source": "our basic winning product criteria, guys, is over $3 profit per unit, over 30% ROI, and then under a 200,000 sales rank, and above 30 estimated sales per month."
+    },
+    {
+        "id": "rule3",
+        "category": "Risk",
+        "trigger": "Sudden drop to zero offers in Keepa chart",
+        "advice": "Avoid listings with sudden drops to zero offers in Keepa, indicating IP complaints",
+        "confidence": "High",
+        "source": "if we take a look at the all-time data right here... we can see in mid 2024, the competition randomly shot down to zero, which is a pretty telltale sign of an IP complaint"
+    },
+    {
+        "id": "rule4",
+        "category": "Risk",
+        "trigger": "No offer count movement, blocky Keepa chart, Amazon dominating",
+        "advice": "Avoid private label products shown by no seller movement, blocky charts, and Amazon holding the buy box",
+        "confidence": "High",
+        "source": "there's no offer count movement on this product. So here on the bottom chart, there's no seller count movement. It's just straight blocky... when Amazon does have the entire buy box, it is going to create that blocky keep it chart, which is something you want to avoid"
+    },
+    {
+        "id": "rule5",
+        "category": "Risk",
+        "trigger": "Competition increasing to 15-20 sellers, price decreasing",
+        "advice": "Avoid products where competition suddenly increases and prices drop",
+        "confidence": "High",
+        "source": "the competition was cooking along between two, three, and one right here. And then randomly it shot up to like 15 to 20 right there... as the competition goes up, the price is likely going to keep going down"
+    },
+    {
+        "id": "rule6",
+        "category": "Buying",
+        "trigger": "Beginner budget of 1-2K, buying 5-10 units",
+        "advice": "Start with 1-2K budget and buy only 5-10 units per product as a beginner",
+        "confidence": "High",
+        "source": "With online arbitrage, you only need 1 to 2K... when you're a beginner, you're typically only buying 5 to 10 of different products"
+    },
+    {
+        "id": "rule7",
+        "category": "General",
+        "trigger": "3-month Keepa data",
+        "advice": "For beginners, check 3-month Keepa data: competition stable or decreasing, price stable or increasing",
+        "confidence": "High",
+        "source": "we just want to take a look at the three-month data and make sure that the competition, the bottom chart is either stable or going down... and that the price the buy box line... is either stable or going up"
+    },
+    {
+        "id": "rule8",
+        "category": "Buying",
+        "trigger": "Buy 3 get 1 free or similar promotions",
+        "advice": "Leverage promotions like buy 3 get 1 free to reduce cost per unit and improve ROI",
+        "confidence": "High",
+        "source": "this sale has buy three get the four free. So we just want to do multiples of four... now this system becomes $7 profit and 108% ROI"
+    },
+    {
+        "id": "rule9",
+        "category": "Buying",
+        "trigger": "15% cash back via Rakuten",
+        "advice": "Always use Rakuten for cash back, up to 15%, when purchasing from retailers",
+        "confidence": "High",
+        "source": "over on PetSmart right here, we can see there's 15% cash back, which is absolutely bonkers. I'm a huge fan of using Rakuten for cash back"
+    },
+    {
+        "id": "rule10",
+        "category": "General",
+        "trigger": "Storefronts of mid to lower price sellers",
+        "advice": "Use storefront stalking: Browse storefronts of mid to lower price Amazon sellers to identify winning products and brands",
+        "confidence": "High",
+        "source": "the storefront stalking method. looking inside the storefronts of other Amazon sellers... Typically, the people in like the middle or the lower end of the price distribution"
+    },
+    {
+        "id": "rule11",
+        "category": "Pricing",
+        "trigger": "Light items under $15",
+        "advice": "For light items under $15, toggle to FBM in Seller Amp and add $4.50 shipping cost for better profitability",
+        "confidence": "High",
+        "source": "listings that are above 15 bucks but really really light tend to be more profitable FBM compared to FBA. So... toggle this from FBA to FBM. then plug in the FBM shipping cost right in this case which probably be like 450"
+    },
+    {
+        "id": "rule12",
+        "category": "Buying",
+        "trigger": "20% email signup coupons",
+        "advice": "Use repeatable 20% email signup coupons on retailer sites to reduce buy cost",
+        "confidence": "High",
+        "source": "there's a 20% email signup coupon right here that I can just go ahead and use again and again just with different emails"
+    },
+    {
+        "id": "rule13",
+        "category": "Buying",
+        "trigger": "Discounted gift cards 5-18% off via Cardbear",
+        "advice": "Purchase discounted gift cards from Cardbear (5-18% off) for retailers like Gap to lower costs",
+        "confidence": "High",
+        "source": "going to be discounted gift cards using Card Bear right here... save another 18% off on discounted gift cards right here"
+    },
+    {
+        "id": "rule14",
+        "category": "Buying",
+        "trigger": "25-35% off sales on brand sites",
+        "advice": "Apply 25-35% off sales and divide cost by quantity to achieve $3+ profit",
+        "confidence": "High",
+        "source": "25 to 35% off. So... we can get 19 bucks off. So it' be 75 basically 75 minus 1875... And now this becomes $3.52 profit and a 33% ROI"
+    },
+    {
+        "id": "rule15",
+        "category": "Pricing",
+        "trigger": "FBM sellers present",
+        "advice": "Prioritize FBM for products where majority sellers are FBM to win buy box",
+        "confidence": "High",
+        "source": "assuming you can see people getting the buy box FBM which I can see in in this case is totally the case considering the majority of the sellers in this listing are FBM"
+    },
+    {
+        "id": "rule16",
+        "category": "Buying",
+        "trigger": "No sales tax on Walmart with resell certificate",
+        "advice": "Use resell certificate on sites like Walmart to avoid sales tax",
+        "confidence": "High",
+        "source": "Nice thing about Walmart is there's no sales tax. We can go ahead and take that out because we can use our tax exempt permit on there"
+    },
+    {
+        "id": "rule17",
+        "category": "Buying",
+        "trigger": "5% off Walmart gift cards via Cardbear",
+        "advice": "Stack 5% off Walmart gift cards from Cardbear to reduce costs further",
+        "confidence": "High",
+        "source": "see if there's any Walmart discounted gift cards... Card cookie 5%. Okay. So we can... take off, you know, 5% from this. And now we can see basically $3 profit"
+    },
+    {
+        "id": "rule18",
+        "category": "Seasonality",
+        "trigger": "Holiday periods like Black Friday, Christmas, New Year's",
+        "advice": "Target holiday sales in Q4 for increased opportunities, especially back to school and seasonal items",
+        "confidence": "High",
+        "source": "holiday sales, especially with Christmas, New Year's, and then eventually Valentine's Day... back to school, Q4 like that Disney hat"
+    },
+    {
+        "id": "rule19",
+        "category": "Pricing",
+        "trigger": "Prime eligible as FBA seller",
+        "advice": "Price above buy box and FBM sellers as FBA to leverage prime bump for higher margins",
+        "confidence": "High",
+        "source": "Smart repricing and pricing above the buy box when it's possible... Especially pricing above FBM sellers as an FBA seller... taking advantage of what's called the prime bump"
+    },
+    {
+        "id": "rule20",
+        "category": "Buying",
+        "trigger": "Tax-free states for prep centers",
+        "advice": "Use tax-free prep centers in states like Delaware, New Hampshire, Oregon, or Montana to save on sales tax",
+        "confidence": "High",
+        "source": "using a tax-free prep center to save sales tax too in taxfree states. Another really, really good thing like Delaware, New Hampshire, Oregon, or Montana"
+    },
+    {
+        "id": "rule21",
+        "category": "General",
+        "trigger": "Variations with good offer count movement",
+        "advice": "In Keepa variations tab, sort by buy box price and select variations with good offer count movement (e.g., 18 sellers)",
+        "confidence": "High",
+        "source": "hit the variations tab on Keepa... filter this top to bottom by buy box price and look for good offer count movement here... like 18 right there. That looks pretty good"
+    },
+    {
+        "id": "rule22",
+        "category": "Buying",
+        "trigger": "Stacking discounts: coupon + gift card + tax exempt",
+        "advice": "Stack multiple discounts like coupons, gift cards, and tax exemptions to make products profitable",
+        "confidence": "High",
+        "source": "Stacking these opportunities together, gift card plus coupon, tax exempt plus gift card, sale plus tax exempt"
     }
 ]

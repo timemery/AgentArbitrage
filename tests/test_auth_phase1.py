@@ -1,79 +1,78 @@
-import pytest
+import unittest
+import sys
+import os
+
+# Add repo root to path to ensure wsgi_handler can be imported
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from wsgi_handler import app, USERS
 
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    app.config['SECRET_KEY'] = 'test'
-    with app.test_client() as client:
-        yield client
+class TestAuthPhase1(unittest.TestCase):
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'test'
+        self.client = app.test_client()
 
-def test_login_admin(client):
-    response = client.post('/login', data={
-        'username': 'tester',
-        'password': USERS['tester']['password']
-    }, follow_redirects=True)
-    assert response.status_code == 200
-    # Should redirect to Dashboard (UPDATED)
-    # Dashboard page has "Dashboard" in title or nav.
-    assert b"Deals Dashboard" in response.data or b"Dashboard" in response.data
-    # Check for presence of Dashboard specific content
-    assert b'id="deals-table"' in response.data
+    def test_login_admin(self):
+        response = self.client.post('/login', data={
+            'username': 'tester',
+            'password': USERS['tester']['password']
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        # Should redirect to Dashboard (UPDATED)
+        self.assertTrue(b"Deals Dashboard" in response.data or b"Dashboard" in response.data)
+        self.assertIn(b'id="deals-table"', response.data)
 
-def test_login_user(client):
-    response = client.post('/login', data={
-        'username': 'AristotleLogic',
-        'password': USERS['AristotleLogic']['password']
-    }, follow_redirects=True)
-    assert response.status_code == 200
-    # Should redirect to Dashboard
-    # Dashboard page has "Dashboard" in title or nav.
-    # Check that "Strategies" link is NOT present
-    assert b'href="/strategies"' not in response.data
-    # Data Sourcing should be gone
-    assert b"Data Sourcing" not in response.data
+    def test_login_user(self):
+        response = self.client.post('/login', data={
+            'username': 'AristotleLogic',
+            'password': USERS['AristotleLogic']['password']
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        # Check that "Strategies" link is NOT present
+        self.assertNotIn(b'href="/strategies"', response.data)
+        # Data Sourcing should be gone
+        self.assertNotIn(b"Data Sourcing", response.data)
 
-def test_user_access_control(client):
-    # Login as User
-    client.post('/login', data={
-        'username': 'AristotleLogic',
-        'password': USERS['AristotleLogic']['password']
-    })
+    def test_user_access_control(self):
+        # Login as User
+        self.client.post('/login', data={
+            'username': 'AristotleLogic',
+            'password': USERS['AristotleLogic']['password']
+        })
 
-    # Try accessing Strategies
-    response = client.get('/strategies', follow_redirects=True)
-    # Should be redirected to Dashboard and show flash message
-    assert b"You are not authorized" in response.data
+        # Try accessing Strategies
+        response = self.client.get('/strategies', follow_redirects=True)
+        # Should be redirected to Dashboard and show flash message
+        self.assertIn(b"You are not authorized", response.data)
 
-    # Try accessing Guided Learning
-    response = client.get('/guided_learning', follow_redirects=True)
-    assert b"You are not authorized" in response.data
+        # Try accessing Guided Learning
+        response = self.client.get('/guided_learning', follow_redirects=True)
+        self.assertIn(b"You are not authorized", response.data)
 
-def test_settings_page_user(client):
-    # Login as User
-    client.post('/login', data={
-        'username': 'AristotleLogic',
-        'password': USERS['AristotleLogic']['password']
-    })
+    def test_settings_page_user(self):
+        # Login as User
+        self.client.post('/login', data={
+            'username': 'AristotleLogic',
+            'password': USERS['AristotleLogic']['password']
+        })
 
-    response = client.get('/settings')
-    assert response.status_code == 200
-    # Should not see "Connect Your Amazon Account" button link if not connected
-    # In test environment, sp_api_connected is False by default.
-    assert b"Connect Your Amazon Account" not in response.data
-    # Should not see Manual Connection form
-    assert b"manual_sp_api_token" not in response.data
-    # Should see "Amazon SP-API Integration is not connected."
-    assert b"Amazon SP-API Integration is not connected." in response.data
+        response = self.client.get('/settings')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(b"Connect Your Amazon Account", response.data)
+        self.assertNotIn(b"manual_sp_api_token", response.data)
+        self.assertIn(b"Amazon SP-API Integration is not connected.", response.data)
 
-def test_settings_page_admin(client):
-    # Login as Admin
-    client.post('/login', data={
-        'username': 'tester',
-        'password': USERS['tester']['password']
-    })
+    def test_settings_page_admin(self):
+        # Login as Admin
+        self.client.post('/login', data={
+            'username': 'tester',
+            'password': USERS['tester']['password']
+        })
 
-    response = client.get('/settings')
-    assert response.status_code == 200
-    # Should see Connect button or form (since not connected in test)
-    assert b"Connect Your Amazon Account" in response.data
+        response = self.client.get('/settings')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Connect Your Amazon Account", response.data)
+
+if __name__ == '__main__':
+    unittest.main()
