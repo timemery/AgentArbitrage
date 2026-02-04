@@ -260,6 +260,9 @@ def backfill_deals(reset=False):
 
                     time.sleep(0.5) # Reduced throttle for hybrid
 
+                rejection_count = len(chunk_deals) - len(rows_to_upsert)
+                logger.info(f"DEBUG: Chunk stats - Processed: {len(chunk_deals)}, Upserting: {len(rows_to_upsert)}, Rejected: {rejection_count}")
+
                 if rows_to_upsert:
                     logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")
                     conn = None
