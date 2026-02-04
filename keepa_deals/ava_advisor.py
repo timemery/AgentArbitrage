@@ -149,8 +149,14 @@ def load_intelligence():
 
             intelligence = INTELLIGENCE_CACHE
             if intelligence:
-                 # Intelligence is usually a list of strings
-                 return "\n".join([f"- {i}" for i in intelligence])
+                 # Intelligence is usually a list of strings, but now objects
+                 formatted_intelligence = []
+                 for i in intelligence:
+                     if isinstance(i, dict) and 'content' in i:
+                         formatted_intelligence.append(f"- {i['content']}")
+                     else:
+                         formatted_intelligence.append(f"- {i}")
+                 return "\n".join(formatted_intelligence)
     except Exception as e:
         logger.error(f"Error loading intelligence: {e}")
     return ""

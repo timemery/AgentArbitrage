@@ -3,7 +3,13 @@
 {% block content %}
     <div class="tidy-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 class="tidy-header">Strategy Database</h2>
+            <div>
+                <h2 class="tidy-header" style="margin-bottom: 5px;">Strategy Database</h2>
+                <div style="color: #6699CC; font-size: 14px; margin-bottom: 10px;">
+                    <span style="margin-right: 15px;">{{ total_count }} Strategies</span>
+                    <span>{{ new_today_count }} New Today</span>
+                </div>
+            </div>
             <button id="remove-dupes-btn" class="tidy-button" style="background-color: transparent; border-color: #CC6666; color: white; font-size: 12px; padding: 5px 10px;">Remove Duplicates</button>
         </div>
         <div class="tidy-card">
