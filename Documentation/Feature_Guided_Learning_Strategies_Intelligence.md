@@ -78,3 +78,21 @@ Displays the "Mental Models" and high-level concepts the agent uses to understan
 *   Reads the `intelligence.json` file from the root directory.
 *   Renders the list of ideas.
 *   This serves as the "System Prompt" or context for the agent's decision-making processes (e.g., when judging if a price is "reasonable" via AI).
+
+---
+
+## 4. Semantic Homogenization (Maintenance)
+
+**Trigger:** Manual (via `/api/homogenize/intelligence`) or Scheduled (Weekly)
+**Implementation:** `keepa_deals/maintenance_tasks.py` -> `homogenize_intelligence_task`
+
+### Overview
+Over time, the agent's knowledge base (`intelligence.json` and `strategies.json`) can accumulate duplicate or synonymous concepts (e.g., "Textbooks spike in August" vs "Academic books sell well in late summer"). The **Semantic Homogenization** task uses AI to merge these redundancies into a concise, high-quality dataset.
+
+### Mechanism
+1.  **Chunking:** The knowledge base is split into chunks (e.g., 500 items) to fit within the AI's context window.
+2.  **AI Processing:**
+    *   **Model:** `grok-4-fast-reasoning`.
+    *   **Prompt:** Instructions to "Merge identical concepts, preserve unique nuances, and delete exact duplicates."
+3.  **Persistence:** The merged results are written back to the JSON files.
+4.  **Status Tracking:** Progress is tracked in Redis (`homogenization_status` key). The frontend polls `/api/homogenize/status` to show a progress bar.

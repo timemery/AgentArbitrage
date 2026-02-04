@@ -7,10 +7,10 @@ This document consolidates the API token management strategies for the three cor
 ## 1. Keepa API: "Controlled Deficit" Optimization
 
 **Strategy:** Aggressive consumption above a threshold, quick recovery below it.
-**Implementation:** `keepa_deals/token_manager.py` (and logic in `backfiller.py`, `simple_task.py`)
+**Implementation:** `keepa_deals/token_manager.py` (Distributed Token Bucket via Redis)
 
 ### The "Why"
-Keepa's API allows the token balance to go negative (deficit spending) as long as the starting balance is positive. A strict "no deficit" policy (waiting until we have *enough* tokens for a batch) causes massive delays. The "Controlled Deficit" strategy maximizes throughput by leveraging this allowance.
+Keepa's API allows the token balance to go negative (deficit spending) as long as the starting balance is positive. A strict "no deficit" policy causes massive delays. The "Controlled Deficit" strategy maximizes throughput by leveraging this allowance. To handle multiple concurrent workers (Backfiller + Upserter) without race conditions, the system uses a **Shared Redis State**.
 
 ### Dynamic Rate Adaptation
 The `TokenManager` dynamically updates its `REFILL_RATE_PER_MINUTE` from the `refillRate` field in Keepa API responses.
@@ -18,13 +18,22 @@ The `TokenManager` dynamically updates its `REFILL_RATE_PER_MINUTE` from the `re
 *   **Adaptation:** Upon the first API sync, it learns the true rate (e.g., 20/min for upgraded plans).
 *   **Benefit:** Users who upgrade their Keepa plan immediately see faster processing without code changes.
 
-### The Algorithm
-1.  **Threshold Check:** Defined `MIN_TOKEN_THRESHOLD` (50 tokens).
-2.  **Aggressive Phase:** If `current_tokens > 50`, the system **allows** the request to proceed immediately, even if the estimated cost exceeds the current balance.
-    *   *Example:* Balance 55, Cost 80 -> **Approved**. (Resulting balance: -25).
-3.  **Recovery Phase:** If `current_tokens < 50` (or negative), the system pauses.
-    *   **Crucial Optimization:** It waits only until the balance recovers to `50 + 5` (approx 55). It does **not** wait for a full refill (300).
-    *   *Benefit:* Wait times reduced from ~18 minutes (full refill) to <2 minutes (recovery).
+### The Algorithm (Distributed & Float-Safe)
+Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers compete for them, the system uses an **Optimistic Locking** strategy with Redis `incrbyfloat`:
+
+1.  **Atomic Reservation:** The worker unconditionally decrements the shared Redis counter (`incrbyfloat -cost`).
+2.  **Threshold Check:** It reads the new balance.
+3.  **Aggressive Phase:** If `new_balance > MIN_TOKEN_THRESHOLD` (50) OR `old_balance` was sufficient to start, it proceeds. The deficit is allowed.
+4.  **Recovery Phase (Revert):** If the reservation drops the balance dangerously low (e.g., below threshold when it was already low):
+    *   The worker **Reverts** the transaction (`incrbyfloat +cost`).
+    *   It enters a **Sleep Loop**, waiting for the balance to recover to `Threshold + Cost + Buffer` (e.g., 55 + cost).
+    *   *Note:* It does **not** wait for a full refill (300).
+
+### Resilience & Crash Recovery (Zombie Locks)
+To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
+*   **Script:** `Diagnostics/kill_redis_safely.py` (invoked by `kill_everything_force.sh`).
+*   **Action:** Connects to Redis, executes `FLUSHALL` (clears memory), then `SAVE` (forces disk sync).
+*   **Result:** This ensures that when the system restarts, the token state and locks are completely reset, preventing "Task already running" errors.
 
 ### Task-Specific Buffers
 *   **Backfiller:** Uses the standard strategy.
