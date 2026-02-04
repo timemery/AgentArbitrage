@@ -36,7 +36,7 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 # DO NOT CHANGE. The optimal chunk size is 20, and is required to allow the Token Bucket sufficient time to refill between requests.
 DEALS_PER_CHUNK = 20
 LOCK_KEY = "backfill_deals_lock"
-LOCK_TIMEOUT = 864000 # 10 days
+LOCK_TIMEOUT = 3600 # 1 hour (Reduced from 10 days to prevent zombie locks)
 STATE_FILE_LEGACY = 'backfill_state.json'
 
 def _convert_keepa_time_to_iso(keepa_minutes):
@@ -259,6 +259,9 @@ def backfill_deals(reset=False):
                             rows_to_upsert.append(processed_row)
 
                     time.sleep(0.5) # Reduced throttle for hybrid
+
+                rejection_count = len(chunk_deals) - len(rows_to_upsert)
+                logger.info(f"DEBUG: Chunk stats - Processed: {len(chunk_deals)}, Upserting: {len(rows_to_upsert)}, Rejected: {rejection_count}")
 
                 if rows_to_upsert:
                     logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")

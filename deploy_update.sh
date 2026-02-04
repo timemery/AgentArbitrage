@@ -15,6 +15,19 @@ sudo chown -R www-data:www-data /var/www/agentarbitrage
 echo "[2/5] Stopping services..."
 ./kill_everything_force.sh
 
+# Step 2.5: Force Clear Locks (Safety Net)
+# Explicitly removes lock keys in case the full wipe failed or was skipped.
+echo "[2.5/5] Ensuring locks are cleared..."
+APP_DIR=$(pwd)
+if [ -f "$APP_DIR/venv/bin/python" ]; then
+    VENV_PYTHON="$APP_DIR/venv/bin/python"
+elif [ -f "$APP_DIR/venv/bin/python3" ]; then
+    VENV_PYTHON="$APP_DIR/venv/bin/python3"
+else
+    VENV_PYTHON="python3"
+fi
+$VENV_PYTHON Diagnostics/force_clear_locks.py
+
 # Step 3: Start Services
 # Starts Redis, Celery Worker, and Celery Beat monitor.
 echo "[3/5] Starting services..."

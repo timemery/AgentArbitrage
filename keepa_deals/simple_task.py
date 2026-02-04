@@ -78,12 +78,14 @@ def update_recent_deals():
     #     return
 
     lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
+    logger.info(f"DEBUG: Attempting to acquire lock {LOCK_KEY}...")
     if not lock.acquire(blocking=False):
         logger.info("--- Task: update_recent_deals is already running. Skipping execution. ---")
         return
 
     try:
         logger.info(f"--- Task: update_recent_deals started (Version: {SIMPLE_TASK_VERSION}) ---")
+        logger.info(f"DEBUG: Lock acquired. Requesting tokens...")
         logger.info(f"Import Source: fetch_deals_for_deals is imported from {fetch_deals_for_deals.__module__}")
         create_deals_table_if_not_exists()
 
@@ -106,7 +108,9 @@ def update_recent_deals():
         # We use a blocking wait here instead of a simple check.
         # Previously, this returned early if tokens were low, causing "starvation" when the Backfiller
         # was running (which keeps tokens low). Now, we force the Upserter to wait in line.
+        logger.info(f"DEBUG: Calling request_permission_for_call(5). Current tokens: {token_manager.tokens}")
         token_manager.request_permission_for_call(5)
+        logger.info("DEBUG: Permission granted for Upserter.")
 
         watermark_iso = load_watermark()
         if watermark_iso is None:
@@ -134,10 +138,12 @@ def update_recent_deals():
                 hit_new_deal_limit = True
                 break
 
-            if not token_manager.has_enough_tokens(5):
-                logger.warning(f"Low tokens during pagination ({token_manager.tokens}). Stopping fetch loop.")
-                incomplete_run = True
-                break
+            # WAITING LOGIC FIX: Instead of aborting, wait for tokens.
+            # if not token_manager.has_enough_tokens(5):
+            #     logger.warning(f"Low tokens during pagination ({token_manager.tokens}). Stopping fetch loop.")
+            #     incomplete_run = True
+            #     break
+            token_manager.request_permission_for_call(5)
             # --------------------------
 
             # Sort by newest first (sortType=4: Last Update)

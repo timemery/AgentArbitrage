@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-02-04T18:12:06.704047+00:00",
+    "timestamp": "2026-02-04T21:33:35.648064+00:00",
     "environment": {
         ".env File": {
             "status": "PASS",
@@ -87,7 +87,7 @@
         },
         "Backfill Lock": {
             "status": "WARN",
-            "message": "Active (TTL: 863875s)"
+            "message": "Active (TTL: 3586s)"
         }
     },
     "logs": {
