@@ -530,7 +530,8 @@ document.addEventListener('DOMContentLoaded', function() {
         columnsToShow.forEach(header => {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
             let groupClass = groupEndColumns.includes(header) ? 'group-end' : '';
-            table += `<th data-sort="${header}" class="${groupClass}">${headerText}</th>`;
+            let colClass = 'col-' + header.toLowerCase().replace(/_/g, '-');
+            table += `<th data-sort="${header}" class="${groupClass} ${colClass}">${headerText}</th>`;
         });
         table += '</tr>';
 
@@ -538,13 +539,14 @@ document.addEventListener('DOMContentLoaded', function() {
         table += '<tr class="sort-arrows-row">';
         columnsToShow.forEach(header => {
             let groupClass = groupEndColumns.includes(header) ? 'group-end' : '';
+            let colClass = 'col-' + header.toLowerCase().replace(/_/g, '-');
             if (header === 'Buy_Now') {
-                table += `<td class="${groupClass}"></td>`; // No arrows for these columns
+                table += `<td class="${groupClass} ${colClass}"></td>`; // No arrows for these columns
             } else {
                 const upArrowSrc = (currentSort.by === header && currentSort.order === 'asc') ? '/static/ascending-on.png' : '/static/ascending-off.png';
                 const downArrowSrc = (currentSort.by === header && currentSort.order === 'desc') ? '/static/descending-on.png' : '/static/descending-off.png';
                 table += `
-                    <td class="${groupClass}">
+                    <td class="${groupClass} ${colClass}">
                         <div class="sort-arrows-container">
                             <img src="${upArrowSrc}" class="sort-arrow"
                                  data-order="asc"
@@ -571,6 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 table += `<tr class="deal-row" data-asin="${cleanAsin}" style="cursor: pointer;">`;
                 columnsToShow.forEach(col => {
                     let groupClass = groupEndColumns.includes(col) ? 'group-end' : '';
+                    let colClass = 'col-' + col.toLowerCase().replace(/_/g, '-');
                     let value = deal[col] != null ? deal[col] : '-';
                     // Re-written formatting logic for robustness
                     const numValue = parseFloat(value);
@@ -648,13 +651,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Fallback to "View" if status unknown
                                 gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link" style="background-color: #6c757d; border: 2px solid #5a6268;" onclick="event.stopPropagation()">View</a>`;
                         }
-                        tdContent = `<td>${gatedContent}</td>`;
                         // Override tdContent to include class
-                        tdContent = `<td class="${groupClass}">${gatedContent}</td>`;
+                        tdContent = `<td class="${groupClass} ${colClass}">${gatedContent}</td>`;
 
                     } else if (col === 'Title') {
                         const fullTitle = deal[col] || '';
-                        tdContent = `<td class="title-cell ${groupClass}" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
+                        tdContent = `<td class="title-cell ${groupClass} ${colClass}" data-full-title="${escape(fullTitle)}"><span>${value}</span></td>`;
                     } else if (col === 'Categories_Sub') {
                         let displayValue = value;
                         if (typeof displayValue === 'string' && displayValue.startsWith('Subjects')) {
@@ -665,19 +667,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (displayValue.trim() === '' || displayValue.trim() === '-') {
                             displayValue = 'No Subject Listed';
                         }
-                        tdContent = `<td class="genre-cell ${groupClass}"><span>${displayValue}</span></td>`;
+                        tdContent = `<td class="genre-cell ${groupClass} ${colClass}"><span>${displayValue}</span></td>`;
                     } else if (col === 'Detailed_Seasonality') {
-                        tdContent = `<td class="season-detail-cell ${groupClass}"><span>${value}</span></td>`;
+                        tdContent = `<td class="season-detail-cell ${groupClass} ${colClass}"><span>${value}</span></td>`;
                     } else if (col === 'Binding') {
-                        tdContent = `<td class="binding-cell ${groupClass}"><span>${value}</span></td>`;
+                        tdContent = `<td class="binding-cell ${groupClass} ${colClass}"><span>${value}</span></td>`;
                     } else if (col === 'Sells') {
-                        tdContent = `<td class="sells-cell ${groupClass}"><span>${value}</span></td>`;
+                        tdContent = `<td class="sells-cell ${groupClass} ${colClass}"><span>${value}</span></td>`;
                     } else if (col === 'Seller') {
-                        tdContent = `<td class="seller-cell ${groupClass}"><span>${value}</span></td>`;
+                        tdContent = `<td class="seller-cell ${groupClass} ${colClass}"><span>${value}</span></td>`;
                     } else if (col === 'ASIN') {
-                        tdContent = `<td class="${groupClass}">${cleanAsin}</td>`;
+                        tdContent = `<td class="${groupClass} ${colClass}">${cleanAsin}</td>`;
                     } else if (col === 'Price_Now') {
-                        tdContent = `<td class="price-now-cell ${groupClass}">${value}</td>`;
+                        tdContent = `<td class="price-now-cell ${groupClass} ${colClass}">${value}</td>`;
                     } else if (col === 'Offers') {
                         // Style the trend arrow - Offers arrows are placed BEFORE the number?
                         // "Arrows should be placed before data in all cases, not after."
@@ -727,10 +729,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         wrapperEnd += '</div>';
 
-                        tdContent = `<td class="${groupClass}">${wrapperStart}${cellContent}${wrapperEnd}</td>`;
+                        tdContent = `<td class="${groupClass} ${colClass}">${wrapperStart}${cellContent}${wrapperEnd}</td>`;
 
                     } else {
-                        tdContent = `<td class="${groupClass}">${value}</td>`;
+                        tdContent = `<td class="${groupClass} ${colClass}">${value}</td>`;
                     }
                     table += tdContent;
                 });

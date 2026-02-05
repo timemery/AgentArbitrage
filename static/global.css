@@ -896,7 +896,8 @@ button:disabled {
 /* Deals Dashboard Table Styles */
 /* VERIFICATION: Sticky header alignment fix active - 2026-02-05 */
 #deals-table {
-    width: 1333px; /* Exact match to filter panel */
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
     font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
@@ -2005,7 +2006,8 @@ body.home-background::before {
 /* -------------------------------------------------------------------------- */
 
 .filter-panel {
-    width: 1333px;
+    width: 100%;
+    max-width: 1200px;
     background-color: transparent;
     border: 1px solid #000000;
     border-radius: 8px;
@@ -2330,7 +2332,8 @@ body.home-background::before {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    width: 1333px;
+    width: 100%;
+    max-width: 1200px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
     top: calc(var(--filter-panel-height) + 246px); /* Adjusted: 221 + 25 */
@@ -2546,4 +2549,71 @@ body.home-background::before {
     font-size: 12px;
     color: #a3aec0;
     font-weight: 700;
+}
+
+/* --- Responsive Dashboard Styles --- */
+
+/* 1. Fluid Narrowing & Breakpoints */
+@media (max-width: 1200px) {
+    #deals-table th, #deals-table td {
+        padding: 0 5px; /* Reduce padding */
+        font-size: 11px; /* Slightly smaller font */
+    }
+    /* Adjust Group Header height/font */
+    #deals-table .group-header th {
+        font-size: 13px;
+        padding: 0 5px !important;
+    }
+}
+
+/* 2. Hide ASIN (< 1024px) & Disable Sticky Headers (Safety) */
+@media (max-width: 1024px) {
+    .col-asin {
+        display: none;
+    }
+    /* Disable Sticky Headers to prevent overlap with wrapping filter panel */
+    #deals-table th,
+    #deals-table .column-header-row th,
+    #deals-table .sort-arrows-row td,
+    #deals-table .group-header th,
+    .filter-panel,
+    #sticky-header-shadow-line {
+        position: static !important;
+        top: auto !important;
+    }
+    /* Remove Shadow Line */
+    #sticky-header-shadow-line {
+        display: none !important;
+    }
+    /* Allow Filter Panel to grow naturally */
+    .filter-panel-open {
+        height: auto !important;
+        min-height: 102px;
+        padding-bottom: 10px;
+    }
+}
+
+/* 3. Truncate Title/Season (< 900px) */
+@media (max-width: 900px) {
+    .col-title span,
+    .col-detailed-seasonality span {
+        max-width: 5ch;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: bottom;
+    }
+}
+
+/* 4. Hide Trust Columns (< 768px) */
+@media (max-width: 768px) {
+    .col-seller-quality-score,
+    .col-profit-confidence {
+        display: none;
+    }
+    /* Stack buttons in Filter Panel */
+    .panel-right-buttons {
+        flex-direction: row; /* Side by side on mobile? Or column? */
+        margin-top: 10px;
+    }
 }
