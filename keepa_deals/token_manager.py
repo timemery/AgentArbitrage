@@ -173,9 +173,10 @@ class TokenManager:
             recovery_target = 0
 
             # Determine required tokens to pass checks
-            # Case A: Standard Check (Tokens >= Threshold + Cost)
-            # We need enough so that (tokens - cost) >= Threshold
-            required_standard = self.MIN_TOKEN_THRESHOLD + cost_int
+            # Case A: Standard Check (Controlled Deficit)
+            # We only need the STARTING balance to be >= Threshold.
+            # So we need self.tokens (which mimics starting balance here) >= Threshold.
+            required_standard = self.MIN_TOKEN_THRESHOLD
 
             # Case B: Priority Pass (Cost <= 10 AND Tokens >= 0)
             # If cost is small, we just need to be non-negative.
