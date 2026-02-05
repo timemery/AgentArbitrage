@@ -272,6 +272,8 @@ class TokenManager:
         if refill_rate is not None:
             try:
                 self.REFILL_RATE_PER_MINUTE = float(refill_rate)
+                if self.REFILL_RATE_PER_MINUTE < 10:
+                    logger.warning(f"CRITICAL: Keepa Refill Rate is extremely low ({self.REFILL_RATE_PER_MINUTE}/min). Deal collection will be severely throttled. Upgrade Keepa plan to improve speed.")
             except (ValueError, TypeError):
                 pass
 
