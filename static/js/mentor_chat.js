@@ -88,7 +88,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const bubble = document.createElement('div');
         bubble.className = 'chat-bubble';
-        bubble.textContent = text;
+
+        if (isUser) {
+            bubble.textContent = text;
+        } else {
+            bubble.innerHTML = text;
+        }
 
         // Layout: User Right, Mentor Left
         if (isUser) {

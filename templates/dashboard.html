@@ -1311,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', function() {
             adviceContainer.style.fontStyle = 'normal';
 
             if (data.advice) {
-                adviceContainer.textContent = data.advice;
+                adviceContainer.innerHTML = data.advice;
             } else {
                 adviceContainer.textContent = "Mentor unexpectedly failed ... Please try again";
             }
