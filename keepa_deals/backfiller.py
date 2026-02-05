@@ -312,7 +312,9 @@ def backfill_deals(reset=False):
                         if conn: conn.close()
 
                 # Throttling to prevent excessive token consumption
-                time.sleep(60)
+                # Reduced from 60s to 1s because TokenManager now handles rate limiting (5 tokens/sec)
+                # This prevents "lugubrious" processing speeds while remaining safe.
+                time.sleep(1)
 
             save_backfill_state(page)
             page += 1
