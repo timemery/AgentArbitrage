@@ -182,11 +182,11 @@ def query_xai_api(payload, api_key=None):
     }
 
     # Retry logic configuration
-    max_retries = 3
-    base_delay = 2  # seconds
+    max_retries = 5
+    base_delay = 3  # seconds
 
     # Increase timeout for reasoning models
-    with httpx.Client(timeout=120.0) as client:
+    with httpx.Client(timeout=150.0) as client:
         for attempt in range(max_retries):
             try:
                 logger.info(f"Sending request to xAI API: {XAI_API_URL} (Attempt {attempt + 1}/{max_retries})")
@@ -308,8 +308,8 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         *   **Tone:** {mentor['tone']}
         *   **Style:** {mentor['style_guide']}
         *   **Context Aware:** Apply your learned strategies (below) to identify risks.
-        *   **Constraint:** Do NOT start with an introduction. Jump straight into the analysis.
-        *   **Constraint:** Do NOT use markdown formatting (no bolding, no headers, no bullet points). Use plain text paragraphs only.
+        *   **Constraint:** Do NOT start with an introduction or preamble. Jump straight into the analysis.
+        *   **Constraint:** Do NOT use markdown. Use HTML tags (e.g., <b>, <br>, <p>) for formatting.
 
         {strategy_section}
 
