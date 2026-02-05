@@ -29,7 +29,7 @@ accept_content = ['json']
 beat_schedule = {
     'update-recent-deals-every-minute': {
         'task': 'keepa_deals.simple_task.update_recent_deals',
-        'schedule': crontab(minute='*/10'),
+        'schedule': crontab(minute='*/15'),
     },
     'janitor-clean-stale-deals': {
         'task': 'keepa_deals.janitor.clean_stale_deals',

@@ -40,8 +40,10 @@ HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 # REGRESSION WARNING: Do not increase MAX_ASINS_PER_BATCH above 5 without careful testing.
 # A batch of 10 costs ~200 tokens. If the Backfiller is running with a target of 180,
 # the Upserter (Target 250) will be starved.
-# Reducing batch to 5 (Cost ~100) lowers the Target to ~150, giving the Upserter priority over the Backfiller.
-MAX_ASINS_PER_BATCH = 5
+# Reducing batch to 5 (Cost ~100) lowers the Target to ~150.
+# UPDATE: With Backfiller Target reduced to 90 (Threshold 50 + Cost 40), we must reduce Upserter
+# batch to 2 (Cost ~40 -> Target 90) to prevent Backfiller from starving Upserter.
+MAX_ASINS_PER_BATCH = 2
 LOCK_KEY = "update_recent_deals_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 MAX_PAGES_PER_RUN = 50 # Safety limit to prevent runaway pagination
