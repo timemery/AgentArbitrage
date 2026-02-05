@@ -841,7 +841,7 @@ button:disabled {
     border: 1px solid #1f293c;
     width: 1000px; /* Updated Width */
     max-width: 95vw; /* Responsive constraint */
-    border-radius: 8px; /* Match dashboard rows */
+    border-radius: 16px; /* Updated from 8px to 16px per request */
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Added box shadow */
     font-family: 'Open Sans', sans-serif;
@@ -1669,9 +1669,10 @@ body.home-background::before {
 }
 .ava-advice-container p {
     margin: 0;
-    font-size: 1.1em; /* Increased size */
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px; /* Match data area */
     line-height: 1.4;
-    color: #ffffff;
+    color: #eef2f6; /* Match header color */
 }
 
 .yellow-action-btn {
@@ -1784,15 +1785,17 @@ body.home-background::before {
 }
 
 .overlay-group-row .label {
-    font-weight: normal;
-    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    color: #a3aec0; /* Grey */
 }
 .overlay-group-row .value {
     text-align: right;
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700; /* Match Hide Gated */
-    font-size: 12px; /* Match Hide Gated */
-    color: #ffffff; /* Match Hide Gated */
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    color: #ffffff; /* White */
 }
 
 .truncated {

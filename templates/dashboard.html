@@ -1150,7 +1150,18 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('overlay-percent-down').textContent = '-';
         }
 
-        document.getElementById('overlay-trend').textContent = deal.Trend || '-';
+        // Format Trend Arrow with SVGs
+        let trendVal = deal.Trend || '-';
+        let trendHtml = trendVal;
+        if (trendVal === '⇧') {
+             trendHtml = '<img src="/static/Arrow_up.svg" class="trend-icon" alt="Up">';
+        } else if (trendVal === '⇩') {
+             trendHtml = '<img src="/static/Arrow_down.svg" class="trend-icon" alt="Down">';
+        } else if (trendVal === '⇨') {
+             trendHtml = '<img src="/static/Arrow_level.svg" class="trend-icon" alt="Flat">';
+        }
+        document.getElementById('overlay-trend').innerHTML = trendHtml;
+
         document.getElementById('overlay-updated').textContent = formatTimeAgo(deal.last_price_change);
 
         document.getElementById('overlay-amz-current').textContent = deal['Amazon - Current'] || '';
