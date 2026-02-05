@@ -518,10 +518,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add the new group header row
         table += '<tr class="group-header">';
-        table += '<th colspan="3" class="group-end">Book Details</th>';
+        table += '<th id="gh-book-details" colspan="3" class="group-end">Book Details</th>';
         table += '<th colspan="4" class="group-end">Supply & Demand</th>';
         table += '<th colspan="4" class="group-end">Deal Details</th>';
-        table += '<th colspan="2" class="group-end">Trust Rates</th>';
+        table += '<th id="gh-trust" colspan="2" class="group-end">Trust Rates</th>';
         table += '<th colspan="4">Profit Estimates</th>';
         table += '</tr>';
 
@@ -745,9 +745,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
         tableContainer.innerHTML = table + '</tbody></table>';
         
+        // Initial responsive check
+        updateResponsiveLayout();
+
         // Add event listeners for navigation and sorting
         addEventListeners();
     }
+
+    function updateResponsiveLayout() {
+        const width = window.innerWidth;
+        const ghBookDetails = document.getElementById('gh-book-details');
+        const ghTrust = document.getElementById('gh-trust');
+
+        if (ghBookDetails) {
+            // < 1024px: ASIN Hidden -> Colspan 2
+            if (width < 1024) {
+                ghBookDetails.colSpan = 2;
+            } else {
+                ghBookDetails.colSpan = 3;
+            }
+        }
+
+        if (ghTrust) {
+            // < 768px: Trust Hidden -> Colspan 0 (Hide header too)
+            if (width < 768) {
+                ghTrust.style.display = 'none';
+            } else {
+                ghTrust.style.display = 'table-cell';
+                ghTrust.colSpan = 2;
+            }
+        }
+    }
+
+    window.addEventListener('resize', updateResponsiveLayout);
     
     function addEventListeners() {
         document.querySelectorAll('#deals-table tbody tr').forEach(row => {
