@@ -123,8 +123,22 @@ class TestApproveDedup(unittest.TestCase):
             final_ideas = json.load(f)
 
         self.assertEqual(len(final_ideas), 2)
+
+        # Check Idea A (Legacy String)
         self.assertIn("Idea A", final_ideas)
-        self.assertIn("Idea B", final_ideas)
+
+        # Check Idea B (New Object format)
+        # It might be an object now, so we search for content
+        idea_b_found = False
+        for i in final_ideas:
+            if isinstance(i, dict) and i.get('content') == "Idea B":
+                idea_b_found = True
+                break
+            elif i == "Idea B":
+                idea_b_found = True
+                break
+
+        self.assertTrue(idea_b_found, "Idea B not found in final ideas")
 
         # Verify Flash Message
         args, _ = self.mock_flash.call_args_list[0]
