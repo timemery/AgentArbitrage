@@ -1710,6 +1710,8 @@ def mentor_chat():
         You are chatting with a user (Tim) about online arbitrage, Amazon FBA, and business strategy.
         Use your specific persona and the knowledge bases below to answer their questions.
         Prioritize the strategies and intelligence gathered.
+        *   **Constraint:** Do NOT start with an introduction or preamble.
+        *   **Constraint:** Do NOT use markdown. Use HTML tags (e.g., <b>, <br>, <p>) for formatting.
 
         {strategy_section}
 
