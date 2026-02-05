@@ -246,9 +246,14 @@ def update_recent_deals():
         new_asins_list = [a for a in asin_list if a not in existing_asins_set]
         existing_asins_list = [a for a in asin_list if a in existing_asins_set]
 
+        # Determine dynamic batch size for low refill rates
+        current_batch_size = MAX_ASINS_PER_BATCH
+        if token_manager.REFILL_RATE_PER_MINUTE < 20:
+            current_batch_size = 1
+
         # A. Fetch NEW Deals (Heavy)
-        for i in range(0, len(new_asins_list), MAX_ASINS_PER_BATCH):
-            batch_asins = new_asins_list[i:i + MAX_ASINS_PER_BATCH]
+        for i in range(0, len(new_asins_list), current_batch_size):
+            batch_asins = new_asins_list[i:i + current_batch_size]
             # Heavy fetch
             token_manager.request_permission_for_call(20 * len(batch_asins))
             product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
@@ -262,8 +267,8 @@ def update_recent_deals():
             time.sleep(1)
 
         # B. Fetch EXISTING Deals (Light)
-        for i in range(0, len(existing_asins_list), MAX_ASINS_PER_BATCH):
-             batch_asins = existing_asins_list[i:i + MAX_ASINS_PER_BATCH]
+        for i in range(0, len(existing_asins_list), current_batch_size):
+             batch_asins = existing_asins_list[i:i + current_batch_size]
              # Light fetch
              token_manager.request_permission_for_call(2 * len(batch_asins))
              product_response, api_info, tokens_consumed, tokens_left = fetch_current_stats_batch(
