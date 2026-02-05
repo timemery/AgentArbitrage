@@ -164,157 +164,162 @@ def backfill_deals(reset=False):
                     save_watermark(wm_iso)
 
             for i in range(0, len(deals_on_page), DEALS_PER_CHUNK):
-                chunk_deals = deals_on_page[i:i + DEALS_PER_CHUNK]
-                if not chunk_deals: continue
-
-                logger.info(f"--- Processing chunk {i//DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + DEALS_PER_CHUNK - 1)//DEALS_PER_CHUNK} on page {page} ---")
-
-                # --- Hybrid Ingestion Logic: Check DB for existing ASINs ---
-                all_asins = [d['asin'] for d in chunk_deals]
-                existing_asins_set = set()
-                existing_rows_map = {} # Map ASIN to existing row dict
-
                 try:
-                    conn_check = sqlite3.connect(DB_PATH)
-                    conn_check.row_factory = sqlite3.Row # Enable dict-like access
-                    c_check = conn_check.cursor()
-                    placeholders = ','.join('?' * len(all_asins))
-                    # We need to fetch ALL columns to preserve them
-                    c_check.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})", all_asins)
-                    rows = c_check.fetchall()
-                    for r in rows:
-                        asin_val = r['ASIN']
-                        existing_asins_set.add(asin_val)
-                        existing_rows_map[asin_val] = dict(r) # Convert Row to dict
-                    conn_check.close()
-                except Exception as e:
-                    logger.warning(f"Failed to check existing ASINs: {e}")
+                    chunk_deals = deals_on_page[i:i + DEALS_PER_CHUNK]
+                    if not chunk_deals: continue
 
-                new_asins = [a for a in all_asins if a not in existing_asins_set]
-                existing_asins_list = list(existing_asins_set)
+                    logger.info(f"--- Processing chunk {i//DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + DEALS_PER_CHUNK - 1)//DEALS_PER_CHUNK} on page {page} ---")
 
-                all_fetched_products = {}
+                    # --- Hybrid Ingestion Logic: Check DB for existing ASINs ---
+                    all_asins = [d['asin'] for d in chunk_deals]
+                    existing_asins_set = set()
+                    existing_rows_map = {} # Map ASIN to existing row dict
 
-                # 1. Fetch NEW deals (Heavy: 365 days history, offers=20)
-                # Batching: Split into smaller chunks (5) to avoid requesting >300 tokens at once (Deadlock Fix)
-                # Cost per batch of 5 is ~100 tokens. Target = 80 + 100 = 180 (Safe for 300 bucket).
-                BACKFILL_BATCH_SIZE = 5
-                if new_asins:
-                    logger.info(f"Fetching full history for {len(new_asins)} NEW deals (Batched by {BACKFILL_BATCH_SIZE})...")
-                    for k in range(0, len(new_asins), BACKFILL_BATCH_SIZE):
-                        batch_asins = new_asins[k:k + BACKFILL_BATCH_SIZE]
-
-                        # Request tokens for this specific batch
-                        token_manager.request_permission_for_call(20 * len(batch_asins))
-
-                        prod_resp, _, _, t_left = fetch_product_batch(api_key, batch_asins, days=365, history=1, offers=20)
-                        if t_left: token_manager.update_after_call(t_left)
-
-                        if prod_resp and 'products' in prod_resp:
-                             all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
-
-                        # Small sleep between API batches to be polite
-                        time.sleep(0.5)
-
-                # 2. Fetch EXISTING deals (Light: stats=180, history=0)
-                if existing_asins_list:
-                    logger.info(f"Fetching lightweight stats for {len(existing_asins_list)} EXISTING deals...")
-                    # Estimated cost is low (~2 tokens/ASIN) but we don't pass token_manager to func
-                    token_manager.request_permission_for_call(2 * len(existing_asins_list))
-
-                    prod_resp_light, _, _, t_left_light = fetch_current_stats_batch(api_key, existing_asins_list, days=180)
-                    if t_left_light: token_manager.update_after_call(t_left_light)
-
-                    if prod_resp_light and 'products' in prod_resp_light:
-                         # Merge into all_fetched_products. Logic downstream distinguishes how to process.
-                         all_fetched_products.update({p['asin']: p for p in prod_resp_light['products']})
-
-                logger.info(f"Fetched product data for {len(all_fetched_products)} ASINs in chunk.")
-
-                rows_to_upsert = []
-                for deal in chunk_deals:
-                    asin = deal['asin']
-                    if asin not in all_fetched_products: continue
-                    product_data = all_fetched_products[asin]
-                    product_data.update(deal) # Merge deal info (like currentSince)
-
-                    # Determine processing path
-                    if asin in existing_asins_set:
-                        # Lightweight Update
-                        processed_row = _process_lightweight_update(existing_rows_map[asin], product_data)
-                        if processed_row:
-                            processed_row = clean_numeric_values(processed_row)
-                            processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-                            processed_row['source'] = 'backfiller_light' # Track source
-                            rows_to_upsert.append(processed_row)
-                    else:
-                        # Heavy Process (New Deal)
-                        seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
-                        processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
-
-                        if processed_row:
-                            processed_row = clean_numeric_values(processed_row)
-                            processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-                            processed_row['source'] = 'backfiller'
-                            rows_to_upsert.append(processed_row)
-
-                    time.sleep(0.5) # Reduced throttle for hybrid
-
-                rejection_count = len(chunk_deals) - len(rows_to_upsert)
-                logger.info(f"DEBUG: Chunk stats - Processed: {len(chunk_deals)}, Upserting: {len(rows_to_upsert)}, Rejected: {rejection_count}")
-
-                if rows_to_upsert:
-                    logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")
-                    conn = None
                     try:
-                        conn = sqlite3.connect(DB_PATH)
-                        cursor = conn.cursor()
+                        conn_check = sqlite3.connect(DB_PATH, timeout=60)
+                        conn_check.row_factory = sqlite3.Row # Enable dict-like access
+                        c_check = conn_check.cursor()
+                        placeholders = ','.join('?' * len(all_asins))
+                        # We need to fetch ALL columns to preserve them
+                        c_check.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})", all_asins)
+                        rows = c_check.fetchall()
+                        for r in rows:
+                            asin_val = r['ASIN']
+                            existing_asins_set.add(asin_val)
+                            existing_rows_map[asin_val] = dict(r) # Convert Row to dict
+                        conn_check.close()
+                    except Exception as e:
+                        logger.warning(f"Failed to check existing ASINs: {e}")
 
-                        # --- New Logging Logic: Refreshed vs New ---
-                        # We do this check *before* the upsert to see what's already there
-                        asin_list_upsert = [row.get('ASIN') for row in rows_to_upsert if row.get('ASIN')]
-                        if asin_list_upsert:
-                            # Sanitize placeholders
-                            placeholders_check = ', '.join(['?'] * len(asin_list_upsert))
-                            query_check = f"SELECT ASIN FROM {TABLE_NAME} WHERE ASIN IN ({placeholders_check})"
-                            cursor.execute(query_check, asin_list_upsert)
-                            existing_asins = {row[0] for row in cursor.fetchall()}
+                    new_asins = [a for a in all_asins if a not in existing_asins_set]
+                    existing_asins_list = list(existing_asins_set)
 
-                            count_refreshed = len(existing_asins)
-                            count_new = len(asin_list_upsert) - count_refreshed
+                    all_fetched_products = {}
 
-                            logger.info(f"--- Upsert Stats: {count_new} New Deals, {count_refreshed} Refreshed Deals ---")
-                        # -------------------------------------------
+                    # 1. Fetch NEW deals (Heavy: 365 days history, offers=20)
+                    # Batching: Split into smaller chunks (2) to avoid requesting >300 tokens at once (Deadlock Fix)
+                    # Cost per batch of 2 is ~40 tokens. Target = 80 + 40 = 120 (Safe for 300 bucket).
+                    BACKFILL_BATCH_SIZE = 2
+                    if new_asins:
+                        logger.info(f"Fetching full history for {len(new_asins)} NEW deals (Batched by {BACKFILL_BATCH_SIZE})...")
+                        for k in range(0, len(new_asins), BACKFILL_BATCH_SIZE):
+                            batch_asins = new_asins[k:k + BACKFILL_BATCH_SIZE]
 
-                        with open(HEADERS_PATH) as f:
-                            headers_data = json.load(f)
-                        db_columns = [sanitize_col_name(h) for h in headers_data]
-                        db_columns.extend(['last_seen_utc', 'source'])
-                        placeholders = ', '.join(['?'] * len(db_columns))
-                        # Quote column names to handle special characters and numbers at the start
-                        quoted_columns = [f'"{col}"' for col in db_columns]
-                        query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(quoted_columns)}) VALUES ({placeholders})"
-                        data_to_insert = [tuple(row.get(h) for h in headers_data) + (row.get('last_seen_utc'), row.get('source')) for row in rows_to_upsert]
-                        cursor.executemany(query, data_to_insert)
-                        conn.commit()
-                        logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")
+                            # Request tokens for this specific batch
+                            token_manager.request_permission_for_call(20 * len(batch_asins))
 
-                        from worker import celery_app
-                        new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
-                        if new_asins:
-                            celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                        celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
-                        logger.info(f"--- Triggered downstream tasks for {len(new_asins)} ASINs. ---")
-                    except sqlite3.Error as e:
-                        logger.error(f"Database error while upserting deals: {e}", exc_info=True)
-                        raise
-                    finally:
-                        if conn: conn.close()
+                            prod_resp, _, _, t_left = fetch_product_batch(api_key, batch_asins, days=365, history=1, offers=20)
+                            if t_left: token_manager.update_after_call(t_left)
 
-                # Throttling to prevent excessive token consumption
-                # Reduced from 60s to 1s because TokenManager now handles rate limiting (5 tokens/sec)
-                # This prevents "lugubrious" processing speeds while remaining safe.
-                time.sleep(1)
+                            if prod_resp and 'products' in prod_resp:
+                                 all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
+
+                            # Small sleep between API batches to be polite
+                            time.sleep(0.5)
+
+                    # 2. Fetch EXISTING deals (Light: stats=180, history=0)
+                    if existing_asins_list:
+                        logger.info(f"Fetching lightweight stats for {len(existing_asins_list)} EXISTING deals...")
+                        # Estimated cost is low (~2 tokens/ASIN) but we don't pass token_manager to func
+                        token_manager.request_permission_for_call(2 * len(existing_asins_list))
+
+                        prod_resp_light, _, _, t_left_light = fetch_current_stats_batch(api_key, existing_asins_list, days=180)
+                        if t_left_light: token_manager.update_after_call(t_left_light)
+
+                        if prod_resp_light and 'products' in prod_resp_light:
+                             # Merge into all_fetched_products. Logic downstream distinguishes how to process.
+                             all_fetched_products.update({p['asin']: p for p in prod_resp_light['products']})
+
+                    logger.info(f"Fetched product data for {len(all_fetched_products)} ASINs in chunk.")
+
+                    rows_to_upsert = []
+                    for deal in chunk_deals:
+                        asin = deal['asin']
+                        if asin not in all_fetched_products: continue
+                        product_data = all_fetched_products[asin]
+                        product_data.update(deal) # Merge deal info (like currentSince)
+
+                        # Determine processing path
+                        if asin in existing_asins_set:
+                            # Lightweight Update
+                            processed_row = _process_lightweight_update(existing_rows_map[asin], product_data)
+                            if processed_row:
+                                processed_row = clean_numeric_values(processed_row)
+                                processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                                processed_row['source'] = 'backfiller_light' # Track source
+                                rows_to_upsert.append(processed_row)
+                        else:
+                            # Heavy Process (New Deal)
+                            seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
+                            processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
+
+                            if processed_row:
+                                processed_row = clean_numeric_values(processed_row)
+                                processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                                processed_row['source'] = 'backfiller'
+                                rows_to_upsert.append(processed_row)
+
+                        time.sleep(0.5) # Reduced throttle for hybrid
+
+                    rejection_count = len(chunk_deals) - len(rows_to_upsert)
+                    logger.info(f"DEBUG: Chunk stats - Processed: {len(chunk_deals)}, Upserting: {len(rows_to_upsert)}, Rejected: {rejection_count}")
+
+                    if rows_to_upsert:
+                        logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")
+                        conn = None
+                        try:
+                            conn = sqlite3.connect(DB_PATH, timeout=60)
+                            cursor = conn.cursor()
+
+                            # --- New Logging Logic: Refreshed vs New ---
+                            # We do this check *before* the upsert to see what's already there
+                            asin_list_upsert = [row.get('ASIN') for row in rows_to_upsert if row.get('ASIN')]
+                            if asin_list_upsert:
+                                # Sanitize placeholders
+                                placeholders_check = ', '.join(['?'] * len(asin_list_upsert))
+                                query_check = f"SELECT ASIN FROM {TABLE_NAME} WHERE ASIN IN ({placeholders_check})"
+                                cursor.execute(query_check, asin_list_upsert)
+                                existing_asins = {row[0] for row in cursor.fetchall()}
+
+                                count_refreshed = len(existing_asins)
+                                count_new = len(asin_list_upsert) - count_refreshed
+
+                                logger.info(f"--- Upsert Stats: {count_new} New Deals, {count_refreshed} Refreshed Deals ---")
+                            # -------------------------------------------
+
+                            with open(HEADERS_PATH) as f:
+                                headers_data = json.load(f)
+                            db_columns = [sanitize_col_name(h) for h in headers_data]
+                            db_columns.extend(['last_seen_utc', 'source'])
+                            placeholders = ', '.join(['?'] * len(db_columns))
+                            # Quote column names to handle special characters and numbers at the start
+                            quoted_columns = [f'"{col}"' for col in db_columns]
+                            query = f"INSERT OR REPLACE INTO {TABLE_NAME} ({', '.join(quoted_columns)}) VALUES ({placeholders})"
+                            data_to_insert = [tuple(row.get(h) for h in headers_data) + (row.get('last_seen_utc'), row.get('source')) for row in rows_to_upsert]
+                            cursor.executemany(query, data_to_insert)
+                            conn.commit()
+                            logger.info(f"Successfully upserted {len(rows_to_upsert)} deals.")
+
+                            from worker import celery_app
+                            new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
+                            if new_asins:
+                                celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
+                            celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
+                            logger.info(f"--- Triggered downstream tasks for {len(new_asins)} ASINs. ---")
+                        except sqlite3.Error as e:
+                            logger.error(f"Database error while upserting deals: {e}", exc_info=True)
+                            # Do not raise - just log and continue to next chunk
+                        finally:
+                            if conn: conn.close()
+
+                    # Throttling to prevent excessive token consumption
+                    # Reduced from 60s to 1s because TokenManager now handles rate limiting (5 tokens/sec)
+                    # This prevents "lugubrious" processing speeds while remaining safe.
+                    time.sleep(1)
+
+                except Exception as e:
+                    logger.error(f"Unexpected error processing chunk on page {page}: {e}", exc_info=True)
+                    time.sleep(5) # Sleep before retrying or moving on
 
             save_backfill_state(page)
             page += 1

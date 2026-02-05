@@ -226,7 +226,7 @@ def update_recent_deals():
         existing_asins_set = set()
         existing_rows_map = {}
         try:
-            conn_check = sqlite3.connect(DB_PATH)
+            conn_check = sqlite3.connect(DB_PATH, timeout=60)
             conn_check.row_factory = sqlite3.Row
             c_check = conn_check.cursor()
             placeholders = ','.join('?' * len(asin_list))
@@ -317,7 +317,7 @@ def update_recent_deals():
 
         logger.info(f"Step 6: Upserting {len(rows_to_upsert)} rows into database...")
         try:
-            with sqlite3.connect(DB_PATH) as conn:
+            with sqlite3.connect(DB_PATH, timeout=60) as conn:
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers]
                 sanitized_headers.extend(['last_seen_utc', 'source'])

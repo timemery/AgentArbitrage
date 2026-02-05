@@ -36,4 +36,9 @@ beat_schedule = {
         'schedule': crontab(minute=0, hour='*/4'),
         'kwargs': {'grace_period_hours': 72},
     },
+    'backfill-deals-persistent': {
+        'task': 'keepa_deals.backfiller.backfill_deals',
+        'schedule': crontab(minute='*/30'),
+        'kwargs': {'reset': False},
+    },
 }
