@@ -42044,5 +42044,545 @@
         "confidence": "High",
         "source": "The monthly sold chart. So, we can see that it's actually starting to sell 50 times per month the minute FBA sellers come in.",
         "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "Starting Amazon selling",
+        "advice": "Open a separate bank account and credit card dedicated only to Amazon business expenses to keep bookkeeping clean and simplify audits.",
+        "confidence": "High",
+        "source": "the number one thing I tell people when they're starting is listen, you have to have your own bank account and ideally a credit card, debit card that you're going to be spending only for Amazon.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat2",
+        "category": "Risk",
+        "trigger": "Using personal bank account for business after 6-12 months",
+        "advice": "Switch to separate business accounts immediately; with professional help, untangle records without avoiding taxes, but prevent exposure of personal finances during audits.",
+        "confidence": "High",
+        "source": "They're not screwed, right? So, if they have the right kind of professional help, you can get out of not when I say get out of, I don't mean like, you know, avoid tax or anything. I just mean you can get yourself out of a situation uh a lot easier and cleaner.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat3",
+        "category": "General",
+        "trigger": "Operating as sole prop under own name",
+        "advice": "Start as sole prop right away even if hobby; register business name if using DBA like 'ABC selling' via provincial service like Service Ontario.",
+        "confidence": "High",
+        "source": "What I normally do is or I suggest is you start off as a soul prop right away. Like even if it's a hobby, you are technically a soul prop. Now you're not registered as a soul prop because maybe you're just operating under your own name, right?",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat4",
+        "category": "Risk",
+        "trigger": "Approaching $30k sales in last 4 calendar quarters",
+        "advice": "Register for GST/HST early before hitting threshold to avoid administrative delays and claim back taxes on purchases, unlocking 5-15% ROI depending on province.",
+        "confidence": "High",
+        "source": "if you're hitting 30k Canadian uh like in the last four uh calendar quarters, then you have to register for HST or GST... as they're approaching 30K, not once they hit 30, as they suggest they register because... you can claim that money back.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat5",
+        "category": "General",
+        "trigger": "Committed to Amazon with $5k sales",
+        "advice": "Register for taxes immediately upon commitment to maximize ROI by reclaiming HST/GST on inventory without calculating it in costs.",
+        "confidence": "High",
+        "source": "my suggestion is doing it as soon as you're committed. you want to do Amazon, you're at 5,000 sales, let's go jump into it because it's only going to make your journey easier.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat6",
+        "category": "General",
+        "trigger": "Registering for GST/HST",
+        "advice": "Do it yourself by calling CRA; no need to pay third-party services as it's free and straightforward, just provide business number and location.",
+        "confidence": "High",
+        "source": "if you're registering for GST or HST... you would just basically call CRA and open your account. Easy as that. So, no excuse not to do it... there's going to be all these other kind of companies... they're going to charge you. So, just know that there is zero charge.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat7",
+        "category": "Buying",
+        "trigger": "Purchasing business supplies like computer 100% for business",
+        "advice": "Claim 100% GST/HST back on business-only purchases after registering, putting money back in pocket.",
+        "confidence": "High",
+        "source": "if the computer is 100% for business, then you would get 100% of that GST or HST back. That's it. So every time you're buying supplies or anything that is used for the business, all those taxes are coming straight back to you.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat8",
+        "category": "General",
+        "trigger": "Small sole prop with simple needs",
+        "advice": "Use a bookkeeper for day-to-day recording of expenses and GST/HST separation; they can handle sole prop tax returns if knowledgeable, costing $35-40/hour for independents.",
+        "confidence": "High",
+        "source": "your bookkeeper basically handles your day-to-day, right? So recording all your expenses... you could probably as a sole prop, you could probably get away with having just a bookkeeper... if you find an independent bookkeeper... you probably are going to pay roughly $35 to $40 an hour.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat9",
+        "category": "Risk",
+        "trigger": "Doing own bookkeeping in first year with limited funds",
+        "advice": "Use Excel or Google Sheets but invest in 1-hour consultation with bookkeeper/CPA ($35-40) to learn deductible expenses; report all gross income accurately.",
+        "confidence": "High",
+        "source": "if they are using Excel spreadsheet, that is great. Um, it's just learning what is and isn't an expense... they might want to invest in an hour of a CPA's time or a bookkeeper... it's a good investment.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat10",
+        "category": "Risk",
+        "trigger": "Passed $30k sales without registering for GST/HST",
+        "advice": "Enter 9-digit tax number in Amazon settings immediately after registering; Amazon stops remitting on your behalf, so update to avoid audit issues and claim refunds properly.",
+        "confidence": "High",
+        "source": "once you reg register, it is your obligation to collect and remit to CRA, not Amazon's anymore. So, if you don't enter your nine-digit number, Amazon still thinks you're not registered.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat11",
+        "category": "Risk",
+        "trigger": "All listings after GST/HST registration",
+        "advice": "Set proper product tax code in each listing dropdown (e.g., A_GEN_TAX for taxable items) to ensure Amazon charges correct tax; two-step process with tax number entry.",
+        "confidence": "High",
+        "source": "not only do you have to enter your nine-digit tax number into your tax settings, but every one of your listings has to have the proper product tax code... if the product is taxable... you need to choose a_gen tax.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat12",
+        "category": "Risk",
+        "trigger": "Charged GST on Amazon seller fees",
+        "advice": "Do not claim GST back on Amazon fees as they use simplified regime; inform bookkeeper to avoid disallowed deductions in audits.",
+        "confidence": "High",
+        "source": "when they charge you as a seller, your seller fees, and they charge you a G GST on top of that, you cannot claim that GST back because they are under a simplified uh registration.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat13",
+        "category": "Risk",
+        "trigger": "GST/HST audit",
+        "advice": "Provide complete Amazon sales listing, tax charges by customer location, top 10 sale invoices from seller account, supplier invoices (e.g., Walmart), and business summary; save emails as PDFs in Google Drive if no formal invoice.",
+        "confidence": "High",
+        "source": "they want to see a complete listing of your sales. You could get that off your Amazon seller account. They want to see what taxes were charged... they'll want to see 10 top invoices... your credit card statements are not going to cut it... saving emails as PDFs and organizing it in a Google Drive.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat14",
+        "category": "General",
+        "trigger": "Generating consistent $20k+ profit as sole prop",
+        "advice": "Consider incorporating if not needing all profits for personal use and have other income (e.g., $80-90k job) to avoid higher personal tax brackets; consult CPA for Section 85 rollover to transfer tax-free.",
+        "confidence": "High",
+        "source": "when you are generating a profit consistently, right? So you know 2025 was your first year of a $20,000 profit... if you're able to generate profits consistently in a corporation... your profit... inching its way upwards, you might want to start thinking, should I be incorporating?... when you are incorporating a sole proprietorship, you may need to be uh declaring or or doing a section 85 rollover election.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat15",
+        "category": "General",
+        "trigger": "In corporation in Ontario",
+        "advice": "Expect 12.2% corporate tax rate vs. 21% personal; use bookkeeping software like QuickBooks for balance sheet and income statement requirements, increasing costs but with professional help.",
+        "confidence": "High",
+        "source": "in Ontario, our tax rate is 12.2%. So that's so much lower than our, you know, 21% for personal tax... as a corporation when you prepare a corporate tax return you basically have to include a balance sheet and an income statement... the easiest way possible is through bookkeeping software.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat16",
+        "category": "Buying",
+        "trigger": "Using car for business travel (e.g., retail arbitrage sourcing)",
+        "advice": "Track business kilometers manually or with apps like MileIQ/QuickBooks (start/end odometer); claim either prescribed rate per km or 50% of actual costs (fuel, repairs, insurance) based on business %.",
+        "confidence": "High",
+        "source": "keeping track of all the kilometers that you do for business... if you're doing, you know, retail arbitrage and you're going in picking up the the products... you could either do, you know, uh 10,000 kilometers at the prescribed rate... or you do 50% of your fuel, of your repairs, of your insurance... Mile IQ is one of them.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "strat17",
+        "category": "Buying",
+        "trigger": "Using personal phone for business (e.g., seller app sourcing)",
+        "advice": "Claim only business portion based on detailed monthly billing (calls to Amazon, etc.); avoid arbitrary % like 50% without proof, as it will be disallowed.",
+        "confidence": "High",
+        "source": "you'd have to look at it on a monthly basis, right? Because you can get a detailed billing to see who did you call that was for business... you can't just say, 'Well, I use my phone 50% of the time.' Well, your detailed billing isn't going to show that.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "scale-inventory-1",
+        "category": "Buying",
+        "trigger": "Current monthly inventory spend is a few thousand dollars (e.g., $2,000)",
+        "advice": "Add a zero to scale inventory spend to $20,000 per month by investing personal savings or obtaining a line of credit",
+        "confidence": "High",
+        "source": "He goes, 'Why don't you add a zero?' Right? if it was 2,000, why don't you why don't you buy $20,000 worth of inventory, right? You know what you're doing.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "scale-units-1",
+        "category": "Buying",
+        "trigger": "Product sells 20-30 times per month and initial test order of 2-3 units sells quickly",
+        "advice": "Add a zero to the test order quantity, buying 10 units instead of 1-3, and continue scaling aggressively without jumping directly to 100 units",
+        "confidence": "High",
+        "source": "If you're going to buy 20, two units, three units for a test order and they all sell very quick, well, add a zero. Order 10. And that one sells extremely quick. Now, I'm not saying to go and buy a 100",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "reinvest-profits-1",
+        "category": "General",
+        "trigger": "Generating a few thousand dollars in monthly sales and profits",
+        "advice": "Reinvest all profits back into inventory to grow capital and scale operations",
+        "confidence": "High",
+        "source": "Every profit that you get from that, reinvest it. Reinvest it.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "personal-investment-1",
+        "category": "Risk",
+        "trigger": "Proven concept with initial small-scale success but limited capital",
+        "advice": "Invest personal savings into Amazon inventory and consider a small line of credit (e.g., $10,000) to add a zero to spending",
+        "confidence": "High",
+        "source": "Either you go into your savings and invest more into Amazon because you're doing it, you're flipping products, you have your proof of concept... let me get a little bit of line of credit so we can actually add a zero",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "full-time-capital-1",
+        "category": "General",
+        "trigger": "Aiming for full-time income from Amazon selling",
+        "advice": "Invest full-time capital equivalent to $30,000-$40,000 in inventory to achieve sustainable growth",
+        "confidence": "High",
+        "source": "If you want to do this full-time and have full-time income, well, you need to be investing full-time capital, right? So, that is 30 $40,000 worth of inventory.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "side-job-reinvest-1",
+        "category": "General",
+        "trigger": "Working a 9-5 job while starting Amazon selling",
+        "advice": "Take a small percentage of paycheck and reinvest it into the business to build capital gradually",
+        "confidence": "High",
+        "source": "You work a 9 to5, take a small percentage of that paycheck, reinvest it into your business.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "scale-time-1",
+        "category": "General",
+        "trigger": "Current sourcing and operational efforts are not scaled",
+        "advice": "Add a zero to the time spent sourcing and all other activities to aggressively scale the business",
+        "confidence": "High",
+        "source": "Add a zero in how much time you spend sourcing. Add a zero to everything.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "community-leverage-1",
+        "category": "General",
+        "trigger": "New or growing seller seeking business-changing advice",
+        "advice": "Join seller communities and groups to collaborate and gain insights that enable explosive growth",
+        "confidence": "High",
+        "source": "When you have a community, when you're able to join groups that have sellers in them... collaboration is the best way to get forward as a new seller",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "start_capital",
+        "category": "General",
+        "trigger": "Starting a new Amazon arbitrage business",
+        "advice": "Start with 1,000 to 3,000 CAD in capital for low risk; can return unsold inventory from big retailers.",
+        "confidence": "High",
+        "source": "The most common question that Amazon sellers are going to ask and honestly you don't need much to start. And the key word is to start 1 to 3,000 is perfect. It's low risk. You won't have a ton of risk losing that inventory. You can always return the products from to big retailers.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "profit_margins",
+        "category": "Pricing",
+        "trigger": "Calculating expected profits",
+        "advice": "Aim for 10% to 25% profit margins on top line revenue, depending on outsourcing (e.g., VAs or prep centers) which reduces margins but saves time.",
+        "confidence": "High",
+        "source": "What are the profit margins? We're looking at 10 to 25%. And I know that's large. Well, one, it depends how good you are at sourcing products. But also, like, how much are you going to outsource? Are you going to hire prep center? Well, that's going to eat into your margins",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "roi_threshold",
+        "category": "Pricing",
+        "trigger": "Evaluating product profitability using SellerAmp",
+        "advice": "Target products with over 30% ROI; input cost price to calculate profit after all expenses including Amazon fees.",
+        "confidence": "High",
+        "source": "So automatically just looking at that I I know that if I can get this product at less than $7, it's going to be a 30% ROI because of my setting. Then you're going to input your cost price and it's going to give you how much profit you're going to make after all expenses.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "tax_registration",
+        "category": "General",
+        "trigger": "Annual sales approaching 30,000 CAD",
+        "advice": "Register as a sole proprietor before reaching 30K in sales to get refunds on taxes paid on inventory purchases (e.g., 13-15% in Ontario/Quebec); Amazon handles collection/remittance initially.",
+        "confidence": "High",
+        "source": "In Canada, technically over 30K, you need to register for taxes. But I actually think you should register for taxes before that and become a sole proprietor because you're going to unlock and you're going to get refunded all your taxes that you purchase.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "ungating_process",
+        "category": "Buying",
+        "trigger": "Encountering gated brands or categories",
+        "advice": "Purchase 10 units from a big retailer (e.g., Walmart for grocery category); submit invoice for ungating, expect rejections and resubmit after 12-24 hours wait, may take 30+ attempts; favor category-wide ungates like grocery or topicals.",
+        "confidence": "High",
+        "source": "You just got to buy 10 units and once you get those 10 units you need to submit to get ungated. ... you have to wait 12 hours to potentially get a different agent. ... wait 12 to 24 hours per resubmission and it could take 30 times plus to get ungated.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "keepa_stable_price",
+        "category": "Pricing",
+        "trigger": "Analyzing Keepa chart for product viability",
+        "advice": "Buy products with stable price history (pink line floating around $23-25 without tanking) and no more than 30% buy box drop in past 30 or 90 days.",
+        "confidence": "High",
+        "source": "We want to see stable price history volume identified and no spike in the sellers ... the price has been stable in the past it was maybe around $23 right now it's probably floating around $25 $24 ... We don't want the buy box to drop more than 30% in the past 30 days. And we don't want in the past 90 days for it to drop 30% either.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "keepa_volume",
+        "category": "Buying",
+        "trigger": "Assessing sales volume on Keepa",
+        "advice": "Target products with consistent volume, e.g., green line drops indicating at least 1 sale per drop, ideally 50 sales per month; filter for minimum 50 units bought in past 50 days.",
+        "confidence": "High",
+        "source": "consistently sold 50 times a month. ... every time it drops, we can safely assume it sells at least one time. ... this essentially will guarantee us by keepa hey in this period it's selling 50 times a month ... filter by the I like going by the smallest because it's not going to show zero. It starts at 50.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "seller_count_stable",
+        "category": "Risk",
+        "trigger": "Evaluating competition on Keepa",
+        "advice": "Avoid products with spikes in seller count (blue line rising sharply, e.g., from 3 to 11); prefer stable counts (e.g., 4-5 to 7-8) even if slight increase, especially if price rises.",
+        "confidence": "High",
+        "source": "no spike in the sellers ... In the past three months, the seller count has remained relatively stable. It might have had like four to five and now there's maybe seven, eight, a slight increase, but the price has actually gone up. ... the low seller count actually went up. There's been a rise in seller count while the price has gone down",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "avoid_alerts",
+        "category": "Risk",
+        "trigger": "SellerAmp alerts during product research",
+        "advice": "Avoid products with alerts for hazards, dangerous goods, generic brands, or IP issues; ensure no eligibility restrictions.",
+        "confidence": "High",
+        "source": "you want to avoid alerts that say hazard, dangerous, good, generic brand or IP alert ... you need to make sure that you are able to sell a product. What that means is, well, if there's other people selling this product",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "reverse_storefront",
+        "category": "Buying",
+        "trigger": "Sourcing using SellerAmp reverse storefront method",
+        "advice": "Target FBA sellers with low reviews (e.g., 12-22 reviews) and few ASINs (e.g., 46 total); check eligibility, stable Keepa charts, and search Google/Walmart for profitable pricing (max cost > purchase price); spend 2-hour sessions cycling through multiple storefronts.",
+        "confidence": "High",
+        "source": "find a low amount of reviews, right? So, we have here 22. We have 12. ... he has a total of 46 asens ... you got to have an expectation of going to storefront to storefront and doing this for like a 2hour flow session.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "keepa_finder_filters",
+        "category": "Buying",
+        "trigger": "Using Keepa Product Finder for leads",
+        "advice": "Apply filters: min price $25, min 3 sellers (to avoid private label), Amazon out of stock, buy box drop <30% in 30/90 days; target specific categories (e.g., beauty, tools); aim for list of 1,000-13,000 products, then vet with SellerAmp calculator.",
+        "confidence": "High",
+        "source": "the first thing I like to put is generally I want the minimum price to be $25. ... I want a minimum of three sellers ... put Amazon out of stock. ... We don't want the buy box to drop more than 30% ... now we have 13,000 products ... select and really only target that category.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "shipping_limits",
+        "category": "General",
+        "trigger": "Preparing shipments to Amazon",
+        "advice": "Ensure boxes are under 50 lbs and max 24 inches per side; use UPS partnered shipping at ~50 cents per kilo; weigh accurately to avoid penalties.",
+        "confidence": "High",
+        "source": "they can't be more than 50 lbs. That is very important. Amazon will get mad at you ... The max size is 24 in on each side. Don't ever get a box that has a longer 24 in on one side. ... Usually comes out to around 50 cents per kilo",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "sales_multiplier",
+        "category": "Pricing",
+        "trigger": "Estimating sales from purchases",
+        "advice": "Expect sales roughly double the purchase cost (e.g., $5,000 purchases = $10,000 sales); with $5-10K start capital, achieve $10K sales in first or second month.",
+        "confidence": "High",
+        "source": "$5,000 worth of purchases equals around $10,000 worth of sales. We're usually selling for double amount what we buy for. ... if you have $5 to $10,000 to start right away, you could probably get $10,000 of sales in your first or second month.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "va-hours-1",
+        "category": "General",
+        "trigger": "Hiring full-time VA",
+        "advice": "Hire VA for 40 hours per week, starting with learning and structure for short, medium, and long term; expect initial hours less than 40 but communicate growth to full workload.",
+        "confidence": "High",
+        "source": "How many hours do you want this person to work? And probably it's going to be full-time because that's what I suggest. But in reality, are they gonna have enough workload to work full-time right away? Uh working might be learning at the beginning too, right? You might say, 'Hey, use these work hours uh to learn from the database, but I want you working 40 hours.' Have a structure for them in the short term, the medium-term, and the long term.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "va-pay-1",
+        "category": "General",
+        "trigger": "VA compensation for 40 hours/week",
+        "advice": "Pay approximately $800 CAD per month, bi-weekly, treating them as a normal employee despite low hourly rate (~$4/hour).",
+        "confidence": "High",
+        "source": "We're not paying these VAS uh that much money. I think I mentioned in here, but if I don't, I'll say it now. It's around $800 Canadian a month that you're going to spend uh for 40 hours a week. Uh and we pay bi-weekly.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "sourcing-va-1",
+        "category": "Buying",
+        "trigger": "VA role in Amazon sourcing",
+        "advice": "Assign VA to sourcing tasks for Amazon reselling, including book arbitrage, to save time; use vision setting to define tasks like finding deals online.",
+        "confidence": "High",
+        "source": "specifically with Amazon like sourcing or it could be straight up admin like okay like it's the person that is in charge of the emails.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "admin-emails-1",
+        "category": "General",
+        "trigger": "Handling order-related emails",
+        "advice": "Have VA manage emails: label order confirmations, shipped, delivered; notify on specific issues; handle customer service for broken products instead of doing it yourself.",
+        "confidence": "High",
+        "source": "every time it comes in, he's the one and he labels it, right? Like, okay, these are order confirmations, these are order shipped, these are order delivered. Uh he can notify you if there's specific emails that need to be taken care of. Then there's also like types of admin like there's products that are broken that arrive broken. Instead of you actually emailing the customer service to let them know something, you just have them do it.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "keepa-test-1",
+        "category": "Buying",
+        "trigger": "VA competency assessment",
+        "advice": "Use Keepa quiz as competency test in hiring to baseline knowledge on Amazon tools essential for book sourcing and pricing analysis.",
+        "confidence": "High",
+        "source": "You have the keepa test which is the competency test in this case.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "onboarding-call-1",
+        "category": "General",
+        "trigger": "Post-hiring VA onboarding",
+        "advice": "Conduct 2-3 hour onboarding call covering all softwares, expectations, goals, communication (e.g., Discord channels), payment, and database intro; set standards immediately.",
+        "confidence": "High",
+        "source": "this should be a solid 2 threeh hour call. The other calls don't need to be that long but this you should go a toz everything that all your expectations the goals how things are going to work.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "review-frequency-1",
+        "category": "General",
+        "trigger": "Initial VA performance review",
+        "advice": "Schedule daily or every two days lead reviews for first 1-2 months during probation; adjust frequency later (e.g., weekly); account for 12-hour time difference with Philippines.",
+        "confidence": "High",
+        "source": "potentially are you going to review leads every single day? That's what I suggest, right? Every day, uh, you do one meeting or every two days you do a meeting and you review each lead, right? Uh, you do that for a bit. That might not be forever. So, you explain that in onboarding call. Hey, for the first two months or like the first month, you're on probation. We're going to do calls every single day",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "rainbow-filter-1",
+        "category": "Risk",
+        "trigger": "Assessing VA attention to detail in job posting",
+        "advice": "Include rainbow color sequence task in Google Sheets in job posting to filter for effort and attention to detail; look for creative responses (e.g., designed rainbow) as bonus.",
+        "confidence": "High",
+        "source": "my favorite filter in this whole thing where in the job posting we ask for uh the uh color of the rainbow from left to right in a Google Sheets, right? So how much effort are they going to actually put into that? ... somebody that might design a rainbow for whatever reason, they might be putting a lot more effort",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "subject-line-filter-1",
+        "category": "Risk",
+        "trigger": "Screening job applications",
+        "advice": "Require specific word in email subject line to filter out inattentive applicants; ignore emails without it to save time.",
+        "confidence": "High",
+        "source": "the subject line filter of just asking them to put a specific word in the subject line. That way you don't even need to open emails that don't read that cuz they're not paying attention to detail.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "sop-database-1",
+        "category": "General",
+        "trigger": "Reducing VA questions",
+        "advice": "Build Notion database with SOPs, videos (via Loom), written guides, and AI-assisted content for tasks like sourcing; cover common questions to minimize interruptions; update based on VA queries.",
+        "confidence": "High",
+        "source": "Starting a library of SOPs, right? understanding operating procedures and guides for VAS to consult ... using notion for again, it's a database that has everything. ... I like video SOPs a lot certainly with the software loom",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "payment-tool-1",
+        "category": "General",
+        "trigger": "Paying VA bi-weekly",
+        "advice": "Use Wise for payments: cheaper fees (~$8-10 vs. $30-40 on PayPal) for $400 bi-weekly transfers.",
+        "confidence": "High",
+        "source": "Wise is how we're going to be paying uh the VA. It's like PayPal, very easy to set up. It's way cheaper than PayPal. Instead of paying like $30, $40 in fees, you might pay like $8 to $10 for the bi-weekly payment of8 of $400.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "communication-tool-1",
+        "category": "General",
+        "trigger": "VA communication setup",
+        "advice": "Use Discord for communication: separate channels for tasks, available on PC and phone; alternative WhatsApp for text-based; avoid only email.",
+        "confidence": "High",
+        "source": "I think Discord is the best. Um, you you can separate through channels. ... WhatsApp is very popular around the world. ... having Discord on both is really something that's, uh, beneficial.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "1",
+        "category": "General",
+        "trigger": "Starting Amazon arbitrage",
+        "advice": "Start with $2,000 to $5,000 minimum cash for upfront costs ($100-150/month software) and initial inventory to cover costs and reinvest.",
+        "confidence": "High",
+        "source": "You can start with as little as $2 to $5,000. All right, that's the minimum I would suggest because you do have some upfront costs every month for software to start running around $100 to $150.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "2",
+        "category": "General",
+        "trigger": "Aiming for full-time selling",
+        "advice": "Allocate $20,000 to $50,000 monthly for inventory purchases to scale to full-time income.",
+        "confidence": "High",
+        "source": "as a full-time seller, I tell you if you want to get anywhere near full-time as a seller, you're going to need 20 to $50,000 to just buy inventory every single month",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "3",
+        "category": "Buying",
+        "trigger": "Sourcing products",
+        "advice": "Use Seller Amp and Keepa tools for finding products via Keepa product finder or reverse storefront stocking; source from all websites, prioritizing low-key ones for higher profitability.",
+        "confidence": "High",
+        "source": "You just need to use something like seller amp and keepa. Those two things is all you need... all websites are fantastic. Uh, I'll find profitable products at Sephora, Walmart, Canadian Tire, uh, Indigo... the less known the website, the more profitable products you'll find",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "4",
+        "category": "General",
+        "trigger": "First 1-5 shipments",
+        "advice": "Handle prep yourself for the first 1-5 shipments to learn the process, then outsource if time-constrained ($1/unit cost), but switch to self-prep as you scale to save costs and access low-ROI products (e.g., $1 return on $3 cost = 33% ROI).",
+        "confidence": "High",
+        "source": "Do your first one to five shipments yourself... I did outsource everything costing me around a dollar per unit... the more you grow, the more you can have time to do it yourself... that dollar return. If the the unit actually only costed you $3, well, you're going to actually make a 33% ROI",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "5",
+        "category": "Risk",
+        "trigger": "Annual profit < $30,000",
+        "advice": "If profit < $30,000/year, source without remitting GST/HST; register as sole proprietor early with an accountant to claim tax reimbursements on purchases and source without sales tax for competitive advantage.",
+        "confidence": "High",
+        "source": "if you are doing less than $30,000 of profit a year, you can just source and not remit your taxes... register as a sole proprietor right away just so you can... start sourcing without sales tax",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "6",
+        "category": "Pricing",
+        "trigger": "Repricing tools",
+        "advice": "Use Aura or Seller Snap for repricing; Seller Snap is best but costs $650 CAD/month for >$10,000 sales; take advantage of trial/low-cost program for small sellers (<$10,000 sales).",
+        "confidence": "High",
+        "source": "Your two options right now is Aura or Seller Snaps um has a trial where if you do less than $10,000 in sales... When you're a big seller and you're doing more than $10,000 of sales a month, they will charge you a big whopping 650 Canadian every single month.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "7",
+        "category": "Risk",
+        "trigger": "Sourcing from unknown websites",
+        "advice": "Avoid unrecognized websites by checking for social media pages and Google reviews to ensure authenticity and prevent inauthentic product complaints that can kill accounts.",
+        "confidence": "High",
+        "source": "sourcing from websites that are not recognized. Now, how do you know if a website is is recognized or not? Well, you can see if there they have a social media page. Do they have Google reviews?",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "8",
+        "category": "Risk",
+        "trigger": "Account health issues",
+        "advice": "Actively monitor and respond to account health issues (e.g., IP complaints, inauthentic products) by submitting disputes or acknowledging faults promptly to maintain long-term account health.",
+        "confidence": "High",
+        "source": "not taking into account health seriously... you're active with Amazon and either submitting disputes or acknowledging your fault like right away because in the long run, Amazon will take that into consideration.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "9",
+        "category": "Pricing",
+        "trigger": "New sellers repricing",
+        "advice": "Avoid undercutting buy box by 1 cent with repricers to prevent price wars; set minimum prices to protect profits, especially with low unit volumes (e.g., 10-50 units).",
+        "confidence": "High",
+        "source": "they tank the buy box. And why? Because when they're repricing... using repricers that will undercut the buy box by one cent... you're probably not buying 10 uh 50 units at a time... if your reperic is reacting in a way where it's trying to prioritize the buy box by undercutting, where you're just going to set a price war... So your minimum price.",
+        "date_added": "2026-02-05"
+    },
+    {
+        "id": "10",
+        "category": "Buying",
+        "trigger": "Test order of 10 units sells in first week",
+        "advice": "After a successful test (e.g., 10 units sell in first week), scale aggressively: order 10 units/week for 2 months (40-50 units total) to maintain stock levels, improve buy box chances, and leverage Amazon's inventory distribution.",
+        "confidence": "High",
+        "source": "if you did a test order of 10 and they all sold in the first week that you got them, don't order 10 again. order 10 per week times two months, right? So now you're ordering 40, 50... the more inventory you have, the more inventory that you have closer to the client and that means you will get to buy box more.",
+        "date_added": "2026-02-05"
     }
 ]
