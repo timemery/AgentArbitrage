@@ -25,9 +25,9 @@
 ### Backfill & Maintenance
 - **Backfiller:** Runs continuous delta-sync. Uses "Mark and Sweep" to update `last_seen_utc`.
 - **Janitor:** Deletes deals older than **72 hours** (`grace_period_hours`).
-- **Configuration:** The "Artificial Backfill Limiter" was removed in Feb 2026.
-- **Tokens:** `TokenManager` uses a "Controlled Deficit" strategy (allows dips to -50, refills to +5). Refill rate is dynamically learned from API response (supporting plan upgrades).
-- **Concurrency:** Backfiller and Upserter (`simple_task.py`) run concurrently. Upserter requires 20 token buffer.
+- **Configuration:** The "Artificial Backfill Limiter" logic remains in `backfiller.py` but is inactive by default.
+- **Tokens:** `TokenManager` uses a "Controlled Deficit" strategy (Threshold reduced to 20). Implements "Recharge Mode" (pauses if tokens < 20 & rate < 10/min until full) to prevent starvation.
+- **Concurrency:** Backfiller and Upserter run concurrently. Upserter frequency reduced to 15 mins. Both tasks dynamically reduce batch size to 1 if refill rate < 20/min.
 
 ## 4. Dashboard & UI
 - **Notifications:** "New Deals" count is filter-aware (matches active filters).
@@ -56,6 +56,7 @@
 - **Formatting:** `format_currency` handles string inputs defensively.
 - **Logs:** Do not read full `celery.log`.
 - **Context:** `Dev_Logs/Archive/*.md` files are historical archives. This file is the current reference.
-- **Backfill Chunk Size:** Must remain **20** (`DEALS_PER_CHUNK`). Increasing causes Token Starvation.
-- **Redis Lock:** `backfill_deals_lock` has a **10-day timeout** to support long-running tasks.
+- **Backfill Chunk Size:** Default **20**, but dynamically reduces to **1** if Keepa refill rate is < 20/min to prevent starvation.
+- **Redis Lock:** `backfill_deals_lock` timeout reduced to **1 hour (3600s)** to prevent zombie locks.
+- **Redis Cleanup:** `kill_everything_force.sh` performs a full wipe (FLUSHALL). `deploy_update.sh` adds surgical lock removal as a safety net.
 - **Janitor Grace Period:** **72 Hours**. Do not lower (causes data loss).

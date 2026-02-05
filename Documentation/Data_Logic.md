@@ -14,6 +14,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   Basic attributes (ASIN, Title, Category) are pulled from the Keepa `/product` API.
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
     *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
+    *   **Dynamic Batching:** The system dynamically adjusts the number of ASINs fetched per request. Standard batch is **20**, but this automatically reduces to **1** if the Keepa API refill rate drops below 20/min to prevent timeouts and starvation.
 
 2.  **Seller & Price Analysis**:
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
