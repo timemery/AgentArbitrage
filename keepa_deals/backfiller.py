@@ -203,6 +203,9 @@ def backfill_deals(reset=False):
                     # Batching: Split into smaller chunks (2) to avoid requesting >300 tokens at once (Deadlock Fix)
                     # Cost per batch of 2 is ~40 tokens. Target = 80 + 40 = 120 (Safe for 300 bucket).
                     BACKFILL_BATCH_SIZE = 2
+                    if token_manager.REFILL_RATE_PER_MINUTE < 20:
+                        BACKFILL_BATCH_SIZE = 1  # Reduce to 1 (Cost ~20) to fit within 20-token buffer
+
                     if new_asins:
                         logger.info(f"Fetching full history for {len(new_asins)} NEW deals (Batched by {BACKFILL_BATCH_SIZE})...")
                         for k in range(0, len(new_asins), BACKFILL_BATCH_SIZE):

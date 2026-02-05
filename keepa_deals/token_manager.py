@@ -130,7 +130,8 @@ class TokenManager:
                         allowed = True
 
                     # Case B: Priority Pass - Low cost, and strictly NOT negative
-                    elif cost_int <= 10 and self.tokens >= 0:
+                    # Disabled for low refill rates (<10/min) to prevent starvation of high-cost tasks
+                    elif cost_int <= 10 and self.tokens >= 0 and self.REFILL_RATE_PER_MINUTE >= 10:
                         logger.info(f"Priority Pass: allowing small cost {cost_int}. Balance: {self.tokens:.2f}")
                         allowed = True
 
@@ -183,7 +184,7 @@ class TokenManager:
             required_priority = 0
 
             target = required_standard
-            if cost_int <= 10:
+            if cost_int <= 10 and self.REFILL_RATE_PER_MINUTE >= 10:
                 target = required_priority
 
             if self.tokens <= 0:
@@ -197,7 +198,10 @@ class TokenManager:
                     return
 
                 # Wait until we have enough to pass the check + small buffer
-                recovery_target = target + 5
+                if self.REFILL_RATE_PER_MINUTE < 10:
+                    recovery_target = target # No buffer for slow connections to maximize throughput
+                else:
+                    recovery_target = target + 5
 
             if recovery_target > 0:
                 tokens_needed = recovery_target - self.tokens
