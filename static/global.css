@@ -841,7 +841,7 @@ button:disabled {
     border: 1px solid #1f293c;
     width: 1000px; /* Updated Width */
     max-width: 95vw; /* Responsive constraint */
-    border-radius: 16px; /* Updated from 8px to 16px per request */
+    border-radius: 20px; /* Updated radius to 20px */
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Added box shadow */
     font-family: 'Open Sans', sans-serif;
@@ -1609,7 +1609,13 @@ body.home-background::before {
 }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
-.action-message { font-size: 0.9em; margin-right: 10px; color: white; font-weight: 400 !important; }
+.action-message {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10px; /* Reduced from 11px */
+    margin-right: 10px;
+    color: white;
+    font-weight: 400 !important;
+}
 .action-strong-red { color: #ff4d4d; font-weight: 400 !important; }
 .action-strong-white { color: white; font-weight: 400 !important; }
 .view-amazon-btn { opacity: 0.7; }
@@ -1653,14 +1659,14 @@ body.home-background::before {
     padding: 15px;
     margin-bottom: 20px;
     background-color: #283143;
-    border-radius: 5px;
+    border-radius: 12px; /* Increased radius per request */
     clear: both; /* Ensure it sits below the close button */
     margin-top: 35px; /* Add space for the close button above */
 }
 .ava-advice-container h3 {
     margin-top: 0;
     font-family: 'Open Sans', sans-serif;
-    font-size: 16px; /* Match Top Nav */
+    font-size: 18px; /* Increased size +1px */
     font-weight: 400; /* Regular */
     margin-bottom: 5px;
     color: #eef2f6; /* Match Top Nav */
@@ -1670,7 +1676,7 @@ body.home-background::before {
 .ava-advice-container p {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
-    font-size: 12px; /* Match data area */
+    font-size: 14px; /* Increased size +1px */
     line-height: 1.4;
     color: #eef2f6; /* Match header color */
 }
@@ -1705,7 +1711,7 @@ body.home-background::before {
 
 .grid-group {
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -1745,6 +1751,7 @@ body.home-background::before {
 
 .overlay-group-header {
     background-color: #283143;
+    font-family: 'Open Sans', sans-serif; /* Explicitly set font */
     font-weight: bold;
     padding: 0 10px;
     border: 1px solid #000000;
@@ -1805,6 +1812,7 @@ body.home-background::before {
     max-width: 130px;
     display: inline-block;
     vertical-align: bottom;
+    cursor: pointer; /* Added cursor pointer */
 }
 
 /* Hover effect for truncated text in overlay */
