@@ -3,11 +3,17 @@ from unittest.mock import MagicMock, patch
 import math
 import sys
 import os
+import logging
 
 # Ensure the app can be imported
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from keepa_deals.token_manager import TokenManager
+
+# Suppress logging for the test
+logging.basicConfig(level=logging.CRITICAL)
+logger = logging.getLogger('keepa_deals.token_manager')
+logger.setLevel(logging.CRITICAL)
 
 class TestTokenThreshold(unittest.TestCase):
     def setUp(self):
@@ -22,10 +28,20 @@ class TestTokenThreshold(unittest.TestCase):
         self.mock_client.get.return_value = "100" # Default tokens
         self.mock_client.incrbyfloat.side_effect = self._mock_incrbyfloat
 
+        # Patch external API calls to prevent 400 errors and network usage
+        self.api_patcher = patch('keepa_deals.keepa_api.get_token_status')
+        self.mock_get_token_status = self.api_patcher.start()
+        self.mock_get_token_status.return_value = {
+            'tokensLeft': 100,
+            'refillRate': 5,
+            'timestamp': 123456789
+        }
+
         self.current_tokens = 100.0
 
     def tearDown(self):
         self.redis_patcher.stop()
+        self.api_patcher.stop()
 
     def _mock_incrbyfloat(self, key, amount):
         if key == "keepa_tokens_left":
@@ -57,6 +73,12 @@ class TestTokenThreshold(unittest.TestCase):
         self.current_tokens = 19.0
         tm.tokens = 19.0
         tm.redis_client = self.mock_client
+
+        # Mock get_token_status to return the low token count so sync_tokens doesn't reset it unexpectedly
+        self.mock_get_token_status.return_value = {
+            'tokensLeft': 19,
+            'refillRate': 5
+        }
 
         # Cost 20 (Greater than 10, so Priority Pass ignored).
         # 19 - 20 = -1.
