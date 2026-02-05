@@ -127,7 +127,9 @@ def backfill_deals(reset=False):
         # The upserter uses the default threshold of 50. By making the backfiller wait for 80,
         # we create a protected window [50, 80] where the upserter can run without competition,
         # but avoid the 'livelock' where a slow refill rate prevents reaching 150.
-        token_manager.MIN_TOKEN_THRESHOLD = 80
+        # UPDATE: With 5 tokens/min, 80 is unreachable if upserter runs frequently.
+        # Reducing to 50 to prevent starvation.
+        token_manager.MIN_TOKEN_THRESHOLD = 50
         token_manager.sync_tokens()
 
         page = load_backfill_state()
