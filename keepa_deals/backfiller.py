@@ -166,12 +166,19 @@ def backfill_deals(reset=False):
                     wm_iso = _convert_keepa_time_to_iso(newest_ts)
                     save_watermark(wm_iso)
 
-            for i in range(0, len(deals_on_page), DEALS_PER_CHUNK):
+            # Dynamic Chunk Sizing for Low-Tier Plans
+            # If rate is low, we must upsert frequently (small chunks) to avoid losing data during long waits.
+            current_chunk_size = DEALS_PER_CHUNK
+            if token_manager.REFILL_RATE_PER_MINUTE < 20:
+                current_chunk_size = 1
+                logger.info(f"Low refill rate detected. Reducing chunk size to {current_chunk_size} to ensure incremental saves.")
+
+            for i in range(0, len(deals_on_page), current_chunk_size):
                 try:
-                    chunk_deals = deals_on_page[i:i + DEALS_PER_CHUNK]
+                    chunk_deals = deals_on_page[i:i + current_chunk_size]
                     if not chunk_deals: continue
 
-                    logger.info(f"--- Processing chunk {i//DEALS_PER_CHUNK + 1}/{(len(deals_on_page) + DEALS_PER_CHUNK - 1)//DEALS_PER_CHUNK} on page {page} ---")
+                    logger.info(f"--- Processing chunk {i//current_chunk_size + 1}/{(len(deals_on_page) + current_chunk_size - 1)//current_chunk_size} on page {page} ---")
 
                     # --- Hybrid Ingestion Logic: Check DB for existing ASINs ---
                     all_asins = [d['asin'] for d in chunk_deals]
@@ -203,6 +210,9 @@ def backfill_deals(reset=False):
                     # Batching: Split into smaller chunks (2) to avoid requesting >300 tokens at once (Deadlock Fix)
                     # Cost per batch of 2 is ~40 tokens. Target = 80 + 40 = 120 (Safe for 300 bucket).
                     BACKFILL_BATCH_SIZE = 2
+                    if token_manager.REFILL_RATE_PER_MINUTE < 20:
+                        BACKFILL_BATCH_SIZE = 1  # Reduce to 1 (Cost ~20) to fit within 20-token buffer
+
                     if new_asins:
                         logger.info(f"Fetching full history for {len(new_asins)} NEW deals (Batched by {BACKFILL_BATCH_SIZE})...")
                         for k in range(0, len(new_asins), BACKFILL_BATCH_SIZE):

@@ -16,6 +16,7 @@ class TokenManager:
     """
     REDIS_KEY_TOKENS = "keepa_tokens_left"
     REDIS_KEY_RATE = "keepa_refill_rate"
+    REDIS_KEY_RECHARGE_MODE = "keepa_recharge_mode_active"
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -24,6 +25,7 @@ class TokenManager:
         self.REFILL_RATE_PER_MINUTE = 5.0 # Default, will be updated from Redis/API
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
         self.MIN_TOKEN_THRESHOLD = 20
+        self.BURST_THRESHOLD = 280 # Wait until this many tokens are available before exiting Recharge Mode
 
         # State variables
         self.tokens = 100 # Local cache/fallback
@@ -101,6 +103,22 @@ class TokenManager:
         cost_int = math.ceil(estimated_cost)
 
         while True:
+            # 0. Check Recharge Mode (Redis)
+            # If we are in "Recharge Mode" (low-tier strategy), we must wait until the bucket is full.
+            # This check happens BEFORE rate limit sleep to avoid unnecessary sleeps if we are blocked anyway.
+            if self.redis_client and self.REFILL_RATE_PER_MINUTE < 10:
+                is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE)
+                if is_recharging == "1":
+                    # Check if we have reached the burst threshold
+                    # Note: We use the local token estimate (sync happening in wait loop)
+                    if self.tokens >= self.BURST_THRESHOLD:
+                        logger.info(f"Burst threshold reached ({self.tokens:.2f} >= {self.BURST_THRESHOLD}). Exiting Recharge Mode.")
+                        self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
+                    else:
+                        logger.info(f"Recharge Mode Active (Tokens: {self.tokens:.2f}/{self.BURST_THRESHOLD}). Waiting for refill...")
+                        self._wait_for_tokens(60, self.BURST_THRESHOLD) # Long wait
+                        continue
+
             # 1. Rate Limit Sleep (Local) - Prevent spamming API even if tokens exist
             now = time.time()
             time_since_last = now - self.last_api_call_timestamp
@@ -124,13 +142,21 @@ class TokenManager:
                     # Calculate starting balance (approximate)
                     old_balance = self.tokens + cost_int
 
+                    # Refill-to-Full Logic: Enter Recharge Mode if we drop too low
+                    if self.REFILL_RATE_PER_MINUTE < 10 and old_balance < self.MIN_TOKEN_THRESHOLD:
+                        logger.warning(f"Tokens critically low ({old_balance:.2f} < {self.MIN_TOKEN_THRESHOLD}). Entering Recharge Mode until {self.BURST_THRESHOLD}.")
+                        self.redis_client.set(self.REDIS_KEY_RECHARGE_MODE, "1")
+                        # Fail this request and force a wait loop
+                        allowed = False
+
                     # Case A: Above threshold - Always OK (Controlled Deficit)
                     # We allow the operation if we started with a healthy balance, even if the result is negative.
-                    if old_balance >= self.MIN_TOKEN_THRESHOLD:
+                    elif old_balance >= self.MIN_TOKEN_THRESHOLD:
                         allowed = True
 
                     # Case B: Priority Pass - Low cost, and strictly NOT negative
-                    elif cost_int <= 10 and self.tokens >= 0:
+                    # Disabled for low refill rates (<10/min) to prevent starvation of high-cost tasks
+                    elif cost_int <= 10 and self.tokens >= 0 and self.REFILL_RATE_PER_MINUTE >= 10:
                         logger.info(f"Priority Pass: allowing small cost {cost_int}. Balance: {self.tokens:.2f}")
                         allowed = True
 
@@ -183,7 +209,7 @@ class TokenManager:
             required_priority = 0
 
             target = required_standard
-            if cost_int <= 10:
+            if cost_int <= 10 and self.REFILL_RATE_PER_MINUTE >= 10:
                 target = required_priority
 
             if self.tokens <= 0:
@@ -197,7 +223,10 @@ class TokenManager:
                     return
 
                 # Wait until we have enough to pass the check + small buffer
-                recovery_target = target + 5
+                if self.REFILL_RATE_PER_MINUTE < 10:
+                    recovery_target = target # No buffer for slow connections to maximize throughput
+                else:
+                    recovery_target = target + 5
 
             if recovery_target > 0:
                 tokens_needed = recovery_target - self.tokens

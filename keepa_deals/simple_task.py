@@ -243,111 +243,118 @@ def update_recent_deals():
         # ----------------------------
 
         # Split batches into New vs Existing
-        new_asins_list = [a for a in asin_list if a not in existing_asins_set]
-        existing_asins_list = [a for a in asin_list if a in existing_asins_set]
+        # NO: We must iterate chunks to support incremental upsert
 
-        # A. Fetch NEW Deals (Heavy)
-        for i in range(0, len(new_asins_list), MAX_ASINS_PER_BATCH):
-            batch_asins = new_asins_list[i:i + MAX_ASINS_PER_BATCH]
-            # Heavy fetch
-            token_manager.request_permission_for_call(20 * len(batch_asins))
-            product_response, api_info, tokens_consumed, tokens_left = fetch_product_batch(
-                api_key, batch_asins, days=1095, history=1, offers=20
-            )
-            token_manager.update_after_call(tokens_left)
+        # Determine dynamic batch size for low refill rates
+        current_batch_size = MAX_ASINS_PER_BATCH
+        if token_manager.REFILL_RATE_PER_MINUTE < 20:
+            current_batch_size = 1
 
-            if product_response and 'products' in product_response:
-                for p in product_response['products']:
-                    all_fetched_products[p['asin']] = p
-            time.sleep(1)
-
-        # B. Fetch EXISTING Deals (Light)
-        for i in range(0, len(existing_asins_list), MAX_ASINS_PER_BATCH):
-             batch_asins = existing_asins_list[i:i + MAX_ASINS_PER_BATCH]
-             # Light fetch
-             token_manager.request_permission_for_call(2 * len(batch_asins))
-             product_response, api_info, tokens_consumed, tokens_left = fetch_current_stats_batch(
-                 api_key, batch_asins, days=180
-             )
-             token_manager.update_after_call(tokens_left)
-
-             if product_response and 'products' in product_response:
-                for p in product_response['products']:
-                    all_fetched_products[p['asin']] = p
-             time.sleep(0.5)
-
-        logger.info(f"Step 3 Complete: Fetched product data for {len(all_fetched_products)} ASINs.")
-
-        logger.info("Step 4: Processing deals...")
+        logger.info("Step 3 & 4 & 6: Fetching, Processing, and Upserting deals incrementally...")
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
 
-        rows_to_upsert = []
-        for deal in all_new_deals:
-            asin = deal['asin']
-            if asin not in all_fetched_products:
+        total_upserted = 0
+
+        # We iterate over `all_new_deals` in chunks (using current_batch_size)
+        # For each chunk, we Fetch -> Process -> Upsert
+        for i in range(0, len(all_new_deals), current_batch_size):
+            chunk_deals = all_new_deals[i:i + current_batch_size]
+
+            # 1. Fetch
+            chunk_asins = [d['asin'] for d in chunk_deals]
+            chunk_new_asins = [a for a in chunk_asins if a not in existing_asins_set]
+            chunk_existing_asins = [a for a in chunk_asins if a in existing_asins_set]
+
+            chunk_products = {}
+
+            # A. Heavy Fetch
+            if chunk_new_asins:
+                token_manager.request_permission_for_call(20 * len(chunk_new_asins))
+                product_response, _, _, tokens_left = fetch_product_batch(
+                    api_key, chunk_new_asins, days=1095, history=1, offers=20
+                )
+                if tokens_left: token_manager.update_after_call(tokens_left)
+                if product_response and 'products' in product_response:
+                    for p in product_response['products']:
+                        chunk_products[p['asin']] = p
+
+            # B. Light Fetch
+            if chunk_existing_asins:
+                 token_manager.request_permission_for_call(2 * len(chunk_existing_asins))
+                 product_response, _, _, tokens_left = fetch_current_stats_batch(
+                     api_key, chunk_existing_asins, days=180
+                 )
+                 if tokens_left: token_manager.update_after_call(tokens_left)
+                 if product_response and 'products' in product_response:
+                    for p in product_response['products']:
+                        chunk_products[p['asin']] = p
+
+            # 2. Process
+            rows_to_upsert = []
+            for deal in chunk_deals:
+                asin = deal['asin']
+                if asin not in chunk_products: continue
+
+                product_data = chunk_products[asin]
+                product_data.update(deal)
+
+                processed_row = None
+                if asin in existing_asins_set:
+                     # Lightweight Update
+                     processed_row = _process_lightweight_update(existing_rows_map[asin], product_data)
+                     if processed_row:
+                         processed_row = clean_numeric_values(processed_row)
+                         processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                         processed_row['source'] = 'upserter_light'
+                else:
+                     # Heavy Process (New Deal)
+                     seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
+                     processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
+                     if processed_row:
+                         processed_row = clean_numeric_values(processed_row)
+                         processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                         processed_row['source'] = 'upserter'
+
+                if processed_row:
+                    rows_to_upsert.append(processed_row)
+
+            # 3. Upsert
+            if not rows_to_upsert:
                 continue
 
-            product_data = all_fetched_products[asin]
-            product_data.update(deal)
+            try:
+                with sqlite3.connect(DB_PATH, timeout=60) as conn:
+                    cursor = conn.cursor()
+                    sanitized_headers = [sanitize_col_name(h) for h in headers]
+                    sanitized_headers.extend(['last_seen_utc', 'source'])
 
-            processed_row = None
-            if asin in existing_asins_set:
-                 # Lightweight Update
-                 processed_row = _process_lightweight_update(existing_rows_map[asin], product_data)
-                 if processed_row:
-                     processed_row = clean_numeric_values(processed_row)
-                     processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-                     processed_row['source'] = 'upserter_light'
-            else:
-                 # Heavy Process (New Deal)
-                 # Fetch seller data for ONLY the lowest-priced 'Used' offer.
-                 seller_data_cache = get_seller_info_for_single_deal(product_data, api_key, token_manager)
-                 processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
-                 if processed_row:
-                     processed_row = clean_numeric_values(processed_row)
-                     processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
-                     processed_row['source'] = 'upserter'
+                    data_for_upsert = []
+                    for row_dict in rows_to_upsert:
+                        row_tuple = tuple(row_dict.get(h) for h in headers) + (row_dict.get('last_seen_utc'), row_dict.get('source'))
+                        data_for_upsert.append(row_tuple)
 
-            if processed_row:
-                rows_to_upsert.append(processed_row)
-        logger.info(f"Step 5 Complete: Processed {len(rows_to_upsert)} deals.")
+                    cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
+                    vals_str = ', '.join(['?'] * len(sanitized_headers))
+                    update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
+                    upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
 
-        if not rows_to_upsert:
-            logger.info("No rows to upsert. Task finished.")
-            return
+                    cursor.executemany(upsert_sql, data_for_upsert)
+                    conn.commit()
+                    total_upserted += len(rows_to_upsert)
+                    logger.info(f"Chunk upsert success: {len(rows_to_upsert)} deals.")
 
-        logger.info(f"Step 6: Upserting {len(rows_to_upsert)} rows into database...")
-        try:
-            with sqlite3.connect(DB_PATH, timeout=60) as conn:
-                cursor = conn.cursor()
-                sanitized_headers = [sanitize_col_name(h) for h in headers]
-                sanitized_headers.extend(['last_seen_utc', 'source'])
+                    # Trigger restriction check
+                    new_asins = [row['ASIN'] for row in rows_to_upsert if 'ASIN' in row]
+                    if new_asins:
+                        celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
 
-                data_for_upsert = []
-                for row_dict in rows_to_upsert:
-                    row_tuple = tuple(row_dict.get(h) for h in headers) + (row_dict.get('last_seen_utc'), row_dict.get('source'))
-                    data_for_upsert.append(row_tuple)
+            except sqlite3.Error as e:
+                logger.error(f"Chunk upsert failed: {e}", exc_info=True)
+            except Exception as e:
+                logger.error(f"Chunk processing failed: {e}", exc_info=True)
 
-                cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
-                vals_str = ', '.join(['?'] * len(sanitized_headers))
-                update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
-                upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
-                
-                cursor.executemany(upsert_sql, data_for_upsert)
-                conn.commit()
-                logger.info(f"Step 6 Complete: Successfully upserted/updated {cursor.rowcount} rows.")
-
-                # After a successful upsert, trigger the restriction check for the new ASINs.
-                new_asins = [row['ASIN'] for row in rows_to_upsert if 'ASIN' in row]
-                if new_asins:
-                    celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                    logger.info(f"--- Triggered restriction check for {len(new_asins)} new ASINs from upserter. ---")
-
-        except sqlite3.Error as e:
-            logger.error(f"Step 6 Failed: Database error during upsert: {e}", exc_info=True)
-        except Exception as e:
-            logger.error(f"Step 6 Failed: Unexpected error during upsert: {e}", exc_info=True)
+        logger.info(f"Task Complete: Processed and upserted {total_upserted} deals total.")
 
         # --- Final Step: Update Watermark ---
         # Only update watermark if we actually found newer deals AND processed them properly.
