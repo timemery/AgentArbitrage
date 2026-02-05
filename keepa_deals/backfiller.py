@@ -129,7 +129,8 @@ def backfill_deals(reset=False):
         # but avoid the 'livelock' where a slow refill rate prevents reaching 150.
         # UPDATE: With 5 tokens/min, 80 is unreachable if upserter runs frequently.
         # Reducing to 50 to prevent starvation.
-        token_manager.MIN_TOKEN_THRESHOLD = 50
+        # UPDATE 2: 50 is still too high. Reducing to 20 to allow operation in low-refill environments.
+        token_manager.MIN_TOKEN_THRESHOLD = 20
         token_manager.sync_tokens()
 
         page = load_backfill_state()

@@ -23,7 +23,7 @@ class TokenManager:
         # Constants
         self.REFILL_RATE_PER_MINUTE = 5.0 # Default, will be updated from Redis/API
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
-        self.MIN_TOKEN_THRESHOLD = 50
+        self.MIN_TOKEN_THRESHOLD = 20
 
         # State variables
         self.tokens = 100 # Local cache/fallback
