@@ -839,9 +839,9 @@ button:disabled {
     margin: 5% auto;
     padding: 40px;
     border: 1px solid #1f293c;
-    width: 95%; /* Updated from 80% to match dashboard */
-    max-width: 1200px;
-    border-radius: 8px; /* Updated from 10px */
+    width: 1000px; /* Updated Width */
+    max-width: 95vw; /* Responsive constraint */
+    border-radius: 20px; /* Updated radius to 20px */
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Added box shadow */
     font-family: 'Open Sans', sans-serif;
@@ -1609,7 +1609,13 @@ body.home-background::before {
 }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
-.action-message { font-size: 0.9em; margin-right: 10px; color: white; font-weight: 400 !important; }
+.action-message {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10px; /* Reduced from 11px */
+    margin-right: 10px;
+    color: white;
+    font-weight: 400 !important;
+}
 .action-strong-red { color: #ff4d4d; font-weight: 400 !important; }
 .action-strong-white { color: white; font-weight: 400 !important; }
 .view-amazon-btn { opacity: 0.7; }
@@ -1653,22 +1659,26 @@ body.home-background::before {
     padding: 15px;
     margin-bottom: 20px;
     background-color: #283143;
-    border-radius: 5px;
+    border-radius: 12px; /* Increased radius per request */
     clear: both; /* Ensure it sits below the close button */
     margin-top: 35px; /* Add space for the close button above */
 }
 .ava-advice-container h3 {
     margin-top: 0;
-    font-size: 1.3em; /* Increased size */
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px; /* Increased size +1px */
+    font-weight: 400; /* Regular */
     margin-bottom: 5px;
-    color: #ffffff;
+    color: #eef2f6; /* Match Top Nav */
+    opacity: 1.0; /* No transparency */
     text-align: left; /* Left align */
 }
 .ava-advice-container p {
     margin: 0;
-    font-size: 1.1em; /* Increased size */
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px; /* Increased size +1px */
     line-height: 1.4;
-    color: #ffffff;
+    color: #eef2f6; /* Match header color */
 }
 
 .yellow-action-btn {
@@ -1701,7 +1711,7 @@ body.home-background::before {
 
 .grid-group {
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -1741,6 +1751,7 @@ body.home-background::before {
 
 .overlay-group-header {
     background-color: #283143;
+    font-family: 'Open Sans', sans-serif; /* Explicitly set font */
     font-weight: bold;
     padding: 0 10px;
     border: 1px solid #000000;
@@ -1774,19 +1785,24 @@ body.home-background::before {
     height: 40px;
     background-color: #1e2227;
     box-sizing: border-box;
+    position: relative; /* For tooltip positioning */
 }
 .overlay-group-row:last-child {
     border-bottom: none;
 }
 
 .overlay-group-row .label {
-    font-weight: normal;
-    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    color: #a3aec0; /* Grey */
 }
 .overlay-group-row .value {
     text-align: right;
-    color: #ffffff;
-    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Bold */
+    font-size: 12px;
+    color: #ffffff; /* White */
 }
 
 .truncated {
@@ -1796,6 +1812,21 @@ body.home-background::before {
     max-width: 130px;
     display: inline-block;
     vertical-align: bottom;
+    cursor: pointer; /* Added cursor pointer */
+}
+
+/* Hover effect for truncated text in overlay */
+.deal-overlay-content .truncated:hover {
+    position: absolute;
+    right: 10px;
+    background-color: #011b2a; /* Match Dashboard Hover */
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    padding: 2px 5px;
+    width: auto;
+    max-width: none;
+    overflow: visible;
+    border-radius: 4px;
 }
 
 .trend-up { color: #ff4d4d; font-weight: bold; }

@@ -419,11 +419,11 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (lower.startsWith('used') || lower.startsWith('u -') || lower.startsWith('u-')) prefix = 'U';
         else if (lower.startsWith('collectible') || lower.startsWith('c -') || lower.startsWith('c-')) prefix = 'C';
 
-        // Extract suffix by checking presence
-        if (lower.includes('like new') || lower.includes('likenew')) suffix = 'Like New';
-        else if (lower.includes('very good') || lower.includes('verygood')) suffix = 'Very Good';
-        else if (lower.includes('good')) suffix = 'Good';
-        else if (lower.includes('acceptable')) suffix = 'Acceptable';
+        // Extract suffix by checking presence (Handling both long forms and abbreviations)
+        if (lower.includes('like new') || lower.includes('likenew') || lower.includes('ln')) suffix = 'Like New';
+        else if (lower.includes('very good') || lower.includes('verygood') || lower.includes('vg')) suffix = 'Very Good';
+        else if (lower.includes('good') || lower.includes('g') && !lower.includes('very good')) suffix = 'Good'; // Avoid matching VG
+        else if (lower.includes('acceptable') || lower.includes('a') && !lower.includes('audi')) suffix = 'Acceptable'; // Avoid matching Audio
         else if (lower.includes('open box') || lower.includes('openbox')) suffix = 'Open Box';
 
         if (prefix === 'New') {
@@ -450,7 +450,11 @@ document.addEventListener('DOMContentLoaded', function() {
             'likenew': 'U - Like New',
             'verygood': 'U - Very Good',
             'good': 'U - Good',
-            'acceptable': 'U - Acceptable'
+            'acceptable': 'U - Acceptable',
+            'uln': 'U - Like New',
+            'uvg': 'U - Very Good',
+            'ug': 'U - Good',
+            'ua': 'U - Acceptable'
         };
 
         return mapping[cleanedValue] || value;
@@ -1071,50 +1075,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // --- Sales Rank ---
         document.getElementById('overlay-rank-current').textContent = formatSalesRank(deal.Sales_Rank_Current);
-        document.getElementById('overlay-rank-180').textContent = formatSalesRank(deal['Sales Rank - 180 days avg.']);
-        document.getElementById('overlay-rank-365').textContent = formatSalesRank(deal['Sales Rank - 365 days avg.']);
+        document.getElementById('overlay-rank-180').textContent = formatSalesRank(deal.Sales_Rank_180_days_avg);
+        document.getElementById('overlay-rank-365').textContent = formatSalesRank(deal.Sales_Rank_365_days_avg);
 
-        document.getElementById('overlay-drops-180').textContent = deal['Sales Rank - Drops last 180 days'] || '-';
-        document.getElementById('overlay-drops-365').textContent = deal['Sales Rank - Drops last 365 days'] || '-';
+        document.getElementById('overlay-drops-180').textContent = deal.Sales_Rank_Drops_last_180_days || '-';
+        document.getElementById('overlay-drops-365').textContent = deal.Sales_Rank_Drops_last_365_days || '-';
 
-        // Format Offer Counts with arrows
-        function formatOffers(val) {
-             if (!val || val === '-') return '-';
-             let text = String(val);
-             if (text.includes('↘')) return text.replace('↘', ' ↘'); // Add space if needed
-             if (text.includes('↗')) return text.replace('↗', ' ↗');
-             return text;
+        // Format Offer Counts with arrows and icons (Matching Dashboard Logic)
+        function formatOffers(value, amzWarning) {
+            if (!value || value === '-') return '-';
+
+            // Handle plain numbers if passed, though usually string with arrow
+            let valStr = String(value);
+            let arrowHtml = '';
+            let count = valStr;
+
+            // Check for Diagonal Down (Falling/Good) -> Map to Vertical Down
+            if (valStr.includes('↘')) {
+                arrowHtml = '<img src="/static/Arrow_down.svg" class="trend-icon" alt="Down">';
+                count = valStr.replace('↘', '').trim();
+            }
+            // Check for Diagonal Up (Rising/Bad) -> Map to Vertical Up
+            else if (valStr.includes('↗')) {
+                arrowHtml = '<img src="/static/Arrow_up.svg" class="trend-icon" alt="Up">';
+                count = valStr.replace('↗', '').trim();
+            }
+            // Check for Flat Arrow (Right Hollow) -> Map to Solid Right Arrow
+            else if (valStr.includes('⇨')) {
+                arrowHtml = '<img src="/static/Arrow_level.svg" class="trend-icon" alt="Flat">';
+                count = valStr.replace('⇨', '').trim();
+            }
+
+            let content = '';
+            if (arrowHtml) {
+                content = `${arrowHtml} ${count}`;
+            } else {
+                content = `${count}`;
+            }
+
+            let wrapperStart = '<div class="offers-wrapper" style="justify-content: flex-end;"><span class="offers-text">';
+            let wrapperEnd = '</span>';
+
+            // Add AMZN icon if needed (Passed explicitly or from deal.AMZ)
+            if (amzWarning) {
+                 wrapperEnd += `<img src="/static/AMZ_Warn.svg" class="amz-warn-icon" alt="AMZ">`;
+            }
+            wrapperEnd += '</div>';
+
+            return `${wrapperStart}${content}${wrapperEnd}`;
         }
 
-        document.getElementById('overlay-offers-current').textContent = formatOffers(deal.Offers);
-        document.getElementById('overlay-offers-180').textContent = formatOffers(deal['Offers 180']);
-        document.getElementById('overlay-offers-365').textContent = formatOffers(deal['Offers 365']);
+        // AMZ Warning check: 'AMZ' column contains '⚠️'
+        const hasAmzWarning = (deal.AMZ === '⚠️');
+
+        document.getElementById('overlay-offers-current').innerHTML = formatOffers(deal.Offers, hasAmzWarning);
+        document.getElementById('overlay-offers-180').innerHTML = formatOffers(deal.Offers_180, false);
+        document.getElementById('overlay-offers-365').innerHTML = formatOffers(deal.Offers_365, false);
 
         // --- Deal & Price Benchmarks ---
         document.getElementById('overlay-price-now').textContent = deal.Price_Now ? `$${parseFloat(deal.Price_Now).toFixed(2)}` : '-';
 
-        // Shipping Included logic (assuming backend sends 'yes'/'no' or we infer)
-        let shipping = deal['Shipping Included'] || '-';
+        // Shipping Included logic
+        let shipping = deal.Shipping_Included || '-';
         if (shipping.toLowerCase() === 'yes') shipping = 'Yes';
         else if (shipping.toLowerCase() === 'no') shipping = 'No';
         document.getElementById('overlay-shipping').textContent = shipping;
 
-        document.getElementById('overlay-price-1yr').textContent = deal['1yr. Avg.'] ? `$${parseFloat(deal['1yr. Avg.']).toFixed(2)}` : '-';
+        // Note: 1yr_Avg starts with a digit so must be accessed via bracket notation.
+        // The API key is confirmed as "1yr_Avg".
+        document.getElementById('overlay-price-1yr').textContent = deal['1yr_Avg'] ? `$${parseFloat(deal['1yr_Avg']).toFixed(2)}` : '-';
 
-        let pctDown = deal['% Down'] || deal['Percent_Down'];
+        let pctDown = deal.Percent_Down;
         if (pctDown != null && !isNaN(parseFloat(pctDown))) {
             document.getElementById('overlay-percent-down').textContent = Math.round(parseFloat(pctDown)) + '%';
         } else {
             document.getElementById('overlay-percent-down').textContent = '-';
         }
 
-        document.getElementById('overlay-trend').textContent = deal.Trend || '-';
+        // Format Trend Arrow with SVGs
+        let trendVal = deal.Trend || '-';
+        let trendHtml = trendVal;
+        if (trendVal === '⇧') {
+             trendHtml = '<img src="/static/Arrow_up.svg" class="trend-icon" alt="Up">';
+        } else if (trendVal === '⇩') {
+             trendHtml = '<img src="/static/Arrow_down.svg" class="trend-icon" alt="Down">';
+        } else if (trendVal === '⇨') {
+             trendHtml = '<img src="/static/Arrow_level.svg" class="trend-icon" alt="Flat">';
+        }
+        document.getElementById('overlay-trend').innerHTML = trendHtml;
+
         document.getElementById('overlay-updated').textContent = formatTimeAgo(deal.last_price_change);
 
-        document.getElementById('overlay-amz-current').textContent = deal['Amazon - Current'] || '';
-        document.getElementById('overlay-amz-1yr').textContent = deal['Amazon - 365 days avg.'] || '';
-        document.getElementById('overlay-bb-current').textContent = deal['Buy Box Used - Current'] || '';
-        document.getElementById('overlay-bb-1yr').textContent = deal['Buy Box Used - 365 days avg.'] || '';
+        document.getElementById('overlay-amz-current').textContent = deal.Amazon_Current || '';
+        document.getElementById('overlay-amz-1yr').textContent = deal.Amazon_365_days_avg || '';
+        document.getElementById('overlay-bb-current').textContent = deal.Buy_Box_Used_Current || '';
+        document.getElementById('overlay-bb-1yr').textContent = deal.Buy_Box_Used_365_days_avg || '';
 
         // --- Listing & Profit Estimates ---
         let trust = deal.Profit_Confidence;
@@ -1127,21 +1182,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('overlay-profit-val').textContent = deal.Profit ? `$${parseFloat(deal.Profit).toFixed(2)}` : '-';
         document.getElementById('overlay-margin-val').textContent = deal.Margin ? `${parseFloat(deal.Margin).toFixed(2)}%` : '-';
 
-        // Max List at (List at)
-        let listAt = deal['List at'];
+        // Max List at -> Prefer List_Price_Highest, fallback to List_at
+        let listAt = deal.List_Price_Highest || deal.List_at;
         // Remove $ if present to parse
         if (listAt && typeof listAt === 'string') listAt = listAt.replace('$','');
         document.getElementById('overlay-max-list').textContent = listAt ? `$${parseFloat(listAt).toFixed(2)}` : '-';
 
-        // Min List at
-        let minList = deal['Min. Listing Price'] || deal.Min_Listing_Price;
+        // Min List at -> Updated key Min_Listing_Price
+        let minList = deal.Min_Listing_Price;
         document.getElementById('overlay-min-list').textContent = minList ? `$${parseFloat(minList).toFixed(2)}` : '-';
 
         // Seasonality
         document.getElementById('overlay-season').textContent = deal.Detailed_Seasonality || '-';
         document.getElementById('overlay-sell-date').textContent = deal.Sells || '-';
-        document.getElementById('overlay-buy-date').textContent = deal['Trough Season'] || '-';
-        document.getElementById('overlay-buy-price').textContent = deal['Expected Trough Price'] || '-';
+
+        // Est. Buy Date -> Trough_Season
+        document.getElementById('overlay-buy-date').textContent = deal.Trough_Season || '-';
+
+        // Est. Buy Price -> Expected_Trough_Price
+        document.getElementById('overlay-buy-price').textContent = deal.Expected_Trough_Price || '-';
 
         // --- Action Bar ---
         const actionBar = document.querySelector('.overlay-action-bar');
@@ -1165,12 +1224,6 @@ document.addEventListener('DOMContentLoaded', function() {
              // Default / Error / Unknown
              messageHtml = 'Approval status unknown: ';
              const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
-             // Use Apply style for fallback view but maybe neutral color if desired, currently using Apply Orange style or maybe keep generic
-             // User requested specific colors for Buy (Green) and Apply (Orange).
-             // For "View on Amazon" fallback, I'll use a generic style if needed, or default to Buy style but grey?
-             // The previous code had "yellow-action-btn view-amazon-btn" where view-amazon-btn had opacity 0.7.
-             // I will use a simple inline style or just the base class with a background override if needed, or just let it use the new classes.
-             // Given the prompt "Restyle the Buy Now and Apply Now buttons...", I will use a grey fallback.
              buttonHtml = `<a href="${buyUrl}" target="_blank" class="overlay-action-btn" style="background-color: #6c757d; border: 2px solid #5a6268;">View on Amazon</a>`;
         }
 
