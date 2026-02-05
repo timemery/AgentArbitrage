@@ -78,7 +78,14 @@ class TestHomogenization(unittest.TestCase):
         with open(self.test_file, 'r') as f:
             new_data = json.load(f)
             self.assertEqual(len(new_data), 2)
-            self.assertIn("Always buy low and sell high.", new_data)
+            # Handle object format
+            found = False
+            for item in new_data:
+                content = item.get('content') if isinstance(item, dict) else item
+                if content == "Always buy low and sell high.":
+                    found = True
+                    break
+            self.assertTrue(found, "Expected concept not found in homogenized data")
 
 if __name__ == '__main__':
     unittest.main()

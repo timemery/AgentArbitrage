@@ -839,9 +839,9 @@ button:disabled {
     margin: 5% auto;
     padding: 40px;
     border: 1px solid #1f293c;
-    width: 95%; /* Updated from 80% to match dashboard */
-    max-width: 1200px;
-    border-radius: 8px; /* Updated from 10px */
+    width: 1000px; /* Updated Width */
+    max-width: 95vw; /* Responsive constraint */
+    border-radius: 8px; /* Match dashboard rows */
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Added box shadow */
     font-family: 'Open Sans', sans-serif;
@@ -1659,9 +1659,12 @@ body.home-background::before {
 }
 .ava-advice-container h3 {
     margin-top: 0;
-    font-size: 1.3em; /* Increased size */
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px; /* Match Top Nav */
+    font-weight: 400; /* Regular */
     margin-bottom: 5px;
-    color: #ffffff;
+    color: #eef2f6; /* Match Top Nav */
+    opacity: 1.0; /* No transparency */
     text-align: left; /* Left align */
 }
 .ava-advice-container p {
@@ -1774,6 +1777,7 @@ body.home-background::before {
     height: 40px;
     background-color: #1e2227;
     box-sizing: border-box;
+    position: relative; /* For tooltip positioning */
 }
 .overlay-group-row:last-child {
     border-bottom: none;
@@ -1785,8 +1789,10 @@ body.home-background::before {
 }
 .overlay-group-row .value {
     text-align: right;
-    color: #ffffff;
-    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700; /* Match Hide Gated */
+    font-size: 12px; /* Match Hide Gated */
+    color: #ffffff; /* Match Hide Gated */
 }
 
 .truncated {
@@ -1796,6 +1802,20 @@ body.home-background::before {
     max-width: 130px;
     display: inline-block;
     vertical-align: bottom;
+}
+
+/* Hover effect for truncated text in overlay */
+.deal-overlay-content .truncated:hover {
+    position: absolute;
+    right: 10px;
+    background-color: #011b2a; /* Match Dashboard Hover */
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    padding: 2px 5px;
+    width: auto;
+    max-width: none;
+    overflow: visible;
+    border-radius: 4px;
 }
 
 .trend-up { color: #ff4d4d; font-weight: bold; }
