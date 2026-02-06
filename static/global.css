@@ -1,5 +1,5 @@
 /* Global Styles */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap');
 
 :root {
     --filter-panel-height: 102px; /* Default open state */
@@ -905,7 +905,7 @@ button:disabled {
 #deals-table table {
     border-spacing: 0; /* No structural spacing */
     border-collapse: separate; /* Use separate model for manual control */
-    width: 100%;
+    width: 100% !important; /* Force full width */
 }
 
 /* Spacer Row for Pill Effect */
@@ -1061,12 +1061,12 @@ button:disabled {
     color: #a3aec0;
 }
 
-/* Specific Column Padding */
-#deals-table .col-asin,
-#deals-table .col-sales-rank-current,
-#deals-table .col-1yr-avg,
-#deals-table .col-seller-quality-score,
-#deals-table .col-all-in-cost {
+/* Specific Column Padding - High Specificity */
+#deals-table tr td.col-asin,
+#deals-table tr td.col-sales-rank-current,
+#deals-table tr td.col-1yr-avg,
+#deals-table tr td.col-seller-quality-score,
+#deals-table tr td.col-all-in-cost {
     padding-left: 10px !important;
 }
 
@@ -1192,11 +1192,11 @@ button:disabled {
 }
 
 .title-cell {
-    max-width: 125px; /* Set to 125px */
+    max-width: clamp(4ch, 12vw, 125px); /* Fluid width: min 4ch, max 125px */
 }
 
 .season-detail-cell {
-    max-width: 105px; /* Set to 105px */
+    max-width: clamp(4ch, 10vw, 105px); /* Fluid width: min 4ch, max 105px */
 }
 
 .seller-cell, .genre-cell {
@@ -1247,7 +1247,7 @@ button:disabled {
 }
 
 .table-container {
-    width: auto; /* Allow table to define its own width */
+    width: 100%; /* Force container to fill width */
     max-width: 100%; /* Prevent overflow on small screens */
     /* overflow-x: auto; Removed to allow sticky headers to work relative to viewport */
 }
@@ -2603,16 +2603,7 @@ body.home-background::before {
 }
 
 /* 3. Truncate Title/Season (< 900px) */
-@media (max-width: 900px) {
-    .col-title span,
-    .col-detailed-seasonality span {
-        max-width: 5ch;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        display: inline-block;
-        vertical-align: bottom;
-    }
-}
+/* REMOVED: Handled by fluid clamp() on .title-cell and .season-detail-cell */
 
 /* 4. Hide Trust Columns (< 768px) */
 @media (max-width: 768px) {
