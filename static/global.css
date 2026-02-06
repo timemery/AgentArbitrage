@@ -401,6 +401,7 @@ button:disabled {
     flex: 0 1 auto;
     justify-content: center;
     white-space: nowrap;
+    margin: 0 10px; /* Ensure separation from left/right sections */
 }
 
 .nav-right {
@@ -419,6 +420,11 @@ button:disabled {
     text-decoration: none;
     opacity: 0.5; /* Default transparency */
     transition: opacity 0.2s ease;
+}
+
+/* Ensure spacing between sections */
+.nav-right {
+    margin-left: 10px;
 }
 
 .nav-item.active,
@@ -452,6 +458,20 @@ button:disabled {
     width: auto;
     margin-right: 8px; /* Spacing between icon and label */
     display: block;
+}
+
+@media (max-width: 1200px) {
+    .nav-icon {
+        width: 16px;
+        height: auto;
+    }
+    .nav-item, .nav-link {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+    .header-logo img {
+        width: 150px;
+    }
 }
 
 /* Spacers */
@@ -756,19 +776,25 @@ button:disabled {
     }
 
     .nav-icon {
-        display: none;
+        display: block !important; /* Keep icons visible */
+        width: 14px;
+    }
+
+    .nav-item {
+        white-space: nowrap; /* Prevent wrapping */
     }
 
     .nav-item, .nav-link {
         font-size: 13px; /* Slightly reduced font size */
+        padding: 0 5px; /* Minimal padding */
     }
 
     .nav-spacer, .nav-spacer-large {
-        width: 10px; /* Reduced spacing */
+        width: 5px; /* Reduced spacing */
     }
 
     .header-content-wrapper {
-        padding: 0 10px;
+        padding: 0 5px;
     }
 }
 
@@ -1169,9 +1195,10 @@ button:disabled {
 
 .sort-arrows-container {
     display: flex;
-    align-items: center;
+    align-items: flex-end; /* Bottom aligned */
     justify-content: flex-start; /* Left aligned */
     height: 25px;
+    gap: 4px; /* Spacing between arrows */
 }
 
 .sort-arrow {
@@ -2131,6 +2158,7 @@ body.home-background::before {
 
 .panel-content-open {
     padding: 0 23px 0 18px; /* 23px from right edge */
+    padding-top: 4px; /* Adjust vertical centering */
 }
 
 /* Hide content based on state */
@@ -2336,18 +2364,31 @@ body.home-background::before {
 /* Checkbox Styling */
 .checkboxes-wrapper {
     display: flex;
-    flex-direction: row; /* Side by side layout */
-    align-items: center;
-    justify-content: flex-start;
-    gap: 15px; /* Spacing between checkboxes */
+    flex-direction: column; /* Stacked layout */
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5px; /* Spacing between checkboxes */
     margin-left: 20px; /* "Spacing between check boxes & sliders: 20px" */
     height: 100%;
+    padding-top: 18px; /* Align top checkbox with slider dot (Calculated ~20px) */
 }
 
 .checkbox-item {
     display: flex;
     align-items: center;
     gap: 8px; /* Spacing between box and text */
+}
+
+/* Narrow state for Checkboxes: Side-by-side under sliders */
+@media (max-width: 1100px) {
+    .checkboxes-wrapper {
+        flex-direction: row;
+        width: 100%; /* Break to new line */
+        justify-content: center;
+        margin-left: 0;
+        padding-top: 0;
+        margin-top: 10px;
+    }
 }
 
 .checkbox-item label {
@@ -2668,7 +2709,8 @@ body.home-background::before {
 @media (max-width: 768px) {
     /* Stack buttons in Filter Panel */
     .panel-right-buttons {
-        flex-direction: row; /* Side by side on mobile? Or column? */
-        margin-top: 10px;
+        /* Keep column, override any potential row defaults if they existed */
+        flex-direction: column;
+        margin-top: 0;
     }
 }
