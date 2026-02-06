@@ -1056,9 +1056,18 @@ button:disabled {
 /* Data Cell Styles */
 #deals-table td {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700; /* Bold */
+    font-weight: 600; /* SemiBold */
     font-size: 12px;
     color: #a3aec0;
+}
+
+/* Specific Column Padding */
+#deals-table .col-asin,
+#deals-table .col-sales-rank-current,
+#deals-table .col-sales-rank-365-days-avg,
+#deals-table .col-seller-quality-score,
+#deals-table .col-all-in-cost {
+    padding-left: 10px !important;
 }
 
 /* Row Styles */
@@ -2192,7 +2201,7 @@ body.home-background::before {
 .custom-slider {
     -webkit-appearance: none;
     width: 120px; /* Shortened to 120px */
-    height: 10px; /* Track Height */
+    height: 4px; /* Track Height */
     background: #304163; /* Track Color */
     border-radius: 5px; /* Assumed radius for track */
     outline: none;
