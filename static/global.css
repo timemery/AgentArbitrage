@@ -460,14 +460,14 @@ button:disabled {
     display: block;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 900px) {
     .nav-icon {
         width: 16px;
         height: auto;
     }
     .nav-item, .nav-link {
         font-size: 14px;
-        padding: 0 10px;
+        padding: 0 8px; /* Slightly reduced padding */
     }
     .header-logo img {
         width: 150px;
@@ -785,16 +785,16 @@ button:disabled {
     }
 
     .nav-item, .nav-link {
-        font-size: 13px; /* Slightly reduced font size */
-        padding: 0 5px; /* Minimal padding */
+        font-size: 12px; /* Reduced font size to prevent clipping */
+        padding: 0 4px; /* Minimal padding */
     }
 
     .nav-spacer, .nav-spacer-large {
-        width: 5px; /* Reduced spacing */
+        width: 4px; /* Reduced spacing */
     }
 
     .header-content-wrapper {
-        padding: 0 5px;
+        padding: 0 4px;
     }
 }
 
@@ -2158,7 +2158,7 @@ body.home-background::before {
 
 .panel-content-open {
     padding: 0 23px 0 18px; /* 23px from right edge */
-    padding-top: 4px; /* Adjust vertical centering */
+    /* Padding-top removed for better vertical centering via flexbox */
 }
 
 /* Hide content based on state */
@@ -2385,9 +2385,11 @@ body.home-background::before {
         flex-direction: row;
         width: 100%; /* Break to new line */
         justify-content: center;
+        gap: 20px; /* Increased gap for better separation */
         margin-left: 0;
         padding-top: 0;
         margin-top: 10px;
+        align-items: center; /* Ensure vertical alignment */
     }
 }
 
@@ -2712,5 +2714,63 @@ body.home-background::before {
         /* Keep column, override any potential row defaults if they existed */
         flex-direction: column;
         margin-top: 0;
+    }
+}
+
+/* 5. Mobile 375px Optimization */
+@media (max-width: 375px) {
+    /* Hide Header Icons */
+    .nav-icon {
+        display: none !important;
+    }
+
+    /* Hide Group Headers to save space and avoid empty groups */
+    #deals-table .group-header {
+        display: none !important;
+    }
+
+    /* Hide non-essential columns */
+    .col-asin,
+    .col-title,
+    .col-condition,
+    .col-sales-rank-current,
+    .col-drops,
+    .col-offers,
+    .col-detailed-seasonality,
+    .col-1yr-avg,
+    .col-seller-quality-score,
+    .col-profit-confidence,
+    .col-all-in-cost,
+    .col-binding,
+    .col-sells,
+    .col-seller,
+    .col-categories-sub {
+        display: none !important;
+    }
+
+    /* Ensure kept columns are visible and styled */
+    .col-price-now,
+    .col-percent-down,
+    .col-last-price-change,
+    .col-profit,
+    .col-margin,
+    .col-gated {
+        display: table-cell !important;
+        padding: 0 2px !important; /* Minimal padding */
+        font-size: 11px !important; /* Smaller font */
+    }
+
+    /* Force width adjustments for mobile */
+    #deals-table th, #deals-table td {
+        white-space: normal !important; /* Allow wrapping if needed? Or keep nowrap */
+    }
+
+    /* Adjust specific columns for mobile */
+    .col-price-now, .col-profit {
+        min-width: 40px;
+    }
+    .col-gated .approval-link {
+        width: 40px; /* Smaller button */
+        font-size: 0.8em;
     }
 }
