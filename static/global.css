@@ -1087,6 +1087,15 @@ button:disabled {
     padding-left: 8px !important; /* User Req: 8px */
 }
 
+/* Optimize % Down Column Padding */
+#deals-table th.col-percent-down,
+#deals-table td.col-percent-down {
+    padding: 0 4px !important; /* Reduce padding to save width */
+}
+#deals-table .sort-arrows-row td.col-percent-down {
+    padding: 0 4px !important;
+}
+
 /* Row Styles */
 .deal-row {
     height: 47px; /* Adjusted target height */
@@ -1218,8 +1227,8 @@ button:disabled {
 }
 
 .season-detail-cell {
-    width: 95px; /* User Req: Increase to 95px */
-    max-width: 95px;
+    width: 100px; /* User Req: Increase default to 100px */
+    max-width: 100px;
     min-width: 40px; /* Allow shrinking */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1649,10 +1658,10 @@ body.home-background::before {
     width: 10px; /* User Req: Reduce size */
     height: 10px;
     vertical-align: bottom;
-    margin-right: 3px; /* User Req: Revise to 3px */
+    margin-right: 3px; /* User Req: 3px spacing */
     display: inline-block;
     position: relative;
-    top: -4px; /* User Req: Bump up 1px more (total 4px) */
+    top: -5px; /* User Req: Bump up 1px more (total 5px) */
 }
 
 .offers-wrapper {
@@ -2103,7 +2112,8 @@ body.home-background::before {
 }
 
 .filter-panel-open {
-    height: 102px;
+    height: auto;
+    min-height: 102px;
 }
 
 /* Common Flex Layouts */
@@ -2206,9 +2216,10 @@ body.home-background::before {
     gap: 20px; /* Reduced to 20px */
     height: 100%;
     flex-wrap: wrap; /* Ensure filters wrap on smaller screens */
+    align-content: center; /* Center rows vertically in available space */
     row-gap: 10px; /* Add vertical spacing when wrapped */
-    padding-top: 5px; /* Slight top padding for alignment */
-    padding-bottom: 5px; /* Slight bottom padding */
+    padding-top: 10px; /* User Req: 10px padding */
+    padding-bottom: 10px; /* User Req: 10px padding */
 }
 
 .filter-item {
