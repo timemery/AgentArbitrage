@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const headerTitleMap = {
         "Categories_Sub": "Genre",
         "Gated": "Action",
-        "last_price_change": "Age",
+        "last_price_change": "Ago",
         "Seller": "Name",
         "Min_Listing_Price": "Min. List",
         "1yr_Avg": "1yr Avg",
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "Detailed_Seasonality": "Season",
         "AMZ": "AMZ",
         "List_at": "List at",
-        "Profit_Confidence": "Est.",
+        "Profit_Confidence": "Estimate",
         "All_in_Cost": "All in",
         "Deal_found": "Found",
         "Buy_Now": "Buy",
@@ -399,8 +399,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // 4.5M
             return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
         } else if (num >= 1000) {
-            // 120K (Upper case K per requirements)
-            return Math.round(num / 1000) + 'K';
+            // 120k
+            return Math.round(num / 1000) + 'k';
         } else {
             return num.toString();
         }
@@ -711,8 +711,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
 
                             if (arrow) {
-                                // Place arrow before data (No space per requirements)
-                                cellContent = `${arrow}${count}`;
+                                // Place arrow before data
+                                cellContent = `${arrow} ${count}`;
                             } else {
                                 cellContent = `${value}`;
                             }
@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         tableContainer.innerHTML = table + '</tbody></table>';
-        
+
         // Initial responsive check
         updateResponsiveLayout();
 
@@ -758,8 +758,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const ghTrust = document.getElementById('gh-trust');
 
         if (ghBookDetails) {
-            // <= 700px: ASIN Hidden -> Colspan 2
-            if (width <= 700) {
+            // < 1024px: ASIN Hidden -> Colspan 2
+            if (width < 1024) {
                 ghBookDetails.colSpan = 2;
             } else {
                 ghBookDetails.colSpan = 3;
@@ -767,8 +767,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (ghTrust) {
-            // <= 700px: Trust Hidden -> Colspan 0 (Hide header too)
-            if (width <= 700) {
+            // < 768px: Trust Hidden -> Colspan 0 (Hide header too)
+            if (width < 768) {
                 ghTrust.style.display = 'none';
             } else {
                 ghTrust.style.display = 'table-cell';
@@ -778,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.addEventListener('resize', updateResponsiveLayout);
-    
+
     function addEventListeners() {
         document.querySelectorAll('#deals-table tbody tr').forEach(row => {
             row.addEventListener('click', () => {

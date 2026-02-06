@@ -401,7 +401,6 @@ button:disabled {
     flex: 0 1 auto;
     justify-content: center;
     white-space: nowrap;
-    margin: 0 10px; /* Ensure separation from left/right sections */
 }
 
 .nav-right {
@@ -420,11 +419,6 @@ button:disabled {
     text-decoration: none;
     opacity: 0.5; /* Default transparency */
     transition: opacity 0.2s ease;
-}
-
-/* Ensure spacing between sections */
-.nav-right {
-    margin-left: 10px;
 }
 
 .nav-item.active,
@@ -458,20 +452,6 @@ button:disabled {
     width: auto;
     margin-right: 8px; /* Spacing between icon and label */
     display: block;
-}
-
-@media (max-width: 900px) {
-    .nav-icon {
-        width: 16px;
-        height: auto;
-    }
-    .nav-item, .nav-link {
-        font-size: 14px;
-        padding: 0 8px; /* Slightly reduced padding */
-    }
-    .header-logo img {
-        width: 150px;
-    }
 }
 
 /* Spacers */
@@ -767,34 +747,12 @@ button:disabled {
     transition: width 0.3s ease;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .header-logo img {
         width: 35px; /* Clip to show only 'A' symbol */
         height: 35px; /* Ensure aspect ratio or crop works */
         object-fit: cover;
         object-position: left;
-    }
-
-    .nav-icon {
-        display: block !important; /* Keep icons visible */
-        width: 14px;
-    }
-
-    .nav-item {
-        white-space: nowrap; /* Prevent wrapping */
-    }
-
-    .nav-item, .nav-link {
-        font-size: 12px; /* Reduced font size to prevent clipping */
-        padding: 0 4px; /* Minimal padding */
-    }
-
-    .nav-spacer, .nav-spacer-large {
-        width: 4px; /* Reduced spacing */
-    }
-
-    .header-content-wrapper {
-        padding: 0 4px;
     }
 }
 
@@ -939,9 +897,9 @@ button:disabled {
 /* VERIFICATION: Sticky header alignment fix active - 2026-02-05 */
 #deals-table {
     width: 100%;
-    max-width: 1200px; /* User Req: Max 1200px */
-    margin: 0 auto; /* Centered */
-    font-family: 'Open Sans', sans-serif;
+    max-width: 1200px; /* Reduced to 1200px */
+    margin: 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
+    font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
 #deals-table table {
@@ -962,7 +920,7 @@ button:disabled {
 }
 
 #deals-table th, #deals-table td {
-    padding: 0 8px !important; /* User Req: 8px padding */
+    padding: 0 2px; /* Reduced to 2px */
     text-align: left;
     white-space: nowrap; /* Prevent wrapping on all columns */
     border: none; /* No default borders */
@@ -971,7 +929,7 @@ button:disabled {
 /* Special padding for first cell in row */
 #deals-table th:first-child,
 #deals-table td:first-child {
-    padding-left: 8px !important; /* User Req: 8px padding */
+    padding-left: 4px !important;
 }
 
 /* Column Header Styles */
@@ -1040,7 +998,7 @@ button:disabled {
 
 /* Group Separation Border */
 #deals-table .group-end {
-    border-right: 2px solid #13161a !important; /* User Req: 2px spacing */
+    border-right: 2px solid #13161a !important; /* Matches site background */
 }
 
 /* Group Header Styles */
@@ -1054,7 +1012,7 @@ button:disabled {
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
-    padding: 0 2px !important; /* User Req: Not the group headers (Keep 2px or 0?) */
+    padding: 0 2px !important;
     box-sizing: border-box !important;
     vertical-align: middle !important;
     line-height: 56px !important;
@@ -1104,22 +1062,12 @@ button:disabled {
 }
 
 /* Specific Column Padding - High Specificity */
-/* Override specific paddings if needed, but strict 8px requested */
 #deals-table tr td.col-asin,
 #deals-table tr td.col-sales-rank-current,
 #deals-table tr td.col-1yr-avg,
 #deals-table tr td.col-seller-quality-score,
 #deals-table tr td.col-all-in-cost {
-    padding-left: 8px !important; /* User Req: 8px */
-}
-
-/* Optimize % Down Column Padding */
-#deals-table th.col-percent-down,
-#deals-table td.col-percent-down {
-    padding: 0 4px !important; /* Reduce padding to save width */
-}
-#deals-table .sort-arrows-row td.col-percent-down {
-    padding: 0 4px !important;
+    padding-left: 10px !important;
 }
 
 /* Row Styles */
@@ -1162,7 +1110,7 @@ button:disabled {
     height: 25px !important; /* Adjusted to 25px */
     min-height: 25px !important;
     max-height: 25px !important;
-    padding: 0 8px !important; /* User Req: 8px */
+    padding: 0 2px !important;
     line-height: 25px !important; /* Adjusted */
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
@@ -1189,20 +1137,19 @@ button:disabled {
     z-index: -1;
 }
 #deals-table .sort-arrows-row td:first-child {
-    padding-left: 8px !important; /* User Req: 8px */
+    padding-left: 4px !important;
 }
 
 
 .sort-arrows-container {
     display: flex;
-    align-items: flex-end; /* Bottom aligned */
+    align-items: center;
     justify-content: flex-start; /* Left aligned */
     height: 25px;
-    gap: 4px; /* Spacing between arrows */
 }
 
 .sort-arrow {
-    width: 13px; /* Reduced width to fix column width */
+    width: 17px;
     height: 25px;
     cursor: pointer;
     margin-right: 0;
@@ -1214,7 +1161,7 @@ button:disabled {
     text-align: center;
     text-decoration: none;
     font-size: 1.2em;
-    color: rgba(102, 153, 204, 0.8); 
+    color: rgba(102, 153, 204, 0.8);
     text-shadow: 0 0 2px rgba(102, 153, 204, 0.5);
 }
 
@@ -1244,36 +1191,13 @@ button:disabled {
     position: relative; /* Needed for hover effect */
 }
 
-/* User Req: Width Updates */
 .title-cell {
-    width: 130px;
-    max-width: 130px;
-    min-width: 40px; /* Allow shrinking */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: clamp(4ch, 12vw, 125px); /* Fluid width: min 4ch, max 125px */
 }
 
 .season-detail-cell {
-    width: 100px; /* User Req: Increase default to 100px */
-    max-width: 100px;
-    min-width: 40px; /* Allow shrinking */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: clamp(4ch, 10vw, 105px); /* Fluid width: min 4ch, max 105px */
 }
-
-.col-condition {
-    width: 82px;
-    max-width: 82px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Center Drops */
-.col-drops {
-    text-align: center !important;
-}
-
 
 .seller-cell, .genre-cell {
     max-width: 120px;
@@ -1305,13 +1229,11 @@ button:disabled {
     flex-direction: column;
     align-items: center; /* Center the content horizontally */
     width: 100%;
-    max-width: 1200px; /* User Req: Max 1200px */
-    margin: 0 auto;
 }
 
 .deal-counter-container {
     width: 100%;
-    max-width: 1200px; /* Match table width */
+    max-width: 1800px; /* Match table width */
     text-align: left;
     margin-top: 10px; /* Reduced top margin to match bottom margin */
     margin-bottom: 10px;
@@ -1674,22 +1596,19 @@ body.home-background::before {
 .trend-rising-red { color: red; font-weight: bold; }
 
 .amzn-icon, .amz-warn-icon {
-    width: 12px; /* User Req: Reduce size */
-    height: 12px;
+    width: 17px;
+    height: 17px;
     display: block;
-    vertical-align: middle; /* Adjusted for centering */
+    vertical-align: bottom;
     margin-left: 5px;
 }
 
 .trend-icon {
-    width: 10px; /* User Req: Reduce size */
-    height: 10px;
-    vertical-align: baseline;
-    margin-right: 4px; /* User Req: 4px spacing */
+    width: 13px;
+    height: 13px;
+    vertical-align: bottom;
+    margin-right: 4px;
     display: inline-block;
-    position: relative;
-    top: -1px; /* Adjusted for alignment */
-    transform: translateY(1px); /* Fine-tune vertical alignment by 1px */
 }
 
 .offers-wrapper {
@@ -1697,7 +1616,6 @@ body.home-background::before {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 0; /* User Req: Remove gap */
 }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
@@ -2098,7 +2016,7 @@ body.home-background::before {
 
 .filter-panel {
     width: 100%;
-    max-width: 1200px; /* User Req: Max 1200px */
+    max-width: 1200px;
     background-color: transparent;
     border: 1px solid #000000;
     border-radius: 8px;
@@ -2140,8 +2058,7 @@ body.home-background::before {
 }
 
 .filter-panel-open {
-    height: auto;
-    min-height: 102px;
+    height: 102px;
 }
 
 /* Common Flex Layouts */
@@ -2159,7 +2076,6 @@ body.home-background::before {
 
 .panel-content-open {
     padding: 0 23px 0 18px; /* 23px from right edge */
-    /* Padding-top removed for better vertical centering via flexbox */
 }
 
 /* Hide content based on state */
@@ -2186,7 +2102,7 @@ body.home-background::before {
 
 /* Open state padding adjustment */
 .filter-panel-open .filter-icon-toggle {
-    margin-right: 20px; /* Padding reduced to 20px */
+    margin-right: 45px; /* Padding of 45px between the filter icon and the first slider */
 }
 .filter-panel-closed .filter-icon-toggle {
     margin-right: 16px; /* Padding of 16px between the filter icon and the text */
@@ -2244,11 +2160,6 @@ body.home-background::before {
     align-items: center;
     gap: 20px; /* Reduced to 20px */
     height: 100%;
-    flex-wrap: wrap; /* Ensure filters wrap on smaller screens */
-    align-content: center; /* Center rows vertically in available space */
-    row-gap: 10px; /* Add vertical spacing when wrapped */
-    padding-top: 10px; /* User Req: 10px padding */
-    padding-bottom: 10px; /* User Req: 10px padding */
 }
 
 .filter-item {
@@ -2365,33 +2276,17 @@ body.home-background::before {
 /* Checkbox Styling */
 .checkboxes-wrapper {
     display: flex;
-    flex-direction: column; /* Stacked layout */
-    align-items: flex-start;
+    flex-direction: column;
     justify-content: center;
-    gap: 5px; /* Spacing between checkboxes */
+    gap: 10px; /* Guessing gap based on mockup */
     margin-left: 20px; /* "Spacing between check boxes & sliders: 20px" */
     height: 100%;
-    padding-top: 18px; /* Align top checkbox with slider dot (Calculated ~20px) */
 }
 
 .checkbox-item {
     display: flex;
     align-items: center;
     gap: 8px; /* Spacing between box and text */
-}
-
-/* Narrow state for Checkboxes: Side-by-side under sliders */
-@media (max-width: 1100px) {
-    .checkboxes-wrapper {
-        flex-direction: row;
-        width: 100%; /* Break to new line */
-        justify-content: center;
-        gap: 20px; /* Increased gap for better separation */
-        margin-left: 0;
-        padding-top: 0;
-        margin-top: 10px;
-        align-items: center; /* Ensure vertical alignment */
-    }
 }
 
 .checkbox-item label {
@@ -2670,27 +2565,36 @@ body.home-background::before {
 /* 1. Fluid Narrowing & Breakpoints */
 @media (max-width: 1200px) {
     #deals-table th, #deals-table td {
-        /* User Req: Maintain 8px padding? "min 8px padding left and right INSIDE of all cells... no padding outside" */
-        /* If I reduce to 2px here, I violate the requirement. I will keep it 8px. */
-        /* padding: 0 2px; REMOVED reduction */
+        padding: 0 2px; /* Reduce padding */
         font-size: 11px; /* Slightly smaller font */
     }
     /* Adjust Group Header height/font */
     #deals-table .group-header th {
         font-size: 13px;
-        /* padding: 0 2px !important; Already set globally */
+        padding: 0 2px !important;
     }
 }
 
-/* 2. Hide ASIN (Reduced Threshold) & Disable Sticky Headers (Safety) */
-@media (max-width: 700px) {
+/* 2. Hide ASIN (< 1024px) & Disable Sticky Headers (Safety) */
+@media (max-width: 1024px) {
     .col-asin {
         display: none;
     }
-}
-
-/* Allow Filter Panel to grow naturally below 1300px to catch early wrapping */
-@media (max-width: 1300px) {
+    /* Disable Sticky Headers to prevent overlap with wrapping filter panel */
+    #deals-table th,
+    #deals-table .column-header-row th,
+    #deals-table .sort-arrows-row td,
+    #deals-table .group-header th,
+    .filter-panel,
+    #sticky-header-shadow-line {
+        position: static !important;
+        top: auto !important;
+    }
+    /* Remove Shadow Line */
+    #sticky-header-shadow-line {
+        display: none !important;
+    }
+    /* Allow Filter Panel to grow naturally */
     .filter-panel-open {
         height: auto !important;
         min-height: 102px;
@@ -2701,77 +2605,15 @@ body.home-background::before {
 /* 3. Truncate Title/Season (< 900px) */
 /* REMOVED: Handled by fluid clamp() on .title-cell and .season-detail-cell */
 
-/* 4. Hide Trust Columns (< 700px) - Synced with ASIN drop */
-@media (max-width: 700px) {
+/* 4. Hide Trust Columns (< 768px) */
+@media (max-width: 768px) {
     .col-seller-quality-score,
     .col-profit-confidence {
         display: none;
     }
-}
-
-@media (max-width: 768px) {
     /* Stack buttons in Filter Panel */
     .panel-right-buttons {
-        /* Keep column, override any potential row defaults if they existed */
-        flex-direction: column;
-        margin-top: 0;
-    }
-}
-
-/* 5. Mobile 375px Optimization */
-@media (max-width: 375px) {
-    /* Hide Header Icons */
-    .nav-icon {
-        display: none !important;
-    }
-
-    /* Hide Group Headers to save space and avoid empty groups */
-    #deals-table .group-header {
-        display: none !important;
-    }
-
-    /* Hide non-essential columns */
-    .col-asin,
-    .col-title,
-    .col-condition,
-    .col-sales-rank-current,
-    .col-drops,
-    .col-offers,
-    .col-detailed-seasonality,
-    .col-1yr-avg,
-    .col-seller-quality-score,
-    .col-profit-confidence,
-    .col-all-in-cost,
-    .col-binding,
-    .col-sells,
-    .col-seller,
-    .col-categories-sub {
-        display: none !important;
-    }
-
-    /* Ensure kept columns are visible and styled */
-    .col-price-now,
-    .col-percent-down,
-    .col-last-price-change,
-    .col-profit,
-    .col-margin,
-    .col-gated {
-        display: table-cell !important;
-        padding: 0 2px !important; /* Minimal padding */
-        font-size: 11px !important; /* Smaller font */
-    }
-
-    /* Force width adjustments for mobile */
-    #deals-table th, #deals-table td {
-        white-space: normal !important; /* Allow wrapping if needed? Or keep nowrap */
-    }
-
-    /* Adjust specific columns for mobile */
-    .col-price-now, .col-profit {
-        min-width: 40px;
-    }
-    .col-gated .approval-link {
-        width: 40px; /* Smaller button */
-        font-size: 0.8em;
+        flex-direction: row; /* Side by side on mobile? Or column? */
+        margin-top: 10px;
     }
 }

@@ -23,11 +23,13 @@ Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers
 
 1.  **Atomic Reservation:** The worker unconditionally decrements the shared Redis counter (`incrbyfloat -cost`).
 2.  **Threshold Check:** It reads the new balance.
-3.  **Aggressive Phase:** If `new_balance > MIN_TOKEN_THRESHOLD` (50) OR `old_balance` was sufficient to start, it proceeds. The deficit is allowed.
-4.  **Recovery Phase (Revert):** If the reservation drops the balance dangerously low (e.g., below threshold when it was already low):
+3.  **Aggressive Phase:** If `new_balance > MIN_TOKEN_THRESHOLD` (20) OR `old_balance` was sufficient to start, it proceeds. The deficit is allowed.
+4.  **Recharge Mode (Low Rate Protection):** If the Keepa refill rate is < 10/min AND the balance drops below the threshold (20), the system enters **Recharge Mode**.
+    *   **Action:** All requests are blocked.
+    *   **Exit Condition:** Wait until tokens reach the `BURST_THRESHOLD` (280) to allow a sustained burst of activity. This prevents "starvation loops" where tasks fight over a trickle of tokens.
+5.  **Recovery Phase (Revert):** If the reservation drops the balance dangerously low (e.g., below threshold when it was already low) and Recharge Mode is not active:
     *   The worker **Reverts** the transaction (`incrbyfloat +cost`).
-    *   It enters a **Sleep Loop**, waiting for the balance to recover to `Threshold + Cost + Buffer` (e.g., 55 + cost).
-    *   *Note:* It does **not** wait for a full refill (300).
+    *   It enters a **Sleep Loop**, waiting for the balance to recover to `Threshold + Cost + Buffer` (e.g., 25 + cost).
 
 ### Resilience & Crash Recovery (Zombie Locks)
 To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
@@ -36,10 +38,12 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
 *   **Result:** This ensures that when the system restarts, the token state and locks are completely reset, preventing "Task already running" errors.
 
 ### Task-Specific Buffers
-*   **Backfiller:** Uses the standard strategy.
+*   **Backfiller:**
+    *   **Dynamic Batching:** Default batch size is 20. If refill rate < 20/min, batch size is automatically reduced to **1 ASIN** to allow incremental progress without hitting timeouts.
 *   **Upserter (`simple_task.py`):**
-    *   **Batch Size:** Reduced to **10 ASINs** (approx 200 tokens) to minimize cost spikes.
-    *   **Blocking Wait:** Uses `token_manager.request_permission_for_call()` to block and wait for sufficient tokens instead of skipping the run. This prevents "starvation loops" where the task repeatedly starts, sees low tokens, and exits without doing work.
+    *   **Frequency:** Scheduled every **15 minutes** (down from 1 min) to allow tokens to accumulate for other tasks.
+    *   **Batch Size:** Reduced to **2 ASINs** (or **1** if refill rate < 20/min) to prevent monopolizing the token bucket.
+    *   **Blocking Wait:** Uses `token_manager.request_permission_for_call()` to block and wait for sufficient tokens instead of skipping the run.
 *   **API Wrapper (`keepa_api.py`):**
     *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.
     *   **Behavior:** If provided, the wrapper calls `request_permission_for_call` *before* the API request. This enforces a blocking wait if tokens are low, preventing `429 Too Many Requests` errors during high-frequency ingestion loops.

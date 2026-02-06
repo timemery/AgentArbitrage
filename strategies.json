@@ -44438,5 +44438,2740 @@
         "confidence": "High",
         "source": "Make sure you put all the proper information in when you're filling it in through the Amazon platform.",
         "date_added": "2026-02-05"
+    },
+    {
+        "id": "price_min_20",
+        "category": "Pricing",
+        "trigger": "Product price below 20 GBP",
+        "advice": "Avoid selling products below 20 GBP as it is very hard to make a profit on Amazon, especially for new sellers.",
+        "confidence": "High",
+        "source": "All I would say is for new sellers or for any sellers really that are Amazon private label sellers, you want to be selling above 20. Below 20 is very hard to make a profit on Amazon.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "size_restriction_avoid",
+        "category": "Buying",
+        "trigger": "Using simple interface shoebox filter (below 38 cm longest side and 1.3 kg)",
+        "advice": "Do not restrict to shoebox size; instead, aim for maximum dimension of 45 cm to stay in standard parcel tier, and weight up to 11.9 kg due to updated fees.",
+        "confidence": "High",
+        "source": "we do not need to restrict ourselves by weight to 1.3 kg. And also we do not need to restrict ourselves on the longest side to 38 cm. If you do want a maximum dimension to aim for I usually use 45 cm as that will keep you in standard parcel tier or below. But even now sometimes it's okay to go over a little bit... since the 2026 fee updates, we can now go up to probably 11 kg. I think the the cap is 11.9 kg",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sellers_max_2",
+        "category": "Risk",
+        "trigger": "More than 2 sellers for a product",
+        "advice": "Limit to maximum of 2 sellers to avoid big branded products resold by many, but include 2 to capture private label and Amazon reselling used items.",
+        "confidence": "High",
+        "source": "Number of sellers. I put a maximum of two. And the reason for this is we're not interested in kind of big branded products are being resold by lots of different sellers, but I still put two as the limit because sometimes if you've got a products been returned and Amazon are reselling it as a used product, that will count as two sellers.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "price_range_19-40",
+        "category": "Pricing",
+        "trigger": "Product price outside 19-40 GBP",
+        "advice": "Set minimum price to 19 GBP to catch products around 19.99, and maximum to 40 GBP for typical FBA private label products.",
+        "confidence": "High",
+        "source": "Minimum price. I always recommend selling at least 20. But if you put 20 in... you might want to put this at something like \u00a319 just to catch those products... in terms of max price... it's going to be priced somewhere between probably 20 to40 or so. So, let's use 20 to 40 in this scenario.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "reviews_no_filter",
+        "category": "Risk",
+        "trigger": "Filtering by review count or rating",
+        "advice": "Leave review count and rating filters blank; reviews are not a reliable metric for competition, as superior products can compete against high-review items.",
+        "confidence": "High",
+        "source": "review counts should not be a way of assessing how competitive a niche is. So, I actually don't put anything in these. I leave the review stuff completely empty... A product could be on Amazon with a thousand reviews selling really well and still be a poor product.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "bsr_no_filter",
+        "category": "General",
+        "trigger": "Setting BSR threshold",
+        "advice": "Leave Best Seller Rank (BSR) blank, as it varies by category and doesn't consistently indicate sales volume across niches.",
+        "confidence": "High",
+        "source": "I leave this blank as well. So, your BSR is a number that Amazon use to rank how well all of the products within a certain category sell... whatever BSR threshold you put in could mean a different number of sales.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sales_150-300",
+        "category": "Risk",
+        "trigger": "Monthly sales outside 150-300 units",
+        "advice": "Target products with 150-300 units per month for new sellers to manage inventory risk; avoid higher demand (e.g., >300) requiring large initial orders (e.g., 3000 units for 3 months).",
+        "confidence": "High",
+        "source": "I like to recommend to new sellers to stick between I normally say as low as 100 units a month, but 150 to 300 units per month is normally a good landing zone... if you go over that, when you order your first batch of stock, you're normally ordering enough inventory for at least 3 months... if you're going into a niche where products are selling, say, a,000 units per month, you're going to need to be ordering 3,000 units, that is a massive financial risk",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "shipping_size_avoid_oversized",
+        "category": "Buying",
+        "trigger": "Large oversize or standard oversize shipping tiers",
+        "advice": "Exclude large oversize and standard oversize tiers; include small oversize and below to keep fulfillment fees competitive.",
+        "confidence": "High",
+        "source": "The only ones I want to avoid are the larger oversized categories. Even small oversize is okay... So, the only two I'm leaving unticked are large oversize and standard oversize. As when you get into those tiers, the Amazon fulfillment fee goes up very, very quickly.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "weight_no_filter_or_20lb",
+        "category": "Buying",
+        "trigger": "Weight above 20 pounds",
+        "advice": "Leave weight filter unchecked due to generous fee structure up to 11.9 kg; if filtering, set max to 20 pounds to exclude extreme products.",
+        "confidence": "High",
+        "source": "I probably wouldn't even put in a weight filter anymore... If you did want to put one, you could put something like 20 pound in just to roll out the absolute insane products... you can pretty much sell a standardsized product up to around I think it's 11.9 kg",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "seasonality_avoid",
+        "category": "Seasonality",
+        "trigger": "Using best sales month filter",
+        "advice": "Leave best sales month blank to avoid seasonal products.",
+        "confidence": "High",
+        "source": "best sales month. I'm not interested in that as we're trying to avoid seasonal products.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "variation_max_2",
+        "category": "Risk",
+        "trigger": "Variation count >2",
+        "advice": "Set maximum variation count to 2 to avoid niches requiring multiple variants (e.g., colors) to compete, especially for new sellers.",
+        "confidence": "High",
+        "source": "I put a variation count maximum of two because I do not want to be competing in niches where you need to have five, six, seven different colors to get enough demand to compete... try to avoid variance with your first product",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "categories_one_two_at_time",
+        "category": "General",
+        "trigger": "Searching all categories at once",
+        "advice": "Search one or two categories or subcategories at a time to manage results and thoroughly review opportunities.",
+        "confidence": "High",
+        "source": "it's better to just go through these kind of one or two categories at a time or a few subcategories at a time so you can really get through all of the products.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "tweak_filters_subtly",
+        "category": "General",
+        "trigger": "Search returns max 500 results",
+        "advice": "Tweak filters subtly (e.g., price bands like 19-25 GBP, 25-30 GBP) and rerun searches across categories to uncover more unique products.",
+        "confidence": "High",
+        "source": "you want to keep running these searches and tweak this criteria subtly. So maybe you want to start off by doing 19 to\u00a325 and then you do \u00a325 to30 and 35 and 30 to 35 etc... That's the maximum it will return at any one time. That's why I'm saying you might want to tweak the filters, make them slightly smaller so you can go through the full range of products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s1",
+        "category": "General",
+        "trigger": "Keyword research initiation",
+        "advice": "Set minimum search volume to 3,000 for keywords to ensure sufficient demand.",
+        "confidence": "High",
+        "source": "for minimum search volume, I'm going to put 3,000.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s2",
+        "category": "General",
+        "trigger": "Product revenue threshold",
+        "advice": "Filter for products with at least $10,000 minimum monthly revenue to target viable opportunities.",
+        "confidence": "High",
+        "source": "For monthly revenue, I'm going to make the minimum at least $10,000. We don't want anything less than that.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s3",
+        "category": "Pricing",
+        "trigger": "Product price range",
+        "advice": "Target products priced between $15 minimum and $50 maximum to balance affordability and profit potential.",
+        "confidence": "High",
+        "source": "For the price, the minimum I'm going to put is $15. The maximum that I'm going to put is $50.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s4",
+        "category": "Risk",
+        "trigger": "Competition assessment",
+        "advice": "Limit search to products with a maximum of 250 reviews to avoid highly competitive markets.",
+        "confidence": "High",
+        "source": "review count. Maximum we're going to put is 250.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s5",
+        "category": "General",
+        "trigger": "Category selection",
+        "advice": "Focus research on categories like arts crafts and sewing, kitchen and dining, home and kitchen, office products, patio lawn and garden, pet supplies, and sports and outdoors.",
+        "confidence": "High",
+        "source": "I'm going to do arts, crafts, and sewing... kitchen and dining. We're going to do home and kitchen. We're going to do office products, patio, lawn, and garden. pet supplies and sports and outdoors.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s6",
+        "category": "Risk",
+        "trigger": "Category avoidance",
+        "advice": "Avoid categories such as video games, movies and TV, grocery, electronics, collectibles currencies, clothing shoes and jewelry, cell phones and accessories, books, and CDs and vinyl due to high competition or restrictions.",
+        "confidence": "High",
+        "source": "The ones I do not recommend you clicking on are video games, movies and TV. I would not recommend you do grocery or anything that someone is going to ingest. Electronics, I would not click on collectible currencies. I would not click on clothing, shoes and jewelry. I would not click on cell phones and accessories. I would not click on books. No CDs and vinyl.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s7",
+        "category": "Seasonality",
+        "trigger": "Upcoming holidays or seasons",
+        "advice": "Exclude seasonal keywords like Memorial Day, graduation, prom, Easter, and eggs to avoid temporary demand spikes.",
+        "confidence": "High",
+        "source": "I'm going to go to exclude keywords, and I'm going to get rid of anything that might be a holiday... Memorial Day... graduation... prom... Easter... eggs as well.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s8",
+        "category": "Risk",
+        "trigger": "Product shipping dimensions",
+        "advice": "Select only large and small standard shipping size tiers to avoid bulky or oversized items that increase costs.",
+        "confidence": "High",
+        "source": "For shipping size tier, we're going to go large and small standard. We don't want anything bulky or oversized.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s9",
+        "category": "Seasonality",
+        "trigger": "Seasonal product identification (e.g., baseball sliding mitt)",
+        "advice": "Analyze search volume graphs over all time to detect peaks (e.g., June) and lows (e.g., January); avoid highly seasonal products if beginner, as sourcing must start months in advance (e.g., by March for June peak).",
+        "confidence": "High",
+        "source": "it looks like it sells the best in June every single year... the numbers definitely are lower during the first half of the year... for a product like this where it's definitely seasonal, I would be very careful... you'd want to have all of your stuff in there by like April, the latest.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s10",
+        "category": "General",
+        "trigger": "Product analysis tool usage",
+        "advice": "Use Helium 10 X-ray Chrome extension to evaluate search volume (e.g., 10,000), total revenue (e.g., $713,000), average revenue per seller (e.g., $12,000), average price (e.g., $32), BSR (e.g., under 100,000), and reviews (e.g., under 200).",
+        "confidence": "High",
+        "source": "Baseball sliding emitt search volume 10,000... Total revenue $713,000... Average revenue $12,000 per seller. Average price is about $32. Average BSR or best sellers rank is 69,000. Average reviews is only 151.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s11",
+        "category": "General",
+        "trigger": "Search result cleanup",
+        "advice": "Hide sponsored products, sort by parent level revenue (highest to lowest), drag review column next to revenue, and remove irrelevant high-review listings to accurately assess averages (e.g., reduce reviews from 2,000 to 151).",
+        "confidence": "High",
+        "source": "I always click on filters and go to hide sponsored products from results... go to parent level revenue... drag the review column... look for ones with really high reviews so that I can remove them if they don't belong... you see how we went from almost 2,000 average reviews now down to 151.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s12",
+        "category": "Risk",
+        "trigger": "Trademark detection",
+        "advice": "Avoid keywords that are trademarked brand names (e.g., Pocket Pony); use generic terms like 'power scrubber' instead to prevent listing takedowns.",
+        "confidence": "High",
+        "source": "Pocket Pony... it is a trademark... you are not going to be able to sell Pocket Pony... if you put pocket pony in your listing, they can get your listing taken down.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s13",
+        "category": "Seasonality",
+        "trigger": "Products with periodic spikes (e.g., yard sign stakes)",
+        "advice": "Check for seasonal patterns like spikes in May (graduation) and fall (elections); be cautious of non-evergreen products with peaks and valleys, but pursue if low competition after cleanup.",
+        "confidence": "High",
+        "source": "there's definitely something seasonal here... spiking in May every year... in the fall there's a little bit of a spike... Definitely definitely something that is not super evergreen. There's definitely, you know, peaks and valleys.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "s14",
+        "category": "Buying",
+        "trigger": "Low competition high revenue opportunity",
+        "advice": "Target niches where top sellers achieve $30,000+ monthly revenue with low reviews (e.g., 50-118) after cleaning results, ensuring profitable sourcing costs.",
+        "confidence": "High",
+        "source": "they are doing about $31,000 a month with only 118 reviews. Then this other listing, 30,000 with only 50 reviews... these are sellers that don't have very many reviews and they're still able to do 30k a month... come down to sourcing the product and making sure that you're getting it for a profitable cost.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "Searching in Amazon's New Releases section",
+        "advice": "Use New Releases to filter millions of products down to hundreds of thousands of potential private label opportunities, avoiding big branded or wholesale products.",
+        "confidence": "High",
+        "source": "So, let's head over to Amazon. And what I want you to do instead of searching for product, I want you to click on the menu and choose new releases.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat2",
+        "category": "Buying",
+        "trigger": "Products with 10 to 50 reviews in New Releases",
+        "advice": "Target products with 10-50 reviews as they likely used Amazon Vine program, indicating private label; avoid 0 reviews or excessively high like 2700.",
+        "confidence": "High",
+        "source": "So, I want you to look for products that have somewhere between about 10 to 50 reviews. So, the ones without any reviews are no good. The ones with 2,700 reviews, I mean, how this is in hot new releases, there's obviously something not quite right there.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat3",
+        "category": "General",
+        "trigger": "Presence of Amazon Vine reviewers on a product",
+        "advice": "Start product research from products with Vine reviewers; click on their profiles to access lists of other private label products they've reviewed for new ideas.",
+        "confidence": "High",
+        "source": "And what we're looking for is we are looking for Vine reviewers. So, there's a good chance if they are a new listing and they've already got somewhere between 10 to 50 reviews that they've used the Amazon Vine review program.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat4",
+        "category": "Risk",
+        "trigger": "Reviewer profiles with hidden or blank reviews",
+        "advice": "Skip reviewers with non-public profiles and move to the next one to continue exploring potential products.",
+        "confidence": "High",
+        "source": "Now, sometimes when you click through these reviewers, they won't have their reviews as public and you'll just have a blank profile. In which case, just close it and move on.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat5",
+        "category": "Buying",
+        "trigger": "Products from Vine reviewer lists that appear appealing",
+        "advice": "Scan reviewer product lists for interesting items; avoid vitamins (consumables), stickers (low price), underwear (clothing), hammocks (seasonal); open and evaluate promising ones like toddler bowls or salad spinners.",
+        "confidence": "High",
+        "source": "So, we've got some vitamins there, which I'm not interested in. Stickers, that's probably going to be a super low price. Uh, brightens my smile, not interested in that type of products. Uh, hydration. That's a consumable. Underwear. Uh, hammock. Probably going to be seasonal. Toddler proof bowls. So, I might open that product and have a look.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat6",
+        "category": "Pricing",
+        "trigger": "Product price below $20",
+        "advice": "Prefer products priced above $20 to ensure at least $7 profit per unit after PPC, storage fees, and returns.",
+        "confidence": "High",
+        "source": "Price point is a little bit on the low side. I want to see ideally above 20 because you want to make a minimum a7 profit per unit before your PPC storage fees and returns.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat7",
+        "category": "Seasonality",
+        "trigger": "Demand drops substantially (e.g., 75%) in off-season months",
+        "advice": "Avoid seasonal niches where sales drop to less than 50 units per month in winter; check one-year demand view, especially around July entering peak season.",
+        "confidence": "High",
+        "source": "So, this demand, I mean, it drops down substantially in the winter month. So, I would avoid this niche as demand is going to drop probably by 75%, you're going to be selling less than 50 units, maybe 25 units per month if that marries up with a search volume dropping off.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat8",
+        "category": "Risk",
+        "trigger": "Niches with high demand but top sellers doing 100+ sales",
+        "advice": "As a new seller, target niches with evidence of multiple sellers achieving 1-200 sales per month; analyze top 15 organic results for entry points beyond top-ranked products.",
+        "confidence": "High",
+        "source": "This is too much. So, you wouldn't be targeting these as a new seller, but you might look further down. You're looking at kind of the top 15 or so organic results. And you could target 100 plus. So, I think you could come into this niche targeting between 1 to 200 sales per month because you've got evidence of multiple sellers selling at that volume.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat9",
+        "category": "General",
+        "trigger": "Finding one Vine-reviewed product",
+        "advice": "Expand research infinitely by checking other Vine reviewers on the same product (typically 4-5) and their profiles for more private label ideas.",
+        "confidence": "High",
+        "source": "And you can find other Vine reviewers because normally if a product has one Vine review, it will norally have four or five others. This might be a brand new product. It only has six so far. But let's take a look.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat10",
+        "category": "Buying",
+        "trigger": "After identifying potential product",
+        "advice": "Use tools like Helium 10 Cerebro for exact search terms, then X-ray for sales estimation, demand analysis, and viability check.",
+        "confidence": "High",
+        "source": "So, the next step is then to find the correct search term, which I've covered in another video... And then you analyze in X-ray to see how well those products are selling and whether the other stats marry up.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_marketplace",
+        "category": "General",
+        "trigger": "Starting product research in Helium 10 Blackbox",
+        "advice": "Select the correct marketplace such as amazon.com for US or amazon.co.uk for UK",
+        "confidence": "High",
+        "source": "the first thing before you do anything is that you want to the correct Marketplace so if you're looking for products in the US obviously select amazon.com if you're looking for products in the UK select amazon.co.uk",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_category",
+        "category": "General",
+        "trigger": "Selecting category in Helium 10 Blackbox",
+        "advice": "Select a specific subcategory like baby clothing or baby shoes, avoiding broad categories or sub-subcategories to be specific without being too narrow",
+        "confidence": "High",
+        "source": "instead of selecting a sub subcat atory or selecting an overall category I would select the middle ground here so I would select something like baby clothing or baby shoes and you just want to select one subcategory at a time",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_price_min",
+        "category": "Pricing",
+        "trigger": "Filtering by price in Helium 10 Blackbox",
+        "advice": "Set minimum selling price of around \u00a315 or $20",
+        "confidence": "High",
+        "source": "the next filter is price so you want to select a minimum selling price of around \u00a315 or $20",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_price_max",
+        "category": "Pricing",
+        "trigger": "Filtering by price in Helium 10 Blackbox",
+        "advice": "Set maximum selling price of around \u00a350 or $60 or $70, as this is the sweet spot for Amazon FBA products",
+        "confidence": "High",
+        "source": "a maximum of around uh \u00a350 or $60 or $70 that's really The Sweet Spot for Amazon FBA products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_shipping_size",
+        "category": "Risk",
+        "trigger": "Filtering by shipping in Helium 10 Blackbox",
+        "advice": "Select everything apart from oversize under shipping size tier to avoid high fulfillment fees",
+        "confidence": "High",
+        "source": "under shipping size you want to select everything apart from oversize",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_weight_max",
+        "category": "Risk",
+        "trigger": "Filtering by weight in Helium 10 Blackbox",
+        "advice": "Set maximum weight of 1.9 kilos (approximately 4 lbs) to keep products lightweight and avoid high Amazon fulfillment fees",
+        "confidence": "High",
+        "source": "under weight we want to select a maximum of 1.9 kilos so when products go over 1.9 kilos in packaged weight or they're oversized in terms of their actual dimensions that's when the Amazon fulfill fees start to get really high now the this tool doesn't give you the option of selecting kilos because it's an American based tool so what you can do here is just put a maximum of \u00a34 which is roughly about 1.8 kilos around there",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_revenue_range",
+        "category": "Pricing",
+        "trigger": "Filtering by monthly revenue in Helium 10 Blackbox",
+        "advice": "Set revenue range around your starting budget, 20% above and below (e.g., \u00a34,000 to \u00a36,000 for \u00a35,000 budget) to match affordable launch products",
+        "confidence": "High",
+        "source": "what you should select is roughly what your starting budget is so if you have a starting budget of say \u00a35,000 then you can afford to launch a product that sells around \u00a35,000 per month so in this Revenue range what I would do is just go 20% above and below so if you had a starting budget of \u00a35,000 and you looking for products that sold around \u00a35,000 here we would put a range of around \u00a34,000 to \u00a36,000",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_subcategory_specific",
+        "category": "General",
+        "trigger": "Search results exceed 500 items in Helium 10 Blackbox",
+        "advice": "Use specific subcategories to reduce results and see all matching products, rather than broad categories which limit to first 500",
+        "confidence": "High",
+        "source": "the reason why you want to use a specific subcategory is because the tool only shows you a certain number of searches so let me show you another example so I used the tool again here with really broad searches so I didn't add any filters and what you can see is the tool only shows me 500 products so if you leave things really broad you only see the first 500 products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "blackbox_excel_list",
+        "category": "General",
+        "trigger": "Finding promising products in Helium 10 Blackbox results",
+        "advice": "Add liked products to an Excel sheet for further evaluation",
+        "confidence": "High",
+        "source": "if you like them then add them to an Excel sheet this is an example of one that comes with the Amazon brand Academy um but if you're not a member then obviously you can just create your own Excel sheet",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "alibaba_suppliers",
+        "category": "Buying",
+        "trigger": "Searching a product on Alibaba",
+        "advice": "Switch to suppliers tab, click into multiple manufacturers, and review their other products under 'see all categories' for additional ideas",
+        "confidence": "High",
+        "source": "what you want to do is Select suppliers cuz we want to find a few different suppliers or manufacturers that make laptop stands so we'll click into this uh manufacturer here maybe this one here you want to do this for a few different manufacturers and when you click into them what it will do is it will take you to the seller's profile and what we want to be doing here is we want to see what other products these manufacturers actually make and sell so what you can do is come to the products drop down let's have a look at se all categories",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "alibaba_contact",
+        "category": "Buying",
+        "trigger": "After reviewing Alibaba manufacturer products",
+        "advice": "Contact manufacturers asking for their bestselling products to get more ideas",
+        "confidence": "High",
+        "source": "what you can also do is actually contact those manufacturers and say hi them we currently sell laptop stands whatever that first product is but we're also looking for other products to add to our range can you tell me what are your bestselling products at the moment and they'll get back to you with a list of products that are their best sellers",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "store_sniping_bestseller",
+        "category": "Buying",
+        "trigger": "Searching a product on Amazon for store sniping",
+        "advice": "Ignore sponsored products and select a bestselling or highest-ranked organic product, then go to the seller store and view all products via 'see all products'",
+        "confidence": "High",
+        "source": "select one of the bestselling or highest ranked products so you want to ignore the sponsored products and then just come down to the bestselling and highest ranked products so let's say that I'm going to select this product here you then want to click into the product and then once in the product you want to come down and click into the seller store which is just below the buy box here then once on the seller store if you scroll down to the bottom of the page what you see is a c products button so you want to click into that and that will show us all the products that this seller is selling",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "house_hunting_criteria",
+        "category": "General",
+        "trigger": "Looking around house for product ideas",
+        "advice": "Focus on small, lightweight, durable, everyday simple products that are easily brandable",
+        "confidence": "High",
+        "source": "try and look for fairly small lightweight products everyday simple products that are durable are not likely to break and products that would be quite easily brandable",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rebate_sites_categories",
+        "category": "Buying",
+        "trigger": "Using rebate sites like rebatekey.com",
+        "advice": "Browse category by category (e.g., baby products, home and kitchen) to see products being launched and add promising ones to your list",
+        "confidence": "High",
+        "source": "you just want to go through this category category by category so sticking on Trend we'll click on baby products and we can have a look what products are being sold here so we can see there is uh some kids protective gear we've got a wooden brush we've got a teddy bear um so those could be potential product ideas so again let's click another category so let's unselect babies and let's select let home and kitchen and see what we get",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "xray_remove_sponsored",
+        "category": "General",
+        "trigger": "Assessing market with Helium 10 X-Ray",
+        "advice": "Select and delete all sponsored products to focus on organic listings",
+        "confidence": "High",
+        "source": "once the results have loaded you then want to open up the helium 10 x-ray tool that's the tool we're going to be using to assess the market as a whole and look at the competi strength of competition and demand then once that Tool's loaded what you want to do is you want to select all of the sponsored Pro Ops and then once you've done that you then want to delete them um and the reason why we want to do this is because we only want want to be assessing the organically ranked products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "xray_revenue_assess",
+        "category": "Pricing",
+        "trigger": "Reviewing organic listings in Helium 10 X-Ray",
+        "advice": "Look for strong revenue within your budget range to assess demand",
+        "confidence": "High",
+        "source": "the first thing that you want to look at is the revenue column so you want to be looking for good strong Revenue that's within your Revenue rised I talked about at the beginning of the video so that's the first that you want to assess to see how strong the demand is and whether it's within your budget",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "xray_competition_assess",
+        "category": "Risk",
+        "trigger": "Evaluating competition in Helium 10 X-Ray",
+        "advice": "Examine review ratings, count, number of images, listing strength, bundling, and variations to identify improvement opportunities",
+        "confidence": "High",
+        "source": "you then want to look at the strength of the competition so you can look at things like review ratings um review count number of images the listings have you can click into the actual listings themselves and look at the strength of the listings you also want to look at all of the products and look at whether they are bundled whether there's variations in the design of the product and just think of any ways that you could actually improve create an improved more desirable product offer",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-saturated-1",
+        "category": "Risk",
+        "trigger": "Page one sellers have thousands of reviews and high sales (3,000-5,000 units/month)",
+        "advice": "Avoid entering saturated markets as a new seller to prevent tough competition for organic ranking",
+        "confidence": "High",
+        "source": "Page one is flooded with sellers having thousands of reviews and they are too competitive. ... 5,000 units bought in the past month 3,000 etc.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-seasonal-1",
+        "category": "Seasonality",
+        "trigger": "Products tied to holidays, trends like fidget spinners, or viral TikTok gadgets",
+        "advice": "Steer clear of seasonal or trendy items to avoid being left with unsold inventory after demand drops",
+        "confidence": "High",
+        "source": "the next thing to look out for are seasonal or trendy items. Right? These are items that we classify as holidays, holiday items or like trendy items. Like you remember the trend of spirit spinners.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-high-return-1",
+        "category": "Risk",
+        "trigger": "Products like glassware, electronics, or items with moving parts",
+        "advice": "Avoid high return products to minimize returns and bad reviews, especially for new sellers",
+        "confidence": "High",
+        "source": "highly return products, right? Products like glassware, electronics, or even moving parts, they tend to have high return ratios.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "return-rate-1",
+        "category": "Risk",
+        "trigger": "Return ratio >5% via Product Opportunity Explorer",
+        "advice": "Target products with <5% return rate for new sellers; avoid markets like small wood tray (5%), prom dresses (21%), wedding dresses (20.7%)",
+        "confidence": "High",
+        "source": "what I'm looking for as a criteria is anything less than 5% return rate. ... small wood tray category the return rate slightly higher now ... 5% return ratio and it's not something that I would sell. ... Prom dress a staggering 21% return ratio. ... wedding dress? Take a look at that. 207% return ratio",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-heavy-1",
+        "category": "Risk",
+        "trigger": "Heavy and oversized products requiring >$50,000 investment",
+        "advice": "Avoid heavy/oversized items due to high shipping, storage fees, and capital requirements",
+        "confidence": "High",
+        "source": "avoid products that are heavy and oversized, right? Just for the obvious reason of higher shipping, storage fees. ... require you upwards of $50,000 in investment",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-trademark-1",
+        "category": "Risk",
+        "trigger": "Products with trademarks (e.g., Disney characters) or patents",
+        "advice": "Check Google Patents for design/utility patents and avoid trademarked items to prevent lawsuits and shutdowns",
+        "confidence": "High",
+        "source": "avoid product that has trademark or patents on them. ... make sure you check Google patents before launching ... do not sell Disney characters or any trademark related items.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-gated-1",
+        "category": "Risk",
+        "trigger": "Restricted/gated categories like automotive, health, beauty, electronics",
+        "advice": "Avoid gated categories requiring approvals, certifications, or lab tests; use Amazon's compliance reference tool (sellercentral.amazon.com/ckp)",
+        "confidence": "High",
+        "source": "restricted and gated categories, right? These are things that you may want to avoid as a new seller because it requires additional certification categories such as automotive, health, beauty",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "profit-margin-1",
+        "category": "Pricing",
+        "trigger": "Profit margin <30-40%",
+        "advice": "Ensure at least 30-40% profit margin using Amazon calculator before sourcing or manufacturing",
+        "confidence": "High",
+        "source": "we want to make sure that we have at least 30 to 40% profit margin. ... use the Amazon calculator to quickly check your profit",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "price-range-1",
+        "category": "Pricing",
+        "trigger": "Product price outside $25-$60",
+        "advice": "Target products in $25-$60 range for impulse buys and healthy margins",
+        "confidence": "High",
+        "source": "make sure your products in the profitable price range ... between $25 to about $60. This is the sweet spot for impulse buy",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "improvement-opportunity-1",
+        "category": "General",
+        "trigger": "3-4 star average reviews, poor listing (4-5 images, no A+ content)",
+        "advice": "Select products with room for improvement by enhancing listings, adding bundles to differentiate and dominate",
+        "confidence": "High",
+        "source": "look for products that has huge room for improvement. ... products with three to four stars average star reviews. They are probably a bad listing as well. Maybe only four or five images without the A+ content.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "no-brand-dominance-1",
+        "category": "Risk",
+        "trigger": "Single brand dominating (e.g., Nike, Adidas, Disney) or Amazon selling the product",
+        "advice": "Avoid products dominated by strong brands or Amazon to ensure a level playing field",
+        "confidence": "High",
+        "source": "look out for products that doesn't have a single brand dominating or Amazon selling that product. ... you don't want to compete with those heavyweight champions like Nike, Adidas or Disney.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "keyword-density-1",
+        "category": "General",
+        "trigger": "<100 relevant keywords",
+        "advice": "Choose products with at least 100 relevant keyword variations for targeting long-tail keywords",
+        "confidence": "High",
+        "source": "look at the keyword density. ... there's at least 100 keywords of this kind of relevant keywords that points to that product",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "evergreen-1",
+        "category": "Seasonality",
+        "trigger": "Seasonal products (Christmas/Halloween only)",
+        "advice": "Select evergreen products that sell year-round for consistent revenue; avoid seasonal for beginners",
+        "confidence": "High",
+        "source": "choose products that sell all year round. ... evergreen products, they sell all year round. They are not seasonal. So avoiding Christmas only or Halloween only types of products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "wide-pricing-1",
+        "category": "Pricing",
+        "trigger": "Narrow price range (e.g., $4-$10 for stainless steel straws)",
+        "advice": "Target products with wide price ranges to allow premium pricing based on added value",
+        "confidence": "High",
+        "source": "a wide pricing range. So, look out for products with really, really wide range of prices on Amazon ... stainless steel straw ... from $4 all the way up to at most $9 ... Not a lot of price variation",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "giftable-1",
+        "category": "Seasonality",
+        "trigger": "Evergreen products without gift potential",
+        "advice": "Prioritize giftable evergreen products for sales spikes during holidays like Christmas, Valentine's Day",
+        "confidence": "High",
+        "source": "look for products that have giftable potential ... evergreen product that you know will sell all year round but at the certain season it will spike in sales like Christmas",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "affordable-1",
+        "category": "Buying",
+        "trigger": "Cannot afford second order including advertising",
+        "advice": "Only launch products within budget to avoid stockouts and losing rank; plan for ongoing inventory",
+        "confidence": "High",
+        "source": "products that you can afford ... do not choose a product that you have no ability to finance especially for the second order together with advertising.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-filters-1",
+        "category": "General",
+        "trigger": "Gated categories like automotive or baby products",
+        "advice": "Use Helium 10 Blackbox to filter non-gated categories (e.g., home & kitchen) for new sellers",
+        "confidence": "High",
+        "source": "choosing the right category to sell in because not all categories are open ... automotive category is a restricted category. It is gated.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-reviews-1",
+        "category": "General",
+        "trigger": "Review count >250 or rating >3.5 stars",
+        "advice": "Filter for max 250 reviews and 3-3.5 star ratings in Helium 10 to find newer listings with improvement potential",
+        "confidence": "High",
+        "source": "review counts here ... max review count of 250 reviews. ... review ratings. ... three or even some 3.5 stars.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-size-1",
+        "category": "Buying",
+        "trigger": "Shipping size outside small/large standard",
+        "advice": "Filter for small/large standard shipping sizes in Helium 10 to keep costs affordable",
+        "confidence": "High",
+        "source": "shipping size, we always go within the large standard size or the small standard size just to keep cost affordable",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-fulfillment-1",
+        "category": "General",
+        "trigger": "Fulfillment by Amazon (own products)",
+        "advice": "Filter for FBA/FBM in Helium 10, avoid Amazon fulfillment to reduce direct competition",
+        "confidence": "High",
+        "source": "Fulfillment, I always choose FBA and sometimes FBM. I avoid having Amazon in there just because I don't want to fight with Amazon directly.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-images-1",
+        "category": "General",
+        "trigger": ">5 images in listing",
+        "advice": "Filter for max 5 images in Helium 10 to identify poorly optimized listings for differentiation",
+        "confidence": "High",
+        "source": "Number of images ... maximum of five images in the listing. This tells me that this seller doesn't know how to sell on Amazon.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-sellers-1",
+        "category": "Risk",
+        "trigger": "Number of sellers >2-3",
+        "advice": "Limit to max 2-3 sellers in Helium 10 to target private label opportunities without heavy competition",
+        "confidence": "High",
+        "source": "the number of sellers. Probably I would want to max it out at probably two or three at most ... limits us with only private labor sellers",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-pricing-1",
+        "category": "Pricing",
+        "trigger": "Pricing outside $25-$60",
+        "advice": "Filter for $25-$60 pricing in Helium 10 for impulse buys and margins",
+        "confidence": "High",
+        "source": "the pricing range I would like to always put $25 to $60 as a starter ... this is a glly lock zone where impulse buy happens",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-revenue-1",
+        "category": "General",
+        "trigger": "ASIN monthly revenue < $5,000 or > $25,000",
+        "advice": "Target ASIN revenue $5,000-$25,000/month in Helium 10 to balance demand and capital needs",
+        "confidence": "High",
+        "source": "asin revenue? Right? So, let's begin with monthly revenue of at least $5,000 ... maximum of maybe $25,000 USD",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium-sales-1",
+        "category": "General",
+        "trigger": "ASIN sales outside 300-800 units/month",
+        "advice": "Filter for 300-800 ASIN sales units/month in Helium 10 to manage inventory and capital requirements",
+        "confidence": "High",
+        "source": "the asin sales ... limit between 300 units sold a ban to 800 units sold a month. This also is another criteria to limit your capital requirement.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-001",
+        "category": "General",
+        "trigger": "Starting an Amazon arbitrage business",
+        "advice": "Obtain a professional Amazon seller account for $40 per month to access FBA, buy box, and Seller Central features",
+        "confidence": "High",
+        "source": "the professional account is going to run you about $40 per month and then Amazon is going to allow you to store your inventory in their warehouses",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-002",
+        "category": "General",
+        "trigger": "No software for product decisions",
+        "advice": "Use Keepa software to analyze exact product data including sales speed, historical prices, seller count, and reviews before purchasing",
+        "confidence": "High",
+        "source": "with Arbitrage and wholesale you never have to buy products blindly because we have a software called keepa keepa gives us so much data of the exact product",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-003",
+        "category": "General",
+        "trigger": "Need profit calculations",
+        "advice": "Use Seller Amp as a profit and loss calculator by entering buy cost to check profitability and spy on other sellers' storefronts",
+        "confidence": "High",
+        "source": "the second software you will need is sell amp seller amp is a profit and loss calculator so you can enter your buy cost and it will automatically tell you if it's profitable",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-004",
+        "category": "Risk",
+        "trigger": "Potential IP complaints on product",
+        "advice": "Use IP Alert software to check for known IP issues on Amazon listings and avoid or assess risk based on red alerts",
+        "confidence": "High",
+        "source": "the third software I recommend is IP alert IP alert will tell you if a product is known for filing IP complaints and it will show up right on the Amazon listing",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-005",
+        "category": "Buying",
+        "trigger": "Sourcing products without strategy",
+        "advice": "Start sourcing from auto-ungated brands (use provided list of over 200 brands) to avoid gated restrictions initially",
+        "confidence": "High",
+        "source": "we're going to start with a brand from the auto unate list which I will provide to you guys down below in the description it's over 200 brands that are Auto unated",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-006",
+        "category": "Buying",
+        "trigger": "Selecting sellers for storefront stocking",
+        "advice": "Target sellers with low ratings (sub-10 or under 200) as they are smaller, easier to compete with, and likely have auto-ungated brands",
+        "confidence": "High",
+        "source": "you don't want a storefront stock somebody who has you know massive amounts of ratings like this guy right here uh pulse uniform has over 11,000 ratings... look at sellers who have a smaller amount of ratings like this one's 16 even 200 even if they have none when they have none or when they have like sub 10 those are good",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-007",
+        "category": "Pricing",
+        "trigger": "Evaluating seller prices",
+        "advice": "Focus on buy box price over listed price to ensure competitiveness; avoid sellers listing far above buy box",
+        "confidence": "High",
+        "source": "you also want to make sure that you're paying attention to their selling price but also the buy box price more importantly because they could list at whatever they want and sometimes you're going to run into sellers who are listing it at these crazy prices and they're not even close to the buy box",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-008",
+        "category": "Buying",
+        "trigger": "Finding sourcing deals",
+        "advice": "Use Google Shopping to search for products and identify deals from retailers like Ace Hardware or small sites, then verify with Amazon button",
+        "confidence": "High",
+        "source": "we're just going to click on the Google button and it's going to take us over to Google and this is where we can see that this product is being offered by a few different people you can buy stuff from sites like toolfetch",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-009",
+        "category": "Risk",
+        "trigger": "Sourcing from unknown small websites",
+        "advice": "Vet small online stores similar to wholesale suppliers to ensure reliability before purchasing",
+        "confidence": "High",
+        "source": "if you're buying from smaller stores like this you want to make sure that you're vetting them out kind of similar to what we do when we're in wholesale we're vetting out the the suppliers we're vetting out websites as well with Arbitrage",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-010",
+        "category": "Pricing",
+        "trigger": "Retail purchase with discounts",
+        "advice": "Stack 17% discount gift cards (e.g., from Cardbear) with cash back (e.g., 7%) to reduce buy cost, e.g., $6.99 to $5.80 for 70% ROI",
+        "confidence": "High",
+        "source": "if we go over to cardbear and we look for Ace Hardware we can see that we can get a 177% discount 133% 11% so we can get a really good discount here right so we go back here and if we're getting a 17% discount from this point right here then we are going to times it by 83 and we're getting it for 580",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-011",
+        "category": "Pricing",
+        "trigger": "Product sells 100+ units/month with steady price",
+        "advice": "Prioritize products with steady prices over 2+ months and sales velocity of 100+ units/month for reliable profits",
+        "confidence": "High",
+        "source": "it's selling uh 50 usually and then now it's selling 100 and the price is actually really steady at this $16 price point okay so 354 that we can get it from this smaller known website... we're making about 70% Roi on a product that has a very steady price point um over the last two months",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-012",
+        "category": "Buying",
+        "trigger": "Packaging variations in products",
+        "advice": "Accept minor packaging changes or slight quantity increases (e.g., 3.5oz vs. expected) if core product matches, as brands test variations",
+        "confidence": "High",
+        "source": "this looks to be the exact same product sometimes they're going to change the packaging because they're just testing out different things so Brands want to see what's going to work more than others... I think this one's actually a little bit bigger yeah 3.5 but I don't think they're going to complain about getting a little bit more",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-013",
+        "category": "Pricing",
+        "trigger": "ROI calculation for low-margin items",
+        "advice": "Target at least 20% ROI and $3+ profit per unit even if price is declining but historically higher (e.g., $27 now, $32-35 recent)",
+        "confidence": "High",
+        "source": "we're getting it for $5 a unit so three three pack would be $15 that's $3 um profit 21% Roi and if we come over here the price isn't horrible... typically this product actually sells for a little bit more than it's selling now",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-014",
+        "category": "Pricing",
+        "trigger": "Buy box suppressed or dragged low",
+        "advice": "Monitor for new sellers (1-3 ratings) tanking price; avoid if current profit low (<$5/unit) but watch for rebound after sell-out",
+        "confidence": "High",
+        "source": "once you see somebody dragging the price down cuz look you can see everybody is priced a little bit higher there's one fbm seller and one FBA seller that's really dragging the price... if you have like one rating or no ratings or like three ratings chances are this a new seller just getting greedy and impatient and they're just going to sell out",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-015",
+        "category": "Risk",
+        "trigger": "Price spike in last 7 days",
+        "advice": "Avoid products with recent price spikes (e.g., $50 now vs. $20-25 historical over 9 months) as they likely revert, especially with FBA send-in delays",
+        "confidence": "High",
+        "source": "a price spike is like let's say a product is selling for $50 right now so within the last 7 days it's been selling for 50 bucks... but for the last 9 months it's sold at $20... the chances of that product going back down to $25 or $20 is extremely high",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-016",
+        "category": "Risk",
+        "trigger": "Spike in seller count",
+        "advice": "Avoid listings with sudden seller count increases (e.g., 4 to 21 sellers) as price drops inversely (e.g., $88 to $43), leading to race to bottom",
+        "confidence": "High",
+        "source": "the more sellers that are on a listing you can almost just follow it like to a te that the price starts to go down... as soon as one goes up the other one is coming down... as soon as we jump up to about 21 to 22 sellers the price drops significantly down to as low as 43",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-017",
+        "category": "Risk",
+        "trigger": "Easy product discovery",
+        "advice": "Be cautious with products found quickly (<5 minutes) at common retailers like Walmart; prefer harder-to-find deals at outlets like Grocery Outlet",
+        "confidence": "High",
+        "source": "if it was really easy for you to find that product like you found it within the first 5 minutes... the chances of somebody else finding that product is probably pretty high... the chances of everybody sourcing at Grocery Outlet them having the same sale... is a lot less than if you were to go Source on nike.com or walmart.com",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-018",
+        "category": "Risk",
+        "trigger": "Amazon dominating buy box",
+        "advice": "Avoid listings where Amazon wins buy box 99%+ of time, even if priced $2 higher, as third-party sellers get no sales",
+        "confidence": "High",
+        "source": "the last 30 days Amazon has dominated the buy box 99% of the time not only are they dominating the buy box they're doing so even though they're priced almost $2 higher than the next offer",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-019",
+        "category": "Risk",
+        "trigger": "Brand owner as seller",
+        "advice": "Avoid listings with brand owners as sellers (check historical presence via Keepa or sold by) to reduce IP removal risk",
+        "confidence": "High",
+        "source": "my personal preference when it comes to products like that... I decided that I don't want to sell next to Brands... wish trend is actually the brand owner of deer Claire's",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-020",
+        "category": "Risk",
+        "trigger": "Red IP alert or Keepa cliff",
+        "advice": "Avoid products with red IP alerts or sharp Keepa seller count drops (e.g., 13 to 3 sellers) indicating brand IP actions",
+        "confidence": "High",
+        "source": "if you don't have the IP alert soft Ware... that is a great software... this particular brand has a big keepa cliff this is a big sharp drop... from 13 sellers down to three sellers if you see that then it is a sign that the brand is uh filing IP complaints",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-021",
+        "category": "Risk",
+        "trigger": "Historical price much lower",
+        "advice": "Avoid price spikes where current price >50% above historical (e.g., $96 now vs. $49-66 over years) as reversion is likely",
+        "confidence": "High",
+        "source": "the price is around $96 but if we go back for the last 3 months we can see that the price before has only ever peaked out at 66... the price is below 50% of what it currently is selling for now... historically it's hanging around between the 66 Mark and even down as low as4 $49",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-022",
+        "category": "Buying",
+        "trigger": "Before purchasing inventory",
+        "advice": "Attempt to list the product in Seller Central first to check for gating; avoid if hard gated without ungating option",
+        "confidence": "High",
+        "source": "you want to attempt to list that product before you purchase it... if it comes up that you're hard gated you don't qualify it's restricted whatever it may be that's a problem that means that we cannot sell it now",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-023",
+        "category": "Pricing",
+        "trigger": "Need to increase margins",
+        "advice": "Stack cash back (6-15% via Rakuten/TopCashback), discount gift cards (5-10% via Raise/Cardbear), and coupons (10% via Capital One) for up to 35% off",
+        "confidence": "High",
+        "source": "we can get 15% cash back and then we can get an additional 10% off by using a discount gift card and then Capital One Shopping finds us another 10% coupon code well now we went from sourcing from a sale... to sourcing from that same sale but now we have a 35% off",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-024",
+        "category": "General",
+        "trigger": "Gated in desired brands",
+        "advice": "Focus on sales in ungated brands first to build metrics, then ungating becomes easier; buy 10 units from Target for invoice to apply",
+        "confidence": "High",
+        "source": "when it comes to ungating especially when you're new you want to focus on sales first and ungating second... you need to give them a current invoice that shows the purchase of 10 units if you're doing Arbitrage you can use a supplier like Target you go to Target you buy 10 units",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule-025",
+        "category": "Risk",
+        "trigger": "Orders getting cancelled",
+        "advice": "Start with small orders to build trust, use PayPal/Apple Pay for verification, or contact customer service as last resort to avoid fraud/reseller flags",
+        "confidence": "High",
+        "source": "you start buying small orders... most of the time you're getting flagged for fraud so if you start placing smaller and smaller orders... Paypal Google pay Apple pay stuff like that is really good... reach out to customer service this works extremely well",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-cheap-products-1",
+        "category": "Buying",
+        "trigger": "Products costing $2 per unit to buy and resell for $8",
+        "advice": "Avoid selling low-quality or cheap products due to high competition, risk of poor reviews, and race to the bottom pricing.",
+        "confidence": "High",
+        "source": "By selling inexpensive items that often arrive damaged or broken, you're going to get a lot of angry customers... the very low barrier to entry means that you will face stiff competition. And before long, someone will come along willing to sell for $7.25, forcing you to sell for $7.25. And before you know it, you're in a race to the bottom",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-seasonal-products-1",
+        "category": "Risk",
+        "trigger": "Seasonal or trendy products like Santa hats or viral hoodies",
+        "advice": "Avoid seasonal and trendy products due to inconsistent demand and high long-term storage fees after 6 months.",
+        "confidence": "High",
+        "source": "You'll also want to avoid selling seasonal and trendy products at all costs... This leads to the biggest issue with inconsistent demand. Ballooning storage costs. You'll be stuck paying your regular storage fee as well as an additional long-term storage fee that kicks in after 6 months... After 180 days, the fee is 50 cents per cubic foot. After one year, the rate is $6.90 per cubic foot",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-copyrighted-content-1",
+        "category": "Risk",
+        "trigger": "Products containing copyrighted material",
+        "advice": "Avoid copyrighted content requiring explicit permission, as it takes significant time and money; research before purchasing.",
+        "confidence": "High",
+        "source": "Now, you'll also want to avoid selling any copyrighted content or so-called restricted goods. Dealing with copyrighted content requires the explicit permission of the owner... Pro tip. If there's even the slightest chance that the product you're planning to sell contains copyrighted material... do your research before purchasing.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-restricted-goods-1",
+        "category": "Risk",
+        "trigger": "Hazardous items (flammable, lithium batteries) or heavily regulated goods (CBD, medications, supplements, cosmetics)",
+        "advice": "Avoid hazardous and heavily regulated goods due to extra fees, compliance hoops, and legal hassles.",
+        "confidence": "High",
+        "source": "There are several dozen categories of restricted products on Amazon, but I will loosely group them into two classes, hazardous and heavily regulated. Hazardous items include anything flammable or combustible... highly regulated goods such as CBD oils, medications, supplements, cosmetics... is too much of a headache.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-food-1",
+        "category": "Risk",
+        "trigger": "Food products like chocolate or frozen meals",
+        "advice": "Absolutely avoid selling food due to regulatory hurdles, melting, or refrigeration needs.",
+        "confidence": "High",
+        "source": "Though technically a subset of highly regulated goods, I specifically want to tell you absolutely no food. Beyond the regulatory hurdles, some foods, like chocolate, can melt... while others, like frozen meals, require refrigeration.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-fragile-products-1",
+        "category": "Risk",
+        "trigger": "Inherently fragile products like glassware or ceramics",
+        "advice": "Avoid fragile products to prevent breakage complaints and extra packaging fees.",
+        "confidence": "High",
+        "source": "Oh, and don't pick something fragile. I don't mean cheaply made. I mean inherently fragile products like glassware or ceramics. That's another poor idea since not only will you have to occasionally deal with an angry customer who has received a broken vase, but you'll be paying Amazon to bubble wrap each package.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-heavy-items-1",
+        "category": "Risk",
+        "trigger": "Oversized or heavy items like furniture or large appliances",
+        "advice": "Avoid oversized or heavy items as storage and shipping fees will reduce profit margins and limit inventory.",
+        "confidence": "High",
+        "source": "And lastly, avoid selling oversized or heavy items. The storage and shipping fees will eat into your profit margins and significantly limit the amount of inventory you can reasonably store at a given time.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "calculate-landed-costs-1",
+        "category": "Pricing",
+        "trigger": "Before sourcing any product",
+        "advice": "Always calculate landed costs including duties, taxes, shipping, handling, and all FBA fees to determine required selling price for sustainable profit.",
+        "confidence": "High",
+        "source": "Always, always, always calculate the price you'll need to sell at to make a healthy, sustainable profit... landed costs, which is all the money you'll spend from procuring the product until it arrives at your customer's door. This includes the potential import or export duties and taxes, shipping and handling, and all your FBA fees",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "prefer-lightweight-products-1",
+        "category": "Buying",
+        "trigger": "When searching for products",
+        "advice": "Look for lightweight, small, durable, and easy-to-handle items to lower fees per unit.",
+        "confidence": "High",
+        "source": "To help lower these fees per item as much as possible, it makes sense to try to look for items that are lightweight, small, durable, and easy to handle.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "profit-margin-target-1",
+        "category": "Pricing",
+        "trigger": "For beginners",
+        "advice": "Aim for 15-20% profit margin as a benchmark; anything above 10% is sustainable; prioritize volume over high margins if sustainable.",
+        "confidence": "High",
+        "source": "aiming for something like 15 to 20% is a good benchmark, and anything above 10% should be fairly sustainable... having a 50% profit margin on a $50 item doesn't matter if you only sell five each month... if you're selling for $25 and your landed costs are $23, but you're selling 2,000 of them a month, then you're still making $4,000 a month... even if your profit margin is technically only 8%.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "niche-selection-1",
+        "category": "General",
+        "trigger": "Product solves a problem or fills a niche",
+        "advice": "Choose products that solve a problem or are used regularly; avoid niches too small or oversaturated.",
+        "confidence": "High",
+        "source": "your product will also need to solve a problem or fill a specific niche... ask yourself, does this item actually solve a problem? Would I use this to do something regularly? If you answer no... the market or niche for that item may be too small... the niche can be so large that it is oversaturated... but it also can't be too small",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "premium-products-1",
+        "category": "Buying",
+        "trigger": "Niches with cheaper alternatives",
+        "advice": "Offer premium, high-quality products that provide more value, features, or durability over cheaper options.",
+        "confidence": "High",
+        "source": "a great way to capture a niche is by offering a premium, highquality products that people will actually want to buy over a cheaper, inferior one... people might be willing to pay $48.95 for a toaster instead of $24.99. Perhaps it has more features or people think it'll last 10 years instead of five.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "price-range-1",
+        "category": "Pricing",
+        "trigger": "Product pricing",
+        "advice": "Sell products between $25 and $70 to balance cost, quality, and margin without deterring customers.",
+        "confidence": "High",
+        "source": "you should only sell products between $25 and $70. as this represents a compromise between cost, quality, and margin.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "low-brand-dominance-1",
+        "category": "General",
+        "trigger": "Niches dominated by major brands like Adidas, Nike",
+        "advice": "Choose niches not dominated by a few major brands to avoid impossible competition.",
+        "confidence": "High",
+        "source": "choose a niche that a few major brands don't dominate. For example, if you're trying to sell sweatpants, then you're going to be competing against giants like Adidas... It'll be almost impossible to compete with them... The key is to find a product in a niche that isn't dominated by just a couple of players.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "price-disparity-1",
+        "category": "General",
+        "trigger": "Wide price range in search results (e.g., $10.29 to $57.99 for hoodies)",
+        "advice": "Target niches with high price disparity to allow targeting different value points; avoid low disparity where price dominates.",
+        "confidence": "High",
+        "source": "the wide margin between the highest and lowest sellers opens up several different price points you could target... Searching for Ziploc gallon size bags, you have a scenario where the disparity... is barely $2... this is the last market you should try to get into.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "keyword-research-1",
+        "category": "General",
+        "trigger": "Product selection",
+        "advice": "Conduct keyword research using tools like Cerebro and Magnet to identify high-search, low-competition keywords; optimize titles, descriptions, and use high-quality photos/videos.",
+        "confidence": "High",
+        "source": "keywords and search engine optimization, SEO, are critical... There are dozens of keyword research apps available, including Helium 10's Cerebro... The more keywords you can use, the wider a net you can cast... optimizing product titles and descriptions, and ensuring you include ample highquality photos and videos",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "helium10-blackbox-filters-1",
+        "category": "General",
+        "trigger": "Using Helium 10 Black Box",
+        "advice": "Filter by 3-5 categories (avoid restricted); review count 200-1500; rating 2.5-4.5; listing age >=6 months; weight 0-5 lbs; FBA; 10-50 sellers; price $25-70; parent revenue $1000-20000.",
+        "confidence": "High",
+        "source": "I recommend choosing between three and five categories... review count... 200 for the minimum and 1 and a half thousand for the maximum... minimum acceptable rating to two and a half and the maximum to 4.5... set the listing age to at least 6 months... limit myself to 5 lb... minimum of 10 sellers and a maximum of 50... price range of between $25 and $70... minimum parent revenue of $1,000 and a maximum of $20,000.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "ppc-avoidance-1",
+        "category": "Risk",
+        "trigger": "Low-margin products requiring ads",
+        "advice": "Avoid reliance on PPC ads (avg $1/click) for low-margin products, as fees can lead to losses.",
+        "confidence": "High",
+        "source": "the best way to get ahead of your competition is to pay for ads on Amazon... The average pay-per-click or PPC rate is around $1 per click... if you're trapped in this downward spiral... you'll likely end up at a loss from the PPC fees alone. So, selling a $5 product for $10 is excellent, but not if you're spending $5 for every single PPC sale.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "review-insights-1",
+        "category": "General",
+        "trigger": "Analyzing competitor reviews",
+        "advice": "Use review insights to identify product weaknesses (e.g., quality issues) and improve your offering, like sourcing higher-quality versions.",
+        "confidence": "High",
+        "source": "Taking a close look at the reviews is always incredibly helpful... 29% of all the reviews... are one-star reviews... quality control is the issue... If people are complaining about the quality, it may make sense to source a pricier heavyduty can opener... That can opener will cost more, sure, but if you can solve the problems... you have a shot at becoming a real competitor",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sell-within-6-months-1",
+        "category": "Risk",
+        "trigger": "Products not selling within 6 months",
+        "advice": "Choose products that can sell within 6 months to avoid long-term storage fees.",
+        "confidence": "High",
+        "source": "That means you need to pick products that you can sell within half a year at most. And seasonal products just aren't it.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "1",
+        "category": "General",
+        "trigger": "Conducting product research",
+        "advice": "Focus on three key things: demand (historical sales, avoid single spikes), competition (number of sellers and pricing impact), and profitability (at least 30% ROI and $5 profit for beginners).",
+        "confidence": "High",
+        "source": "So when you're doing online product research, there are three key things you need to focus on. So number one is demand... Second thing is competition... And the third thing you want to look for is profitability, right? ... for a beginner, a good rule of thumb is going to be at least 30% ROI, at least $5 of profit just to get started.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "2",
+        "category": "Pricing",
+        "trigger": "Calculating profitability",
+        "advice": "Use tools like Seller AMP to calculate; purchase price must allow at least 30% ROI and $5 profit after fees; for example, buy under $18 to break even on $25.44 sell price, aim for $13 purchase.",
+        "confidence": "High",
+        "source": "I'm using Seller AMP here as my profit calculator... sell price right here 25.44... I need to purchase this product under $18 in order to just break even... purchase it around $13 to kind of meet the criteria... at least 30% and $5.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "3",
+        "category": "Risk",
+        "trigger": "Assessing product risks",
+        "advice": "Avoid fragile items (e.g., glass candles, crackers) that can break and lead to returns; avoid oversized/heavy items over 30 pounds due to high shipping/storage fees.",
+        "confidence": "High",
+        "source": "First one is fragile items... like glass candles... Another thing you want to avoid is oversized or heavy items... Anything more than like 30 pounds.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "4",
+        "category": "Risk",
+        "trigger": "Gated or restricted products",
+        "advice": "Check if approved to sell the product before purchasing to avoid buying unsellable inventory.",
+        "confidence": "High",
+        "source": "Another one is gated products. You of course want to check if you're approved to sell the products... You don't want to just end up purchasing the product then you find out you can't sell it.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "5",
+        "category": "Seasonality",
+        "trigger": "Seasonal products like Valentine's Day items",
+        "advice": "Approach with caution as they have deadlines to sell; may be hit or miss, requiring sale before the season ends or wait a year.",
+        "confidence": "High",
+        "source": "Another one is seasonal products... for example, let's just say like Valentine's Day... you need to sell it before that or else you're going to wait another year.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "6",
+        "category": "Risk",
+        "trigger": "IP or copyright issues",
+        "advice": "Use software like Seller AMP (check alerts for IP analysis) or IP Alert (lifetime access) to detect potential legal problems that could lead to suspension.",
+        "confidence": "High",
+        "source": "the last one here... is the IP or copyright issues... the software that I use... seller amp. It'll show me exactly where it is... under alerts... no known IP issues... Another one I use is called IP alert.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "7",
+        "category": "Buying",
+        "trigger": "Storefront pattern hunting",
+        "advice": "Start broad by looking at sellers with 50-500 reviews (indicating experience); focus on FBA sellers; identify recurring themes or brands for potential categories.",
+        "confidence": "High",
+        "source": "start broad when you're storefront pattern hunting... look for sellers that are, you know, has like 50 reviews to like 500... look for products that have a recurring theme or you know brand.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "8",
+        "category": "General",
+        "trigger": "Evaluating sales velocity",
+        "advice": "Target products with at least 50 units sold per month to ensure fast turnover; use Seller AMP to check estimated monthly sales.",
+        "confidence": "High",
+        "source": "what's the velocity, right? The sales velocity... I would just highly suggest to find a product that sells at least 50 plus per month, right? That should be your minimum threshold.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "9",
+        "category": "Pricing",
+        "trigger": "Historical price data",
+        "advice": "Look for price stability with flat lines in Keepa charts; avoid products with big price crashes or sudden jumps in sellers; use guard rails like stable historical data.",
+        "confidence": "High",
+        "source": "the next tip... is price stability... you want a flat line as much as possible... Are there big price crashes... is there a jump in sellers... use softwares like Keepa and seller amp.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "10",
+        "category": "Buying",
+        "trigger": "Profit margins not meeting criteria",
+        "advice": "If numbers don't add up to at least 30% ROI and $5 profit, don't force it; pass and look for better options with higher ROI (e.g., 40-50%) to compound capital.",
+        "confidence": "High",
+        "source": "if the numbers don't add up, don't force it... aim for 30% at least $5 profit... there's better products out there. Maybe I can find someone has 40% ROI, 50% ROI.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "11",
+        "category": "Risk",
+        "trigger": "Low competition opportunity",
+        "advice": "When competition is low (e.g., 3 FBA offers, 5 total), assess historical data for dips; buy if worst-case sell price covers costs (e.g., break even at $38 on $25 buy).",
+        "confidence": "High",
+        "source": "Not much competition. There's only like three FBA here... five total... the competition is at its lowest ever... Worst case I can move the product... at 38 37... break even.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "12",
+        "category": "Buying",
+        "trigger": "New or uncertain products",
+        "advice": "Perform test buys of 3-5 units to minimize risk and gain confidence; scale up if successful; avoid putting all capital into one product for diversification.",
+        "confidence": "High",
+        "source": "test buy the product... buy a small amount of quantity... I would buy between three to five quantities... Never go in 100% in terms of one product... diversity diversity diversity.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "demand-1",
+        "category": "General",
+        "trigger": "Top 10 organic results show 100+ units per month in recent purchases",
+        "advice": "Target niches with good demand evidenced by 100+ or 200+ sales per month in top organic positions for a viable landing zone",
+        "confidence": "High",
+        "source": "the top 10 organic results. So this is with the organic results filtered. ... 100 plus units per month, 200 plus, 100 plus, 100 plus, 200 plus, 100, 100 plus.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "demand-2",
+        "category": "General",
+        "trigger": "New seller aiming for initial sales",
+        "advice": "Aim for products with 100-300 units per month as a starting point",
+        "confidence": "High",
+        "source": "which is a really good starting point for new sellers who I usually recommend aim for somewhere between 1 to 300 units per month.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "pricing-1",
+        "trigger": "Selling price below 20 or high teens",
+        "advice": "Avoid low prices as Amazon fees and PPC eat into profits; target 20+ or high teens",
+        "confidence": "High",
+        "source": "you're probably going to want to be selling at 20 or very high teens at least because below that with the Amazon fees and PPC, it really eats into your profit.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "pricing-2",
+        "category": "Pricing",
+        "trigger": "At least 4-5 sellers at target price point",
+        "advice": "Ensure evidence of sales at your desired price point with at least 4-5 sellers around 20 mark",
+        "confidence": "High",
+        "source": "at least four or five sellers at the price point that I'm looking at to show that it is possible to achieve these type of sales at the price point that I want to sell at. ... around about that 20 mark.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "seasonality-1",
+        "category": "Seasonality",
+        "trigger": "Inconsistent sales over one year",
+        "advice": "Check one-year search volume history for consistent year-round demand; avoid seasonal fluctuations",
+        "confidence": "High",
+        "source": "if we go over the one-year view, we can see based on the search volume history, this sells pretty consistently year round.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "general-1",
+        "category": "General",
+        "trigger": "Any of demand, price, or seasonality fails",
+        "advice": "Exclude product and move on if core three criteria (demand, price, seasonality) don't stack up to research efficiently",
+        "confidence": "High",
+        "source": "if any one of those three things don't stack up, I just close the product and move on to the next one.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "risk-1",
+        "category": "Risk",
+        "trigger": "Big brand dominating niche",
+        "advice": "Check brand column; avoid if one brand has more than 1-2 listings dominating",
+        "confidence": "High",
+        "source": "take a look at the brand column to see if there's a big brand that is dominating this niche. ... there's no one there with more than one or two listings.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "general-2",
+        "category": "General",
+        "trigger": "Untrustworthy brand names in niche",
+        "advice": "Develop a trustworthy, niche-focused brand (e.g., 'Little Tots') to stand out over generic Chinese brands",
+        "confidence": "High",
+        "source": "developing your own generic brand, a brand that you can use in any niche. But I think for niches like this where there's a greater trust element involved, if you developed a brand that sounded more trustworthy, for example, little tots",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "general-3",
+        "category": "General",
+        "trigger": "Targeting 2-4k revenue per month",
+        "advice": "Use ASIN revenue column instead of sales if focusing on revenue goals of 2-4k per month",
+        "confidence": "High",
+        "source": "if you're looking to make 2 to3,000 or to 4,000 of revenue per month, look at the asin revenue column",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "risk-2",
+        "category": "Risk",
+        "trigger": "All sellers from CN (China)",
+        "advice": "Prefer niches with some GB sellers; all CN may indicate too competitive or low prices, but verify for fraud",
+        "confidence": "High",
+        "source": "It's nice to see a few GB sellers in the results. If they are all CN, that can suggest that sometimes the niche is just too competitive or the price has been driven too low",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "pricing-3",
+        "category": "Pricing",
+        "trigger": "Fees above 30% of sale price",
+        "advice": "Target fees around 30% or below (e.g., \u00a36-7 for \u00a320 sale); add VAT for new sellers",
+        "confidence": "High",
+        "source": "these are nice and low. And by nice and low, I want to see about 30% of the sale price or below. So if we're selling at 20, if we're around6 or \u00a37",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "risk-3",
+        "category": "Risk",
+        "trigger": "Competitors at 5-star ratings (4.8+)",
+        "advice": "Avoid niches where all are 5-stars; compete against 4.5-star products",
+        "confidence": "High",
+        "source": "there's no one here managing five stars which is a good sign as trying to maintain a fivestar average which is 4.8 or above is very very difficult but competing against four and a half star products is absolutely fine.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "risk-4",
+        "category": "Risk",
+        "trigger": "Low review count despite high sales",
+        "advice": "Investigate low reviews (e.g., single/double figures) for high sales as it may indicate new listings",
+        "confidence": "High",
+        "source": "in the review column we see some sellers with double figure reviews low three figure reviews and even single figure reviews which may suggest some of these are new fairly new listings",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "general-4",
+        "category": "General",
+        "trigger": "Size tier standard or large oversize",
+        "advice": "Prefer small parcel or small oversize; avoid standard and large oversize for lower fees",
+        "confidence": "High",
+        "source": "size tier, small parcel, which is really good ... In terms of shipping size, the only ones I don't search in is standard and large oversize.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "general-5",
+        "category": "General",
+        "trigger": "Too many FBM or AMZ fulfillments",
+        "advice": "Prioritize FBA; avoid niches with many FBM (too big/heavy) or all AMZ (avoid if more than 2-3)",
+        "confidence": "High",
+        "source": "I'm not interested in buyer box fulfillment. We want to see lots of FBA. You don't want to see too many FBMs ... You don't want to see too many of these AMZ listings either. I don't mind seeing two or three",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "risk-5",
+        "category": "Risk",
+        "trigger": "Many new listings (2022-2024) with high churn",
+        "advice": "Monitor creation dates and seller age; many newish listings may indicate rising popularity or unknown churn risks",
+        "confidence": "High",
+        "source": "creation date 2022, 2024, 2024, 2024, 2023. ... Sometimes lots of new listings can indicate there is a high churn in that niche",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "general-6",
+        "category": "General",
+        "trigger": "Busy niche with heavy bundling and noise",
+        "advice": "Look for opportunities to stand out with stripped-back, quality-focused images and trustworthy branding in noisy niches",
+        "confidence": "High",
+        "source": "it is very very busy. ... these are all bundling very heavily. ... maybe there's an option here to enter with a more strippedback product that focused more on image given that perception of quality",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "risk-6",
+        "category": "Risk",
+        "trigger": "Baby or trust-sensitive products",
+        "advice": "Check for testing/compliancy issues in categories like baby products",
+        "confidence": "High",
+        "source": "One thing to keep in mind as this is a baby product. There may be certain testing or compliancy issues with this.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "buying-1",
+        "category": "Buying",
+        "trigger": "Search filters: Price 20-30\u00a3, sales 100-300/month",
+        "advice": "Use tools like Blackbox: Filter baby products, 20-30\u00a3 price, 100-300 sales/month, avoid standard/large oversize, weight <4lb (under 2kg), variation count <=2",
+        "confidence": "High",
+        "source": "we are searching on Amazon.co. ... in baby products. I was looking in the 20 to30 pound price point ... as in sales between 1 to30 per month. ... weight I've put as 4 pound which is just under 2 kg ... variation count here as two",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sr-max-100k",
+        "category": "General",
+        "trigger": "Sales Rank maximum of 100,000",
+        "advice": "Set a cap on sales rank to exclude slow movers, even with increased velocity.",
+        "confidence": "High",
+        "source": "I'm going to put a cap of 100,000 and we're going to scroll all the way to the right here and we're going to look at the 90-day drops",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sr-90day-drop-5",
+        "category": "Seasonality",
+        "trigger": "90-day sales rank drops at least 5%",
+        "advice": "Filter for products showing increasing velocity into Q4 by requiring at least a 5% drop in sales rank over 90 days; adjust to 30-day or 7-day closer to December peak.",
+        "confidence": "High",
+        "source": "we're going to say we want at least a drop of a 5% in the sales rank so we want to see this go from 100,000 down to 95,000 right that's a 5% drop all the way down to a 99% drop",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "bbp-min-20-beauty",
+        "category": "Pricing",
+        "trigger": "Buy box price minimum of 20 for Beauty category",
+        "advice": "Set minimum buy box price based on category to ensure profitability; for Beauty, minimum 20 to avoid low-margin items like chapsticks.",
+        "confidence": "High",
+        "source": "I'm going to set a minimum of 20 and then depending on you know again the category maybe we want to set a maximum if you want to avoid any expensive Sho listings",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "bbp-max-100-200",
+        "category": "Pricing",
+        "trigger": "Buy box price maximum of 100-200 depending on category",
+        "advice": "Cap maximum buy box price to avoid expensive, hard-to-source items; e.g., 100 for general, 200 for Electronics to skip heavy $500+ items.",
+        "confidence": "High",
+        "source": "we could set a maximum of 100 set a maximum of 200 if you know you're looking in categories say like Electronics or appliances where you don't want to you know get into those five or $600 doll items",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "bbp-30day-avg",
+        "category": "Pricing",
+        "trigger": "Use 30-day average buy box price",
+        "advice": "Switch to 30-day average buy box price to filter out fluke spikes from out-of-stock situations.",
+        "confidence": "High",
+        "source": "we might actually change this over to the 30-day average just to remove any of those fluke products that are going to be in the search",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "price-30day-no-drop",
+        "category": "Pricing",
+        "trigger": "30-day price drops minimum 0% (no decrease)",
+        "advice": "Filter for products with stable or increasing prices over 30 days to avoid oversaturated items; allow small drops like -5% for velocity increases; use inverse for increases up to 50% or more.",
+        "confidence": "High",
+        "source": "we want the inverse that's why it says the range is negative th000 to 99 so basically what this is saying is if we go a negative 50% that's going to say that this is instead of dropping 50% it's increasing 50% and then our minimum right maybe we want to say zero we don't want to see any drop",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "category-beauty-clothing",
+        "category": "General",
+        "trigger": "Categories: Beauty or Clothing",
+        "advice": "Focus searches on high-potential Q4 categories like Beauty and Clothing for repeatable sourcing.",
+        "confidence": "High",
+        "source": "we can pick clothing we can pick Beauty those are some of two of my favorite categories so we're going to stick with Beauty for the search here in the video",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "offer-max-10",
+        "category": "Risk",
+        "trigger": "Current offer count maximum 10 sellers",
+        "advice": "Limit to listings with no more than 10 current sellers to target opportunities where supply is decreasing.",
+        "confidence": "High",
+        "source": "I'm going to say we don't want more than 10 sellers on any listing that we have went from 25,000 down to 23,000",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "offer-30day-avg-min-5",
+        "category": "Risk",
+        "trigger": "30-day average offer count minimum 5 sellers",
+        "advice": "Require at least 5 sellers on average over 30 days to avoid wholesale, brand direct, or Amazon-dominated listings; use 90-day if too restrictive.",
+        "confidence": "High",
+        "source": "we can set a minimum 30-day average offer count so if this thing has averaged at least five sellers in the last 30 days that's going to say it's probably not wholesale probably not brand direct or Amazon",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "offer-30day-drop-5",
+        "category": "Seasonality",
+        "trigger": "30-day offer count drops at least 5%",
+        "advice": "Look for at least 5% decrease in offer count over 30 days to find high-velocity products where sellers are running out of stock; switch to 7-day in December peak.",
+        "confidence": "High",
+        "source": "we're going to do we want to see at least a 5% decrease in the offer count all the way up to a 99% increase right now we're down to a thousand products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "amazon-oos-50-100",
+        "category": "Risk",
+        "trigger": "90-day Amazon out of stock percentage 50-100%",
+        "advice": "Filter for listings where Amazon is out of stock at least 50% of the time over 90 days to avoid competition from Amazon.",
+        "confidence": "High",
+        "source": "we're going to say Amazon is out of stock on these listings at least 50% of the time in the last 90 days now that could be you know they're coming out of stock as of recently",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "cherry-pick-known-brands",
+        "category": "Buying",
+        "trigger": "Recognizable brands from past sales or everyday use",
+        "advice": "From search results, cherry-pick products from known brands to ensure sourcing potential; hover or click for Keepa charts to verify trends.",
+        "confidence": "High",
+        "source": "I want to look at brands that I recognize this could be brands that I just use in my everyday life or I see at the store um these are you know if you don't if if you aren't familiar with a ton of these Brands uh then just go with ones that you know",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sales-100-month",
+        "category": "General",
+        "trigger": "Products sold at least 100 times in the last month",
+        "advice": "Add filter for minimum 100 sales per month to focus on high-velocity items with decreasing offers and increasing prices.",
+        "confidence": "High",
+        "source": "let's say we want to look at only products that already currently sell 100 times a month but that offer count is decreasing the buy box price is increasing and the sales rank is decreasing",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "low-return-rate",
+        "category": "Risk",
+        "trigger": "Low return rate products",
+        "advice": "Filter for low return rate variations to minimize risk of returns, especially in gift-heavy Q4.",
+        "confidence": "High",
+        "source": "if we want to look at only low return rate products now this is a metric that Amazon puts on some of the listings right if it's a variation listing a lot of times you'll say this variation doesn't get returned very often",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "ratings-min-4-stars",
+        "category": "Risk",
+        "trigger": "Minimum 4 out of 5 star ratings",
+        "advice": "Require at least 4-star average rating to avoid products with poor reviews that may lead to issues.",
+        "confidence": "High",
+        "source": "something we could look at is you know doing a minimum of four out of five star rating right so that's going to eliminate maybe some products that you know don't get a lot of good ratings",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "shorter-timeframes-peak",
+        "category": "Seasonality",
+        "trigger": "Use 7-day drops for metrics during December peak",
+        "advice": "Switch from 90-day to 7-day drops in sales rank, price, and offers during peak December to capture rapid market changes.",
+        "confidence": "High",
+        "source": "when we get closer to you know the peak of December maybe we want to shrink our 90day drops to 30-day or 7day um but for now this is going to uh help with our search",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule1",
+        "category": "Buying",
+        "trigger": "Sales Rank < 1,000,000",
+        "advice": "Consider purchasing the book if it meets profit thresholds, as it generally sells at least once per month.",
+        "confidence": "High",
+        "source": "under a million rank is generally pretty good if you get if you get to a million ranked book that's about 12 times per year ish it sells about 12 times per year which is one time per month",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule2",
+        "category": "Buying",
+        "trigger": "Sales Rank 1-125,000",
+        "advice": "Use default Scout IQ triggers; lower profit threshold acceptable due to high sales velocity.",
+        "confidence": "High",
+        "source": "the sales rank range go from I think starting out it's like one to 125 000 and then 125 000 like 200 000. yeah they have like different rank ranges and the slower selling the look the more profit Scout IQ requires",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule3",
+        "category": "Buying",
+        "trigger": "E-score >= 146",
+        "advice": "Prioritize books with high e-score indicating consistent sales (at least one sale on 146+ days in last 180 days).",
+        "confidence": "High",
+        "source": "146 is a pretty good e-score so when someone's at a thrift store or a library sale... 146 e-score so what that means is over the last six months this book has had at least 146 days with at least one sale",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule4",
+        "category": "Buying",
+        "trigger": "$2 profit and sells within first week",
+        "advice": "Buy even low-profit books if sales velocity is very high.",
+        "confidence": "High",
+        "source": "if you can make two dollars on a book that is gonna sell like the first week it's gonna go ahead and say buy that book but if it's a two dollar profit book and it's gonna take like two months for you to sell Scott IQ is going to reject it",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule5",
+        "category": "Pricing",
+        "trigger": "Using FBA for fast shipping",
+        "advice": "Price competitively to win the buy box, allowing higher pricing than non-Prime sellers due to two-day shipping advantage.",
+        "confidence": "High",
+        "source": "our goal is to teach you how to send your books in to be to have fast shipping and a low price and because of that combination of fast shipping a low price uh you can actually price your books higher than a lot of the competition",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule6",
+        "category": "Pricing",
+        "trigger": "Scout IQ analysis",
+        "advice": "Assume selling price is 10% less than Amazon's new price for used books to calculate realistic profit.",
+        "confidence": "High",
+        "source": "it compares to the Amazon price but it acts assumes that we are going to sell it for 10 less than Amazon... it's actually taking 10 of 17.98 which should be a dollar 79 or 1.80 and it's subtracting that from 1798 which is 16 18",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule7",
+        "category": "Buying",
+        "trigger": "No barcode on book or set",
+        "advice": "Manually search by ISBN from inside cover or title to find listings, especially for valuable sets.",
+        "confidence": "High",
+        "source": "Pro tip like sneak peek into the next section... look at the books without barcodes if you manually look up all the books about barcodes there's a ton of profit out there because people are too lazy to do it",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule8",
+        "category": "General",
+        "trigger": "Scanning books on shelf",
+        "advice": "Scan 500-1000 books per hour by pulling books only far enough to expose barcode, keeping app open for quick decisions.",
+        "confidence": "High",
+        "source": "you should be able to scan 500 to a thousand books per hour... keep the books on the Shelf here and... I'm only pulling it out far enough to scan the barcode and I can go again and I can go again",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule9",
+        "category": "Risk",
+        "trigger": "Book in restricted categories (e.g., Textbooks, Pearson, McGraw-Hill)",
+        "advice": "Do not sell directly; send to restrictedinventory.com for consignment to split profits and avoid counterfeits.",
+        "confidence": "High",
+        "source": "there's three brands categories Publishers that you can't... Popular or textbooks and Pearson's engaged McGraw-Hill... go to restrictedinventory.com... they'll split the profits with you",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule10",
+        "category": "Buying",
+        "trigger": "Sellbackyourbook offers > purchase cost",
+        "advice": "Sell to vendors like sellbackyourbook for immediate cash if Amazon profit is low or restricted.",
+        "confidence": "High",
+        "source": "sell back your book is a website where they will buy your books for cash... if you can pick this up for two dollars you can make eight dollars Profit just like that just send it to them",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule11",
+        "category": "Risk",
+        "trigger": "Multiple listings for scanned ISBN",
+        "advice": "Select the listing with the lowest sales rank for faster-selling option.",
+        "confidence": "High",
+        "source": "if there are multiple listings like that I recommend I always just choose the one with the lower sales rank because the one with the lower sales rank sells more often",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule12",
+        "category": "Risk",
+        "trigger": "Merchant fulfilled prices low, FBA prices high",
+        "advice": "Avoid buying if risk of price tanking; verify with Amazon Seller app before purchase.",
+        "confidence": "High",
+        "source": "the merchants are super duper low and FBA is super duper High don't always just trust what it says because that's a recipe for Price tanking",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rule13",
+        "category": "General",
+        "trigger": "Any green signal in Scout IQ",
+        "advice": "Double-check with Amazon Seller app for restrictions and accuracy before buying.",
+        "confidence": "High",
+        "source": "100 listen to every green... always check Amazon Seller right before I leave the store 100 yeah always double check make sure you're not restricted",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy1",
+        "category": "Buying",
+        "trigger": "Sales Rank < 1,000,000",
+        "advice": "Consider purchasing the book if it meets profit thresholds, as this indicates reasonable sales velocity (about 12 sales per year at 1M rank).",
+        "confidence": "High",
+        "source": "under a million rank is generally pretty good if you get if you get to a million ranked book that's about 12 times per year ish it sells about 12 times per year",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy2",
+        "category": "Buying",
+        "trigger": "Sales Rank < 100,000",
+        "advice": "Prioritize books with sales rank under 100,000 for faster turnover, as this is considered pretty good among millions of books on Amazon.",
+        "confidence": "High",
+        "source": "if the sales rank is 100 that means it's a hundredth best sales rank on Amazon one hundred thousand still pretty good for books",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy3",
+        "category": "Buying",
+        "trigger": "E-score >= 21",
+        "advice": "Buy if E-score is at least 21 (indicating at least 21 days with sales in 180 days), as it shows consistent demand; higher like 146 is excellent.",
+        "confidence": "High",
+        "source": "21 e-score is pretty good but let's scan another one here what does 21e score mean sure 21 this is 146 e-score so what that means is over the last six months this book has had at least 146 days with at least one sale",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy4",
+        "category": "Buying",
+        "trigger": "Sales Rank > 1,000,000 but high profit potential (e.g., $2,000)",
+        "advice": "Purchase slow-selling books (high rank) only if profit margin is substantial, like investing $100 for potential $2,000 sale, especially for rare sets.",
+        "confidence": "High",
+        "source": "I've purchased 5 million plus rank books and sold them for thousands of dollars profit like literally like it's crazy I've purchased like Jewish sets and I'm like there's a chance this might sell for two thousand dollars do I wanna invest a hundred dollars in this",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy5",
+        "category": "Buying",
+        "trigger": "Profit > $2 after fees",
+        "advice": "Use Scout IQ's default custom triggers, which lower profit threshold for fast-selling books (e.g., allow $2 profit if sells in first week) but require more for slow sellers.",
+        "confidence": "High",
+        "source": "if you can make two dollars on a book that is gonna sell like the first week it's gonna go ahead and say buy that book but if it's a two dollar profit book and it's gonna take like two months for you to sell Scott IQ is going to reject it",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy6",
+        "category": "Buying",
+        "trigger": "Scanning speed target 500-1,000 books/hour",
+        "advice": "Scan books on shelves by pulling out only far enough to expose barcode, keeping Scout IQ open, to achieve high volume; even 1% hit rate yields 5-10 profitable books/hour.",
+        "confidence": "High",
+        "source": "you should be able to scan 500 to a thousand books per hour and remember even if only one percent of the books are good that's five to ten books every hour",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy7",
+        "category": "Pricing",
+        "trigger": "Compare to used Buy Box price",
+        "advice": "Price to compete for Buy Box by aiming at or slightly below lowest FBA (Prime) offer for fast shipping advantage; Scout IQ highlights this with orange box.",
+        "confidence": "High",
+        "source": "as an FBA seller you should be comparing to this price here this price is going to tell you the lowest Prime price which is the buy box price",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy8",
+        "category": "Pricing",
+        "trigger": "Sell price = 10% less than Amazon's new price",
+        "advice": "Scout IQ assumes used book sales at 10% below Amazon's price (e.g., $17.98 Amazon -> $16.18 sell), avoiding overpricing against new stock.",
+        "confidence": "High",
+        "source": "it compares to the Amazon price but it acts assumes that we are going to sell it for 10 less than Amazon oh really yeah so if we go to profit here you can see what price it's comparing to you see how it says 16 18. Amazon's 17.98 it's actually taking 10 of 17.98",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy9",
+        "category": "Pricing",
+        "trigger": "Multiple listings for same ISBN",
+        "advice": "Select the listing with the lowest sales rank (fastest seller) when multiple appear, even if price is higher, to ensure better velocity.",
+        "confidence": "High",
+        "source": "if there are multiple listings like that I recommend I always just choose the one with the lower sales rank because the one with the lower sales rank sells more often",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy10",
+        "category": "Risk",
+        "trigger": "Book from restricted publishers (e.g., Pearson, McGraw-Hill)",
+        "advice": "Do not buy restricted textbooks without approval; instead, send to consignment service like restrictedinventory.com to split profits (e.g., $14 estimated).",
+        "confidence": "High",
+        "source": "there's three brands categories Publishers that you can't yeah and that's going to be popular or textbooks and Pearson's engaged McGraw-Hill they've there's so many counterfeits... go to restrictedinventory.com... you'll split the profits with you",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy11",
+        "category": "Risk",
+        "trigger": "Sellbackyourbook.com offers > $8 cash",
+        "advice": "If Amazon profit is low but sellback site offers cash (e.g., $11 for $2 cost), sell to them for quick $8+ profit instead of risking Amazon sale.",
+        "confidence": "High",
+        "source": "sell back your books offering 11 for this book... if you can pick this up for two dollars you can make eight dollars Profit just like that just send it to them",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy12",
+        "category": "General",
+        "trigger": "No barcode on book or set",
+        "advice": "Manually search by ISBN from inside cover or title; for sets, use set ISBN to find listings, as this uncovers high-profit items others skip.",
+        "confidence": "High",
+        "source": "if you open up the inside cover for a set of books it'll have what's called a set ISBN... look at the books without barcodes if you manually look up all the books about barcodes there's a ton of profit out there because people are too lazy",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strategy13",
+        "category": "Risk",
+        "trigger": "Merchant fulfilled offers much lower than FBA",
+        "advice": "Avoid relying solely on low merchant prices; check FBA for potential price tanking, and always verify with Amazon Seller app before purchase.",
+        "confidence": "High",
+        "source": "the merchants are super duper low and FBA is super duper High don't always just trust what it says because that's a recipe for Price tanking",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "capital-minimum",
+        "category": "General",
+        "trigger": "Starting capital less than $3,000",
+        "advice": "Pause and get a side job like bartending to accumulate at least $3,000; recommend $3,000-$5,000 to start Amazon wholesale or arbitrage business",
+        "confidence": "High",
+        "source": "The amount of capital that you need to start is $3,000. That is the bare minimum that I recommend a beginner starts with in Amazon wholesale. Generally, I recommend between three and $5,000.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "reinvest-profits",
+        "category": "General",
+        "trigger": "First 6 months of business",
+        "advice": "Reinvest all profits back into the business to build inventory; do not pull out money until self-sustaining",
+        "confidence": "High",
+        "source": "you need to be reinvesting your profits back into your business at least within the first 6 months in order to see any results.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "fba-preference",
+        "category": "General",
+        "trigger": "Choosing fulfillment method",
+        "advice": "Use Amazon FBA for scalability over FBM or dropshipping; ship products in bulk to Amazon warehouses",
+        "confidence": "High",
+        "source": "I by far recommend that you start with Amazon FBA. This is going to be the most scalable business model that you can do.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "avoid-private-label",
+        "category": "Risk",
+        "trigger": "Beginner with $3,000 capital",
+        "advice": "Avoid private label sourcing from Alibaba as it's risky and requires heavy marketing; focus on arbitrage or wholesale instead",
+        "confidence": "High",
+        "source": "this is just a terrible way to start as a beginner. Why is that? Well, because it's super risky. If you're just starting and you have this $3,000 set aside, you don't want to go invest your $3,000 and then completely blow it",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "arbitrage-stepping-stone",
+        "category": "General",
+        "trigger": "Starting with retail or online arbitrage",
+        "advice": "Use retail/online arbitrage as a stepping stone to wholesale; buy from stores or sites like Home Depot, Target, scan for profitability, but transition for scalability",
+        "confidence": "High",
+        "source": "I look at arbitrage as a stepping stone business model into wholesale... With retail arbitrage, we're going into the stores, buying these products, scanning them on the shelf... Online arbitrage is the same thing... buying the products from online websites. So online websites like homed depot.com, target.com",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "professional-plan",
+        "category": "General",
+        "trigger": "Expected sales >40 items/month",
+        "advice": "Choose Amazon Professional plan at $39.99/month over Individual plan to avoid $1 fee per item",
+        "confidence": "High",
+        "source": "With the professional plan, it's going to cost you $39.99 per month... if you sell more than 40 items a month, this plan makes no sense. just go with a professional plan right away.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "business-setup",
+        "category": "General",
+        "trigger": "Setting up Amazon selling account",
+        "advice": "Obtain EIN, resale permit for tax-exempt purchases, business bank account, credit card, utility bill, and business email domain (e.g., name@company.com) to legitimize",
+        "confidence": "High",
+        "source": "you need your business EIN... Once you have your business EIN, you want to get your resale permit... A business email means that you have your name at your company domain",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "reverse-sourcing",
+        "category": "Buying",
+        "trigger": "Finding products to sell",
+        "advice": "Use reverse sourcing on Amazon to prove demand before supply; analyze via Keepa tool ($20/month) for historical price, sales volume, competition",
+        "confidence": "High",
+        "source": "it's all going to start on Amazon through a process called reverse sourcing... we are able to see how many units these products are selling every single month... With Keepa, we are able to see... the price over time... sales volume over time... the competition",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "keepa-product-finder",
+        "category": "Buying",
+        "trigger": "Narrowing product search on Amazon",
+        "advice": "Use Keepa product finder with filters: high average selling price (ASP), high monthly unit volume, poorly represented brands (bad listings, low competition) to identify opportunities",
+        "confidence": "High",
+        "source": "keep a product finder... based on three criteria... Number one is the ASP, also known as average selling price. Number two is the monthly unit volume... if this brand is well represented or poorly represented on Amazon.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "outreach-volume",
+        "category": "Buying",
+        "trigger": "Contacting suppliers/brands",
+        "advice": "Contact minimum 100 brands/suppliers per week via phone/email; expect 3% closure rate as beginner, leading to 1 profitable brand/month",
+        "confidence": "High",
+        "source": "I am going to contact at minimum 100 brands per week... if we contact 100 brands per week, and let's say our closure rate is only 3% as a beginner, we are actually able to close three brands per week.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "phone-script-intro",
+        "category": "Buying",
+        "trigger": "First call to brand/supplier",
+        "advice": "Introduce as e-commerce company: 'Hi, my name is [name] and I'm calling with my company [name] located in [location]. I'm calling because we're interested in opening a wholesale account. Am I speaking with the right person?'",
+        "confidence": "High",
+        "source": "Hi, my name is and I'm calling with my company. Insert your company name located in Boom... I'm calling because we're interested in opening a wholesale account. Am I speaking with the right person for that?",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "company-description",
+        "category": "Buying",
+        "trigger": "Explaining business to brand",
+        "advice": "Describe as: 'We are an e-commerce company. We stock and ship to our facility located in [location]. We have our own website and we do sell on Amazon.' Then ask calibrated question: 'Can you tell me a little bit more about your e-commerce presence?'",
+        "confidence": "High",
+        "source": "We are an e-commerce company. We stock and ship to our facility located in blank... We have our own website and we do sell on Amazon. Can you tell me a little bit more about your e-commerce presence?",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "overcome-objections",
+        "category": "Risk",
+        "trigger": "Brand objection to Amazon sellers",
+        "advice": "Provide value propositions like improving listings (pictures, titles, SEO, A+ content), advertising, brand story; tie to brand's history/emotion to build trust and partnership",
+        "confidence": "High",
+        "source": "we present value propositions to the brand. These value propositions take place in the form of improving their product listing on Amazon... building a brand's listing via brand story or A+ content and improving their imagery... tie that back in with emphasizing inside of the content of the listing their long-standing brand equity",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "brand-direct-preference",
+        "category": "Buying",
+        "trigger": "Sourcing wholesale inventory",
+        "advice": "Prefer brand direct partnerships over distributors for guaranteed supply chain, no IP complaints, scalability to exclusives; target small-medium brands as beginner",
+        "confidence": "High",
+        "source": "buying directly from the brand is definitely the safest way... It's the most scalable because you're actually able to build such a good relationship... called a brand exclusive... most people think brand partnership... is only for experts... There are so many brands out there that are willing to work with you and these are going to be smaller to medium-siz brands",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-001",
+        "category": "Buying",
+        "trigger": "New seller without knowledge of websites or brands",
+        "advice": "Avoid manual sourcing as it requires high effort and blindly searching stores like Home Depot; instead, learn specific websites that run promos for cheaper products.",
+        "confidence": "High",
+        "source": "manual sourcing works extremely well if you have an idea of like which websites run what promos, like what websites have what product, what brand for the cheapest cost... you're just kind of blindly going into it. Again, especially as a new seller, not knowing what to look for.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-002",
+        "category": "Risk",
+        "trigger": "Using deal sites like Brickseek for big-name brands",
+        "advice": "Check for ungating requirements before sourcing; focus on products you are approved for to avoid restrictions.",
+        "confidence": "High",
+        "source": "these products that we're actually sourcing are probably not going to be approved for you, right? A lot of these products in here are really bigname brand products... you still have to worry about this whole ungating portion.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Access to discount stores like Grocery Outlet or ALDI",
+        "advice": "Prioritize retail arbitrage in these stores for auto-approved products; build sales to get approvals for others.",
+        "confidence": "High",
+        "source": "grocery outlet. Uh, that's probably the best source. Um, all these is another really good one. like these general merchandise uh places is very beginner friendly and a lot of those will be auto approved as you kind of build some sales on your store.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-004",
+        "category": "Risk",
+        "trigger": "Scanning products in retail arbitrage",
+        "advice": "Always check for misbranded listings to avoid severe issues; do not sell on suppressed or restricted listings.",
+        "confidence": "High",
+        "source": "you have to really watch for these misbranded listings because you're not allowed to sell on those. You can run into severe issues.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-005",
+        "category": "Seasonality",
+        "trigger": "Products profitable in specific periods like June to November or March",
+        "advice": "Use Keepa to track old leads and set alerts for when they become profitable again; replenish winners seasonally.",
+        "confidence": "High",
+        "source": "take product A, it's profitable, you know, in uh June to November, then it's not that good for a little bit, then again, it's profitable in March. Only way you're able to track these is if you are using Keepa to track them... when you find a product that's really close to being profitable, just set an alert for it.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-006",
+        "category": "General",
+        "trigger": "After several months of sourcing",
+        "advice": "Implement replen strategy to create consistent flow of leads; track 10-100 units to sell through within a month.",
+        "confidence": "High",
+        "source": "utilizing this replen strategy is going to allow that to happen once you've been doing this for several months... we're only buying, you know, anywhere from 10 to 100 units typically max to sell through these inventory within a month.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-007",
+        "category": "Risk",
+        "trigger": "Leads list posted in the last week",
+        "advice": "Do not buy fresh leads; go back 3 months to find proven consistent products that are still profitable.",
+        "confidence": "High",
+        "source": "I do not recommend buying any product off a leads list that was just posted in the last week. Okay? If anything, if you've been using a leads list for a while, go back to like month three, like three months ago, and look at those items, and if they are still profitable today.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-008",
+        "category": "Buying",
+        "trigger": "Finding sellers on Amazon listings",
+        "advice": "Use reverse sourcing: open seller storefronts with Seller Amp, search their products on Google for cheaper sources; master Keepa to avoid buying during offer spikes.",
+        "confidence": "High",
+        "source": "reverse sourcing is what I found... we take a product, we come down here, we go ahead and find a seller on here, we open up their storefront, and then we're using seller to go through the rest of their products... you're not buying these things when they're really spiking up in offers.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-009",
+        "category": "Risk",
+        "trigger": "Clearance items from stores like Walgreens",
+        "advice": "Avoid clearance sourcing long-term as items are not replenishable and face high competition; use only for one-time buys if profitable.",
+        "confidence": "High",
+        "source": "these items are not replenishable. So, you're going to buy them once and they're done. Lots of new sellers are doing this. So, you run the risk of potentially competing against a lot of new sellers.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-010",
+        "category": "Pricing",
+        "trigger": "Using Tactical Arbitrage with standard searches",
+        "advice": "Customize searches with known websites, coupons, and filters for sales rank and buy box; avoid price spikes and suppressed listings.",
+        "confidence": "High",
+        "source": "if you know some websites that carry brands and if you can utilize it properly with coupons that maybe not everyone knows of... Some items don't sell at all. Also, if you look at the sales rank, you don't realize that it's a high rank... listings have suppressed buy boxes.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-011",
+        "category": "Risk",
+        "trigger": "Automated sourcing tools providing product lists",
+        "advice": "Avoid automated tools as they lead to high competition, price spikes, poor sales ranks, and losses; learn manual analysis instead.",
+        "confidence": "High",
+        "source": "your competition here is so extremely high... A lot of times they're like on price spikes... They don't have good sales ranks. They're all spiking in offers because everyone is like seeing the same products.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-012",
+        "category": "Buying",
+        "trigger": "After mastering reverse sourcing",
+        "advice": "Use Keepa Product Finder for custom searches: filter by brands, sales volume (50-300 units/month), trending prices/offers; combine with other methods for 1 in 4 profitable hits.",
+        "confidence": "High",
+        "source": "you can get so specific with it... products that only sell 50 a month, products that sell 300 a month... instead of like one in every 30 products being profitable, doing reverse sourcing, maybe like one in every four products are profitable because the different filters.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "book-condition-listing",
+        "category": "General",
+        "trigger": "Listing books on Amazon",
+        "advice": "Select 'used' condition for books when appropriate, especially for arbitrage items that may not be new.",
+        "confidence": "High",
+        "source": "If you want to do books and stuff like that, you might be going in here and saying used from time to time.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "book-shipping-dimensions",
+        "category": "General",
+        "trigger": "Shipping a standard book order",
+        "advice": "Use packaging dimensions of 12 inches length, 9 inches width, 2 inches height, and declare weight as 1 pound for a typical book.",
+        "confidence": "High",
+        "source": "this is just a random book that we sold. So, I'm going to go ahead and punch in the length of our item here. It's going to be 12 in. The width is going to be 9 in and then 2 in for our height. This is a pretty simple item to ship just,like I said, it's just a pretty simple book. ... we're going to go with one pound here.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "book-cheap-shipping",
+        "category": "General",
+        "trigger": "Shipping lightweight book items via USPS",
+        "advice": "Opt for USPS Bound Printed Matter as the cheapest shipping option for books to minimize costs.",
+        "confidence": "High",
+        "source": "for me, USPS bound printed matter is going to be the cheapest. For most of you guys who are watching this video, you're probably going to be doing some arbitrage, some wholesale type products. So that's going to be a lot of USPS parcel select",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "book-returnless-resolution",
+        "category": "Risk",
+        "trigger": "Return request for wrong item on a book priced below $10",
+        "advice": "Set up automatic returnless resolution to issue a refund without requiring the item back, and consider sending a replacement to maintain customer satisfaction.",
+        "confidence": "High",
+        "source": "let's say, for example, you're shipping out a bunch of books. And if the return reason was that you sent the wrong item, you picked out the wrong book, you're selling on the USA marketplace, we're going to go ahead and add all that on there. And then if the item's price is below 10 bucks, you know, you sent them the wrong book, and it's just going to automatically give them a returnless resolution, you can go ahead and send them a new book.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "book-restocking-fee",
+        "category": "Risk",
+        "trigger": "Book returned in worse condition than shipped",
+        "advice": "Consider charging up to 20% restocking fee, but avoid it to prevent negative feedback; instead, source more inventory for profit.",
+        "confidence": "Medium",
+        "source": "you are able to charge a restocking fee of up to 20% on any of the products that you get shipped back to you in a condition that's worse than what you shipped it out. ... the downside to a negative feedback is so much more than the $10 to $20 you'd be able to get back from them.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "Beginner seeking easy method without expensive software",
+        "advice": "Focus on Amazon arbitrage with discounted name brand products; avoid private label, unbranded from China, or wholesaler pallets",
+        "confidence": "High",
+        "source": "It's way easier just to work from home with Amazon arbitrage and find discounted name brand products. We can flip on Amazon for a profit. We don't have to run any ads, create any products, buy stuff from China, nothing like that.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat2",
+        "category": "Buying",
+        "trigger": "Product with 20% coupon at retailer",
+        "advice": "Calculate buy cost after coupon; target $3+ profit per unit, but consider high volume like 1k sales/month",
+        "confidence": "High",
+        "source": "Taking a look over on Amazon, we can see this same jar is selling for $7.50 and it has 1k bought in the past month. ... Typically I like to be a little bit above that $3 profit per unit threshold, but there's 1k sales per month on this product",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat3",
+        "category": "Risk",
+        "trigger": "Sales rank above 200k",
+        "advice": "Avoid products with sales rank >200k; prioritize below 200k for quick sales",
+        "confidence": "High",
+        "source": "We want to make sure we're staying below a 200k sales rank right here.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat4",
+        "category": "General",
+        "trigger": "Evaluating profitability",
+        "advice": "Use Seller Amp ($20/month) to check current profitability after shipping, fees, sales tax",
+        "confidence": "High",
+        "source": "Taking a look at the seller amp chrome extension, we can see nice and profitable. It's after shipping, fees, sales tax, literally everything. So seller amp, it's $20 per month, nice and cheap.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat5",
+        "category": "Risk",
+        "trigger": "Historical price and competition analysis",
+        "advice": "Use Keepa to verify steady prices and competition trending down or stable; avoid skyrocketing competition",
+        "confidence": "High",
+        "source": "I'm also a fan of the Keepa Chrome extension, which shows if a listing's been profitable over time. And I can see the price is nice and steady right here on the top Kippa chart. Then the bottom Keepa chart shows the competition. I can see that's trending down as well. ... we want to buy listings where the competition is either stable like it was on that first listing or trending down.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat6",
+        "category": "Buying",
+        "trigger": "Sourcing products as beginner",
+        "advice": "Use storefront stalking in Seller Amp: target sellers with 25+ reviews, explore their storefronts for brands, categories, and fast-selling products",
+        "confidence": "High",
+        "source": "By far the best way to find online arbitrage products as a complete beginner ... is scrolling down here on Seller AMP and actually just using what's called the storefront stalking method to look inside the storefronts of other sellers ... I like doing above 25 right here as well.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat7",
+        "category": "Buying",
+        "trigger": "Product from stalked storefront with good sales",
+        "advice": "Prioritize products with sales rank <50k and 100+ estimated sales/month; check Keepa for movement",
+        "confidence": "High",
+        "source": "This is a 4,000 sales rank and it's got over a 100 estimated sales per month. ... This has a 42K sales rank and has 100 sales per month. ... 73 current rank, 600 sales per month.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat8",
+        "category": "General",
+        "trigger": "Potential ungating needed",
+        "advice": "Check for autogate; if not, request approval via Seller Central without documentation if possible",
+        "confidence": "High",
+        "source": "Redwing here, I believe this is an autogate for most hours. So, you can plug in this as and select condition. Hit apply to sell and request rule. It's probably going to let you sell without even submitting documentation",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat9",
+        "category": "Buying",
+        "trigger": "Finding retail deals",
+        "advice": "Use Google button in Seller Amp or Google Shopping to find retailers carrying the product; apply coupons from extensions like Capital One Shopping, Coupon Birds",
+        "confidence": "High",
+        "source": "All I need to do is go ahead and hit this Google button right here to see what websites actually carry this product. ... I love taking a look at the uh coupon extensions, Capital One Shopping, Coupon Birds, and Cooper. Those are all free.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat10",
+        "category": "Pricing",
+        "trigger": "FBM seller in buy box with slower delivery",
+        "advice": "Price 10% above current if using FBA for faster Prime delivery advantage",
+        "confidence": "High",
+        "source": "I know I can price above that, probably about 10% right here. So, I go ahead and plug in 10%. Now, $6 profit, 33% ROI",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat11",
+        "category": "Buying",
+        "trigger": "Products with variations",
+        "advice": "Use Keepa variations tab, filter buy box top to bottom for expensive variations with good new offer count history and movement",
+        "confidence": "High",
+        "source": "When I run into a listing where there's variations on, what I need to do is scroll down here. ... hit the variations tab on Keepa ... go to buy box and filter top to bottom to see the most expensive variations and then look for the ones that have good new offer count history aka movement",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat12",
+        "category": "Buying",
+        "trigger": "Found a winning product",
+        "advice": "Buy 10 units initially; storefront stalk from there to find more winners",
+        "confidence": "High",
+        "source": "Then when you find a winning item, you just buy 10 of it. ... Take the winning items we saw in this video and storefront stock from there and find other winners.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs1",
+        "category": "General",
+        "trigger": "Listings with over 60 sellers, including newer sellers (0-200 reviews)",
+        "advice": "Identify online arbitrage sellers by looking for multiple low-review sellers on a listing to start reverse sourcing",
+        "confidence": "High",
+        "source": "It has over 60 people on this listing. And we can tell this is online arbitrage because there's multiple sellers with lower reviews on this listing. Now, we've already looked at this. There's newer sellers on it, and there's also sellers in the medium seller size range. So, with the new sellers on this listing and people within the 0 to 200 review range, we most likely know that these are online arbitrage sellers.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs2",
+        "category": "Buying",
+        "trigger": "Sellers with 200+ lifetime reviews",
+        "advice": "Avoid reverse sourcing large sellers as they have many SKUs and mixed strategies; focus on 0-150 review sellers for easier niching",
+        "confidence": "High",
+        "source": "Now, we want to stay away from these sellers who have 200 plus reviews because they're going to have a ton of SKs in their inventory. It might be a little more wholesale, but they also might be supplementing with online arbitrage. ... So, what I like to do is reverse source anyone from the zero to about 150 mark.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs3",
+        "category": "Buying",
+        "trigger": "Products sold over 50 times in the past month",
+        "advice": "Sort seller storefronts by 'bought in the past month' and prioritize products above 50 sales/month, ideally 100+, to focus on fast-moving inventory",
+        "confidence": "High",
+        "source": "We're going to sort this by bought in the past month. So now we can see the fastest selling product at the top and the slowest selling SKs at the very bottom. ... We only have a handful of products that are above 50 plus to look at. Generally, I like to keep mine above 100 plus.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs4",
+        "category": "Risk",
+        "trigger": "Seasonal products like Halloween items",
+        "advice": "Avoid seasonal products showing flatlining volume on Keepa, especially if trending down post-season",
+        "confidence": "High",
+        "source": "The first one I wouldn't even look for because this is a Halloween thing. We can click on the keepa and we can already see that the volume is starting to flatline and it's going to trend back up based on the previous data. You can see in January this significantly slowed down.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs5",
+        "category": "Pricing",
+        "trigger": "ROI below 30%",
+        "advice": "Only buy if purchase price allows at least 30% ROI based on historical Amazon pricing (e.g., $15 cost for $33-35.99 sell price)",
+        "confidence": "High",
+        "source": "We needed to pay about $15 to make sure this hits our criteria of at least 30% ROI. ... If we got it for $15, we would be taking a loss at $24.97.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs6",
+        "category": "Buying",
+        "trigger": "Potential packaging differences",
+        "advice": "Verify exact match by checking ingredients, images, and customer reviews for complaints about variations before purchasing",
+        "confidence": "High",
+        "source": "What I also noticed is this might be different packaging. ... But if it's the same thing, we can still sell that. We just got to make sure it's the same thing based on the ingredients. ... What I like to do to make sure this is the exact same thing, just double check the reviews and see if anyone's complaining about it.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs7",
+        "category": "Pricing",
+        "trigger": "Max cost of $7.10 for specific criteria",
+        "advice": "Calculate max allowable cost using SellerAmp to meet ROI targets, e.g., $7.10 for $17.95 sell price",
+        "confidence": "High",
+        "source": "Our max cost is $710 to meet our criteria. So, it looks like a two pack is $625. So, if we can get this for 625, right?",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs8",
+        "category": "Risk",
+        "trigger": "BSR indicating 1,000+ sales/month, consistent pricing $13.99-$17.95",
+        "advice": "Target products with steady BSR and sales volume (1,000+/month) even if price dips slightly, ensuring profitability at low end",
+        "confidence": "High",
+        "source": "We're still getting at least 1,000 sales a month, and it is moving. We can see the BSR still moving. ... Let's look at the yearly. More offers back here for sure. Went down in the $12 range, but I think $13.99 would probably be the worst part. We're still in the green.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs9",
+        "category": "Risk",
+        "trigger": "Converging offers and dropping buy box on Keepa",
+        "advice": "Avoid listings with converging offers and tanking prices as red flags for poor performance",
+        "confidence": "High",
+        "source": "If you're having converging offers and buy box, this is a red flag and you want to avoid those tanking products. ... See, this is something that we don't want to look at. $18 currently. Average is 24 to25. This is a bad product.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs10",
+        "category": "Pricing",
+        "trigger": "ROI around 18%, close to criteria",
+        "advice": "For marginal ROIs (e.g., 18%), use Walmart gift cards (15-20% off) and cashback (5-10%) to boost margins to profitable levels",
+        "confidence": "High",
+        "source": "18% ROI, not the greatest. We're still profitable, but we know that we can boost our margins with gift cards, cash back, etc. ... If you have a good Walmart gift card plus a cashback credit card, you could probably get this down another 5 to 10%. If the gift card market is good, you could probably get this down 15 to 20%.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs11",
+        "category": "Risk",
+        "trigger": "Skyrocketing offers or low competition with high potential ($80 sell price)",
+        "advice": "Monitor listings with high historical prices and low current competition for future profitability if offers decrease",
+        "confidence": "High",
+        "source": "Offers have skyrocketed. That's something we want to avoid. ... We've reverse sourced this product before. It's not the strongest, but if competition falls off, as we can see over here, when the competition is low, this sells for around $80. So, I would monitor this listing and see if this will be profitable in the future.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs12",
+        "category": "General",
+        "trigger": "Single seller focus",
+        "advice": "Don't hyperfocus on one seller; track multiple sellers (0-150 reviews) in a Google Sheet to identify trends like sourcing from Walmart or Best Buy",
+        "confidence": "High",
+        "source": "Don't focus on products just from one seller. ... We want a broad group of sellers that we can check. We want to keep adding these sellers to a sheet and track all of this data. Now, what you really want to focus on is trends and patterns. ... Spring Valley came from Walmart. Now, these are trends and patterns that you want to pick up on.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs13",
+        "category": "Risk",
+        "trigger": "Products below ROI criteria or low margins",
+        "advice": "Skip low-margin products below your criteria; wait for optimal opportunities with decreasing offers and increasing buy box",
+        "confidence": "High",
+        "source": "Avoid these low margin products. If these products are below your criteria, it is okay to skip them. ... Usually what this look like is offer count decreasing and the buy box is increasing. That is basically what a good keepraph looks like for online arbitrage.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "rs14",
+        "category": "General",
+        "trigger": "Scaling with VAs",
+        "advice": "Delegate reverse sourcing to VAs using recorded training videos, set metrics like 10-15 profitable products/day, to scale sourcing",
+        "confidence": "High",
+        "source": "Once you get a VA, you can delegate this task out to them ... You can do this by setting clear metrics. You give your team your criteria, your ROI targets, tell them how many leads you want them to source per day. And a bonus tip would be record yourself doing reverse sourcing ... I currently have four sourcing VAS and they're sourcing every single day using my exact reverse sourcing methods. And they're bringing in between 10 and 15 profitable products per day.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sr_filter_1",
+        "category": "Buying",
+        "trigger": "Sales Rank < 4,000",
+        "advice": "Avoid listings with sales rank under 4,000 as Amazon is often the seller",
+        "confidence": "High",
+        "source": "with the sales rank I usually make sure that it's over 4,000 now the lower the BSR the better it is the BSR is a sales rank is two same things but I want to make sure that I'm not hopping on any listings that Amazon is on and most of the time whenever listings are under around that range or like in the one BSR 2 BSR 100 BSR usually Amazon is on it so I just decided to put 4,000",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "sr_filter_2",
+        "category": "Buying",
+        "trigger": "Sales Rank > 85,000",
+        "advice": "Prefer sales rank under 85,000 (ideally under 100,000) for better sales potential",
+        "confidence": "High",
+        "source": "I'll put 285,000 now it's good to have psrs under 100K but I'd rather just do 85,000 that's like my number um you can't put any commas so you just have to take that out and put it like that so you can also choose no sales rank... remember you want the sales rank to be under 100,000",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "no_sr_filter",
+        "category": "Risk",
+        "trigger": "No sales rank or BSR data",
+        "advice": "Disregard products without sales rank data, though they may still sell if data is glitched or insufficient",
+        "confidence": "High",
+        "source": "what a lot of people don't know is that if the product doesn't have a sales rank or BSR estimated sales that doesn't necessarily mean that it's not selling usually me I just disregard them but there is different ways that you can actually sell profitable products with there not being any data sometimes the software they just glitch sometimes there's just not enough data to go based off of but that does doesn't necessarily mean that it's not selling so you can put no sales rank if you wanted to but I'm just going to leave that off I like personally looking and making sure that there is a sales rank Etc",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "price_filter",
+        "category": "Pricing",
+        "trigger": "Buy Box price < $15",
+        "advice": "Filter for products priced over $15 (preferably $25) to ensure profitability after FBA fees; avoid items under $5 as profit is nonexistent",
+        "confidence": "High",
+        "source": "next thing buy box I usually like products that are priced over $25 um it's really just up to you it can be 15 just keep in mind that if anything is priced at $5 and you know that you're doing this this product FBA and there's going to be already a lot of fees included there's no way that you're going to be making any profit so if something is selling on Amazon for $5 the profit is definitely not existent so honestly you can do 15 you can do 25 I'll just put 15 for now but that's usually what I want it to be the price doesn't really matter to me I actually want it to be as priced as high as possible",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "amazon_stock_filter",
+        "category": "Risk",
+        "trigger": "Amazon in stock",
+        "advice": "Filter for Amazon out of stock to avoid competing directly with Amazon",
+        "confidence": "High",
+        "source": "Amazon I don't want them to be on it so I'm just going to put out of stock for that it's really just up to you like I said said these are just personally my filters that I use",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "seller_id_method",
+        "category": "General",
+        "trigger": "Sourcing from specific seller stores",
+        "advice": "Copy seller ID from Amazon seller store and paste into Keepa product finder to filter results to that seller's products; can add multiple IDs with comma and space",
+        "confidence": "High",
+        "source": "you're going to go to where it says seller and you can actually restrict your results to listings with offers from specific sellers using their seller IDs... what I just did was just go on a random listing and you're just going to click on a seller... take the seller ID and we're just going to copy it we're going to go back on keep product finder we're just going to paste it right there... you can actually do multiple seller IDs so let's say um I'm going to do a comma then space",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "seller_reviews_filter",
+        "category": "Buying",
+        "trigger": "Target sellers with high reviews",
+        "advice": "For new sellers with few reviews, target other sellers with less than 100 reviews max when storefront stalking",
+        "confidence": "High",
+        "source": "usually when you're sore from stocking and you are just doing FBA um you don't really have that much reviews you are going to want to store from stock other sellers that are within your range maybe less than 100 reviews Max",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "brand_filter",
+        "category": "Buying",
+        "trigger": "Interested in specific brands",
+        "advice": "Use brand filter in Keepa (e.g., Mattel, Lego) to niche down products from a seller store",
+        "confidence": "High",
+        "source": "you can also filter it by the brand too so let's say that you want to only look into his Mattel products... filter it by category or brand just go here manufactur m a t t e l click that... you can use that filter if you know that you're only Eng in a certain brand so you can look at all the brands that he has um that he has listed",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "offer_count_filter",
+        "category": "Risk",
+        "trigger": "High number of offers",
+        "advice": "Optionally filter by offer count to control competition from other sellers",
+        "confidence": "High",
+        "source": "you can also do the offer count too so if you want a certain amount of sellers I'm personally just going to leave the offer count alone",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "tools_required",
+        "category": "General",
+        "trigger": "Finding profitable products online",
+        "advice": "Use Keepa and SellerAmp for this storefront stalking method; download via links if needed",
+        "confidence": "High",
+        "source": "today we're going to be using keepa and if you don't have keepa make sure to go down into the link in the description so then you can download keepa it's super essential you definitely need sell ramp and keep up for this method... you really just need seller and keepa for this method and most of you guys already have that software if you guys don't have seller amp or keepa make sure to go down into the link in the description",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-001",
+        "category": "Buying",
+        "trigger": "Amazon in stock or holding buy box",
+        "advice": "Filter out and avoid products where Amazon is selling to prevent direct competition, as Amazon offers the lowest prices.",
+        "confidence": "High",
+        "source": "we don't want to compete with Amazon because guess what Amazon gets the best and lowest price out there so do not compete with them... Amazon out of stock we had talked about it we don't want to compete with Amazon no no no",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-002",
+        "category": "Risk",
+        "trigger": "Offer count of 1 or 2",
+        "advice": "Avoid products with 1-2 offers as they indicate private label or single authorized seller; filter for 3-10 offers to ensure it's not private label and keep competition low.",
+        "confidence": "High",
+        "source": "if there's only one that will indicate to us that it's so fully private label okay same thing with two maybe they have one authorized seller but three or four that will just give us a good chance that they are not doing private label okay so I like to put three to 10 we don't want to have too much cuz remember we want to keep the competition low",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "BSR worse than 50,000",
+        "advice": "Filter for BSR between 10,000 and 50,000 to target products with strong monthly sales velocity; lower BSR means faster selling.",
+        "confidence": "High",
+        "source": "sales rank is going to be the first filter we're going to use because sales rank will determine how many sales uh you know the product gets per month it's a rule of thumb the lower the sales rank the faster it sells so just for the example here let's go ahead and start with 10,000 and maybe we'll do 50,000",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-004",
+        "category": "Pricing",
+        "trigger": "Buy box price under $15 or over $70",
+        "advice": "Target products with buy box prices between $15-20 minimum and cap at $60-70 to ensure profitability after Amazon fees; avoid low prices that yield only $1-2 profit.",
+        "confidence": "High",
+        "source": "buy box or the price advertis is I'd like to put 15 or maybe even 20 right just cuz it's a higher threshold because if you try to find products that are lower than that with all the fees that Amazon charges you and all that stuff you're going to end up making you know a buck or two it's not even worth it... I'd like to cap it like around 60 70 bucks around there",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-005",
+        "category": "Buying",
+        "trigger": "Large or fragile items like appliances, furniture, glass",
+        "advice": "Avoid big, heavy, or fragile categories to minimize fees and damage risks; focus on small, higher-cost items in categories like pet supplies, beauty, or grocery.",
+        "confidence": "High",
+        "source": "want to avoid big items like appliances because that's going to eat up a lot of fees and all that stuff right like Furnitures definitely avoid those glass products we want to pick something that's small but still has a higher cost of product... pet supplies is a good one you know beauty products grocery kind of like that",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-006",
+        "category": "Buying",
+        "trigger": "Units bought in past month under 200",
+        "advice": "Filter for high purchase velocity, e.g., 2000+ units sold last month, to ensure consistent inventory turnover; aim for products selling 20-30 units per seller monthly.",
+        "confidence": "High",
+        "source": "narrow down the bot in the past here in the past month pretty much it tells me how many products you know were sold the last month so ideally we want to sell the product that sells a lot... this one was purchased 2000 plus last month... divide by four so roughly estimate if everything gets shared properly 192 so that kind of checks off the bock that we want to sell at least you know 20 to 30 products",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-007",
+        "category": "Risk",
+        "trigger": "Listing age under 1 year",
+        "advice": "Avoid newer listings lacking sales history; prefer listings at least 1-2 years old for reliable data on competition and velocity.",
+        "confidence": "High",
+        "source": "we want to find a listing that's been at least on for a little bit ideally you know a year two years into it so we have a lot of history of what we can see with this one I will definitely avoid right off the start just because it's a newer listing",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-008",
+        "category": "Risk",
+        "trigger": "IP alert present on listing",
+        "advice": "Avoid products with IP alerts, as they indicate brand complaints about infringement and restrictions on third-party sellers.",
+        "confidence": "High",
+        "source": "IP alert showed up okay if you didn't know IP alerts is a warning that this brand had complained to Amazon in terms of internal infringement to their you know their brand that normally they don't allow you know third party sellers to sell okay so it is definitely a bit risky if you do that",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-009",
+        "category": "Risk",
+        "trigger": "Brand owner actively selling on listing",
+        "advice": "Double-check and avoid listings where the brand owner is selling, as they may kick out third-party sellers.",
+        "confidence": "High",
+        "source": "the brand is not selling themselves... Mary root so they looks like they sell here... so you you still have to double check... so that simply checked avoid",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-010",
+        "category": "General",
+        "trigger": "Searching for suppliers via Google",
+        "advice": "Use Google searches like 'category distributor wholesale + brand name'; skip first few ad results, check deeper pages (3rd-5th) for less competitive suppliers.",
+        "confidence": "High",
+        "source": "in order to find the wholesale supplier or distributor we're going to use Google to do that okay so we're going to type in pet supplies distributor wholesale then type in the brand name... I like to avoid the first few because those are pretty much advertisement and sponsored... don't be afraid to go to the third fourth page fifth page so on so forth because that's just going to add another layer you know other people won't see the wholesaler or distributor that you're using",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-011",
+        "category": "Buying",
+        "trigger": "Supplier verification needed",
+        "advice": "Verify suppliers by reading 'About Us', checking for login-required pricing (avoid public e-commerce carts), and requiring LLC, EIN, tax exempt for account setup.",
+        "confidence": "High",
+        "source": "read about us first like this is the ideally steps like what I would do in order to just verify the supplier is legitimate... login view to price so that's what I mean right there you need do need to log in create an open up account... you do need your tax ID tax ID means your EIN all right so you're going to input it there sales tax numbers your tax exempts... this one looks like more of like an e-commerce website not necessarily like a wholesale supplier distributor because just from experience reaching out to a lot of them they normally would not have like a cart that you can add",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-012",
+        "category": "General",
+        "trigger": "No suitable supplier after checking pages",
+        "advice": "If no good supplier found after 3-5 Google pages, move to the next product from your filtered list instead of forcing it.",
+        "confidence": "High",
+        "source": "I just can't find a good supplier that kind of matches what we're looking for so we can simply go on to the next product again we have a tons of product here about 2,000 so you know after checking a couple Pages if you can't still see a decent Supply or wholesaler go back to the original results",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-013",
+        "category": "Buying",
+        "trigger": "Reaching out to brands directly",
+        "advice": "For brands without clear distributors, send short professional emails via ChatGPT template inquiring about wholesale account setup, including business details like tax ID.",
+        "confidence": "High",
+        "source": "we're going to utilize chat GPT here... create and email reaching out to a brand on how to open up a wholesale account with them ask them what information they need from us make it professional and short... dear Formula 420 team... wholesale account inquiry... could you currently provide us with the necessary information requirement to establish a wholeale account with your company... please let us know what documentations are needed from our end",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-001",
+        "category": "Buying",
+        "trigger": "Using Amazon category trees for niche selection",
+        "advice": "Start with broad category like 'dog supplies', niche down to sub-niches like 'dog house breaking supplies' > 'dog diapers', check at least 10 products on page one for sales estimates using BSR and tools like Joe Scot's Amazon sales estimator.",
+        "confidence": "High",
+        "source": "So what I want to do here is just type in dog supplies. ... And then keep niching down to the lowest level. ... You want to go back to the search results and do that for at least ten products or even all the products on page one.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-002",
+        "category": "Buying",
+        "trigger": "Exploring Amazon new releases",
+        "advice": "Duplicate search page, navigate to 'new releases' tab under pet supplies > dog category, review top products in sub-categories like 'training behavior rates' or 'agility equipment', organize ideas using Google tabs/groups for efficiency.",
+        "confidence": "High",
+        "source": "And we're going to use the new releases pages here. ... So this is going to show a bunch of products on Amazon in each category where new products are being added in, They're selling very well. ... one little trick I like to do ... is to use Google tabs ... Added to a group what we recall on this dog steps and then green.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Generating ideas with ChatGPT",
+        "advice": "Prompt ChatGPT for product lists with criteria: price >$25, small/lightweight, easy to manufacture, exclude food/electronics/breakable items; follow up for sub-types (e.g., types of dog beds), then search Amazon for niches like 'dog beds with hooded blanket'.",
+        "confidence": "High",
+        "source": "So and type that in here and paste the prompt already have. And this prompt essentially is asking chat to give me a list of dog products that are usually above $25 are small and lightweight, easy to manufacture, and we don't want to sell anything that's a food or electronic item and nothing that's easily breakable here.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-004",
+        "category": "Buying",
+        "trigger": "High demand filter in product database",
+        "advice": "Set minimum sales to 300 units/month (over 10 sales/day) in US marketplace; prioritize as it's the only factor not directly influenceable; confirm consistent customer searches/purchases.",
+        "confidence": "High",
+        "source": "We like to define high demand products as those that maintain a consistent sales volume of over ten sales per day or 300 sales per month. ... So I'll go out and put that here as a minimum. ... our customers consistently searching for and purchasing this type of product.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "Brand loyal categories",
+        "advice": "Target brand-agnostic categories where purchases are based on price/features/innovation, not brand reputation; use max reviews filter <=250 to find products selling well with low reviews (indicating unknown/new brands).",
+        "confidence": "High",
+        "source": "brand agnostic. This is the type of customer you want purchasing your product ... maximum review filter here instead of maximum of 250 reviews. ... the product is sold by either unknown brand or is pretty new to the market.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-006",
+        "category": "Buying",
+        "trigger": "Product age filter",
+        "advice": "Filter for date first available in last 12-24 months to find recently launched products selling 300+ units/month with <=250 reviews; start with 24 months and narrow to 12.",
+        "confidence": "High",
+        "source": "And this is the date first available filter. And what I like to do now is select either the last 24 months or 12 months of the last two or one years. ... products that were just launched in the past year that are selling 300 units each month despite only having 250 reviews.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-007",
+        "category": "Risk",
+        "trigger": "Competing with top brands or Amazon",
+        "advice": "Exclude top brands (e.g., Nike, Adidas); filter seller type to FBA/FBM only, excluding Amazon-sold products to avoid direct competition with large entities.",
+        "confidence": "High",
+        "source": "So another way that we can do this is to exclude top brands. ... But then also what I like to do is come up here, the seller type. ... So I like to weed out Amazon. You want to compete with Amazon and select FBA and FPM only.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-008",
+        "category": "Pricing",
+        "trigger": "Price outside $25-$75 range",
+        "advice": "Target products priced $25-$75 for healthy margins; under $25 has slim margins, over $75 hard for impulse buys from unknown brands; adjust filters as needed (e.g., min $20, max $80).",
+        "confidence": "High",
+        "source": "So as a general rule of thumb, you want to aim to sell products between 25 and $75. ... Minimum price 25, maximum price zone five.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-009",
+        "category": "Buying",
+        "trigger": "High star ratings indicating no improvement potential",
+        "advice": "Set max star rating to 4 to find products selling 100s units/month but with negative reviews, indicating room for improvement (e.g., better design to address complaints).",
+        "confidence": "High",
+        "source": "So to help you find products that customers are just begging to be improved, you can actually utilize this star rating filter. ... I suggest setting the maximum rating to at least a four here. ... products that are selling hundreds of units each month despite having negative reviews.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-010",
+        "category": "Risk",
+        "trigger": "Products that are hard to source/sell",
+        "advice": "Prioritize easy-to-sell products: small/lightweight (fits shoebox, <20lbs to avoid oversize FBA fees), not easily breakable, exclude food/clothing/electronics; filter to standard products only and avoid problematic categories.",
+        "confidence": "High",
+        "source": "Ideally, you want to find a product that is easy for a factory to make and for you to sell. These are products that aren't easily breakable in a food, clothing or electronic item and are also products that are small and lightweight. ... to avoid oversize products, you can actually come up here to the product here section and select standard products only. ... a standard product is a product that can fit into a normal shoebox and oversize would be something above \u00a320.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-011",
+        "category": "Risk",
+        "trigger": "Potential legal/liability issues",
+        "advice": "Manually check for patents/trademarks (e.g., sell generic but not patented designs); avoid liability-prone products like child car seats that could lead to lawsuits if defective.",
+        "confidence": "High",
+        "source": "You need to double check that it doesn't infringe on any existing patents or trademarks. For example, it is okay to sell a generic travel mug like this, but it's not okay to sell the specific one that's designed and patented by the company. ... make sure to cross off any products that you can see as being a potential liability. This means you could be sued if something were to go tragically wrong with a product like a child's car seat.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-012",
+        "category": "Seasonality",
+        "trigger": "Products with high seasonality or fads",
+        "advice": "Avoid purely seasonal/fad products; use social media (e.g., TikTok) to spot trends but validate; in Opportunity Finder, set seasonality to medium, demand >=300 units/month, price $25-75, exclude top brands.",
+        "confidence": "High",
+        "source": "But how to even find out what's trending? Well, if you're active on social media, especially on apps like TikTok ... you want to make sure that you're not selling something that's just seasonal or that's a fad. ... And now for our monthly price, 25 to 75. And we come down here in bringing seasonality and competition to medium.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-013",
+        "category": "Buying",
+        "trigger": "Identifying trending products",
+        "advice": "In Opportunity Finder, set 90-day trend filter to minimum 1% upward growth for niches with >=300 units/month; include interest keywords (e.g., 'dog') to filter results.",
+        "confidence": "High",
+        "source": "to find trending products ... I'm going to put one as the minimum here and the 90 day trend filter. So essentially what this is going to do is show us products over the past three months that are trending upwards by at least 1%.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-014",
+        "category": "Buying",
+        "trigger": "Broad product ideas needing sub-niches",
+        "advice": "For each idea, use reverse ASIN search on top 10 organic products (min exact match search volume 1000, category pet supplies); select unique sub-niches (e.g., 'dog beds for large dogs', 'calming dog bed') avoiding repeats/brands; save to keyword lists.",
+        "confidence": "High",
+        "source": "take each of your ideas and identify all the different submissions. ... copy the essence, and then bring back up here and this fill this up with ten different reasons. ... put a thousand ... isolate those high volume keywords ... looking for unique ideas here. ... save this to a new keyword list.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "strat-015",
+        "category": "General",
+        "trigger": "Evaluating multiple ideas",
+        "advice": "Generate 5-10 product ideas across strategies for comparison; ensure ideas meet 6 factors (high demand, brand agnostic, profitable, improvable, easy to sell, no legal issues); play with filters and save sets for iteration.",
+        "confidence": "High",
+        "source": "creating a list of at least 5 to 10 product ideas. ... which of these ideas hit most or ideally all six. Those factors of a good product. ... I'd encourage you to play around and see what different results you get by setting different parameters. ... you can actually just save the ones that you've created yourself.",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-001",
+        "category": "General",
+        "trigger": "Accessing product leads in groups or Discord",
+        "advice": "Start with profitable leads posted daily and look for leads within leads to avoid saturation; join groups like Discord for $55/month with daily leads and networking.",
+        "confidence": "High",
+        "source": "I do have leads posted every single day so then you can start off with those profitable leads and start store from stocking and look for leads within leads now keep in mind if you're in a group filled of many other Sellers and there's a leads list you want to make sure to look for the leads within those leads you don't want to necessarily buy those because those are most likely going to get saturated and tank",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-002",
+        "category": "Risk",
+        "trigger": "Offer count rising from 11 to 47 sellers in a month for a product selling 100 times/month",
+        "advice": "Avoid oversaturated products where offer count increases rapidly and price tanks (e.g., from $44.97 to $24.99); monitor with Keepa paid version for offer count graph.",
+        "confidence": "High",
+        "source": "from April 1st all the way to April 30th so a whole month it went from 11 sellers to 47 sellers that is a big increase and you can tell this product from the second graph this product only sells about 100 times a month okay so that is way too oversaturated for me and as you can tell April 3rd let's go here it's valued at $24.99 so it definitely tanked tanked means that the price of the product is going down",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-003",
+        "category": "Pricing",
+        "trigger": "BSR under 10k-11k with sales increasing to 200/month",
+        "advice": "Target products with BSR staying under 10k-11k (green line on Keepa) and improving sales velocity (e.g., from 50 to 200/month) as sellers sell out and price rises.",
+        "confidence": "High",
+        "source": "the green line is actually pretty good it stays under like 10K 11k so the lower the BSR the better it is as you can tell around here it went as high as 30k and that's when it sold 50 times a month but it has lowered so these people are selling out within these past months ... it sells 200 times a month now ... the value of the product is actually going back up",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-004",
+        "category": "Pricing",
+        "trigger": "ROI calculation for arbitrage purchase",
+        "advice": "Aim for at least 25% ROI for retail/online arbitrage (e.g., $14.64 cost yields $4.79 profit at 32% ROI); use 20%+ for wholesale; factor in 7% tax if not exempt.",
+        "confidence": "High",
+        "source": "the ROI is 22% now I look for 20% and above that's only because my stats are more for when I'm sourcing wholesale if you are just doing Arbitrage Retail Arbitrage online Arbitrage ... you would want at least 25% Roi ... we would make a profit of $4.79 per unit and 32% return on investment ... plus 7% That's I'm in Florida so it's 7% for me",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-005",
+        "category": "Risk",
+        "trigger": "20 sellers for product selling 200 times/month",
+        "advice": "Consider saturation risk; acceptable if sales >500/month, but avoid if lower (e.g., 200/month with 20 sellers still too saturated).",
+        "confidence": "High",
+        "source": "it's still only sells 200 times a month now if this was selling 500 times a month I wouldn't mind there being 20 sellers on it but it's still a little saturated to me ... usually when you see the offer count going down the price is going to go up",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-006",
+        "category": "Buying",
+        "trigger": "Using Seller Amp for storefront stalking",
+        "advice": "Filter to FBA/Prime only sellers; target arbitrage sellers (low reviews <10, few products <5, no Amazon competition) and avoid wholesalers (high reviews >46k, Amazon on listings).",
+        "confidence": "High",
+        "source": "you are going to want the seller amp software so then you can look through these seller stores so if you're doing FBA then you're just going to take out all of the fbm so then it's just going to show you prime only ... hover over the FBA button and it tells you exactly how much reviews ... this seller I can tell is most likely an Arbitrage seller um that's just because they have four reviews ... this one 46,000 reviews ... most of these wholesalers they compete with Amazon ... you can see the orange shading you can also tell the little Amazon symbol",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-007",
+        "category": "Buying",
+        "trigger": "Max cost negative or unrealistic (e.g., under $4 for 5lb product)",
+        "advice": "Skip products with negative max cost or unrealistic sourcing price; ensure max cost allows 25% ROI (e.g., under $16.19 for $30 sell price).",
+        "confidence": "High",
+        "source": "the Max cost and then the product and the title name ... whenever the Max cost is in the negatives I don't even look at it there's no way you're going to be able to get it for free plus you get 14 cents ... we see it's an A and D original diaper ointment jar 1 lb and we have to find it under $16 ... the Max cost is actually updated to 1162 so it's actually the Max cost is going based off of the buy box price right now",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-008",
+        "category": "Buying",
+        "trigger": "Sourcing from sites like iHerb or Walmart",
+        "advice": "Search for product under max cost; buy in quantities for free shipping (e.g., 5 units over $30); check variations match via images/title.",
+        "confidence": "High",
+        "source": "you would put your cost price $ 1447 ... from iherb ... $464 free shipping over $30 ... we're going to add like five the test order five ... look at the title the picture and the Max cost those are the first three things that you should be looking at ... make sure to compare the two rocket in is there so that's good we can get cash back on this",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-009",
+        "category": "Pricing",
+        "trigger": "Using Rakuten for purchases",
+        "advice": "Activate 2% cashback and check for coupons/discount codes to lower effective cost (e.g., $5.53 with code for 2-pack under $12.08 max); use referral for $20-30 bonus.",
+        "confidence": "High",
+        "source": "use rettin if you use my link in my description I believe you get a bonus okay I forgot how much it was but I think it was like 20 $30 bonus ... activate 2% cashback ... rettin has discount codes and also cash back ... see if there's any discount codes ... 553 that would work because we need to find it under 1208 so 5.53 times you can do all this math on the cost price calculator * 2 = 1106",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-010",
+        "category": "Risk",
+        "trigger": "Product variations or sizes mismatch (e.g., 13in x 3ft vs 13in x 12ft)",
+        "advice": "Deep dive into product details: compare images, titles, and specs to ensure exact match before purchasing; avoid brief scans.",
+        "confidence": "High",
+        "source": "instead of just you know just looking at briefly looking at the things briefly like actually look into the picture so then you don't have to go back ... this one is 13 in by by 3 ft this one is 13 in x 12 ft so so I think that's pretty much it ... look at the title the picture and the Max cost those are the first three things that you should be looking at",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-011",
+        "category": "Buying",
+        "trigger": "Multi-pack products (e.g., 2-pack or 6-pack)",
+        "advice": "For multi-packs, calculate per-unit cost under max (e.g., 2-pack under $12 means each under $6; 6-pack at $4.38/unit); prefer single units if possible.",
+        "confidence": "High",
+        "source": "if it's a two pack you have to find each unit under $6 simple as that ... this one has six per case we'll have to do 4384 / 6 oh that wouldn't work so that would be 730 * 2 so we would buy it for 1461 but we're not under the max H has to be 1185 ... now if it was a pack of one I would look into it but if it's a pack of three probably not",
+        "date_added": "2026-02-06"
+    },
+    {
+        "id": "oa-012",
+        "category": "Risk",
+        "trigger": "Sellers with bad ratings (e.g., 50% negative) or few sales",
+        "advice": "Skip storefronts with poor ratings or low sales indicators, as they may indicate quality issues; focus on steady BSR graphs.",
+        "confidence": "High",
+        "source": "whenever they have really bad ratings I usually don't store friend stock them cuz it's like why are people reviewing your product so badly so negatively ... their ratings are trash 50% ratings yeah they're probably not getting much sales at all ... just look at the green line see what the sales rank is at usually you see this big dip that means that it's actually pretty selling well",
+        "date_added": "2026-02-06"
     }
 ]
