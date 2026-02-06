@@ -758,8 +758,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const ghTrust = document.getElementById('gh-trust');
 
         if (ghBookDetails) {
-            // <= 1024px: ASIN Hidden -> Colspan 2
-            if (width <= 1024) {
+            // <= 700px: ASIN Hidden -> Colspan 2
+            if (width <= 700) {
                 ghBookDetails.colSpan = 2;
             } else {
                 ghBookDetails.colSpan = 3;
@@ -767,8 +767,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (ghTrust) {
-            // <= 768px: Trust Hidden -> Colspan 0 (Hide header too)
-            if (width <= 768) {
+            // <= 700px: Trust Hidden -> Colspan 0 (Hide header too)
+            if (width <= 700) {
                 ghTrust.style.display = 'none';
             } else {
                 ghTrust.style.display = 'table-cell';
