@@ -195,8 +195,26 @@ def backfill_deals(reset=False):
                         rows = c_check.fetchall()
                         for r in rows:
                             asin_val = r['ASIN']
-                            existing_asins_set.add(asin_val)
-                            existing_rows_map[asin_val] = dict(r) # Convert Row to dict
+
+                            # CHECK HEALTH: Zombie / Bad Data Detection (Self-Healing)
+                            # If a deal has invalid critical data ('-', '0', or None/Null),
+                            # we treat it as NEW (do not add to existing_set) to force a heavy re-fetch.
+                            list_at = r['List at']
+                            yr_avg = r['1yr. Avg.']
+                            profit = r['Profit']
+
+                            is_zombie = False
+                            if not list_at or str(list_at).strip() in ['-', 'N/A', '0', '0.0', '0.00']: is_zombie = True
+                            elif not yr_avg or str(yr_avg).strip() in ['-', 'N/A', '0', '0.0', '0.00']: is_zombie = True
+                            elif profit is not None and isinstance(profit, (int, float)) and profit <= 0: is_zombie = True
+
+                            if is_zombie:
+                                logger.info(f"ASIN {asin_val}: Detected as ZOMBIE/BAD DATA (List at: {list_at}, 1yr Avg: {yr_avg}, Profit: {profit}). Forcing heavy re-fetch.")
+                                # Do NOT add to existing_asins_set. It will fall into new_asins loop.
+                            else:
+                                existing_asins_set.add(asin_val)
+                                existing_rows_map[asin_val] = dict(r) # Convert Row to dict
+
                         conn_check.close()
                     except Exception as e:
                         logger.warning(f"Failed to check existing ASINs: {e}")

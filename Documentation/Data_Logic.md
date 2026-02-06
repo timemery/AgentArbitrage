@@ -27,7 +27,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     **CRITICAL INTEGRITY CHECK (Feb 2026):**
     *   **Negative Profit:** Any deal with `Profit <= 0` is strictly rejected at the ingestion stage.
     *   **Incomplete Data:** Deals missing critical fields like `List at` or `1yr. Avg.` are rejected.
-    *   **Lightweight Updates:** These checks are also enforced during "lightweight" (delta) updates to prevent invalid/stale data from persisting in the database.
+    *   **Self-Healing Backfill:** The Backfiller detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them. If repair fails (data still missing), they are then rejected by the integrity check.
 
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
@@ -37,7 +37,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 4.  **Analytics & Seasonality**:
     *   **Logic:** `keepa_deals/new_analytics.py` and `seasonality_classifier.py`.
     *   **1yr. Avg.:** The mean price of all inferred sales in the last 365 days.
-    *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped. This check is strictly enforced during both initial ingestion and lightweight updates.
+    *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped.
     *   **Seasonality:** AI (`grok-4-fast-reasoning`) classifies the book (e.g., "Fall Semester") based on title, category, and historical peak sales months.
 
 5.  **Price Benchmarks ("List at" & "Trough")**:
@@ -49,7 +49,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Ceiling Guardrail:** The "List at" price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
     *   **Verification:** Queries AI (`grok-4-fast-reasoning`): "Is a peak price of $X.XX reasonable for this book?" Context provided includes Binding, Page Count, Image URL, and Rank.
-    *   **Exclusion:** If AI says "No" or calculation fails, the deal is dropped. This check is strictly enforced during both initial ingestion and lightweight updates.
+    *   **Exclusion:** If AI says "No" or calculation fails, the deal is dropped.
 
 6.  **Business Math**:
     *   **Logic:** `keepa_deals/business_calculations.py`.
