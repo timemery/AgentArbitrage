@@ -897,9 +897,9 @@ button:disabled {
 /* VERIFICATION: Sticky header alignment fix active - 2026-02-05 */
 #deals-table {
     width: 100%;
-    max-width: 1200px; /* User Req: Max 1200px */
-    margin: 0 auto; /* Centered */
-    font-family: 'Open Sans', sans-serif;
+    max-width: 1200px; /* Reduced to 1200px */
+    margin: 0 auto; /* Centered - Negative top margin counteracts border-spacing gap */
+    font-family: 'Open Sans', sans-serif; /* Update to Open Sans */
 }
 
 #deals-table table {
@@ -920,7 +920,7 @@ button:disabled {
 }
 
 #deals-table th, #deals-table td {
-    padding: 0 8px !important; /* User Req: 8px padding */
+    padding: 0 2px; /* Reduced to 2px */
     text-align: left;
     white-space: nowrap; /* Prevent wrapping on all columns */
     border: none; /* No default borders */
@@ -929,7 +929,7 @@ button:disabled {
 /* Special padding for first cell in row */
 #deals-table th:first-child,
 #deals-table td:first-child {
-    padding-left: 8px !important; /* User Req: 8px padding */
+    padding-left: 4px !important;
 }
 
 /* Column Header Styles */
@@ -998,7 +998,7 @@ button:disabled {
 
 /* Group Separation Border */
 #deals-table .group-end {
-    border-right: 2px solid #13161a !important; /* User Req: 2px spacing */
+    border-right: 2px solid #13161a !important; /* Matches site background */
 }
 
 /* Group Header Styles */
@@ -1012,7 +1012,7 @@ button:disabled {
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
-    padding: 0 2px !important; /* User Req: Not the group headers (Keep 2px or 0?) */
+    padding: 0 2px !important;
     box-sizing: border-box !important;
     vertical-align: middle !important;
     line-height: 56px !important;
@@ -1062,13 +1062,12 @@ button:disabled {
 }
 
 /* Specific Column Padding - High Specificity */
-/* Override specific paddings if needed, but strict 8px requested */
 #deals-table tr td.col-asin,
 #deals-table tr td.col-sales-rank-current,
 #deals-table tr td.col-1yr-avg,
 #deals-table tr td.col-seller-quality-score,
 #deals-table tr td.col-all-in-cost {
-    padding-left: 8px !important; /* User Req: 8px */
+    padding-left: 10px !important;
 }
 
 /* Row Styles */
@@ -1111,7 +1110,7 @@ button:disabled {
     height: 25px !important; /* Adjusted to 25px */
     min-height: 25px !important;
     max-height: 25px !important;
-    padding: 0 8px !important; /* User Req: 8px */
+    padding: 0 2px !important;
     line-height: 25px !important; /* Adjusted */
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
@@ -1138,7 +1137,7 @@ button:disabled {
     z-index: -1;
 }
 #deals-table .sort-arrows-row td:first-child {
-    padding-left: 8px !important; /* User Req: 8px */
+    padding-left: 4px !important;
 }
 
 
@@ -1162,7 +1161,7 @@ button:disabled {
     text-align: center;
     text-decoration: none;
     font-size: 1.2em;
-    color: rgba(102, 153, 204, 0.8); 
+    color: rgba(102, 153, 204, 0.8);
     text-shadow: 0 0 2px rgba(102, 153, 204, 0.5);
 }
 
@@ -1192,26 +1191,13 @@ button:disabled {
     position: relative; /* Needed for hover effect */
 }
 
-/* User Req: Width Updates */
-.title-cell, .season-detail-cell {
-    width: 130px;
-    max-width: 130px;
-    min-width: 50px; /* Allow shrinking */
+.title-cell {
+    max-width: clamp(4ch, 12vw, 125px); /* Fluid width: min 4ch, max 125px */
 }
 
-.col-condition {
-    width: 82px;
-    max-width: 82px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.season-detail-cell {
+    max-width: clamp(4ch, 10vw, 105px); /* Fluid width: min 4ch, max 105px */
 }
-
-/* Center Drops */
-.col-drops {
-    text-align: center !important;
-}
-
 
 .seller-cell, .genre-cell {
     max-width: 120px;
@@ -1243,13 +1229,11 @@ button:disabled {
     flex-direction: column;
     align-items: center; /* Center the content horizontally */
     width: 100%;
-    max-width: 1200px; /* User Req: Max 1200px */
-    margin: 0 auto;
 }
 
 .deal-counter-container {
     width: 100%;
-    max-width: 1200px; /* Match table width */
+    max-width: 1800px; /* Match table width */
     text-align: left;
     margin-top: 10px; /* Reduced top margin to match bottom margin */
     margin-bottom: 10px;
@@ -1612,18 +1596,18 @@ body.home-background::before {
 .trend-rising-red { color: red; font-weight: bold; }
 
 .amzn-icon, .amz-warn-icon {
-    width: 14px; /* User Req: Reduce size */
-    height: 14px;
+    width: 17px;
+    height: 17px;
     display: block;
     vertical-align: bottom;
     margin-left: 5px;
 }
 
 .trend-icon {
-    width: 10px; /* User Req: Reduce size */
-    height: 10px;
+    width: 13px;
+    height: 13px;
     vertical-align: bottom;
-    margin-right: 0; /* User Req: Remove margin */
+    margin-right: 4px;
     display: inline-block;
 }
 
@@ -1632,7 +1616,6 @@ body.home-background::before {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 0; /* User Req: Remove gap */
 }
 
 .amz-warning-cell { font-size: 1.2em; text-align: center; }
@@ -2033,7 +2016,7 @@ body.home-background::before {
 
 .filter-panel {
     width: 100%;
-    max-width: 1200px; /* User Req: Max 1200px */
+    max-width: 1200px;
     background-color: transparent;
     border: 1px solid #000000;
     border-radius: 8px;
@@ -2582,15 +2565,13 @@ body.home-background::before {
 /* 1. Fluid Narrowing & Breakpoints */
 @media (max-width: 1200px) {
     #deals-table th, #deals-table td {
-        /* User Req: Maintain 8px padding? "min 8px padding left and right INSIDE of all cells... no padding outside" */
-        /* If I reduce to 2px here, I violate the requirement. I will keep it 8px. */
-        /* padding: 0 2px; REMOVED reduction */
+        padding: 0 2px; /* Reduce padding */
         font-size: 11px; /* Slightly smaller font */
     }
     /* Adjust Group Header height/font */
     #deals-table .group-header th {
         font-size: 13px;
-        /* padding: 0 2px !important; Already set globally */
+        padding: 0 2px !important;
     }
 }
 
@@ -2600,8 +2581,6 @@ body.home-background::before {
         display: none;
     }
     /* Disable Sticky Headers to prevent overlap with wrapping filter panel */
-    /* REMOVING "position: static" override to fix disappearing table bug if caused by layout shift */
-    /*
     #deals-table th,
     #deals-table .column-header-row th,
     #deals-table .sort-arrows-row td,
@@ -2611,14 +2590,10 @@ body.home-background::before {
         position: static !important;
         top: auto !important;
     }
-    */
-    /* Keeping Shadow Line hidden if headers aren't sticky? Or should I keep it? */
-    /* If I keep sticky headers, I should keep shadow line. */
-    /*
+    /* Remove Shadow Line */
     #sticky-header-shadow-line {
         display: none !important;
     }
-    */
     /* Allow Filter Panel to grow naturally */
     .filter-panel-open {
         height: auto !important;
