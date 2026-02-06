@@ -1684,11 +1684,12 @@ body.home-background::before {
 .trend-icon {
     width: 10px; /* User Req: Reduce size */
     height: 10px;
-    vertical-align: bottom;
-    margin-right: 3px; /* User Req: 3px spacing */
+    vertical-align: baseline;
+    margin-right: 4px; /* User Req: 4px spacing */
     display: inline-block;
     position: relative;
-    top: -5px; /* User Req: Bump up 1px more (total 5px) */
+    top: -1px; /* Adjusted for alignment */
+    transform: translateY(1px); /* Fine-tune vertical alignment by 1px */
 }
 
 .offers-wrapper {
