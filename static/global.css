@@ -937,7 +937,7 @@ button:disabled {
     background-color: transparent !important; /* Managed by pseudos */
     color: #a3aec0;
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700; /* Bold */
+    font-weight: 600; /* SemiBold */
     font-size: 12px;
     cursor: default;
     height: 31px !important;
@@ -1006,7 +1006,7 @@ button:disabled {
     background-color: transparent !important; /* Managed by pseudos */
     color: #ffffff;
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700; /* Bold */
+    font-weight: 600; /* SemiBold */
     font-size: 14px;
     border: none !important; /* NONE */
     height: 56px !important;
@@ -1064,7 +1064,7 @@ button:disabled {
 /* Specific Column Padding */
 #deals-table .col-asin,
 #deals-table .col-sales-rank-current,
-#deals-table .col-sales-rank-365-days-avg,
+#deals-table .col-1yr-avg,
 #deals-table .col-seller-quality-score,
 #deals-table .col-all-in-cost {
     padding-left: 10px !important;
@@ -2111,7 +2111,7 @@ body.home-background::before {
 /* Closed State Text */
 .deals-found-text {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
+    font-weight: 600; /* SemiBold */
     font-size: 15px;
     color: #ffffff;
     vertical-align: middle;
@@ -2125,7 +2125,7 @@ body.home-background::before {
 
 .new-deals-text {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700; /* Bold */
+    font-weight: 600; /* SemiBold */
     font-size: 12px;
     color: #a3aec0;
 }
@@ -2149,7 +2149,7 @@ body.home-background::before {
 
 .refresh-text-white {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
+    font-weight: 600; /* SemiBold */
     font-size: 12px;
     color: #ffffff;
 }
@@ -2185,7 +2185,7 @@ body.home-background::before {
 
 .slider-value-readout {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
+    font-weight: 600; /* SemiBold */
     color: #a3aec0 !important; /* Force color per critique */
     margin-left: 8px; /* Changed from 4px to 8px per request */
 }
@@ -2252,7 +2252,7 @@ body.home-background::before {
     border-radius: 8px; /* Increased radius per critique */
     color: #ffffff;
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
+    font-weight: 600; /* SemiBold */
     font-size: 12px;
     cursor: pointer;
     padding: 0;
@@ -2291,7 +2291,7 @@ body.home-background::before {
 
 .checkbox-item label {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
+    font-weight: 600; /* SemiBold */
     font-size: 12px;
     color: #ffffff;
     cursor: pointer;
