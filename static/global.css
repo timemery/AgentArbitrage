@@ -1166,7 +1166,7 @@ button:disabled {
 }
 
 .sort-arrow {
-    width: 17px;
+    width: 13px; /* Reduced width to fix column width */
     height: 25px;
     cursor: pointer;
     margin-right: 0;
@@ -1218,8 +1218,8 @@ button:disabled {
 }
 
 .season-detail-cell {
-    width: 90px; /* User Req: Reduce default to 90px */
-    max-width: 90px;
+    width: 95px; /* User Req: Increase to 95px */
+    max-width: 95px;
     min-width: 40px; /* Allow shrinking */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1649,10 +1649,10 @@ body.home-background::before {
     width: 10px; /* User Req: Reduce size */
     height: 10px;
     vertical-align: bottom;
-    margin-right: 1px; /* User Req: Add 1px padding */
+    margin-right: 3px; /* User Req: Revise to 3px */
     display: inline-block;
     position: relative;
-    top: -3px; /* User Req: Move up 3px */
+    top: -4px; /* User Req: Bump up 1px more (total 4px) */
 }
 
 .offers-wrapper {
@@ -2147,7 +2147,7 @@ body.home-background::before {
 
 /* Open state padding adjustment */
 .filter-panel-open .filter-icon-toggle {
-    margin-right: 45px; /* Padding of 45px between the filter icon and the first slider */
+    margin-right: 20px; /* Padding reduced to 20px */
 }
 .filter-panel-closed .filter-icon-toggle {
     margin-right: 16px; /* Padding of 16px between the filter icon and the text */
@@ -2206,6 +2206,9 @@ body.home-background::before {
     gap: 20px; /* Reduced to 20px */
     height: 100%;
     flex-wrap: wrap; /* Ensure filters wrap on smaller screens */
+    row-gap: 10px; /* Add vertical spacing when wrapped */
+    padding-top: 5px; /* Slight top padding for alignment */
+    padding-bottom: 5px; /* Slight bottom padding */
 }
 
 .filter-item {
@@ -2322,9 +2325,10 @@ body.home-background::before {
 /* Checkbox Styling */
 .checkboxes-wrapper {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10px; /* Guessing gap based on mockup */
+    flex-direction: row; /* Side by side layout */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px; /* Spacing between checkboxes */
     margin-left: 20px; /* "Spacing between check boxes & sliders: 20px" */
     height: 100%;
 }
@@ -2630,8 +2634,8 @@ body.home-background::before {
     }
 }
 
-/* Allow Filter Panel to grow naturally below 1024px */
-@media (max-width: 1024px) {
+/* Allow Filter Panel to grow naturally below 1300px to catch early wrapping */
+@media (max-width: 1300px) {
     .filter-panel-open {
         height: auto !important;
         min-height: 102px;
