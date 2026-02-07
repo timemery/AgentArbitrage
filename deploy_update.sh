@@ -28,6 +28,11 @@ else
 fi
 $VENV_PYTHON Diagnostics/force_clear_locks.py
 
+# Step 2.6: Force Pause (Recharge Mode)
+# Ensures system starts in a PAUSED state until tokens refill to 280.
+echo "[2.6/5] Forcing Recharge Mode (Pause until Refill)..."
+$VENV_PYTHON Diagnostics/force_pause.py
+
 # Step 3: Start Services
 # Starts Redis, Celery Worker, and Celery Beat monitor.
 echo "[3/5] Starting services..."
