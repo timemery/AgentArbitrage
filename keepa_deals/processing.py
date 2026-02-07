@@ -177,6 +177,18 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             logger.info(f"ASIN {asin}: Excluding deal because Profit is zero or negative (${row_data.get('Profit', 0):.2f}).")
             return None
 
+        # Exclusion: Validate Critical Data (prevent re-fetch loops)
+        # If Self-Healing forced a re-fetch but we still lack data, we MUST reject it.
+        list_at_val = row_data.get('List at')
+        if not list_at_val or str(list_at_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
+             logger.info(f"ASIN {asin}: Ingestion Rejected - Invalid 'List at' ({list_at_val}).")
+             return None
+
+        yr_avg_val = row_data.get('1yr. Avg.')
+        if not yr_avg_val or str(yr_avg_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
+             logger.info(f"ASIN {asin}: Ingestion Rejected - Invalid '1yr. Avg.' ({yr_avg_val}).")
+             return None
+
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed business calculations: {e}", exc_info=True)
 
