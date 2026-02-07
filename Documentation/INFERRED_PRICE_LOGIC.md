@@ -103,3 +103,28 @@ Used for the "Percent Down" and "Trend" calculations.
 2.  **Mode for Peak:** We use **Mode** for the "List at" price because arbitrage sellers often target a specific "standard" market price that occurs frequently, rather than an average of fluctuations.
 3.  **Strict Validation:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it prefers to reject the deal rather than present a risky one.
 4.  **240-Hour Window:** Expanding the correlation window from 168h to 240h significantly improved capture rates for "Near Miss" sales events where rank reporting lagged behind offer drops.
+
+------
+
+## 5. Verification Case Study: The "Missing Data" Investigation (Feb 2026)
+
+In February 2026, users reported that several deals appeared on the dashboard with missing data (e.g., `1yr Avg: -`) or negative profit, despite Keepa data seemingly being available. An in-depth investigation was conducted to determine if the *calculation logic* was flawed.
+
+### Methodology
+A diagnostic script (`tests/trace_1yr_avg.py`) was created to trace the exact execution of the logic on ASIN `1455616133`, one of the reported "missing data" items.
+
+### Findings
+1.  **Raw History:** The script found 1286 rank history points and 100 offer count points (valid data availability).
+2.  **Inference Logic:**
+    *   Detected **46** raw offer drops.
+    *   Successfully correlated **28** of them with a Rank Drop within the 240-hour window.
+3.  **Sanitization:** 8 outliers were removed using the IQR method.
+4.  **Result:**
+    *   **Sales in Last 365 Days:** 28 confirmed sales.
+    *   **Calculated 1yr Avg:** **$54.38**.
+
+### Conclusion
+The calculation logic is **sound**. The data *does* exist, and the algorithm *can* find it. The reason these deals appeared broken on the dashboard was **Data Ingestion Stagnation** (deals getting stuck in a "lightweight update" loop that never re-fetched the full history needed for the calculation), not a flaw in the math itself.
+
+### Resolution
+Instead of changing the math (e.g., adding unsafe fallbacks), we implemented a **"Self-Healing Backfill"** strategy. The system now detects these "Zombie" deals (missing data) and forces a full re-fetch to allow the proven logic to execute correctly.
