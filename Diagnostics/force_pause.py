@@ -1,5 +1,6 @@
 import redis
 import os
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,7 +15,13 @@ def force_pause():
 
         # Set the key to '1' (Active)
         r.set("keepa_recharge_mode_active", "1")
-        print("Set 'keepa_recharge_mode_active' to '1'. System is now PAUSED until tokens reach 280.")
+
+        # Set the start time for timeout detection
+        start_time = time.time()
+        r.set("keepa_recharge_start_time", str(start_time))
+
+        print(f"Set 'keepa_recharge_mode_active' to '1'. System is now PAUSED until tokens reach 280.")
+        print(f"Set 'keepa_recharge_start_time' to {start_time}. Timeout set to 60 minutes.")
 
     except Exception as e:
         print(f"[ERROR] Could not connect to Redis: {e}")

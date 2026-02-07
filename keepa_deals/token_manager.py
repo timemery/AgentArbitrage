@@ -110,15 +110,39 @@ class TokenManager:
             if self.redis_client and self.REFILL_RATE_PER_MINUTE < 10:
                 is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE)
                 if is_recharging == "1":
-                    # Check if we have reached the burst threshold
-                    # Note: We use the local token estimate (sync happening in wait loop)
-                    if self.tokens >= self.BURST_THRESHOLD:
-                        logger.info(f"Burst threshold reached ({self.tokens:.2f} >= {self.BURST_THRESHOLD}). Exiting Recharge Mode.")
+                    # --- SAFETY: Check for Recharge Timeout (Stuck Logic) ---
+                    recharge_start_str = self.redis_client.get("keepa_recharge_start_time")
+                    start_time = None
+                    if recharge_start_str:
+                        try:
+                            start_time = float(recharge_start_str)
+                        except ValueError:
+                            pass
+
+                    if start_time is None:
+                        # Adopt current time if missing (legacy/orphaned)
+                        start_time = time.time()
+                        self.redis_client.set("keepa_recharge_start_time", str(start_time))
+
+                    elapsed = time.time() - start_time
+                    RECHARGE_TIMEOUT_SECONDS = 3600 # 60 minutes
+
+                    if elapsed > RECHARGE_TIMEOUT_SECONDS:
+                        logger.warning(f"CRITICAL: Recharge Mode timed out after {elapsed/60:.1f} minutes (Limit: 60m). Forcing exit to prevent Livelock/Stuck state.")
                         self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
+                        self.redis_client.delete("keepa_recharge_start_time")
+                        # Proceed with request
                     else:
-                        logger.info(f"Recharge Mode Active (Tokens: {self.tokens:.2f}/{self.BURST_THRESHOLD}). Waiting for refill...")
-                        self._wait_for_tokens(60, self.BURST_THRESHOLD) # Long wait
-                        continue
+                        # Check if we have reached the burst threshold
+                        # Note: We use the local token estimate (sync happening in wait loop)
+                        if self.tokens >= self.BURST_THRESHOLD:
+                            logger.info(f"Burst threshold reached ({self.tokens:.2f} >= {self.BURST_THRESHOLD}). Exiting Recharge Mode.")
+                            self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
+                            self.redis_client.delete("keepa_recharge_start_time")
+                        else:
+                            logger.info(f"Recharge Mode Active (Tokens: {self.tokens:.2f}/{self.BURST_THRESHOLD}, Elapsed: {elapsed/60:.1f}m). Waiting for refill...")
+                            self._wait_for_tokens(60, self.BURST_THRESHOLD) # Long wait
+                            continue
 
             # 1. Rate Limit Sleep (Local) - Prevent spamming API even if tokens exist
             now = time.time()
@@ -147,6 +171,7 @@ class TokenManager:
                     if self.REFILL_RATE_PER_MINUTE < 10 and old_balance < self.MIN_TOKEN_THRESHOLD:
                         logger.warning(f"Tokens critically low ({old_balance:.2f} < {self.MIN_TOKEN_THRESHOLD}). Entering Recharge Mode until {self.BURST_THRESHOLD}.")
                         self.redis_client.set(self.REDIS_KEY_RECHARGE_MODE, "1")
+                        self.redis_client.set("keepa_recharge_start_time", str(time.time()))
                         # Fail this request and force a wait loop
                         allowed = False
 
