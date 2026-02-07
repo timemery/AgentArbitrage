@@ -16,7 +16,7 @@ class TestApiFiltering(unittest.TestCase):
         conn = sqlite3.connect(TEST_DB)
         cursor = conn.cursor()
 
-        # Schema from check_schema.py but simplified for relevant columns
+        # Schema matching production (underscores for sanitized columns)
         cursor.execute("""
             CREATE TABLE deals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +24,7 @@ class TestApiFiltering(unittest.TestCase):
                 Title TEXT,
                 Profit REAL,
                 List_at REAL,
-                "1yr_Avg" TEXT,  -- Note: Still TEXT in production schema
+                "1yr_Avg" TEXT,
                 Percent_Down TEXT,
                 Seller_Quality_Score TEXT,
                 Margin REAL,
@@ -63,16 +63,6 @@ class TestApiFiltering(unittest.TestCase):
         conn.close()
 
         # Point the app to the test DB
-        # We need to mock the DATABASE_URL in the app context or modify it directly
-        # Since wsgi_handler.py uses a global variable DATABASE_URL, we might need to patch it
-        # However, api_deals re-reads it from os.getenv or the global.
-        # Let's set the env var for the process? No, python reads it once.
-        # But `api_deals` function has `DB_PATH = DATABASE_URL` inside it? No, it uses the global.
-        # Wait, let's check `api_deals` source again.
-        # It says `DB_PATH = DATABASE_URL` at the start of the function.
-        # And `DATABASE_URL` is defined at module level.
-        # We can monkeypatch `wsgi_handler.DATABASE_URL`.
-
         import wsgi_handler
         wsgi_handler.DATABASE_URL = TEST_DB
 

@@ -1201,6 +1201,11 @@ def api_deals():
         filter_params.append(filters["profit_gte"])
 
     # Enforce Data Completeness (Global Filters)
+    # Using correct column names from DB schema: 'List_at' (sanitized, but originally had space) and '1yr_Avg'
+    # Wait, 'List at' sanitizes to 'List_at' in db_utils.py, but pragma output showed 'List_at' and '1yr_Avg'.
+    # The grep output confirms: 14|1yr_Avg|TEXT and 236|List_at|REAL.
+    # So underscores ARE correct in the DB schema for these specific columns.
+
     where_clauses.append("\"List_at\" IS NOT NULL")
     where_clauses.append("\"List_at\" > 0")
     where_clauses.append("\"1yr_Avg\" IS NOT NULL")

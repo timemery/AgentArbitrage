@@ -24,7 +24,9 @@ Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers
 1.  **Atomic Reservation:** The worker unconditionally decrements the shared Redis counter (`incrbyfloat -cost`).
 2.  **Threshold Check:** It reads the new balance.
 3.  **Aggressive Phase:** If `new_balance > MIN_TOKEN_THRESHOLD` (20) OR `old_balance` was sufficient to start, it proceeds. The deficit is allowed.
-4.  **Recharge Mode (Low Rate Protection):** If the Keepa refill rate is < 10/min AND the balance drops below the threshold (20), the system enters **Recharge Mode**.
+4.  **Recharge Mode (Low Rate Protection & Livelock Prevention):**
+    *   **Trigger 1 (Automatic):** If the Keepa refill rate is < 10/min AND the balance drops below the threshold (20), the system enters **Recharge Mode**.
+    *   **Trigger 2 (Forced on Deploy):** To prevent "Livelock" (where the system restarts with e.g. 40 tokens and hovers indefinitely above the low threshold but below efficient levels), the deployment script (`deploy_update.sh`) explicitly forces **Recharge Mode** on every restart.
     *   **Action:** All requests are blocked.
     *   **Exit Condition:** Wait until tokens reach the `BURST_THRESHOLD` (280) to allow a sustained burst of activity. This prevents "starvation loops" where tasks fight over a trickle of tokens.
 5.  **Recovery Phase (Revert):** If the reservation drops the balance dangerously low (e.g., below threshold when it was already low) and Recharge Mode is not active:
