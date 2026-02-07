@@ -1,6 +1,7 @@
 import redis
 import os
 import json
+import time
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -21,10 +22,12 @@ def check_pause_status():
     KEY_TOKENS = "keepa_tokens_left"
     KEY_RATE = "keepa_refill_rate"
     KEY_RECHARGE = "keepa_recharge_mode_active"
+    KEY_START_TIME = "keepa_recharge_start_time"
 
     tokens = r.get(KEY_TOKENS)
     rate = r.get(KEY_RATE)
     recharge_active = r.get(KEY_RECHARGE)
+    start_time_str = r.get(KEY_START_TIME)
 
     print(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Redis Connection: OK")
@@ -37,6 +40,21 @@ def check_pause_status():
     if recharge_active == "1":
         print("  STATUS:  PAUSED (Recharge Mode Active)")
         print("  Reason:  Waiting for tokens to reach 280 (Burst Threshold).")
+
+        # Display Recharge Timer Info
+        if start_time_str:
+            try:
+                start_ts = float(start_time_str)
+                elapsed = time.time() - start_ts
+                limit = 3600 # 60 minutes
+                print(f"  Recharge Duration: {elapsed/60:.1f} minutes (Limit: 60m)")
+                if elapsed > limit:
+                     print("  CRITICAL: TIMEOUT EXCEEDED. System should force resume shortly.")
+            except:
+                pass
+        else:
+             print("  Recharge Duration: Unknown (Key missing - will be adopted on next check)")
+
         if tokens:
             try:
                 t_val = float(tokens)
@@ -45,7 +63,7 @@ def check_pause_status():
                     rate_val = float(rate) if rate else 5.0
                     mins_left = needed / rate_val
                     print(f"  Progress: {t_val:.1f} / 280.0")
-                    print(f"  Est. Wait: {mins_left:.1f} minutes")
+                    print(f"  Est. Wait (Refill): {mins_left:.1f} minutes")
                 else:
                     print(f"  Progress: {t_val:.1f} / 280.0 (Ready to Resume)")
             except:
