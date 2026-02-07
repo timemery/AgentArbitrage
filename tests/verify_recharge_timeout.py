@@ -2,10 +2,14 @@ import unittest
 from unittest.mock import MagicMock, patch
 import time
 import sys
+import os
 import logging
 
 # Configure logging to stdout
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
+# Ensure project root is in sys.path for direct execution
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from keepa_deals.token_manager import TokenManager
 
