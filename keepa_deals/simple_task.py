@@ -103,6 +103,17 @@ def update_recent_deals():
 
         business_settings = business_load_settings()
 
+        # --- Load Shedding for Low-Tier Plans ---
+        # If refill rate is low (< 10), we MUST reduce the batch size to avoid starvation.
+        # Burst Threshold is 280. Cost per deal (new) is ~20. Capacity = 14 deals.
+        # We set a safe limit of ~11 deals (Burst/25) to ensure we can process them within one burst cycle.
+        # This prevents the task from running for hours and timing out before updating the watermark.
+        max_deals_limit = MAX_NEW_DEALS_PER_RUN
+        if token_manager.REFILL_RATE_PER_MINUTE < 10:
+            safe_limit = int(token_manager.BURST_THRESHOLD / 25)
+            max_deals_limit = max(1, safe_limit)
+            logger.warning(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Enabling Load Shedding. Reduced MAX_NEW_DEALS_PER_RUN from {MAX_NEW_DEALS_PER_RUN} to {max_deals_limit}.")
+
         # --- New Delta Sync Logic ---
         logger.info("Step 1: Initializing Delta Sync...")
 
@@ -135,8 +146,8 @@ def update_recent_deals():
                 logger.warning(f"Safety Limit Reached: Stopped pagination after {MAX_PAGES_PER_RUN} pages to prevent runaway task.")
                 break
 
-            if len(all_new_deals) >= MAX_NEW_DEALS_PER_RUN:
-                logger.warning(f"New Deal Limit Reached: Found {len(all_new_deals)} new deals. Stopping fetch to process current batch and update watermark.")
+            if len(all_new_deals) >= max_deals_limit:
+                logger.warning(f"New Deal Limit Reached: Found {len(all_new_deals)} new deals (Limit: {max_deals_limit}). Stopping fetch to process current batch and update watermark.")
                 hit_new_deal_limit = True
                 break
 
