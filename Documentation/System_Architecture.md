@@ -119,7 +119,7 @@ We do not rely on local files (JSON) for state tracking, as they can be lost dur
 The background processes are orchestrated to be resilient:
 *   **Worker:** Executes the tasks. Configured with `--concurrency=4` to ensure short tasks (like Janitor or Restriction Checks) are not blocked by long-running Backfills.
 *   **Beat:** The scheduler that triggers `update_recent_deals` and `clean_stale_deals`.
-*   **Zombie Locks:** The `kill_everything_force.sh` script invokes `Diagnostics/kill_redis_safely.py` to perform a "Brain Wipe" (FLUSHALL + SAVE) on Redis during restarts. This prevents stale locks from persisting and causing "Task already running" errors.
+*   **Zombie Locks:** The `kill_everything_force.sh` script invokes `Diagnostics/kill_redis_safely.py` to perform a "Redis Flush" (FLUSHALL + SAVE) on Redis during restarts. This prevents stale locks from persisting and causing "Task already running" errors.
 *   **Logs:** `celery_worker.log` and `celery_beat.log` are the primary sources for debugging background failures.
 
 ### Token Management ("Controlled Deficit")
