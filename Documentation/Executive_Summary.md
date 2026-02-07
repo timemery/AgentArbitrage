@@ -1,6 +1,6 @@
 # Agent Arbitrage: Executive Summary & Competitive Analysis
 
-**Version:** 1.0 (Feb 2026)
+**Version:** 1.1 (Feb 2026)
 **Audience:** Partners, Investors, Key Stakeholders
 **Objective:** To provide a non-technical overview of the Agent Arbitrage platform, its market position, and its strategic advantages.
 
@@ -13,8 +13,8 @@
 Unlike competitors that bombard users with raw data spreadsheets, Agent Arbitrage acts as an **intelligent filter and mentor**. It uses advanced algorithms to identify high-probability "flip" opportunities (buying low, selling high) and leverages Generative AI (xAI's Grok) to provide qualitative advice, effectively giving every user a "CFO in their pocket."
 
 **The Core Value Proposition:**
-*   **Simplicity First:** A curated, distraction-free dashboard that highlights only the most critical metrics.
-*   **AI Mentorship:** "Ava Advisor" and persona-based chatbots (CFO, Flipper, Professor) guide decision-making.
+*   **Simplicity First:** A curated, distraction-free dashboard that highlights only the most critical metrics, reducing analysis paralysis.
+*   **AI Mentorship:** "Ava Advisor" and persona-based chatbots (CFO, Flipper, Professor) guide decision-making with plain-English advice, not just charts.
 *   **Data Integrity:** Proprietary "Inferred Sales" logic detects hidden sales demand that other tools miss, while rigorous safety checks prevent bad buys.
 
 ---
@@ -33,16 +33,16 @@ The FBA software market is crowded with powerful but intimidating tools like **T
 To maintain our "novice-friendly" appeal, we have intentionally omitted features common in enterprise tools. These are not deficiencies, but strategic choices to reduce cognitive load:
 *   **No "Mass Site Scanning":** We do not scan 500+ external retail sites (Walmart, Target, etc.). We focus purely on **Amazon-to-Amazon** flips (e.g., Keepa flips), which is a more stable and predictable business model for beginners.
 *   **No Complex Repricing Rules:** We provide a "List At" price (based on Peak Season logic) but do not automate the repricing. This keeps the user in control and avoids the "race to the bottom" common with automated repricers.
-*   **Limited Filters:** Instead of 50+ filter sliders, we offer the 6 most impactful ones (Profit, Margin, ROI, Rank, etc.). This prevents "Analysis Paralysis."
+*   **Limited Filters:** Instead of 50+ filter sliders, we offer the 6 most impactful ones (Profit, Margin, ROI, Rank, etc.). This ensures users spend time buying, not configuring.
 
 ---
 
 ## 3. Future Roadmap: Enhancing Simplicity & Capability
 
-Our goal is to make the platform even more approachable while quietly increasing its power.
+Our goal is to make the platform even more approachable while quietly increasing its power beneath the surface.
 
-*   **Expanded "Guided Learning":** Currently an admin feature, we plan to expose the "Brain" to users. They could feed a YouTube video on "Textbook Flipping" to the AI, and the system would automatically adjust its scanning parameters to find books matching that strategy.
 *   **Interactive Mentorship:** Moving beyond static advice, the "Mentor Chat" will evolve into a proactive assistant that alerts users to specific risks in their portfolio (e.g., "Hey, the semester is ending, consider lowering prices on your textbooks").
+*   **Smarter Alerts:** Instead of generic notifications, the system will use its internal Intelligence to push personalized opportunities matching the user's specific buying style (e.g., "High Volume" vs "High ROI").
 *   **Community Intelligence:** Aggregating anonymous success data to refine the "Inferred Sales" logic further, creating a network effect where the tool gets smarter as more users flip items.
 
 ---
