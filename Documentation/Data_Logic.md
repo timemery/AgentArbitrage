@@ -24,6 +24,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Optimization:** Fetches seller details **only** for this single winning seller ID to minimize API calls.
     *   **Output:** `Price Now`, `Seller`, `Seller ID`, `Seller_Quality_Score`.
 
+    **CRITICAL INTEGRITY CHECK (Feb 2026):**
+    *   **Negative Profit:** Any deal with `Profit <= 0` is strictly rejected at the ingestion stage.
+    *   **Incomplete Data:** Deals missing critical fields like `List at` or `1yr. Avg.` are rejected.
+    *   **Self-Healing Backfill:** The Backfiller detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them. If repair fails (data still missing), they are then rejected by the integrity check.
+
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
     *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed by a drop in **Sales Rank** (Amazon registered the sale) within a **240-hour** (10-day) window.

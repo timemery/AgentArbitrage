@@ -105,6 +105,7 @@ class TokenManager:
         while True:
             # 0. Check Recharge Mode (Redis)
             # If we are in "Recharge Mode" (low-tier strategy), we must wait until the bucket is full.
+            # This is critical for preventing "Livelock" on 5/min plans.
             # This check happens BEFORE rate limit sleep to avoid unnecessary sleeps if we are blocked anyway.
             if self.redis_client and self.REFILL_RATE_PER_MINUTE < 10:
                 is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE)

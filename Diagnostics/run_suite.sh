@@ -8,5 +8,8 @@ echo ""
 echo "=== 3. Pipeline Flow ==="
 python3 Diagnostics/diagnose_dwindling_deals.py
 echo ""
+echo "=== 4. Pause Status ==="
+python3 Diagnostics/check_pause_status.py
+echo ""
 echo "=== 4. Worker Log Tail ==="
 tail -n 20 celery_worker.log

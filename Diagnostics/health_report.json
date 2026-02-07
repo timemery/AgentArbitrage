@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-02-05T20:18:08.996457+00:00",
+    "timestamp": "2026-02-07T20:52:00.717910+00:00",
     "environment": {
         ".env File": {
             "status": "PASS",
@@ -51,7 +51,7 @@
         },
         "Table: deals": {
             "status": "PASS",
-            "message": "62 rows"
+            "message": "275 rows"
         },
         "Table: system_state": {
             "status": "PASS",
@@ -63,13 +63,13 @@
         },
         "Table: user_restrictions": {
             "status": "PASS",
-            "message": "1294 rows"
+            "message": "1594 rows"
         }
     },
     "api_connectivity": {
         "Keepa API": {
             "status": "PASS",
-            "message": "Tokens: 22.0, Rate: 5.0"
+            "message": "Tokens: 24.0, Rate: 5.0"
         },
         "xAI API": {
             "status": "PASS",
@@ -86,8 +86,8 @@
             "message": "2026-01-27T17:28:03.550317+00:00"
         },
         "Backfill Lock": {
-            "status": "WARN",
-            "message": "Active (TTL: 3423s)"
+            "status": "PASS",
+            "message": "Free"
         }
     },
     "logs": {
@@ -97,7 +97,7 @@
         },
         "Recent Errors": {
             "status": "WARN",
-            "message": "3 errors in last 50 lines"
+            "message": "13 errors in last 50 lines"
         }
     }
 }

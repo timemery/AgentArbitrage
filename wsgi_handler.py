@@ -1193,9 +1193,25 @@ def api_deals():
         where_clauses.append("\"Seller_Quality_Score\" >= ?")
         filter_params.append(seller_trust_db_value)
 
-    if filters.get("profit_gte") is not None and filters["profit_gte"] > 0:
+    # Enforce Profit > 0 by default to exclude negative/zero profit deals
+    if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
+        where_clauses.append("\"Profit\" > 0")
+    else:
         where_clauses.append("\"Profit\" >= ?")
         filter_params.append(filters["profit_gte"])
+
+    # Enforce Data Completeness (Global Filters)
+    # Using correct column names from DB schema: 'List_at' (sanitized, but originally had space) and '1yr_Avg'
+    # Wait, 'List at' sanitizes to 'List_at' in db_utils.py, but pragma output showed 'List_at' and '1yr_Avg'.
+    # The grep output confirms: 14|1yr_Avg|TEXT and 236|List_at|REAL.
+    # So underscores ARE correct in the DB schema for these specific columns.
+
+    where_clauses.append("\"List_at\" IS NOT NULL")
+    where_clauses.append("\"List_at\" > 0")
+    where_clauses.append("\"1yr_Avg\" IS NOT NULL")
+    # Filter out common placeholders for missing data in TEXT column and ensure numeric validity
+    where_clauses.append("\"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')")
+    where_clauses.append("\"1yr_Avg\" != 0")
 
     if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
         where_clauses.append("\"Percent_Down\" >= ?")

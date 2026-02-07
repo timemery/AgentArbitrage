@@ -28,6 +28,13 @@ else
 fi
 $VENV_PYTHON Diagnostics/force_clear_locks.py
 
+# Step 2.6: Force Pause (Recharge Mode)
+# CRITICAL: DO NOT REMOVE. This prevents "Livelock" where the system
+# restarts with low tokens (e.g. 40) and never enters the efficient Burst Cycle.
+# It forces a full recharge (to 280) before processing begins.
+echo "[2.6/5] Forcing Recharge Mode (Pause until Refill)..."
+$VENV_PYTHON Diagnostics/force_pause.py
+
 # Step 3: Start Services
 # Starts Redis, Celery Worker, and Celery Beat monitor.
 echo "[3/5] Starting services..."

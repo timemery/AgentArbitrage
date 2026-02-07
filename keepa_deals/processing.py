@@ -171,6 +171,24 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
             'Min. Listing Price': min_listing
         })
+
+        # Exclusion: Profit must be positive
+        if row_data.get('Profit') is not None and row_data.get('Profit') <= 0:
+            logger.info(f"ASIN {asin}: Excluding deal because Profit is zero or negative (${row_data.get('Profit', 0):.2f}).")
+            return None
+
+        # Exclusion: Validate Critical Data (prevent re-fetch loops)
+        # If Self-Healing forced a re-fetch but we still lack data, we MUST reject it.
+        list_at_val = row_data.get('List at')
+        if not list_at_val or str(list_at_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
+             logger.info(f"ASIN {asin}: Ingestion Rejected - Invalid 'List at' ({list_at_val}).")
+             return None
+
+        yr_avg_val = row_data.get('1yr. Avg.')
+        if not yr_avg_val or str(yr_avg_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
+             logger.info(f"ASIN {asin}: Ingestion Rejected - Invalid '1yr. Avg.' ({yr_avg_val}).")
+             return None
+
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed business calculations: {e}", exc_info=True)
 
@@ -266,7 +284,7 @@ def clean_numeric_values(row_data):
         elif "%" in value:
             try: row_data[key] = float(cleaned_value.replace('%', ''))
             except (ValueError, TypeError): row_data[key] = None
-        elif any(k in key for k in ["Price", "Cost", "Fee", "Profit", "Margin"]):
+        elif any(k in key for k in ["Price", "Cost", "Fee", "Profit", "Margin", "Avg"]):
             try: row_data[key] = float(cleaned_value)
             except (ValueError, TypeError): row_data[key] = None
     return row_data
@@ -283,6 +301,17 @@ def _process_lightweight_update(existing_row, product_data):
 
     # Start with existing data converted to a dict
     row_data = dict(existing_row)
+
+    # 0. Validation: Sanity check critical fields to prevent zombie deals
+    list_at_val = row_data.get('List at')
+    if not list_at_val or str(list_at_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
+         logger.info(f"ASIN {asin}: Lightweight Update Rejected - Invalid 'List at' ({list_at_val}). Letting deal expire.")
+         return None
+
+    yr_avg_val = row_data.get('1yr. Avg.')
+    if not yr_avg_val or str(yr_avg_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
+         logger.info(f"ASIN {asin}: Lightweight Update Rejected - Invalid '1yr. Avg.' ({yr_avg_val}). Letting deal expire.")
+         return None
 
     # 1. Update Price Now & Seller Info
     # Reuse get_used_product_info which works with 'offers' or 'stats'
@@ -411,6 +440,11 @@ def _process_lightweight_update(existing_row, product_data):
             'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
             'Min. Listing Price': min_listing
         })
+
+        # Exclusion: Profit must be positive
+        if row_data.get('Profit') is not None and row_data.get('Profit') <= 0:
+            logger.info(f"ASIN {asin}: Lightweight Update Rejected - Profit is zero or negative (${row_data.get('Profit', 0):.2f}). Letting deal expire.")
+            return None
 
         # Recalculate Percent Down
         yr_avg = row_data.get('1yr. Avg.')
