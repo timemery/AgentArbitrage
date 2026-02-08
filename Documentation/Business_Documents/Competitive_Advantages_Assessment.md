@@ -4,10 +4,6 @@
 **Target:** Agent Arbitrage (v2.12)
 **Comparison Scope:** Tactical Arbitrage, SourceMogul, Nepeto, SellerAmp, SmartScout, Arbitrage Hero, Arbitrage Cyclops.
 
-**Also see Competitor Analysis Sheet:**
-
- https://docs.google.com/spreadsheets/d/1gE0XebB0NO7aRhhEfDF5w5Y6Ht-_Sie67nOMEmMK6YA/edit?usp=sharing
-
 ---
 
 ## 1. Feature Comparison Matrix
