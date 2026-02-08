@@ -65,6 +65,8 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
     Now accepts tokens directly and handles its own refresh logic.
     """
     logger.info(f"Starting restriction check for all ASINs for user_id: {user_id}")
+    items = []
+    total_processed = 0
 
     try:
         # Ensure we have a valid access token
@@ -88,7 +90,6 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
 
         # Process in batches to provide incremental updates to the UI
         BATCH_SIZE = 5
-        total_processed = 0
 
         for i in range(0, len(items), BATCH_SIZE):
             batch_items = items[i : i + BATCH_SIZE]
@@ -157,17 +158,55 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                                 datetime.utcnow()
                             ))
                         conn.commit()
+                        total_processed += len(batch_items) # Count them as processed (errored)
                 except Exception as db_e:
                     logger.error(f"CRITICAL: Failed to save error fallback state for batch: {db_e}", exc_info=True)
 
         logger.info(f"Successfully finished restriction check for all {len(items)} ASINs for user_id: {user_id}")
 
-    except sqlite3.Error as e:
-        logger.error(f"Database error in check_all_restrictions_for_user: {e}", exc_info=True)
     except Exception as e:
+        # Catch-all for outer scope crashes (e.g. Database fetch failure, or unexpected task crash)
         logger.error(f"An unexpected error occurred in check_all_restrictions_for_user: {e}", exc_info=True)
 
-    return f"Completed restriction check for {len(items) if 'items' in locals() else 0} ASINs for user {user_id}."
+        # Emergency Fallback: If we have items but crashed, mark the remaining ones as error.
+        if items and total_processed < len(items):
+            remaining_count = len(items) - total_processed
+            logger.warning(f"Task crashed with {remaining_count} items pending. Marking them as Error.")
+            try:
+                # Identify remaining items
+                # We can't easily know which specific ones were processed if `total_processed` is just a count,
+                # but since we process sequentially, we can approximate or just mark ALL pending ones.
+                # Safer strategy: Query DB for NULLs and mark them.
+                with sqlite3.connect(DB_PATH) as conn:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        SELECT asin FROM user_restrictions
+                        WHERE user_id = ? AND is_restricted IS NULL
+                    """, (user_id,))
+                    # Actually, pending items might NOT have a row yet if we use INSERT OR REPLACE?
+                    # No, check_all_restrictions iterates 'deals'. If a deal has no row in user_restrictions, it's pending.
+                    # So we should insert error rows for deals that are missing from user_restrictions.
+
+                    # Optimized approach: Iterate the local `items` list, skipping the first `total_processed`.
+                    remaining_items = items[total_processed:]
+                    for item in remaining_items:
+                        cursor.execute("""
+                            INSERT OR REPLACE INTO user_restrictions
+                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, (
+                            user_id,
+                            item['asin'],
+                            -1,
+                            "ERROR",
+                            datetime.utcnow()
+                        ))
+                    conn.commit()
+                    logger.info(f"Successfully marked {len(remaining_items)} remaining items as Error.")
+            except Exception as fallback_e:
+                logger.error(f"CRITICAL: Emergency fallback failed: {fallback_e}", exc_info=True)
+
+    return f"Completed restriction check for {len(items) if items else 0} ASINs for user {user_id}."
 
 
 @celery.task(name='keepa_deals.sp_api_tasks.check_restriction_for_asins')
@@ -206,11 +245,7 @@ def check_restriction_for_asins(asins: list[str]):
                     items = [{'asin': row[0], 'condition': row[1]} for row in cursor.fetchall()]
             except sqlite3.Error as e:
                 logger.error(f"Database error fetching ASINs for restriction check: {e}", exc_info=True)
-                # If DB read fails, we can't proceed with this user easily without knowing ASINs
-                # We should probably mark the input `asins` as error for this user
                 items = [{'asin': asin, 'condition': None} for asin in asins]
-                # Proceed to mark them as error below in catch block or explicitly?
-                # Actually, raising here will trigger the outer except block
 
             # If some ASINs are missing from DB (shouldn't happen), add them with None condition
             found_asins = {item['asin'] for item in items}
@@ -220,7 +255,6 @@ def check_restriction_for_asins(asins: list[str]):
 
             if not access_token:
                 logger.warning(f"Could not refresh token for user {user_id}. Marking {len(items)} items as error.")
-                # If auth fails, write error records so the UI shows 'Broken/Error' instead of 'Pending'
                 try:
                     with sqlite3.connect(DB_PATH) as conn:
                         cursor = conn.cursor()
@@ -271,7 +305,6 @@ def check_restriction_for_asins(asins: list[str]):
                         conn.commit()
                 except Exception as e:
                     logger.error(f"Error processing restriction check batch for user {user_id}: {e}", exc_info=True)
-                    # Fallback: Mark batch as error
                     try:
                         with sqlite3.connect(DB_PATH) as conn:
                             cursor = conn.cursor()
@@ -294,31 +327,8 @@ def check_restriction_for_asins(asins: list[str]):
 
             logger.info(f"Successfully saved restriction data for {len(asins)} new ASINs for user_id: {user_id}")
 
-        except sqlite3.Error as e:
-            logger.error(f"Database error in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
-            # Outer fallback: try to mark ALL asins as error
-            try:
-                with sqlite3.connect(DB_PATH) as conn:
-                    cursor = conn.cursor()
-                    for asin in asins:
-                        cursor.execute("""
-                            INSERT OR REPLACE INTO user_restrictions
-                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
-                            VALUES (?, ?, ?, ?, ?)
-                        """, (
-                            user_id,
-                            asin,
-                            -1,
-                            "ERROR",
-                            datetime.utcnow()
-                        ))
-                    conn.commit()
-            except Exception as db_e:
-                logger.error(f"CRITICAL: Failed to save outer fallback state: {db_e}", exc_info=True)
-
         except Exception as e:
             logger.error(f"An unexpected error occurred in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
-            # Outer fallback: try to mark ALL asins as error
             try:
                 with sqlite3.connect(DB_PATH) as conn:
                     cursor = conn.cursor()
