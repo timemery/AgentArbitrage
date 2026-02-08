@@ -12,7 +12,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Primary Function** | **Intel Platform / Flip Scanner** | Retail OA Scanner | Retail OA Scanner | Lead Marketplace | Analysis Tool | Brand/Wholesale Research |
 | **Sourcing Model** | **Keepa (Internal Amazon)** | External Retail Sites (500+) | External Retail Sites | Pre-Vetted Leads | Manual / Mobile Scan | Amazon Brand Catalog |
-| **Data Logic** | **Inferred Sales (Rank + Offer Drops)** | Sales Rank / Buy Box | Sales Rank / Buy Box | Human/Bot Vetted | Sales Rank / Buy Box | Market Share / Brand Size |
+| **Data Logic** | **Inferred Sold Price (Rank + Offer Drops)** | Listing Price / Buy Box | Listing Price / Buy Box | Human/Bot Vetted | Listing Price / Buy Box | Market Share / Brand Size |
 | **AI Integration** | **Deep (Ava Advisor, Guided Learning)** | Basic (Filters) | None/Basic | None | None | Basic (AI Review) |
 | **User Experience** | **"Simplicity First" (Curated)** | High Complexity (Config Heavy) | Moderate (Visual) | Simple (List View) | Mobile-First / Extension | Data-Heavy (Excel-like) |
 | **Mobile App** | No (Responsive Web) | No (Web) | No (Web) | No (Web) | **Yes (Best in Class)** | No (Web) |
@@ -24,10 +24,14 @@
 
 ## 2. Competitive Advantages (The "Moat")
 
-### A. Inferred Sales Logic vs. Blind Rank
-**The Problem:** Competitors like Tactical Arbitrage rely on "Sales Rank" snapshots. A book might have a rank of 100k (good), but if the lowest offer is $500, it likely *isn't selling at that price*. The rank is sustained by lower-priced sales.
-**The Agent Arbitrage Solution:** The "Inferred Sales" engine (`stable_calculations.py`) correlates **Offer Drops** with **Rank Drops** over a 240-hour window. It only counts a sale if the inventory count actually decreased *and* Amazon registered a rank improvement.
-*   **Advantage:** Calculates a "Real" market price (e.g., $45) vs the "Listed" price ($500). Prevents users from buying "Zombie" inventory that never sells.
+### A. Inferred Sold Price vs. Listing Price (The "No Guesswork" Engine)
+**The Problem with Competitors:** Tools like Tactical Arbitrage, SellerAmp, and SourceMogul rely on the **Listing Price** (Supply-side). They show you what a seller is *asking* for (e.g., the current Buy Box or Lowest FBA price).
+*   **The Risk:** A book might be listed for $100, but if nobody buys it at that price, the profit calculation is a fantasy. The user is forced to look at charts and *guess* if the item will actually sell.
+*   **The Gap:** Most users misinterpret high listing prices as high value, buying "Zombie" inventory that sits on shelves for months.
+
+**The Agent Arbitrage Solution:** We do not rely on listing prices. Our "Inferred Sales" engine (`stable_calculations.py`) calculates the **Inferred Sold Price** (Demand-side).
+*   **How It Works:** We correlate **Offer Drops** (someone bought a copy) with **Rank Drops** (Amazon registered the sale) within a 240-hour window. The price we display is the price *at the moment the sale occurred*.
+*   **The Advantage:** When Agent Arbitrage shows a profit, it is based on a **proven transaction history**, not a hopeful listing. This eliminates the guesswork for the user: we tell you what the item *will* sell for, because we know what it *has* sold for.
 
 ### B. AI Mentorship ("Ava Advisor")
 **The Problem:** Traditional scanners are "dumb filters." They give you a list of 1,000 items with ROI > 30%, but don't tell you *why* an item might be risky (e.g., "Price tanked due to repricer war").
