@@ -23,7 +23,8 @@ class TokenManager:
 
         # Constants
         self.REFILL_RATE_PER_MINUTE = 5.0 # Default, will be updated from Redis/API
-        self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
+        # FIX: Reduced from 60 to 1 to allow Burst Mode. Keepa is token-based, not time-based.
+        self.MIN_TIME_BETWEEN_CALLS_SECONDS = 1
         self.MIN_TOKEN_THRESHOLD = 20
         # Dynamic Burst Threshold: For low-tier plans, waiting for 280 takes too long (~1hr).
         # We start with 280 but will adjust based on refill rate.

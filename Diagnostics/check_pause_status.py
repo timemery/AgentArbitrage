@@ -39,7 +39,17 @@ def check_pause_status():
     print("\n[Pause / Recharge Status]")
     if recharge_active == "1":
         print("  STATUS:  PAUSED (Recharge Mode Active)")
-        print("  Reason:  Waiting for tokens to reach 280 (Burst Threshold).")
+
+        # Determine dynamic burst threshold (Logic from TokenManager)
+        burst_threshold = 280
+        try:
+            rate_val = float(rate) if rate else 5.0
+            if rate_val < 10:
+                burst_threshold = 80
+        except ValueError:
+            rate_val = 5.0
+
+        print(f"  Reason:  Waiting for tokens to reach {burst_threshold} (Burst Threshold).")
 
         # Display Recharge Timer Info
         if start_time_str:
@@ -58,14 +68,13 @@ def check_pause_status():
         if tokens:
             try:
                 t_val = float(tokens)
-                if t_val < 280:
-                    needed = 280 - t_val
-                    rate_val = float(rate) if rate else 5.0
+                if t_val < burst_threshold:
+                    needed = burst_threshold - t_val
                     mins_left = needed / rate_val
-                    print(f"  Progress: {t_val:.1f} / 280.0")
+                    print(f"  Progress: {t_val:.1f} / {burst_threshold}.0")
                     print(f"  Est. Wait (Refill): {mins_left:.1f} minutes")
                 else:
-                    print(f"  Progress: {t_val:.1f} / 280.0 (Ready to Resume)")
+                    print(f"  Progress: {t_val:.1f} / {burst_threshold}.0 (Ready to Resume)")
             except:
                 pass
     else:
