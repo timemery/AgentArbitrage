@@ -93,49 +93,72 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
         for i in range(0, len(items), BATCH_SIZE):
             batch_items = items[i : i + BATCH_SIZE]
 
-            if auth_failed:
-                # If auth failed, we can't call the API. Manually construct failure results.
-                # We use -1 for is_restricted and "ERROR" for URL to signal the broken state.
-                results = {}
-                for item in batch_items:
-                    asin = item['asin']
-                    results[asin] = {
-                        'is_restricted': -1,
-                        'approval_url': "ERROR"
-                    }
-            else:
-                # Use the provided access token for the API calls (chunked)
-                results = check_restrictions(batch_items, access_token, seller_id)
+            try:
+                if auth_failed:
+                    # If auth failed, we can't call the API. Manually construct failure results.
+                    # We use -1 for is_restricted and "ERROR" for URL to signal the broken state.
+                    results = {}
+                    for item in batch_items:
+                        asin = item['asin']
+                        results[asin] = {
+                            'is_restricted': -1,
+                            'approval_url': "ERROR"
+                        }
+                else:
+                    # Use the provided access token for the API calls (chunked)
+                    results = check_restrictions(batch_items, access_token, seller_id)
 
-            # Save results to the database immediately
-            with sqlite3.connect(DB_PATH) as conn:
-                cursor = conn.cursor()
-                for asin, result in results.items():
-                    # Determine stored value for is_restricted:
-                    # True -> 1 (Restricted)
-                    # False -> 0 (Not Restricted)
-                    # -1 -> -1 (Error)
-                    is_restricted_val = 0
-                    if result['is_restricted'] is True:
-                        is_restricted_val = 1
-                    elif result['is_restricted'] == -1:
-                        is_restricted_val = -1
+                # Save results to the database immediately
+                with sqlite3.connect(DB_PATH) as conn:
+                    cursor = conn.cursor()
+                    for asin, result in results.items():
+                        # Determine stored value for is_restricted:
+                        # True -> 1 (Restricted)
+                        # False -> 0 (Not Restricted)
+                        # -1 -> -1 (Error)
+                        is_restricted_val = 0
+                        if result['is_restricted'] is True:
+                            is_restricted_val = 1
+                        elif result['is_restricted'] == -1:
+                            is_restricted_val = -1
 
-                    cursor.execute("""
-                        INSERT OR REPLACE INTO user_restrictions
-                        (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
-                        VALUES (?, ?, ?, ?, ?)
-                    """, (
-                        user_id,
-                        asin,
-                        is_restricted_val,
-                        result['approval_url'],
-                        datetime.utcnow()
-                    ))
-                conn.commit()
+                        cursor.execute("""
+                            INSERT OR REPLACE INTO user_restrictions
+                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, (
+                            user_id,
+                            asin,
+                            is_restricted_val,
+                            result['approval_url'],
+                            datetime.utcnow()
+                        ))
+                    conn.commit()
 
-            total_processed += len(results)
-            logger.info(f"Progress: Saved restriction data for {total_processed}/{len(items)} ASINs for user_id: {user_id}")
+                total_processed += len(results)
+                logger.info(f"Progress: Saved restriction data for {total_processed}/{len(items)} ASINs for user_id: {user_id}")
+            except Exception as e:
+                logger.error(f"Error processing restriction check batch for user {user_id}: {e}", exc_info=True)
+                # Fallback: Mark batch as error to prevent infinite spinner
+                try:
+                    with sqlite3.connect(DB_PATH) as conn:
+                        cursor = conn.cursor()
+                        for item in batch_items:
+                            asin = item['asin']
+                            cursor.execute("""
+                                INSERT OR REPLACE INTO user_restrictions
+                                (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                                VALUES (?, ?, ?, ?, ?)
+                            """, (
+                                user_id,
+                                asin,
+                                -1, # Error
+                                "ERROR",
+                                datetime.utcnow()
+                            ))
+                        conn.commit()
+                except Exception as db_e:
+                    logger.error(f"CRITICAL: Failed to save error fallback state for batch: {db_e}", exc_info=True)
 
         logger.info(f"Successfully finished restriction check for all {len(items)} ASINs for user_id: {user_id}")
 
@@ -144,7 +167,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
     except Exception as e:
         logger.error(f"An unexpected error occurred in check_all_restrictions_for_user: {e}", exc_info=True)
 
-    return f"Completed restriction check for {len(items)} ASINs for user {user_id}."
+    return f"Completed restriction check for {len(items) if 'items' in locals() else 0} ASINs for user {user_id}."
 
 
 @celery.task(name='keepa_deals.sp_api_tasks.check_restriction_for_asins')
@@ -175,11 +198,19 @@ def check_restriction_for_asins(asins: list[str]):
 
             # Fetch conditions for these ASINs from the database (Done early to handle both success/failure cases)
             items = []
-            with sqlite3.connect(DB_PATH) as conn:
-                cursor = conn.cursor()
-                placeholders = ', '.join(['?'] * len(asins))
-                cursor.execute(f"SELECT ASIN, Condition FROM deals WHERE ASIN IN ({placeholders})", asins)
-                items = [{'asin': row[0], 'condition': row[1]} for row in cursor.fetchall()]
+            try:
+                with sqlite3.connect(DB_PATH) as conn:
+                    cursor = conn.cursor()
+                    placeholders = ', '.join(['?'] * len(asins))
+                    cursor.execute(f"SELECT ASIN, Condition FROM deals WHERE ASIN IN ({placeholders})", asins)
+                    items = [{'asin': row[0], 'condition': row[1]} for row in cursor.fetchall()]
+            except sqlite3.Error as e:
+                logger.error(f"Database error fetching ASINs for restriction check: {e}", exc_info=True)
+                # If DB read fails, we can't proceed with this user easily without knowing ASINs
+                # We should probably mark the input `asins` as error for this user
+                items = [{'asin': asin, 'condition': None} for asin in asins]
+                # Proceed to mark them as error below in catch block or explicitly?
+                # Actually, raising here will trigger the outer except block
 
             # If some ASINs are missing from DB (shouldn't happen), add them with None condition
             found_asins = {item['asin'] for item in items}
@@ -190,37 +221,86 @@ def check_restriction_for_asins(asins: list[str]):
             if not access_token:
                 logger.warning(f"Could not refresh token for user {user_id}. Marking {len(items)} items as error.")
                 # If auth fails, write error records so the UI shows 'Broken/Error' instead of 'Pending'
-                with sqlite3.connect(DB_PATH) as conn:
-                    cursor = conn.cursor()
-                    for item in items:
-                        cursor.execute("""
-                            INSERT OR REPLACE INTO user_restrictions
-                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
-                            VALUES (?, ?, ?, ?, ?)
-                        """, (
-                            user_id,
-                            item['asin'],
-                            -1, # Error State
-                            "ERROR",
-                            datetime.utcnow()
-                        ))
-                    conn.commit()
+                try:
+                    with sqlite3.connect(DB_PATH) as conn:
+                        cursor = conn.cursor()
+                        for item in items:
+                            cursor.execute("""
+                                INSERT OR REPLACE INTO user_restrictions
+                                (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                                VALUES (?, ?, ?, ?, ?)
+                            """, (
+                                user_id,
+                                item['asin'],
+                                -1, # Error State
+                                "ERROR",
+                                datetime.utcnow()
+                            ))
+                        conn.commit()
+                except Exception as db_e:
+                    logger.error(f"Failed to save auth failure state to DB: {db_e}", exc_info=True)
                 continue
 
             BATCH_SIZE = 5
             for i in range(0, len(items), BATCH_SIZE):
                 batch_items = items[i : i + BATCH_SIZE]
-                results = check_restrictions(batch_items, access_token, user_id)
 
+                try:
+                    results = check_restrictions(batch_items, access_token, user_id)
+
+                    with sqlite3.connect(DB_PATH) as conn:
+                        cursor = conn.cursor()
+                        for asin, result in results.items():
+                            is_restricted_val = 0
+                            if result['is_restricted'] is True:
+                                is_restricted_val = 1
+                            elif result['is_restricted'] == -1:
+                                is_restricted_val = -1
+
+                            cursor.execute("""
+                                INSERT OR REPLACE INTO user_restrictions
+                                (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                                VALUES (?, ?, ?, ?, ?)
+                            """, (
+                                user_id,
+                                asin,
+                                is_restricted_val,
+                                result['approval_url'],
+                                datetime.utcnow()
+                            ))
+                        conn.commit()
+                except Exception as e:
+                    logger.error(f"Error processing restriction check batch for user {user_id}: {e}", exc_info=True)
+                    # Fallback: Mark batch as error
+                    try:
+                        with sqlite3.connect(DB_PATH) as conn:
+                            cursor = conn.cursor()
+                            for item in batch_items:
+                                asin = item['asin']
+                                cursor.execute("""
+                                    INSERT OR REPLACE INTO user_restrictions
+                                    (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                                    VALUES (?, ?, ?, ?, ?)
+                                """, (
+                                    user_id,
+                                    asin,
+                                    -1, # Error
+                                    "ERROR",
+                                    datetime.utcnow()
+                                ))
+                            conn.commit()
+                    except Exception as db_e:
+                        logger.error(f"CRITICAL: Failed to save error fallback state for batch: {db_e}", exc_info=True)
+
+            logger.info(f"Successfully saved restriction data for {len(asins)} new ASINs for user_id: {user_id}")
+
+        except sqlite3.Error as e:
+            logger.error(f"Database error in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
+            # Outer fallback: try to mark ALL asins as error
+            try:
                 with sqlite3.connect(DB_PATH) as conn:
                     cursor = conn.cursor()
-                    for asin, result in results.items():
-                        is_restricted_val = 0
-                        if result['is_restricted'] is True:
-                            is_restricted_val = 1
-                        elif result['is_restricted'] == -1:
-                            is_restricted_val = -1
-
+                    for asin in asins:
                         cursor.execute("""
                             INSERT OR REPLACE INTO user_restrictions
                             (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
@@ -228,17 +308,34 @@ def check_restriction_for_asins(asins: list[str]):
                         """, (
                             user_id,
                             asin,
-                            is_restricted_val,
-                            result['approval_url'],
+                            -1,
+                            "ERROR",
                             datetime.utcnow()
                         ))
                     conn.commit()
+            except Exception as db_e:
+                logger.error(f"CRITICAL: Failed to save outer fallback state: {db_e}", exc_info=True)
 
-            logger.info(f"Successfully saved restriction data for {len(asins)} new ASINs for user_id: {user_id}")
-
-        except sqlite3.Error as e:
-            logger.error(f"Database error in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
         except Exception as e:
             logger.error(f"An unexpected error occurred in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
+            # Outer fallback: try to mark ALL asins as error
+            try:
+                with sqlite3.connect(DB_PATH) as conn:
+                    cursor = conn.cursor()
+                    for asin in asins:
+                        cursor.execute("""
+                            INSERT OR REPLACE INTO user_restrictions
+                            (user_id, asin, is_restricted, approval_url, last_checked_timestamp)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, (
+                            user_id,
+                            asin,
+                            -1,
+                            "ERROR",
+                            datetime.utcnow()
+                        ))
+                    conn.commit()
+            except Exception as db_e:
+                logger.error(f"CRITICAL: Failed to save outer fallback state: {db_e}", exc_info=True)
 
     return f"Completed restriction check for {len(asins)} ASINs for {len(user_credentials)} users."
