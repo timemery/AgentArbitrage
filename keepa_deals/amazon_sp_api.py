@@ -118,7 +118,8 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
         logger.info(f"Requesting URL: {url} with params: {params}")
 
         try:
-            response = session.get(url, params=params)
+            # Set a strict timeout to prevent indefinite hangs
+            response = session.get(url, params=params, timeout=15)
             response.raise_for_status()
             data = response.json()
 
@@ -188,7 +189,7 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
                     # Use the same params, but Sandbox might not have the ASIN.
                     # Actually, Sandbox restriction check is mocked. It usually returns 200 OK (and restricted status).
                     # If we get 200 OK, it means the TOKEN is valid for Sandbox.
-                    sb_resp = session.get(sandbox_url, params=params)
+                    sb_resp = session.get(sandbox_url, params=params, timeout=10)
 
                     if sb_resp.status_code == 200:
                         logger.critical("MISCONFIGURATION DETECTED: The SP-API Token is valid for Sandbox but rejected by Production (403). "
@@ -202,6 +203,9 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
             # -----------------------------
 
             # Mark as error state
+            results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
+        except requests.exceptions.Timeout:
+            logger.error(f"Timeout checking ASIN {asin}. The SP-API endpoint took too long to respond.")
             results[asin] = {"is_restricted": -1, "approval_url": "ERROR"}
         except Exception as e:
             logger.error(f"Unexpected error checking ASIN {asin}: {e}", exc_info=True)
