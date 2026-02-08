@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap');
 
 :root {
-    --filter-panel-height: 102px; /* Default open state */
+    --filter-panel-height: 100px; /* Default open state */
     --filter-panel-z: 200;
 }
 
@@ -2140,8 +2140,8 @@ body.home-background::before {
 }
 
 .filter-panel-open {
-    height: auto;
-    min-height: 102px;
+    height: 100px;
+    min-height: 100px;
 }
 
 /* Common Flex Layouts */
@@ -2158,7 +2158,7 @@ body.home-background::before {
 }
 
 .panel-content-open {
-    padding: 0 23px 0 18px; /* 23px from right edge */
+    padding: 0 16px 0 18px; /* 16px from right edge */
     /* Padding-top removed for better vertical centering via flexbox */
 }
 
@@ -2243,12 +2243,12 @@ body.home-background::before {
     display: flex;
     align-items: center;
     gap: 20px; /* Reduced to 20px */
-    height: 100%;
+    height: 100%; /* Ensure full height to align children */
     flex-wrap: wrap; /* Ensure filters wrap on smaller screens */
     align-content: center; /* Center rows vertically in available space */
     row-gap: 10px; /* Add vertical spacing when wrapped */
-    padding-top: 10px; /* User Req: 10px padding */
-    padding-bottom: 10px; /* User Req: 10px padding */
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .filter-item {
@@ -2258,7 +2258,7 @@ body.home-background::before {
     align-items: flex-start; /* Left aligned */
     margin: 0;
     padding: 0;
-    height: 100%;
+    height: auto;
 }
 
 .filter-item label {
@@ -2267,7 +2267,7 @@ body.home-background::before {
     font-size: 12px;
     color: #ffffff;
     white-space: nowrap;
-    margin-bottom: 8px; /* Padding reduced to 8px per critique */
+    margin-bottom: 2px; /* Adjusted to 2px for tighter spacing */
     height: auto;
     line-height: 1;
 }
@@ -2329,7 +2329,7 @@ body.home-background::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 5px; /* 5px padding separating the two buttons */
+    gap: 4px; /* 4px padding separating the two buttons */
     height: 100%;
 }
 
@@ -2368,10 +2368,10 @@ body.home-background::before {
     flex-direction: column; /* Stacked layout */
     align-items: flex-start;
     justify-content: center;
-    gap: 5px; /* Spacing between checkboxes */
+    gap: 6px;
     margin-left: 20px; /* "Spacing between check boxes & sliders: 20px" */
-    height: 100%;
-    padding-top: 18px; /* Align top checkbox with slider dot (Calculated ~20px) */
+    height: auto;
+    padding-top: 0;
 }
 
 .checkbox-item {
@@ -2692,9 +2692,8 @@ body.home-background::before {
 /* Allow Filter Panel to grow naturally below 1300px to catch early wrapping */
 @media (max-width: 1300px) {
     .filter-panel-open {
-        height: auto !important;
-        min-height: 102px;
-        padding-bottom: 10px;
+        height: 100px !important;
+        min-height: 100px;
     }
 }
 
