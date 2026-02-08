@@ -362,14 +362,26 @@ def update_recent_deals():
         # This effectively "skips" the older backlog deals that we chose not to process in this run.
         # Given that we sort by Newest First, skipping the backlog (old deals) is acceptable behavior for an upserter.
 
-        should_update_watermark = (not incomplete_run) or hit_new_deal_limit
+        # Watermark Logic Update (2026-02-07):
+        # We now ALLOW updating the watermark even if the run was "incomplete" (due to token limits),
+        # provided we found newer deals. This prevents the "Infinite Rejection Loop" where the system
+        # keeps re-fetching the same page of bad deals because it never "finished" the page.
+        # By advancing the watermark to the newest deal we *did* see, we ensure forward progress.
+
+        # Original strict logic: should_update_watermark = (not incomplete_run) or hit_new_deal_limit
+        should_update_watermark = True
+
+        logger.info(f"DEBUG: Watermark Update Check -> Should={should_update_watermark}, Incomplete={incomplete_run}, HitLimit={hit_new_deal_limit} (Strict check disabled to force progress)")
+        logger.info(f"DEBUG: Timestamp Check -> Newest={newest_deal_timestamp}, Watermark={watermark_keepa_time}, Diff={newest_deal_timestamp - watermark_keepa_time}")
 
         if should_update_watermark and newest_deal_timestamp > watermark_keepa_time:
             new_watermark_iso = _convert_keepa_time_to_iso(newest_deal_timestamp)
             save_watermark(new_watermark_iso)
             logger.info(f"Successfully updated watermark to {new_watermark_iso}")
         elif incomplete_run and not hit_new_deal_limit:
-            logger.warning("Task was incomplete due to token limits. Skipping watermark update to prevent data loss.")
+            # This branch is now unreachable if should_update_watermark is forced True,
+            # but keeping logic structure for clarity if we revert.
+            logger.warning("Task was incomplete due to token limits. forcing watermark update anyway to prevent stagnation.")
 
         logger.info("--- Task: update_recent_deals finished ---")
     finally:

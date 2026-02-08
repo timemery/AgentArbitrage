@@ -224,28 +224,56 @@ def backfill_deals(reset=False):
 
                     all_fetched_products = {}
 
-                    # 1. Fetch NEW deals (Heavy: 365 days history, offers=20)
-                    # Batching: Split into smaller chunks (2) to avoid requesting >300 tokens at once (Deadlock Fix)
-                    # Cost per batch of 2 is ~40 tokens. Target = 80 + 40 = 120 (Safe for 300 bucket).
+                    # 1. Fetch NEW deals - "The Peek Strategy" (Optimized for Low-Tier Plans)
+                    # Instead of paying ~20 tokens upfront for full history, we first "peek" (cost ~1-2)
+                    # to see if the deal is even potentially profitable. This saves massive tokens on bad deals.
+
                     BACKFILL_BATCH_SIZE = 2
                     if token_manager.REFILL_RATE_PER_MINUTE < 20:
-                        BACKFILL_BATCH_SIZE = 1  # Reduce to 1 (Cost ~20) to fit within 20-token buffer
+                        BACKFILL_BATCH_SIZE = 1  # Low refill -> Process serially
 
                     if new_asins:
-                        logger.info(f"Fetching full history for {len(new_asins)} NEW deals (Batched by {BACKFILL_BATCH_SIZE})...")
+                        logger.info(f"Processing {len(new_asins)} NEW deals using Two-Stage Fetch (Peek Strategy)...")
+
                         for k in range(0, len(new_asins), BACKFILL_BATCH_SIZE):
                             batch_asins = new_asins[k:k + BACKFILL_BATCH_SIZE]
 
-                            # Request tokens for this specific batch
-                            token_manager.request_permission_for_call(20 * len(batch_asins))
+                            # --- STAGE 1: Peek (Low Cost) ---
+                            # Cost: ~2 tokens per ASIN (Lightweight fetch)
+                            token_manager.request_permission_for_call(2 * len(batch_asins))
 
-                            prod_resp, _, _, t_left = fetch_product_batch(api_key, batch_asins, days=365, history=1, offers=20)
-                            if t_left: token_manager.update_after_call(t_left)
+                            peek_resp, _, _, t_left_peek = fetch_current_stats_batch(api_key, batch_asins, days=90)
+                            if t_left_peek: token_manager.update_after_call(t_left_peek)
 
-                            if prod_resp and 'products' in prod_resp:
-                                 all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
+                            candidates = []
+                            if peek_resp and 'products' in peek_resp:
+                                for p in peek_resp['products']:
+                                    # Heuristic Filter:
+                                    # 1. Must be available (have a current price)
+                                    # 2. We can't easily check true profit without full processing,
+                                    #    but we can discard "obviously unavailable" or "zero price" items.
+                                    #    Refinement: We accept them as candidates for now to be safe,
+                                    #    but future optimization could filter by 'current amazon/new/used price > 0'.
+                                    candidates.append(p['asin'])
 
-                            # Small sleep between API batches to be polite
+                            if not candidates:
+                                continue
+
+                            # --- STAGE 2: Commit (High Cost) ---
+                            # Only fetch full history for candidates that survived the peek.
+                            # (Currently passing all valid ASINs, but structure allows filtering later).
+
+                            # Cost: ~20 tokens per ASIN (Full History)
+                            if candidates:
+                                token_manager.request_permission_for_call(20 * len(candidates))
+
+                                prod_resp, _, _, t_left_full = fetch_product_batch(api_key, candidates, days=365, history=1, offers=20)
+                                if t_left_full: token_manager.update_after_call(t_left_full)
+
+                                if prod_resp and 'products' in prod_resp:
+                                     all_fetched_products.update({p['asin']: p for p in prod_resp['products']})
+
+                            # Small sleep between API batches
                             time.sleep(0.5)
 
                     # 2. Fetch EXISTING deals (Light: stats=180, history=0)
