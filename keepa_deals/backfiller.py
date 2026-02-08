@@ -47,38 +47,52 @@ def _convert_keepa_time_to_iso(keepa_minutes):
 
 def load_backfill_state():
     """
-    Loads the last completed page from the system_state table.
+    Loads the last completed page and chunk index from the system_state table.
     Migrates from legacy JSON file if DB entry is missing.
+    Returns: tuple (page_number, chunk_index)
     """
     # 1. Try loading from DB
-    val = get_system_state('backfill_page')
-    if val is not None:
-        try:
-            return int(val)
-        except ValueError:
-            logger.error(f"Invalid backfill_page in DB: {val}. Defaulting to 0.")
-            return 0
+    val_page = get_system_state('backfill_page')
+    val_chunk = get_system_state('backfill_chunk_index')
 
-    # 2. Migration: Check legacy file
-    if os.path.exists(STATE_FILE_LEGACY):
+    page = 0
+    chunk_index = 0
+
+    if val_page is not None:
+        try:
+            page = int(val_page)
+        except ValueError:
+            logger.error(f"Invalid backfill_page in DB: {val_page}. Defaulting to 0.")
+            page = 0
+
+    if val_chunk is not None:
+        try:
+            chunk_index = int(val_chunk)
+        except ValueError:
+            logger.error(f"Invalid backfill_chunk_index in DB: {val_chunk}. Defaulting to 0.")
+            chunk_index = 0
+
+    # 2. Migration: Check legacy file (Only if DB was empty)
+    if val_page is None and os.path.exists(STATE_FILE_LEGACY):
         logger.info("Backfill state missing in DB. Checking legacy file...")
         try:
             with open(STATE_FILE_LEGACY, 'r') as f:
                 data = json.load(f)
                 page = data.get('last_completed_page', 0)
                 logger.info(f"Found legacy backfill state: page {page}. Migrating to DB.")
-                save_backfill_state(page)
-                return page
+                save_backfill_state(page, 0)
+                return page, 0
         except (json.JSONDecodeError, FileNotFoundError, ValueError) as e:
             logger.error(f"Error loading legacy backfill state: {e}")
-            return 0
+            return 0, 0
 
-    return 0
+    return page, chunk_index
 
-def save_backfill_state(page_number):
-    """Saves the last completed page to the system_state table."""
+def save_backfill_state(page_number, chunk_index=0):
+    """Saves the last completed page and chunk index to the system_state table."""
     set_system_state('backfill_page', str(page_number))
-    logger.info(f"--- Backfill state saved. Last completed page: {page_number} ---")
+    set_system_state('backfill_chunk_index', str(chunk_index))
+    logger.info(f"--- Backfill state saved. Page: {page_number}, Chunk: {chunk_index} ---")
 
 def check_peek_viability(stats):
     """
@@ -143,7 +157,7 @@ def backfill_deals(reset=False):
     if reset:
         logger.info("Reset requested. Clearing backfill state and database.")
         # Reset DB state to 0
-        save_backfill_state(0)
+        save_backfill_state(0, 0)
 
         # Remove legacy file if it exists
         if os.path.exists(STATE_FILE_LEGACY):
@@ -188,8 +202,8 @@ def backfill_deals(reset=False):
         token_manager.MIN_TOKEN_THRESHOLD = 20
         token_manager.sync_tokens()
 
-        page = load_backfill_state()
-        logger.info(f"--- Resuming backfill from page {page} ---")
+        page, start_chunk_index = load_backfill_state()
+        logger.info(f"--- Resuming backfill from page {page}, chunk {start_chunk_index} ---")
 
         while True:
             # Check for artificial limit
@@ -214,8 +228,8 @@ def backfill_deals(reset=False):
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
             logger.info(f"Found {len(deals_on_page)} deals on page {page}.")
 
-            # Update watermark if starting fresh (Page 0), so upserter knows where to pick up
-            if page == 0 and deals_on_page:
+            # Update watermark if starting fresh (Page 0, Chunk 0), so upserter knows where to pick up
+            if page == 0 and start_chunk_index == 0 and deals_on_page:
                 newest_ts = deals_on_page[0].get('lastUpdate')
                 if newest_ts:
                     wm_iso = _convert_keepa_time_to_iso(newest_ts)
@@ -228,12 +242,22 @@ def backfill_deals(reset=False):
                 current_chunk_size = 4 # Increased from 1 to 4 to reduce overhead
                 logger.info(f"Low refill rate detected. Reducing chunk size to {current_chunk_size} to ensure incremental saves.")
 
+            total_chunks = (len(deals_on_page) + current_chunk_size - 1) // current_chunk_size
+
             for i in range(0, len(deals_on_page), current_chunk_size):
+                current_chunk_idx = i // current_chunk_size
+
+                # INCREMENTAL RECOVERY: Skip chunks we already processed
+                if current_chunk_idx < start_chunk_index:
+                    if current_chunk_idx % 10 == 0: # Reduce log spam
+                         logger.info(f"Skipping already processed chunk {current_chunk_idx} on page {page}.")
+                    continue
+
                 try:
                     chunk_deals = deals_on_page[i:i + current_chunk_size]
                     if not chunk_deals: continue
 
-                    logger.info(f"--- Processing chunk {i//current_chunk_size + 1}/{(len(deals_on_page) + current_chunk_size - 1)//current_chunk_size} on page {page} ---")
+                    logger.info(f"--- Processing chunk {current_chunk_idx + 1}/{total_chunks} on page {page} ---")
 
                     # --- Hybrid Ingestion Logic: Check DB for existing ASINs ---
                     all_asins = [d['asin'] for d in chunk_deals]
@@ -429,6 +453,10 @@ def backfill_deals(reset=False):
                         finally:
                             if conn: conn.close()
 
+                    # INCREMENTAL SAVE: Save state after each successful chunk
+                    # Store page and NEXT chunk index
+                    save_backfill_state(page, current_chunk_idx + 1)
+
                     # Throttling to prevent excessive token consumption
                     # Reduced from 60s to 1s because TokenManager now handles rate limiting (5 tokens/sec)
                     # This prevents "lugubrious" processing speeds while remaining safe.
@@ -438,8 +466,10 @@ def backfill_deals(reset=False):
                     logger.error(f"Unexpected error processing chunk on page {page}: {e}", exc_info=True)
                     time.sleep(5) # Sleep before retrying or moving on
 
-            save_backfill_state(page)
+            # Page Complete: Reset chunk index for next page
+            start_chunk_index = 0
             page += 1
+            save_backfill_state(page, 0)
             time.sleep(1)
 
         logger.info(f"--- Task: backfill_deals finished. ---")
