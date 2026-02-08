@@ -170,7 +170,7 @@ def backfill_deals(reset=False):
             # If rate is low, we must upsert frequently (small chunks) to avoid losing data during long waits.
             current_chunk_size = DEALS_PER_CHUNK
             if token_manager.REFILL_RATE_PER_MINUTE < 20:
-                current_chunk_size = 1
+                current_chunk_size = 4 # Increased from 1 to 4 to reduce overhead
                 logger.info(f"Low refill rate detected. Reducing chunk size to {current_chunk_size} to ensure incremental saves.")
 
             for i in range(0, len(deals_on_page), current_chunk_size):
@@ -230,7 +230,7 @@ def backfill_deals(reset=False):
 
                     BACKFILL_BATCH_SIZE = 2
                     if token_manager.REFILL_RATE_PER_MINUTE < 20:
-                        BACKFILL_BATCH_SIZE = 1  # Low refill -> Process serially
+                        BACKFILL_BATCH_SIZE = 4  # Increased from 1 to 4 to match chunk size
 
                     if new_asins:
                         logger.info(f"Processing {len(new_asins)} NEW deals using Two-Stage Fetch (Peek Strategy)...")
@@ -363,7 +363,8 @@ def backfill_deals(reset=False):
                             new_asins = [d['ASIN'] for d in rows_to_upsert if 'ASIN' in d]
                             if new_asins:
                                 celery_app.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
-                            celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
+                            # OPTIMIZATION: Removed redundant update_recent_deals trigger to prevent token starvation
+                            # celery_app.send_task('keepa_deals.simple_task.update_recent_deals')
                             logger.info(f"--- Triggered downstream tasks for {len(new_asins)} ASINs. ---")
                         except sqlite3.Error as e:
                             logger.error(f"Database error while upserting deals: {e}", exc_info=True)
