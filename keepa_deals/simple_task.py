@@ -114,6 +114,14 @@ def update_recent_deals():
         token_manager.request_permission_for_call(5)
         logger.info("DEBUG: Permission granted for Upserter.")
 
+        # DYNAMIC LIMIT: Reduce deal limit for low refill rates
+        # If refill is < 20/min, 200 deals would take hours to process.
+        # Reduce to 20 to allow frequent completions and watermark updates.
+        current_max_deals = MAX_NEW_DEALS_PER_RUN
+        if token_manager.REFILL_RATE_PER_MINUTE < 20:
+            current_max_deals = 20
+            logger.info(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing NEW_DEALS limit from {MAX_NEW_DEALS_PER_RUN} to {current_max_deals} to ensure task completion.")
+
         watermark_iso = load_watermark()
         if watermark_iso is None:
             logger.error("CRITICAL: Watermark not found. The backfiller must be run at least once before the upserter. Aborting.")
@@ -135,8 +143,8 @@ def update_recent_deals():
                 logger.warning(f"Safety Limit Reached: Stopped pagination after {MAX_PAGES_PER_RUN} pages to prevent runaway task.")
                 break
 
-            if len(all_new_deals) >= MAX_NEW_DEALS_PER_RUN:
-                logger.warning(f"New Deal Limit Reached: Found {len(all_new_deals)} new deals. Stopping fetch to process current batch and update watermark.")
+            if len(all_new_deals) >= current_max_deals:
+                logger.warning(f"New Deal Limit Reached: Found {len(all_new_deals)} new deals (Limit: {current_max_deals}). Stopping fetch to process current batch and update watermark.")
                 hit_new_deal_limit = True
                 break
 
