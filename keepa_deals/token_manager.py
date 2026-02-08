@@ -25,7 +25,9 @@ class TokenManager:
         self.REFILL_RATE_PER_MINUTE = 5.0 # Default, will be updated from Redis/API
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 60
         self.MIN_TOKEN_THRESHOLD = 20
-        self.BURST_THRESHOLD = 280 # Wait until this many tokens are available before exiting Recharge Mode
+        # Dynamic Burst Threshold: For low-tier plans, waiting for 280 takes too long (~1hr).
+        # We start with 280 but will adjust based on refill rate.
+        self.BURST_THRESHOLD = 280
 
         # State variables
         self.tokens = 100 # Local cache/fallback
@@ -46,6 +48,21 @@ class TokenManager:
         logger.info("TokenManager initialized with Redis shared state.")
         # Try to load initial state from Redis
         self._load_state_from_redis()
+        self._adjust_burst_threshold()
+
+    def _adjust_burst_threshold(self):
+        """
+        Dynamically adjusts the Burst Threshold based on refill rate.
+        For low rates (<10/min), waiting for 280 tokens creates a perception of 'stalling' (50+ min wait).
+        We lower it to improve responsiveness while still allowing efficient batch processing.
+        """
+        if self.REFILL_RATE_PER_MINUTE < 10:
+            # 80 tokens takes ~16 mins to refill at 5/min.
+            # This allows for ~4 heavy updates (20 tokens each) or ~40 light checks.
+            self.BURST_THRESHOLD = 80
+            logger.info(f"Low Refill Rate ({self.REFILL_RATE_PER_MINUTE}/min) detected. Adjusted Burst Threshold to {self.BURST_THRESHOLD} to improve responsiveness.")
+        else:
+            self.BURST_THRESHOLD = 280
 
     def _get_shared_tokens(self):
         if not self.redis_client:
@@ -78,6 +95,7 @@ class TokenManager:
             rate = self.redis_client.get(self.REDIS_KEY_RATE)
             if rate:
                 self.REFILL_RATE_PER_MINUTE = float(rate)
+                self._adjust_burst_threshold()
         except Exception as e:
             logger.error(f"Redis load state error: {e}")
 
@@ -342,6 +360,7 @@ class TokenManager:
         if refill_rate is not None:
             try:
                 self.REFILL_RATE_PER_MINUTE = float(refill_rate)
+                self._adjust_burst_threshold()
                 if self.REFILL_RATE_PER_MINUTE < 10:
                     logger.warning(f"CRITICAL: Keepa Refill Rate is extremely low ({self.REFILL_RATE_PER_MINUTE}/min). Deal collection will be severely throttled. Upgrade Keepa plan to improve speed.")
             except (ValueError, TypeError):
