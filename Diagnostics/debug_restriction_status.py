@@ -49,8 +49,11 @@ def run_diagnostic():
         total_deals = cursor.fetchone()[0]
         print(f"Total Deals in DB: {total_deals}")
 
-        # Restriction Breakdown
-        # Pending (NULL record in user_restrictions)
+        # Restriction Breakdown - FILTERED BY DEALS TABLE
+        # We only care about restriction records for ASINs that currently exist in the deals table.
+        # Stale restriction records for deleted deals should be ignored.
+
+        # Pending (Deals with NO record in user_restrictions)
         cursor.execute("""
             SELECT COUNT(*)
             FROM deals d
@@ -59,31 +62,37 @@ def run_diagnostic():
         """, (active_user_id,))
         pending_count = cursor.fetchone()[0]
 
-        # Error (-1)
+        # Error (-1) - Filtered by current deals
         cursor.execute("""
             SELECT COUNT(*)
-            FROM user_restrictions
-            WHERE user_id = ? AND is_restricted = -1
+            FROM user_restrictions ur
+            WHERE ur.user_id = ?
+            AND ur.is_restricted = -1
+            AND ur.asin IN (SELECT ASIN FROM deals)
         """, (active_user_id,))
         error_count = cursor.fetchone()[0]
 
-        # Restricted (1)
+        # Restricted (1) - Filtered by current deals
         cursor.execute("""
             SELECT COUNT(*)
-            FROM user_restrictions
-            WHERE user_id = ? AND is_restricted = 1
+            FROM user_restrictions ur
+            WHERE ur.user_id = ?
+            AND ur.is_restricted = 1
+            AND ur.asin IN (SELECT ASIN FROM deals)
         """, (active_user_id,))
         restricted_count = cursor.fetchone()[0]
 
-        # Approved (0)
+        # Approved (0) - Filtered by current deals
         cursor.execute("""
             SELECT COUNT(*)
-            FROM user_restrictions
-            WHERE user_id = ? AND is_restricted = 0
+            FROM user_restrictions ur
+            WHERE ur.user_id = ?
+            AND ur.is_restricted = 0
+            AND ur.asin IN (SELECT ASIN FROM deals)
         """, (active_user_id,))
         approved_count = cursor.fetchone()[0]
 
-        print("\n--- Restriction Status Breakdown ---")
+        print("\n--- Restriction Status Breakdown (Current Deals Only) ---")
         print(f"  Pending (Loading Spinner): {pending_count}")
         print(f"  Error (Broken/Failed):    {error_count}")
         print(f"  Restricted (Apply):       {restricted_count}")
@@ -91,12 +100,16 @@ def run_diagnostic():
 
         print("-" * 30)
         total_checked = error_count + restricted_count + approved_count
+        coverage = (total_checked / total_deals * 100) if total_deals > 0 else 0
         print(f"  Total Checked:            {total_checked}")
-        print(f"  Coverage:                 {(total_checked / total_deals * 100) if total_deals > 0 else 0:.1f}%")
+        print(f"  Coverage:                 {coverage:.1f}%")
+
+        if total_checked + pending_count != total_deals:
+             print(f"  [Warning] Discrepancy: {total_deals - (total_checked + pending_count)} deals unaccounted for.")
 
         if pending_count > 0:
             print(f"\n[CRITICAL] {pending_count} deals are stuck in 'Pending' state (Loading Animation).")
-            print("This indicates the background task 'check_all_restrictions_for_user' failed to process them.")
+            print("Action: Run 'python3 Diagnostics/force_restriction_check.py' to manually trigger checks for these items.")
 
             # Show a sample of pending ASINs
             cursor.execute("""
