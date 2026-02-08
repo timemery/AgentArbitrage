@@ -289,6 +289,21 @@ class TokenManager:
                 logger.info(f"Tokens recovered ({self.tokens:.2f} >= {target}). Resuming.")
                 return
 
+            # --- Critical Livelock Fix ---
+            # Check if global recharge timeout (60m) has passed.
+            # Previously, this loop would hang indefinitely if tokens never reached target, bypassing the outer check.
+            if self.redis_client:
+                recharge_start_str = self.redis_client.get("keepa_recharge_start_time")
+                if recharge_start_str:
+                    try:
+                        start_ts = float(recharge_start_str)
+                        if (time.time() - start_ts) > 3600:
+                            logger.warning(f"Recharge Timeout detected inside wait loop. Forcing exit to clear stuck state.")
+                            return
+                    except ValueError:
+                        pass
+            # -----------------------------
+
             # Recalc
             tokens_needed = target - self.tokens
             if tokens_needed <= 0: return
