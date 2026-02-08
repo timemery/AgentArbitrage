@@ -152,3 +152,19 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 - **Token Starvation & Zombie Locks:** The system uses a **Shared Redis Token Bucket** (`keepa_deals/token_manager.py`) to coordinate API usage. To prevent locks from persisting after a crash, the kill script (`kill_everything_force.sh`) now performs a "Brain Wipe" (FLUSHALL + SAVE) on Redis. **Do not remove this cleanup logic.**
 - **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not attempt to "guess" shipping costs for MFN sellers.
 - **Seller Name Preservation:** To save tokens, the system performs "Lightweight Updates" that lack seller names. It uses the `Seller ID` to preserve the existing human-readable name. If you modify `processing.py`, ensure this logic remains intact to avoid overwriting names with raw IDs.
+
+## Definition of Done: The Logic Check
+
+**WARNING: The "Infrastructure vs. Logic" Trap**
+Developers often split complex tasks into two stages:
+1.  **Infrastructure:** Building the scaffolding (e.g., loops, function calls, API integrations) to ensure the system handles the new data flow without crashing.
+2.  **Logic:** Implementing the actual decision-making algorithms (e.g., filtering, pricing, rejection).
+
+**CRITICAL RULE:** A task is **NOT DONE** until both stages are complete.
+*   **NEVER** leave a placeholder like `candidates.append(all_items)` or `return True` in production code with the intent to "refine later".
+*   If infrastructure must be merged before logic is ready, the feature must be **DISABLED** by default (e.g., via a feature flag or commented out).
+*   **Zombie Features:** Infrastructure without logic creates "Zombie Features" that consume resources (tokens/CPU) but provide no value (e.g., fetching data only to pass everything through). This is worse than not having the feature at all.
+
+**Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
+
+*   **Backfill Chunk Size:** Default **20**, but dynamically reduces to **1** if Keepa refill rate is < 20/min to prevent starvation.

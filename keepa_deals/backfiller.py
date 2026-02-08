@@ -80,6 +80,61 @@ def save_backfill_state(page_number):
     set_system_state('backfill_page', str(page_number))
     logger.info(f"--- Backfill state saved. Last completed page: {page_number} ---")
 
+def check_peek_viability(stats):
+    """
+    Heuristic check to see if a deal is worth a heavy fetch (20 tokens).
+    Returns True if potentially profitable, False if obviously bad.
+    """
+    if not stats: return False
+    
+    current = stats.get('current', [])
+    avg90 = stats.get('avg90', [])
+    
+    # Indices: 0: Amazon, 1: New, 2: Used
+    
+    # 1. Determine Buy Price (Current Used)
+    buy_price = -1
+    if len(current) > 2 and current[2] != -1:
+        buy_price = current[2]
+    elif len(current) > 1 and current[1] != -1: # Fallback to New if Used missing
+        buy_price = current[1]
+        
+    if buy_price == -1:
+        return False # Can't buy it
+        
+    # 2. Determine Sell Price (Avg90 Used or New/Amazon)
+    # We are optimistic here - find highest historical reference
+    sell_candidates = []
+    if len(avg90) > 0 and avg90[0] != -1: sell_candidates.append(avg90[0]) # Amazon
+    if len(avg90) > 1 and avg90[1] != -1: sell_candidates.append(avg90[1]) # New
+    if len(avg90) > 2 and avg90[2] != -1: sell_candidates.append(avg90[2]) # Used
+    
+    if not sell_candidates:
+        return False # No history
+        
+    est_sell = max(sell_candidates)
+    
+    # 3. Simple Filters
+    
+    # A. Absolute Price Floor (Fees kill anything under $12)
+    if est_sell < 1200: 
+        return False
+        
+    # B. Negative Margin (Buy > Sell)
+    # Allow small buffer (e.g. 10%) just in case
+    if buy_price > (est_sell * 1.1):
+        return False
+        
+    # C. Gross ROI check
+    # (Sell - Buy) / Buy
+    # If ROI < 20%, fees will likely eat it.
+    if buy_price > 0:
+        gross_roi = (est_sell - buy_price) / buy_price
+        if gross_roi < 0.2:
+            return False
+            
+    return True
+
 @celery.task(name='keepa_deals.backfiller.backfill_deals')
 def backfill_deals(reset=False):
     # Ensure tables exist immediately
@@ -246,15 +301,17 @@ def backfill_deals(reset=False):
                             if t_left_peek: token_manager.update_after_call(t_left_peek)
 
                             candidates = []
+                            filtered_count = 0
                             if peek_resp and 'products' in peek_resp:
                                 for p in peek_resp['products']:
                                     # Heuristic Filter:
-                                    # 1. Must be available (have a current price)
-                                    # 2. We can't easily check true profit without full processing,
-                                    #    but we can discard "obviously unavailable" or "zero price" items.
-                                    #    Refinement: We accept them as candidates for now to be safe,
-                                    #    but future optimization could filter by 'current amazon/new/used price > 0'.
-                                    candidates.append(p['asin'])
+                                    if check_peek_viability(p.get('stats')):
+                                        candidates.append(p['asin'])
+                                    else:
+                                        filtered_count += 1
+                            
+                            if filtered_count > 0:
+                                logger.info(f"Peek Filter: Rejected {filtered_count} deals as unprofitable/unviable. Saved {filtered_count * 20} tokens.")
 
                             if not candidates:
                                 continue
