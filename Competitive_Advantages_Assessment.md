@@ -6,17 +6,7 @@
 
 ---
 
-## 1. Executive Summary
-
-Agent Arbitrage occupies a unique niche as a **"High-Fidelity Intelligence Platform"** specialized for **Amazon-to-Amazon Flips** and **Used Media Arbitrage**. Unlike general-purpose "Retail Scrapers" (e.g., Tactical Arbitrage) that prioritize volume and breadth across hundreds of external retailers (Walmart, Target), Agent Arbitrage prioritizes **Data Hygiene** and **Sales Verification** within the Amazon ecosystem itself.
-
-Its core value proposition is **"Quality over Quantity"**: by leveraging proprietary "Inferred Sales Logic" and AI-driven mentorship ("Ava Advisor"), it filters out the noise and "zombie listings" that plague traditional scanners, offering a curated stream of high-probability opportunities rather than a raw hose of potential leads.
-
-However, its reliance on Keepa data as the sole source creates a critical gap: it cannot currently source inventory from external retail sites (OA) or wholesale manifests, limiting its utility to users specifically focused on Amazon flips or used books.
-
----
-
-## 2. Feature Comparison Matrix
+## 1. Feature Comparison Matrix
 
 | Feature | **Agent Arbitrage** | **Tactical Arbitrage** | **SourceMogul** | **Nepeto** | **SellerAmp (SAS)** | **SmartScout** |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -32,7 +22,7 @@ However, its reliance on Keepa data as the sole source creates a critical gap: i
 
 ---
 
-## 3. Competitive Advantages (The "Moat")
+## 2. Competitive Advantages (The "Moat")
 
 ### A. Inferred Sales Logic vs. Blind Rank
 **The Problem:** Competitors like Tactical Arbitrage rely on "Sales Rank" snapshots. A book might have a rank of 100k (good), but if the lowest offer is $500, it likely *isn't selling at that price*. The rank is sustained by lower-priced sales.
@@ -55,7 +45,7 @@ However, its reliance on Keepa data as the sole source creates a critical gap: i
 
 ---
 
-## 4. Critical Gaps & Vulnerabilities
+## 3. Critical Gaps & Vulnerabilities
 
 ### A. External Retail Sourcing (The "Retail Gap")
 **The Gap:** Tactical Arbitrage and SourceMogul scan **Walmart.com, Target.com, Kohls.com**, etc., matching those prices against Amazon.
@@ -75,7 +65,7 @@ However, its reliance on Keepa data as the sole source creates a critical gap: i
 
 ---
 
-## 5. Conclusion
+## 4. Conclusion
 
 **Agent Arbitrage is not a direct competitor to Tactical Arbitrage.** It is a specialized **"Sniper Rifle"** for the Used Media/Amazon Flip market, whereas TA is a **"Shotgun"** for the general Retail Arbitrage market.
 
