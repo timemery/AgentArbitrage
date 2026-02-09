@@ -47173,5 +47173,1274 @@
         "confidence": "High",
         "source": "whenever they have really bad ratings I usually don't store friend stock them cuz it's like why are people reviewing your product so badly so negatively ... their ratings are trash 50% ratings yeah they're probably not getting much sales at all ... just look at the green line see what the sales rank is at usually you see this big dip that means that it's actually pretty selling well",
         "date_added": "2026-02-06"
+    },
+    {
+        "id": "start-point-sale",
+        "category": "General",
+        "trigger": "Site has a promotion like buy 1 get one sale",
+        "advice": "Start sourcing from sites with active promotions to increase chances of finding profitable inventory, e.g., prioritize Walgreens over Target if Walgreens has BOGO and Target has none",
+        "confidence": "High",
+        "source": "For example, let's say we can source at Walgreens or we can source at Target. Now Walgreens has a buy 1 get one sale. Target has nothing. We are already starting with an advantage just by going on to the Walgreens website.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "stack-discounts",
+        "category": "Buying",
+        "trigger": "Available coupons, cash back, or discount codes on retail sites",
+        "advice": "Stack discounts like 17% cash back on Ace Hardware via Card Bear to lower effective cost, e.g., $6.99 becomes $5.80 after 17% discount",
+        "confidence": "High",
+        "source": "But if we go over to Card Bear and we look for Ace Hardware, we can see that we can get a 17% discount. 13% 11%. So we can get a really good discount here, right? So, we go back here and if we're getting a 17% discount from this point right here, then we are going to times it by 83 and we're getting it for 580.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "software-keepa",
+        "category": "General",
+        "trigger": "Analyzing any product listing",
+        "advice": "Use Keepa to check buy box price, seller count, reviews, ratings, sales rank (green graph, lower number = faster selling), historical seller spikes, price history, and monthly sales estimates",
+        "confidence": "High",
+        "source": "The first software is Kipa. Kipa is a product analysis software. It's going to give us buy box information, so essentially what the product is selling for consistently. It's going to give us seller count. It's going to give us reviews. It's going to give us ratings.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "software-selleramp",
+        "category": "General",
+        "trigger": "Calculating profitability",
+        "advice": "Use Seller Amp as a profit and loss calculator to estimate sales, check profitability, and storefront stock; mandatory for new sellers",
+        "confidence": "High",
+        "source": "The second piece of software you're going to need is Seller Amp. Seller Amp is essentially just a profit and loss calculator. It's going to tell you, is this product profitable? It's going to give you estimated sales.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "autogate-list",
+        "category": "Buying",
+        "trigger": "New seller needing ungated brands",
+        "advice": "Use auto-ungated list of over 200 brands/products to access sellable items without gating issues; one client ungated 114 brands",
+        "confidence": "High",
+        "source": "I want to give you this auto ungated as list. This is over 200 products that you can go and plug in and potentially sell right now. And one of my clients used this list and autoengated in over 114 different brands.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "start-autogated-brand",
+        "category": "Buying",
+        "trigger": "Sourcing session start",
+        "advice": "Begin sourcing with brands from auto-ungated list (e.g., 32\u00b0), find listings with few sellers (1-4 FBA), then storefront stock from those sellers",
+        "confidence": "High",
+        "source": "So, we're going to start with a brand from the auto ungate list... we're going to go here and then we're going to find a listing with a few sellers. Now when you're going about this, this doesn't mean that it's only three, four, one sellers.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "low-rating-sellers",
+        "category": "Buying",
+        "trigger": "Storefront stocking from Amazon sellers",
+        "advice": "Target sellers with low ratings (sub 10, 16, up to 200) for storefront stocking as they are smaller, easier to compete with, and likely have autogated brands",
+        "confidence": "High",
+        "source": "You don't want to storefront stock somebody who has, you know, massive amounts of ratings like this guy right here... So, we want to look at sellers who have a smaller amount of ratings like this one, 16, even 200, even if they have none. when they have none or when they have like sub 10, those are good storefronts to stock.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "buybox-competitive",
+        "category": "Pricing",
+        "trigger": "Seller's listed price vs buy box",
+        "advice": "Only source if seller's price is competitive with buy box (e.g., close to $16 buy box, not $42 when buy box is $29); ignore listings far above buy box",
+        "confidence": "High",
+        "source": "You want to make sure that you're paying attention to their selling price, but also the buy box price more importantly... So there's no point in us trying to source from that. Okay, we want to get somebody who's has a good idea of, okay, we need to have our price to be competitive.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "max-cost-pricing",
+        "category": "Pricing",
+        "trigger": "Browsing seller's products",
+        "advice": "Look for products priced at or below your max allowable cost to ensure profitability after fees",
+        "confidence": "High",
+        "source": "From here, or even as you go about all of these products, you want to look for prices at your max cost that you could potentially find.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "save-seller-ids",
+        "category": "General",
+        "trigger": "Found profitable seller storefront",
+        "advice": "Save seller IDs in an Excel spreadsheet to revisit later for more inventory",
+        "confidence": "High",
+        "source": "Once you start finding sellers who have a lot of inventory that we're finding profitable, you want to save this ID right here, this uh seller ID into an Excel spreadsheet so that you can save this storefront so you can refer back to it later on.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "reps-consistency",
+        "category": "General",
+        "trigger": "Building sourcing skills",
+        "advice": "Practice consistently ('reps are king') to improve; treat as a skill, be patient, avoid random sourcing without plan",
+        "confidence": "High",
+        "source": "The second thing that you want to keep in mind is that reps are king. Reps, reps, reps. You need to put in the reps in order to get better at this skill that is product sourcing.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "seller-spike-risk",
+        "category": "Risk",
+        "trigger": "Seller count spikes on Keepa (e.g., from 4 to 21-22)",
+        "advice": "Avoid listings with recent seller count spikes as price drops significantly (e.g., from $88 to $43); indicates potential price wars",
+        "confidence": "High",
+        "source": "As soon as we jump up to about 21 to 22 sellers, the price drops significantly down to as low as 43. So the price almost gets cut in half because we see this big spike in sellers that come onto the listing.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "amazon-buybox-dominate",
+        "category": "Risk",
+        "trigger": "Amazon dominates buy box >99% in last 30 days, even at higher price (e.g., $10 vs $8)",
+        "advice": "Stay away from listings where Amazon wins buy box almost always, especially if priced higher; no share for third-party sellers",
+        "confidence": "High",
+        "source": "We can see that the last 30 days, Amazon has dominated the buy box 99% of the time. Not only are they dominating the buy box, they're doing so even though they're priced almost $2 higher than the next offer.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "brand-on-listing",
+        "category": "Risk",
+        "trigger": "Brand owner visible as seller on listing (e.g., Wish Trend for Dear Claire's) or always present historically",
+        "advice": "Avoid selling next to brand owners if risk-averse; they may remove you later, causing issues",
+        "confidence": "High",
+        "source": "The reason I personally stay away from brands like this is because in the beginning of my journey, I did not stay away from them and I kept running into issues. Sometimes it was one week after selling it. Sometimes it was 6 months after selling it.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "ip-alert-red",
+        "category": "Risk",
+        "trigger": "IP Alert software shows red flag on listing",
+        "advice": "Avoid listings with red IP alerts; use software like IP Alert for database of issues (ignore yellow)",
+        "confidence": "High",
+        "source": "If you don't have the IP alert software... that is a great software... I prefer IP alert the software over something like seller.mpell also has an IP feature and I only listen to it when it is red like this.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "keepa-cliff",
+        "category": "Risk",
+        "trigger": "Sharp drop in seller count on Keepa (e.g., from 13 to 3)",
+        "advice": "Avoid listings with Keepa cliffs indicating brand IP complaints kicking off sellers; price may not recover",
+        "confidence": "High",
+        "source": "We can see that this particular brand has a big Keepa cliff. This is a big sharp drop that we will see on Keepa right here where one moment to another the seller count changes drastically from 13 sellers down to three sellers.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "price-spike-risk",
+        "category": "Risk",
+        "trigger": "Current price >50% above historical average (e.g., $96 vs usual $66, peaks at $91 in last year)",
+        "advice": "Avoid jumping into price spikes; historical data shows high chance of dropping back (e.g., to $40-66); check 3-5 years history",
+        "confidence": "High",
+        "source": "Price spikes is something that really destroys new sellers... we can see that the price is significantly higher than it usually is. Okay, so we can see that the price is around $96. But if we go back for the last 3 months, we can see that the price before has only ever peaked out at 66.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "low-seller-tanking",
+        "category": "Pricing",
+        "trigger": "One low-rating seller (1-3 ratings) dragging buy box down below others (e.g., $30 vs $41+)",
+        "advice": "Monitor for new/low-rating sellers tanking price; they may sell out quickly, allowing price to rebound",
+        "confidence": "High",
+        "source": "If you have like one rating or no ratings or like three ratings, chances are it's a new seller just getting greedy and impatient and they're just going to sell out. And once they sell out of their limited inventory... then the price is going to jump right back up.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "effective-consistency",
+        "category": "General",
+        "trigger": "Daily sourcing routine",
+        "advice": "Practice effective consistency: show up daily, learn/adapt strategies, double down on what works, eliminate what doesn't; treat business as priority, not afterthought",
+        "confidence": "High",
+        "source": "It is not enough just to show up day in and day out... That is why I believe in effective consistency. This means that you're not just showing up and doing the same thing. You're learning, you're growing, you're adapting.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "focus-few-methods",
+        "category": "General",
+        "trigger": "Overwhelmed by multiple sourcing methods",
+        "advice": "Master 1-3 sourcing methods (e.g., manual with good starting point, storefront stocking) instead of learning 10-15; improve skills in those before expanding",
+        "confidence": "High",
+        "source": "The first thing that I want you to get completely out of your head is this idea that I need to have more methods of sourcing. I need to know 10 15 different ways to find products cuz you really don't. You just need a handful that you like and you're really good at.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "gen-001",
+        "category": "General",
+        "trigger": "Goal of 2-5k profit per month with minimal interaction",
+        "advice": "Focus exclusively on online arbitrage to build a self-reliant business without dealing with wholesale reps or brands",
+        "confidence": "High",
+        "source": "He's like, 'Hey, is it possible to grow if I just do online arbitrage?' He's like, 'I don't want to talk to wholesale reps. Um, I don't want to work with brands. I just I just want to sit in my room, work on this business, and make a couple thousand a month.' And I was like, 'Dude, 100%.'",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "gen-002",
+        "category": "General",
+        "trigger": "Scaling beyond 50k-120k monthly revenue",
+        "advice": "Avoid acquiring a warehouse or hiring employees if it compromises personal freedom and autonomy; reassess alignment with lifestyle goals",
+        "confidence": "High",
+        "source": "Hit my first 50k a month, then my first 75K month, then I crossed 120 uh plus in a month... I started looking into hiring employees... I started to realize... I'm essentially going to just build a second job for myself.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "gen-003",
+        "category": "General",
+        "trigger": "Lack of clarity on business goals leading to procrastination",
+        "advice": "Define specific end results (e.g., side income of a few thousand/month, quitting job, or scaling to wholesale) to create a reverse-engineered path and maintain daily motivation",
+        "confidence": "High",
+        "source": "A lot of times the procrastination that you guys deal with... is just a lack of clarity... as soon as you have clarity, then now we can actually reverse engineer and have a clear path to get to that goal.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "buy-001",
+        "category": "Buying",
+        "trigger": "Preference for solitary, low-interaction sourcing",
+        "advice": "Engage in online arbitrage sourcing sessions with headphones and music for an enjoyable, self-reliant process without in-store visits or rep interactions",
+        "confidence": "Medium",
+        "source": "I just love when I get into a flow. I'm just I have my headphones on. I have some music on and I'm just sourcing. It's completely reliant on me. I like that... I enjoy sourcing arbitrage.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "Pressure from social media influencers to scale via wholesale or retail",
+        "advice": "Resist adopting unaligned models (e.g., wholesale, in-store retail) even if profitable, as they may lead to misery if not matching personal vision",
+        "confidence": "High",
+        "source": "If that is truly what you want to do, then yeah, 100%. But if not, even if you win, you are winning at a game that is not worth winning to you... Imagine if he goes and opens up all these wholesale accounts. Now he has this crazy business and he's like, 'Dude, I hate talking to these sales reps.'",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "prof-seller-account",
+        "category": "General",
+        "trigger": "Starting Amazon FBA business",
+        "advice": "Sign up for a professional seller account at $40 per month to access FBA, ungating, and buy box advantages; avoid free account due to limitations and extra $1 per sale fee",
+        "confidence": "High",
+        "source": "go to sell.amazon.com and sign up for a professional seller account. Now, this professional seller account is going to run you $40 per month, but it's going to allow you to take full advantage of the Amazon FBA platform... There is a free seller account, but trust me, that is not the one that you need. You're going to be severely limited... and you're going to get charged an extra dollar every single time you sell a product.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "tools-keepa",
+        "category": "Buying",
+        "trigger": "Analyzing products for sourcing",
+        "advice": "Use Keepa software ($ part of $50/month total) as the primary product analysis tool to evaluate current performance, historical data, number of sellers, and pricing for confident buying decisions",
+        "confidence": "High",
+        "source": "the first piece of software you're going to need is Keepa. This is a product analysis tool and it is the most important software... It's going to tell you how a product is performing right now, how it's performed throughout time... how many sellers on it, what it's selling for.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "tools-selleramp",
+        "category": "Pricing",
+        "trigger": "Calculating profitability and sales estimates",
+        "advice": "Use Seller AMP software ($ part of $50/month total) for profit and loss calculations, estimated sales, buy box analysis, variation info, and storefront stocking support",
+        "confidence": "High",
+        "source": "Next, you're also going to need Seller AMP. This is a profit and loss calculator, but it also does a whole bunch of other things like give you estimated sales, gives you buy box breakdown... variation info, but it's also really good at storefront stocking.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "gated-products",
+        "category": "Risk",
+        "trigger": "Encountering gated brands, products, subcategories, or categories",
+        "advice": "Provide invoices from legitimate suppliers to ungate, or improve sales metrics for auto-ungating; use free autogate list of over 200 brands via Instagram DM to quickly access new selling opportunities (e.g., one client ungated 114 brands)",
+        "confidence": "High",
+        "source": "being gated in a brand is essentially just Amazon has restricted that brand until you're able to provide an invoice... or until you've improved your sales metrics... I went ahead and created an autogate list. This is a list of over 200 brands... One of my clients took this list and got ungated in over 114 different brands.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "sourcing-storefront",
+        "category": "Buying",
+        "trigger": "Sourcing profitable inventory",
+        "advice": "Prioritize storefront stocking by exploring other sellers' storefronts to identify successful products, then replicate their sourcing (e.g., discounts) for efficient profitability; avoid manual combing of sites like target.com or walmart.com",
+        "confidence": "High",
+        "source": "focus on is storefront stocking. This is where you're able to capitalize on the work that other sellers have already done by diving into their storefronts, seeing what they have for sale... This is a much more efficient way of sourcing than what people typically do, which is they go on to target.com, Walmart.com, and they start combing through items one by one.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "fulfillment-choice",
+        "category": "General",
+        "trigger": "Selecting fulfillment method after finding products",
+        "advice": "Choose FBA for hands-off storage, shipping, customer service (ideal at scale) or FBM for more control; both viable depending on current stage",
+        "confidence": "High",
+        "source": "consider what fulfillment method you want to use. Do you want to do FBA... or do we want to do fulfilled by merchant, which is FBM... Most people want to do FBA and yes that is the more hands-off approach that is better at scale but there is massive benefit to doing FBM. Both are great.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "scaling-example",
+        "category": "General",
+        "trigger": "Aiming for rapid profit growth",
+        "advice": "Follow structured approach to achieve $6K monthly profit within 5 months, as demonstrated by successful sellers",
+        "confidence": "Medium",
+        "source": "Trevor here, who went from zero to a 6K month in profit after only 5 months",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "kw-ratio-1",
+        "category": "General",
+        "trigger": "Sponsored to organic keyword ratio below 1:2",
+        "advice": "Aim for a golden keyword ratio of 1 sponsored keyword to 2 organic keywords to balance PPC and SEO efforts; if below, focus on SEO to improve organic indexing.",
+        "confidence": "High",
+        "source": "i like to have a golden keyword ratio of one to two that is one sponsored keyword to two organic",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "title-seo-1",
+        "category": "General",
+        "trigger": "Product title lacks high-volume keywords",
+        "advice": "Prioritize the product title as the most important SEO element; include top keywords from research directly in the title to signal relevance.",
+        "confidence": "High",
+        "source": "the title is the most important element on a listing you should spend significant time working on that",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "main-image-1",
+        "category": "General",
+        "trigger": "Low click-through rate (CTR) on listings",
+        "advice": "Make the main image the second most important SEO element; include branding or packaging details in the image to boost CTR and prevent hijackers.",
+        "confidence": "High",
+        "source": "the second most important thing for seo is actually the main photo and that's because ctr on a keyword will affect your keyword rankings",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "backend-terms-1",
+        "category": "General",
+        "trigger": "Backend search terms underutilized",
+        "advice": "Use the backend generic keyword field (250 bytes, not characters) as the third most important SEO element; include misspellings, foreign languages like Spanish, and rotate every 30-90 days for additional indexing.",
+        "confidence": "High",
+        "source": "in here this search term field this is the third most important thing to focus on when you're doing seo work it's also not customer facing which means you can do some clever and creative things back here like using spanish... rotate this copy once every 30 to 90 days",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "bullet-points-1",
+        "category": "General",
+        "trigger": "Bullet points lack keyword integration",
+        "advice": "Incorporate keywords into bullet points after title, photo, and backend; use emojis in playful categories to engage users.",
+        "confidence": "High",
+        "source": "going next would be the bullet points spending lots of time on the bullet points we threw emojis on our bullets",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "a-plus-content-1",
+        "category": "General",
+        "trigger": "Limited real estate on product detail page",
+        "advice": "Utilize A+ Content module for additional text and images; text is for robots (keyword stuffing), images for consumers; include alt text up to 100 characters for extra keywords.",
+        "confidence": "High",
+        "source": "this is the a plus content module you'll notice that you can put in lots of pictures lots of text... text is for robots and pictures are for people... alt text and in here you can fill in a hundred characters",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "brand-story-1",
+        "category": "General",
+        "trigger": "Overlooked brand storytelling opportunities",
+        "advice": "Fill out the Brand Story module to gain extra real estate on the detail page; link products to increase average order value.",
+        "confidence": "High",
+        "source": "this is called a brand story this is the most newest module you can add to an amazon detail page and is frequently overlooked... it's a great way to tell the story get additional real estate",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "product-grid-1",
+        "category": "General",
+        "trigger": "Missed cross-selling opportunities",
+        "advice": "Use the A+ Product Grid module to include additional keywords and link to other products; add CTAs like 'Get this' in images to boost average order value.",
+        "confidence": "High",
+        "source": "down here i really like the product grid module... it's another place you can stick additional keywords... notice how i have the get this cta",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "social-posts-1",
+        "category": "General",
+        "trigger": "Underutilized free traffic sources",
+        "advice": "Implement keywords into social media posts on Amazon for additional real estate and free traffic; now visible on desktop as well.",
+        "confidence": "High",
+        "source": "once you make this master keyword research... you need to implement it not only into the listing but also into your social media strategy... these social posts only showed up on mobile but... now they're starting to show up on desktop",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "master-list-1",
+        "category": "General",
+        "trigger": "Launching new product or optimizing listing",
+        "advice": "Create a master keyword list by analyzing 10 competitor ASINs using Cerebro; sort by search volume and rank to prioritize high-impression keywords.",
+        "confidence": "High",
+        "source": "you're going to look at 10 competitor products and you're going to pull them into cerebro and you're going to create what's called a master keyword list",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "trend-timing-1",
+        "category": "Seasonality",
+        "trigger": "Keyword search volume trending up",
+        "advice": "Time product launches or optimizations when keyword trends are rising, like stock market timing; check historical data to avoid seasonal blips.",
+        "confidence": "High",
+        "source": "i want to enter the market right here right like on the way up just like you're timing the stock market... you can look at the years of data... to make sure it's not just a seasonal blip",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "icap-funnel-1",
+        "category": "General",
+        "trigger": "Low impressions or clicks in Search Query Performance Report",
+        "advice": "Use the ICAP funnel (Impressions, Clicks, Add to Carts, Purchases) from Brand Analytics to track market share; pyramid shape indicates traffic issue\u2014focus on PPC and more keywords.",
+        "confidence": "High",
+        "source": "this is why i call the search query performance the icap marketing funnel... if you have a pyramid or a tornado... you have a problem either with traffic or you've got a problem with conversion",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "tornado-pyramid-1",
+        "category": "General",
+        "trigger": "Tornado shape in ICAP data (high impressions, low conversions)",
+        "advice": "If ICAP shows a tornado (shrinking funnel), focus on conversion improvements; pyramid means buy more traffic via PPC and SEO.",
+        "confidence": "High",
+        "source": "in this case i have what's called a tornado... what this means is i need to focus on the traffic... when i have a pyramid it's a problem with traffic",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "search-volume-1",
+        "category": "General",
+        "trigger": "High search volume keywords identified (>10,000 monthly)",
+        "advice": "Prioritize keywords with high search volume (e.g., 62,000 for 'sage candles for cleansing house'); place in title for new products.",
+        "confidence": "High",
+        "source": "62 000 search volume in a month that's a drastically high number this is something we've got to pay attention to right",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "backend-bytes-1",
+        "category": "General",
+        "trigger": "Exceeding 250 characters in backend keywords",
+        "advice": "Limit backend generic keywords to 250 bytes (spaces don't count, allowing ~20% more); use for misspellings and non-English terms without penalty.",
+        "confidence": "High",
+        "source": "you have 250 bytes to put into the generic keyword tab... what this means is that you have 250 bytes... about an extra 20 percent of spacing... amazon's rule for bytes is they don't count spaces",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "competitor-gap-1",
+        "category": "General",
+        "trigger": "Competitor has better organic keyword ratio (e.g., 1:5)",
+        "advice": "Perform keyword gap analysis on top competitors (BSR <30,000); download their keyword lists and add missing high-volume terms to your listing.",
+        "confidence": "High",
+        "source": "they have a platinum ratio... one to five or so... we could run a keyword distribution uh gap analysis here",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rotation-1",
+        "category": "General",
+        "trigger": "No keyword updates in 30-90 days",
+        "advice": "Rotate backend search terms every 30-90 days to gain additional indexing opportunities from keyword research.",
+        "confidence": "High",
+        "source": "rotate this copy once every 30 to 90 days because you can rotate and gain additional indexing",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "alt-text-1",
+        "category": "General",
+        "trigger": "Images without keyword alt text",
+        "advice": "Add up to 100 characters of keywords to image alt text in A+ content for extra indexing; use for misspellings or non-English terms.",
+        "confidence": "High",
+        "source": "it's image alt equals this is called alt text and in here you can fill in a hundred characters it is characters this time of of text",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Using Helium 10 Blackbox for keyword-based product research",
+        "advice": "Start with keywords tab, set minimum search volume to 3,000 to ensure sufficient demand",
+        "confidence": "High",
+        "source": "with this it's really important that you put a minimum amount because the lower the search is the less demand there is for the product so in this case for the minimum we're going to put 3,000 searches",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-002",
+        "category": "General",
+        "trigger": "Monthly revenue filtering in Blackbox",
+        "advice": "Set minimum monthly revenue to $10,000 and maximum to $75,000 to target substantial profit potential after fees",
+        "confidence": "High",
+        "source": "for monthly revenue for the minimum here I'm going to put at least $110,000 because I want to make sure that I'm looking for products that are making good money on Amazon I don't want to see anything that's only doing $5,000 a month because after fees after expenses that's only going to come out to about $1,000 in profits and we want you know more substantial numbers so I'm going to put $10,000 for the minimum and for the maximum I'm going to just put 75,000",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-003",
+        "category": "Pricing",
+        "trigger": "Product price filtering",
+        "advice": "Set minimum price to $15 to ensure viable profit margins, as cheaper products yield less profit",
+        "confidence": "High",
+        "source": "for the price minimum we want at least $15 anything less than that is going to be hard to make a good profit on because the cheaper the product the less money there is to be be made off of that product",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-004",
+        "category": "Risk",
+        "trigger": "Review count in Blackbox",
+        "advice": "Set maximum review count to 200 (minimum 0) to identify low-competition niches",
+        "confidence": "High",
+        "source": "for the review count our minimum we're going to put is 200 and then the maximum oh I'm sorry not the minimum the maximum we're going to put is 200 the minimum can just be Zero review count is a very important metric because it tells you how competitive the niche is for this product so if you have a review count that is in the thousands or in the high hundreds that means it's a very competitive uh product that you're looking at so I like to put the maximum at 200",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-005",
+        "category": "General",
+        "trigger": "Category selection in advanced filters",
+        "advice": "Select non-perishable categories like Arts Crafts and Sewing, Health and Household, Home and Kitchen, Kitchen and Dining, Office Products, Patio Lawn and Garden, Pet Supplies to focus on evergreen products",
+        "confidence": "High",
+        "source": "here we're going to select on the categories that we want to see for the purposes of this video I'm going to just click on the ones that I tend to gravitate towards I do like Arts crafts and sewing I definitely like some other categories like health and household that's the category where my products fall into that I sell on Amazon homeing kitchen kitchen and dining I'm going to do Office Products I'll do patio lawn and garden I'll do pet supplies",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-006",
+        "category": "Seasonality",
+        "trigger": "Searching during specific times of year",
+        "advice": "Use exclude keywords for holidays or events (e.g., Christmas, Memorial Day, summer, Father's Day) to avoid seasonal products that don't sell year-round",
+        "confidence": "High",
+        "source": "if you are doing product research during a specific time of the year where there may be a holiday that's coming up or some some well-known event you might want to exclude those keywords so for example if we were doing product research in December we might want to exclude Christmas we might want to exclude New Year's we might want to exclude holiday because it's going to give you seasonal products as results and if you've never seen any of my other videos you would not know this but probably some of you already know that I do not recommend selling seasonal products for the simple fact that you have to them very well and you're not going to make money year round you'll only make money during the season that that product is popular so that's why this is an important field especially if you're searching during a specific time now right now it is the end of May so Memorial Day just passed I might just type in Memorial so that it excludes anything that might have to do with Memorial Day and I might exclude summer because that also would give us seasonal items put a comment here and I think that'll be it for now there's not any other oh Father's Day is coming up so maybe I'll put that in here as well for the exclusions",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-007",
+        "category": "Buying",
+        "trigger": "Shipping size tier filtering",
+        "advice": "Select only Small Standard and Large Standard sizes to minimize Amazon fees; avoid bulky or extra large items",
+        "confidence": "High",
+        "source": "shipping size tier and I'm going to just click on small standard and large standard and then we have other products which they used to classify them as oversized but now they have this different terminology for it so large bulky or extra large and then you know different tiers of that depending on the weight of the product we definitely don't want to sell anything that's bulky or large so we only want to find things that are small standard or large standard so that we can keep our Amazon fees down",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-008",
+        "category": "Risk",
+        "trigger": "Using Helium 10 Xray on Amazon search results",
+        "advice": "Look for average BSR under 33,000 as acceptable for sales velocity; average reviews under 200 indicate low competition",
+        "confidence": "High",
+        "source": "the average best sellers rank or how quickly the product is selling is 33,000 which is in an acceptable range the average reviews is only 20 now remember I said we wanted average reviews under 200 20 average reviews is incredible I mean that's an awesome awesome number so that means that there's really not a lot of competition for this product",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-009",
+        "category": "Risk",
+        "trigger": "Many sellers from China in Xray results",
+        "advice": "Consider that China-based sellers may be direct manufacturers offering low prices; evaluate if this increases price competition risk",
+        "confidence": "High",
+        "source": "the vast majority of sellers of this product are based out of China and so that is not necessarily a deal breaker but sometimes that can indicate that a lot of the sellers are the suppliers themselves so many of the suppliers for Amazon products are used via a platform called alibaba.com and that is a Chinese platform for buying products in bulk and so sometimes when you see or oftentimes when you see that China is the main country of origin that means that a lot of these sellers themselves are selling on Amazon so not a deal breaker per se but it is something to consider that when the suppliers are selling on Amazon they can make the prices really low because they are the direct manufacturer of the products",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-010",
+        "category": "Pricing",
+        "trigger": "Average price in Xray around $14",
+        "advice": "Ensure sourcing cost allows for reasonable margins (e.g., source for $1-2 to sell at $14); negotiate on Alibaba for better pricing",
+        "confidence": "High",
+        "source": "average price is $14 it's a little bit lower cost than what I would like but it's you know not a deal breaker depending on how much it would cost to buy the product so if you can get this product for a dollar and you're selling it for 14 then that would still be a reasonable profit margin but it really will depend on how much you're going to pay for it to determine whether or not that price point is something that will be profitable or not ... these are fairly cheap so it looks like 199 to 289 170 to 220 this of course will be dependent on how many units you get the more you get the cheaper it will be 185 there are some for as little as 120 that's very very cheap 98 cents even so yeah it looks like you'll be able to get this product for about $2 a pop maybe less if you have pretty good negotiation skills",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-011",
+        "category": "Risk",
+        "trigger": "Trending products with recent launch dates",
+        "advice": "Act quickly on new trends (e.g., launched within 1-2 months) before saturation drives prices down; check sales graphs for launch history",
+        "confidence": "High",
+        "source": "this is actually a very very promising product the only thing is this is going to become saturated quickly I already know it because it's so simplistic it's easy to make and so unless you have a really strong differentiator this is going to become very saturated and what happens normally when products become or if a niche becomes saturated the price goes down so right now you know people are selling for $16.99 or $1 13.99 as more and more sellers come in they're going to be more willing to price at a lower price point which is going to drive the cost down and so if you were to try to sell this product you would have to move really really really quickly and try to catch it before it becomes too saturated ... they launched on April 26th so they've only been selling for one month ... they only launched April 9th 20124 so they've been selling for a month and a half",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-012",
+        "category": "Seasonality",
+        "trigger": "Search volume trends in Xray graph",
+        "advice": "Review search volume over time to detect seasonality (e.g., spikes in warmer months); avoid if pre-spike history shows low year-round demand",
+        "confidence": "High",
+        "source": "if we click on all time we can see when people really started to look this up and it's no surprise that as the weather has gotten warmer people are wanting you know different ways of keeping their beverages cold ... this product might have a slight element of seasonality to it because prior to March of 2024 there weren't really many searches for this it just became something that's more popular",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-013",
+        "category": "Buying",
+        "trigger": "Product differentiation opportunities",
+        "advice": "Seek unique features like different shapes (e.g., hearts, stars, smiley faces) or bundles (e.g., with accessories) to stand out in competitive listings",
+        "confidence": "High",
+        "source": "you always want to make sure that your product has something unique about it ... a star shape which is a good differentiator ... if you could potentially think of different ways to make the product Stand Out potentially you could do a different shape like maybe Hearts I haven't seen any of those I've seen the Stars ... if you could find different inside shapes so like I said the heart might be one maybe like a smiley face you know cutesy stuff ... this one for example they did a bundle um they also added in the little straw covers as well so that's how they're trying to differentiate is by doing a bundle",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-014",
+        "category": "General",
+        "trigger": "Sponsored products in Xray results",
+        "advice": "Filter out sponsored products to eliminate duplicates and get a clearer view of organic competition",
+        "confidence": "High",
+        "source": "I personally don't like to see the ads in my search results because it's just duplicating what is already here ... what you can do is just click on filter results and then you can click on hide sponsored products from results you apply the filter and then it will eliminate all the duplicates",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-015",
+        "category": "Risk",
+        "trigger": "Comparing revenue and review counts in Xray",
+        "advice": "Sort by revenue high-to-low and compare with review counts to identify high-revenue sellers with low reviews (e.g., 67 reviews at $103k revenue) for opportunity assessment",
+        "confidence": "High",
+        "source": "I always like to look at it from the top seller down to the bottom sellers because it gives me a better idea of who's actually making money versus who isn't and one other thing that I like to do is I like to drag over the review count column ... so we'll look at Revenue compared with review counts and what we can see is this seller here they only have 67 reviews but they're doing $103,000 in sales in the last 30 days",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat1",
+        "category": "Pricing",
+        "trigger": "Product priced under $20 (home good item)",
+        "advice": "Set ACOS up to 35% for PPC advertising; consider higher in some cases as each PPC sale generates 3 organic sales within 6 months, becoming profitable at 16% ACOS",
+        "confidence": "High",
+        "source": "with a home good item under $20 I would go up to 35% all day no problem and in some instances I might go slightly higher than that because every PBC sale you get you get three organic sales within 6 months and it and it usually pays for itself at at a 16%",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat2",
+        "category": "General",
+        "trigger": "Identifying resonating keywords from search data",
+        "advice": "Lead with the most important keyword in the title (e.g., 'car seat net organizer'); move less relevant terms like 'seat caddy' to the end or remove if better options exist",
+        "confidence": "High",
+        "source": "lead with car seat net organizer based on that one observation ... maybe move seat caddy to the very end of the title or maybe even get rid of it if there's a better keyword",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat3",
+        "category": "Risk",
+        "trigger": "Sales dropping while search volume remains stable",
+        "advice": "Diagnose as competitor issue, not listing problem; check competitor pricing (e.g., $12.99) and promotions; reposition product to avoid direct comparison",
+        "confidence": "High",
+        "source": "your sales are down there's no question about it are there the same amount of people searching the products seems to be yes but there are more options for somebody to buy from ... it's just purely a competitor issue your competitor is at $12.99",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat4",
+        "category": "Pricing",
+        "trigger": "Optimizing initial sales volume for new or underperforming listings",
+        "advice": "Start with a lower price to increase sales volume, then gradually raise to the desired price level",
+        "confidence": "High",
+        "source": "price lower and work up to the price level that I'd like to be you know in hindsight probably would have obviously sold a lot more at a lower price",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat5",
+        "category": "General",
+        "trigger": "Low click-through rates on listings",
+        "advice": "Prioritize main image optimization: run A/B tests or Pik Fu polls on elements like objects shown (e.g., backpack vs. purse), packaging inclusion, and showcase key features; test composite images vs. real shots",
+        "confidence": "High",
+        "source": "focus on the main image first i' run some AB test I would try repositioning what shows in the main image ... run Pik Fu polls or AB tests ... a composit beats a real shot",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat6",
+        "category": "Risk",
+        "trigger": "Sales tanking simultaneously with top competitors",
+        "advice": "Assess as market-wide issue indicating end of product shelf life; options include repositioning the listing or launching a new product within 3-6 months to recapture market momentum",
+        "confidence": "High",
+        "source": "their chart mirrors yours their sales started tanking right at the same time ... every product has a shelf life ... launch the next product you might be able to ... in the next 3 to 6 months",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat7",
+        "category": "General",
+        "trigger": "Selecting keywords for PPC or organic ranking",
+        "advice": "Prioritize keywords with higher search volume (e.g., 1,400 vs. 250) to target larger market segments; aim for 4,600+ organic indexed keywords like top competitors",
+        "confidence": "High",
+        "source": "back seat organizer has 1,400 search fly ... seat cat he had 250 this alone tells us six times the market ... the number one guy in seat caddies 4600 keywords organically indexed",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat8",
+        "category": "General",
+        "trigger": "Main image blending in with competitors",
+        "advice": "Use distinctive colors (e.g., yellow) to draw eye attention; test variations via polls to improve click likelihood, ensuring clear identification of product use (e.g., purse vs. backpack)",
+        "confidence": "High",
+        "source": "the yellow is different than everybody else's ... put different colors do we need to put a different object can somebody tell this is a purse ... we run some polls to see",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat9",
+        "category": "Risk",
+        "trigger": "Struggling with first product after initial success",
+        "advice": "Consider pivoting to launch second, third, or fourth products, as these often become the primary wealth generators rather than the initial launch",
+        "confidence": "High",
+        "source": "a lot of them will tell you that their second third fourth product was the real wealth generator product right not very many people launch one product and just make it",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat10",
+        "category": "Pricing",
+        "trigger": "Recent price reduction restores previous sales levels",
+        "advice": "After testing lower prices, maintain or adjust based on sustained performance; alternatively, run targeted PPC campaigns on seasonal keywords (e.g., 'gifts for mom') without further price cuts",
+        "confidence": "High",
+        "source": "you've already done the price reduction and you're right back to where you were before ... create a PBC campaign with the keywords like gifts for mom",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Pre-launch product selection",
+        "advice": "Finalize product and design before keyword research; use similar competitor ASINs for analysis if not launched.",
+        "confidence": "High",
+        "source": "okay so this is a particular design which you want to um which you want to launch basically and then from that level we are going to see the keywords... put up the competitor which has the most similar design um the design which you want to sell on Amazon",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-002",
+        "category": "Buying",
+        "trigger": "Helium 10 X-Ray sort by Revenue",
+        "advice": "Sort search results by Revenue to select top competitors for maximum keyword data; aim for high-revenue ASINs to capture more indexed keywords.",
+        "confidence": "High",
+        "source": "we are supposed to do the um helium 10 x-ray then what we need to do is we need to sort it on the base of Revenue because the science behind it is uh once you have more uh Revenue it means you are getting sale from more keywords",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-003",
+        "category": "General",
+        "trigger": "Keyword volume in Cerebro",
+        "advice": "Target 2,000-3,000 keywords initially; if over 7,000-10,000, refine filters to reduce irrelevance.",
+        "confidence": "High",
+        "source": "the ideal number of keyword here is around uh 2 to 3,000 that's totally fine... if we have around 7 8 10,000 it means uh the result is a bit more irrelevant and you need to Define it",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-004",
+        "category": "Pricing",
+        "trigger": "Market depth and revenue targets",
+        "advice": "Set organic rank filter based on market depth: use top 30 if sellers earn $20k-$30k up to 30th position; use top 10-15 if revenue drops off earlier.",
+        "confidence": "High",
+        "source": "if the market has good depth if there are people earning your target Revenue which your minimum acceptable Target Revenue which is like 20,000 or 30,000 if people are earning that kind of Revenue till the 30th position then we are supposed to select the 31... if let's say there are only 10 top 10 or 15 sellers which are earning your minimum Target um acceptable Revenue then we need to select 15 here",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "Relevancy score >3 in Cerebro",
+        "advice": "Only include keywords with relevancy score >3; refine further by design similarity to avoid irrelevant data.",
+        "confidence": "High",
+        "source": "all those keywords which have relevancy score more than three in our cerebro um sheet... should I take all of those keywords as relevant keywords or should I refine those",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-006",
+        "category": "General",
+        "trigger": "Custom search for low-ranked ASIN",
+        "advice": "For post-launch products ranked below top 50, use custom search with 10 competitors to access X-Ray and Cerebro data.",
+        "confidence": "High",
+        "source": "if um your Essen is not ranked in the top 20 30 40 or maybe 50 position... this is a custom search basically where all 10 competitors including uh your SN um is available",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-007",
+        "category": "Buying",
+        "trigger": "Minimum search volume 200",
+        "advice": "Apply minimum search volume filter of 200 in Cerebro to refine keyword list to 2,500-3,000 actionable terms.",
+        "confidence": "High",
+        "source": "we can put up the minimum search volume filter here like let's say 200... the keyword list is pretty refined around 25 500 which is totally acceptable",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-008",
+        "category": "Risk",
+        "trigger": "Competitor count 1-10, ranks top 30",
+        "advice": "Filter for keywords where at least 1 competitor ranks in top 30; adjust max rank based on experience and revenue depth.",
+        "confidence": "High",
+        "source": "enter the minimum and maximum number of competitor Essence... minimum one maximum 10... for the ranks uh... even if only one competitor has keywords um which is ranked in a top 30 position then show us that",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-009",
+        "category": "General",
+        "trigger": "Design-specific keywords",
+        "advice": "Select only similar design competitors for relevancy scoring to capture design-specific keywords; repeat for multiple designs.",
+        "confidence": "High",
+        "source": "select those competitors which have very particularly relevant uh and similar design... keywords for every I mean keywords for this particular design are supposed to be different",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-010",
+        "category": "Pricing",
+        "trigger": "Alpha ASIN top 10% search volume",
+        "advice": "Use Alpha ASIN feature to fetch keywords where selected similar-design ASINs rank in top 10, regardless of other competitors.",
+        "confidence": "High",
+        "source": "add Alpha SN so what it is going to do is it is going to um fetch all of the keywords on which these two particular Essence are ranked in top 10 position no matter if they are the only competitors",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-011",
+        "category": "Risk",
+        "trigger": "Branded search volume analysis",
+        "advice": "Check total branded search volume; subtract from total to get non-branded opportunity; avoid skewed data where >30-40% is branded.",
+        "confidence": "High",
+        "source": "total branded search volume... if uh majority of the search volume is coming through the or majority of the sale is coming through the Branded uh keyword... that is a skewed data... out of those 50,000 15 or 20,000 is um branded search volume that it means your relevant data is... 30,000",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-012",
+        "category": "Seasonality",
+        "trigger": "Search volume trends",
+        "advice": "Review search volume trends in Keyword Dominator to identify seasonal patterns before finalizing keyword list.",
+        "confidence": "Medium",
+        "source": "the search volume Trend",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-013",
+        "category": "General",
+        "trigger": "Keyword frequency tool",
+        "advice": "Use keyword frequency tool to identify high-volume root words (e.g., 'stress' in 174 keywords, 226k volume); prioritize for listing optimization.",
+        "confidence": "High",
+        "source": "keyword frequency tool... the word their quantity and then their search volume um for example the stress word is used in around 174 keywords and the combined broad search volume for stress is 226,000",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-014",
+        "category": "Risk",
+        "trigger": "Manual Amazon search validation",
+        "advice": "Manually search each potential keyword on Amazon to verify organic ranking of similar designs; tag as 'negative' if not relevant.",
+        "confidence": "High",
+        "source": "we need to search those keywords step by step and manually which is very important... if you see... organically you can't see it here... that is one point here which shows the design is not uh... relevant",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-015",
+        "category": "Pricing",
+        "trigger": "Design-specific vs. generic keywords",
+        "advice": "Prioritize design-specific keywords (higher conversion, lower ACOS) over generic; target first-layer competition in design niche before broad terms.",
+        "confidence": "High",
+        "source": "design specific keyword is for example stress bowl for hand therapy... your conversion on stress ball for hand therapy is supposed to be higher... my first choice of keywords when I'm going for ranking through PPC should be these keywords",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-016",
+        "category": "Risk",
+        "trigger": "Tags: negative, design, relevant, branded, outlier",
+        "advice": "Tag keywords: 'negative' for irrelevant (e.g., fidget toys), 'design' for specific (high conversion), 'relevant' for broad, 'branded' to exclude, 'outlier' for edge cases; delete negatives.",
+        "confidence": "High",
+        "source": "these are the four different types of tags... negative... design... relevant... branded... outlier... all these ones which I just explained we are supposed to tag them as negative",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-017",
+        "category": "General",
+        "trigger": "Flag list for brands",
+        "advice": "Build flag list of brands from tool; apply to filter and delete branded keywords to focus on non-branded opportunities.",
+        "confidence": "High",
+        "source": "import brand list... it will populate all of the potential Brands... select all these ones... paste... apply that list... it is going to flag up all of those negative keywords",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-018",
+        "category": "Buying",
+        "trigger": "Refined list: 100-500 keywords, 50k-100k volume",
+        "advice": "Aim for refined list of 100-120 keywords with 90k-100k search volume after removing negatives; focus on high-potential for organic sales.",
+        "confidence": "High",
+        "source": "the final version is 116 keywords and the relevant search volume is 93,000... I've removed all of the negative keywords... our Prime Focus should be those Search terms where we have potential to get rank",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "no-buy-box-risk",
+        "category": "Risk",
+        "trigger": "No pink line (buy box) on Keepa chart",
+        "advice": "Avoid buying products without a buy box as they lack seller rotation, sell slower, and are not pushed to customers by Amazon",
+        "confidence": "High",
+        "source": "No buy box products are not the best products to buy because there's no rotation of buy box and it's not being pushed to customers like Amazon usually would.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "sales-rank-velocity",
+        "category": "Buying",
+        "trigger": "Sales rank (green line) dropping and low BSR (e.g., under 100)",
+        "advice": "Prioritize products with improving sales rank indicating faster sales velocity; correlate with monthly sold (yellow line) for volume estimates like BSR 96 selling ~2,000 units/month",
+        "confidence": "High",
+        "source": "The green line, this is your sales rank. So, lower sales rank means it's selling faster... back here when the BSR was 96, this was selling about 2,000 times a month. Now when it got all the way to rank two, it was selling right around 40,000 times a month.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "amazon-presence-check",
+        "category": "Risk",
+        "trigger": "Orange box indicating Amazon on the listing",
+        "advice": "Check if Amazon dominates the buy box; if not, third-party rotation is possible, but monitor for potential dominance",
+        "confidence": "High",
+        "source": "There's this little orange box. What this means is Amazon is on the listing... Amazon can dominate the buy box sometimes, and that's something we need to take into consideration.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "buy-box-share-dominant",
+        "category": "Risk",
+        "trigger": "Single seller has buy box share over 75-80%",
+        "advice": "Avoid listings where one seller dominates buy box share, as it may indicate brand ownership or IP risk; 80% dominance still leaves 20% opportunity if data checks out",
+        "confidence": "High",
+        "source": "One thing you want to watch out for is if a single seller has buy box share over 75 to 80%... this could mean that this seller is a brand direct seller... You don't want to put yourself in the shoes of competing with the brand.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "seasonal-spike-detection",
+        "category": "Seasonality",
+        "trigger": "Price and sales spikes in specific months on yearly Keepa chart (e.g., August-September)",
+        "advice": "Identify seasonal products by historical spikes; analyze past pricing (e.g., $5.99-$6 average, peaks to $7-8) to forecast sell-through and plan inventory timing",
+        "confidence": "High",
+        "source": "This seems to be a highly seasonal product... it spikes around the same time. September, August, September, August... School supplies are a hit right now... look at all of the pricing history on this product during each season.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "seasonal-shipping-timing",
+        "category": "Seasonality",
+        "trigger": "Upcoming seasonal peak (e.g., back to school in August)",
+        "advice": "Ship inventory early to mid-July for August peaks to ensure Prime eligibility and sell at peak prices ($7-8); avoid shipping in early August to prevent post-season tanking",
+        "confidence": "High",
+        "source": "We would want to make sure we're shipping our products in probably early to mid July. And I wouldn't really risk it shipping at the beginning of August... you don't want to check in right when September hits and it starts to tank.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "profit-scenario-calc",
+        "category": "Pricing",
+        "trigger": "Seasonal product with historical low $4 and peak $8",
+        "advice": "Calculate ROI for best ($8 sell: 286% ROI, ~$3 profit on $0.99 buy) and worst ($4 sell: -56% ROI, $0.56 loss) cases to assess risk-reward before buying",
+        "confidence": "High",
+        "source": "If we were selling this at $7, we would actually be making $2 profit a unit, 200% ROI... Best case scenario, make 286% ROI, almost $3 profit on a 99 item. Our worst case scenario would be getting out at $4 and we would lose 56 cents a unit.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "offer-count-competition",
+        "category": "Risk",
+        "trigger": "High offer count (e.g., 108 sellers) with downtrend",
+        "advice": "Monitor offer count (blue line) for competition levels; dropping offers indicate sell-outs and price increases, while high counts signal slower sales and potential stalls",
+        "confidence": "High",
+        "source": "This is the offer count. This will tell you exactly how many sellers are competing on this listing... approximately 108 sellers... when it started to sell very fast you can tell that offers were dropping off which means people were selling out and the price went up.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "reverse-sourcing-new-offers",
+        "category": "Buying",
+        "trigger": "New sellers with recent 'first seen' date (e.g., 2 days ago) on Keepa offers tab",
+        "advice": "Sort offers by 'first seen' to identify active arbitrage sellers; reverse source their storefronts for similar profitable products, focusing on low-review (200-400) sellers for OA opportunities",
+        "confidence": "High",
+        "source": "Sort these by first seen... someone actually hopped on this listing 2 days ago... these are the people that you want to reverse source because these are the people who are actively selling on Amazon... lower reviews 2 3 400 and below. They're probably online arbitrage.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "va-lead-expectation",
+        "category": "General",
+        "trigger": "VA sourcing after training on Keepa and criteria",
+        "advice": "Expect 3-5 quality leads per day from VA; use Google Sheets for tracking with export from Seller Amp, provide daily feedback, and aim for 20-30 leads/week focusing on quality over quantity",
+        "confidence": "High",
+        "source": "You should expect at least 3 to five leads per day from your VA... You can push for 20 to 30 leads a week... We really want to just focus on the best result we can get out of them.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "va-hiring-platform",
+        "category": "General",
+        "trigger": "Need to scale sourcing beyond personal capacity",
+        "advice": "Hire VAs from onlinejobs.ph for ~$69/month; post job listings for 'online arbitrage Amazon' experience, train on Keepa/Seller Amp, and conduct frequent Zoom training for 80% performance level",
+        "confidence": "High",
+        "source": "You go to online jobs.ph... type in online arbitrage Amazon... make an account. It's about $69 a month... If they can do your job 80% as good as you, you will succeed.",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule1",
+        "category": "General",
+        "trigger": "Starting out with limited resources",
+        "advice": "Use only a smartphone to scan barcodes and look up book values on Amazon; no advanced tools needed initially.",
+        "confidence": "High",
+        "source": "starting out uh number one you just need a smartphone so we're actually going to use our smartphone to look up the value of the books on Amazon",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule2",
+        "category": "Buying",
+        "trigger": "Books priced at $1-3",
+        "advice": "Purchase used books for $1-3 and flip for $20+ to achieve high ROI.",
+        "confidence": "High",
+        "source": "you can throw them uh you only pay a dollar or two it'll flip them for 20 plus like there's a lot of benefits to use books",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule3",
+        "category": "Buying",
+        "trigger": "90-99% of scanned books unprofitable",
+        "advice": "Scan 200-1000 books per day to find 1-10% profitable ones; aim for 10 profitable books netting $4 each for $40/hour profit.",
+        "confidence": "High",
+        "source": "90% of the books aren't going to be profitable maybe you can set that realistic expectation yeah maybe it's 99% but who cares if you scan 1,000 books and only 1% are good then you can get 10 profitable books",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule4",
+        "category": "General",
+        "trigger": "Full-time commitment in medium-large city",
+        "advice": "Scan 10 hours/day to achieve $100K+ annual profit.",
+        "confidence": "High",
+        "source": "if you actually put the work in put the time in you can make easily and I'm not joking 100K plus profit a year",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule5",
+        "category": "Risk",
+        "trigger": "Shipping 40lb box via UPS with Amazon partnership",
+        "advice": "Ship boxes for $9-15 (20-40 cents/lb); avoid post office rates of $1-3/lb.",
+        "confidence": "High",
+        "source": "usually it comes out anywhere from $9 to $15 which comes out to about 20 to 40 cents per pound which is extremely cheap you are not going to get those rates at at the post office at the post office you'll be paying doar to $3 per pound",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule6",
+        "category": "General",
+        "trigger": "Selling books directly to customer",
+        "advice": "Ship for ~$4/book; viable if selling for $15 with $7 Amazon payout.",
+        "confidence": "High",
+        "source": "we'll also teach you guys how to ship books directly to the customer and this comes up to about $4 per book which is still pretty good rate you know if you sell a book for 15 bucks you'll get a $7 Amazon payout",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule7",
+        "category": "General",
+        "trigger": "New to Amazon selling",
+        "advice": "Use FBA (Fulfillment by Amazon) over Merchant Fulfilled to avoid handling shipments and enable semi-passive income.",
+        "confidence": "High",
+        "source": "FBA this stands for fulfillment by Amazon so just like it sounds it's fulfilled by Amazon... we actually don't recommend this starting out [Merchant Fulfilled]",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule8",
+        "category": "General",
+        "trigger": "Bootstrapping with no budget",
+        "advice": "Start for free by sourcing free books, using free software trials, and printing labels at libraries/UPS/FedEx.",
+        "confidence": "High",
+        "source": "theoretically you can start for free like if you're really bootstrapping it you can get a bunch of books ship them to Amazon... every software we recommend has a free trial you can print labels at The UPS Store at the FedEx store at the library",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule9",
+        "category": "General",
+        "trigger": "Initial setup costs",
+        "advice": "Budget $400-500 for supplies, $100-200 inventory, $50 scanner to start optimally.",
+        "confidence": "High",
+        "source": "if you want to start this business like the complete way we recommend you'll probably spend four to 500 bucks you know on all supplies your first $100 $200 in inventory boxes 50 bucks for a scanner",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule10",
+        "category": "General",
+        "trigger": "Amazon account selection",
+        "advice": "Choose Professional account ($39.99/month) over Individual to avoid $1/item fee, enable software integration, and access Buy Box eligibility.",
+        "confidence": "High",
+        "source": "the free account you're just not going to sell as many items you're going to lose money over the long haul... every item you sell you have to pay $1... you can't get bybox you're going to sell your items slower",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule11",
+        "category": "Pricing",
+        "trigger": "Sourcing from thrift stores/libraries",
+        "advice": "List books as 'Used' for safety; list as 'New' only if impeccable condition and with invoice, at own risk.",
+        "confidence": "High",
+        "source": "generally we're going to be selling used because we're going to thrift stores for books... if you're not sure if it's used or new it's usually better to go used... if the the book is in new condition you can sell it as new but play your own risk",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule12",
+        "category": "Risk",
+        "trigger": "Early business stage",
+        "advice": "Start without LLC using personal name; form LLC later for asset protection once profitable (low lawsuit risk in books).",
+        "confidence": "High",
+        "source": "you can start with just your individual name you don't have to go out you're a s proprietor... once you start making money you could set that up... focus on making a profit like don't go negative",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule13",
+        "category": "Buying",
+        "trigger": "Using Scout IQ app",
+        "advice": "Scan with Scout IQ; green light and sound indicates profitable after fees (e.g., $15 profit at $32 sale price).",
+        "confidence": "High",
+        "source": "Scout IQ use the link below... it turns green if it's profitable it turns red if it's not... boom baby $15 profit now this is after all Amazon fees",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule14",
+        "category": "Buying",
+        "trigger": "High-volume sourcing (5000+ books)",
+        "advice": "Use Bluetooth scanner with phone for speed (up to 1000 scans/hour) to find 10-50 profitable books at 1-5% rate.",
+        "confidence": "High",
+        "source": "you can connect this Bluetooth scanner to your phone which allows you I was able to scan 1,000 books per hour... I was going to sources that were 1 to 5% so I knew mathematically if I could scam 1,000 books per hour I could find anywhere from 10 to 50 books",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule15",
+        "category": "Buying",
+        "trigger": "No barcode on book",
+        "advice": "Use Amazon Seller app to scan book cover (unique artwork) to look up item.",
+        "confidence": "High",
+        "source": "you could scan the actual cover let me go back here this is crazy guys so you could scan the cover just like that and it'll pull off... as long as there's a unique artwork it can pull it up",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule16",
+        "category": "General",
+        "trigger": "Stickers or residue on book",
+        "advice": "Remove with Goo Gone spray and Scotty peelers to clean without damage.",
+        "confidence": "High",
+        "source": "I recommend using Goan yeah Goan is uh you can just spray it a little bit like that and then you can also use Scotty peelers all different types of Tricks",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule17",
+        "category": "General",
+        "trigger": "Textbooks with access codes or loose leaf",
+        "advice": "Use poly bag with suffocation warning to protect; also for small sets.",
+        "confidence": "High",
+        "source": "if you're ever selling a textbook with an access code... poly bag is good... poly bags are also good for loose leaf books... or even small sets of books",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule18",
+        "category": "General",
+        "trigger": "Book sets (e.g., Harry Potter)",
+        "advice": "Use poly bag, stretch wrap, or small box with 'one complete set do not separate' sticker.",
+        "confidence": "High",
+        "source": "stretch wrapping a book versus using a poly bag I I do both... this is really good for sets too like let's say you have a Harry Potter set... you can actually use these right here and you can put that on the outside or use a small box",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule19",
+        "category": "Pricing",
+        "trigger": "Listing books efficiently",
+        "advice": "Use Lister software (14-day trial) to list 100+ books/hour, auto-price, and print FNSKU labels covering original barcode.",
+        "confidence": "High",
+        "source": "this is a software that I use and Zach Zach's our cameraman by the way big shout out to Zach this is my my go-to Lister account... this really allows you to list like 100 plus books per hour... take this labeled we want to cover up any existing labels",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule20",
+        "category": "Risk",
+        "trigger": "Shipping to Amazon",
+        "advice": "Use small/medium boxes (12x16x12), 35-45 lbs to avoid overweight fees ($50+); heavy duty for textbooks.",
+        "confidence": "High",
+        "source": "I recommend going about 40 45 lb if you go over 45 lb... Amazon will charge you overweight fees... the sweet spots anywhere from 35 to 45 lbs... if you are shipping big textbooks I actually do recommend getting the heavy duty boxes",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule21",
+        "category": "Risk",
+        "trigger": "Packing books for shipment",
+        "advice": "Pack pages inward, bigger books first, fill voids with void fill, over-tape seams, waterproof with extra tape to prevent damage/loss.",
+        "confidence": "High",
+        "source": "you want to make sure the pages are facing inwards especially with paperback obviously put the bigger books in first... you don't want space you don't want these books moving around... I always like to tape over this little you know insert... you can waterproof this and protect your books from getting water damage",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "rule22",
+        "category": "General",
+        "trigger": "Budget printing setup",
+        "advice": "Use 30-up labels on any inkjet/laser printer for FNSKU; slower but no special equipment needed.",
+        "confidence": "High",
+        "source": "if you just have like an HP Inkjet or maybe you have a laser printer you can use this to actually print out the F and SKS... 30 up labels... it works on every single printer single printer",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Checking product inventory levels",
+        "advice": "Use the 999 technique: Add product to cart, change quantity to 999, and update to see the seller's available stock (e.g., 'this seller only has 355 available')",
+        "confidence": "High",
+        "source": "the first technique is called the 999 technique here we can see an arm Blaster that supports weightlifting if we go to cart and change the quantity of 999 and click update the popup reads this seller only has 355 of these available",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-002",
+        "category": "General",
+        "trigger": "Estimating monthly sales from Best Seller Rank (BSR)",
+        "advice": "Use Jungle Scout sales estimator: Input BSR and category (e.g., #5 in pet supplies estimates 77,000 units/month), multiply by price for revenue (e.g., $5.99 x 77,000 = $460,000/month)",
+        "confidence": "High",
+        "source": "go over to the Jungle Scout sales estimator tool let's look at the duck crinkle toy for dogs we can see that it's number five in pet supplies and the jungle Scout sales estimator tool for the United States in pet supplies and number five estimates that this duck toy is selling 77,000 70 units each month then take that number and multiply it by the cost of the product",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-003",
+        "category": "General",
+        "trigger": "Viewing product revenue data",
+        "advice": "Install Helium 10 Chrome extension to see 30-day revenue directly on product pages (e.g., $18,000 for a product); average with Jungle Scout estimates if they differ",
+        "confidence": "High",
+        "source": "with the helium 10 extension once you download it and install it you can usually see the product information here now for this product it actually does not have the data but most products it will so if we were to navigate over to say this duck Chet toy right here and wait for it to load we can now see the 30-day Revenue right here for this product is 18,000 sometimes the jungle Scout number in the helium time number are different so I recommend taking both these numbers into an account and basically splitting the difference",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-004",
+        "category": "Seasonality",
+        "trigger": "Products tied to specific holidays or seasons (e.g., Christmas decorations, Easter items)",
+        "advice": "Avoid seasonal products to ensure year-round sales; they limit income to certain periods and risk overstocking inventory for 11 months",
+        "confidence": "High",
+        "source": "some of the things I also avoid selling are seasonal products for instance I never sell Christmas decorations or Easter bunny ears because people are only buying that at a certain time of year which means you're only making money for a certain time of year plus it creates another major issue you'd have to guess how much inventory us to purchase and if you purchase too much inventory you have to store that inventory for an entire year",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-005",
+        "category": "General",
+        "trigger": "Products identical to competitors",
+        "advice": "Sell unique products that are better than competition to differentiate and succeed on Amazon",
+        "confidence": "High",
+        "source": "I always try to sell products that are unique and the better and better than the competition if your product is the exact same as your competitors you're going to have a hard time having success on Amazon",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-006",
+        "category": "Risk",
+        "trigger": "Non-consumable products",
+        "advice": "Prefer consumable products for repeat purchases to increase sales volume (e.g., a product that made over $1M due to being consumable)",
+        "confidence": "High",
+        "source": "ideally you want to sell a product that people are likely to purchase again with my team's product that's done over a million dollars in sales part of the reason that it did so much volume in sales is because it was consumable people would buy it would eat it and then they would have to buy it again you don't need to sell a consumable product but it is very helpful",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-007",
+        "category": "Buying",
+        "trigger": "Keyword search volume <300/month",
+        "advice": "Target keywords with at least 300 searches/month as bare minimum for supporting a few thousand dollars/month in sales; stack multiple keywords per product",
+        "confidence": "High",
+        "source": "the first thing we want to do is we want to find keywords that have at least a search volume of 300 300 search a month is the bare minimum I look for for a keyword that's going to perform well for a product that would be enough to support a product to make a few thousand a month now ideally for each product we're stacking up multiple keywords",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-008",
+        "category": "Buying",
+        "trigger": "Magnet IQ score <3x search volume",
+        "advice": "Look for Magnet IQ score at least 3 times higher than search volume to ensure low competition relative to demand",
+        "confidence": "High",
+        "source": "I personally always look for a magn q score around at least three times higher than the search volume so this is around 100 times less than the search volume so this is not a very good keyword it's way too competitive relative to the search volume",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-009",
+        "category": "Buying",
+        "trigger": "CPR >25 for new sellers",
+        "advice": "For first-time sellers, target keywords with CPR <=25 (sales needed in 8 days to rank on first page half); aim for 3-4 sales/day",
+        "confidence": "High",
+        "source": "I recommend when you first start out don't go for keywords that are over around the 25 as a first-time seller you want to make sure that you know you'll be able to get the amount of sales to reach the CPR in the first week so you can start ranking there",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-010",
+        "category": "Pricing",
+        "trigger": "Product price <$15 or >$85",
+        "advice": "Target the 'Goldilocks zone' of $15-$85 for optimal impulse buys, profit margins, and customer decision-making",
+        "confidence": "High",
+        "source": "the gold lock zone for pricing a product on Amazon is between $15 and $885 so we're going to plug in that criteria to make sure we're selling a product at a price point that works for the majority of Amazon customers Amazon works well for impulse buys where customers don't think twice about it if a product is selling for less than $15 the profit margins are just so low and if it's selling for more than $85 it becomes less of an Impulse buy",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-011",
+        "category": "Risk",
+        "trigger": "Products with >400 reviews",
+        "advice": "Filter for products with <400 reviews to target less competitive markets that are easier to enter",
+        "confidence": "High",
+        "source": "the first one I want to pay attention to is the review count I'm looking for products that have less than 400 reviews because products that have more than that are just going to be too competitive we want products that can have up to 400 reviews but not more than that",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-012",
+        "category": "Risk",
+        "trigger": "Products with 5-star average rating",
+        "advice": "Target markets with ~4.2-star ratings (rounds to 4 stars) for room to improve and attract customers with a better product",
+        "confidence": "High",
+        "source": "ideally we're looking for products for a market we can break into that we can improve upon for instance if the products in the category were already five stars then we can't improve that product at all people already love it so there's no reason for them to order our new product versus the established seller so that way so that's why I plug in for the review rating 4.2 which on Amazon a 4.2 average rating will round down to four star average",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-013",
+        "category": "Buying",
+        "trigger": "Monthly revenue <$10,000",
+        "advice": "Target products with at least $10,000 monthly revenue ($120,000/year baseline); lower to $5,000 for side income starters",
+        "confidence": "High",
+        "source": "next over here I'm looking to find products that are doing at least $110,000 in Revenue this means these products are doing at least $120,000 in Revenue Vue every single year now this is my Baseline for finding a product obviously they could be making a whole lot more than that a product making less than 10,000 a month this is not worth my time to break into however if you're looking to find a product that could work for you you're welcome to change this down to 5,000 if you just want a little bit of side income",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-014",
+        "category": "General",
+        "trigger": "Keyword word count >5",
+        "advice": "Filter keywords to 2-5 words to avoid overly broad or specific terms; exclude branded keywords (e.g., Nike) as they are irrelevant",
+        "confidence": "High",
+        "source": "we don't want any keywords that are too long so I usually put the cap at five for the word count... if we see a brand over and over again we can't make a product targeting another brand so if we see like Nike for instance we see Nike show up over and over again we could go ahead and exclude phrases and put Nike",
+        "date_added": "2026-02-09"
+    },
+    {
+        "id": "strat-015",
+        "category": "General",
+        "trigger": "Seasonal keywords (e.g., Halloween, costume)",
+        "advice": "Exclude seasonal terms like 'Halloween' or 'costume' in Black Box filters to avoid short-term peaking products",
+        "confidence": "High",
+        "source": "we're getting a lot of Halloween decorations if we really want to we can go back to the filters and we can filter out things that have the word um Halloween or costume on it which I think could be a good idea we can exclude Tyler keywords we can exclude Halloween costume decoration so we're going to exclude these just because we don't want to sell seasonal products",
+        "date_added": "2026-02-09"
     }
 ]
