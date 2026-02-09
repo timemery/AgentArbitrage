@@ -430,6 +430,7 @@ def analyze_sales_performance(product, sale_events):
     if amz_180 and amz_180 > 0: valid_amz_prices.append(amz_180)
     if amz_365 and amz_365 > 0: valid_amz_prices.append(amz_365)
 
+    is_capped_by_ceiling = False
     if valid_amz_prices:
         min_amz_price = min(valid_amz_prices)
         ceiling_price_cents = min_amz_price * 0.90 # 90% of lowest Amazon price
@@ -437,6 +438,7 @@ def analyze_sales_performance(product, sale_events):
         if peak_price_mode_cents > ceiling_price_cents:
             logger.info(f"ASIN {asin}: Calculated List at (${peak_price_mode_cents/100:.2f}) exceeds Amazon ceiling (${ceiling_price_cents/100:.2f}). Capping price.")
             peak_price_mode_cents = ceiling_price_cents
+            is_capped_by_ceiling = True
         else:
             logger.info(f"ASIN {asin}: Calculated List at (${peak_price_mode_cents/100:.2f}) is within Amazon ceiling (${ceiling_price_cents/100:.2f}).")
     else:
@@ -472,11 +474,15 @@ def analyze_sales_performance(product, sale_events):
 
     logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}', Rank='{rank_info}', Trend='{trend_info}', 3yrAvg='${avg_3yr_usd}'")
 
-    is_reasonable = _query_xai_for_reasonableness(
-        title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key,
-        binding=binding, page_count=page_count, image_url=image_url, rank_info=rank_info,
-        trend_info=trend_info, avg_3yr_usd=avg_3yr_usd
-    )
+    if is_capped_by_ceiling:
+        logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
+        is_reasonable = True
+    else:
+        is_reasonable = _query_xai_for_reasonableness(
+            title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key,
+            binding=binding, page_count=page_count, image_url=image_url, rank_info=rank_info,
+            trend_info=trend_info, avg_3yr_usd=avg_3yr_usd
+        )
 
     if not is_reasonable:
         # If XAI deems the price unreasonable, we invalidate it by setting it to -1.

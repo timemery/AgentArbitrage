@@ -7,7 +7,7 @@ import unittest
 # Add repo root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from keepa_deals.backfiller import check_peek_viability
+from keepa_deals.smart_ingestor import check_peek_viability
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -59,6 +59,16 @@ class TestPeekFilter(unittest.TestCase):
             'avg90': [-1, -1, -1]
         }
         self.assertFalse(check_peek_viability(stats), "Should REJECT missing sell history")
+
+    def test_seasonal_deal(self):
+        # Sell 90d: $15 (Bad), Sell 365d: $200 (Good - Seasonal Peak)
+        # Buy: $20
+        stats = {
+            'current': [-1, -1, 2000],
+            'avg90': [-1, -1, 1500],
+            'avg365': [-1, -1, 20000]
+        }
+        self.assertTrue(check_peek_viability(stats), "Should ACCEPT seasonal deal (good 365d avg, bad 90d avg)")
 
 if __name__ == '__main__':
     unittest.main()
