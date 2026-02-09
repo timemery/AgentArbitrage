@@ -37,3 +37,6 @@ db_backups/*.bak
 xai_cache.json
 AgentArbitrage_BeforeGateCheckFeature2/
 temp-*.rdb
+
+# Diagnostics Reports
+Diagnostics/health_report.json
