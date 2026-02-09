@@ -1,20 +1,33 @@
 #!/bin/bash
 
-# Safe Sync Script
+# Safe Sync Script (Version 2.0)
 # Pulls the latest code from GitHub and runs the deployment process.
-# Aborts if you have unsaved local changes to prevent conflicts.
+# Usage: ./sync_from_repo.sh [--reset]
 
 echo "--- Starting Safe Sync ---"
 
+FORCE_RESET=0
+
+# Parse arguments
+if [[ "$1" == "--reset" ]]; then
+    FORCE_RESET=1
+    echo "⚠️  WARNING: Reset mode enabled. Discarding ALL local changes..."
+fi
+
 # 1. Check for uncommitted changes
 if ! git diff-index --quiet HEAD --; then
-    echo "❌ ERROR: You have uncommitted changes on the server."
-    echo "Please run your standard 'push' commands first to save your work:"
-    echo "  git add --all"
-    echo "  git commit -m '...'"
-    echo "  git push origin main"
-    echo "Then run this script again."
-    exit 1
+    if [ $FORCE_RESET -eq 1 ]; then
+        echo "Running 'git reset --hard HEAD' to discard local changes..."
+        git reset --hard HEAD
+    else
+        echo "❌ ERROR: You have uncommitted changes on the server."
+        echo "To keep your changes, commit/push them first:"
+        echo "  git add . && git commit -m 'Save work' && git push origin main"
+        echo ""
+        echo "To DISCARD your changes and force update:"
+        echo "  ./sync_from_repo.sh --reset"
+        exit 1
+    fi
 fi
 
 # 2. Pull from GitHub
