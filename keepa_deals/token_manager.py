@@ -159,8 +159,13 @@ class TokenManager:
                             self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
                             self.redis_client.delete("keepa_recharge_start_time")
                         else:
-                            logger.info(f"Recharge Mode Active (Tokens: {self.tokens:.2f}/{self.BURST_THRESHOLD}, Elapsed: {elapsed/60:.1f}m). Waiting for refill...")
-                            self._wait_for_tokens(60, self.BURST_THRESHOLD) # Long wait
+                            # logger.info(f"Recharge Mode Active (Tokens: {self.tokens:.2f}/{self.BURST_THRESHOLD}, Elapsed: {elapsed/60:.1f}m). Waiting for refill...")
+                            # Don't pass 60 here. Trust the math.
+                            tokens_needed = self.BURST_THRESHOLD - self.tokens
+                            if tokens_needed < 0: tokens_needed = 0
+                            wait_time = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+                            if wait_time < 5: wait_time = 5 # Minimum sleep
+                            self._wait_for_tokens(wait_time, self.BURST_THRESHOLD)
                             continue
 
             # 1. Rate Limit Sleep (Local) - Prevent spamming API even if tokens exist
@@ -294,48 +299,37 @@ class TokenManager:
 
     def _wait_for_tokens(self, initial_wait, target):
         """
-        Sleeps in chunks, checking for refill/sync updates.
+        Sleeps for the calculated duration to allow refill.
+        Avoids calling sync_tokens() in a loop to prevent token drain from status checks.
         """
-        logger.info(f"Entered wait loop. Initial Wait: {initial_wait}s. Target: {target}")
+        logger.info(f"Entered wait loop. Estimated Wait: {initial_wait}s to reach {target} tokens.")
+
+        # Determine strict sleep duration
+        # We assume 100% reliability of the refill rate.
+        # We only wake up early to check for "Recharge Timeout" (every 5 mins)
+
         remaining = initial_wait
         while remaining > 0:
-            sleep_chunk = max(1, min(remaining, 30))
+            sleep_chunk = min(remaining, 300) # Max sleep 5 mins at a time
             time.sleep(sleep_chunk)
+            remaining -= sleep_chunk
 
-            # Sync to check progress (updates self.tokens)
-            self.sync_tokens()
-            if self.tokens >= target:
-                logger.info(f"Tokens recovered ({self.tokens:.2f} >= {target}). Resuming.")
-                return
-
-            # --- Critical Livelock Fix ---
-            # Check if global recharge timeout (60m) has passed.
-            # Previously, this loop would hang indefinitely if tokens never reached target, bypassing the outer check.
+            # --- Check Global Timeout (Livelock Prevention) ---
             if self.redis_client:
                 recharge_start_str = self.redis_client.get("keepa_recharge_start_time")
                 if recharge_start_str:
                     try:
                         start_ts = float(recharge_start_str)
                         if (time.time() - start_ts) > 3600:
-                            logger.warning(f"Recharge Timeout detected inside wait loop. Forcing exit to clear stuck state.")
+                            logger.warning(f"Recharge Timeout detected inside wait loop. Forcing exit.")
                             return
                     except ValueError:
                         pass
-            # -----------------------------
 
-            # Recalc
-            tokens_needed = target - self.tokens
-            if tokens_needed <= 0: return
-
-            # Refill rate might have changed
-            if self.REFILL_RATE_PER_MINUTE <= 0:
-                logger.error("Refill rate 0. Sleeping 15m.")
-                time.sleep(900)
-                self.sync_tokens()
-                continue
-
-            new_wait = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
-            remaining = new_wait
+        # Only sync at the very end of the wait
+        logger.info(f"Wait complete. Syncing tokens...")
+        self.sync_tokens()
+        logger.info(f"Tokens after wait: {self.tokens:.2f}")
 
     def sync_tokens(self):
         """
@@ -363,7 +357,9 @@ class TokenManager:
                 self.REFILL_RATE_PER_MINUTE = float(refill_rate)
                 self._adjust_burst_threshold()
                 if self.REFILL_RATE_PER_MINUTE < 10:
-                    logger.warning(f"CRITICAL: Keepa Refill Rate is extremely low ({self.REFILL_RATE_PER_MINUTE}/min). Deal collection will be severely throttled. Upgrade Keepa plan to improve speed.")
+                    pass
+                    # logger.warning(f"CRITICAL: Keepa Refill Rate is extremely low...")
+                    # (Reduced log spam here, rely on startup log)
             except (ValueError, TypeError):
                 pass
 
