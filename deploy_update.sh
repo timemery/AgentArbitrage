@@ -45,10 +45,9 @@ sudo ./start_celery.sh
 echo "[4/5] Reloading Web Server..."
 touch wsgi.py
 
-# Step 5: Trigger Backfill
-# Initiates the historical data fetch.
-echo "[5/5] Triggering Backfill..."
-python3 trigger_backfill_task.py
+# Step 5: Trigger Backfill (Removed)
+# Smart Ingestor starts automatically via Celery Beat (every minute).
+echo "[5/5] Data Collection (Smart Ingestor) will start automatically via Celery Beat."
 
 echo "--- Deployment Complete ---"
 echo "Monitor logs with: tail -f celery_worker.log"

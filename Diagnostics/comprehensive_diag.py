@@ -57,10 +57,11 @@ def run_diagnostic():
     rejected_count = 0
 
     if log_path:
+        reason_peek = get_grep_count("Peek Filter: Rejected", log_path)
         reason_no_offer = get_grep_count("No used offer found", log_path)
         reason_list_at = get_grep_count("Excluding deal because 'List at' is missing", log_path)
         reason_1yr_avg = get_grep_count("Excluding deal because '1yr. Avg.' is missing", log_path)
-        rejected_count = reason_no_offer + reason_list_at + reason_1yr_avg
+        rejected_count = reason_peek + reason_no_offer + reason_list_at + reason_1yr_avg
     else:
         print("Warning: celery_worker.log not found. Rejection stats will be 0.")
 
@@ -120,17 +121,21 @@ def run_diagnostic():
     print("--- Rejection Breakdown ---")
 
     if rejected_count > 0:
+        p_peek = (reason_peek / rejected_count * 100)
         p_no_offer = (reason_no_offer / rejected_count * 100)
         p_list_at = (reason_list_at / rejected_count * 100)
         p_1yr_avg = (reason_1yr_avg / rejected_count * 100)
 
-        print(f"1. No Used Offer Found: {reason_no_offer} ({p_no_offer:.1f}%)")
+        print(f"1. Peek Filter:         {reason_peek} ({p_peek:.1f}%)")
+        print("   (Rejected early for bad ROI/Spread/Price)")
+        print("")
+        print(f"2. No Used Offer Found: {reason_no_offer} ({p_no_offer:.1f}%)")
         print("   (Deal has no valid used offers to analyze)")
         print("")
-        print(f"2. Missing 'List at':   {reason_list_at} ({p_list_at:.1f}%)")
+        print(f"3. Missing 'List at':   {reason_list_at} ({p_list_at:.1f}%)")
         print("   (Could not determine a safe listing price or AI rejected it)")
         print("")
-        print(f"3. Missing '1yr Avg':   {reason_1yr_avg} ({p_1yr_avg:.1f}%)")
+        print(f"4. Missing '1yr Avg':   {reason_1yr_avg} ({p_1yr_avg:.1f}%)")
         print("   (Insufficient sales history/data points)")
     else:
         print("No rejections found (or log missing).")

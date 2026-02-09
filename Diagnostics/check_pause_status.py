@@ -82,7 +82,8 @@ def check_pause_status():
         print("  Note:    Recharge mode is NOT active.")
 
     print("\n[Lock Status]")
-    locks = ["backfill_deals_lock", "simple_task_lock", "recalculate_deals_lock"]
+    # Updated to reflect Smart Ingestor Refactor
+    locks = ["smart_ingestor_lock", "recalculate_deals_lock"]
     for lock in locks:
         val = r.get(lock)
         print(f"  {lock}: {'LOCKED' if val else 'Free'}")

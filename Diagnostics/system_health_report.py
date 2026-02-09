@@ -220,12 +220,12 @@ class HealthChecker:
         # Locks
         try:
             r = redis.Redis.from_url('redis://127.0.0.1:6379/0')
-            lock_key = "backfill_deals_lock"
+            lock_key = "smart_ingestor_lock"
             if r.exists(lock_key):
                 ttl = r.ttl(lock_key)
-                self.log_result("application_state", "Backfill Lock", "WARN", f"Active (TTL: {ttl}s)")
+                self.log_result("application_state", "Ingestor Lock", "WARN", f"Active (TTL: {ttl}s)")
             else:
-                self.log_result("application_state", "Backfill Lock", "PASS", "Free")
+                self.log_result("application_state", "Ingestor Lock", "PASS", "Free")
         except:
             pass
 

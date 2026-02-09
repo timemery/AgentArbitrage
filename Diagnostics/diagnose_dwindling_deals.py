@@ -16,7 +16,7 @@ try:
 except ImportError:
     DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'deals.db')
 
-# Version Check: Diagnostic Tool
+# Version Check: Smart Ingestor Diagnostic
 def get_redis_client():
     return redis.Redis.from_url('redis://127.0.0.1:6379/0')
 
@@ -33,25 +33,17 @@ def check_scheduler_process():
 def check_locks(r):
     print("\n--- LOCK STATUS ---")
 
-    # Check Backfill Lock
-    backfill_lock_key = "backfill_deals_lock"
-    backfill_ttl = r.ttl(backfill_lock_key)
-    if backfill_ttl == -2:
-        print(f"[FREE] Backfill Lock ({backfill_lock_key}) is NOT held.")
-        backfill_active = False
+    # Check Smart Ingestor Lock
+    smart_ingestor_lock_key = "smart_ingestor_lock"
+    ingestor_ttl = r.ttl(smart_ingestor_lock_key)
+    if ingestor_ttl == -2:
+        print(f"[FREE] Smart Ingestor Lock ({smart_ingestor_lock_key}) is NOT held.")
+        ingestor_active = False
     else:
-        print(f"[LOCKED] Backfill Lock ({backfill_lock_key}) IS held. TTL: {backfill_ttl} seconds remaining.")
-        backfill_active = True
+        print(f"[LOCKED] Smart Ingestor Lock ({smart_ingestor_lock_key}) IS held. TTL: {ingestor_ttl} seconds remaining.")
+        ingestor_active = True
 
-    # Check Upserter Lock
-    upserter_lock_key = "update_recent_deals_lock"
-    upserter_ttl = r.ttl(upserter_lock_key)
-    if upserter_ttl == -2:
-        print(f"[FREE] Upserter Lock ({upserter_lock_key}) is NOT held.")
-    else:
-        print(f"[LOCKED] Upserter Lock ({upserter_lock_key}) IS held. TTL: {upserter_ttl} seconds remaining.")
-
-    return backfill_active
+    return ingestor_active
 
 def analyze_db_state():
     print("\n--- DATABASE STATE ---")
@@ -78,11 +70,12 @@ def analyze_db_state():
             return
 
         # 2. System State (Backfill Page)
+        # Note: Backfill Page is legacy but might still be there.
         try:
             cursor.execute("SELECT value FROM system_state WHERE key = 'backfill_page'")
             row = cursor.fetchone()
-            backfill_page = row[0] if row else "Not Found"
-            print(f"Current Backfill Page: {backfill_page}")
+            backfill_page = row[0] if row else "Not Found (Legacy)"
+            print(f"Backfill Page (Legacy): {backfill_page}")
         except sqlite3.OperationalError:
             print("Could not read system_state table (might not exist).")
 
@@ -172,23 +165,21 @@ def main():
         print("ERROR: Could not connect to Redis.")
         return
 
-    backfill_active = check_locks(r)
+    ingestor_active = check_locks(r)
     analyze_db_state()
 
     print("\n--- DIAGNOSIS SUMMARY ---")
 
     scheduler_running = check_scheduler_process()
     if scheduler_running:
-        print(f"[OK] Scheduled Upserter (Celery Beat) is RUNNING.")
+        print(f"[OK] Scheduled Ingestor (Celery Beat) is RUNNING.")
     else:
-        print(f"[WARNING] Scheduled Upserter (Celery Beat) is NOT RUNNING.")
+        print(f"[WARNING] Scheduled Ingestor (Celery Beat) is NOT RUNNING.")
 
-    if backfill_active:
-        print("1. The BACKFILLER is currently RUNNING (Lock held).")
-        print("   -> Note: The Upserter is designed to run concurrently with the Backfiller.")
-        print("   -> However, if tokens are low, both tasks may stall waiting for refills.")
+    if ingestor_active:
+        print("1. The Smart Ingestor is currently RUNNING (Lock held).")
     else:
-        print("1. The Backfiller is NOT running.")
+        print("1. The Smart Ingestor is NOT running.")
 
     print("\nRECOMMENDATION:")
     print("Check the 'Deal Age' distribution above.")
@@ -221,8 +212,8 @@ def main():
     # Always tail Worker Log to see Upserter errors
     tail_log("/var/www/agentarbitrage/celery_worker.log", "Celery Worker Log")
 
-    print("- If many deals are > 70 hours, the Upserter is not refreshing timestamps fast enough.")
-    print("- If 'Backfill Lock' is held for hours/days without 'Current Backfill Page' changing, the Backfiller is stuck.")
+    print("- If many deals are > 70 hours, the Smart Ingestor is not refreshing timestamps fast enough.")
+    print("- Check for 'Stop Trigger' or 'Watermark' logs in the output above.")
 
 if __name__ == "__main__":
     main()
