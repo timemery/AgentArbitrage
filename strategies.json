@@ -48442,5 +48442,428 @@
         "confidence": "High",
         "source": "we're getting a lot of Halloween decorations if we really want to we can go back to the filters and we can filter out things that have the word um Halloween or costume on it which I think could be a good idea we can exclude Tyler keywords we can exclude Halloween costume decoration so we're going to exclude these just because we don't want to sell seasonal products",
         "date_added": "2026-02-09"
+    },
+    {
+        "id": "gen-001",
+        "category": "General",
+        "trigger": "Optimizing Amazon product listings",
+        "advice": "Use backend search terms to improve indexing and ranking; 80% of sellers miss this, leading to lost visibility.",
+        "confidence": "High",
+        "source": "80 of the people miss out this thing and don't do it properly that's why the listing is not optimized and they are losing their ranking",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-002",
+        "category": "General",
+        "trigger": "Researching keywords for a product",
+        "advice": "Type the main product keyword into Amazon search to get auto-suggestions; note down all recommended keywords like 'hip trainer butt lifting' for use in backend terms.",
+        "confidence": "High",
+        "source": "when I type that product name here so you can see Amazon is recommending me some more keyword which people are actually searching for this product",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-003",
+        "category": "General",
+        "trigger": "Compiling keywords and terms",
+        "advice": "Copy and paste suggested keywords into a Google Doc or Word document for organization before processing.",
+        "confidence": "High",
+        "source": "you can just copy and paste all of those keyword into a Word document so let's just copy this one paste",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-004",
+        "category": "General",
+        "trigger": "Understanding product purpose and features",
+        "advice": "Analyze top listings to identify key factors like material, purpose (e.g., 'portable', 'replacement pads'), and user searches; include these in backend terms.",
+        "confidence": "High",
+        "source": "what are the main key factor for that product and what is a good material for that product which people are looking for",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-005",
+        "category": "General",
+        "trigger": "Gathering comprehensive keyword list",
+        "advice": "Extract at least 20 keywords and 20 descriptive words from top 40-50 listings' titles and bullet points to define product use.",
+        "confidence": "High",
+        "source": "for you you need to find out at least 20 keywords and at least 20 words with basically Define the use of that product... from the top 405 listing",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-006",
+        "category": "General",
+        "trigger": "Cleaning up keyword list",
+        "advice": "Remove duplicates and repetitions (e.g., remove repeated 'hip trainer' or 'woman'); avoid competitor brand names or ASINs as per Amazon rules.",
+        "confidence": "High",
+        "source": "remove the repeated keywords like for example hip Trader... Amazon itself say that Search terms that describe your product no repetition no competitor brand names or Asin",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-007",
+        "category": "General",
+        "trigger": "Formatting backend search terms",
+        "advice": "Format cleaned keywords and words into a single paragraph without spaces or repetitions, then paste into Seller Central under the Search Terms tab.",
+        "confidence": "High",
+        "source": "you can just format it like a paragraph like this like you can just remove the spaces between them and you can just make it a paragraph with only words... paste all of those words into a search term type of your listing",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-008",
+        "category": "General",
+        "trigger": "After updating backend search terms",
+        "advice": "Expect increased visibility and impressions within 2-3 days; apply to all listings for better sales.",
+        "confidence": "High",
+        "source": "after two or three days you will start seeing your listing get more and more visibility and more about impression",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "sea-001",
+        "category": "Seasonality",
+        "trigger": "Holiday seasons like Christmas",
+        "advice": "Anticipate sales increases during December (e.g., up to 150k revenue); maintain consistent sales year-round with optimized listings.",
+        "confidence": "High",
+        "source": "my sales actually increased in December which was Christmas season so around 150k was the revenue... throughout the year I got consistent sales",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "gen-009",
+        "category": "General",
+        "trigger": "PPC and overall strategy",
+        "advice": "Minimize PPC spend by relying on organic optimization like backend terms; use common sense tips for consistent revenue without 'magic'.",
+        "confidence": "High",
+        "source": "the PPC spend was very less for the lifetime so basically I don't do any magic I only use common sense and use some tips and tricks",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "startup-capital",
+        "category": "General",
+        "trigger": "Starting Amazon FBA business",
+        "advice": "Have at least $3,000 to $5,000 in startup capital to aim for 30% ROI and avoid slow grind; more capital allows faster ungating and larger catalog",
+        "confidence": "High",
+        "source": "For money, I highly recommend at least 3 to 5K to start. So 3 to 5K is great cuz we're going to aim to make about a 30% ROI average. Now the more money you start with is going to be better because it's going to streamline the whole entire experience. You're going to be able to get ungated faster, apply for more ungates, build a bigger catalog",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "sourcing-time",
+        "category": "Buying",
+        "trigger": "Beginners with full time available",
+        "advice": "Spend 4 to 6 hours a day on sourcing; if working a job, at least 20 hours a week to build skills and find products",
+        "confidence": "High",
+        "source": "what I recommend for beginners is to spend between four and 6 hours a day on sourcing if you have the time. Now, if you're still working a job or doing another side hustle, try to fit at least 20 hours a week into product sourcing",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "reverse-sourcing",
+        "category": "Buying",
+        "trigger": "Beginner sourcing method",
+        "advice": "Use reverse sourcing by browsing other sellers' storefronts on Amazon, identify products like seasonal items (e.g., water guns in summer), search on Google or online retailers to buy profitably; can generate 20 to 50K a month but may be late to market if items are listed over two weeks",
+        "confidence": "High",
+        "source": "the best method for beginners is definitely reverse sourcing. So reverse sourcing is basically when you open up another seller storefront, you look through their storefront and see exactly what they're selling. So, what this would mean, if they're selling a water gun during the summer... search it up on Google, and see if you can find it profitably from an online retailer... Now, reverse sourcing will get you anywhere from 20 to 50K a month... these sellers may have had these items in their storefront for up to over two weeks",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "manual-sourcing",
+        "category": "Buying",
+        "trigger": "Advanced sourcing after reverse",
+        "advice": "Manually scan retailer catalogs on sites like Dick's Sporting Goods, Target, Walmart, Best Buy, Vitacost for deals, cross-check profitability on Amazon using tools; apply selectively as beginner",
+        "confidence": "High",
+        "source": "manual sourcing is is you're not going through other seller storefronts. You're going directly to these websites like Dick Sporting Goods, Target, Walmart, Best Buy, Viticost, and you're manually scanning their cataloges yourself, searching for these good deals, and cross-checking that website with Amazon",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "keepa-mastery",
+        "category": "Buying",
+        "trigger": "All buying decisions",
+        "advice": "Master Keepa for price history, sales data, and charts to avoid bad buys; use Seller Amp for profit calculations and competition view; learn in month 1 via videos and practice",
+        "confidence": "High",
+        "source": "learn how to understand a Keepa chart, understand all the data in Keepa... Keep the sole software that is going to drive all of your buying decisions. Seller Amp is just mainly used to calculate profits, view our competition... If you learn how to master Keepa, you will never make a bad buying decision that is in your control",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "keepa-product-finder",
+        "category": "Buying",
+        "trigger": "Refining sourcing in months 2-3",
+        "advice": "Use Keepa Product Finder with filters on the website to efficiently find products and improve sourcing",
+        "confidence": "High",
+        "source": "Keepa product finder is going to be your number one best friend. If you learn how to use Keepa product finder, now this is on their website, the product finder button with all those crazy filters. You're going to be insane at sourcing",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "ungating-process",
+        "category": "Risk",
+        "trigger": "Encountering restricted brands like Bounty",
+        "advice": "Submit invoices from authorized distributors for 10-200 unit orders; process takes 3-5 days per brand including ordering and delivery; keep multiple ungates active to build catalog variety",
+        "confidence": "High",
+        "source": "The ungating process is submitting invoices to get approved to sell these brands on Amazon... it's going to tell me how many units I'll need... ungating can take between 3 to 5 days per brand because you need to place your order, you need to wait till it ships... find a profitable online arbitrage brand that you come across of quite frequently, get the ungate for that going... You should always have a couple ungates going at all times",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "account-health",
+        "category": "Risk",
+        "trigger": "New seller with low trust",
+        "advice": "Build account health starting at 200 score by proving reliability to ease ungating; focus on products from new sellers (0-3 reviews) for auto-ungating opportunities while pursuing larger brand ungates",
+        "confidence": "High",
+        "source": "account health. This is basically your score on Amazon and you start off at 200... as a new seller, Amazon doesn't know who you are... the more we can prove ourselves to Amazon, the easier it is you will get ungated... focus on those products that people are selling with 0 to 1 2 3 reviews on their account because they are also not ungated",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "fba-prep-guidelines",
+        "category": "General",
+        "trigger": "Prepping products for FBA shipment",
+        "advice": "Follow prep rules: polybag multipacks (e.g., two-packs), blank out barcodes and add FBA labels for multipacks or FNSKU over single packs; box max 50 lbs and 25x25x36 inches; track shipping costs",
+        "confidence": "High",
+        "source": "learning how to prep your products... if you have a two pack, do you know how to prep a two pack compared to a one pack?... a two pack would require a polyag. Sometimes you have to blank out the barcodes and replace it with your Amazon barcode. That's if it's a two pack. If it's a one pack, you can just fence skew right over the barcode... How heavy can your box be? It can only be 50 lbs. What is the biggest box size you can use? 25x 25x 36",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "margin-stacking",
+        "category": "Buying",
+        "trigger": "During product purchases",
+        "advice": "Stack margins using Rakuten for cashback (e.g., 3%), CardBear for discounted gift cards (e.g., 5%), Capital One Shopping or Cupert for coupons to add 8% to net margins on sales items",
+        "confidence": "High",
+        "source": "learn how to find discounts... getting your plugins such as Racketin for cash back, Card Bear for discounted gift cards. Plugins like Cupert or Capital One Shopping to help you find those discount codes... margin stacking. You're taking a product that's 20 bucks maybe on sale and you go and find a 5% gift card and then it's 3% cash back on top. That just added 8% back into your net margins",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "seasonal-sourcing",
+        "category": "Seasonality",
+        "trigger": "Current month is August",
+        "advice": "Source highly seasonal products performing in December early (e.g., now in August) to ship in first, capture market share and maximize profits despite potential higher buy prices",
+        "confidence": "High",
+        "source": "Like right now, it's August. So my current sourcing strategy is what products are performing in December that are highly seasonal. I want to get my hands on them now so I can ship them in early and become first to sell all of those seasonal products, which in turn makes me the most money out of every other seller on that listing",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "repricer-use",
+        "category": "Pricing",
+        "trigger": "Managing over 25 SKUs or 10-20K monthly revenue",
+        "advice": "Implement repricer like GoAura when manual repricing becomes time-intensive; set criteria to adjust prices dynamically (e.g., follow undercuts from $19.99 to $19.95) to win buy box without tanking prices; keep expense under 2-3% of profit",
+        "confidence": "High",
+        "source": "it's going to get hard to repric all your products. So, I would consider a repericer... when you find yourself repricing a bunch of SKs, I would say over 25 SKS or you're doing over 10 to 20K in revenue per month... The best repricer I have seen for a beginner's level budget is Go Aura... set certain criteria... follow them down and come back up so it doesn't tank... Try to keep your repricing expense to under 2 to 3%",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "prep-center",
+        "category": "General",
+        "trigger": "Scaling to 20-30K monthly revenue",
+        "advice": "Outsource prep to a third-party center when home prep limits growth (e.g., can't handle $40K inventory); costs manageable under $3,000 for 1-2K units, negotiate for volume; frees time for sourcing at $200+/hour vs. $15-20/hour prep labor",
+        "confidence": "High",
+        "source": "as we move up and we're doing 20 to 30k months, you do not want to be tying your time up into packaging products. So, the best way to go is either a prep center... when you're sending 1 to2,000 units, and the prep center bills less than $3,000... You can pay someone to prep your products anywhere from $15 to $20 an hour... when you're finding these products and you can make over $200 in an hour",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "hire-sourcing-va",
+        "category": "General",
+        "trigger": "Reached 25-30K monthly revenue",
+        "advice": "Hire VA from Philippines via onlinejobs.ph at $3-5/hour (base $3) for sourcing; train thoroughly to find profitable products (yielding $2-5K+/month value for $5-600 cost); hire when skills are sharp to avoid counterproductivity",
+        "confidence": "High",
+        "source": "the proper time to hire a VA is when you're comfortable... I hired my first VA when I did my first $25,000 in revenue month, but anything under that... from 25 to 30K in revenue... outsource our VAS from the Philippines using online jobs.ph... rate of labor is cheaper over there. It's anywhere from $3 to45 $5 an hour. A general good base pay rate is about $3 an hour... they'll be able to make you $2 to $5,000 if not more per month",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "data-tracking",
+        "category": "General",
+        "trigger": "After every product purchase",
+        "advice": "Track all data in spreadsheets: order numbers, dates, quantities, tracking, damages, targeted sale prices (e.g., buy $10 sell $22), invoices for quick access; analyze to refine processes and identify issues",
+        "confidence": "High",
+        "source": "setting up spreadsheets. You should be tracking every single piece of data... You should have your tracking numbers, order numbers, dates you ordered it, how many you ordered down to how many got delivered... Taking notes of what's damaged... tracking down your targeted sale price... if you bought a product today for $10 and we wanted to sell it for 22... save our invoices",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "leverage-credit",
+        "category": "General",
+        "trigger": "Scaling beyond personal cash (e.g., from 5K to 10K profit/month)",
+        "advice": "Use business credit cards under LLC (e.g., Chase Ink 0% for 12 months, Capital One Spark 2% unlimited cashback) to fund purchases; float balances with minimum payments; earn 1-2% back on $120K annual spend ($1,200-$2,400) plus points for travel",
+        "confidence": "High",
+        "source": "leverage credit... Alls it takes is one credit card and you will be able to do 10k profit a month... under your LLC, you can get crazy cards like from Chase. They have the business incimited 0% interest for your first 12 months... Capital One uh Spark has unlimited 2% cash back... if you spend $120,000 in a year on product... you would get an additional 1 to 2% back on that. So, you could have $1,200 to over $2,000",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-001",
+        "category": "General",
+        "trigger": "Setting up backend search terms for Amazon listings",
+        "advice": "Create a master keyword list for your product market, showcasing keywords versus competitors, sorted by relevancy from highest to lowest, and focus on the most relevant ones for backend terms.",
+        "confidence": "High",
+        "source": "It's a list where exactly showcases your keywords uh in a market for your product, showcasing your product versus your competitors and showcasing the ranking for it. And what we like to do is we sort it by relevancy. So, how relevant are these keywords to our product from highest to lowest.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-002",
+        "category": "General",
+        "trigger": "Selecting initial keywords for backend terms",
+        "advice": "Copy and paste up to 100 of the first and most relevant keywords from the master list into Helium 10 Frankenstein for processing.",
+        "confidence": "High",
+        "source": "Now ideally what you want to do is you want to go and copy and paste up to 100 characters I would say or 100 100 of the first and most relevant keywords here.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-003",
+        "category": "General",
+        "trigger": "Processing keywords for backend terms",
+        "advice": "Use Helium 10's Frankenstein tool to automatically remove duplicates, add only spaces between keywords, and convert all to lowercase before pasting into backend terms.",
+        "confidence": "High",
+        "source": "What I like to do is I like to use helium's Frankenstein. Okay. water like Frankenstein. It's very easy. It already sets criteria of what you can do because it removes the duplicates and it adds only spaces which are the criteria for back-end terms. Now what I want to do is just hit copy and paste. All the keywords are here. Okay. Now what what is it going to do? It's going to automatically only add spaces, remove duplicate keywords and convert all to lowercase.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-004",
+        "category": "Risk",
+        "trigger": "Keywords include brand names",
+        "advice": "Do not include brand names in backend search terms to avoid being flagged by Amazon for advertising on unrelated keywords.",
+        "confidence": "High",
+        "source": "You can't include brand names on your back end. Okay? Because if you include brand names and let's say they figure it out, they can flag you because you're advertising on a listing or a keyword that is not related to your product, which is a big big issue.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-005",
+        "category": "General",
+        "trigger": "Backend terms under 500 characters after initial processing",
+        "advice": "Manually review and expand the keyword list by adding more relevant keywords from the master list to reach as close to 500 characters as possible, ensuring all are product-specific.",
+        "confidence": "High",
+        "source": "You have 435 characters. You want to maximize all of it. So, right now, I see that I'm at 435. I can go up to 500. So, I'm going to go back. I went up to 100 last time. I'm going to go even further. Let's see if I can go to like 125, 130, wherever makes sense.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-006",
+        "category": "General",
+        "trigger": "Lazy copy-paste of all generated keywords",
+        "advice": "Avoid directly copy-pasting all processed keywords; instead, go through them one by one to remove irrelevant terms (e.g., brand names, unrelated phrases) and ensure specificity to your product for better ranking.",
+        "confidence": "High",
+        "source": "Now, where people mess up here is usually they just go and they'll copy and paste all these keywords... you're not being super specific in the keywords you're targeting and you can cause some issues for your listings... What I do recommend is this is more timeconuming but this is more beneficial for your ranking and that is to go through all of your keywords one by one individually and see if they are related to your product.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-007",
+        "category": "General",
+        "trigger": "After finalizing cleaned backend keywords",
+        "advice": "Add all selected relevant keywords to a Helium 10 Keyword Tracker portfolio to monitor indexing and ranking progress.",
+        "confidence": "High",
+        "source": "Now that I have this list done... I'm going to go into Helium 10. I can go into keyword tracker and I'm going to put all these keywords into a portfolio so we can track all of it... I can track all these keywords to make sure I'm indexed and starting to rank for it.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-008",
+        "category": "General",
+        "trigger": "Every few months or after ranking well on keywords",
+        "advice": "Update backend search terms by removing keywords you are already indexed and ranking for, and add new relevant keywords to maintain close to 500 characters.",
+        "confidence": "High",
+        "source": "You always want to update it every few months with new keywords relevant to your product and remove old ones you're already indexed for... once, let's say down uh one month down the line, two month down the line, I have a lot of keywords that I ranked well for already. I can remove these on my back end and I can go back into my list and add more keywords to hit that 500 count.",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "bk-strat-009",
+        "category": "Risk",
+        "trigger": "Including irrelevant or fragmented keywords",
+        "advice": "When reviewing processed keywords, identify and remove fragmented or unclear terms (e.g., 'don't break back' or 'pi') that may not relate to your product to avoid confusion and poor SEO.",
+        "confidence": "High",
+        "source": "The issue is since we've removed duplicates and and removed and add only spaces, a lot of these terms are very separate from everything here... have a look at this term don't break. What does that even mean?... Pi. What does that even mean?",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "kw-limit-1",
+        "category": "General",
+        "trigger": "Search terms field",
+        "advice": "Limit to 500 characters for backend search terms.",
+        "confidence": "High",
+        "source": "there are 500 character limits for searchs now you can add here and you can add more here if you click add more you can add a lot of keywords in the saroms field",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "repeat-kw-1",
+        "category": "General",
+        "trigger": "Initial indexing phase",
+        "advice": "Repeat main keywords one or two times only in the first phase for quick indexing, then change keywords in subsequent phases.",
+        "confidence": "High",
+        "source": "for quick indust maybe some of the keywords like your main keywords you can repeat one or two times but it is only for the first phase not in the other phes so you need to change the keywords",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "tool-helium-1",
+        "category": "General",
+        "trigger": "Keyword research",
+        "advice": "Use Helium 10 to search keywords, filter, check competitors, and export data; add up to 10 competitors to get ranked keywords.",
+        "confidence": "High",
+        "source": "there are mainly two ways that you can do ke research one is with C TRS like helium... this way I can add up to 10 competitors so let's add competitors and get keybo and this it will give me all the keywords which are ranked for these products",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "competitor-kw-1",
+        "category": "General",
+        "trigger": "Competitor analysis in Helium 10",
+        "advice": "Check competitors' PPC keywords by selecting sponsored and sorting by keyword sales to identify potential keywords.",
+        "confidence": "High",
+        "source": "I will go and check which are the keywords this competitor are running as... if I choose PPC from here so so sponsored and then if I click on apply so it will give me all the keywords it's running PPC for so here you can see I can see the keyword sales here",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "brand-analytics-1",
+        "category": "General",
+        "trigger": "Keyword research via Brand Analytics",
+        "advice": "Use Amazon Brand Analytics > Search Query Performance, select monthly or quarterly data (e.g., last month), download top search terms for the category.",
+        "confidence": "High",
+        "source": "download keywords from the brand analytics... you can select weekly you can select um monthly or quarterly so let's select monthly for now and then I want to see the last month data February and apply",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "kw-filter-1",
+        "category": "General",
+        "trigger": "Keyword list filtration",
+        "advice": "Rate keywords for relevancy: 1 for relevant (use in frontend/backend), 2 for not 100% relevant (use in backend), 3 for irrelevant or brand names (remove).",
+        "confidence": "High",
+        "source": "I will give one to all the relevant keywords... for some keywords which are not actually 100% relevant I will put them as two... these are the three numberings that I will actually use to like um fix this keyword list",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "include-variations-1",
+        "category": "General",
+        "trigger": "Master keyword sheet preparation",
+        "advice": "Include international keywords (e.g., Spanish, Chinese), misspellings, and spelling mistakes to rank beyond standard searches.",
+        "confidence": "High",
+        "source": "we can include some of the misspelling or spelling mistakes that people generally sech with... this is Chinese keywords this is Spanish keyword so this help us to rank our product Beyond",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "frankenstein-tool-1",
+        "category": "General",
+        "trigger": "Processing keyword list",
+        "advice": "Use Frankenstein tool to remove duplicates, convert to lowercase, use only spaces; aim for under 500 characters, remove single irrelevant words like 'x' or 'size'.",
+        "confidence": "High",
+        "source": "they have used you know the Frankenstein tool to you know keep the unique terms only... here I will input all the keywords and then I will select R duplicates convert to lower case at only space... it gives me now only 584 characters of keywords",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "no-repeat-frontend-1",
+        "category": "General",
+        "trigger": "Backend search terms",
+        "advice": "Do not repeat keywords already used in title, bullet points, or description; remove them to free up space for variations.",
+        "confidence": "High",
+        "source": "you shouldn't use any keyword that you already used in the title point and description... we're going to remove them from here in that case we'll get more space",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "tweak-period-1",
+        "category": "General",
+        "trigger": "Monitoring performance",
+        "advice": "Monitor keyword indexing and ranking; tweak search terms every 2-3 months based on trends, search volume, and sales.",
+        "confidence": "High",
+        "source": "you need to monitor the ranking how many keyers you are indexing ranking... you should change every two three months the Search terms based on the trends and based on the Sear volume based on the keyword celles",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "guidelines-1",
+        "category": "General",
+        "trigger": "Using search terms",
+        "advice": "Follow Amazon guidelines: no brand names, no punctuation, no misleading or irrelevant terms.",
+        "confidence": "High",
+        "source": "you need to make sure that you are following the guideline like you shouldn't use any brand name... no punctuation you shouldn't uh mislead or use any irrelevant terms in the source terms",
+        "date_added": "2026-02-10"
+    },
+    {
+        "id": "alt-text-1",
+        "category": "General",
+        "trigger": "Additional backend fields",
+        "advice": "Use keywords in alt text (100 characters per image module), Brand Story, Platinum keywords, and subject matters for more visibility.",
+        "confidence": "High",
+        "source": "you can use this in the all text field as well so so there is a plus content and for every module in under the under every images you can use 100 characters of all text and in the Brand Story as well... there is some backend field as well like the Platinum keywords there are some subject matters",
+        "date_added": "2026-02-10"
     }
 ]
