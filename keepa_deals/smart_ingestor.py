@@ -30,7 +30,7 @@ logger = getLogger(__name__)
 load_dotenv()
 
 # --- Version Identifier ---
-SMART_INGESTOR_VERSION = "3.0-Consolidated"
+SMART_INGESTOR_VERSION = "3.1-ZombieFix"
 
 # --- Constants ---
 # DB_PATH is imported from db_utils
@@ -185,11 +185,7 @@ def run():
         watermark_iso = load_watermark()
         if watermark_iso is None:
             logger.error("CRITICAL: Watermark not found. Assuming fresh start/reset required but not handling here.")
-            # We could default to a recent time, but backfiller used to handle this.
-            # If no watermark, we should probably fetch recent deals?
-            # Or default to 24 hours ago?
-            # User said "Consolidating...". If this is a new deploy, maybe watermark exists.
-            # If not, let's default to 24 hours ago to be safe.
+            # Default to 24 hours ago to be safe.
             watermark_iso = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
             logger.info(f"Watermark defaulted to {watermark_iso}")
             save_watermark(watermark_iso)
@@ -264,6 +260,7 @@ def run():
         # --- Check Existing ASINs ---
         asin_list = [d['asin'] for d in all_new_deals]
         existing_asins_set = set()
+        zombie_asins_set = set()
         existing_rows_map = {}
         try:
             conn_check = sqlite3.connect(DB_PATH, timeout=60)
@@ -286,6 +283,7 @@ def run():
 
                 if is_zombie:
                     logger.info(f"ASIN {r['ASIN']}: Detected as ZOMBIE/BAD DATA. Forcing heavy re-fetch.")
+                    zombie_asins_set.add(r['ASIN'])
                 else:
                     existing_asins_set.add(r['ASIN'])
                     existing_rows_map[r['ASIN']] = dict(r)
@@ -297,35 +295,35 @@ def run():
         # Iterate chunks
         current_batch_size = MAX_ASINS_PER_BATCH
         if token_manager.REFILL_RATE_PER_MINUTE < 20:
-            current_batch_size = 1 # Back to 1 for starvation protection if needed, or 4 like backfiller?
-            # User doc said "Backfiller... increases this to 4 when refill rate is < 20... to reduce loop overhead".
-            # Simple Task said "Reduce batch to 1".
-            # Let's use 2 (MAX_ASINS_PER_BATCH default) or 1 if very low.
-            # Smart Ingestor uses Peek (2 tokens).
-            # If rate is 5/min. 2 tokens is fine.
-            # Let's stick to simple logic: 2 default, 1 if < 20.
-            current_batch_size = 1
+            current_batch_size = 1 # Back to 1 for starvation protection
 
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
 
         total_upserted = 0
+        total_deleted_zombies = 0
 
         for i in range(0, len(all_new_deals), current_batch_size):
             chunk_deals = all_new_deals[i:i + current_batch_size]
             chunk_asins = [d['asin'] for d in chunk_deals]
 
-            chunk_new_asins = [a for a in chunk_asins if a not in existing_asins_set]
+            # Split new ASINs into Pure New vs Zombies
+            # 'chunk_new_asins' includes anyone NOT in existing_asins_set (so includes zombies)
+            chunk_all_new_candidates = [a for a in chunk_asins if a not in existing_asins_set]
+
+            chunk_zombies = [a for a in chunk_all_new_candidates if a in zombie_asins_set]
+            chunk_true_new = [a for a in chunk_all_new_candidates if a not in zombie_asins_set]
+
             chunk_existing_asins = [a for a in chunk_asins if a in existing_asins_set]
 
             chunk_products = {}
 
-            # --- STAGE 1: PEEK (For New/Zombie Deals) ---
+            # --- STAGE 1: PEEK (For Pure New Deals) ---
             new_candidates = []
-            if chunk_new_asins:
-                token_manager.request_permission_for_call(2 * len(chunk_new_asins))
+            if chunk_true_new:
+                token_manager.request_permission_for_call(2 * len(chunk_true_new))
                 # Use stats=365 for Peek
-                peek_resp, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_new_asins, days=365)
+                peek_resp, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_true_new, days=365)
                 if tokens_left: token_manager.update_after_call(tokens_left)
 
                 if peek_resp and 'products' in peek_resp:
@@ -335,7 +333,11 @@ def run():
                         else:
                             logger.info(f"Peek Rejected: ASIN {p.get('asin')}")
 
-            # --- STAGE 2: COMMIT (For Survivors) ---
+            # Add Zombies to Candidates (Skip Peek, force heavy fetch)
+            for z in chunk_zombies:
+                new_candidates.append(z)
+
+            # --- STAGE 2: COMMIT (For Survivors + Zombies) ---
             if new_candidates:
                 token_manager.request_permission_for_call(20 * len(new_candidates))
                 prod_resp, _, _, tokens_left = fetch_product_batch(api_key, new_candidates, days=365, history=1, offers=20)
@@ -355,8 +357,17 @@ def run():
 
             # --- PROCESS ---
             rows_to_upsert = []
+            zombies_to_delete = []
+
             for deal in chunk_deals:
                 asin = deal['asin']
+
+                # Handling Zombies that failed Fetch/Processing
+                if asin in zombie_asins_set and asin not in chunk_products:
+                    # Failed Fetch (e.g. invalid ASIN or API error)
+                    zombies_to_delete.append(asin)
+                    continue
+
                 if asin not in chunk_products: continue
 
                 product_data = chunk_products[asin]
@@ -376,15 +387,27 @@ def run():
                          processed_row = clean_numeric_values(processed_row)
                          processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                          processed_row['source'] = 'smart_ingestor'
+                     elif asin in zombie_asins_set:
+                         # Processing returned None (unprofitable/invalid), so Delete the Zombie
+                         zombies_to_delete.append(asin)
 
                 if processed_row:
                     rows_to_upsert.append(processed_row)
 
-            # --- UPSERT & WATERMARK RATCHET ---
-            if rows_to_upsert:
-                try:
-                    with sqlite3.connect(DB_PATH, timeout=60) as conn:
-                        cursor = conn.cursor()
+            # --- UPSERT / DELETE & WATERMARK RATCHET ---
+            try:
+                with sqlite3.connect(DB_PATH, timeout=60) as conn:
+                    cursor = conn.cursor()
+
+                    # 1. DELETE Zombies
+                    if zombies_to_delete:
+                        placeholders_del = ','.join('?' * len(zombies_to_delete))
+                        cursor.execute(f"DELETE FROM {TABLE_NAME} WHERE ASIN IN ({placeholders_del})", zombies_to_delete)
+                        total_deleted_zombies += len(zombies_to_delete)
+                        logger.info(f"Deleted {len(zombies_to_delete)} irrecoverable zombie deals.")
+
+                    # 2. UPSERT Valid
+                    if rows_to_upsert:
                         sanitized_headers = [sanitize_col_name(h) for h in headers]
                         sanitized_headers.extend(['last_seen_utc', 'source'])
 
@@ -399,7 +422,6 @@ def run():
                         upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
 
                         cursor.executemany(upsert_sql, data_for_upsert)
-                        conn.commit()
                         total_upserted += len(rows_to_upsert)
 
                         # Trigger restriction check
@@ -407,27 +429,20 @@ def run():
                         if new_asins:
                             celery.send_task('keepa_deals.sp_api_tasks.check_restriction_for_asins', args=[new_asins])
 
-                        # Watermark Ratchet
-                        # We are processing Oldest -> Newest.
-                        # The last deal in this chunk is the "newest" we have fully processed so far.
-                        last_deal_in_chunk = chunk_deals[-1] # This is safe because chunk_deals corresponds to loop
-                        new_wm_iso = _convert_keepa_time_to_iso(last_deal_in_chunk['lastUpdate'])
-                        save_watermark(new_wm_iso)
-                        logger.info(f"Watermark ratcheted to {new_wm_iso}")
+                    conn.commit()
 
-                except Exception as e:
-                    logger.error(f"Chunk processing/upsert failed: {e}", exc_info=True)
-            else:
-                 # Even if no rows upserted (all rejected), we MUST advance watermark past these deals
-                 # to avoid infinite loops on rejected deals.
-                 # "Scan vs Save: The watermark must track the timestamp of deals scanned, not just deals saved."
-                 last_deal_in_chunk = chunk_deals[-1]
-                 new_wm_iso = _convert_keepa_time_to_iso(last_deal_in_chunk['lastUpdate'])
-                 save_watermark(new_wm_iso)
-                 logger.info(f"Watermark advanced (no deals saved) to {new_wm_iso}")
+                    # 3. Watermark Ratchet
+                    # We are processing Oldest -> Newest.
+                    last_deal_in_chunk = chunk_deals[-1]
+                    new_wm_iso = _convert_keepa_time_to_iso(last_deal_in_chunk['lastUpdate'])
+                    save_watermark(new_wm_iso)
+                    logger.info(f"Watermark ratcheted to {new_wm_iso}")
+
+            except Exception as e:
+                logger.error(f"Chunk processing/upsert failed: {e}", exc_info=True)
 
 
-        logger.info(f"Task Complete: Processed {len(all_new_deals)} scanned, upserted {total_upserted}.")
+        logger.info(f"Task Complete: Processed {len(all_new_deals)} scanned, upserted {total_upserted}, deleted {total_deleted_zombies} zombies.")
 
     finally:
         lock.release()
