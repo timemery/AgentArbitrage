@@ -118,9 +118,38 @@ def create_deals_table_if_not_exists():
 
             # If the table exists, just perform safe checks.
             logger.info(f"Table '{TABLE_NAME}' exists. Verifying schema and indexes.")
-            existing_columns = get_table_columns(cursor, TABLE_NAME)
+            existing_columns = set(get_table_columns(cursor, TABLE_NAME))
 
-            # Add missing columns (idempotent)
+            # --- Dynamic Schema Migration (Added 2026-02-10) ---
+            # Iterate through all headers defined in headers.json and ensure they exist in the DB.
+            with open(HEADERS_PATH) as f:
+                headers = json.load(f)
+
+            explicit_real_types = ["Price", "Cost", "Fee", "Profit", "Margin", "List at"]
+
+            for header in headers:
+                sanitized_header = sanitize_col_name(header)
+                if sanitized_header not in existing_columns:
+                    # Determine type
+                    col_type = 'TEXT' # Default
+                    if any(keyword in header for keyword in explicit_real_types):
+                        col_type = 'REAL'
+                    elif "Rank" in header or "Count" in header or "Drops" in header:
+                        col_type = 'INTEGER'
+
+                    logger.info(f"Schema Migration: Adding missing column '{sanitized_header}' ({col_type}) to '{TABLE_NAME}'.")
+                    try:
+                        cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN "{sanitized_header}" {col_type}')
+                    except sqlite3.OperationalError as e:
+                        if "duplicate column" in str(e).lower():
+                            logger.info(f"Column '{sanitized_header}' already exists (race condition handled).")
+                        else:
+                            raise e
+
+            # Add mandatory system columns if missing
+            # Refresh existing_columns as we might have added some via headers.json that conflict
+            existing_columns = set(get_table_columns(cursor, TABLE_NAME))
+
             if 'last_seen_utc' not in existing_columns:
                 logger.info("Adding 'last_seen_utc' column.")
                 cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN last_seen_utc TIMESTAMP')
@@ -128,19 +157,6 @@ def create_deals_table_if_not_exists():
             if 'source' not in existing_columns:
                 logger.info("Adding 'source' column.")
                 cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN source TEXT')
-
-            # Add new dashboard columns if missing (Added 2025-06-25)
-            if 'Drops' not in existing_columns:
-                logger.info("Adding 'Drops' column.")
-                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN Drops INTEGER')
-
-            if 'Offers' not in existing_columns:
-                logger.info("Adding 'Offers' column.")
-                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN Offers TEXT')
-
-            if 'AMZ' not in existing_columns:
-                logger.info("Adding 'AMZ' column.")
-                cursor.execute(f'ALTER TABLE {TABLE_NAME} ADD COLUMN AMZ TEXT')
 
             if not has_unique_index_on_asin(cursor, TABLE_NAME):
                 logger.warning("No unique index found on ASIN column. This should have been created with the table.")
