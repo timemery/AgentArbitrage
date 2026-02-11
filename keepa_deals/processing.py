@@ -196,6 +196,8 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         yr_avg_info = get_1yr_avg_sale_price(product_data)
         if yr_avg_info:
             row_data.update(yr_avg_info)
+        else:
+            logger.info(f"ASIN {asin}: get_1yr_avg_sale_price returned None.")
 
         # Exclusion: Do not collect deals with missing 1yr. Avg.
         # This implies < 1 sale event in the last year or missing history.

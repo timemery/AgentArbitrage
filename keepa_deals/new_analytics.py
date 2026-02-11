@@ -72,24 +72,33 @@ def get_1yr_avg_sale_price(product, logger=None):
     if mean_price_cents == -1:
         logger.info(f"ASIN {asin}: Insufficient inferred sales for {COLUMN_NAME}. Attempting fallback to Keepa Stats.")
         stats = product.get('stats', {})
+        if not stats:
+            logger.warning(f"ASIN {asin}: 'stats' object missing from product data.")
+            return None
+
         candidates = []
 
         # Used (Index 2)
         avg365 = stats.get('avg365', [])
-        if len(avg365) > 2 and avg365[2] > 0: candidates.append(avg365[2])
+        if avg365 and len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0:
+            candidates.append(avg365[2])
 
         # Used - Good (Index 21)
-        if len(avg365) > 21 and avg365[21] > 0: candidates.append(avg365[21])
+        if avg365 and len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0:
+            candidates.append(avg365[21])
 
         # Used - Like New (Index 19)
-        if len(avg365) > 19 and avg365[19] > 0: candidates.append(avg365[19])
+        if avg365 and len(avg365) > 19 and avg365[19] is not None and avg365[19] > 0:
+            candidates.append(avg365[19])
 
         if candidates:
             # Use the Max (Optimistic)
             mean_price_cents = max(candidates)
             logger.info(f"ASIN {asin}: Fallback succeeded for {COLUMN_NAME} using Keepa Stats: ${mean_price_cents/100:.2f}")
+            # Ensure we return the source flag for trust rating
+            return {COLUMN_NAME: mean_price_cents / 100.0, 'price_source': 'Keepa Stats Fallback'}
         else:
-            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history in Stats.")
+            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history in Stats (avg365 len: {len(avg365) if avg365 else 0}).")
             return None
 
     # Final check to ensure we don't return negative
