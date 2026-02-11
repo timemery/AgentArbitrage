@@ -102,8 +102,10 @@ def check_peek_viability(stats):
     # Rejecting here saves 20 tokens per dead deal.
     # Note: 'salesRankDrops365' might be missing in some lightweight objects, but if present, trust it.
     drops365 = stats.get('salesRankDrops365', -1)
-    if drops365 == 0:
-        # Strict rejection for proven zero-velocity items
+
+    # Threshold: 4 drops/year (~1 per quarter).
+    # Anything less is too slow/risky to waste 20 tokens on heavy analysis.
+    if drops365 != -1 and drops365 < 4:
         return False
 
     # Also check 90 days for fresher deadness, though seasonal items might have 0 drops in 90d.
