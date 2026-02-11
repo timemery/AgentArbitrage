@@ -41,9 +41,12 @@ def get_1yr_avg_sale_price(product, logger=None):
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
 
+    # Basic data check
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
-        logger.warning(f"ASIN {asin}: Incomplete data for {COLUMN_NAME}.")
-        return None
+        # NOTE: Even if CSV is missing/bad, we might still have Stats for fallback.
+        # But existing logic enforced this. Let's relax it slightly if we want pure fallback.
+        # However, `infer_sale_events` needs CSV.
+        pass
 
     sale_events, _ = infer_sale_events(product)
 
@@ -60,10 +63,12 @@ def get_1yr_avg_sale_price(product, logger=None):
             if len(df_last_year) >= 1:
                 mean_price_cents = df_last_year['inferred_sale_price_cents'].mean()
                 logger.info(f"ASIN {asin}: Calculated {COLUMN_NAME} from {len(df_last_year)} inferred sales: ${mean_price_cents/100:.2f}")
+            else:
+                logger.info(f"ASIN {asin}: Found {len(sale_events)} total sales, but 0 in last 365 days.")
         except Exception as e:
             logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME} from sales: {e}", exc_info=True)
 
-    # Fallback if inferred sales failed
+    # Fallback if inferred sales failed (or no sales in last year)
     if mean_price_cents == -1:
         logger.info(f"ASIN {asin}: Insufficient inferred sales for {COLUMN_NAME}. Attempting fallback to Keepa Stats.")
         stats = product.get('stats', {})
@@ -80,15 +85,16 @@ def get_1yr_avg_sale_price(product, logger=None):
         if len(avg365) > 19 and avg365[19] > 0: candidates.append(avg365[19])
 
         if candidates:
-            # Use the Max (Optimistic) or Median?
-            # Max ensures we don't accidentally lowball the average if "Used" includes junk.
-            # But Avg is average.
-            # Let's use max to be safe/optimistic for now, consistent with other fallbacks.
+            # Use the Max (Optimistic)
             mean_price_cents = max(candidates)
             logger.info(f"ASIN {asin}: Fallback succeeded for {COLUMN_NAME} using Keepa Stats: ${mean_price_cents/100:.2f}")
         else:
-            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history.")
+            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history in Stats.")
             return None
+
+    # Final check to ensure we don't return negative
+    if mean_price_cents <= 0:
+        return None
 
     return {COLUMN_NAME: mean_price_cents / 100.0}
 
