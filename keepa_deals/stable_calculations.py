@@ -413,10 +413,10 @@ def analyze_sales_performance(product, sale_events):
         if candidates:
             fallback_price = max(candidates)
             logger.info(f"ASIN {asin}: Fallback succeeded using Keepa Stats (Max Used Avg): ${fallback_price/100:.2f}")
-            return {'peak_price_mode_cents': fallback_price, 'peak_season': '-', 'trough_season': '-'}
+            return {'peak_price_mode_cents': fallback_price, 'peak_season': '-', 'trough_season': '-', 'price_source': 'Keepa Stats Fallback'}
         else:
             logger.warning(f"ASIN {asin}: Fallback failed. No valid Used price history in stats.")
-            return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
+            return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-', 'price_source': 'None'}
 
     df = pd.DataFrame(sale_events)
     df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
@@ -545,6 +545,7 @@ def analyze_sales_performance(product, sale_events):
         'peak_season': peak_season_str,
         'trough_season': trough_season_str,
         'expected_trough_price_cents': expected_trough_price_cents,
+        'price_source': 'Inferred Sales',
     }
 
 # --- Memoization cache for analysis results ---

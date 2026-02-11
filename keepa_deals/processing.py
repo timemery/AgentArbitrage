@@ -214,6 +214,19 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         row_data.update(recent_inferred_sale_price(product_data))
         row_data.update(analyze_sales_rank_trends(product_data))
 
+        # Trust Adjustment for Fallback Pricing
+        # If we used the "Keepa Stats Fallback" (Avg365) instead of real Inferred Sales,
+        # we must lower the confidence score to warn the user.
+        price_source = row_data.get('price_source')
+        if price_source == 'Keepa Stats Fallback':
+            # Append a warning symbol to List at
+            if row_data.get('List at'):
+                row_data['List at'] = f"{row_data['List at']} (Est.)"
+
+            # Cap Profit Confidence at 50% or mark as Low
+            # (If profit_confidence calc exists, we override it)
+            row_data['Profit Confidence'] = "Low (Est.)"
+
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)
 

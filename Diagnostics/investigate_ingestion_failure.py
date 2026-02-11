@@ -109,8 +109,7 @@ def detailed_diagnosis(asin):
 def main():
     # Pick an ASIN from the logs or a new one
     test_asins = [
-        "1455616133", # The one that failed on 1yr Avg
-        "1632907690", # The one that failed on Sales Inference
+        "1454919108", # New candidate from user
     ]
 
     for asin in test_asins:
