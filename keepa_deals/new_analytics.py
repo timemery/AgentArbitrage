@@ -41,6 +41,9 @@ def get_1yr_avg_sale_price(product, logger=None):
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
 
+    # DEBUG LOG
+    logger.info(f"DEBUG ENTRY: get_1yr_avg_sale_price called for {asin}")
+
     # Basic data check
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
         # NOTE: Even if CSV is missing/bad, we might still have Stats for fallback.
