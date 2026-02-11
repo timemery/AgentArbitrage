@@ -250,14 +250,36 @@ def infer_sale_events(product):
             rank_changes_in_window = df_rank[(df_rank['timestamp'] >= start_time) & (df_rank['timestamp'] <= end_time)]
             has_rank_drop = not rank_changes_in_window.empty and (rank_changes_in_window['rank_diff'] < 0).any()
 
-            # Near Miss Logging
-            near_miss_window_end = end_time + timedelta(hours=72)
-            near_miss_rank_changes = df_rank[(df_rank['timestamp'] > end_time) & (df_rank['timestamp'] <= near_miss_window_end)]
-            has_near_miss_rank_drop = not near_miss_rank_changes.empty and (near_miss_rank_changes['rank_diff'] < 0).any()
-            if not has_rank_drop and has_near_miss_rank_drop:
-                first_miss_time = near_miss_rank_changes[near_miss_rank_changes['rank_diff'] < 0].iloc[0]['timestamp']
-                hours_missed_by = (first_miss_time - end_time).total_seconds() / 3600
-                logger.info(f"ASIN {asin}: Near Miss - A rank drop occurred {hours_missed_by:.2f} hours after the 168-hour window for an offer drop at {start_time}.")
+            # Sparse Data Fallback Logic
+            if not has_rank_drop:
+                # Find the last rank recorded *before* the offer drop
+                rank_before_slice = df_rank[df_rank['timestamp'] <= start_time]
+
+                # Find the first rank recorded *after* the offer drop (looking up to 30 days ahead)
+                lookahead_limit = start_time + timedelta(days=30)
+                rank_after_slice = df_rank[(df_rank['timestamp'] > start_time) & (df_rank['timestamp'] <= lookahead_limit)]
+
+                if not rank_before_slice.empty and not rank_after_slice.empty:
+                    last_rank_val = rank_before_slice.iloc[-1]['rank']
+                    next_rank_val = rank_after_slice.iloc[0]['rank']
+                    next_rank_ts = rank_after_slice.iloc[0]['timestamp']
+
+                    # If the next rank is lower (better) than the last rank before the drop,
+                    # implies a sale happened sometime in the gap.
+                    if next_rank_val < last_rank_val:
+                        gap_days = (next_rank_ts - start_time).total_seconds() / 86400
+                        has_rank_drop = True
+                        logger.info(f"ASIN {asin}: Sparse Data Fallback - Inferred sale from rank drop {last_rank_val}->{next_rank_val} over {gap_days:.1f} days (Offer Drop at {start_time}).")
+
+            # Near Miss Logging (Only if still False)
+            if not has_rank_drop:
+                near_miss_window_end = end_time + timedelta(hours=72)
+                near_miss_rank_changes = df_rank[(df_rank['timestamp'] > end_time) & (df_rank['timestamp'] <= near_miss_window_end)]
+                has_near_miss_rank_drop = not near_miss_rank_changes.empty and (near_miss_rank_changes['rank_diff'] < 0).any()
+                if has_near_miss_rank_drop:
+                    first_miss_time = near_miss_rank_changes[near_miss_rank_changes['rank_diff'] < 0].iloc[0]['timestamp']
+                    hours_missed_by = (first_miss_time - end_time).total_seconds() / 3600
+                    logger.info(f"ASIN {asin}: Near Miss - A rank drop occurred {hours_missed_by:.2f} hours after the window for an offer drop at {start_time}.")
 
             if has_rank_drop:
                 price_df_to_use = df_new_price if drop['offer_type'] == 'New' and df_new_price is not None else df_used_price
@@ -366,9 +388,35 @@ def analyze_sales_performance(product, sale_events):
     xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
 
     MIN_SALES_FOR_ANALYSIS = 1
+
+    # --- Fallback Logic for Insufficient Data ---
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
-        logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for performance analysis.")
-        return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
+        logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for performance analysis. Attempting fallback to Keepa Stats.")
+
+        stats = product.get('stats', {})
+        fallback_price = -1
+
+        # Try to find a valid price from stats (Optimistic: Max of avg90, avg365)
+        candidates = []
+
+        # Used (Index 2)
+        avg90 = stats.get('avg90', [])
+        if len(avg90) > 2 and avg90[2] > 0: candidates.append(avg90[2])
+
+        avg365 = stats.get('avg365', [])
+        if len(avg365) > 2 and avg365[2] > 0: candidates.append(avg365[2])
+
+        # Used - Good (Index 21) - often cleaner data
+        if len(avg90) > 21 and avg90[21] > 0: candidates.append(avg90[21])
+        if len(avg365) > 21 and avg365[21] > 0: candidates.append(avg365[21])
+
+        if candidates:
+            fallback_price = max(candidates)
+            logger.info(f"ASIN {asin}: Fallback succeeded using Keepa Stats (Max Used Avg): ${fallback_price/100:.2f}")
+            return {'peak_price_mode_cents': fallback_price, 'peak_season': '-', 'trough_season': '-'}
+        else:
+            logger.warning(f"ASIN {asin}: Fallback failed. No valid Used price history in stats.")
+            return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
 
     df = pd.DataFrame(sale_events)
     df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])

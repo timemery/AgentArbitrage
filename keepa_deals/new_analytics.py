@@ -46,25 +46,51 @@ def get_1yr_avg_sale_price(product, logger=None):
         return None
 
     sale_events, _ = infer_sale_events(product)
-    if not sale_events:
-        return None
 
-    try:
-        df = pd.DataFrame(sale_events)
-        df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
-        one_year_ago = datetime.now() - timedelta(days=365)
-        df_last_year = df[df['event_timestamp'] >= one_year_ago]
+    mean_price_cents = -1
 
-        if len(df_last_year) < 1:
-            logger.info(f"ASIN {asin}: Insufficient sale events ({len(df_last_year)}) for a meaningful average.")
+    # Try using inferred sales first
+    if sale_events:
+        try:
+            df = pd.DataFrame(sale_events)
+            df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
+            one_year_ago = datetime.now() - timedelta(days=365)
+            df_last_year = df[df['event_timestamp'] >= one_year_ago]
+
+            if len(df_last_year) >= 1:
+                mean_price_cents = df_last_year['inferred_sale_price_cents'].mean()
+                logger.info(f"ASIN {asin}: Calculated {COLUMN_NAME} from {len(df_last_year)} inferred sales: ${mean_price_cents/100:.2f}")
+        except Exception as e:
+            logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME} from sales: {e}", exc_info=True)
+
+    # Fallback if inferred sales failed
+    if mean_price_cents == -1:
+        logger.info(f"ASIN {asin}: Insufficient inferred sales for {COLUMN_NAME}. Attempting fallback to Keepa Stats.")
+        stats = product.get('stats', {})
+        candidates = []
+
+        # Used (Index 2)
+        avg365 = stats.get('avg365', [])
+        if len(avg365) > 2 and avg365[2] > 0: candidates.append(avg365[2])
+
+        # Used - Good (Index 21)
+        if len(avg365) > 21 and avg365[21] > 0: candidates.append(avg365[21])
+
+        # Used - Like New (Index 19)
+        if len(avg365) > 19 and avg365[19] > 0: candidates.append(avg365[19])
+
+        if candidates:
+            # Use the Max (Optimistic) or Median?
+            # Max ensures we don't accidentally lowball the average if "Used" includes junk.
+            # But Avg is average.
+            # Let's use max to be safe/optimistic for now, consistent with other fallbacks.
+            mean_price_cents = max(candidates)
+            logger.info(f"ASIN {asin}: Fallback succeeded for {COLUMN_NAME} using Keepa Stats: ${mean_price_cents/100:.2f}")
+        else:
+            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history.")
             return None
 
-        mean_price_cents = df_last_year['inferred_sale_price_cents'].mean()
-        return {COLUMN_NAME: mean_price_cents / 100.0}
-
-    except Exception as e:
-        logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME}: {e}", exc_info=True)
-        return None
+    return {COLUMN_NAME: mean_price_cents / 100.0}
 
 def get_percent_discount(avg_price, now_price, logger=None):
     """
