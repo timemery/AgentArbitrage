@@ -111,7 +111,7 @@ def deal_found(deal_object, logger_param=None): # Renamed logger to logger_param
 # Deal Found ends
 # Last update starts
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
-def last_update(deal_object, logger_param, product_data=None): # Renamed logger to logger_param
+def last_update(deal_object, logger_param=None, product_data=None): # Renamed logger to logger_param
     current_logger = logger_param if logger_param else logger # Use passed logger or module logger
 
     asin = deal_object.get('asin', product_data.get('asin', 'Unknown ASIN') if product_data else 'Unknown ASIN')
