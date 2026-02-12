@@ -30,6 +30,9 @@ class TokenManager:
         # We start with 280 but will adjust based on refill rate.
         self.BURST_THRESHOLD = 280
 
+        # Throttling for sync calls (to prevent drain)
+        self.last_sync_request_timestamp = 0
+
         # State variables
         self.tokens = 100 # Local cache/fallback
         self.max_tokens = 300
@@ -61,7 +64,7 @@ class TokenManager:
             # 80 tokens takes ~16 mins to refill at 5/min.
             # This allows for ~4 heavy updates (20 tokens each) or ~40 light checks.
             self.BURST_THRESHOLD = 80
-            logger.info(f"Low Refill Rate ({self.REFILL_RATE_PER_MINUTE}/min) detected. Adjusted Burst Threshold to {self.BURST_THRESHOLD} to improve responsiveness.")
+            # logger.info(f"Low Refill Rate ({self.REFILL_RATE_PER_MINUTE}/min) detected. Adjusted Burst Threshold to {self.BURST_THRESHOLD} to improve responsiveness.")
         else:
             self.BURST_THRESHOLD = 280
 
@@ -124,9 +127,10 @@ class TokenManager:
         while True:
             # 0. Check Recharge Mode (Redis)
             # If we are in "Recharge Mode" (low-tier strategy), we must wait until the bucket is full.
-            # This is critical for preventing "Livelock" on 5/min plans.
-            # This check happens BEFORE rate limit sleep to avoid unnecessary sleeps if we are blocked anyway.
-            if self.redis_client and self.REFILL_RATE_PER_MINUTE < 10:
+            # CRITICAL FIX: We MUST check this regardless of the current REFILL_RATE.
+            # If Recharge Mode was activated (because rate was low), it must persist until satisfied.
+            # This prevents "flapping" where a transient rate spike unlocks the system prematurely.
+            if self.redis_client:
                 is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE)
                 if is_recharging == "1":
                     # --- SAFETY: Check for Recharge Timeout (Stuck Logic) ---
@@ -159,11 +163,15 @@ class TokenManager:
                             self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
                             self.redis_client.delete("keepa_recharge_start_time")
                         else:
-                            # logger.info(f"Recharge Mode Active (Tokens: {self.tokens:.2f}/{self.BURST_THRESHOLD}, Elapsed: {elapsed/60:.1f}m). Waiting for refill...")
-                            # Don't pass 60 here. Trust the math.
+                            # Trust the math.
                             tokens_needed = self.BURST_THRESHOLD - self.tokens
                             if tokens_needed < 0: tokens_needed = 0
-                            wait_time = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
+
+                            # Safety check: avoid division by zero or negative rate
+                            rate_for_calc = self.REFILL_RATE_PER_MINUTE
+                            if rate_for_calc <= 0: rate_for_calc = 1.0
+
+                            wait_time = math.ceil((tokens_needed / rate_for_calc) * 60)
                             if wait_time < 5: wait_time = 5 # Minimum sleep
                             self._wait_for_tokens(wait_time, self.BURST_THRESHOLD)
                             continue
@@ -192,6 +200,7 @@ class TokenManager:
                     old_balance = self.tokens + cost_int
 
                     # Refill-to-Full Logic: Enter Recharge Mode if we drop too low
+                    # Only enter if rate is low. But once entered, the logic above (block 0) keeps us there.
                     if self.REFILL_RATE_PER_MINUTE < 10 and old_balance < self.MIN_TOKEN_THRESHOLD:
                         logger.warning(f"Tokens critically low ({old_balance:.2f} < {self.MIN_TOKEN_THRESHOLD}). Entering Recharge Mode until {self.BURST_THRESHOLD}.")
                         self.redis_client.set(self.REDIS_KEY_RECHARGE_MODE, "1")
@@ -331,13 +340,24 @@ class TokenManager:
         self.sync_tokens()
         logger.info(f"Tokens after wait: {self.tokens:.2f}")
 
-    def sync_tokens(self):
+    def sync_tokens(self, force=False):
         """
         Authoritatively fetches the current token status from the Keepa API
         and updates the internal state and Redis.
+        Includes throttling to prevent draining tokens via frequent status checks.
         """
+        # Throttling Logic
+        now = time.time()
+        if not force and (now - self.last_sync_request_timestamp) < 60:
+             # logger.debug("Skipping sync_tokens (throttled).")
+             return
+
         from .keepa_api import get_token_status
         status_data = get_token_status(self.api_key)
+
+        # Update timestamp regardless of success to prevent spamming on failure
+        self.last_sync_request_timestamp = time.time()
+
         if status_data and 'tokensLeft' in status_data:
             refill_rate = status_data.get('refillRate')
             self._sync_tokens_from_response(status_data['tokensLeft'], refill_rate=refill_rate)
