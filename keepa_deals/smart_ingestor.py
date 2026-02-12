@@ -62,8 +62,10 @@ def save_safe_watermark(iso_timestamp):
     try:
         wm_dt = datetime.fromisoformat(iso_timestamp).astimezone(timezone.utc)
         now_utc = datetime.now(timezone.utc)
-        if wm_dt > now_utc:
-            logger.warning(f"Clamping Future Watermark: {iso_timestamp} -> {now_utc.isoformat()}")
+        # Allow up to 24 hours of future drift (clock skew / timezone issues)
+        # Only clamp if it's egregiously in the future (e.g. > 24 hours)
+        if wm_dt > (now_utc + timedelta(hours=24)):
+            logger.warning(f"Clamping Extreme Future Watermark: {iso_timestamp} -> {now_utc.isoformat()}")
             iso_timestamp = now_utc.isoformat()
     except Exception as e:
         logger.error(f"Error checking watermark safety: {e}")
@@ -225,8 +227,9 @@ def run():
             try:
                 wm_dt = datetime.fromisoformat(watermark_iso).astimezone(timezone.utc)
                 now_utc = datetime.now(timezone.utc)
-                if wm_dt > now_utc:
-                    logger.warning(f"CRITICAL: Future Watermark Detected ({watermark_iso} > {now_utc.isoformat()}). Resetting to 24h ago to restore functionality.")
+                # Apply same tolerance as save_safe_watermark
+                if wm_dt > (now_utc + timedelta(hours=24)):
+                    logger.warning(f"CRITICAL: Extreme Future Watermark Detected ({watermark_iso} > {now_utc.isoformat()}). Resetting to 24h ago to restore functionality.")
                     watermark_iso = (now_utc - timedelta(hours=24)).isoformat()
                     save_watermark(watermark_iso)
             except Exception as e:
