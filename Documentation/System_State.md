@@ -50,7 +50,6 @@
 ## 5. Strategy Database
 - **Format:** Structured JSON (`id`, `category`, `trigger`, `advice`, `confidence`).
 - **Legacy Support:** System supports "Hybrid" mode (Legacy Strings + New Objects) for backward compatibility.
-- **Migration:** `migrate_strategies.py` converts legacy text to structured JSON.
 
 ## 6. Known Constraints & Hard Rules
 - **Formatting:** `format_currency` handles string inputs defensively.
