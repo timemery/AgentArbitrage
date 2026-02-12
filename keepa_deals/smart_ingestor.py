@@ -36,7 +36,7 @@ SMART_INGESTOR_VERSION = "3.0-Consolidated"
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-MAX_ASINS_PER_BATCH = 2
+MAX_ASINS_PER_BATCH = 5
 LOCK_KEY = "smart_ingestor_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 MAX_PAGES_PER_RUN = 50 # Safety limit
@@ -208,7 +208,7 @@ def run():
         # Dynamic Deal Limit
         current_max_deals = MAX_NEW_DEALS_PER_RUN
         if token_manager.REFILL_RATE_PER_MINUTE < 20:
-            current_max_deals = 20
+            current_max_deals = 50
             logger.info(f"Low Refill Rate. Reducing NEW_DEALS limit to {current_max_deals}.")
 
         watermark_iso = load_watermark()
@@ -342,15 +342,8 @@ def run():
         # Processing Loop
         # Iterate chunks
         current_batch_size = MAX_ASINS_PER_BATCH
-        if token_manager.REFILL_RATE_PER_MINUTE < 20:
-            current_batch_size = 1 # Back to 1 for starvation protection if needed, or 4 like backfiller?
-            # User doc said "Backfiller... increases this to 4 when refill rate is < 20... to reduce loop overhead".
-            # Simple Task said "Reduce batch to 1".
-            # Let's use 2 (MAX_ASINS_PER_BATCH default) or 1 if very low.
-            # Smart Ingestor uses Peek (2 tokens).
-            # If rate is 5/min. 2 tokens is fine.
-            # Let's stick to simple logic: 2 default, 1 if < 20.
-            current_batch_size = 1
+        # We no longer reduce batch size to 1 for low refill rates.
+        # We rely on the "Deficit Dip" strategy (Batch Size 5) to maximize throughput.
 
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
