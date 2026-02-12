@@ -71,8 +71,8 @@ class TestDeficitStrategy(unittest.TestCase):
         # Test Low Rate -> High Burst (New Logic)
         tm.REFILL_RATE_PER_MINUTE = 5
         tm._adjust_burst_threshold()
-        # Proposed logic: if rate < 10, burst = 150 (was 80)
-        self.assertEqual(tm.BURST_THRESHOLD, 150)
+        # Proposed logic: if rate < 10, burst = 40 (was 150/80)
+        self.assertEqual(tm.BURST_THRESHOLD, 40)
         print("PASS: Low Rate Burst Adjustment.")
 
         # Test High Rate -> High Burst

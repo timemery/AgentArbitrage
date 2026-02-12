@@ -63,7 +63,7 @@ class TokenManager:
         if self.REFILL_RATE_PER_MINUTE < 10:
             # 80 tokens takes ~16 mins to refill at 5/min.
             # This allows for ~4 heavy updates (20 tokens each) or ~40 light checks.
-            self.BURST_THRESHOLD = 150
+            self.BURST_THRESHOLD = 40
             # logger.info(f"Low Refill Rate ({self.REFILL_RATE_PER_MINUTE}/min) detected. Adjusted Burst Threshold to {self.BURST_THRESHOLD} to improve responsiveness.")
         else:
             self.BURST_THRESHOLD = 280

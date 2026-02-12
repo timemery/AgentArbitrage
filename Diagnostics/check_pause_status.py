@@ -45,7 +45,7 @@ def check_pause_status():
         try:
             rate_val = float(rate) if rate else 5.0
             if rate_val < 10:
-                burst_threshold = 80
+                burst_threshold = 40
         except ValueError:
             rate_val = 5.0
 
