@@ -141,7 +141,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         -   `⇨` (Flat) otherwise.
     -   **Dashboard**: Merged into "Changed" column (Arrow + Time).
 
--   **`Profit Confidence` (Profit Trust)**:
+-   **`Deal Trust` (Deal Trust)**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: `(Count of Inferred Sales / Count of Offer Drops) * 100`.
     -   **Fallback Status**: If the deal uses the `avg365` fallback price (because inferred sales were insufficient), this field is set to **"Low (Est.)"** to warn the user that the price is an estimate.

@@ -1157,7 +1157,7 @@ def api_deals():
         "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
         "margin_gte": request.args.get('margin_gte', type=int),
         "keyword": request.args.get('keyword', type=str),
-        "profit_confidence_gte": request.args.get('profit_confidence_gte', type=int),
+        "deal_trust_gte": request.args.get('deal_trust_gte', type=int),
         "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
         "profit_gte": request.args.get('profit_gte', type=float),
         "percent_down_gte": request.args.get('percent_down_gte', type=int),
@@ -1181,9 +1181,9 @@ def api_deals():
         filter_params.extend([keyword_like] * len(keyword_clauses))
 
     # New Filters
-    if filters.get("profit_confidence_gte") is not None and filters["profit_confidence_gte"] > 0:
-        where_clauses.append("\"Profit_Confidence\" >= ?")
-        filter_params.append(filters["profit_confidence_gte"])
+    if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
+        where_clauses.append("\"Deal_Trust\" >= ?")
+        filter_params.append(filters["deal_trust_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
         # User input is 0-10, DB is 0-1 (Wilson Score).
@@ -1576,7 +1576,7 @@ def deal_count():
                 "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
                 "margin_gte": request.args.get('margin_gte', type=int),
                 "keyword": request.args.get('keyword', type=str),
-                "profit_confidence_gte": request.args.get('profit_confidence_gte', type=int),
+                "deal_trust_gte": request.args.get('deal_trust_gte', type=int),
                 "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
                 "profit_gte": request.args.get('profit_gte', type=float),
                 "percent_down_gte": request.args.get('percent_down_gte', type=int),
@@ -1617,9 +1617,9 @@ def deal_count():
                 where_clauses.append(f"({ ' OR '.join(keyword_clauses) })")
                 filter_params.extend([keyword_like] * len(keyword_clauses))
 
-            if filters.get("profit_confidence_gte") is not None and filters["profit_confidence_gte"] > 0:
-                where_clauses.append("\"Profit_Confidence\" >= ?")
-                filter_params.append(filters["profit_confidence_gte"])
+            if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
+                where_clauses.append("\"Deal_Trust\" >= ?")
+                filter_params.append(filters["deal_trust_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
                 # User input is 0-10, DB is 0-1 (Wilson Score).
