@@ -57,6 +57,19 @@ def _convert_iso_to_keepa_time(iso_str):
     delta = dt_object - keepa_epoch
     return int(delta.total_seconds() / 60)
 
+def save_safe_watermark(iso_timestamp):
+    """Saves watermark with protection against future dates."""
+    try:
+        wm_dt = datetime.fromisoformat(iso_timestamp).astimezone(timezone.utc)
+        now_utc = datetime.now(timezone.utc)
+        if wm_dt > now_utc:
+            logger.warning(f"Clamping Future Watermark: {iso_timestamp} -> {now_utc.isoformat()}")
+            iso_timestamp = now_utc.isoformat()
+    except Exception as e:
+        logger.error(f"Error checking watermark safety: {e}")
+
+    save_watermark(iso_timestamp)
+
 def check_peek_viability(stats):
     """
     Heuristic check to see if a deal is worth a heavy fetch (20 tokens).
@@ -207,6 +220,17 @@ def run():
             watermark_iso = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
             logger.info(f"Watermark defaulted to {watermark_iso}")
             save_watermark(watermark_iso)
+        else:
+            # Sanity Check for Future Watermark (Self-Healing)
+            try:
+                wm_dt = datetime.fromisoformat(watermark_iso).astimezone(timezone.utc)
+                now_utc = datetime.now(timezone.utc)
+                if wm_dt > now_utc:
+                    logger.warning(f"CRITICAL: Future Watermark Detected ({watermark_iso} > {now_utc.isoformat()}). Resetting to 24h ago to restore functionality.")
+                    watermark_iso = (now_utc - timedelta(hours=24)).isoformat()
+                    save_watermark(watermark_iso)
+            except Exception as e:
+                logger.error(f"Error checking watermark date: {e}")
 
         watermark_keepa_time = _convert_iso_to_keepa_time(watermark_iso)
         logger.info(f"Loaded watermark: {watermark_iso} (Keepa time: {watermark_keepa_time})")
@@ -426,7 +450,7 @@ def run():
                         # The last deal in this chunk is the "newest" we have fully processed so far.
                         last_deal_in_chunk = chunk_deals[-1] # This is safe because chunk_deals corresponds to loop
                         new_wm_iso = _convert_keepa_time_to_iso(last_deal_in_chunk['lastUpdate'])
-                        save_watermark(new_wm_iso)
+                        save_safe_watermark(new_wm_iso)
                         logger.info(f"Watermark ratcheted to {new_wm_iso}")
 
                 except Exception as e:
@@ -437,7 +461,7 @@ def run():
                  # "Scan vs Save: The watermark must track the timestamp of deals scanned, not just deals saved."
                  last_deal_in_chunk = chunk_deals[-1]
                  new_wm_iso = _convert_keepa_time_to_iso(last_deal_in_chunk['lastUpdate'])
-                 save_watermark(new_wm_iso)
+                 save_safe_watermark(new_wm_iso)
                  logger.info(f"Watermark advanced (no deals saved) to {new_wm_iso}")
 
 
