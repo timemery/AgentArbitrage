@@ -15,19 +15,25 @@
 
 ## 3. Data Pipeline & Logic
 ### Pricing & Inferred Sales
-- **"List at" Price:** Derived from Peak Season history or `monthlySold` fallback.
+- **"List at" Price:** Derived from Peak Season history (Mode).
+    - **Fallback:** If Inferred Sales < 1, falls back to `Used - 365d Avg` (Silver Standard).
+    - **Validation:** **ALL** prices (including fallbacks) must pass the **Amazon Ceiling Check** (90% of lowest New price) and **XAI Reasonableness Check** to be accepted.
 - **"Expected Trough" Price:** Median price of the identified trough month.
-- **Safety Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d, 365d).
-- **Validation:** Prices checked by xAI (`ava_advisor.py`) for reasonableness (Page Count, Binding, etc.).
-- **Sales Inference:** Search window is **240 hours (10 days)** to capture "Near Miss" sales events.
+- **Sales Inference:** Search window is **240 hours (10 days)**.
+    - **Sparse Data:** Logic includes a **30-day lookahead** for rank drops to infer sales even when data points are sparse (e.g., slow movers).
 - **Extended Metrics:** 180-day and 365-day trend analysis for Offer Counts and Sales Rank drops.
 
-### Backfill & Maintenance
-- **Backfiller:** Runs continuous delta-sync. Uses "Mark and Sweep" to update `last_seen_utc`.
-- **Janitor:** Deletes deals older than **72 hours** (`grace_period_hours`).
-- **Configuration:** The "Artificial Backfill Limiter" logic remains in `backfiller.py` but is inactive by default.
-- **Tokens:** `TokenManager` uses a "Controlled Deficit" strategy (Threshold reduced to 20). Implements "Recharge Mode" (pauses if tokens < 20 & rate < 10/min until full) to prevent starvation.
-- **Concurrency:** Backfiller and Upserter run concurrently. Upserter frequency reduced to 15 mins. Both tasks dynamically reduce batch size to 1 if refill rate < 20/min.
+### Smart Ingestor & Maintenance
+- **Smart Ingestor (v3.0):** The unified entry point for all deal ingestion (`keepa_deals.smart_ingestor`). Replaces legacy `backfiller` and `simple_task`.
+    - **Logic:** Explicitly sorts Keepa responses by `lastUpdate` (descending) to ensure strictly ordered processing.
+    - **Watermark:** Implements a "Ratchet" mechanism (advances even if deals are rejected) and tolerates up to **24 hours** of future clock skew before clamping.
+    - **Zombie Defense:** Automatically detects deals with missing critical data (e.g., `List at`) and forces a heavy re-fetch to repair them.
+    - **Throughput:** Uses a fixed batch size of **5 ASINs** (increased from 2) to maximize "Deficit Utilization" (spending below zero).
+- **Janitor:** Deletes deals older than **72 hours**.
+- **Tokens:** `TokenManager` uses a "Burst Mode" strategy:
+    - **Threshold:** `MIN_TOKEN_THRESHOLD` reduced to **1** to aggressively use the negative deficit allowance.
+    - **Recharge Mode:** If tokens run out, system pauses until it reaches the **Burst Threshold** (40 for slow connections < 10/min, 280 for fast). This prevents "flapping" and starvation loops.
+    - **Shared State:** Uses Redis (`keepa_tokens_left`) to coordinate quotas across all workers.
 
 ## 4. Dashboard & UI
 - **Notifications:** "New Deals" count is filter-aware (matches active filters).
@@ -56,7 +62,7 @@
 - **Formatting:** `format_currency` handles string inputs defensively.
 - **Logs:** Do not read full `celery.log`.
 - **Context:** `Dev_Logs/Archive/*.md` files are historical archives. This file is the current reference.
-- **Backfill Chunk Size:** Default **20**, but dynamically reduces to **1** if Keepa refill rate is < 20/min to prevent starvation.
-- **Redis Lock:** `backfill_deals_lock` timeout reduced to **1 hour (3600s)** to prevent zombie locks.
+- **Batch Size:** Fixed at **5 ASINs** (Smart Ingestor) to maximize deficit spending efficiency.
+- **Redis Lock:** `smart_ingestor_lock` is the primary mutex. Timeout 30 minutes.
 - **Redis Cleanup:** `kill_everything_force.sh` performs a full wipe (FLUSHALL). `deploy_update.sh` adds surgical lock removal as a safety net.
 - **Janitor Grace Period:** **72 Hours**. Do not lower (causes data loss).

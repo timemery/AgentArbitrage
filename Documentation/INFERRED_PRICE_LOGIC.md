@@ -21,18 +21,19 @@ The process follows three main stages:
 
 A critical lesson learned in January 2026 is that fallback mechanisms—attempts to provide a price when the primary logic finds none—are extremely dangerous. They often result in the system confidently presenting garbage data, which then triggers downstream rejections (like the AI Reasonableness Check) or, worse, leads users to make bad buying decisions.
 
-**Specific Failure Case: The "High Velocity" Fallback**
-The system previously contained a fallback logic:
+**Specific Failure Case: The "High Velocity" Fallback (Deprecated)**
+The system previously contained an *unsafe* fallback logic:
 > *If no sales are inferred, but `monthlySold > 20`, use the `Used - 90 days avg` price.*
+This caused massive deal rejection rates because it often grabbed stale, high-priced Used listings for books that only sold as New. This logic has been **REMOVED**.
 
-This caused massive deal rejection rates (~95%) because:
-1.  `monthlySold` measures **Total** velocity (New + Used).
-2.  `avg90` (Used) measures the **Used** price history.
-3.  **Scenario:** A book sells briskly as New ($50) but has a stale, high-priced Used listing ($400) that never sells.
-4.  **Result:** The fallback sees high velocity (from New sales) and erroneously grabs the high Used price ($400).
-5.  **Impact:** The system sets "List at" to $400. The AI check correctly rejects "$400 for this book". The deal is discarded.
+**The New "Silver Standard" (Feb 2026)**
+To address data sparsity without sacrificing safety, we introduced a **Validated Fallback**:
+> *If Inferred Sales < 1, use `stats.avg365` (Used).*
+**Crucially**, this fallback price is NOT trusted blindly. It must pass the exact same validation pipeline as a real sale:
+1.  **Amazon Ceiling:** Must be < 90% of New Price.
+2.  **XAI Reasonableness:** Must be approved by the AI.
 
-**Principle:** If the system cannot find a price through **confirmed inferred sales** (Offer Drop + Rank Drop), it should return `None` (missing data) rather than guessing. Accuracy is prioritized over completeness.
+**Principle:** Fallbacks are permitted ONLY if they can survive the same rigorous validation as primary data. If they fail validation, the deal is rejected.
 
 ------
 
@@ -77,7 +78,7 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (High Velocity):** **REMOVED**. See Critical Warning above.
+    -   **Fallback 2 (Silver Standard):** If Inferred Sales are insufficient, uses **`stats.avg365`** (Used or Used-Good). This allows the system to price items that are valid inventory but have sparse rank drops.
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
@@ -127,4 +128,4 @@ A diagnostic script (`tests/trace_1yr_avg.py`) was created to trace the exact ex
 The calculation logic is **sound**. The data *does* exist, and the algorithm *can* find it. The reason these deals appeared broken on the dashboard was **Data Ingestion Stagnation** (deals getting stuck in a "lightweight update" loop that never re-fetched the full history needed for the calculation), not a flaw in the math itself.
 
 ### Resolution
-Instead of changing the math (e.g., adding unsafe fallbacks), we implemented a **"Self-Healing Backfill"** strategy. The system now detects these "Zombie" deals (missing data) and forces a full re-fetch to allow the proven logic to execute correctly.
+We implemented a **"Zombie Data Defense"** strategy in the `Smart Ingestor`. The system now detects these "Zombie" deals (missing data) and forces a full re-fetch (heavy update) to attempt to repair them. Additionally, the introduction of the **Validated Fallback** (avg365) ensures that items with sparse but valid history are no longer rejected, provided they pass the safety checks.
