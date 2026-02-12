@@ -1754,6 +1754,8 @@ body.home-background::before {
     border-radius: 12px; /* Increased radius per request */
     clear: both; /* Ensure it sits below the close button */
     margin-top: 35px; /* Add space for the close button above */
+    max-height: 250px; /* Constrain height to approx 3 paragraphs */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
 }
 .ava-advice-container h3 {
     margin-top: 0;
