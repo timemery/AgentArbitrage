@@ -19,17 +19,22 @@ The `TokenManager` dynamically updates its `REFILL_RATE_PER_MINUTE` from the `re
 *   **Benefit:** Users who upgrade their Keepa plan immediately see faster processing without code changes.
 
 ### The Algorithm (Distributed & Float-Safe)
-Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers compete for them, the system uses an **Optimistic Locking** strategy with Redis `incrbyfloat`:
+Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers compete for them, the system uses an **Optimistic Locking** strategy with Redis `incrbyfloat`.
 
+**Key Thresholds:**
+*   **`MIN_TOKEN_THRESHOLD`:** Reduced to **1**. This aggressive setting ensures that as long as we have a positive balance (even 1.0), we can initiate a request. Since API calls cost 10-20+ tokens, this effectively pushes the balance into the negative (Deficit), utilizing the full overdraft allowance.
+*   **`BURST_THRESHOLD` (Recharge Target):**
+    *   **High Refill Rates (>= 10/min):** Target **280** tokens.
+    *   **Low Refill Rates (< 10/min):** Target **40** tokens. Waiting for 280 tokens at 5/min takes ~50 minutes, creating a perception of "system stall". Lowering the target to 40 allows for frequent, smaller bursts of activity ("Empty the Bucket" strategy).
+
+**Logic Flow:**
 1.  **Atomic Reservation:** The worker unconditionally decrements the shared Redis counter (`incrbyfloat -cost`).
 2.  **Threshold Check:** It reads the new balance.
-3.  **Aggressive Phase:** If `new_balance > MIN_TOKEN_THRESHOLD` (20) OR `old_balance` was sufficient to start, it proceeds. The deficit is allowed.
-4.  **Recharge Mode (Low Rate Protection):** If the Keepa refill rate is < 10/min AND the balance drops below the threshold (20), the system enters **Recharge Mode**.
+3.  **Aggressive Phase:** If the starting balance was positive (>= 1), the operation proceeds, even if the result is negative.
+4.  **Recharge Mode (Low Rate Protection):** If the Keepa refill rate is < 10/min AND the balance drops below `MIN_TOKEN_THRESHOLD`, the system enters **Recharge Mode**.
     *   **Action:** All requests are blocked.
-    *   **Exit Condition:** Wait until tokens reach the `BURST_THRESHOLD` (280) to allow a sustained burst of activity. This prevents "starvation loops" where tasks fight over a trickle of tokens.
-5.  **Recovery Phase (Revert):** If the reservation drops the balance dangerously low (e.g., below threshold when it was already low) and Recharge Mode is not active:
-    *   The worker **Reverts** the transaction (`incrbyfloat +cost`).
-    *   It enters a **Sleep Loop**, waiting for the balance to recover to `Threshold + Cost + Buffer` (e.g., 25 + cost).
+    *   **Exit Condition:** Wait until tokens reach the dynamic `BURST_THRESHOLD` (40 or 280). This prevents "flapping" (oscillating between 0 and 5 tokens).
+5.  **Recovery Phase (Revert):** If the reservation fails the check and Recharge Mode is not triggered, the worker **Reverts** the transaction and waits.
 
 ### Resilience & Crash Recovery (Zombie Locks)
 To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
@@ -38,12 +43,8 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
 *   **Result:** This ensures that when the system restarts, the token state and locks are completely reset, preventing "Task already running" errors.
 
 ### Task-Specific Buffers
-*   **Backfiller:**
-    *   **Dynamic Batching:** Default batch size is 20. If refill rate < 20/min, batch size is automatically reduced to **1 ASIN** to allow incremental progress without hitting timeouts.
-*   **Upserter (`simple_task.py`):**
-    *   **Frequency:** Scheduled every **15 minutes** (down from 1 min) to allow tokens to accumulate for other tasks.
-    *   **Batch Size:** Reduced to **2 ASINs** (or **1** if refill rate < 20/min) to prevent monopolizing the token bucket.
-    *   **Blocking Wait:** Uses `token_manager.request_permission_for_call()` to block and wait for sufficient tokens instead of skipping the run.
+*   **Smart Ingestor:**
+    *   **Fixed Batching:** Uses a batch size of **5 ASINs**. This creates a "Deficit Dip" large enough to maximize throughput (spending ~100 tokens at once) without overwhelming the deficit limit.
 *   **API Wrapper (`keepa_api.py`):**
     *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.
     *   **Behavior:** If provided, the wrapper calls `request_permission_for_call` *before* the API request. This enforces a blocking wait if tokens are low, preventing `429 Too Many Requests` errors during high-frequency ingestion loops.

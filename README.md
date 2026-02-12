@@ -93,7 +93,8 @@ KEEPA_API_KEY="your_keepa_api_key"
 ## Architectural Notes
 
 - **Primary Application File:** The main Flask application logic is in `wsgi_handler.py`. The `wsgi.py` file is the entry point for the Apache/mod_wsgi server.
+- **Background Workers:** The system uses `keepa_deals.smart_ingestor` as the unified entry point for all deal ingestion, replacing legacy components like `backfiller.py`.
 - **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
-*Last Updated: February 2026 (v2.12)*
+*Last Updated: February 2026 (v3.0 - Smart Ingestor)*
