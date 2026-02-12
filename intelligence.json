@@ -7926,5 +7926,21 @@
     {
         "content": "Educational Foundation: Absorb tools/knowledge, practice small experiments, document failures/successes, and use presets/filters for efficient, data-backed decisions in sourcing/listing/ads.",
         "date_added": "2026-02-11"
+    },
+    {
+        "content": "*   **Distinguishing legitimacy through ASIN structures**: B0 ASINs serve as a marker for Amazon-generated identifiers on self-published or print-on-demand (POD) books lacking traditional ISBNs, enabling resellers to quickly assess authenticity without assuming illegitimacy, as these are a standard feature for non-traditional titles rather than a red flag for counterfeits.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "content": "*   **Risk assessment in niche product categories**: POD formats, common in low-content or indie guides like travel books, carry an elevated risk of quality issues due to their on-demand production nature, prompting a philosophy of cautious sourcing that weighs potential value against inherent variability in output.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "content": "*   **Patterns in counterfeit dynamics**: Counterfeits predominantly target established, popular ASINs by hijacking them, rather than emerging B0 ones, which informs a sourcing strategy that prioritizes newer or niche listings as lower-risk opportunities for arbitrage while avoiding saturated, high-scrutiny markets.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "content": "*   **Holistic verification for risk mitigation**: Effective risk management in book acquisition involves cross-referencing multiple indicators\u2014such as customer reviews, seller identity (Amazon vs. third-party), and return policies\u2014to build confidence in product legitimacy, ensuring safer inventory decisions without over-relying on a single metric.",
+        "date_added": "2026-02-12"
     }
 ]

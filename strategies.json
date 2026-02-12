@@ -54250,5 +54250,59 @@
         "confidence": "High",
         "source": "they sell a bunch of different products, right? It's not all exclusive to one industry. So, it's going to increase my success of the outreach process.",
         "date_added": "2026-02-11"
+    },
+    {
+        "id": "asin-b0-legitimate",
+        "category": "Risk",
+        "trigger": "ASIN starts with B0",
+        "advice": "Treat as legitimate for self-published or KDP print-on-demand titles without traditional ISBN; monitor for higher risk of low quality",
+        "confidence": "High",
+        "source": "B0 ASINs are common and legitimate for many paperback books, especially self-published or KDP print-on-demand titles without a traditional ISBN (or using Amazon's free ISBN). ... often POD\u2014higher risk of low quality, but not inherently fake/counterfeit.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "asin-numeric-traditional",
+        "category": "General",
+        "trigger": "ASIN is numeric ISBN",
+        "advice": "Identify as traditional book using ISBN as ASIN",
+        "confidence": "High",
+        "source": "Traditional books use numeric ISBN as ASIN; B0 ones are Amazon-generated.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "counterfeit-hijacked-asin",
+        "category": "Risk",
+        "trigger": "Hijacked popular ASINs",
+        "advice": "Suspect counterfeits and avoid or further investigate",
+        "confidence": "High",
+        "source": "Counterfeits usually involve hijacked popular ASINs, not new B0 ones.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "new-b0-low-counterfeit-risk",
+        "category": "Risk",
+        "trigger": "New B0 ASINs",
+        "advice": "Lower risk of counterfeits compared to hijacked popular ASINs",
+        "confidence": "High",
+        "source": "Counterfeits usually involve hijacked popular ASINs, not new B0 ones.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pod-title-risk",
+        "category": "Risk",
+        "trigger": "Low-content or indie travel guide titles (e.g., 2025 Puerto Rico guides)",
+        "advice": "Expect POD format with higher risk of low quality but not fake; verify legitimacy",
+        "confidence": "High",
+        "source": "This specific title appears to be a typical low-content or indie travel guide (many similar 2025 Puerto Rico guides exist), often POD\u2014higher risk of low quality, but not inherently fake/counterfeit.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "safety-verification-checks",
+        "category": "Buying",
+        "trigger": "Any potential book purchase",
+        "advice": "Always check reviews, seller (Amazon or third-party), and return policy to ensure safety",
+        "confidence": "High",
+        "source": "Check reviews, seller (Amazon or third-party), and return policy for safety.",
+        "date_added": "2026-02-12"
     }
 ]
