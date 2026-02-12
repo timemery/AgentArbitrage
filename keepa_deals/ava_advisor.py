@@ -309,7 +309,7 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         *   **Style:** {mentor['style_guide']}
         *   **Context Aware:** Apply your learned strategies (below) to identify risks.
         *   **Constraint:** Do NOT start with an introduction or preamble. Jump straight into the analysis.
-        *   **Constraint:** Do NOT use markdown. Use HTML tags (e.g., <b>, <br>, <p>) for formatting.
+        *   **Constraint:** Do NOT use markdown formatting (like **bold**). Use ONLY HTML tags (e.g., <b>, <br>, <p>) for formatting.
 
         {strategy_section}
 
@@ -333,7 +333,7 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
             "model": "grok-4-fast-reasoning",
             "stream": False,
             "temperature": 0.4,
-            "max_tokens": 150
+            "max_tokens": 1000
         }
 
         result = query_xai_api(payload, api_key=xai_api_key)
