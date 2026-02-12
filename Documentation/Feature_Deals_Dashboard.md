@@ -16,7 +16,7 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
 ### Key Features
 
 *   **Data Grid:** Displays deals in a responsive table. Columns are defined in `Documentation/Dashboard_Specification.md`.
-*   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Profit Confidence (Trust), Seller Trust, and Price Drops.
+*   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Deal Trust, Seller Trust, and Price Drops.
     *   **New Checkboxes:** "Hide Gated" (excludes restricted items) and "Hide AMZ Offers" (excludes items sold by Amazon).
     *   *Logic:* Filters are applied server-side by the `/api/deals` endpoint SQL query.
     *   **"Any" Logic:** Setting a filter to 0 ("Any") excludes it from the query, ensuring that NULL/Negative values are not hidden by default.

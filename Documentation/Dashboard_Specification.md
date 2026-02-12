@@ -51,7 +51,7 @@ All sliders utilize a standardized "Any" state logic:
 2.  **Min. Profit ($)**: Filter by `Profit`.
 3.  **Min. Margin (%)**: Filter by `Margin`.
 4.  **Max. Sales Rank**: Filter by `Sales_Rank_Current`.
-5.  **Min. Profit Trust**: Filter by `Profit_Confidence`.
+5.  **Min. Deal Trust**: Filter by `Deal_Trust`.
 6.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
 
 ### Checkbox Filters
@@ -135,7 +135,7 @@ The grid is divided into four logical groups:
     -   **Buy Box Used - 1yr Avg**: Long-term Buy Box price.
 
 #### Group 4: Listing & Profit Estimates
--   **Estimate Trust**: `Profit Confidence` %.
+-   **Estimate Trust**: `Deal Trust` %.
 -   **Profit**: Calculated Profit ($).
 -   **Margin**: Calculated Margin (%).
 -   **Max. List at**: The calculated "List at" (Peak) price.
