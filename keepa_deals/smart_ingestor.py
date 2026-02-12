@@ -97,9 +97,23 @@ def check_peek_viability(stats):
     if not sell_candidates:
         return False # No history
 
+    # 3. Sales Velocity Check (Critical Optimization)
+    # If the item has NO sales drops in the last year, it's dead inventory.
+    # Rejecting here saves 20 tokens per dead deal.
+    # Note: 'salesRankDrops365' might be missing in some lightweight objects, but if present, trust it.
+    drops365 = stats.get('salesRankDrops365', -1)
+
+    # Threshold: 4 drops/year (~1 per quarter).
+    # Anything less is too slow/risky to waste 20 tokens on heavy analysis.
+    if drops365 != -1 and drops365 < 4:
+        return False
+
+    # Also check 90 days for fresher deadness, though seasonal items might have 0 drops in 90d.
+    # We'll stick to 365 to be safe for seasonal items.
+
     est_sell = max(sell_candidates)
 
-    # 3. Simple Filters
+    # 4. Simple Filters
 
     # A. Absolute Price Floor (Fees kill anything under $12)
     if est_sell < 1200:

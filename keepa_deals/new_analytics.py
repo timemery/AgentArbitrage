@@ -41,30 +41,74 @@ def get_1yr_avg_sale_price(product, logger=None):
         logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
 
+    # DEBUG LOG
+    logger.info(f"DEBUG ENTRY: get_1yr_avg_sale_price called for {asin}")
+
+    # Basic data check
     if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
-        logger.warning(f"ASIN {asin}: Incomplete data for {COLUMN_NAME}.")
-        return None
+        # NOTE: Even if CSV is missing/bad, we might still have Stats for fallback.
+        # But existing logic enforced this. Let's relax it slightly if we want pure fallback.
+        # However, `infer_sale_events` needs CSV.
+        pass
 
     sale_events, _ = infer_sale_events(product)
-    if not sale_events:
-        return None
 
-    try:
-        df = pd.DataFrame(sale_events)
-        df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
-        one_year_ago = datetime.now() - timedelta(days=365)
-        df_last_year = df[df['event_timestamp'] >= one_year_ago]
+    mean_price_cents = -1
 
-        if len(df_last_year) < 1:
-            logger.info(f"ASIN {asin}: Insufficient sale events ({len(df_last_year)}) for a meaningful average.")
+    # Try using inferred sales first
+    if sale_events:
+        try:
+            df = pd.DataFrame(sale_events)
+            df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
+            one_year_ago = datetime.now() - timedelta(days=365)
+            df_last_year = df[df['event_timestamp'] >= one_year_ago]
+
+            if len(df_last_year) >= 1:
+                mean_price_cents = df_last_year['inferred_sale_price_cents'].mean()
+                logger.info(f"ASIN {asin}: Calculated {COLUMN_NAME} from {len(df_last_year)} inferred sales: ${mean_price_cents/100:.2f}")
+            else:
+                logger.info(f"ASIN {asin}: Found {len(sale_events)} total sales, but 0 in last 365 days.")
+        except Exception as e:
+            logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME} from sales: {e}", exc_info=True)
+
+    # Fallback if inferred sales failed (or no sales in last year)
+    if mean_price_cents == -1:
+        logger.info(f"ASIN {asin}: Insufficient inferred sales for {COLUMN_NAME}. Attempting fallback to Keepa Stats.")
+        stats = product.get('stats', {})
+        if not stats:
+            logger.warning(f"ASIN {asin}: 'stats' object missing from product data.")
             return None
 
-        mean_price_cents = df_last_year['inferred_sale_price_cents'].mean()
-        return {COLUMN_NAME: mean_price_cents / 100.0}
+        candidates = []
 
-    except Exception as e:
-        logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME}: {e}", exc_info=True)
+        # Used (Index 2)
+        avg365 = stats.get('avg365', [])
+        if avg365 and len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0:
+            candidates.append(avg365[2])
+
+        # Used - Good (Index 21)
+        if avg365 and len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0:
+            candidates.append(avg365[21])
+
+        # Used - Like New (Index 19)
+        if avg365 and len(avg365) > 19 and avg365[19] is not None and avg365[19] > 0:
+            candidates.append(avg365[19])
+
+        if candidates:
+            # Use the Max (Optimistic)
+            mean_price_cents = max(candidates)
+            logger.info(f"ASIN {asin}: Fallback succeeded for {COLUMN_NAME} using Keepa Stats: ${mean_price_cents/100:.2f}")
+            # Ensure we return the source flag for trust rating
+            return {COLUMN_NAME: mean_price_cents / 100.0, 'price_source': 'Keepa Stats Fallback'}
+        else:
+            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history in Stats (avg365 len: {len(avg365) if avg365 else 0}).")
+            return None
+
+    # Final check to ensure we don't return negative
+    if mean_price_cents <= 0:
         return None
+
+    return {COLUMN_NAME: mean_price_cents / 100.0}
 
 def get_percent_discount(avg_price, now_price, logger=None):
     """

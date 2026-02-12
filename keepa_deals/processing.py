@@ -184,10 +184,8 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
              logger.info(f"ASIN {asin}: Ingestion Rejected - Invalid 'List at' ({list_at_val}).")
              return None
 
-        yr_avg_val = row_data.get('1yr. Avg.')
-        if not yr_avg_val or str(yr_avg_val).strip() in ['-', 'N/A', '0', '0.0', '0.00']:
-             logger.info(f"ASIN {asin}: Ingestion Rejected - Invalid '1yr. Avg.' ({yr_avg_val}).")
-             return None
+        # NOTE: '1yr. Avg.' validation removed from here as it is calculated later in the pipeline.
+        # See subsequent check after get_1yr_avg_sale_price().
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed business calculations: {e}", exc_info=True)
@@ -196,6 +194,8 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         yr_avg_info = get_1yr_avg_sale_price(product_data)
         if yr_avg_info:
             row_data.update(yr_avg_info)
+        else:
+            logger.info(f"ASIN {asin}: get_1yr_avg_sale_price returned None.")
 
         # Exclusion: Do not collect deals with missing 1yr. Avg.
         # This implies < 1 sale event in the last year or missing history.
@@ -213,6 +213,19 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
 
         row_data.update(recent_inferred_sale_price(product_data))
         row_data.update(analyze_sales_rank_trends(product_data))
+
+        # Trust Adjustment for Fallback Pricing
+        # If we used the "Keepa Stats Fallback" (Avg365) instead of real Inferred Sales,
+        # we must lower the confidence score to warn the user.
+        price_source = row_data.get('price_source')
+        if price_source == 'Keepa Stats Fallback':
+            # Append a warning symbol to List at
+            if row_data.get('List at'):
+                row_data['List at'] = f"{row_data['List at']} (Est.)"
+
+            # Cap Profit Confidence at 50% or mark as Low
+            # (If profit_confidence calc exists, we override it)
+            row_data['Profit Confidence'] = "Low (Est.)"
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)
