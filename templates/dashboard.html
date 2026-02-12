@@ -59,12 +59,12 @@
                             <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
                         </div>
                     </div>
-                    <!-- Min. Profit Trust -->
+                    <!-- Min. Deal Trust -->
                     <div class="filter-item">
-                        <label for="profit_confidence_slider">Min. Profit Trust: <span id="profit-confidence-value" class="slider-value-readout">Any</span></label>
+                        <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
                         <div class="slider-container-new">
-                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_confidence_slider">
-                            <input type="hidden" id="profit_confidence" name="profit_confidence_gte" value="0">
+                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
+                            <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
                         </div>
                     </div>
                     <!-- Min. Seller Trust -->
@@ -215,9 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const profitMarginValueSpan = document.getElementById('profit-margin-value');
     const hiddenProfitMarginInput = document.getElementById('min_profit_margin');
 
-    const profitConfidenceSlider = document.getElementById('profit_confidence_slider');
-    const profitConfidenceValueSpan = document.getElementById('profit-confidence-value');
-    const hiddenProfitConfidenceInput = document.getElementById('profit_confidence');
+    const dealTrustSlider = document.getElementById('deal_trust_slider');
+    const dealTrustValueSpan = document.getElementById('deal-trust-value');
+    const hiddenDealTrustInput = document.getElementById('deal_trust');
 
     const sellerTrustSlider = document.getElementById('seller_trust_slider');
     const sellerTrustValueSpan = document.getElementById('seller-trust-value');
@@ -301,12 +301,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Deal Details
         "1yr_Avg", "Price_Now", "Percent_Down", "last_price_change",
         // Trust Ratings
-        "Seller_Quality_Score", "Profit_Confidence",
+        "Seller_Quality_Score", "Deal_Trust",
         // Profit Estimates
         "All_in_Cost", "Profit", "Margin", "Gated"
     ];
 
-    const groupEndColumns = ['Condition', 'Detailed_Seasonality', 'last_price_change', 'Profit_Confidence'];
+    const groupEndColumns = ['Condition', 'Detailed_Seasonality', 'last_price_change', 'Deal_Trust'];
 
     const headerTitleMap = {
         "Categories_Sub": "Genre",
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "Detailed_Seasonality": "Season",
         "AMZ": "AMZ",
         "List_at": "List at",
-        "Profit_Confidence": "Est.",
+        "Deal_Trust": "Deal",
         "All_in_Cost": "All in",
         "Deal_found": "Found",
         "Buy_Now": "Buy",
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // const keyword = document.getElementById('keyword_search').value; // Removed
         const salesRank = hiddenSalesRankInput.value;
         const profitMargin = hiddenProfitMarginInput.value;
-        const profitConfidence = hiddenProfitConfidenceInput.value;
+        const dealTrust = hiddenDealTrustInput.value;
         const sellerTrust = hiddenSellerTrustInput.value;
         const profit = hiddenProfitInput.value;
         const percentDown = hiddenPercentDownInput.value;
@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Only add filters if they deviate from "Show All" default logic ("Any")
         if (salesRank && salesRank !== '99999999') filters['sales_rank_current_lte'] = salesRank;
         if (profitMargin !== '') filters['margin_gte'] = profitMargin; // Send 0 to filter negatives
-        if (profitConfidence && profitConfidence !== '0') filters['profit_confidence_gte'] = profitConfidence;
+        if (dealTrust && dealTrust !== '0') filters['deal_trust_gte'] = dealTrust;
         if (sellerTrust && sellerTrust !== '0') filters['seller_trust_gte'] = sellerTrust;
         if (profit !== '') filters['profit_gte'] = profit; // Send 0 to filter negatives
         if (percentDown && percentDown !== '0') filters['percent_down_gte'] = percentDown;
@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             value = timeAgo;
                         }
                     } else if (!isNaN(numValue)) { // Check if the parsed value is a number
-                        if (col === 'Profit_Confidence') {
+                        if (col === 'Deal_Trust') {
                             value = `${Math.round(numValue)}%`;
                         } else if (col === 'Percent_Down') {
                             value = `${Math.round(numValue)}%`;
@@ -905,8 +905,8 @@ document.addEventListener('DOMContentLoaded', function() {
         profitMarginSlider.value = 0; // Index 0 is 0%
         profitMarginValueSpan.textContent = 'Any';
 
-        profitConfidenceSlider.value = 0;
-        profitConfidenceValueSpan.textContent = 'Any';
+        dealTrustSlider.value = 0;
+        dealTrustValueSpan.textContent = 'Any';
 
         sellerTrustSlider.value = 0;
         sellerTrustValueSpan.textContent = 'Any';
@@ -920,7 +920,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset Hidden Inputs to defaults
         hiddenSalesRankInput.value = '99999999';
         hiddenProfitMarginInput.value = '0';
-        hiddenProfitConfidenceInput.value = '0';
+        hiddenDealTrustInput.value = '0';
         hiddenSellerTrustInput.value = '0';
         hiddenProfitInput.value = '0';
         hiddenPercentDownInput.value = '0';
@@ -951,14 +951,14 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenProfitMarginInput.value = (step.value === Infinity) ? '9999' : step.value;
     });
 
-    profitConfidenceSlider.addEventListener('input', () => {
-        const val = profitConfidenceSlider.value;
+    dealTrustSlider.addEventListener('input', () => {
+        const val = dealTrustSlider.value;
         if (val == 0) {
-            profitConfidenceValueSpan.textContent = 'Any';
+            dealTrustValueSpan.textContent = 'Any';
         } else {
-            profitConfidenceValueSpan.textContent = val + '%';
+            dealTrustValueSpan.textContent = val + '%';
         }
-        hiddenProfitConfidenceInput.value = val;
+        hiddenDealTrustInput.value = val;
     });
 
     sellerTrustSlider.addEventListener('input', () => {
@@ -1204,7 +1204,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('overlay-bb-1yr').textContent = deal.Buy_Box_Used_365_days_avg || '';
 
         // --- Listing & Profit Estimates ---
-        let trust = deal.Profit_Confidence;
+        let trust = deal.Deal_Trust;
         if (trust != null && !isNaN(parseFloat(trust))) {
             document.getElementById('overlay-trust').textContent = Math.round(parseFloat(trust)) + '%';
         } else {

@@ -240,7 +240,7 @@ from .stable_calculations import (
     get_peak_season,
     get_list_at_price,
     get_trough_season,
-    profit_confidence,
+    deal_trust,
 )
 # Imports for seller info are no longer needed here, as it's handled in a decoupled loop.
 from .stable_deals import (
@@ -704,7 +704,7 @@ FUNCTION_LIST = [
     get_list_at_price,              # List at
     get_trough_season,              # Trough Season
     None,                           # Expected Trough Price
-    profit_confidence,              # Profit Confidence
+    deal_trust,                     # Deal Trust
     None,                           # Min. Listing Price
     None,                           # All-in Cost
     None,                           # Profit
