@@ -389,14 +389,18 @@ def analyze_sales_performance(product, sale_events):
 
     MIN_SALES_FOR_ANALYSIS = 1
 
-    # --- Fallback Logic for Insufficient Data ---
+    # Initialize variables with defaults
+    peak_price_mode_cents = -1
+    peak_season_str = '-'
+    trough_season_str = '-'
+    expected_trough_price_cents = -1
+    price_source = 'Inferred Sales'
+
+    # --- Check Data Sufficiency ---
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
         logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for performance analysis. Attempting fallback to Keepa Stats.")
 
         stats = product.get('stats', {})
-        fallback_price = -1
-
-        # Try to find a valid price from stats (Optimistic: Max of avg90, avg365)
         candidates = []
 
         # Used (Index 2)
@@ -411,57 +415,57 @@ def analyze_sales_performance(product, sale_events):
         if len(avg365) > 21 and avg365[21] > 0: candidates.append(avg365[21])
 
         if candidates:
-            fallback_price = max(candidates)
-            logger.info(f"ASIN {asin}: Fallback succeeded using Keepa Stats (Max Used Avg): ${fallback_price/100:.2f}")
-            return {'peak_price_mode_cents': fallback_price, 'peak_season': '-', 'trough_season': '-', 'price_source': 'Keepa Stats Fallback'}
+            peak_price_mode_cents = max(candidates)
+            price_source = 'Keepa Stats Fallback'
+            logger.info(f"ASIN {asin}: Fallback succeeded using Keepa Stats (Max Used Avg): ${peak_price_mode_cents/100:.2f}")
+            # Do NOT return here. Continue to Reasonableness Check.
         else:
             logger.warning(f"ASIN {asin}: Fallback failed. No valid Used price history in stats.")
+            # If fallback fails entirely, we return early as -1 price, triggering exclusion.
             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-', 'price_source': 'None'}
 
-    df = pd.DataFrame(sale_events)
-    df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
-    df['month'] = df['event_timestamp'].dt.month
-
-    # --- Peak/Trough Season Identification ---
-    monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
-
-    if len(monthly_stats) < 1:
-         return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
-
-    peak_month = monthly_stats['median'].idxmax()
-    # If only 1 month, peak and trough are the same
-    trough_month = monthly_stats['median'].idxmin()
-    peak_season_str = datetime(2000, int(peak_month), 1).strftime('%b')
-    trough_season_str = datetime(2000, int(trough_month), 1).strftime('%b')
-
-    # --- "List at" Price Calculation (Mode of Peak Season) ---
-    peak_season_prices = df[df['month'] == peak_month]['inferred_sale_price_cents'].tolist()
-    
-    # --- Expected Trough Price Calculation (Median of Trough Season) ---
-    trough_season_prices = df[df['month'] == trough_month]['inferred_sale_price_cents'].tolist()
-    expected_trough_price_cents = -1
-    if trough_season_prices:
-        expected_trough_price_cents = float(np.median(trough_season_prices))
-        logger.info(f"ASIN {asin}: Calculated expected trough price: {expected_trough_price_cents/100:.2f} (Median of trough month {trough_month}).")
     else:
-        logger.warning(f"ASIN {asin}: No prices found for trough month {trough_month}.")
+        # --- Normal Logic (Sufficient Sale Events) ---
+        df = pd.DataFrame(sale_events)
+        df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
+        df['month'] = df['event_timestamp'].dt.month
 
-    # --- High-Velocity / Sparse Data Fallback REMOVED ---
-    peak_price_mode_cents = -1
+        # --- Peak/Trough Season Identification ---
+        monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
 
-    if not peak_season_prices:
-        logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
-        return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
-    else:
-        # Normal calculation
-        # Calculate the mode. Scipy's mode is robust.
-        mode_result = st.mode(peak_season_prices)
-        if mode_result.count > 1:
-            peak_price_mode_cents = float(mode_result.mode)
-            logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (occurred {mode_result.count} times).")
+        if len(monthly_stats) < 1:
+             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
+
+        peak_month = monthly_stats['median'].idxmax()
+        # If only 1 month, peak and trough are the same
+        trough_month = monthly_stats['median'].idxmin()
+        peak_season_str = datetime(2000, int(peak_month), 1).strftime('%b')
+        trough_season_str = datetime(2000, int(trough_month), 1).strftime('%b')
+
+        # --- "List at" Price Calculation (Mode of Peak Season) ---
+        peak_season_prices = df[df['month'] == peak_month]['inferred_sale_price_cents'].tolist()
+
+        # --- Expected Trough Price Calculation (Median of Trough Season) ---
+        trough_season_prices = df[df['month'] == trough_month]['inferred_sale_price_cents'].tolist()
+        if trough_season_prices:
+            expected_trough_price_cents = float(np.median(trough_season_prices))
+            logger.info(f"ASIN {asin}: Calculated expected trough price: {expected_trough_price_cents/100:.2f} (Median of trough month {trough_month}).")
         else:
-            peak_price_mode_cents = float(np.median(peak_season_prices))
-            logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
+            logger.warning(f"ASIN {asin}: No prices found for trough month {trough_month}.")
+
+        if not peak_season_prices:
+            logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
+            return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
+        else:
+            # Normal calculation
+            # Calculate the mode. Scipy's mode is robust.
+            mode_result = st.mode(peak_season_prices)
+            if mode_result.count > 1:
+                peak_price_mode_cents = float(mode_result.mode)
+                logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (occurred {mode_result.count} times).")
+            else:
+                peak_price_mode_cents = float(np.median(peak_season_prices))
+                logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
 
     # --- Amazon Ceiling Logic ---
     stats = product.get('stats', {})
@@ -545,7 +549,7 @@ def analyze_sales_performance(product, sale_events):
         'peak_season': peak_season_str,
         'trough_season': trough_season_str,
         'expected_trough_price_cents': expected_trough_price_cents,
-        'price_source': 'Inferred Sales',
+        'price_source': price_source,
     }
 
 # --- Memoization cache for analysis results ---
