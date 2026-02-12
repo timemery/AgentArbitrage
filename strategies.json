@@ -56841,5 +56841,921 @@
         "confidence": "High",
         "source": "the BSR of this product in the kitchen and diary category is 10 368... the monthly sale of this listing is 695... click on this number of sale... I will be able to see the graph of throughout the year",
         "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-box-dimensions",
+        "category": "General",
+        "trigger": "Preparing case pack for FBA shipment",
+        "advice": "Ensure no side of the box is longer than 25 inches and the total weight does not exceed 50 lbs to meet Amazon warehouse requirements.",
+        "confidence": "High",
+        "source": "no side can be longer than 25 in and the box your units are in can't weigh over 50 lbs",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-case-example",
+        "category": "General",
+        "trigger": "Creating case pack template for products like books",
+        "advice": "Use case dimensions of 18.5 in x 18.5 in x 12 in with a weight of 14 lbs, capable of holding up to 115 units to optimize shipping.",
+        "confidence": "High",
+        "source": "this case that we're shipping in has a dimension of 18.5 in X 18.5 in x 12 in and each case weighs 14 lbs",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fnsku-label-hack",
+        "category": "General",
+        "trigger": "Labeling individual units for FBA",
+        "advice": "Have the supplier or manufacturer print the FNSKU directly on the product to avoid Amazon's 50 cents per unit labeling fee and save time.",
+        "confidence": "High",
+        "source": "you can actually have your manufacturer print your FN skew directly on your product which is going to save you a lot of money in time you can also have Amazon do this but they're going to charge you 50 cents per unit",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "shipping-method-selection",
+        "category": "General",
+        "trigger": "Sending small quantities (under pallet load) to FBA",
+        "advice": "Use small parcel shipping via UPS for shipments under a full pallet, such as 10 cases totaling 140 lbs, to benefit from Amazon's discounted rates.",
+        "confidence": "High",
+        "source": "small parcel shipping is where you use a company like UPS... if you're sending in a whole palette or more... use less than truckload... we're sending in 10 cases a total weight of 140",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "prep-requirements-check",
+        "category": "Risk",
+        "trigger": "Products that might be fragile or special category (e.g., certain books)",
+        "advice": "Select 'no extra prep needed' for most items, but double-check for adult items, baby products, fragile, or liquid items which may require additional preparation.",
+        "confidence": "High",
+        "source": "for most products you're going to click on no extra prep needed but double check this adult items baby products fragile liquid items might need extra prep",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "label-verification",
+        "category": "Risk",
+        "trigger": "Printing shipping labels for FBA cases",
+        "advice": "Double-check weight, dimensions, ship-from, and ship-to addresses on UPS and Amazon FBA box ID labels; print on sticker paper or tape regular paper ensuring labels are clear and uncovered.",
+        "confidence": "High",
+        "source": "you want to double check that the weight and the dimensions are correct for each individual box... you also want to confirm your ship from and ship to address... print out the labels on either sticker paper or you can use regular paper and tape them to your boxes and when you stick the labels to the boxes make sure they're clear and not covered by tape",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "address-selection",
+        "category": "Risk",
+        "trigger": "Initiating FBA replenishment shipment",
+        "advice": "Select the correct ship-from address, using the manufacturer's address if shipping from there, to avoid issues with incorrect addresses.",
+        "confidence": "High",
+        "source": "you want to make sure to select the correct ship from address because if this is the wrong address it can cause a lot of issues... if you're shipping from your manufacturer's address put their address instead of your personal address",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "Business delivery rate below 95%",
+        "advice": "Switch to higher performing carriers like FedEx to improve the rate and maintain account health",
+        "confidence": "High",
+        "source": "As you can see uh the seller rate is 88% right. So uh which is below the target of u 95%. ... So it suggests switching to carrier uh with a higher performance rate. The data shows the uh FedEx has a higher rate ... than USPS.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat2",
+        "category": "General",
+        "trigger": "Manual calculation of delivery dates",
+        "advice": "Enable Shipping Setting Automation (SSA) to automatically calculate accurate delivery dates, shorten promises, and increase sales",
+        "confidence": "High",
+        "source": "Uh here it recommends uh enabling shipping uh setting automation SSA. This is a feature that automatically calculate accurate delivery dates for you and which can shorten your delivery promises and lead to the more sales.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat3",
+        "category": "Risk",
+        "trigger": "Inventory sitting in Amazon fulfillment centers for a long time",
+        "advice": "Monitor inventory age tab to identify excess or aged stock and take action to sell it or remove it to avoid long-term storage fees",
+        "confidence": "High",
+        "source": "uh when excess is a crucial tab for managing your cost. It helps you to identify uh inventory that has been sitting in Amazon fulfillment centers for a long time which would lead you to a long-term storage fees. It also highlights any excess stock you can take action to sell it or remove it.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat4",
+        "category": "Risk",
+        "trigger": "Customer returns or damaged inventory",
+        "advice": "Use FBA grade and resell tab to have Amazon inspect returned items, determine condition, and resell as used if viable or ship back",
+        "confidence": "High",
+        "source": "The FBA grade and resell tab is designed to help you to manage uh return or damage inventory. If a customer returns a product, you can use this tab to have Amazon inspect the item, determine its condition, and provide options uh to either have it shipped back to you or if uh it is in good enough condition to resell as a used product.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat5",
+        "category": "General",
+        "trigger": "Need to restock or improve listings",
+        "advice": "Use FBA opportunities section to get Amazon's recommendations on restocking products, improving listings, and managing inventory based on sales data",
+        "confidence": "High",
+        "source": "Uh under opportunities ... Amazon provides you with the actionable recommendations uh to improve your FBA business. It analyze your sales data and suggest things like which uh products you should restock, which listings could be improved or how to manage your inventory to avoid storage fees.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat6",
+        "category": "General",
+        "trigger": "Orders from non-Amazon channels",
+        "advice": "Use multi-channel fulfillment to leverage Amazon's network for shipping orders from your own website or other sales channels",
+        "confidence": "High",
+        "source": "The multi- channelannel fulfillment is the powerful feature that allows you to use Amazon fulfillment network to shop order uh to ship orders from other sales channel like uh your own website.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat7",
+        "category": "General",
+        "trigger": "Expanding to international markets",
+        "advice": "Use build international listings tool to link marketplaces and sync product listings and inventory automatically to save time",
+        "confidence": "High",
+        "source": "build international listings. This is the main uh tool you will use. This is where you can link your different marketplaces together to automatically sync your product listings and inventory uh to save your a lot of time and effort.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat8",
+        "category": "Risk",
+        "trigger": "Inaccurate handling time settings",
+        "advice": "Set accurate default or individual handling times in shipping settings to ensure meeting delivery expectations and build customer trust",
+        "confidence": "High",
+        "source": "Uh your handling time is the amount of time it takes uh you to pack and ship an order after a customer place it. ... setting and accurate handling time ensures that you are always meeting customer expectations for delivery.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-001",
+        "category": "Risk",
+        "trigger": "Business delivery rate below 95%",
+        "advice": "Switch to higher-performing carriers like FedEx to improve the rate and maintain account health",
+        "confidence": "High",
+        "source": "the seller rate is 88% right. So uh which is below the target of u 95%. ... The data shows the uh FedEx has a higher rate ... than USPS. So the uh the recommendation uh is to consider using carriers like FedEx to improve that metric.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-002",
+        "category": "General",
+        "trigger": "Manual delivery date calculations",
+        "advice": "Enable Shipping Setting Automation (SSA) to automatically calculate accurate delivery dates, shorten promises, and increase sales",
+        "confidence": "High",
+        "source": "it recommends uh enabling shipping uh setting automation SSA. This is a feature that automatically calculate accurate delivery dates for you and which can shorten your delivery promises and lead to the more sales.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-003",
+        "category": "Risk",
+        "trigger": "Handling time not set accurately",
+        "advice": "Set default handling time for all products or adjust per product to ensure meeting customer delivery expectations and build trust",
+        "confidence": "High",
+        "source": "You can uh adjust your handling time in your shipping setting. You can set a default handling time for all your products ... or you can even adjust the u handling time for individual products ... setting and accurate handling time ensures that you are always meeting customer expectations for delivery.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-004",
+        "category": "General",
+        "trigger": "Selling only in one marketplace",
+        "advice": "Use Build International Listings to link marketplaces and automatically sync product listings and inventory to save time and expand sales",
+        "confidence": "High",
+        "source": "build international listings. This is the main uh tool you will use. This is where you can link your different marketplaces together to automatically sync your product listings and inventory uh to save your a lot of time and effort.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "Excess or aged inventory in FBA",
+        "advice": "Monitor inventory age and excess stock in FBA analytics to sell or remove items and avoid long-term storage fees",
+        "confidence": "High",
+        "source": "inventory age uh when excess is a crucial tab for managing your cost. It helps you to identify uh inventory that has been sitting in Amazon fulfillment centers for a long time which would lead you to a long-term storage fees. It also highlights any excess stock you can take action to sell it or remove it.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-006",
+        "category": "General",
+        "trigger": "Limited to domestic inventory for international sales",
+        "advice": "Use Remote Fulfillment with FBA to sell in other countries like Canada using US inventory without shipping to local FBA centers",
+        "confidence": "High",
+        "source": "remote fulfillment with FBA. Uh this is the program that allows you to sell products in an another country like Canada by using your US inventory without having to shift your products to an FBA center uh in that country.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-007",
+        "category": "General",
+        "trigger": "No actionable insights for FBA improvement",
+        "advice": "Review FBA Opportunities section for recommendations on restocking products, improving listings, and managing inventory to avoid fees",
+        "confidence": "High",
+        "source": "under opportunities ... Amazon provides you with the actionable recommendations uh to improve your FBA business. It analyze your sales data and suggest things like which uh products you should restock, which listings could be improved or how to manage your inventory to avoid storage fees.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-fee-view-1",
+        "category": "General",
+        "trigger": "Need to check exact FBA fees for a product",
+        "advice": "Search for the product on the Manage All Inventory page and view the FBA fees displayed on the right side.",
+        "confidence": "High",
+        "source": "search for the product on your manage all inventory page. And right over here on the right, um you've got the FBA fees that are showing there.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-fee-breakdown",
+        "category": "General",
+        "trigger": "Require detailed breakdown of product fees",
+        "advice": "Click the Calculate Revenue button to view a comprehensive breakdown of all applicable fees based on product details.",
+        "confidence": "High",
+        "source": "If you hit the calculate revenue button, um it shows you a good breakdown of all the fees as well um that could be charged depending on, you know, what you got going on for the product.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "enable-fee-column",
+        "category": "General",
+        "trigger": "Estimated fees column not visible in inventory view",
+        "advice": "Add the estimated fees option in preferences and enable the FBA fees column to display fee information.",
+        "confidence": "High",
+        "source": "if you don't see that estimated fees, you might have to add it in preferences here and then, you know, check the FBA fees column so that you have that on your list there.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-start-units",
+        "category": "General",
+        "trigger": "First Amazon FBA shipment",
+        "advice": "Start with around 500 to 1000 units per product to launch, depending on supplier MOQ.",
+        "confidence": "High",
+        "source": "many existing sellers recommend starting out with around 500 units per product but a lot of suppliers only deal with moq's which are minimum order quantities so if your supplier has an moq of say a thousand units it's just gonna depend on what your supplier is able to provide so let's say roughly around 500 to a thousand units to start",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-risk-mitigate",
+        "category": "Risk",
+        "trigger": "Starting out with new product",
+        "advice": "Start with smaller amount like 500 units to mitigate risk of money tied up and storage costs if sales are low (e.g., only 100 units per month).",
+        "confidence": "High",
+        "source": "when you're just starting out it can be a good idea to start with a smaller amount to mitigate risk what i mean by that is you don't want to start off with 2 000 units and then you only end up selling maybe 100 units per month you'll have money tied up in those assets and you're also going to have to consider storage costs",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-excess-def",
+        "category": "Risk",
+        "trigger": "Inventory over 90 days of supply or 1 unit aged over 90 days",
+        "advice": "Consider inventory as excess if over 90 days of supply, at least one unit aged over 90 days, or better ROI opportunities like reducing price.",
+        "confidence": "High",
+        "source": "it's considered excess inventory if you have over 90 days of supply at least one unit aged over 90 days or if you have better roi opportunities such as reducing the price to increase sales",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-out-of-stock",
+        "category": "Risk",
+        "trigger": "Product goes out of stock",
+        "advice": "Avoid going out of stock to prevent loss of sales, rank penalties, need to redo PPC, and missed reviews.",
+        "confidence": "High",
+        "source": "going out of stock can result in a loss of sales because your product is no longer available and if your product isn't available then potential customers will have no choice but to buy from your competitors amazon listings will get penalized for going out of stock and as a result the rank will plummet you're basically going back to square one because you're gonna have to redo all your ppc work and this can be extremely expensive to try and re-rank your listing another thing people don't necessarily think about is that going out of stock you're missing out on potential reviews",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-overstock",
+        "category": "Risk",
+        "trigger": "Overstocking inventory",
+        "advice": "Avoid overstocking to prevent tying up resources and high storage costs.",
+        "confidence": "High",
+        "source": "over stocking or in other words having excess inventory overstocking sucks money out of your business by tying up resources and running up storage costs",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-stranded",
+        "category": "Risk",
+        "trigger": "Sellable inventory not listed for sale",
+        "advice": "Fix stranded inventory at fulfillment centers that isn't listed for sale.",
+        "confidence": "High",
+        "source": "stranded inventory is sellable inventory that may be at a fulfillment center that isn't actually listed for sale",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-spoilage",
+        "category": "Risk",
+        "trigger": "Selling perishable items like food, supplements, cosmetics",
+        "advice": "Avoid holding inventory past expiry date to prevent loss.",
+        "confidence": "High",
+        "source": "spoilage doesn't affect a ton of people but there are a few niches where it does if you're selling food supplements or cosmetics usually all of those have an expiry date so when you're holding inventory past its sale date then your investment kind of just goes down the drain",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-storage-costs",
+        "category": "Risk",
+        "trigger": "Overstocking or not tracking inventory",
+        "advice": "Optimize storage space, stock fast-selling items, track inventory to avoid high storage costs, liquidation, or removal.",
+        "confidence": "High",
+        "source": "if you're over stocking you'll see high storage costs optimizing your storage space will help you to lower costs and stock fast selling items not tracking your inventory can lead to higher storage costs liquidation or removal",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-supplier-rel",
+        "category": "General",
+        "trigger": "Need reliable inventory supply",
+        "advice": "Build and maintain good relationship with suppliers for on-time delivery and expedited help if needed.",
+        "confidence": "High",
+        "source": "building and maintaining a relationship with your supplier is critical not only because they'll ensure that your inventory normally is on time but if you were in a pinch where you really needed inventory expedited they're more likely to help you if you have a good relationship versus a bad one",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-sell-through",
+        "category": "General",
+        "trigger": "Planning future inventory needs",
+        "advice": "Monitor sell-through rate to see how fast inventory moves and plan accordingly.",
+        "confidence": "High",
+        "source": "monitoring your sell through rate is also very important because you need to see how fast inventory is coming in and out to plan for how much inventory you need in the future",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-restock-popular",
+        "category": "General",
+        "trigger": "Popular products running low",
+        "advice": "Regularly restock most popular products.",
+        "confidence": "High",
+        "source": "it's also advised to regularly restock your most popular products",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-promotions",
+        "category": "Pricing",
+        "trigger": "Aging inventory",
+        "advice": "Run promotions to reduce aging inventory, even if breaking even or minimal loss, to avoid storage fees.",
+        "confidence": "High",
+        "source": "it's a good idea to run promotions to reduce aging inventory now you may just break even or take a minimal loss but it's better than continually paying storage fees for that inventory",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-margins",
+        "category": "General",
+        "trigger": "Ongoing operations",
+        "advice": "Always watch your margins.",
+        "confidence": "High",
+        "source": "also always be watching your margins",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-4weeks-cover",
+        "category": "General",
+        "trigger": "Potential sales spike",
+        "advice": "Maintain four weeks of inventory cover to accommodate sales spikes without running out.",
+        "confidence": "High",
+        "source": "it's also recommended that you maintain four weeks of inventory cover the reason being is if you have a period where you see a major spike in sales you want to be able to accommodate those people instead of running out of stock",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-ipi-score",
+        "category": "General",
+        "trigger": "IPI score below threshold",
+        "advice": "Monitor IPI score (0-1000) to ensure efficiency; improve by replenishing popular products, maintaining healthy levels, fixing listing problems; aim above minimum threshold for unlimited storage.",
+        "confidence": "High",
+        "source": "your ipi score measures how efficient and productive you are at managing your amazon inventory it's scored on a basis of zero to a thousand and amazon sets thresholds that amazon sellers need to meet as long as your score is at or above the minimum threshold then you'll qualify for unlimited storage if your score falls below the threshold on both weeks that it's measured then amazon will set storage limits on your account for the next quarter",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-sellthrough-90day",
+        "category": "General",
+        "trigger": "Improving IPI score",
+        "advice": "Improve 90-day rolling sell-through rate by maintaining right balance of inventory over time.",
+        "confidence": "High",
+        "source": "improve your 90-day rolling sell-through rate and you do this by maintaining the right balance of inventory over a period of time",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-restock-limits",
+        "category": "General",
+        "trigger": "IPI below threshold",
+        "advice": "Check restock limits based on past and forecasted sales; maximum inventory levels and shipment quantities apply if limits set.",
+        "confidence": "High",
+        "source": "restock limits are basically based on your past and forecasted sales now you may notice another tab which is the storage volume restock limits are the number of units while storage volume is the usage of space in an amazon warehouse in cubic feet",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "1",
+        "category": "General",
+        "trigger": "Low stock levels detected",
+        "advice": "Use tools like Sellerboard to monitor inventory and restock to stay in stock, improving buy box chances and Amazon trust.",
+        "confidence": "High",
+        "source": "staying in stock on an item is actually one of those factors that plays a pretty decent role. And so the longer you're able to stay in stock on a product, the more Amazon is going to trust your store",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "2",
+        "category": "Buying",
+        "trigger": "Products with 0-6 days of stock left",
+        "advice": "Prioritize restocking products shown in red on Sellerboard planner tab, calculating based on estimated sales velocity when in stock.",
+        "confidence": "High",
+        "source": "when I go in here and filter by days of stock left, I start to see a lot of those products that I, you know, have completely sold out of. The red ones especially will be ones that we've sold out of recently",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "3",
+        "category": "Buying",
+        "trigger": "Estimated sales velocity >1 unit per day",
+        "advice": "Restock quantities to cover at least 30 days of supply for arbitrage products, adjusting with human input for profitability.",
+        "confidence": "High",
+        "source": "On an arbitrage level, I usually restock for about 30 days. ... this number right here actually helps my lead virtual assistant who he basically decides how much we're going to buy",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "4",
+        "category": "Seasonality",
+        "trigger": "Seasonal product approaching peak season (e.g., sunblock in May)",
+        "advice": "Weight recent sales data more heavily in Sellerboard (e.g., last 7 days) and increase restock quantities beyond 30 days based on expected sales bump.",
+        "confidence": "High",
+        "source": "you might want to weight those recent days a little bit heavier. You know, let's say you're selling Sunblock in May. You might be wanting to, you know, boost that up a little bit",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "5",
+        "category": "Risk",
+        "trigger": "ROI < threshold (e.g., below 92%) or unprofitable",
+        "advice": "Filter out and avoid restocking products that are no longer profitable using Sellerboard ROI data.",
+        "confidence": "High",
+        "source": "I don't want to restock a product that I'm not still making a profit on. And Sellerboard helps me kind of rule out those products that I might not still be making a profit on",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "6",
+        "category": "Seasonality",
+        "trigger": "Approaching off-season (e.g., Christmas lights in January)",
+        "advice": "Reduce restock quantities or avoid buying seasonal products outside peak times, using Keepa charts to assess sales velocity changes.",
+        "confidence": "High",
+        "source": "Sometimes you might have to think about the product if it's Christmas lights for example and it's January. Probably not a great product idea ... dive into the Keepa charts, seeing how much faster items really are selling during with that seasonality",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "7",
+        "category": "Buying",
+        "trigger": "Limited-time deal (e.g., coupons expiring soon)",
+        "advice": "Buy more than 30 days of inventory if the low-cost sourcing opportunity (e.g., coupon + cashback) may not last 2-3 months.",
+        "confidence": "High",
+        "source": "with arbitrage especially, you might not see that same coupon plus a cash back plus a discounted gift card combo for two, three months later, right? And so in those cases, you might also want to buy a little bit more than that suggested 30 days",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "8",
+        "category": "Risk",
+        "trigger": "Easy sourcing at retail (e.g., Walmart.com at full price)",
+        "advice": "Decrease restock quantities due to higher risk of price undercutting by competitors, as lowest cost is harder to maintain.",
+        "confidence": "High",
+        "source": "If you think that item was really easy to source, maybe it was from a super easy to find wholesale distributor or was just at walmart.com at retail price just sitting there, you might want to bump down how much you were expecting to buy",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "9",
+        "category": "General",
+        "trigger": "High days of stock (>57 days)",
+        "advice": "Skip restocking and focus on higher priority items to avoid overstocking slow movers.",
+        "confidence": "High",
+        "source": "You've got 57 days left of stock of this item. ... Those are the types of items that you don't want to really be looking at at all",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "10",
+        "category": "Buying",
+        "trigger": "Historical sales 1-2 units per day",
+        "advice": "Manually adjust restock to 20-30 units for products with proven velocity, even if tool suggests lower (e.g., 14 units).",
+        "confidence": "High",
+        "source": "it looks like it was selling, you know, somewhere close to one to two sales per day. And so in my mind, ... I'd probably buy, you know, 20 to 30 units of this. Sellerboard's probably wanting us to be a little bit more cautious",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ddc65613-3401-4357-8ad3-e2e4bc8de3e1",
+        "advice": "\"id\": \"inv-mgmt-001\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "5aa1302e-95b6-476a-a0ea-c239ce1c3ac5",
+        "advice": "\"trigger\": \"Current inventory approaching less than two months supply\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "e466c05e-1a07-4809-98bc-27a3b63c9b00",
+        "advice": "\"advice\": \"Maintain approximately two months of inventory on hand at fulfillment centers at any given time\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "f4306017-35e0-4230-b920-d72c52b65f78",
+        "advice": "\"source\": \"We recommend that you have about two months of inventory on hand at fulfillment centers at any given time.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "f55d6a32-51a4-4b5b-9d11-dda2a80cf634",
+        "advice": "\"id\": \"inv-mgmt-002\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "2898aad2-8e0e-48a0-975c-412a3e8578d7",
+        "advice": "\"trigger\": \"Unit level reaches zero\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "8a05183b-3403-4eea-b852-40ffb242fc4e",
+        "advice": "\"advice\": \"Check inventory frequently to prevent unit level from reaching zero, as the listing will become inactive and impact sales, velocity, and search ranking\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "cb522a02-9338-4e3c-b702-1002726e9bf6",
+        "advice": "\"source\": \"If your unit level is zero, your listing will become inactive. This will negatively impact your sales and sales velocity, and may also impact your search ranking.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "46ce39eb-cc7d-450e-a4b5-039b4b9970be",
+        "advice": "\"id\": \"inv-mgmt-003\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "1c81c211-c543-4389-a94b-533a43d3fe4b",
+        "advice": "\"trigger\": \"Low stock levels detected\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "74ab6ec9-1937-414f-9a49-1a5b0d2a1865",
+        "advice": "\"advice\": \"Set replenishment alerts to receive notifications via a red bell in the Available column for low stock at fulfillment centers\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "35962acd-eeac-4aff-b87d-1d0e94386e87",
+        "advice": "\"source\": \"if you set inventory replenishment alerts, you\u2019ll see a red bell next to the number in the \u2018Available\u2019 column representing the stock that\u2019s low at the fulfillment center.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "eb3fe8f4-4dec-41f2-8baa-bd06e602ef9a",
+        "advice": "\"id\": \"inv-mgmt-004\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "28211aa9-34c4-4a0f-95a6-c3c236c3205e",
+        "advice": "\"trigger\": \"Low sell-through rate\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "8a5b93c3-fce4-4040-bd6a-cadbf46fa99f",
+        "advice": "\"advice\": \"Run Ads and Deals to increase sell-through rate, which raises stock limits and reduces the frequency of sending products to fulfillment centers\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fdedc863-6323-4d59-b143-1a0fe00adc55",
+        "advice": "\"source\": \"The higher your sell-through rate, the more these limits will increase. Strategies such as running Ads and Deals can help you promote your products\u2014and may increase both your sales and your stock limits.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "e699a87e-7cd3-4282-b7a0-864e34fe3ed2",
+        "advice": "\"id\": \"inv-mgmt-005\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "d0b05bb4-3014-4610-b5cc-c96160922a90",
+        "advice": "\"trigger\": \"Inventory sitting in fulfillment centers for long periods\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "68569f7b-87a1-4137-afba-69adb07380b1",
+        "advice": "\"advice\": \"Avoid storing excess inventory for too long to prevent negative impact on sell-through rate and incurrence of long-term storage fees, which are costlier than standard fees\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bc39a790-5942-4750-b5db-a08e6469f455",
+        "advice": "\"source\": \"ensure that you don't have inventory sitting in fulfillment centers for long periods of time, as this may negatively impact your sell-through rate.\" and \"you also may incur long-term storage fees, which are costlier than standard storage fees, if your inventory is poorly managed or if you store excess inventory for too long.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ad81c266-44e4-4f40-b723-658b29fb1338",
+        "advice": "\"id\": \"inv-mgmt-006\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ca851fe2-b005-48d0-b7c8-9987d8d54a19",
+        "advice": "\"trigger\": \"Planning inventory shipments\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "6f4565fc-8aa7-4b8f-b56c-21eb698f5d25",
+        "advice": "\"advice\": \"Only send products to fulfillment centers that you know will sell to maintain adequate inventory levels and avoid inactivation\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "63985db9-89c0-4d5a-9688-48ae191b0cea",
+        "advice": "\"source\": \"Send products you know will sell.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "b108b87b-ead9-4847-9ac9-7be4df4992c5",
+        "advice": "\"id\": \"inv-mgmt-007\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "dc2b282a-0852-4ad9-849b-79fff7d3485f",
+        "advice": "\"trigger\": \"Routine inventory monitoring\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "b69f36ca-e50d-464c-9876-b9ed7c80bbd4",
+        "advice": "\"advice\": \"Check your inventory frequently on the FBA inventory-management page to ensure adequate levels and respond to low-stock alerts\",",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "9c8fa4c2-a66b-4293-8b2f-63e71b04f0a5",
+        "advice": "\"source\": \"Check your inventory frequently on the FBA inventory-management page.\" and \"make sure to always check that your inventory is kept at an adequate level, and that you\u2019re aware of any low-stock alerts.\"",
+        "trigger": "Manual Entry",
+        "category": "General",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-fulfillment-method",
+        "category": "Pricing",
+        "trigger": "Different fulfillment methods (FBA or MFN)",
+        "advice": "Use advanced pricing criteria to set prices based on fulfillment method for greater flexibility",
+        "confidence": "High",
+        "source": "Advanced pricing criteria options, such as fulfillment method-based pricing, provide greater flexibility in pricing strategies.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-shopping-events",
+        "category": "Seasonality",
+        "trigger": "Major shopping events like Prime Day",
+        "advice": "Implement specialized scheduling features to synchronize pricing and optimize revenue during high-traffic periods",
+        "confidence": "High",
+        "source": "Specialized scheduling features allow synchronization with major shopping events like Prime Day, optimizing revenue during high-traffic periods.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-based-on-competitors",
+        "category": "Pricing",
+        "trigger": "Other FBA or MFN seller offers available",
+        "advice": "Create predefined or customizable rules to price products based on competitors' offers",
+        "confidence": "High",
+        "source": "Create rules that price products based on other FBA or MFN seller offers.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-no-featured-offer",
+        "category": "Pricing",
+        "trigger": "No Featured Offer exists for a product",
+        "advice": "Optimize pricing when no Featured Offer is available",
+        "confidence": "High",
+        "source": "or optimize pricing when no Featured Offer exists for a product.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-sole-seller-informed",
+        "category": "Pricing",
+        "trigger": "Sole seller for a particular ASIN",
+        "advice": "Handle pricing scenarios where you are the only seller for the ASIN",
+        "confidence": "High",
+        "source": "The application handles scenarios where you\u2019re the sole seller for a particular ASIN.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-exclude-products",
+        "category": "Pricing",
+        "trigger": "Need to exclude certain products from rules",
+        "advice": "Exclude individual products from broader inventory pricing rules",
+        "confidence": "High",
+        "source": "or exclude individual products from broader inventory rules.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-schedules-repriceit",
+        "category": "Seasonality",
+        "trigger": "Amazon shopping events",
+        "advice": "Support pricing schedules aligned with events for strategic pricing during peak periods",
+        "confidence": "High",
+        "source": "The application supports pricing schedules aligned with Amazon shopping events for strategic pricing during peak periods.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-real-time",
+        "category": "Pricing",
+        "trigger": "Need faster than standard 10-15 minute update intervals",
+        "advice": "Use real-time pricing optimization for quicker adjustments",
+        "confidence": "High",
+        "source": "SellerEngine focuses on real-time pricing optimization rather than standard 10-15 minute update intervals.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-minimum-price",
+        "category": "Pricing",
+        "trigger": "To ensure profitability",
+        "advice": "Calculate minimum prices using associated costs and fees, with options to add minimum markup percentages",
+        "confidence": "High",
+        "source": "The application calculates minimum prices using associated costs and fees, with options to add minimum markup percentages to ensure profitability.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "pricing-sole-seller-sellerengine",
+        "category": "Pricing",
+        "trigger": "Only seller for a product",
+        "advice": "Identify similar listings to inform pricing strategy when you are the sole seller",
+        "confidence": "High",
+        "source": "When you\u2019re the only seller for a product, SellerEngine identifies similar listings to inform pricing strategy development.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price1",
+        "category": "Pricing",
+        "trigger": "Other FBA or MFN seller offers present",
+        "advice": "Create rules to price products based on competing seller offers",
+        "confidence": "High",
+        "source": "Create rules that price products based on other FBA or MFN seller offers",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price3",
+        "category": "Pricing",
+        "trigger": "You are the sole seller for a particular ASIN",
+        "advice": "Handle pricing scenarios where you are the only seller for the ASIN",
+        "confidence": "High",
+        "source": "The application handles scenarios where you\u2019re the sole seller for a particular ASIN",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price5",
+        "category": "Pricing",
+        "trigger": "Need to exclude individual products from broader rules",
+        "advice": "Exclude specific products from inventory-wide pricing rules",
+        "confidence": "High",
+        "source": "or exclude individual products from broader inventory rules",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "season1",
+        "category": "Seasonality",
+        "trigger": "Major shopping events like Prime Day",
+        "advice": "Use pricing schedules to synchronize with high-traffic shopping events for revenue optimization",
+        "confidence": "High",
+        "source": "The application supports pricing schedules aligned with Amazon shopping events for strategic pricing during peak periods",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price6",
+        "category": "Pricing",
+        "trigger": "Standard update intervals of 10-15 minutes",
+        "advice": "Opt for real-time pricing optimization instead of 10-15 minute update intervals",
+        "confidence": "High",
+        "source": "SellerEngine focuses on real-time pricing optimization rather than standard 10-15 minute update intervals",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "risk1",
+        "category": "Risk",
+        "trigger": "Calculating minimum prices",
+        "advice": "Calculate minimum prices using associated costs and fees, and add minimum markup percentages to ensure profitability",
+        "confidence": "High",
+        "source": "The application calculates minimum prices using associated costs and fees, with options to add minimum markup percentages to ensure profitability",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price7",
+        "category": "Pricing",
+        "trigger": "Pricing ASINs effectively",
+        "advice": "Use cross-checking capabilities to price ASINs effectively",
+        "confidence": "High",
+        "source": "Cross-checking capabilities help price ASINs effectively",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price8",
+        "category": "Pricing",
+        "trigger": "You are the only seller for a product",
+        "advice": "Identify similar listings to inform pricing strategy when you are the sole seller",
+        "confidence": "High",
+        "source": "When you\u2019re the only seller for a product, SellerEngine identifies similar listings to inform pricing strategy development",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "price9",
+        "category": "Pricing",
+        "trigger": "Fulfillment method variations",
+        "advice": "Use fulfillment method-based pricing for greater flexibility in strategies",
+        "confidence": "High",
+        "source": "Advanced pricing criteria options, such as fulfillment method-based pricing, provide greater flexibility in pricing strategies",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fbm-001",
+        "category": "General",
+        "trigger": "Selling large or slow-moving items",
+        "advice": "Use FBM to manage storage and shipping yourself, especially if you have a strong logistics setup",
+        "confidence": "High",
+        "source": "FBM can be a great fit if you prefer to manage your own fulfillment, sell large or slow-moving items, or already have a strong logistics setup in place.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fbm-002",
+        "category": "General",
+        "trigger": "Items needing special handling or custom packaging",
+        "advice": "Combine FBM for special items with FBA for standard products to leverage Amazon\u2019s network",
+        "confidence": "High",
+        "source": "For example, you might use FBM for items that need special handling or custom packaging, and FBA for products that benefit from Amazon\u2019s storage and delivery network.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fbm-003",
+        "category": "Risk",
+        "trigger": "Packaging preparation",
+        "advice": "Ensure each package can withstand a three-foot drop on any side or corner to reduce damage-related complaints",
+        "confidence": "High",
+        "source": "When preparing packages, make sure each package can withstand a three-foot drop on any side or corner to reduce damage-related customer complaints.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fbm-004",
+        "category": "General",
+        "trigger": "Customer messages",
+        "advice": "Respond to all customer messages within 24 hours to maintain satisfaction",
+        "confidence": "High",
+        "source": "respond to all customer messages within 24 hours to maintain customer satisfaction.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fbm-005",
+        "category": "Risk",
+        "trigger": "Performance standards",
+        "advice": "Maintain low Order Defect Rate, ship on time, and provide valid tracking to meet Amazon\u2019s standards",
+        "confidence": "High",
+        "source": "As an FBM seller, you need to meet Amazon\u2019s performance standards. This includes maintaining a low Order Defect Rate, shipping orders on time, and providing valid tracking for your shipments.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fbm-006",
+        "category": "General",
+        "trigger": "Consistent quick delivery",
+        "advice": "Qualify for Seller Fulfilled Prime to display Prime badge without using Amazon\u2019s fulfillment",
+        "confidence": "High",
+        "source": "If you consistently meet these requirements and can deliver orders quickly, you may qualify for Seller Fulfilled Prime. This program allows your offers to display the Prime badge, without sending your products to Amazon\u2019s fulfillment network.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-prime-1",
+        "category": "General",
+        "trigger": "Need for fast delivery to attract customers",
+        "advice": "Use Amazon FBA to obtain the Prime badge, as it increases visibility and sales for urgent purchases",
+        "confidence": "High",
+        "source": "When I'm shopping online and there's something that I need urgently and it says it's going to be delivered in a week or two weeks, I usually just skip over that and move on to something else. And so that's why it's so critical to have the Prime badge on Amazon. And one of the best ways to get that is through FBA.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-cost-1",
+        "category": "General",
+        "trigger": "Comparing fulfillment costs between direct shipping and FBA",
+        "advice": "Ship products to Amazon FBA if it results in lower overall shipping costs due to Amazon's carrier discounts",
+        "confidence": "High",
+        "source": "we've actually found that using Amazon FBA is cheaper. So shipping the product to Amazon and then having them fulfill it to the end customer is actually cheaper for us than shipping it directly to the end customer from our facility in Wisconsin. And one of the main reasons for that is because Amazon gets significant discounts on their shipping. So, the cost of shipping on Amazon is significantly lower than even wholesale rates from carriers like UPS.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fba-startup-1",
+        "category": "Risk",
+        "trigger": "Starting out with Amazon FBA",
+        "advice": "Do not go all-in initially; send only top-selling SKUs to FBA for fulfillment, and keep slower-selling SKUs as fulfilled by merchant (FBM) in-house",
+        "confidence": "High",
+        "source": "Here's my main tip. When starting out with FBA, you don't necessarily need to go allin. What we did with Kangaroo Hanger was we started out by shipping only our top selling SKUs to Amazon FBA and having them fulfilled through Amazon. And we kept our slower selling SKUs as in-house Amazon fulfilled by merchant.",
+        "date_added": "2026-02-12"
     }
 ]

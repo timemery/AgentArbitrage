@@ -219,10 +219,6 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         # we must lower the confidence score to warn the user.
         price_source = row_data.get('price_source')
         if price_source == 'Keepa Stats Fallback':
-            # Append a warning symbol to List at
-            if row_data.get('List at'):
-                row_data['List at'] = f"{row_data['List at']} (Est.)"
-
             # Cap Profit Confidence at 50% or mark as Low
             # (If profit_confidence calc exists, we override it)
             row_data['Profit Confidence'] = "Low (Est.)"
