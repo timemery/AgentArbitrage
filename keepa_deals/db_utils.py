@@ -171,6 +171,20 @@ def create_deals_table_if_not_exists():
             if not has_unique_index_on_asin(cursor, TABLE_NAME):
                 logger.warning("No unique index found on ASIN column. This should have been created with the table.")
 
+            # --- Data Migration: Profit_Confidence -> Deal_Trust (2026-02-12) ---
+            if "Profit_Confidence" in existing_columns and "Deal_Trust" in existing_columns:
+                logger.info("Migrating data from 'Profit_Confidence' to 'Deal_Trust'...")
+                try:
+                    cursor.execute("""
+                        UPDATE deals
+                        SET "Deal_Trust" = "Profit_Confidence"
+                        WHERE "Deal_Trust" IS NULL AND "Profit_Confidence" IS NOT NULL
+                    """)
+                    if cursor.rowcount > 0:
+                        logger.info(f"Migration successful. Updated {cursor.rowcount} rows.")
+                except sqlite3.Error as e:
+                    logger.error(f"Error migrating Profit_Confidence data: {e}")
+
             conn.commit()
             logger.info("Database schema check complete.")
 

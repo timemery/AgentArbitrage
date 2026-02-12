@@ -613,14 +613,14 @@ def get_expected_trough_price(product):
         return {'Expected Trough Price': f"${price_cents / 100:.2f}"}
     return {'Expected Trough Price': None}
 
-def profit_confidence(product):
+def deal_trust(product):
     """Calculates a confidence score based on how many offer drops correlate with a rank drop."""
     sale_events, total_offer_drops = infer_sale_events(product)
     if total_offer_drops == 0:
-        return {'Profit Confidence': '-'}
+        return {'Deal Trust': '-'}
     
     confidence = (len(sale_events) / total_offer_drops) * 100
-    return {'Profit Confidence': f"{confidence:.0f}%"}
+    return {'Deal Trust': f"{confidence:.0f}%"}
 
 def calculate_seller_quality_score(positive_ratings, total_ratings):
     """
