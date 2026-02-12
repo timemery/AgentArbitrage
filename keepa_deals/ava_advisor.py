@@ -310,6 +310,7 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         *   **Context Aware:** Apply your learned strategies (below) to identify risks.
         *   **Constraint:** Do NOT start with an introduction or preamble. Jump straight into the analysis.
         *   **Constraint:** Do NOT use markdown formatting (like **bold**). Use ONLY HTML tags (e.g., <b>, <br>, <p>) for formatting.
+        *   **Goal:** Provide a dense, high-quality analysis in approximately 150-180 words. Be concise but do not sacrifice depth.
 
         {strategy_section}
 
