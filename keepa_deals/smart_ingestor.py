@@ -279,6 +279,11 @@ def run():
 
             deals_on_page = [d for d in deal_response['deals']['dr'] if validate_asin(d.get('asin'))]
 
+            # CRITICAL: Sort Descending (Newest First) BEFORE checking watermark.
+            # Keepa API response for sortType=4 is NOT strictly sorted (e.g. Index 6 can be > Index 0).
+            # Without this sort, we might hit an old deal at Index 0 and stop prematurely, missing newer deals later in the list.
+            deals_on_page.sort(key=lambda x: x['lastUpdate'], reverse=True)
+
             found_older_deal = False
             for deal in deals_on_page:
                 if deal['lastUpdate'] <= watermark_keepa_time:

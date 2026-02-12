@@ -20,7 +20,7 @@ def inspect_latest_deals():
         print("ERROR: KEEPA_API_KEY not found in environment.")
         return
 
-    print(f"--- Diagnostic: Inspect Latest Deals ---")
+    print(f"--- Diagnostic: Inspect Latest Deals (RAW ORDER) ---")
 
     # 1. Load Current Watermark
     wm_iso = load_watermark()
@@ -33,10 +33,6 @@ def inspect_latest_deals():
         now_utc = datetime.now(timezone.utc)
         diff = (wm_dt - now_utc).total_seconds()
         print(f"Watermark vs Now: {diff:.2f} seconds difference.")
-        if diff > 0:
-            print(f"WARNING: Watermark is in the future!")
-        else:
-            print(f"Watermark is in the past.")
 
     # 2. Fetch Latest Deals (Page 0)
     token_manager = TokenManager(api_key)
@@ -50,12 +46,13 @@ def inspect_latest_deals():
     deals = deal_response['deals']['dr']
     print(f"Found {len(deals)} deals on Page 0.")
 
-    # Sort them by lastUpdate DESC (Newest First) just to be sure
-    # Keepa API returns DESC usually for sortType=4
-    deals_sorted = sorted(deals, key=lambda x: x['lastUpdate'], reverse=True)
+    print("\n--- RAW ORDER (First 10 Items from API) ---")
+    # This reveals if the API returns mixed results (Old, New, Old...)
+    # If Item 1 is OLD, but Item 2 is NEW, then iterating and stopping at Item 1 is WRONG.
 
-    print("\nTop 5 Newest Deals found:")
-    for i, deal in enumerate(deals_sorted[:5]):
+    count_new_missed = 0
+
+    for i, deal in enumerate(deals[:10]):
         asin = deal['asin']
         last_update = deal['lastUpdate']
         last_update_iso = _convert_keepa_time_to_iso(last_update)
@@ -66,44 +63,26 @@ def inspect_latest_deals():
         else:
             status = "NEW (> Watermark)"
 
-        print(f"{i+1}. ASIN: {asin} | LastUpdate: {last_update} ({last_update_iso}) | Status: {status}")
+        print(f"[{i}] ASIN: {asin} | LastUpdate: {last_update} ({last_update_iso}) | Status: {status}")
 
-        # Check specific future check logic
-        deal_dt = datetime.fromisoformat(last_update_iso).astimezone(timezone.utc)
-        now_utc = datetime.now(timezone.utc)
-        future_diff = (deal_dt - now_utc).total_seconds()
+        # Check if we would have stopped here
+        if i == 0 and status == "SEEN (<= Watermark)":
+             print("   CRITICAL: First item is OLD. Code stops immediately.")
 
-        if future_diff > 0:
-            print(f"   WARNING: Deal is {future_diff:.2f} seconds in the FUTURE!")
+    # Check for ANY new deal in the list that isn't at index 0
+    for deal in deals:
+        if deal['lastUpdate'] > wm_keepa:
+             count_new_missed += 1
 
-    # 3. Simulate Logic Check
-    print("\n--- Logic Simulation ---")
-    top_deal = deals_sorted[0]
-    top_deal_iso = _convert_keepa_time_to_iso(top_deal['lastUpdate'])
-    print(f"Top Deal Time: {top_deal_iso}")
+    print(f"\nTotal NEW deals available on Page 0: {count_new_missed}")
 
-    # Simulate 'save_safe_watermark'
-    print("Simulating save_safe_watermark logic:")
-    try:
-        wm_dt = datetime.fromisoformat(top_deal_iso).astimezone(timezone.utc)
-        now_utc = datetime.now(timezone.utc)
-        clamped_iso = top_deal_iso
-        if wm_dt > now_utc:
-            print(f"   -> CLAMPING TRIGGERED: {top_deal_iso} is > {now_utc.isoformat()}")
-            clamped_iso = now_utc.isoformat()
-            print(f"   -> Resulting Watermark would be: {clamped_iso}")
-
-            # Check if next run would see it again
-            clamped_keepa = _convert_iso_to_keepa_time(clamped_iso)
-            if top_deal['lastUpdate'] > clamped_keepa:
-                print("   -> LOOP DETECTED: Next run will see this deal again because Real Time > Clamped Time.")
-            else:
-                print("   -> No Loop detected immediately, but risk exists.")
-        else:
-            print("   -> No clamping needed.")
-
-    except Exception as e:
-        print(f"Error in simulation: {e}")
+    if count_new_missed > 0 and deals[0]['lastUpdate'] <= wm_keepa:
+        print("\nCONCLUSION: The API returns mixed/unsorted results. The code stops at the first old deal (Index 0), missing {count_new_missed} new deals.")
+        print("FIX: Must sort Page 0 explicitly by LastUpdate DESC before checking Watermark.")
+    elif count_new_missed == 0:
+        print("\nCONCLUSION: No new deals found on Page 0. System is up to date (or Watermark is too high).")
+    else:
+        print("\nCONCLUSION: First deal is New. Logic should work correctly unless subsequent sorting is weird.")
 
 if __name__ == "__main__":
     inspect_latest_deals()
