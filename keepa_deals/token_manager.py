@@ -25,7 +25,7 @@ class TokenManager:
         self.REFILL_RATE_PER_MINUTE = 5.0 # Default, will be updated from Redis/API
         # FIX: Reduced from 60 to 1 to allow Burst Mode. Keepa is token-based, not time-based.
         self.MIN_TIME_BETWEEN_CALLS_SECONDS = 1
-        self.MIN_TOKEN_THRESHOLD = 20
+        self.MIN_TOKEN_THRESHOLD = 1
         # Dynamic Burst Threshold: For low-tier plans, waiting for 280 takes too long (~1hr).
         # We start with 280 but will adjust based on refill rate.
         self.BURST_THRESHOLD = 280
@@ -63,7 +63,7 @@ class TokenManager:
         if self.REFILL_RATE_PER_MINUTE < 10:
             # 80 tokens takes ~16 mins to refill at 5/min.
             # This allows for ~4 heavy updates (20 tokens each) or ~40 light checks.
-            self.BURST_THRESHOLD = 80
+            self.BURST_THRESHOLD = 40
             # logger.info(f"Low Refill Rate ({self.REFILL_RATE_PER_MINUTE}/min) detected. Adjusted Burst Threshold to {self.BURST_THRESHOLD} to improve responsiveness.")
         else:
             self.BURST_THRESHOLD = 280

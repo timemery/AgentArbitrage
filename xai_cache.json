@@ -20528,11 +20528,14 @@
     "seasonality:Shetland|Books, Subjects|Marie Wallin Designs Ltd.": "Year-round",
     "seasonality:Sa\u0308mtliche Werke: Kritische Studienausgabe in 15 Ba\u0308nden (German Edition)|Books, Subjects, Reference, Language Study & Reference|Deutscher Taschenbuch Verlag de Gruyter": "Year-round",
     "seasonality:Civilizations of the Ancient Near East/4 Volumes Bound in 2 Books|Books, Subjects, History, Ancient Civilizations|Hendrickson Pub": "Year-round",
-    "reasonableness:Diving Indonesia's Bird's Head Seascape|Books > Subjects > Science & Math > Biological Sciences > Animals > Fish & Sharks|Mar|1372.00|Paperback|Current Rank: 4365237, 90-day Avg Rank: 2858767|DOWN (-11.6% over 3 years)|366.97": "True",
-    "reasonableness:Photographic Printing|Books > Subjects > Arts & Photography > Photography & Video|Feb|498.00|Paperback|Current Rank: 2135752, 90-day Avg Rank: 1517579|Flat|147.65": "True",
-    "reasonableness:Legal Reasoning and Legal Writing (Aspen Coursebook Series)|Books > Subjects > Law > Law Practice > Research|Mar|12.10|Paperback|Current Rank: 1959286, 90-day Avg Rank: 1923362|DOWN (-24.8% over 3 years)|6.96": "True",
-    "reasonableness:Barbara Walker's Learn-to-Knit Afghan Book|Books > Subjects > Crafts, Hobbies & Home > Crafts & Hobbies > Needlecrafts & Textile Crafts > Knitting|Feb|20.91|Hardcover|Current Rank: 1535527, 90-day Avg Rank: 1714812|DOWN (-55.7% over 3 years)|12.73": "True",
-    "reasonableness:Solutions Manual for Molecular Quantum Mechanics|Books > Subjects > Science & Math > Chemistry > Physical & Theoretical|Nov|247.98|Paperback|Current Rank: 4309687, 90-day Avg Rank: 4199881|Flat|100.68": "True",
-    "reasonableness:Persistence Creates Opportunity Building America for 50 Years: The Story of Ames Construction|Books > Subjects|May|2180.00|Hardcover|Current Rank: 873016, 90-day Avg Rank: 3042169|UP (7.7% over 3 years)|2134.75": "True",
-    "reasonableness:Chettinad Kitchen: Food and Flavours from South India|Books > Subjects > Cookbooks, Food & Wine > Regional & International > Asian|Nov|37.98|Paperback|Current Rank: 6006870, 90-day Avg Rank: 4751834|UP (78.4% over 3 years)|29.98": "True"
+    "seasonality:Diving Indonesia's Bird's Head Seascape|Books, Subjects, Science & Math, Biological Sciences, Animals, Fish & Sharks|New World Pubns Inc": "Travel",
+    "seasonality:Photographic Printing|Books, Subjects, Arts & Photography, Photography & Video|Virgin Pub": "Year-round",
+    "seasonality:Solutions Manual for Molecular Quantum Mechanics|Books, Subjects, Science & Math, Chemistry, Physical & Theoretical|Oxford University Press": "Textbook (Summer)",
+    "seasonality:Persistence Creates Opportunity Building America for 50 Years: The Story of Ames Construction|Books, Subjects|Ames Construction": "Year-round",
+    "seasonality:Batman in the Seventies|Books, Subjects, Comics & Graphic Novels, Graphic Novels, Superheroes|DC Comics": "Year-round",
+    "seasonality:Vanishing Ireland: Friendship and Community|Books, Subjects, Arts & Photography, Photography & Video, Portraits|Hachette Books Ireland": "Year-round",
+    "seasonality:Kaplan Medical USMLE Medical Ethics: The 100 Cases You are Most Likely to See on the Test (Kaplan USMLE)|Books, Subjects, Medical Books, Medicine, Medical Ethics|Kaplan Publishing": "Medical School",
+    "seasonality:A Guide to the Engineering Management Body of Knowledge|Books, Subjects|The American Society for Engineering Management ASEM": "Year-round",
+    "reasonableness:An Artist's Life: Insights into the paintings of Stuart Dunkel|Books > Subjects|Jul|29.03|None|Current Rank: 4687600, 90-day Avg Rank: 3730313|DOWN (-10.9% over 3 years)|26.85": "True",
+    "seasonality:Confianza Total, para vivir mejor (Spanish Edition)|Books, Subjects, Self-Help, Personal Transformation|Planeta Publishing": "New Year/Fitness"
 }

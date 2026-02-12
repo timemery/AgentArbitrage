@@ -56013,5 +56013,833 @@
         "confidence": "High",
         "source": "a pro tip if you plan to sell your product at Brick and Mortar stores like Walmart or Target where they're going to require your products to have the UPC barcode on them and you also plan to sell it on Amazon instead of having to create two different package designs one with the UPC barcode and another with the Amazon barcode you can save some money by designing your product packaging with the UPC on it so that the UPC is already printed on the original product this way for the units that you're shipping to Amazon to sell on Amazon you can simply cover up that UPC barcode with the FN skq label",
         "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Starting a new Amazon seller account",
+        "advice": "Choose the $40/month professional seller account over the free individual account to avoid limitations like $1 per sale fee, 40 unit cap, and lack of access to buy box, ungating, and FBA features.",
+        "confidence": "High",
+        "source": "Now, the free individual account is not going to be the option that you want to go with. Yes, it is free, but you're going to be severely limited... you're going to end up getting charged an additional dollar for every unit that you sell. And you can only sell up to 40 units.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-002",
+        "category": "General",
+        "trigger": "Beginner in Amazon selling",
+        "advice": "Focus on online arbitrage and wholesale models instead of private label, as they leverage existing demand on established listings without needing to create products or handle manufacturing.",
+        "confidence": "High",
+        "source": "Because of this, I will be focusing on arbitrage and wholesale for the remainder of the video... arbitrage and wholesale are just significantly simpler ways of selling on Amazon.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Goal to reach 10K month in 90 days",
+        "advice": "Incorporate FBM (Fulfilled by Merchant) alongside FBA to turn over cash faster by listing inventory immediately without Amazon processing delays, especially for beginners to build experience and sales metrics quickly.",
+        "confidence": "High",
+        "source": "the people who hit it in record time are heavily focusing on FBM because they can turn over their cash significantly faster... if our goal is to hit a 10K month in the next 90 days, it is definitely something that you want to consider implementing.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-004",
+        "category": "Seasonality",
+        "trigger": "During holidays like Valentine's, Easter, Halloween, back to school, or Q4",
+        "advice": "Prioritize FBM to capitalize on high demand and rising prices when FBA sellers sell out, allowing immediate listing and fulfillment without Amazon delays.",
+        "confidence": "High",
+        "source": "During Q4, if you can only fit in FBM once a year, you want to do it during Q4 because the holiday demand will skyrocket... The people who are going to capitalize are the people who are doing FBM.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-005",
+        "category": "Buying",
+        "trigger": "Sourcing inventory for online arbitrage",
+        "advice": "Use Keepa for historical data (price trends over 90+ days, sales rank, competition count) and Seller Amp for profit calculations (max cost, ROI, buy box percentage) to make data-driven buying decisions.",
+        "confidence": "High",
+        "source": "Keepa... is going to give us all of the data... what it sells for, what it's sold for in the past... how many sellers are currently on it... estimated monthly sales. Seller Amp is a profit and loss tool that will tell you whether this product is profitable.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-006",
+        "category": "Pricing",
+        "trigger": "After initial sales metrics improve",
+        "advice": "Aim for 30%+ ROI margins; start flexible with slimmer margins to build sales velocity and ungating ease, then increase as skills improve.",
+        "confidence": "High",
+        "source": "with profit margins, you want to be flexible in the start... Once our sales metrics improve... your margins are going to start to improve higher and higher... now we're at that 30% plus um ROI threshold.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-007",
+        "category": "Buying",
+        "trigger": "Gated brands or categories encountered",
+        "advice": "Use an autogate list of over 200 brands that approve without invoices; request via Instagram to access new opportunities immediately.",
+        "confidence": "High",
+        "source": "I went ahead and created an autogate list with over 200 asens. These are brands that you can get auto ungated without having to apply any invoice... All you have to do is shoot me a message on Instagram.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-008",
+        "category": "Buying",
+        "trigger": "Storefront stocking in online arbitrage",
+        "advice": "Target small storefronts with low seller ratings (0-200) and new sellers to find profitable deals, as they indicate similar access levels for beginners; avoid high-count sellers (e.g., massive wholesalers).",
+        "confidence": "High",
+        "source": "focus typically on smaller storefronts... He has zero. And also... you want to try to focus on those smaller storefronts... what you want to avoid is when the seller count is just way too high.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-009",
+        "category": "Risk",
+        "trigger": "Analyzing product listings with Keepa",
+        "advice": "Ensure steady price (pink line not spiking/dipping extremely) and sales velocity over last 90 days; avoid if competition jumps (e.g., from 2-3 to 50 sellers) or seasonal spikes.",
+        "confidence": "High",
+        "source": "Make sure there is no glaring issues... how much is it selling for which is the pink line and is the price fairly steady... what is the sales velocity look like? Is that pretty steady... We don't want the seller count to go from, you know, two to three all the way up to 50.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-010",
+        "category": "Buying",
+        "trigger": "Pre-analysis of leads in storefront stocking",
+        "advice": "Quickly scan for potential profitability (e.g., max cost under $10 for bulk items); aim to process 20+ leads per hour by skipping unlikely ones (e.g., costs >$1.68 for low-value items) to increase volume and opportunities.",
+        "confidence": "High",
+        "source": "pre-analysis... If it's taking you an hour to go through three to six leads, that's too slow... an hour to go through 20 leads, okay, that's much better... The chances of me finding this for under $1.68, probably not very good.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-011",
+        "category": "Pricing",
+        "trigger": "Purchasing from retailers like Keurig or Staples",
+        "advice": "Use auto-delivery/subscribe for discounts (e.g., $10 off), buy in multiples for free shipping (e.g., 2 units to meet threshold, saving $8), and ship to tax-free states (Oregon, Delaware, Montana, New Hampshire) via prep center to avoid sales tax (e.g., 7.25% in CA).",
+        "confidence": "High",
+        "source": "we're going to get it for $30 instead of $40... add two of these so that we can meet the free shipping threshold... we're not paying sales tax because we're shipping it off to a prep center in a tax-free state.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-012",
+        "category": "Pricing",
+        "trigger": "Finding deals on retailer sites",
+        "advice": "Apply discount gift cards (e.g., 13% off Staples via cardbearer.com) and cashback (e.g., 9% on Dollar Tree via RetailMeNot) as bonuses to reduce effective cost without counting as core profit.",
+        "confidence": "High",
+        "source": "we can go to a site like cardbearer.com... saving 13%... there's cash back opportunities. Um, I don't count cash back as profit. I just take it as a bonus.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-013",
+        "category": "Buying",
+        "trigger": "Assorted or multi-variation products (e.g., wipes packs)",
+        "advice": "If buying assortments yields unwanted variations, perform Amazon title searches for separate listings to sell them profitably; check single vs. multi-pack margins.",
+        "confidence": "High",
+        "source": "the smart way... would be to do a title search on Amazon for this listing... see if there's any opportunity there... What if there's a one pack? ... Sometimes you're going to get better margins by doing the three-pack.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-014",
+        "category": "Risk",
+        "trigger": "Auto-delivery orders from retailers",
+        "advice": "Extend delivery intervals as far as possible and organize emails/folders to track and cancel after first shipment to avoid unprofitable repeat inventory at full price.",
+        "confidence": "High",
+        "source": "you want to extend it out as far as you can. And you want to make sure that you actually cancel these... I create a little folder so then I know exactly which ones I need to go over and make sure that I cancel them after they've shipped.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-015",
+        "category": "General",
+        "trigger": "No inventory found after searching",
+        "advice": "Persist with repetition to build skills; even experienced sellers have multi-day dry spells\u2014focus on volume over perfection.",
+        "confidence": "High",
+        "source": "even at his scale, there's still times where he'll go multiple days without finding inventory. So don't get discouraged if you don't find inventory your first day.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-016",
+        "category": "Buying",
+        "trigger": "Wholesale sourcing setup",
+        "advice": "Establish LLC, EIN, and seller's permit (or equivalent) to qualify for tax-exempt wholesale purchases; use services like Busy for simplicity.",
+        "confidence": "High",
+        "source": "We need a business structure. I have an LLC... you will also need an EIN and a seller's permit... I always go to Busy just because it's so much easier.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-017",
+        "category": "Buying",
+        "trigger": "Finding wholesale distributors",
+        "advice": "Use Google Maps with niche searches (e.g., 'grocery distributor', 'hot sauce distributor', 'Mexican food distributor') near your location for local suppliers; visit in person to build relationships and stand out.",
+        "confidence": "High",
+        "source": "go to Google Maps... type in grocery distributor... get a little bit more specific like... hot sauce distributor... there's something powerful about being able to go in person and talk to your supplier.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-018",
+        "category": "Risk",
+        "trigger": "Evaluating potential wholesale suppliers",
+        "advice": "Avoid suppliers targeting only Amazon/FBA/ecom sellers (e.g., those advertising 'Amazon wholesale supplier') as they prioritize larger clients; consider lesser-known brands if Amazon demand exists via search.",
+        "confidence": "High",
+        "source": "If it says Amazon, if it says FBA... they're catering just to Amazon or e-commerce sellers, they're about it's just a bad sign... there's thousands of brands if you've never heard of before, but they sell really, really well.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-1",
+        "category": "Risk",
+        "trigger": "Dealing with B2B suppliers not suitable for Amazon",
+        "advice": "Avoid purchasing from non-legitimate or risky B2B distributors as it can lead to unsellable inventory on Amazon, resulting in capital tied up for months and partial recovery only",
+        "confidence": "High",
+        "source": "we ended up kind of getting into like a deal with not necessarily a fake distributor, but one of those people that you don't really want to deal with for Amazon, like a B2B like how you have mentioned before. So, we had made a purchase with them, couldn't even sell the product on Amazon. It was a mess. And we had that money out there for so long, for months and months and months.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-2",
+        "category": "General",
+        "trigger": "Starting with limited capital and no sales",
+        "advice": "Reinvest all profits back into inventory to scale, aiming to increase monthly inventory spend progressively (e.g., from 10K to 15K to 17-18K)",
+        "confidence": "High",
+        "source": "Amazon's such a capital-based business. So, we've just been reinvesting everything until we you know, have that significant amount of capital to buy as much inventory as possible... every single month we're saying, okay, last month we spent 10,000 on inventory, 15,000 on inventory. This month let's try and spend 17 18.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-3",
+        "category": "Seasonality",
+        "trigger": "Approaching Q4 holiday season",
+        "advice": "Switch from FBA to FBM for faster control during peak season, prepare by saving promising leads in advance to capitalize on holiday demand",
+        "confidence": "High",
+        "source": "Especially for us right now in Q4, like we have a lot more confidence... we were just like a 20k month last month but now we're on pace for 40k right now... going into Q4, we were saving a bunch of leads that we had kind of inklings that it would pop off during, you know, the holiday season... since I kind of switched to FBM for Q4 right now.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-4",
+        "category": "Buying",
+        "trigger": "Newer listings with sales rank around 9000",
+        "advice": "Purchase inventory (e.g., $1200 order) on newer listings if other metrics check out, as they can sell out quickly (within 3 days) and allow for rapid reordering",
+        "confidence": "Medium",
+        "source": "she gives us one of these leads and you know, probably a few months ago, I wouldn't have hopped on it cuz I'm like, 'Oh, it was a newer listing like 9000 days, but everything checks out now that I'm looking at it.' And uh we ended up making like a $1,200 purchase order for that product. It came in, we sold out within three days, and then we put in another $1,200 order.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-5",
+        "category": "General",
+        "trigger": "Ongoing sourcing over a year",
+        "advice": "Consistently evaluate a high volume of ASINs (aim for over 30,000 in the first year) to identify profitable opportunities and achieve scaling to 20-40K monthly revenue",
+        "confidence": "High",
+        "source": "Since we started in a year's time, I think we've looked at over 30,000 different asens just over time... It's not by mistake that you just get to like the point of getting 20, 30, 40k.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-6",
+        "category": "Buying",
+        "trigger": "New seller with no sales history",
+        "advice": "Prioritize getting initial sales even at break-even (e.g., first $2,000-$5,000 in sales) to build trust with Amazon and automatically get ungated in more brands without additional documentation",
+        "confidence": "High",
+        "source": "By far the most important thing for any new seller is just getting your sales done. Even if it's, you know, at worst, obviously you don't really want to do this, but just even breaking even like getting, you know, your first few sales is going to help you like tenfold... once you get your first like $5,000 in sales or like couple thousand in sales, Amazon sees you as like, 'Okay, you're familiar. We trust you more. Here's some more brands to sell.'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-7",
+        "category": "Risk",
+        "trigger": "Part-time operation leading to 10K monthly sales",
+        "advice": "Quit day job only after achieving consistent 10K monthly revenue part-time to ensure confidence in full-time scaling, using extra time to prepare inventory for peak seasons",
+        "confidence": "High",
+        "source": "at that point when I quit, I had already done a 10K month kind of like doing it on the side. So, you know, I was at that point it kind of gave me the confidence... being able to quit my job, focus 100% on my business is like definitely paying off, uh, tenfold for me.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-001",
+        "category": "Risk",
+        "trigger": "Relying on 1-2 brands or specific ASINs (e.g., one product like zip-ups accounting for 50% of sales)",
+        "advice": "Diversify ASINs across multiple categories to reduce risk of restrictions or restrictions on a single brand; aim to build and test more ASINs beyond initial 20-30.",
+        "confidence": "High",
+        "source": "I was relying too much on like certain asens... zip-ups that I sold and I feel like that was like almost half of my like sale basically. So yeah, from there I just decided to... source more and try to see what's actually profitable... diversify as much as possible, try to look into other categories",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-002",
+        "category": "General",
+        "trigger": "Achieving first 10K sales month",
+        "advice": "After hitting 10K, go deeper on profitable existing ASINs by replenishing while expanding wide into new categories; leverage auto-ungating for easier access to restricted categories.",
+        "confidence": "High",
+        "source": "once you hit that 10K mark, Amazon is kind of more lenient with you in terms of like the ungates. So I was auto ungated like in a lot of categories... I feel like it was a mixture of both because like the ones that I was already selling and that was profitable, I decided to go deep on those and keep replenishing those products. But other than that, like I also try to go wide",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Evaluating product for FBM profitability",
+        "advice": "Check if ungated; use Keepa graph to confirm buy box dominated by FBM sellers; verify offers tab shows downward slope in FBM inventory (indicating sales); check buy box statistics for FBM frequency; estimate shipping costs via Pirate Ship based on size/weight and input into SellerAmp shipping tab to confirm profitability.",
+        "confidence": "High",
+        "source": "go down to the keepa chart... toggle with my mouse see to see if the buy box is like dominated by FBM sellers... go into the data tab... offers and the buy box statistics... offer t like in the inventory for the FBM sellers to be actually like going downwards... check the buy box stati stat statistics... go into the the seller amp tab... go into pirate ship where you can kind of estimate how much a product will cost to ship based on its size, its weight",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-004",
+        "category": "General",
+        "trigger": "Scaling from 10K to 30K+ months",
+        "advice": "Prioritize FBM for 50% of inventory to achieve quicker cash flow (2 weeks payout vs. 1.5-3 months for FBA), enabling faster reinvestment and capital growth; combine with FBA for balance.",
+        "confidence": "High",
+        "source": "FBM it's the cash flow is so much quicker compared to FBA... once you actually sell it there's like a two week period... now I do like about like 50/50 FBM FBA... FBM played a big role in you going from that 10K month to that 30k month? Oh yeah, 100%",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-005",
+        "category": "Buying",
+        "trigger": "Starting with limited capital ($1,000-$1,500)",
+        "advice": "Focus on FBM and storefront stocking to source as many ASINs as possible; exercise patience as it may take up to 1 month to find first profitable product; once found, branch out to related ASINs; add some retail arbitrage for higher margins if possible.",
+        "confidence": "High",
+        "source": "I started with around like one and a halfk... as long as you have like at least 1K... just start storeing as many people as you can... it could take some time like you really have to be patient... probably like how much it took me to find a profitable product... try to do as much FBM as possible... storefront stocking, FBM. I think that's like the perfect route... Throw in some RA in there if you want some higher market",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-006",
+        "category": "Risk",
+        "trigger": "No profitable products found in sourcing sessions (e.g., days or a week without finds)",
+        "advice": "Treat sourcing as a repetition game; aim for 3-4 profitable products per good week by sourcing daily; detach emotion, stay data-driven with tools like Keepa/SellerAmp, and persist knowing results come with consistent reps even at 30K/month scale.",
+        "confidence": "High",
+        "source": "in a week if I do have a really good week, I'll find like maybe three or four... It's more of a repetition game... keep your head down and just keep working... even if you don't find anything for like let's say a week... reps are king... you have to be able to detach emotion and just leave it at the door",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-007",
+        "category": "General",
+        "trigger": "Scaling towards Q4 (end of year)",
+        "advice": "Set ambitious goals like 80-100K monthly sales; use pre-Q4 to test and stockpile, then go deep on high-performing ASINs/categories to capitalize on seasonal demand.",
+        "confidence": "Medium",
+        "source": "I would like to do like around the 80 to 100K month mark in the Q4 hopefully... The way that I kind of think of Q4, it's kind of like um we're just testing things out until we get to Q4 to really like just go super deep on certain things",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-008",
+        "category": "General",
+        "trigger": "Hitting initial milestones like 10K sales",
+        "advice": "Network with successful peers (e.g., those at 40-50K/month) with genuine intentions for knowledge sharing and healthy competition; post wins in communities to attract like-minded individuals for mutual growth.",
+        "confidence": "High",
+        "source": "I try to network more... with other people in the community like Brian that's doing like probably like 45k a month... healthy competition... post your wins to the group because like how you and Brian found each other by seeing each other post um the wins",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "gen-001",
+        "category": "General",
+        "trigger": "Feeling overwhelmed when starting Amazon FBA",
+        "advice": "Accept overwhelm as normal; learn and apply small pieces daily to build understanding over time",
+        "confidence": "High",
+        "source": "It is completely normal to not know what's going on, to be overwhelmed... it is going to take time. It is going to take effort. And it is going to take consistency",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "gen-002",
+        "category": "General",
+        "trigger": "Lack of confidence in business execution",
+        "advice": "Execute daily actions regardless of feelings to build confidence; start with FBM for faster real-time feedback and inventory turnover",
+        "confidence": "High",
+        "source": "Execution comes before confidence... start with Amazon FBM because they're fulfilling all of these orders and they're getting real-time feedback significantly faster",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "gen-003",
+        "category": "General",
+        "trigger": "Motivation leading to intense short bursts of work",
+        "advice": "Prioritize consistent daily actions over intense sporadic efforts; even small daily progress allows subconscious skill growth",
+        "confidence": "High",
+        "source": "Consistency over intensity... I would rather you take it slow, consistent daily action a fraction of the time, but do it every single day than to show up once a week for eight hours",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "gen-004",
+        "category": "General",
+        "trigger": "Lack of adaptation in daily routines",
+        "advice": "Practice effective consistency by learning, adapting, and repeating what works while stopping what doesn't",
+        "confidence": "High",
+        "source": "Effective consistency... You need to learn. You need to grow. You need to adapt... What is working right now and let me do more of that. What is not working? Let me stop doing that",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "gen-005",
+        "category": "General",
+        "trigger": "Attempting multiple business models simultaneously like arbitrage and wholesale",
+        "advice": "Focus on mastering one model first, such as arbitrage, before adding others to avoid divided attention and halfway results",
+        "confidence": "High",
+        "source": "Clarity is king... if you're trying to chase two rabbits, you're going to catch none... start with one and then they add the other later on. Once they have mastered that first business model",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "Exposure to online noise and complaints about Amazon FBA viability",
+        "advice": "Ignore noise like gating or market saturation; focus on reality where sellers are succeeding quickly despite challenges",
+        "confidence": "High",
+        "source": "Identify noise from reality... Noise. Everything is gated. Amazon is really hard... Reality. They just didn't try very hard... clients starting in the exact same Amazon marketplace... building businesses faster than ever",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "season-001",
+        "category": "Seasonality",
+        "trigger": "Current time period before peak seasons",
+        "advice": "Start now to prepare inventory for back to school and Q4 opportunities when demand is high",
+        "confidence": "High",
+        "source": "I think right now is the best time of year to get into Amazon FBA so that you're ready for back to school. You're ready for Q4 because right now the opportunity is just as good as it's ever been",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-1",
+        "category": "General",
+        "trigger": "No products found in first 45 days",
+        "advice": "Source consistently day by day using storefront stocking to find first profitable product and build momentum",
+        "confidence": "High",
+        "source": "to get my first product it took almost 45 days. ... I started sourcing like storebone stocking consistently day by day, day by day and uh then finally I got a product.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-2",
+        "category": "Buying",
+        "trigger": "Beginner starting Amazon arbitrage",
+        "advice": "Start with storefront sourcing to capitalize on others' work for faster wins and motivation",
+        "confidence": "High",
+        "source": "as a beginner we should start storeing. ... you're capitalizing on the work that somebody else has already done. They've already done the work. Let's just go look at their storefront and see what we can find too.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-3",
+        "category": "Pricing",
+        "trigger": "Product not selling after 2-3 weeks (e.g., 20-25 units)",
+        "advice": "Set price at break even to liquidate inventory quickly, potentially selling all units in 25-30 minutes",
+        "confidence": "High",
+        "source": "sent a product like 20 25 units two or three weeks he didn't sell any product single product then I I was trying to sell this product by break even then I set the price and within 25 or 30 minutes every unit were sold",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-4",
+        "category": "Buying",
+        "trigger": "Before purchasing any product",
+        "advice": "Analyze Keepa graph properly to avoid losses from price spikes or decreases post-listing",
+        "confidence": "High",
+        "source": "didn't understand the keepraph and I made some bad purchase ... price uh spike after listing the product. Uh uh the price decrease then I lost money. So I think uh before buying any products uh read the keeper graph properly",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-5",
+        "category": "Risk",
+        "trigger": "IP or trademark violation (e.g., loss of $500)",
+        "advice": "Remove the listing, dispose of the product, appeal if needed; one issue won't shut down account",
+        "confidence": "High",
+        "source": "we face we got some IP violation. So this is how we lost like uh 500. Another issue was like trademark issue ... Remove the listing. ... dispose the product. ... it's not the end of the world if you get them. Just Clean up the issue, appeal it, and then move on",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-6",
+        "category": "General",
+        "trigger": "No products found in one week",
+        "advice": "It's normal; stay consistent, take action daily, and try new strategies or stores",
+        "confidence": "High",
+        "source": "Still sometimes I couldn't find in product like one week. ... it's completely natural brother and uh keep stay consistent everything will be okay. ... sometimes we try a new strategy or we try a new website or we try a new store and we just don't have any luck. Okay. So, then we just keep it moving.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-7",
+        "category": "Seasonality",
+        "trigger": "Approaching Q4 with current 20K monthly revenue",
+        "advice": "Scale up arbitrage efforts to easily hit 50K annual goal due to higher seasonal sales",
+        "confidence": "Medium",
+        "source": "especially during quarter four. You guys will easily hit that if you're already at 20k. ... Uh we have a plan to hit 50k in this year.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-001",
+        "category": "Buying",
+        "trigger": "Listings with more than 5 sellers",
+        "advice": "Avoid purchasing items from listings with more than 5 other sellers to reduce competition.",
+        "confidence": "High",
+        "source": "like I would only look at listings that had less than five people on it. If it had more than five other sellers on it, it was a no-go for me.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-002",
+        "category": "Buying",
+        "trigger": "Popular brands like Nike or Adidas",
+        "advice": "Steer clear of highly competitive, gated brands like Nike and Adidas due to high competition, potential legal issues, and low profits.",
+        "confidence": "High",
+        "source": "the Nike and Adidas, like yeah, it's super sexy and popular, but like everybody's selling Nike and Adidas. You're not going to make any profit off of it... Then you're going to lose your ass because you have to pay court fees or whatever because Nike comes after you.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-003",
+        "category": "Buying",
+        "trigger": "Niches like fishing, camping, or everyday miscellaneous items",
+        "advice": "Target less competitive niches such as outdoor activities (fishing, camping) or everyday items that sell quickly, avoiding 'sexy' popular categories.",
+        "confidence": "High",
+        "source": "we focused really heavily on like fishing and camping supplies... The little miscellaneous things that you probably would never think of that everybody uses on a daily basis that sell really fast and get out the door really fast.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-004",
+        "category": "General",
+        "trigger": "Starting with limited capital",
+        "advice": "Leverage credit (e.g., $13-14k) alongside minimal cash ($2k) to scale quickly, but ensure tactical sourcing to avoid failure despite capital.",
+        "confidence": "Medium",
+        "source": "We put up like 13,000 almost $14,000 to start this with in credit though... Not like I think we together um put in like two grand into this between the two of us um and then the rest we used credit and we leveraged that.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "Exciting profitable-looking deals",
+        "advice": "Be patient and thoroughly check product listings, names, and details before buying in bulk to avoid mismatches or unprofitable purchases.",
+        "confidence": "High",
+        "source": "not being very like penyed when you're looking at things and like actually actually looking at the name of the product that you're buying versus the name that it is on Amazon and looking at the full listing... that's tripped us up three times.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-006",
+        "category": "Buying",
+        "trigger": "Online sourcing opportunities",
+        "advice": "Prioritize online arbitrage over retail (70/30 split) for faster filtering, higher margins, and efficiency without physical store visits.",
+        "confidence": "High",
+        "source": "it's like 7030. Yeah. like uh and 70 being like the re or not retail but online arbitrage 30% uh because the margins are I wouldn't say quite a bit lower but they are lower than that of the uh online arbitrage",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-007",
+        "category": "General",
+        "trigger": "FBM shipping",
+        "advice": "Account for shipping costs in FBM profitability calculations, as tools may not auto-include them, leading to overestimation of profits.",
+        "confidence": "High",
+        "source": "the biggest thing that I had forgotten was the cost to ship things out from our house for doing FBM because it doesn't automatically add in like a whatever fee. It's just zero.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-008",
+        "category": "Risk",
+        "trigger": "Retail arbitrage items",
+        "advice": "Always remove stickers from retail-sourced items before shipping to avoid customer complaints and negative feedback.",
+        "confidence": "High",
+        "source": "Take the stickers off of your like stuff that you buy for retail arbitrage. Remember to take those stickers off because if you don't and somebody complains, it's a bad day for you.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-009",
+        "category": "General",
+        "trigger": "FBA shipments",
+        "advice": "Enable 2D barcodes on shipping labels to speed up inventory processing and make items available for sale faster.",
+        "confidence": "High",
+        "source": "the 2D bar codes. 2D barcodes that they put on the shipping labels. Um, turning those on and using those because what happens is they scan the barcode and then it automatically is in your inventory",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-010",
+        "category": "Seasonality",
+        "trigger": "Peak season (Q4)",
+        "advice": "Use FBM strategically around Q4 peak season for quick growth, but transition to FBA for scalability to avoid burnout.",
+        "confidence": "Medium",
+        "source": "as long as you can fit it in for quarter 4, then that's like the only time that you re I mean you can do it all year long obviously and you grow really fast, but as long as you can fit it in around quarter 4 peak season",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "New seller with limited budget",
+        "advice": "Use middleman strategy: Buy brand name products from wholesalers and sell on existing Amazon listings instead of creating your own product.",
+        "confidence": "High",
+        "source": "Instead you should focus on the new way which is the middleman strategy. Now the middleman strategy is simply you buy brand name products which are already known by the customers.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat2",
+        "category": "Buying",
+        "trigger": "Starting capital under $3,000",
+        "advice": "Start with less than $2,000-$3,000 by sourcing from local wholesalers via Google Maps search 'wholesalers near me' and opening trade accounts.",
+        "confidence": "High",
+        "source": "Instead you can start this with less than 2 to 3,000 or $2 to $3,000. ... step one, you're going to go on Google Maps and type in wholesalers near me.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat3",
+        "category": "Buying",
+        "trigger": "Access to wholesaler price list",
+        "advice": "Review entire price list, check products on Amazon for sales velocity, and buy in bulk those selling well.",
+        "confidence": "High",
+        "source": "I'm going to go through the entire price list and I'm going to check these products on Amazon to find the ones that are actually selling well and then just simply buy it in bulk from this supplier.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat4",
+        "category": "Pricing",
+        "trigger": "Product buy price \u00a32.29, retail price higher",
+        "advice": "Buy at wholesale (\u00a32.29 or cheaper in bulk) and sell at retail price on Amazon without creating new listing.",
+        "confidence": "High",
+        "source": "you can buy this product for \u00a3229. If you buy it in bulk, you can get it for even cheaper. And then you can sell the same product for the retail price.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat5",
+        "category": "Risk",
+        "trigger": "Potential unsold inventory",
+        "advice": "Perform test shipment: Buy 10-50 units, send to Amazon FBA, monitor sales before committing to bulk order.",
+        "confidence": "High",
+        "source": "doing a test shipment. ... I would buy anywhere from 10 to 50 units of that product, ship it off to Amazon and just see if this product is going to sell well or not.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat6",
+        "category": "Pricing",
+        "trigger": "Using Keepa for analysis",
+        "advice": "Use Keepa to check price history; avoid products where historical prices (e.g., \u00a310) would eliminate profit margin (buy \u00a35, sell \u00a315).",
+        "confidence": "High",
+        "source": "you can use keeper which is basically it allows you to see the data of the product such as the price history ... So you don't want to buy a product that you might buy for \u00a35 and you're selling \u00a315 but in the past that product has gone to \u00a310.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat7",
+        "category": "General",
+        "trigger": "Existing Amazon listing with high reviews",
+        "advice": "Join listings with established sales, e.g., 16,000 reviews and multiple sellers, to leverage existing traffic without ads or review building.",
+        "confidence": "High",
+        "source": "this is the buy box on this listing right here, which has 16,000 reviews. There is currently 16 other sellers selling this exact product. ... you can use existing listings that are already selling well on Amazon and jump on it.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat8",
+        "category": "Buying",
+        "trigger": "Limited local wholesalers (e.g., only 5)",
+        "advice": "Expand to online wholesalers by searching 'wholesalers UK' and open accounts to access more price lists.",
+        "confidence": "High",
+        "source": "You can then just write wholesalers UK and then you will have list of wholesalers that you can go through and start opening an account with them.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat9",
+        "category": "General",
+        "trigger": "Approaching wholesalers",
+        "advice": "Create professional image: Use professional email (e.g., company.co.uk) and simple website (e.g., via Wix for \u00a31/month domain) to open trade accounts.",
+        "confidence": "High",
+        "source": "create little professional image of yours ... a professional email address. ... a simple landing page or a website ... buy this package which is going to cost you \u00a31 a month for the first 12 months.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat10",
+        "category": "Risk",
+        "trigger": "Old way of selling (own product)",
+        "advice": "Avoid old method costing \u00a33,000-\u00a335,000 upfront plus \u00a31,000-\u00a33,000 in ads; opt for middleman to minimize costs and risks.",
+        "confidence": "High",
+        "source": "it's going to cost you \u00a33 to \u00a335,000. And then you're going to spend money in ads, which is going to cost you another 1 2 3,000.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-price-1",
+        "category": "Pricing",
+        "trigger": "Competing sellers on the same listing",
+        "advice": "Price lower than competitors to win the buy box majority of the time",
+        "confidence": "High",
+        "source": "So, if you are priced lower than someone in the buy box, you're going to win the buy box majority of the times. I say it's the biggest factor",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-fulfill-1",
+        "category": "General",
+        "trigger": "Choosing fulfillment method",
+        "advice": "Use FBA fulfillment to get Prime badge and favor over FBM",
+        "confidence": "High",
+        "source": "Amazon favors sellers who have FBA as their fulfillment method or they enrolled into the Prime badge... FBA fulfillment method means you will have this Prime 1 day icon",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-stock-1",
+        "category": "Risk",
+        "trigger": "Low stock levels",
+        "advice": "Send more stock to Amazon for better distribution across fulfillment centers",
+        "confidence": "High",
+        "source": "The more stock you have sent to Amazon, the better it is... if you send more, they can distribute it across multiple fulfillment centers around the country",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-stock-2",
+        "category": "Risk",
+        "trigger": "Running out of stock",
+        "advice": "Avoid running out of stock as it resets buy box credibility",
+        "confidence": "High",
+        "source": "But more important than just sending more stock is not running out of stock. When you run out of stock, your buy box fully resets",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-perf-1",
+        "category": "General",
+        "trigger": "High refund rates or poor product quality",
+        "advice": "Maintain low refunds, good product quality, and positive reviews to win buy box more often",
+        "confidence": "High",
+        "source": "Seller performance. How often are you getting refunds? Is the product quality actually good? And you're getting good reviews on the listing",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-feedback-1",
+        "category": "General",
+        "trigger": "Seller feedback below 92% positive over 12 months",
+        "advice": "Achieve high seller feedback (e.g., 92% positive over 12 months) to increase buy box wins",
+        "confidence": "High",
+        "source": "The fifth and final factor is your seller feedback... 92% positive rating over 12 months which is good. If you have bad rating over the last 12 months that's telling Amazon that you're just a crappy seller",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ph-match-1",
+        "category": "Pricing",
+        "trigger": "Starting to sell a new product",
+        "advice": "Price match the lowest FBA seller to avoid price wars",
+        "confidence": "High",
+        "source": "The first pricing hack is price matching. Whenever you start selling your product on Amazon, always start by price matching the lowest FBA seller",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ph-night-1",
+        "category": "Pricing",
+        "trigger": "Competitor undercuts after price matching",
+        "advice": "After 6:00 or 7:00 PM, reduce price below competitor until 1:00 AM, then revert to normal to capture evening/night sales",
+        "confidence": "High",
+        "source": "The second pricing hack... night owl pricing... after 6:00 or 7:00, you're going to reduce your price below them... until maybe 1:00 at midnight and then you're going to take your price back to normal",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ph-patience-1",
+        "category": "Pricing",
+        "trigger": "Competitor continues undercutting even in evenings",
+        "advice": "Wait patiently for the competitor to run out of stock, then sell at profitable price",
+        "confidence": "High",
+        "source": "Pricing hack three... patience. Yes, the seller who's selling that product eventually will run out of stock. And once they run out of stock, then you can continue selling that same product at the price where you're making a profit",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ph-reprice-1",
+        "category": "Pricing",
+        "trigger": "Winning the buy box",
+        "advice": "Use repricers to automatically increase price when winning buy box to maximize profit",
+        "confidence": "High",
+        "source": "Bonus hack... using repricers... enroll your product into automatic repricing. What this will do is it will maximize your profit every time you're winning the buy box... It will actually increase your price so that you can make more money",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-auto-1",
+        "category": "General",
+        "trigger": "Auto ungating page appears when requesting approval for brand or category",
+        "advice": "Select reseller/distributor as your role; answer yes to questions about selling authentic products and being a legitimate reseller",
+        "confidence": "High",
+        "source": "Autogate is basically a bunch of questions Amazon will ask you and the answers are pretty much the same. You have to say are you a redistributor slash a reseller/distributor a manufacturer or both? You just want to say you're a reseller/distributor. Then for this question the answer is yes this then answers this. For this the answers all of them above as well and the product you're selling are authentic.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-invoice-1",
+        "category": "General",
+        "trigger": "Application requires invoice submission for brand ungating",
+        "advice": "Upload a paid invoice from a wholesaler or distributor for at least 10 units of the specific brand; invoice must be within 180 days, include your name and address matching Amazon account, show manufacturer/distributor details, and be in PDF or JPEG format",
+        "confidence": "High",
+        "source": "you will need to upload an invoice, an invoice from a wholesaler that shows that you have bought 10 units of whatever brand you're trying to get ungated for. Now, the product that you have bought from this wholesaler needs to be from this specific brand... the invoice has to must be within 180 days. So, it cannot be older than 180 days. It should include your name and your address. Make sure it's matching your information same as your seller account... include name and address of the manufacturer/distributor... show the combined purchase of at least 10 units... Make sure it's a PDF invoice or image uh JPEG uh and it's a paid invoice.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-units-1",
+        "category": "General",
+        "trigger": "Buying products in packs or cases for ungating invoice",
+        "advice": "Ensure invoice shows at least 10 individual units; if product comes in a pack of 10, buy 10 packs to show 10 units on invoice, as a single pack counts as 1 unit",
+        "confidence": "High",
+        "source": "if you're buying one product or one unit, right, but this comes in a pack of 10, then it won't work. If it if if you can only buy this product in a pack of 10, then you will have to buy 10 of these packs and then so it will show you 10 on the invoice... there is one case of 10 units count as one unit. Exactly what I was saying that if you're buying a case of 10 then on the in it will just say one one unit because although you're buying 10 units, the wholesale will just put one. So you need to buy 10 units um or 10 packs of 10 only then you'll be able to see that number 10",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-category-1",
+        "category": "General",
+        "trigger": "Gated in a specific category when adding product",
+        "advice": "Purchase any product from the category (ideally the same or cheaper version of the product you're trying to sell) from a wholesaler, obtain invoice for at least 10 units with matching name/address, and submit for ungating",
+        "confidence": "High",
+        "source": "category ungating is exactly the same as the brand ungating. The main difference is is that when you're trying to un get it for this, you just need to buy a product, any product from that category. Ideally, buy the same product that you have tried adding it to the category... Buy the same product or a cheaper version of that product. As long as the product is from the same category... you need to upload an invoice and submit that invoice make sure it's an invoice that has at least 10 units",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-invoice-tips-1",
+        "category": "General",
+        "trigger": "Preparing invoice for ungating submission",
+        "advice": "Use a finalized paid invoice (not proforma or unpaid); non-editable format like PDF/JPEG/PNG; 10 units of one specific product (no mixing); include personal name even if under company; bill-to address must match Amazon account exactly",
+        "confidence": "High",
+        "source": "make sure I already mentioned it must be a finalized invoice not a per performer or unpaid invoice. It has to be an invoice with the balance it has been paid... must be in a non-editable format. So it can't be a word document... do not mix and match your 10 units. So if you're ordering this product plus this marker, then you can't do five units of this and five units of that. It has to be 10 units of one specific product... under your name not the company name... include your name as well... the address which is same as your Amazon account... ship to and bill to should match... the bill to should be exactly same as your Amazon account must match the Amazon information",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-rejection-1",
+        "category": "Risk",
+        "trigger": "Ungating application gets rejected",
+        "advice": "Reapply immediately or print the invoice and submit a photo of it; persist as approvals are handled by a bot system checking for matches, not a human",
+        "confidence": "High",
+        "source": "If you do get rejected, just apply again or just take the invoice, print it out, and take a picture of the invoice and then submit it. Sometimes you just have to keep applying and you'll get ungated... the ungating application goes through a bot system. It's not a real human looking on the other side... It's just a bot that is going to look at your application and if it looks at all the things and it matches, it's going to go ahead",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-transparency-1",
+        "category": "General",
+        "trigger": "Product requires transparency code approval",
+        "advice": "Enter the validated transparency code from the product's packaging into the application to get approved for that specific product",
+        "confidence": "High",
+        "source": "for the as/transprarency code. So if you get it for that you will have to fill this details in and then you will have to put the validated transparency code which will be on the actual product and you will need to submit that and then you will get ungated",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ungate-noapp-1",
+        "category": "Risk",
+        "trigger": "Product listing shows 'not accepting applications' or other limitations",
+        "advice": "Avoid attempting to sell; Amazon is not accepting new sellers for this product (affects less than 1% of products)",
+        "confidence": "High",
+        "source": "there is not accepting application restrictions... there are products where Amazon does not accept new applications. So you just can't get approved. But this is only I would say not even 1% of products... This product has other listing limitations. This is basically they're not accepting any new applications at the moment. So unfortunately, you can't sell this product at all",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-001",
+        "category": "General",
+        "trigger": "Launching a new product",
+        "advice": "Order initial inventory to sustain for 4 months based on estimated sales; for example, if predicting 300 units/month, order 1200 units.",
+        "confidence": "High",
+        "source": "if we want our inventory to get sustained for four months so we have to order 1200 units of this product",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-002",
+        "category": "Seasonality",
+        "trigger": "Product with seasonal sales (e.g., stationary during school season)",
+        "advice": "Prepare and stock inventory 2-3 months before the peak season starts to avoid out-of-stock during high demand.",
+        "confidence": "High",
+        "source": "if the product is Caesar so we need to prepare for the inventory just before 2-3 months of good sales",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-003",
+        "category": "Buying",
+        "trigger": "Analyzing competitor sales using tools like AMZ Scout",
+        "advice": "Estimate initial monthly sales as half of a top competitor's sales; e.g., if competitor sells 750 units/month, assume 350-400 units for new launch.",
+        "confidence": "High",
+        "source": "we can just consider the sale as a half of this competitor for example This Server is selling 750 sales per month so we can just assume 350 to 400 sales initially",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-004",
+        "category": "Risk",
+        "trigger": "After 2 months of sales post-launch",
+        "advice": "Place reorder with supplier to account for 60 days total lead time (20 days production + 40 days shipping) to ensure continuous stock and avoid out-of-stock.",
+        "confidence": "High",
+        "source": "we must place the second order to the supplier two months after the launching of the product so we can just get the inventory on time",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-005",
+        "category": "Seasonality",
+        "trigger": "Products with linear sales graph (consistent throughout year)",
+        "advice": "Use average monthly sales from competitor data (e.g., 695-700 units/month) without seasonal adjustments for inventory planning.",
+        "confidence": "High",
+        "source": "this graph is a linear graph... so we can consider 6.95 which is 700 sales per month for this competitor",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-006",
+        "category": "Risk",
+        "trigger": "Out-of-stock during peak season (e.g., Q4 December)",
+        "advice": "Monitor inventory closely after ranking to prevent stockouts, as recovery can take 3-4 months and result in lost revenue (e.g., missed double sales in December).",
+        "confidence": "High",
+        "source": "our product got out of stock in November... in this December we got a golden chance to get double seats from that but unfortunately due to wrong Inventory management we got Auto stock in December and lose a great opportunity... it actually take us three to four months to get back",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inv-mgmt-007",
+        "category": "General",
+        "trigger": "Competitor with BSR < 10,000 and badges like Amazon's Choice",
+        "advice": "Analyze sales trends using AMZ Scout extension to fetch monthly sales data and historical graphs for inventory forecasting.",
+        "confidence": "High",
+        "source": "the BSR of this product in the kitchen and diary category is 10 368... the monthly sale of this listing is 695... click on this number of sale... I will be able to see the graph of throughout the year",
+        "date_added": "2026-02-12"
     }
 ]
