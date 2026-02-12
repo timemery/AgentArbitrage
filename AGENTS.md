@@ -149,7 +149,9 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 - **Sorting:** When using `dateRange: 4`, you MUST enforce `sortType: 4` (Last Update) to ensure the API returns fresh data and not stale deals from 2015.
 
 ### Critical Fixes & Stability (Feb 2026)
+- **Smart Ingestor (v3.0):** The `Smart Ingestor` replaces all legacy tasks. It explicitly sorts deals by `lastUpdate` (descending) to avoid premature stops and implements a "Zombie Data Defense" to repair broken deals.
 - **Token Starvation & Zombie Locks:** The system uses a **Shared Redis Token Bucket** (`keepa_deals/token_manager.py`) to coordinate API usage. To prevent locks from persisting after a crash, the kill script (`kill_everything_force.sh`) now performs a "Brain Wipe" (FLUSHALL + SAVE) on Redis. **Do not remove this cleanup logic.**
+- **Token Burst Mode:** The `TokenManager` now waits for a "Burst Threshold" (40 or 280) before resuming after a pause. This "Empty the Bucket" strategy maximizes throughput on low-refill plans.
 - **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not attempt to "guess" shipping costs for MFN sellers.
 - **Seller Name Preservation:** To save tokens, the system performs "Lightweight Updates" that lack seller names. It uses the `Seller ID` to preserve the existing human-readable name. If you modify `processing.py`, ensure this logic remains intact to avoid overwriting names with raw IDs.
 
@@ -167,4 +169,4 @@ Developers often split complex tasks into two stages:
 
 **Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
 
-*   **Backfill Chunk Size:** Default **20**, but dynamically reduces to **1** if Keepa refill rate is < 20/min to prevent starvation.
+*   **Smart Ingestor Batch Size:** Fixed at **5 ASINs** to maximize deficit utilization.

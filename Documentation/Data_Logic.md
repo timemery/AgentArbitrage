@@ -14,7 +14,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   Basic attributes (ASIN, Title, Category) are pulled from the Keepa `/product` API.
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
     *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
-    *   **Dynamic Batching:** The system dynamically adjusts the number of ASINs fetched per request. Standard batch is **20**, but this automatically reduces to **1** if the Keepa API refill rate drops below 20/min to prevent timeouts and starvation.
+    *   **Batching:** Uses a fixed batch size of **5 ASINs** to maximize deficit spending efficiency (Smart Ingestor v3.0).
 
 2.  **Seller & Price Analysis**:
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
@@ -32,6 +32,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
     *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed by a drop in **Sales Rank** (Amazon registered the sale) within a **240-hour** (10-day) window.
+    *   **Sparse Data Fallback:** If no rank drop is found immediately, the system looks ahead **30 days**. If the next available rank is lower (better) than the rank before the offer drop, a sale is inferred. This allows capturing sales for slow-moving items with sparse rank history.
     *   **Output:** A list of `sale_events` used for all downstream analytics.
 
 4.  **Analytics & Seasonality**:
@@ -44,12 +45,13 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-        *   **Fallback (High Velocity):** **REMOVED**. The system no longer uses `Used - 90d avg` as a fallback. If no mode/median can be found from confirmed sales, the deal is rejected.
+        *   **Fallback (Silver Standard):** If Inferred Sales < 1 (insufficient data), the system falls back to using **`stats.avg365`** (Used or Used-Good).
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
-    *   **Ceiling Guardrail:** The "List at" price is capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
-    *   **Verification:** Queries AI (`grok-4-fast-reasoning`): "Is a peak price of $X.XX reasonable for this book?" Context provided includes Binding, Page Count, Image URL, and Rank.
-    *   **Exclusion:** If AI says "No" or calculation fails, the deal is dropped.
+    *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass two checks:
+        1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
+        2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context (Binding, Page Count, Rank). If AI says "No", the deal is dropped.
+    *   **Exclusion:** If validation fails, the deal is dropped.
 
 6.  **Business Math**:
     *   **Logic:** `keepa_deals/business_calculations.py`.
@@ -142,7 +144,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Profit Confidence` (Profit Trust)**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: `(Count of Inferred Sales / Count of Offer Drops) * 100`.
-    -   **Meaning**: High % means offer drops reliably correlate with sales rank drops (confirmed sales). Low % implies noise or fake drops.
+    -   **Fallback Status**: If the deal uses the `avg365` fallback price (because inferred sales were insufficient), this field is set to **"Low (Est.)"** to warn the user that the price is an estimate.
+    -   **Meaning**: High % means offer drops reliably correlate with sales rank drops. "Low (Est.)" means the price is a historical average, not derived from confirmed recent sales.
 
 ### AI-Driven Seasonality and Pricing
 
