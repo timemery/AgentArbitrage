@@ -54304,5 +54304,1714 @@
         "confidence": "High",
         "source": "Check reviews, seller (Amazon or third-party), and return policy for safety.",
         "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-1",
+        "category": "General",
+        "trigger": "Book description limited to 3,000 characters",
+        "advice": "Maximize usage by incorporating keywords and benefits; use PASTOR method (Problem, Amplify, Story, Testimony, Offer, Response) to structure compelling copy at a 5th-grade reading level with spacing for readability.",
+        "confidence": "High",
+        "source": "we have 3,000 characters right we have we have 3,000 characters to write a book description on Amazon... PASTOR method... fifth grade reading level be able to read this and not get caught up okay so always put spaces between stuff",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-2",
+        "category": "General",
+        "trigger": "Creating A+ content for new books",
+        "advice": "Start with company logo module (600x180 pixels in Canva); use Amazon's AI tool by entering ISBN, selecting themes like 'light backyard', and generating images; edit AI outputs in Canva (970x600 pixels) to fix errors and ensure no false advertising.",
+        "confidence": "High",
+        "source": "I love to start with the company logo this is the pening... 600 by 180... AI ready standard image... generate content we're going to put in our ISBN number... 970 time 600 pixel",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-3",
+        "category": "Seasonality",
+        "trigger": "Seasonal books like Easter journals",
+        "advice": "Incorporate seasonal keywords (e.g., 'Easter basket stuffer') in title, description, and backend; design covers and A+ content with thematic elements (e.g., spring-inspired floral) to target holiday buyers like grandmas or aunts.",
+        "confidence": "High",
+        "source": "Easter basket stuffer... vibrant spring inspired FL recover... celebrate spring and Easter by journaling your gratitude",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-4",
+        "category": "General",
+        "trigger": "Low sales or no conversions on new books",
+        "advice": "Optimize sales page before running ads; build A+ content using AI to paint 'what's in it for me' picture; ensure book specs match description (e.g., 100 pages, 6x9 inches, soft cover) to boost reviews and trust.",
+        "confidence": "High",
+        "source": "if you're struggling to get sales... leveraging A+ content... I would never try to do that without having a really great book description... 100 Pages... 6 by 9",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-5",
+        "category": "Risk",
+        "trigger": "Potential account issues from poor optimization",
+        "advice": "Conduct keyword research upfront for title, subtitle, and pen name to avoid unchangeable errors post-publish; use unique pen names to stand out and prevent clutter (e.g., avoid generic like 'springly press' if overused).",
+        "confidence": "Medium",
+        "source": "we cannot change the title this is why keyword research is important... pen name which is also a reason why we do keyword research too... it has to cut through the Clutter of an actual press",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strategy-6",
+        "category": "General",
+        "trigger": "Time constraints in creating visuals",
+        "advice": "Use Canva Pro ($15/month) for templates and resizing (e.g., resize covers to 600x180 for logos); leverage AI tools like ChatGPT or Amazon AI for mockups (e.g., 'grandmother holding journal') to save time over third-party services.",
+        "confidence": "High",
+        "source": "you do I do believe you need a canva pro account for this it's 122 $15 a month... I need a mockup image generated of a grandmother holding this journal... it pays for itself once your books start making money",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a1",
+        "category": "General",
+        "trigger": "Low-content books like coloring books",
+        "advice": "Use strong A+ content as the second most important aspect after the cover to visually showcase the book and drive conversions",
+        "confidence": "High",
+        "source": "having strong A+ content is absolutely essential I would even go as far as saying it's the second most important aspect of a book listing after a cover",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a2",
+        "category": "General",
+        "trigger": "Creating A+ content",
+        "advice": "Utilize A+ content visually with photos, minimal text, and key points to double conversion rates; avoid overwhelming with too many details",
+        "confidence": "High",
+        "source": "when utilized correctly they can easily double the conversion rate of our listings a lot of people don't understand how to use this tool effectively and they overwhelm the customers with too many details the correct way to utilize a plus would be to Showcase what customers can expect from our book at a glance not with a bunch of text",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a3",
+        "category": "General",
+        "trigger": "High-content books in A+",
+        "advice": "Include book cover, simple points, testimonials, and bite-sized text; keep it visual and not overwhelming",
+        "confidence": "High",
+        "source": "features the book cover as well as some simple points that the author wanted to drive home over here we can see a section where he included a testimonial as well as some bite-sized pieces of text which are easily digestible",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a4",
+        "category": "General",
+        "trigger": "Coloring book A+ content",
+        "advice": "Feature front cover, title, author, dimensions, single-sided printing, bleed-through prevention diagram, sample coloring pages in color and black/white, and a comparison table",
+        "confidence": "High",
+        "source": "we get a nice look on the front cover of the book as well as the title and the author over here we can see some information about the book the dimensions as well as the fact it's print printed single sided the author also included this handy little diagram which tells us to put a blank page behind the page that we're coloring in order to prevent bleed through over here you can see they're featuring their coloring pages some of them in color some of them in black and white",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a5",
+        "category": "General",
+        "trigger": "Any A+ content design",
+        "advice": "Always include a comparison table at the bottom to feature other books for free, including options like reviews, prices, add-to-cart buttons, and custom metrics like beginner-friendly, age suitability, dimensions, single-sided, page count",
+        "confidence": "High",
+        "source": "they utilize a comparison table in order to feature the other books this comparison table is an absolute must have for any A+ content in my opinion because it gives us the opportunity to feature our other books for completely free",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a6",
+        "category": "General",
+        "trigger": "Low-content book like notebook A+",
+        "advice": "Show front cover, interior, dimensions, key features, comparison table for other notebooks, mention hardcover versions, and composition of all available books",
+        "confidence": "High",
+        "source": "we're greeted by this picture of the front cover of the notebook when we scroll down we see again the front cover as well as the interior the dimensions and the key features of the notebook and then when we scroll down further we can see a comparison table where the author is utilizing this space in order to Market their other notebooks",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a7",
+        "category": "General",
+        "trigger": "Designing A+ modules",
+        "advice": "Use standard image header with text module for 970x600 pixel images to maximize real estate; design images in Canva for custom text, fonts, and placement instead of using built-in text boxes",
+        "confidence": "High",
+        "source": "the one which allows me to have the most real estate possible is this one St standard image header with text as it allows us to input an image which is 970 by 600 pixels by using large images and designing them entirely in canva you're not constrained to the format provided by Amazon you can use any text font and put it wherever you like",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a8",
+        "category": "General",
+        "trigger": "A+ content creation for coloring books",
+        "advice": "Include front cover with dimensions, brand, key features in first module; show sample coloring pages in second module",
+        "confidence": "High",
+        "source": "for my design I decided to include the front cover of the book the dimensions my brand name as well as some key features of my book and in the second part of my A+ I simply decided to just include the coloring pages from my coloring book so the customer can get an idea of what the interior looks like",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a9",
+        "category": "General",
+        "trigger": "Applying A+ content",
+        "advice": "Create unique A+ content for each book rather than generic ones applied to multiple; generic comparison tables can be reused but unique content has massive impact on conversions",
+        "confidence": "High",
+        "source": "I do recommend you create a unique piece of A+ content for every single book rather than being lazy and just creating one for all of them as A+ content has a massive impact on your book conversions",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "a10",
+        "category": "General",
+        "trigger": "Comparison table in A+",
+        "advice": "Populate with ASINs, cover images, titles; include metrics like single-sided (tick box), page count (text); options for reviews, prices, add-to-cart",
+        "confidence": "High",
+        "source": "In the comparison chart we would need to put the asence of the book we want to advertise as well as their respective cover images and titles over here you can see that we've got three options to tick show review show prices show add to card button we can add a metric here for instance single sided and we can select whether we want a block of text or we just want a tick box",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-start-immediate",
+        "category": "General",
+        "trigger": "Product listing goes live",
+        "advice": "Start PPC campaigns right away to leverage the honeymoon period where Amazon boosts new product rankings; ensure listing is fully ready including photos.",
+        "confidence": "High",
+        "source": "Well, you should start it right away as soon as your product goes live. There's no sense in waiting. Just make sure that you have all of your ducks in a row and that your listing is ready to go the moment your listing goes live. ... Remember, if you didn't know, there's a honeymoon period where Amazon helps boost your product rank whenever you launch a new product. And this honeymoon period starts the moment you have inventory in stock and ready to sell.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-automatic-campaigns-separate",
+        "category": "General",
+        "trigger": "Setting up automatic targeting",
+        "advice": "Create separate automatic campaigns for each targeting group: close match, loose match, substitutes, and compliments to keep data clean and easy to optimize; start with close match for highest intent traffic.",
+        "confidence": "High",
+        "source": "So, instead of this one campaign targeting all four groups, the pro way to do this is to start with close match only and create a separate campaign for each group. ... As you can see here with close match, Amazon shows your ad when someone searches for something that closely matches your product. ... This is the highest intent traffic and this is the best way to spend your ad money.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-bid-suggested-automatic",
+        "category": "General",
+        "trigger": "Initial bid setting for automatic campaigns",
+        "advice": "Start bids with Amazon's suggested bid for automatic campaigns and optimize later after data collection.",
+        "confidence": "High",
+        "source": "For bids, I recommend starting with Amazon's suggested bid. And don't overthink this. We'll optimize this later once enough data is collected.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-bidding-strategy-dynamic",
+        "category": "General",
+        "trigger": "Product launch phase",
+        "advice": "Use dynamic bids up and down bidding strategy during launch to allow Amazon to increase bids on high-conversion likelihood clicks; use down only for tight budgets.",
+        "confidence": "High",
+        "source": "However, if your goal is to drive sales, especially during a product launch, I highly suggest selecting dynamic bids up and down. This allows Amazon to increase your bid when it thinks a shopper is very likely to buy and lower it when they're not.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-placement-adjustment",
+        "category": "General",
+        "trigger": "Setting placement adjustments",
+        "advice": "Increase bids by 20-30% for top of search placements as they convert best; leave rest of search and product pages at 0%.",
+        "confidence": "High",
+        "source": "I suggest setting this to 20 to 30%. Leave rest of search and product pages at zero.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-daily-budget-launch",
+        "category": "General",
+        "trigger": "Product launch daily budget",
+        "advice": "Set daily budget to at least $20-$50 for product launch automatic campaigns.",
+        "confidence": "High",
+        "source": "for a product launch, I suggest at least $20 to $50.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-keyword-research-tool",
+        "category": "General",
+        "trigger": "Conducting keyword research",
+        "advice": "Use Helium 10 Cerebro for keyword research; enter seed keywords to find related searches, filter by organic match type to narrow list; organize into four lists: main, related, master, misspelled.",
+        "confidence": "High",
+        "source": "So to do keyword research properly, I use a tool from Helium 10 called Cerebro. ... By using Cerebro, I can enter the main keyword phrase here, and Cerebro will pull up the entire list of related keywords ... An easy one to start with is the match type. Set it to organic and click apply.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-match-types-strategy",
+        "category": "General",
+        "trigger": "Choosing keyword match types",
+        "advice": "Use exact match for control and high-quality traffic, broad match for reach; skip phrase match as it's covered by broad and adds complexity.",
+        "confidence": "High",
+        "source": "In general, exact match gives you the most control. Broad match gives you the most reach ... But for my strategy, we're actually not going to use phrase match at all. ... By sticking with exact and broad, we keep the structure cleaner.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-manual-campaigns-separate",
+        "category": "General",
+        "trigger": "Creating manual keyword campaigns",
+        "advice": "Create separate manual campaigns for: main keywords exact match, related exact match, master broad match, misspelled broad match, and suggested broad match to test strategies cleanly.",
+        "confidence": "High",
+        "source": "We're going to create several individual PPC campaigns, each testing a different strategy with each of the four keyword lists ... the first campaign we're going to create is an exact match campaign using our main keywords list. ... the next campaign ... use the related keyword list. ... the third campaign ... broad match using the master list. ... the fourth campaign ... broad match using the misspelled keyword list. ... the fifth campaign ... keywords that Amazon suggests.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-bid-aggressive-manual",
+        "category": "General",
+        "trigger": "Setting bids for manual exact match campaigns",
+        "advice": "Overbid suggested high bid by $1 (use odd penny amounts) or by 25% to win top spots; remember you only pay actual winning bid, not max set.",
+        "confidence": "High",
+        "source": "What I suggest doing is over bid the suggested bid by $1. ... use odd numbers for the penny amount. ... by being super aggressive with your bidding strategy, it will almost guarantee that you'll always win the top ad spots.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-budget-high-exposure",
+        "category": "General",
+        "trigger": "Exact match campaigns with high-intent keywords",
+        "advice": "Set daily budget higher (e.g., $100) than intended spend (e.g., $10-20) for more impressions and exposure; pause when target spend reached, resume next day; only pay per click.",
+        "confidence": "High",
+        "source": "I like to give Amazon a lot of room to work with. So, even if you only want to spend $10 to $20 per day, I highly recommend setting the daily budget much higher, like to $100. ... higher budgets doesn't automatically mean higher spend. It means more exposure.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-budget-broad-varied",
+        "category": "General",
+        "trigger": "Daily budgets for different manual campaigns",
+        "advice": "Set $100 for exact match main/related (high exposure), $20 for master broad, $10 for misspelled broad and suggested broad.",
+        "confidence": "High",
+        "source": "for this campaign, set the daily budget to whatever you can afford. I suggest a minimum of $10 to $20. ... Set it to $20. ... set it to $10.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-negative-keywords",
+        "category": "General",
+        "trigger": "Irrelevant searches or non-converting keywords",
+        "advice": "Add negative keywords (exact or phrase match) for unrelated searches like different use cases; after running, analyze reports and add non-converting keywords to save ad spend.",
+        "confidence": "High",
+        "source": "use common sense. Think through all the things that a shopper might search for that are similar in wording but meant for a different use case ... analyze your PPC reports and if there's any keywords that you're spending on that are not converting to sales, you can add them to the negative keyword list.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-run-duration",
+        "category": "General",
+        "trigger": "After launching campaigns",
+        "advice": "Let campaigns run for 7-10 days to collect data before optimizing; avoid daily checks and knee-jerk changes.",
+        "confidence": "High",
+        "source": "What I suggest at this point is letting the campaigns run for at least 7 to 10 days in order to collect enough data ... Don't fall into the trap of checking the campaigns every day and making knee-jerk changes.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Potential product idea identified",
+        "advice": "Search for the product on Amazon using the main keyword, then use Data Dive Chrome extension to open dive box and select 15 to 20 top relevant listings (hide sponsored, exclude unrelated products).",
+        "confidence": "High",
+        "source": "once you found a potential product idea, go ahead and do a search for it on Amazon using the main keyword like you normally would. For example, left-handed can opener. Then click on the Data Dive Chrome extension and click on open dive box. ... select 15 to 20 of the top listings. Make sure to hide the sponsored listings first and only select listings that are the product that you want to sell. If it's unrelated, then do not select it.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-002",
+        "category": "Risk",
+        "trigger": "Master keyword list shows mostly red (very strong/strong) for relevant keywords",
+        "advice": "Avoid the niche as it indicates high competition; top listings rank extremely well (e.g., #1, #2, #3) for main keywords, leading to high PPC costs.",
+        "confidence": "High",
+        "source": "when you're analyzing competitors listings, red is bad. That means they're ranking extremely well for these keywords. For example, this first listing here, the overall strength is very strong, and they're ranked number one for all of the most relevant keywords. ... That means this niche is going to be extremely difficult to rank for ... the PPC costs for these keywords are most likely going to be extremely high.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-003",
+        "category": "Risk",
+        "trigger": "Overview shows competition search volume strength >40% or keyword strength >40%",
+        "confidence": "High",
+        "source": "the competition search volume strength is through the roof at 80%. And the competition keyword strength is at 53%. That's way too high. Ideally, you want to see these below 30 to 40%.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-004",
+        "category": "General",
+        "trigger": "Green keywords have low relevancy and low search volume",
+        "advice": "Do not optimize for these keywords as they won't help in ranking or capturing sales.",
+        "confidence": "High",
+        "source": "the keywords that are green have very low relevancy and low search volume, like left-handed tools and left-handed store. So, optimizing for these keywords isn't going to be too helpful in getting ranked and capturing sales.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "12 or more top listings have extremely strong search volume strength",
+        "advice": "Consider the niche too competitive despite low review counts.",
+        "confidence": "High",
+        "source": "You can also see here 12 out of the top listings have extremely strong search volume strength. So although this might have looked like a good product idea ... by doing a deeper analysis with data dive, we can see that it definitely isn't.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-006",
+        "category": "General",
+        "trigger": "Only a few (e.g., 3) listings rated very strong, rest weak or very weak",
+        "advice": "Proceed with analysis; indicates potential opportunity if top listings rank poorly.",
+        "confidence": "High",
+        "source": "We can quickly see that only these three listings are rated very strong. The rest are very weak or weak. ... The top two listings aren't even ranking well for most of the relevant keywords. The best is fourth.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-007",
+        "category": "Risk",
+        "trigger": "Top listings rank outside top 10 for main keywords",
+        "advice": "View as hidden opportunity; optimize listing and PPC to outperform by 1-2%.",
+        "confidence": "High",
+        "source": "what really gives me confidence for this product here is that these top listings are doing well despite ranking outside of the top 10 for the main keywords. ... If I can even slightly optimize my product listing and PPC campaigns by even a small amount, like 1 or 2% better than these guys, then I can easily get ranked, overtake these listings, and capture some of the sales in this niche.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-008",
+        "category": "General",
+        "trigger": "Keywords on page one percentage <80% for top sellers",
+        "advice": "Indicates room for improvement in optimization to capture more rankings.",
+        "confidence": "High",
+        "source": "take a look at this metric here, keywords on page one. ... This listing only has 20%, 51%, 47% and so on. And even these top sellers have a low percentage, not even breaking 80% ... That means this niche has a hidden opportunity here.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-009",
+        "category": "Risk",
+        "trigger": "Overview competition search volume strength <40% and keyword strength <40%",
+        "advice": "Consider the niche viable for entry after further checks.",
+        "confidence": "High",
+        "source": "if we hop on over to the overview page, the competition, search volume strength, and keyword strength are below 40%. Exactly what we're looking for.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-010",
+        "category": "Risk",
+        "trigger": "Niche is brand dominated, saturated with new listings, patented/trademarked, or seasonal",
+        "advice": "Avoid or further investigate these factors before proceeding.",
+        "confidence": "High",
+        "source": "there are other factors you need to consider, such as making sure the niche isn't brand dominated, it isn't saturated with new listings, it's not patented or trademarked, it isn't a seasonal product, and so on.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-011",
+        "category": "Seasonality",
+        "trigger": "Product is seasonal",
+        "advice": "Avoid seasonal products to ensure consistent sales.",
+        "confidence": "High",
+        "source": "it isn't a seasonal product",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "strat-012",
+        "category": "General",
+        "trigger": "Product selected with hidden opportunity",
+        "advice": "Launch correctly focusing on gaining traction fast through reviews, as new listings can rank high with few reviews via sales velocity and keyword optimization.",
+        "confidence": "High",
+        "source": "Even if you pick the perfect niche, you still need to launch correctly in order to gain traction on Amazon. ... the next step is getting traction fast. And that starts with reviews. Because, as we all know, shoppers tend to buy from sellers that have the most reviews.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev1",
+        "category": "Risk",
+        "trigger": "Negative review mentions seller, order, shipping, packaging, product condition, damage, shipping cost/speed, pricing/availability related to individual experience",
+        "advice": "Report the review to Amazon for removal as it violates review guidelines",
+        "confidence": "High",
+        "source": "Amazon will only remove reviews if they violate their review guidelines. ... The review can't focus on sellers and the customer service they provide, ordering issues and returns, shipping or packaging, product condition and damage, and the shipping cost and speed. The review also can't be about the pricing or availability. For example, ... pricing comments related to an individual experience isn't allowed.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev2",
+        "category": "Risk",
+        "trigger": "Review written in unsupported language (e.g., French on US Amazon)",
+        "advice": "Report the review to Amazon for removal",
+        "confidence": "High",
+        "source": "You can also remove reviews if they're written in an unsupported language. For example, if someone leaves a review in French on the US Amazon marketplace, where only English and Spanish are supported.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev3",
+        "category": "Risk",
+        "trigger": "Review contains repetitive text, spam, pictures created with symbols, private information (phone, email, order number), profanity, harassment, hate speech, sexual content (unless product-specific), external links, ads, conflicts of interest, promotional content, illegal activities, or medical claims",
+        "advice": "Report the review to Amazon for removal as it violates guidelines",
+        "confidence": "High",
+        "source": "Reviews also cannot have repetitive text, spam, or pictures created with symbols. It can't contain any private information such as a phone number, email address, order number, and so on. They also can't contain any profanity or harassment as well as any hate speech. No sexual content unless it's specific to a sexually related product, no external links, and one of the most egregious type of reviews, no ads, conflicts of interest, or promotional content. ... And of course, they cannot mention any illegal activities or make any medical claims.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev4",
+        "category": "General",
+        "trigger": "New 1-3 star reviews appear",
+        "advice": "Monitor reviews daily or weekly by navigating to reviews, filtering to 1-3 stars and most relevant; use Helium 10 Review Insights to filter by date range (e.g., last month) and report non-conforming reviews",
+        "confidence": "High",
+        "source": "So how do you monitor your reviews on your product listing? Navigate to your reviews and click on the one, two, and three star reviews here. ... change this to most relevant. ... If you have Helium 10, you can also use their review insights tool to filter out recent reviews. ... choose a date range, like the last month. ... depending on how many reviews you're getting, you may want to monitor your reviews on a daily or weekly basis",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev5",
+        "category": "Risk",
+        "trigger": "Brand registered seller with access to Customer Review Page and 1-3 star reviews",
+        "advice": "Filter to 1-3 star reviews, reach out promptly with customized message offering support/refund/replacement without asking to change review or offering incentives; aim for 10-20% update rate to 4-5 stars",
+        "confidence": "High",
+        "source": "The new customer reviews page is available to sellers that are brand registered. ... by clicking on the star rating button here, you can filter the list to only show the one, two, and three star reviews. Then reach out to your shoppers. ... you can't ask them to remove or change their review or offer them an incentive to do so. ... send them a message that's customized ... contact your shoppers as soon as possible. ... around 10 to 20% will actually go back and update their review from a one-star to a four or five star",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev6",
+        "category": "General",
+        "trigger": "High volume of reviews requiring automation",
+        "advice": "Use Sellerise Review Puncher to set custom rules for automated messages to 1-3 star reviewers",
+        "confidence": "High",
+        "source": "Selleriz has a tool called review puncher where you can create custom rules. For example, you can set it up to send an automated message to your one, two, and three star reviews",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev7",
+        "category": "Risk",
+        "trigger": "Negative seller feedback containing obscene/profane words, personal info, or entire comment as product review",
+        "advice": "Request removal via Seller Central Performance > Feedback Manager",
+        "confidence": "High",
+        "source": "customers can also leave what's called seller feedback. ... Amazon will remove feedback if it determines doing so is necessary because of the following cases. The feedback includes words commonly understood to be obscene or profane. The feedback includes seller specific personally identifiable information ... The entire feedback comment is a product review. ... head on over to seller central and on the menu, click on performance feedback manager. And if you find any feedback that you want to remove, click on request removal here.",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rev8",
+        "category": "General",
+        "trigger": "Low sales-to-review ratio (<1%)",
+        "advice": "Implement product insert cards with QR code leading to lead funnel offering free gift (e.g., $5 Amazon gift card, discount, free product); collect purchase verification and email; ask for review only if customer indicates 100% satisfaction to boost ratio to over 40%; use Review Scan Go tool for setup",
+        "confidence": "High",
+        "source": "the average salestore ratio is less than 1%. ... this strategy involves using product insert cards ... offer my customers a free gift. Like you can see here, this is the actual insert card that I use. scan here to get a free $5 Amazon gift card. ... the funnel collects their purchase information so I can verify their purchase. It also collects their contact information and email address. And then it asks them to write a review ... Only when your customers are 100% happy, the funnel will then ask them to share their review on Amazon. ... massively boosts the salestore ratio from the dismal less than 1% to over 40%",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "vine-program-prereq",
+        "category": "General",
+        "trigger": "New product launch with fewer than 30 reviews",
+        "advice": "Enroll in Amazon Vine program if professional seller, brand registered, FBA offer in new condition, not adult/digital/heavy/bulky; allocate products for trusted reviewers to get up to 30 honest reviews within 35 days",
+        "confidence": "High",
+        "source": "You must be a professional selling partner... Have fewer than 30 reviews... 25% of reviews received occur within 5 days... 99% within 35 days",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "vine-cost-credit",
+        "category": "General",
+        "trigger": "Enrolling in Vine program",
+        "advice": "Use new seller incentives for $200 credit to get 30 reviews for free; costs up to $200 otherwise depending on tier",
+        "confidence": "High",
+        "source": "It can cost up to $200... Amazon has an offer called new seller incentives... $200 credit for Amazon Vine",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "review-services-time",
+        "category": "General",
+        "trigger": "Need quick reviews post-launch",
+        "advice": "Use services like Rebate Key (with discounts) or FBA reviews (no discount) to get reviews within 1-4 weeks from shopper communities",
+        "confidence": "High",
+        "source": "You can start getting reviews rather quickly and reliably, usually within one to four weeks",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "friends-family-purchase",
+        "category": "Risk",
+        "trigger": "Using friends and family for initial reviews",
+        "advice": "Ensure they purchase the product (not just review without buying) and wait a few days after receipt to post; accounts must have $50+ prior purchases",
+        "confidence": "High",
+        "source": "Your friends and family members must buy your product... Wait a few days or longer... Amazon shoppers must have already purchased at least $50 worth",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "friends-family-detection",
+        "category": "Risk",
+        "trigger": "Requesting reviews from personal connections",
+        "advice": "Avoid detection by ensuring no shared Wi-Fi, same household, last name, zip code, or social media connections; unfriend if necessary",
+        "confidence": "High",
+        "source": "Make sure that you've never shared the same Wi-Fi... Don't live in the same household... Not friends on Facebook or Instagram. If you are, unfriend them",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "review-ratio-limit",
+        "category": "Risk",
+        "trigger": "Getting multiple reviews from friends/family",
+        "advice": "Limit to match 1% sales-to-review ratio; avoid sudden spikes like 10 reviews from 10 sales to prevent red flags",
+        "confidence": "High",
+        "source": "The average salestore review ratio is around 1%... Don't go crazy getting reviews... All 10 customers post a review",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "insert-card-funnel",
+        "category": "General",
+        "trigger": "Long-term review generation",
+        "advice": "Include QR code insert cards offering free gifts (e.g., $5 Amazon gift card) leading to a funnel that verifies purchase, collects email, and requests review only if 100% satisfied; boosts ratio from <1% to over 40%",
+        "confidence": "High",
+        "source": "Boosts the salestore review ratio from less than 1% to over 40%... Scan here to get a free $5 Amazon gift card... Only when your customers are 100% happy",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "email-reminders-limit",
+        "category": "General",
+        "trigger": "Post-purchase follow-up",
+        "advice": "Send one additional review request via Seller Central per order (Amazon sends automatic ones); automate with tools like Sellerize targeting 4-5 star ratings, no refunds",
+        "confidence": "High",
+        "source": "You can only send one additional reminder... Set it to only send requests to customers that have left a specific star rating, such as between four and five stars... Not send requests to customers that refunded",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "online-review-sites",
+        "category": "General",
+        "trigger": "Seeking external traffic and reviews",
+        "advice": "Contact owners of top Google-ranking review sites in your niche to feature your product; they use affiliate links to drive Amazon sales and recommendations",
+        "confidence": "High",
+        "source": "Contacting the site owners... Have them write a review for your product on their website... These are affiliate links",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bsr-sales-ranking",
+        "category": "General",
+        "trigger": "Amazon search ranking based on sales, not search volume",
+        "advice": "Focus on improving BSR (Best Sellers Rank) by driving sales, as lower BSR indicates higher sales and better ranking in organic search and bestseller lists",
+        "confidence": "High",
+        "source": "Amazon ranks products in the search results based on sales that's right every product listing on Amazon has a metric called the BSR which stands for best seller rank you can see that it says here Amazon BSR scores go up Up and Down based on sales typically the lower the score the higher the Amazon sales rank",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "seed-keywords-top-sellers",
+        "category": "General",
+        "trigger": "Choosing seed keywords for keyword research",
+        "advice": "Use up to 10 seed keywords derived from top sellers' listings (e.g., common phrases like 'practice golf balls', 'foam golf practice balls') to generate relevant keywords via tools like Keyword Hunter Pro",
+        "confidence": "High",
+        "source": "keyword Hunter Pro lets you enter up to 10 keywords here so instead of try to reinvent the wheel you can find the best seed keywords to use by just taking a look at what the top sellers are already using so for example let's do a search on Amazon for practice golf balls and you can see what the top sellers are already using",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "organic-sales-keywords",
+        "category": "General",
+        "trigger": "Keyword research for ranking",
+        "advice": "Prioritize keywords that generated organic sales (not PPC), sourced from Amazon data, focusing on the semantic core of 1500+ related keywords that drive actual sales",
+        "confidence": "High",
+        "source": "what's unique about keyword Hunter Pro is that it only pulls up keywords that generated organic sales not PP PC sales you can see that it pulled up over 1500 keywords here which is called the semantic core the number of keywords related most accurately to your search term and remember these are keywords that resulted in organic sales",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "market-availability-40",
+        "category": "Risk",
+        "trigger": "Market Availability <40%",
+        "advice": "Target niches with Market Availability >=40% (e.g., 54%), indicating that sellers outside top 3 capture at least 40% of sales; avoid low availability like 10% where top 3 dominate 90% of sales",
+        "confidence": "High",
+        "source": "the average Market availability you can see that it says it's at 54% this means that this list of keywords that are generated sellers outside of the top three organic listings are able to capture 54% of the total sales in the entire Niche a good Target is 40% or better so in the market availability field enter 39% here",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "conversion-rate-20",
+        "category": "General",
+        "trigger": "Conversion rate <20%",
+        "advice": "Filter out keywords with conversion rate <20% (e.g., less than 20 sales out of 100 searches); target higher rates like 30-35% for better sales generation",
+        "confidence": "High",
+        "source": "remove all low conversion keywords these are keywords that have a conversion rate that's less than 20% that means out of 100 searches 20 sales or less were made we can easily filter those out by using the filter settings here in the conversion rate field enter 19% here",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "relevance-10",
+        "category": "General",
+        "trigger": "Relevance score <10%",
+        "advice": "Remove keywords with relevance <10% to seed keyword, as they are unrelated (e.g., 'whiffle balls' for 'practice golf balls'); manually review and delete after sorting",
+        "confidence": "High",
+        "source": "generally any keyword with a relevant score that's less than 10% is unrelated to the product so let's also remove those keywords from the list so back in the filter settings enter 10 here and click apply",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "sales-volume-25",
+        "category": "General",
+        "trigger": "Monthly sales <25",
+        "advice": "Keep only keywords with at least 25 sales per month (approx. 1 sale per day) to ensure they contribute to listing rank; sort by sales highest to lowest and remove low performers",
+        "confidence": "High",
+        "source": "we only want to keep keywords that have relatively High sales keywords with low sales isn't going to help you with your listing rank so in the sales column this is how many sales were made in the past 30 days sort it highest to lowest and what I suggest is removing keywords that don't have at least one sale per day so again just so we can capture the keywords that are right on the borderline remove all the keywords that have less than 25 sales per month",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "competitor-keyword-steal",
+        "category": "General",
+        "trigger": "Building comprehensive keyword list",
+        "advice": "Extract and combine keywords from top 3 competitors' listings using tools like Keyword Ranker; filter for high conversion, availability, relevance; remove duplicates and unrelated terms to create a unified list",
+        "confidence": "High",
+        "source": "to go that extra mile to fully complete this list and make sure you didn't miss anything what I suggest also doing is stealing the best keywords that the top three sellers are using yes you can actually do that this will really make your keyword list a true Powerhouse then copy and paste all the data from the top three products into one spreadsheet as you can see that I've done here and because all three competitors are trying to rank for the same product you'll notice that there's going to be a lot of duplicate keywords so let's clean these up now",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-verification-search",
+        "category": "Risk",
+        "trigger": "Unverified keywords in Amazon search",
+        "advice": "For each keyword, search on Amazon (all departments) to verify most results match your product; highlight and separate mismatched keywords (e.g., 'kids golf balls') for indexing only, not PPC",
+        "confidence": "High",
+        "source": "make sure you don't skip this step depending on the size of your keyword list this step can take some time to do but make sure you do this for each keyword on your list do a search on Amazon make sure the search is set to all departments and verify in the search results that most of the listings are in fact the product that you're selling",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-groups-usage",
+        "category": "General",
+        "trigger": "Finalized keyword list separation",
+        "advice": "Divide keywords into two groups: primary (exact match for listing, backend, PPC to drive sales) and secondary (yellow-highlighted for backend indexing only, avoid PPC to prevent irrelevant traffic)",
+        "confidence": "High",
+        "source": "you'll end up with two groups of keywords separate the two groups by copying the highlighted ones and pasting them down below okay and once you've done that we now have our complete finalized list of the best keywords this top group is the best keywords for your product these keywords are the best ones to use for your product listing and in the backend keyword list to index your listing in the Amazon search algorithm and you also want to use this list of keywords in your PPC campaigns the bottom group of keywords that are highlighted in yellow however are keywords that you don't want to use in your PPC campaigns",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "seasonality-historical",
+        "category": "Seasonality",
+        "trigger": "Checking historical keyword performance",
+        "advice": "Review historical performance of seed keywords (e.g., via dropdown in tool) to identify seasonal trends, such as higher performance in summer months (lower blue bar indicates better)",
+        "confidence": "High",
+        "source": "you can also see the historical performance of each seed keyword here and you can cycle through each seed keyword by selecting them in the drop-down menu you can see that these practice golf balls perform much better during the summer months the lower the blue bar the better",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "social-proof-reviews",
+        "category": "General",
+        "trigger": "Product launch without reviews",
+        "advice": "Implement a pre-launch strategy to obtain initial reviews for social proof, as it increases sales and conversion rates; refer to dedicated resources for review generation methods",
+        "confidence": "High",
+        "source": "putting this keyword strategy into practice is half of the solution to get your listing ranked in order to massively increase your sales and conversion rates it's essential that your product has social proof that means you need to have a strategy in place before your product Launches on how you plan to get your first reviews",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "kdp-001",
+        "category": "General",
+        "trigger": "Limited funds or want to minimize risk",
+        "advice": "Use Amazon's KDP platform to publish ebooks for free without inventory; identify popular topics via Google Trends (e.g., Fitness, weight loss, Finance, self-help, trending like ChatGPT); use ChatGPT to generate ebook content (prompt: 'write an ebook around 20 pages explaining step-by-step how to use ChatGPT for people 50 years and older'); upload as PDF to KDP; promote affiliate products via ClickBank (e.g., fitness niche products with $138 commission); create multiple ebooks to rank on Amazon's first page and earn commissions up to $11,000/month for beginners.",
+        "confidence": "High",
+        "source": "this is Amazon's publishing platform that allows anyone to publish ebooks for free... you can write a guide on how to use chat gbt for people 50 years and older... chat gbt provides a title all the chapters and a detailed step-by-step guide... promote this product on ClickBank... $138 commission... beginners are earning up to $11,000 per month",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "kdp-002",
+        "category": "Risk",
+        "trigger": "No money for inventory",
+        "advice": "Publish free ebooks on KDP to access Amazon's customers for affiliate marketing; avoid costs of FBA ($39.99/month); rank books on first page by creating many (shotgun strategy); use free tools like Canva for covers if needed, but focus on content generation with AI; select niches with high-commission affiliates on ClickBank (e.g., health supplements with 140+ earners in 30 days).",
+        "confidence": "High",
+        "source": "KDP... doesn't cost you anything... setting up a KDP account is free unlike FBA which typically costs around $39.99 a month... create tons of ebooks... clickbank.com... earn commissions... over 140 people have earned this Commission in the last 30 days",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ip-001",
+        "category": "Risk",
+        "trigger": "Planning to sell books or products with names/logos",
+        "advice": "Avoid trademarked names in ebook titles or descriptions (e.g., don't use brand names like Apple, Nike; use generics like 'building blocks' instead of Lego); check USPTO.gov for trademarks if not obvious; for ebook content, ensure original writing or AI-generated to avoid copyright infringement; do not use others' photos or copy in listings.",
+        "confidence": "High",
+        "source": "trademarks are completely different than patents a trademark protects a name or logo... you can't use other people's brand names or logos... be very careful with brand names that have become synonymous... copyright protects works of art like literature... don't use it even if you found the photos on Google",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "research-001",
+        "category": "General",
+        "trigger": "Looking for book-related product ideas",
+        "advice": "Use Helium 10 Black Box with filters: US marketplace, avoid categories like clothing, electronics, toys; max reviews 300; max weight 2 lb; price $14.75-$50.27; min revenue $6,000; min monthly sales 300; exclude keywords like 'men's', 'women's', 'book' if filtering non-books; look for strange/out-of-ordinary book niches (e.g., niche guides).",
+        "confidence": "Medium",
+        "source": "helium 10's product database called blackbox... set the maximum reviews to 300... maximum weight to 2 lb... price range between $15 and $50... minimum Revenue to 9,000 but... lower to $6,000... minimum monthly sales to 300... exclude... keywords... men's women's Nike",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "tax-exempt-1",
+        "category": "Buying",
+        "trigger": "Purchasing inventory through Alibaba as a US-based buyer",
+        "advice": "Enroll in Alibaba's US Sales Tax Exemption Program (ASTEP/AEP) by providing sales tax exemption certificate from your state, selecting 'resale' exemption type, and submitting the application to avoid paying sales tax on eligible purchases.",
+        "confidence": "High",
+        "source": "Alibaba Sales Tax Exemption (ASTEP) section: 'enroll in the AEP program by completing a few steps... once Alibaba confirms you as an eligible tax exempt buyer your future purchases eligible for exemption will not be subject to sales tax'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "tax-exempt-2",
+        "category": "Buying",
+        "trigger": "Filling out purchase order on Alibaba with destination address outside home state (e.g., Amazon FBA or 3PL)",
+        "advice": "Enter your home state address (where business is registered and AEP enrolled) as the shipping destination on Alibaba to prevent sales tax charges, even if actual shipment goes elsewhere via manufacturer or freight forwarder.",
+        "confidence": "High",
+        "source": "Alibaba Sales Tax Exemption (ASTEP) section: 'put your home state... Alibaba won't charge you sales tax this strategy works because Alibaba doesn't actually know where you're really going to be shipping'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "shipping-method-1",
+        "category": "Buying",
+        "trigger": "Small quantity shipment during product launch",
+        "advice": "Ship by air (7-10 business days) for faster delivery to start selling quickly.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'shipping by air is the fastest... if you're shipping a small quantity like during a product launch then Ship by air'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "shipping-method-2",
+        "category": "Buying",
+        "trigger": "Large or heavy products or large quantities",
+        "advice": "Ship by sea (3-8 weeks) to reduce costs; optionally ship a small portion by air for initial stock and bulk by sea.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'shipping by C which is significantly cheaper... if you have large or heavy products or if you're shipping large quantities then Ship by C'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "freight-forwarder",
+        "category": "General",
+        "trigger": "Arranging international shipment from China",
+        "advice": "Hire a freight forwarder to handle logistics, paperwork, insurance, customs brokerage, and duties instead of doing it yourself to avoid delays, fines, or shipment returns.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'hire a freight forwarder... they'll handle the entire shipment process for you... I highly recommend that you don't do that [yourself]'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "incoterms-ddp",
+        "category": "Buying",
+        "trigger": "Supplier offers shipping services",
+        "advice": "Prefer DDP (Delivery Duties Paid) Incoterms where supplier handles entire shipment, paperwork, customs, and duties to Amazon or 3PL, included in the final fee.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'DDP stands for delivery duties paid this is the easiest... the one I actually recommend... all you have to do is pay your supplier'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "direct-to-amazon",
+        "category": "Risk",
+        "trigger": "Shipping directly from supplier to Amazon FBA",
+        "advice": "Ensure 100% compliance with Amazon prep and labeling (barcodes, warnings, origin) via pre-shipment inspection to avoid fines, penalties, bad reviews, or damaged goods issues.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'you have to make 100% sure that your products are prepped and labeled correctly... always have an inspection done before your products leave'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "storage-capacity",
+        "category": "Risk",
+        "trigger": "New seller with individual plan shipping to Amazon",
+        "advice": "Monitor storage capacity limits (15 cu ft for individual plan, based on IPI score for others) in Seller Central to avoid over-shipment; use Capacity Monitor for current availability.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'sellers with the individual seller plan have a storage capacity limit of only 15 cubic feet... you can see what your storage capacity limit is in Seller Central'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "placement-fees",
+        "category": "Pricing",
+        "trigger": "Creating Amazon shipping plan for multiple warehouses",
+        "advice": "Ship to 5 Amazon warehouses to avoid placement fees; shipping to fewer (e.g., 1 warehouse) incurs higher fees (varies by shipment). Enter California address in plan to route to closer ports.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'if I choose to ship to five Amazon warehouses there's no placement fee... shipping to only one Warehouse will cost much more... entering a California address here'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "3pl-usage",
+        "category": "General",
+        "trigger": "Limited Amazon storage or need for long-term/cheaper storage",
+        "advice": "Use 3PL for receiving, inspecting, labeling, consolidating, and storing inventory before shipping to Amazon in smaller batches; ideal for Q4 when Amazon fees increase 3-4x.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'use a 3pl to store the inventory... much cheaper long-term storage solution compared to Amazon especially during Q4 when Amazon storage fees increase by as much as three or four times'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "storage-fees-seasonal",
+        "category": "Seasonality",
+        "trigger": "Storing inventory at Amazon FBA October-December",
+        "advice": "Plan restocking to minimize Q4 storage (Oct-Dec: $2.40/cu ft vs. Jan-Sep: $0.78/cu ft) by using 3PL for overflow or shipping just-in-time.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'between January and September the standard storage fee is 78 cents per cubic foot but at skyrockets to $2.40 between October and December'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-type",
+        "category": "General",
+        "trigger": "Selling on Amazon FBA (wholesale, arbitrage, or private label)",
+        "advice": "Always use Amazon barcode (FNSKU) instead of manufacturer barcode (UPC/EAN/ISBN) to keep inventory separate from other sellers and avoid commingling issues leading to bad reviews or quality control loss.",
+        "confidence": "High",
+        "source": "Barcodes Explained section: 'always use the Amazon barcode or FN skew so that your inventory is kept separate... regardless if you're doing wholesale Arbitrage or private label'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "upc-purchase",
+        "category": "General",
+        "trigger": "Creating new product listing for private label or unique products",
+        "advice": "Buy UPC barcodes directly from GS1 ($30 each) to ensure validity; avoid third-party sellers to prevent listing removal or account suspension. Wait 24-72 hours for GS1 database update if errors occur.",
+        "confidence": "High",
+        "source": "Barcodes Explained section: 'only buy directly from gs1... gs1 now offers individual barcodes for only $30... if you just purchased the UPC barcode from the gs1 website you may need to wait 24 to 72 hours'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-variations",
+        "category": "General",
+        "trigger": "Selling product variations (e.g., colors, sizes) or bundles",
+        "advice": "Assign unique UPC/FNSKU per variation or bundle (e.g., 2 colors = 2 barcodes; pack of 3 identical items = 1 barcode; different packs = separate barcodes). Cover existing UPC with FNSKU sticker for Amazon.",
+        "confidence": "High",
+        "source": "Barcodes Explained section: 'each assortment type such as size or color must have a different FN skew... the entire pack or bundle is considered one unit... you'll need to buy two UPC barcodes'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inspection-pre-ship",
+        "category": "Risk",
+        "trigger": "Products leaving supplier warehouse in China",
+        "advice": "Conduct inspection before products leave supplier to fix damage, labeling, or prep issues on-site; harder and costlier to resolve post-shipment, even with 3PL.",
+        "confidence": "High",
+        "source": "How to Ship from China section: 'always have an inspection done before your products leave... it becomes infinitely more difficult to resolve problems once your products have left their warehouse'",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "sp-edit-1",
+        "category": "General",
+        "trigger": "Shipping plan not completed (before accepting charges)",
+        "advice": "Edit via Manage Inventory > Send/Replenish Inventory > Active Workflows > Switch to workflow to resume and modify.",
+        "confidence": "High",
+        "source": "if you haven't completed the shipping plan yet meaning you started the first few steps of the shipping plan and then abandoned it then you'll be able to make changes to it so to edit or continue the existing shipping plan if you head on over to your shipments Page by clicking on menu inventory shipments you won't find it here you need to go to your manage inventory page and click on send or replenish inventory from the dropdown menu and then at the top here click on active workflows",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "sp-edit-2",
+        "category": "General",
+        "trigger": "Shipping plan completed step 2 (accepted charges)",
+        "advice": "Limited edits: Update tracking number, carrier, delivery window via Inventory > Shipments > Work on Shipment.",
+        "confidence": "High",
+        "source": "if when you created the shipping plan you completed step two meaning you clicked on the accept charges and confirm shipping button here then you'll be limited on what you can change and edit in the shipping plan so to make changes in this scenario you can find the shipping plan by going to your shipment Q page click on menu inventory shipments and you'll be able to see the shipping plan that you created here click on work on shipment",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "delivery-window",
+        "category": "Risk",
+        "trigger": "Shipment arrival outside specified window",
+        "advice": "Update delivery window immediately to prevent negative impact on account health.",
+        "confidence": "High",
+        "source": "it's very important that you set the delivery window accurately this is when you expect your shipment to arrive at the Amazon warehouse if your shipment doesn't arrive within the window you specify in the shipping plan it will start to affect your account health so if the original delivery window date that you set hasn't arrived yet you can still make changes to the shipping plan and update this delivery window",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "quantity-change",
+        "category": "General",
+        "trigger": "Need to change unit quantity after confirming shipment",
+        "advice": "Limit increases to 5% or 6 units per SKU per shipment (whichever greater); otherwise create new shipping plan.",
+        "confidence": "High",
+        "source": "take note it says here unit quantity changes cannot exceed 5% or six units per skew per shipment whichever is greater so if you want to send more units that you originally planned you can only increase that number of units by 5% or six units whichever is greater otherwise you'll have to start over and create a new shipping plan",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "shipment-naming",
+        "category": "General",
+        "trigger": "Multiple shipments for easy identification",
+        "advice": "Rename shipments descriptively (e.g., 'SKU - 10 units') instead of default names.",
+        "confidence": "High",
+        "source": "a pro tip I suggest you name your shipments to something more easily identifiable especially when you get to the point where you have multiple products and multiple shipments so that you know what each shipment is for rather than the default workflow name that Amazon assigns",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "delete-plans",
+        "category": "Risk",
+        "trigger": "Storage space error when creating new plan despite no shipments",
+        "advice": "Delete unused shipping plans from Shipping Queue to free allocated storage; plans auto-expire after 90 days.",
+        "confidence": "High",
+        "source": "shipping plans that are not cancelled or deleted in your shipping queue tie up your storage capacity... if you try to create a new shipping plan and you get an error saying that you don't have enough space available... you'll need to delete those shipping plans to free up your available storage space... shipping plans do expire automatically after 90 days",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "partnered-cancel",
+        "category": "General",
+        "trigger": "Need to cancel partnered carrier shipping plan",
+        "advice": "Cancel within 24 hours for full refund on shipping charges.",
+        "confidence": "High",
+        "source": "if you created a shipping plan using the partnered carrier program you can also cancel or delete it here however you only have 24 hours to cancel it to get a full refund on the shipping charges",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "multi-sku-ship",
+        "category": "General",
+        "trigger": "Shipping multiple SKUs to save costs",
+        "advice": "Combine into one shipping plan via Manage Inventory > Select SKUs > Send/Replenish Inventory or add to existing plan to ship to one warehouse and reduce cartons.",
+        "confidence": "High",
+        "source": "in order to ship inventory to Amazon you need to have created a product listing for all of your SKS... the second way to ship multiple SKS to Amazon is to Simply check mark all of the SKS that you want to ship here then down at the bottom of the page here click on select group action send replenish inventory",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "packing-template",
+        "category": "General",
+        "trigger": "First time shipping SKU or non-case quantities",
+        "advice": "Create and name packing templates descriptively (e.g., 'case packed 60') for reuse; use 'add packing line' for individual units.",
+        "confidence": "High",
+        "source": "you'll have to click on the pencil icon here and create a new packing template... a pro tip here I suggest naming your templates like I have so that it's easily identifiable... if I wanted to ship only five units you can see that I can't enter that here it's gray out I can only enter the number of boxes so in this case click on more inputs here then click on add a packing line",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "inbound-fee-avoid",
+        "category": "Pricing",
+        "trigger": "Shipping multiple SKUs to avoid inbound placement fee",
+        "advice": "Ship at least 5 identical cartons/pallets per item with same quantity and mix; compare costs as splitting to multiple warehouses may be more expensive.",
+        "confidence": "High",
+        "source": "to qualify for the Amazon optimized inbound option with no inbound fee your shipments must include at least five identical cartons or pallets per item each carton or pallet must contain the same quantity per item and the same item mix... sometimes paying the inbound shipment fee ends up being cheaper than trying to box them up to avoid the fee and that's because I now have to ship to five or more Amazon warehouses",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "box-limits",
+        "category": "General",
+        "trigger": "Preparing shipping cartons",
+        "advice": "Ensure boxes do not exceed 25 inches on any side or 50 lbs; strictly enforced to avoid shipment blocks.",
+        "confidence": "High",
+        "source": "boxes must not exceed these maximum size and weight requirements no more than 25 in on any side and no more than 50 lb total... important box weight and dimension policies are strictly enforced sending overweight or oversized boxes to fulfillment centers may lead to the blocking of future shipments",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "send-it-again",
+        "category": "General",
+        "trigger": "Repeat identical shipments",
+        "advice": "Use 'Send It Again' feature from Shipments page to duplicate previous SKU quantities and settings in one click.",
+        "confidence": "High",
+        "source": "send it again enables you to duplicate skews and quantities from a previously created shipment in one click now instead of having to start from scratch every time you need to ship inventory to Amazon you can now go to a previous shipment that you want to duplicate click on the Arrow here and click on send it again",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "country-origin",
+        "category": "General",
+        "trigger": "Importing products from outside US",
+        "advice": "Label every unit and master carton with country of origin (e.g., 'Made in China') to comply with US Customs.",
+        "confidence": "High",
+        "source": "if you're importing your goods from outside the US you need to have the country of origin on every single unit and the master carton for example if you're products are coming from China every unit and the master carton needs to have made in China on it",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "fnsku-use",
+        "category": "Risk",
+        "trigger": "Selling via FBA to avoid commingling",
+        "advice": "Always use FNSKU barcode on products; cover existing UPC with label or marker to prevent mixing with other sellers' inventory.",
+        "confidence": "High",
+        "source": "my suggestion is to not put the UPC barcode on your product always put the FN skew or Amazon barcode on it so if you're doing wholesale or Arbitrage cover the UPC barcode that's already on each unit with the FN skew... the reason you want to always use the fnc barcode instead of the UPC is to keep your inventory separate from other sellers",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "case-packed",
+        "category": "General",
+        "trigger": "Shipping identical items in cartons",
+        "advice": "For case-packed: Max 150 units per case, equal quantities per box; use for same SKU/condition.",
+        "confidence": "High",
+        "source": "case packed means your shipment consists of boxes that contain identical items with matching SKS that are also in the same condition... the case pack limit is 150 units per case",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "sbd-limits",
+        "category": "General",
+        "trigger": "Small parcel delivery (SPD) shipments",
+        "advice": "Max 50 lbs and 25 inches per carton; partnered carrier max 200 units/box, non-partnered 500 units/carton.",
+        "confidence": "High",
+        "source": "the shipping cartons need to meet these SBD requirements they must not weigh more than 50 lounds and cannot exceed 25 in on any side... SBD shipments using an Amazon partnered carrier the maximum units per box is 200 units and 500 units per carton for nonpartnered Carrier shipments",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "partnered-carrier",
+        "category": "Pricing",
+        "trigger": "Arranging shipment to Amazon",
+        "advice": "Prefer Amazon partnered carrier for discounts (often >50% savings vs. UPS/FedEx); available in shipping plan.",
+        "confidence": "High",
+        "source": "a pro tip you should always try to use the Amazon partnered carrier option whenever you can if it's available you'll see an option to select it here in the shipping plan because Amazon does so much shipping volume they offer deep discounts on shipments to sellers versus arranging the shipment yourself through a shipping carrier such as UPS FedEx or DHL the savings are sometimes more than half the price",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "labels-types",
+        "category": "General",
+        "trigger": "Preparing shipments to Amazon",
+        "advice": "Apply both FBA shipment ID labels (from plan, one per carton) and carrier labels (from UPS/etc.); ensure correct carton-warehouse match.",
+        "confidence": "High",
+        "source": "there's two labels that you can package your master cartons... FBA shipment ID label and a carrier label you'll get these from your shipping plan and shipping carrier... these Amazon shipping labels are simply to identify the shipment... in order to physically ship your products... the carrier will then provide you with their own shipping labels",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "overboxing",
+        "category": "Risk",
+        "trigger": "Fragile or heavy products (>10 lbs)",
+        "advice": "Use overboxing with double-walled corrugated boxes for protection; required for sharp/fragile/hazardous items to prevent damage.",
+        "confidence": "High",
+        "source": "over boxing involves placing a prepared or packaged product in a box for additional protection even if the product is already boxed for products over 10 lbs use double walled corrugated boxes for over boxing over boxing is required for the following types of products sharp items... fragile items... hazardous liquids",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "box-request",
+        "category": "Risk",
+        "trigger": "Fragile products damaged in padded envelopes",
+        "advice": "Collect evidence (multiple bad reviews/returns) and submit to Amazon to request mandatory box shipping instead of envelopes.",
+        "confidence": "High",
+        "source": "if your product is fragile and can be damaged or crushed because it wasn't shipped in a box what you can actually do is contact Amazon and request to have your product to be old shipped in a box... what you need to do is prove to them that your product is being damaged... collect any bad reviews or returns you received... submit these reviews to Amazon as evidence",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-bid-adjust-1",
+        "category": "General",
+        "trigger": "Top of search bids performing well",
+        "advice": "Raise top of search bids by 10% while lowering all other bids by 10% to maintain performance and reduce costs in lower placements.",
+        "confidence": "High",
+        "source": "I want to raise the top of search by 10% so lower all the bids in the campaign by 10% so again for example if I'm bidding $1 for this keyword Now set it to 90 basically by doing it this way all of the top of search bids will remain the same since they're performing well and I increased it by 10% but everywhere else we lowered the bids to lower the a cost in those placements",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "ppc-analysis-1",
+        "category": "General",
+        "trigger": "After initial campaign setup",
+        "advice": "Download PPC reports from Amazon Ads Manager and analyze in Excel or Numbers, focusing on one report per PPC strategy (main keywords exact, relevant keywords exact, etc.).",
+        "confidence": "High",
+        "source": "download your PPC reports so that you can analyze the data and develop a strategic plan... you'll see that you have six reports like you can see here for a product that I launched here you can see there is one report for each PPC strategy main keywords exact relevant keywords exact Master list broad misspelled broad suggested Broad and automatic",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "acos-removal-1",
+        "category": "Risk",
+        "trigger": "ACoS > profit margin (e.g., >36%)",
+        "advice": "Sort by ACoS highest to lowest and remove keywords where ACoS exceeds profit margin by highlighting in red and turning off in campaigns.",
+        "confidence": "High",
+        "source": "sort the a cost from highest to lowest... we want this number to be equal to or lower than our profit margin so again in my case this product has a profit margin of 36% so what I want to do is remove any keywords where the a cost is way over my break even point which is 30 6% so as you can see here these two keywords are way over at 81 and 63% so what I do is I highlight these two rows in red marking them for removal",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "break-even-keep-1",
+        "category": "General",
+        "trigger": "ACoS slightly over break-even (e.g., 37%)",
+        "advice": "Keep keywords near break-even, highlight in yellow, and monitor for sales velocity benefits to search ranking.",
+        "confidence": "High",
+        "source": "this keyword here is just over my break even point at 37% now it's not necessarily a bad keyword since I'm pretty much breaking even on it and the sales is helping me generate sales velocity which helps in the search ranking so I'm going to keep it for now but I'm going to keep a close eye on it so what I'm going to do here is highlight it in yellow",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "no-sales-spend-1",
+        "category": "Risk",
+        "trigger": "No sales but spend >3x profit margin (e.g., >$30 for $10 profit)",
+        "advice": "For keywords with no ACoS (zero sales), sort by spend descending and highlight in red for removal if spend exceeds 3x profit margin.",
+        "confidence": "High",
+        "source": "any keywords where I've spent more than three times my profit margin I'm going to highlight them in red and mark them for removal so in this case you can see that this keyword I spent $69 with no sales so let's highlight this one in red and this keyword here I've spent $34 with no sales so let's also highlight it red",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "low-data-keep-1",
+        "category": "General",
+        "trigger": "No sales but low spend (<3x profit) and few clicks (e.g., 1-3 clicks)",
+        "advice": "Leave keywords with insufficient data alone to allow potential future sales, monitor for 7-10 days.",
+        "confidence": "High",
+        "source": "all the remaining keywords I spent less than three times the profit so I'm going to leave them alone again remember there's not enough data on these so if the next click turns into a sale the AC cost will turn profitable",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "high-click-no-sale-1",
+        "category": "Risk",
+        "trigger": "No sales, spend $21+ with 13+ clicks (projected unprofitable even with next sale)",
+        "advice": "Highlight in yellow for close monitoring if mental math shows break-even requires multiple future sales.",
+        "confidence": "High",
+        "source": "however there is one exception with this keyword you can see that I've spent $21 on it and it has $13 clicks so in my opinion even if the next click is a sale the a cost will still be unprofitable I would have spent over $20 just to make $10 so basically doing some Mental Math the next two clicks would have to turn into sales for this keyword to break even but you never know what's going to happen so with keywords like this I'm going to mark it in yellow",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "optimization-cycle-1",
+        "category": "General",
+        "trigger": "After 7-10 days of campaign run",
+        "advice": "Let campaigns run for at least 7-10 days to collect data before analyzing and optimizing, accounting for sales fluctuations.",
+        "confidence": "High",
+        "source": "you want to let your campaigns run for at least 7 to 10 days in order to collect enough Data before analyzing and optimizing again and this is because sales can fluctuate wildly from dayto day in fact on average sales are the best from Thursday through Monday",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "seasonal-sales-1",
+        "category": "Seasonality",
+        "trigger": "Weekly sales analysis",
+        "advice": "Consider higher sales from Thursday through Monday when evaluating PPC performance to avoid incomplete data from frequent changes.",
+        "confidence": "High",
+        "source": "on average sales are the best from Thursday through Monday so if you start making changes too frequently you can be looking at add an incomplete picture of your PPC performance",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "yellow-bid-lower-1",
+        "category": "General",
+        "trigger": "Keywords highlighted in yellow (near break-even or high-risk no-sales)",
+        "advice": "Lower bids by 10 cents at a time to test performance improvement without removal, potentially reducing ACoS.",
+        "confidence": "High",
+        "source": "for keywords that you've highlighted in yellow you can try to improve their performance by lowering their bids instead of removing them all together by lowering the bid you are paying less per click so although the conversion rate may fall it can still perform well and lower the a cost at the same time this is something that you have to test to see there's no way to know without trying so what you can do is lower the bids by 10 cents at a time and see what happens",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "green-keyword-campaign-1",
+        "category": "General",
+        "trigger": "Keywords highlighted in green (low ACoS, profitable)",
+        "advice": "Move profitable keywords to a new campaign named '[Product] Good Keywords' with same match type and aggressive daily budget of $50-$100+ to scale sales.",
+        "confidence": "High",
+        "source": "for the keywords that are performing well these are the keywords that you've highlighted in green what I suggest doing is moving them to a new campaign and I like to name the campaign my product name good keywords and make sure to use the same match type for that keyword so if the keyword is an exact match then you want to make sure the new campaign is also an exact match then set your daily budget very aggressively like to $50 or $100 or more remember these keywords are profitable so the more money you spend on these the more profitable sales you're making",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-focus-1",
+        "category": "General",
+        "trigger": "Keyword research for ranking and PPC",
+        "advice": "Prioritize high conversion rate keywords (e.g., 52% vs 6%) over high search volume (e.g., 50,000 vs 299 monthly searches) to improve organic ranking and reduce PPC spend.",
+        "confidence": "High",
+        "source": "high volume keywords might seem attractive but they can severely hinder your efforts to rank organically because they don't convert you want to focus on using High conversion keywords in your product listings not high search volume keywords because you want the Amazon search algorithm to index your listing for high conversion keywords since it's sales that determine your listing rank not search volume",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-filter-conv-1",
+        "category": "General",
+        "trigger": "Generating keyword list",
+        "advice": "Filter out keywords with conversion rate <20% (less than 20 sales per 100 searches) to focus on high-converting terms.",
+        "confidence": "High",
+        "source": "remove all the low conversion keywords these are keywords that have a conversion rate of less than 20% that means out of 100 searches 20 sales or less were made and we can easily do that by clicking on the filter settings and in the conversion rate field enter 19% here just so we can capture those keyword phrases that are right on the borderline",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-filter-market-1",
+        "category": "Risk",
+        "trigger": "Market availability <40%",
+        "advice": "Filter keywords to keep only those with market availability >=40% (other sellers capture at least 40% of sales) to ensure opportunity beyond top 3 sellers.",
+        "confidence": "High",
+        "source": "in the market availability field we want to remove keywords where the top three sellers are getting most of the sales we want to make sure that the rest of the sellers are capturing a good portion of the sales since when you launch your product you're not going to be in the top three so let's keep the keywords where the rest of the sellers are able to capture at least 40% of the sales and like before let's enter 39% here just so we can include the ones that are right on the border",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-sales-min-1",
+        "category": "General",
+        "trigger": "Sorting keyword list by sales",
+        "advice": "Remove keywords with <25 sales per month (less than 1 sale per day) to focus on those with sufficient volume for ranking.",
+        "confidence": "High",
+        "source": "sort this list by sales we want only the keywords that have relatively High sales keywords with low sales isn't going to help us rank so this sales column is the total sales in the last 30 days I suggest removing keywords that don't have at least one sale per day so again just so we can capture the keywords that are on the borderline remove all the keywords that have less than 25 sales per month",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-relevance-1",
+        "category": "General",
+        "trigger": "Relevance score <=10",
+        "advice": "Sort by relevance descending and remove unrelated keywords (relevance <=10) to ensure product fit.",
+        "confidence": "High",
+        "source": "Resort this list by relevance in descending order relevance is a metric that indicates how closely related the keyword phrase is to our seed keyword so typically anything 10 or lower is most likely not related to our product now as you can see there's a ton of keywords here that are unrelated to camping tent Stakes so go through the list and remove them",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "competitor-keyword-steal-1",
+        "category": "General",
+        "trigger": "After seed keyword list",
+        "advice": "Extract keywords from top 3 competitors using tools like Keyword Ranker, filter for conv >20% and market avail >40%, remove duplicates, and merge with seed list.",
+        "confidence": "High",
+        "source": "we're going to take a look at the top competitors and steal their best keywords so navigate over to the top related products tab make sure it's sorted by sales highest to lowest... this will grab all the keywords that this listing is ranking for... repeat the step for the other top three related products then copy and paste all the data from the top three products into one spreadsheet... create a filter to remove any duplicates",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "keyword-verify-1",
+        "category": "General",
+        "trigger": "Final keyword list review",
+        "advice": "Search each keyword on Amazon (all departments) to verify most results match your product; highlight mismatches in yellow for indexing only, not PPC.",
+        "confidence": "High",
+        "source": "do a search on Amazon for every keyword phrase on your list make sure to set the search to all departments and verify in the search results that most of the listings are indeed the product that you're selling... for these keywords we're going to highlight them and only use them for keyword indexing... the bottom group of keywords that you've highlighted however are not good keywords to use in your PPC campaigns",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-plan-1",
+        "category": "General",
+        "trigger": "Unable to win buy box",
+        "advice": "Upgrade to Professional Seller plan ($39.99/month) to be eligible for buy box; individual plan cannot win it.",
+        "confidence": "High",
+        "source": "in order to even be eligible to win the buy box you need to have a professional Amazon Seller plan that's the plan where you're paying $39.99 a month and this is where so many beers get confused if you have the free individual plan then you'll never be able to win the buy box",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-hijacker-1",
+        "category": "Risk",
+        "trigger": "Sudden loss of buy box to another seller",
+        "advice": "Identify hijacker and remove them from listing without price war; refer to hijacker removal guide.",
+        "confidence": "High",
+        "source": "if you had the buybox one day and then you suddenly notice that another seller has won the buy box then you've got a hijacker that's jumped onto your listing... don't get into a price war with the hijacker in an attempt to win the buy box back instead what you need to do is to get rid of them and have them removed from your listing",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-inventory-1",
+        "category": "Risk",
+        "trigger": "Low or out of stock",
+        "advice": "Maintain sufficient inventory across multiple warehouses to avoid buy box loss; monitor levels to prevent stockouts.",
+        "confidence": "High",
+        "source": "the first thing to check is your inventory levels... if you just run low on stock you can lose the buy box basically in this scenario your opportunity to win the buy box is also dependent on whether Amazon believes you have enough inventory to efficiently fulfill orders to Shoppers anywhere in the country",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-fulfill-1",
+        "category": "General",
+        "trigger": "Competing for buy box",
+        "advice": "Use FBA for priority in buy box winning due to faster delivery and Prime eligibility; FBM possible but disadvantaged unless SFP qualified.",
+        "confidence": "High",
+        "source": "sellers that are doing FBA have an advantage... products being sold through FBA are also eligible for Amazon Prime which means Shoppers typically get their purchases delivered within 2 days... this isn't to say that sellers that aren't doing FBA can't win the buy box it just means that FBA sellers will get priority",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-rating-1",
+        "category": "Risk",
+        "trigger": "Order Defect Rate >=1%",
+        "advice": "Maintain ODR <1%, respond quickly to customers, minimize cancellations and A-to-Z claims to keep seller rating high for buy box eligibility.",
+        "confidence": "High",
+        "source": "you need to maintain your Amazon ordered defect rate to less than 1% otherwise Amazon will pen ize you and your chances of winning the Amazon buybox will be affected especially if you have a poor seller rating and your customer experience is subpar",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-price-low-1",
+        "category": "Pricing",
+        "trigger": "Price < $9.99",
+        "advice": "Avoid pricing below $9.99 to prevent classification as add-on item and loss of buy box.",
+        "confidence": "High",
+        "source": "the buy box can also be lost if your price is too low if your price is lower than $9.99 Amazon might consider the product to be what's called an add-on item and therefore take away the buy box",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-price-high-1",
+        "category": "Pricing",
+        "trigger": "Price significantly higher than competitors",
+        "advice": "Avoid excessive pricing to prevent price gouging flag and buy box loss; balance with other strong metrics like FBA.",
+        "confidence": "High",
+        "source": "you can also lose the buy box if you've priced your product too high compared to your competitors Amazon sees this as price gouging",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-price-change-1",
+        "category": "Pricing",
+        "trigger": "Frequent or drastic price changes (e.g., $5-10 jumps)",
+        "advice": "Make gradual changes ($1-2 at a time); for large increases, test new price, revert if buy box lost, then increment slowly; check with non-seller account.",
+        "confidence": "High",
+        "source": "you can also lose the buy box to yourself if you make drastic price changes like if you make a sudden five or a $10 jump in price if you do need to make a large change to your price then what I suggest you do is set the new price to what you want and then see if you still have the buy box if you do then you're good to go however if the buy box is gone then set the price back to what it was verify that the buy box is back then slow slowly raise the price $1 or $2 at a time until you get to your new Target price point",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "buybox-price-hack-1",
+        "category": "Pricing",
+        "trigger": "Need to change prices without risking buy box",
+        "advice": "Set list price to highest imaginable, use sale price for actual selling price with start date today and future end date to avoid drastic change flags and gain sale badge.",
+        "confidence": "High",
+        "source": "when you first create your product listing set the your price and the list price field to the highest price you can ever imagine selling your product for then set the actual price you want to sell the product for in the sale price field make sure to set the start date to today's date and then the end date to sometime in the future and by using this strategy you can make changes to your product pricing and Amazon won't think you're making drastic price changes or price gouging and remove the buy box from you another huge Advantage by doing this is that your listing will also show the product on sale and the search results like you can see here with the limited time deal badge as well as a strikeout price",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "launch-pricing-1",
+        "category": "Pricing",
+        "trigger": "Product launch with 0 reviews",
+        "advice": "Price 20% below average of top 20-30 sellers (e.g., $16 if average $20) to build initial sales and reviews (aim for 30 reviews threshold).",
+        "confidence": "High",
+        "source": "undercut the average market price take a look at the top 20 or 30 sellers on the first page of the search results and get an average if they're selling at an average price of around $20 consider pricing your product at $16 this 20% lower price point will make your listing more appealing to potential customers and help you gather those initial reviews",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "break-even-pricing-1",
+        "category": "Pricing",
+        "trigger": "Launch stage, low reviews",
+        "advice": "Price at break-even (manufacturing + shipping + Amazon fees) but avoid if too low vs competitors to prevent low-quality perception; account for PPC costs.",
+        "confidence": "High",
+        "source": "another strategy is to sell sell your product at the break even point this is the cost to manufacture and ship your product to Amazon Plus all of the Amazon fees but be careful here if the break even point is too low compared to your competitor's prices Shoppers can perceive your product as low quality plus you're leaving yourself without a buffer to accommodate any marketing or advertising costs",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "coupon-setup-1",
+        "category": "Pricing",
+        "trigger": "Launch incentives needed",
+        "advice": "Create coupons via Advertising > Coupons: 5-50% discount, min $100 budget, limit 1 per customer, set start/end dates (same-day up to 6h activation); fee 60\u00a2/redemption.",
+        "confidence": "High",
+        "source": "you can create coupons by clicking on the menu advertising coupons create a new coupon... choose standard... minimum of 5% and a maximum of 50%... limit Redemption to One customer... set your budget the minimum is $100 there's a fee for offering coupons like you can see here it costs 60 cents per coupon redemption",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "growth-price-increase-1",
+        "category": "Pricing",
+        "trigger": "After initial sales/reviews built",
+        "advice": "Increase price gradually: 10% or $1-2 weekly, or per 10 positive reviews, to target price without losing buy box; test higher if product has advantages.",
+        "confidence": "High",
+        "source": "each week slowly increase the price either 10% at a time time or by1 or2 dollar at a time gradually approaching your Target price alternatively you can increase the price incrementally based on the reviews every 10 positive reviews received increase the price by 10% or1 or2",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "subscribe-save-1",
+        "category": "Pricing",
+        "trigger": "Products suitable for repeat buys",
+        "advice": "Offer Subscribe & Save for recurring revenue and loyalty; create via coupons as subscribe type.",
+        "confidence": "High",
+        "source": "another pricing strategy you can employ is offering a subscribe and save option this is where buyers can get a deal on your product by subscribing to scheduled weekly or monthly deliveries... you can create subscribe and save coupons which I'll go over later on in the video",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "holiday-pricing-1",
+        "category": "Seasonality",
+        "trigger": "High demand periods (Black Friday, Christmas, Prime Day)",
+        "advice": "Raise prices during peak demand instead of discounting to boost profits; prepare strategies in advance.",
+        "confidence": "High",
+        "source": "don't forget about taking advantage of holidays or special events during high demand periods like Black Friday Christmas or Amazon Prime day you can offer deals or you can even raise your prices instead of offering discounts especially if your product is in high demand doing this can significantly boost your profits when demand is at its peak",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "sale-price-setup-1",
+        "category": "Pricing",
+        "trigger": "Want limited time deal badge",
+        "advice": "In Offer tab, set sale price lower than standard price, add start date (required), optional end date; displays strikethrough and savings.",
+        "confidence": "High",
+        "source": "if you want to offer your product on sale at a lower price and have the limited time deal badge appear on your listing... you can enter a sale price in the sale price field... by entering a sale price the S start date field is now required so enter the date that you'd like the sale to begin also choose the date that you'd like the sale to end but if you don't want the sale to end then you can just leave this field blank",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat1",
+        "category": "General",
+        "trigger": "New seller with no upfront money",
+        "advice": "Sign up for the individual Amazon seller plan with no monthly fee, charged 99 cents per sale only after sales are made",
+        "confidence": "High",
+        "source": "sign up with the individual plan there's no monthly subscription fee you'll only get charged 99 cents each time you sell something so essentially it's free until you start making sales",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat2",
+        "category": "General",
+        "trigger": "Selling more than 40 items per month",
+        "advice": "Upgrade to the professional seller plan for $39.99/month to avoid per-sale fees and access advertising features",
+        "confidence": "High",
+        "source": "if you end up selling more than 40 items each month it makes more sense to just upgrade to the professional plan",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat3",
+        "category": "Buying",
+        "trigger": "Sourcing free inventory for books",
+        "advice": "Join Facebook book clubs and browse Marketplace to acquire free used non-fiction books by posting requests or searching listings",
+        "confidence": "High",
+        "source": "join book clubs on Facebook and post asking if anyone is looking to get rid of books and also browse in the marketplace for the same thing and focus on non-fiction books as these have the best resale value",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat4",
+        "category": "Risk",
+        "trigger": "Planning to sell used textbooks",
+        "advice": "Avoid selling textbooks on Amazon due to heavy regulation",
+        "confidence": "High",
+        "source": "stay away from textbooks selling textbooks on Amazon is very regulated",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat5",
+        "category": "Pricing",
+        "trigger": "Acquired free used books",
+        "advice": "Scan the book's barcode using the free Amazon seller app to check current used selling prices on Amazon",
+        "confidence": "High",
+        "source": "when you get your hands on free books you can scan the barcode that's on them using the Amazon seller app ... you'll be able to see right away how much they're selling for on Amazon",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat6",
+        "category": "Pricing",
+        "trigger": "Evaluating profitability of free books",
+        "advice": "Use the Amazon profit calculator to estimate net profit after fees; for a $29 used sale price with zero cost, expect approximately $20 profit",
+        "confidence": "High",
+        "source": "let's say you got a hold of this Tom Clancy book here for free ... the used paperback copies are selling for $29 ... after subtracting all the Amazon fees you make $20",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat7",
+        "category": "General",
+        "trigger": "Preparing to sell acquired books",
+        "advice": "Ship books to Amazon FBA for automated storage, picking, packing, shipping, customer service, and Prime badge eligibility to boost sales",
+        "confidence": "High",
+        "source": "ship the book to Amazon to take advantage of their FBA or fulfillment by Amazon service ... sellers that use FBA have higher sales because their products will get the Amazon Prime badge",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat8",
+        "category": "Buying",
+        "trigger": "Shipping free books to Amazon FBA",
+        "advice": "Batch ship multiple books together to reduce per-book shipping cost to as low as 28 cents",
+        "confidence": "High",
+        "source": "you can cut that expense down significantly by shipping in several books at the same time and by doing that you can cut the shipping cost down to as little as 28 cents per book",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat9",
+        "category": "Pricing",
+        "trigger": "Finding discounted books or items for arbitrage",
+        "advice": "Only purchase if the Amazon selling price is double or more than the acquisition cost to ensure profit",
+        "confidence": "High",
+        "source": "only buy the items where you can make a profit ideally items that are selling for double or more on Amazon than what you buy them for at the store",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bookstrat10",
+        "category": "Risk",
+        "trigger": "Reselling name-brand or restricted books",
+        "advice": "Before buying, add the UPC to Seller Central to check for approval requirements, invoices, or brand authorization; avoid items needing invoices from wholesalers (retail receipts insufficient)",
+        "confidence": "High",
+        "source": "make sure that you're allowed to sell these items without needing brand approval ... just go ahead and add the product in Seller Central by entering the UPC barcode and it'll show you what the requirements are ... you need at least one invoice from the manufacturer or distributor ... at least 180 days or newer ... purchased at least 10 units",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-001",
+        "category": "General",
+        "trigger": "Selling more than 40 items per month",
+        "advice": "Choose the Professional seller plan ($39.99/month) over the Individual plan to avoid $0.99 per item fee and access extra features like marketing tools.",
+        "confidence": "High",
+        "source": "if you sell more than 40 items per month then the professional plan is the better choice with the professional plan you also get access to all of these extra features as well as marketing and advertising tools",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-002",
+        "category": "General",
+        "trigger": "Starting out with low sales volume",
+        "advice": "Start with the Individual seller plan to avoid the $39.99 monthly fee, then upgrade to Professional when ready to sell more.",
+        "confidence": "High",
+        "source": "one way to save some money upfront is to start with the individual plan and when you're ready to start selling upgrade to the professional plan so you can avoid having to pay the $39.99 monthly fee",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-003",
+        "category": "Pricing",
+        "trigger": "Items sold at discounted price (e.g., with coupon or promotion)",
+        "advice": "Calculate referral fee (usually 15%) based on the discounted sale price, not the original price, to accurately assess profitability.",
+        "confidence": "High",
+        "source": "the referral fee is based on the price that the item actually sells for so if the item is on sale like you have a coupon or promotion then the referral fee is 15% of the discounted price",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-004",
+        "category": "General",
+        "trigger": "Driving external traffic to Amazon listings",
+        "advice": "Enroll in Amazon's brand referral bonus to reduce referral fees from 15% to as low as 5% (average 10% discount, up to 30% by category) by handling your own advertising.",
+        "confidence": "High",
+        "source": "you can drastically lower your FBA referral fee remember the typical referral fee is around 15% but there's a way to lower that fee down to as little as 5% through Amazon's brand referral bonus basically if you drive outside sales traffic to Amazon Amazon will reduce your referral fees",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-005",
+        "category": "Risk",
+        "trigger": "Products weighing less than 16 oz and sized smaller than 15x12x0.75 inches",
+        "advice": "Use Amazon's FBA calculator to estimate fulfillment fees ($3.00 to $3.65 for small standard tier starting April 15, 2024) before purchasing inventory to ensure profitability.",
+        "confidence": "High",
+        "source": "the fulfillment fee can range from $3 all the way up to $365 and if you take notice the fees increase much higher as the product gets bigger and heavier... to see what your actual FBA and storage fees are going to be is to use Amazon's free FBA calculator now I highly encourage everyone to do this before you invest or decide to sell any product",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-006",
+        "category": "Seasonality",
+        "trigger": "Inventory stored during October-December (Q4)",
+        "advice": "Limit inventory to estimated sales based on historical data to avoid high storage fees ($2.40 per cubic foot vs. $0.78 Jan-Sep) during holiday rush.",
+        "confidence": "High",
+        "source": "the storage fee between January and September starts at 78 cents per cubic foot and between October through December it's $2.40 per cubic foot... one way to save yourself from overpaying storage fees is by making sure you don't keep too much inventory at Amazon during Q4 track and analyze your sales history and only keep enough inventory at Amazon to cover your estimated sales",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-007",
+        "category": "Risk",
+        "trigger": "Inventory stored over 180 days",
+        "advice": "Remove or dispose of aged inventory to avoid long-term storage fees ($0.50 per cubic foot at 181-210 days, up to $6.90 over 365 days); use removal orders ($1.04 per unit for standard <0.5 lb) or disposal.",
+        "confidence": "High",
+        "source": "the Aged inventory search charge fee starts at 50 cents per cubic foot for items aged 181 to 210 days and skyrockets to 690 cents per cubic feet for inventory aged over 365 days so if you have inventory that's not selling consider removing it from Amazon",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-008",
+        "category": "Risk",
+        "trigger": "Inventory levels below historical 28-day average",
+        "advice": "Maintain adequate inventory across warehouses to avoid low inventory fee (up to $1.11 per unit for standard size); exemptions for new sellers (first 365 days), new products (first 180 days), or products sold <20 units in past 7 days.",
+        "confidence": "High",
+        "source": "if your inventory levels fall below your historical 28 day average your fees will go up by as much as $1.11 per unit depending on the tier but don't worry this penalty doesn't apply universally for example... it doesn't apply to new professional sellers for their first 365 days as well as on new FBA products for the first 180 days and the feed doesn't apply to products that I've sold less than 20 units in the past 7 days",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-009",
+        "category": "Risk",
+        "trigger": "Shipping to wrong warehouse or non-compliant inventory",
+        "advice": "Follow FBA shipping guidelines strictly to avoid inbound defect fees (minimum $0.04 per unit, e.g., $400 for 10,000 units); improper prep can lead to refusal or loss of FBA privileges.",
+        "confidence": "High",
+        "source": "if you ship to the wrong Warehouse you'll get fined a minimum of 4 cents per unit now that might not sound like much but if you're sent in let's say say 10,000 units that's a $400 fine",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-010",
+        "category": "Risk",
+        "trigger": "Products arriving without labels or improper prep",
+        "advice": "Ensure proper labeling and prep (e.g., by manufacturer) to avoid unplanned service fees ($0.20-$0.40 per unit) and labeling fees ($0.55 per unit).",
+        "confidence": "High",
+        "source": "if your products show up with no labels Amazon will charge you 20 cents per unit on top of the labeling fee and if you keep sending in products with missing labels the unplanned service fee can be as much as 40 cents per unit... Amazon will charge you a labeling fee of 55 cents per unit",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-011",
+        "category": "Buying",
+        "trigger": "Creating new FBA shipping plans for standard/large bulky items",
+        "advice": "Ship inventory to 4+ warehouses to avoid inbound placement fees (0 fee vs. $0.21-$0.68 per unit for 1 warehouse, $0.12-$0.23 for 2-3); compare with freight quotes.",
+        "confidence": "High",
+        "source": "if you want to ship all of your inventory to one Warehouse you'll be charged anywhere from 21 cents per unit to 68 cents per unit and if you ship to two or three warehouses the fee is lower starting from 12 cents per unit to 23 cents per unit and if you ship to four or more warehouses there's no fee",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-012",
+        "category": "Risk",
+        "trigger": "High return rate exceeding category threshold (except apparel/shoes)",
+        "advice": "Sell quality products with clear listings describing features/benefits to stay below return thresholds and avoid returns processing fees ($1.65 for small standard to $15.27 for extra-large starting June 1, 2024).",
+        "confidence": "High",
+        "source": "if you exceed the return rate threshold Amazon will start charging you the return processing fee which as you can can see here starts at a165 on small standard items to as much as $3.69 on large standard and can be even as high as $157 per return on extra-large items... that's why I only sell quality premium products that have value and always make sure that my product listings easily communicate the features and benefits",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-013",
+        "category": "Pricing",
+        "trigger": "Items priced below $10",
+        "advice": "Package products to qualify for small standard tier and low price to get $0.77 per unit fulfillment fee discount (plus 20 cents reduction for standard size starting April 15, 2024).",
+        "confidence": "High",
+        "source": "the fulfillment fee has been reduced for standard siiz products by 20 cents per unit... and items priced below $10 will get an additional 77 cents per unit discount so in order to take advantage of that work with your supplier to make sure you package your products in the smallest way possible",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-014",
+        "category": "General",
+        "trigger": "Products that can ship in their own packaging without damage",
+        "advice": "Enroll in Ships In Product Packaging (SIP) program to save $0.04-$1.32 per unit on fulfillment fees; redesign packaging for brand exposure while ensuring protection.",
+        "confidence": "High",
+        "source": "if your product qualifies and Amazon can ship your product in its own packaging you can save anywhere from4 cents to $1.32 depending on the size and weight of your product... definitely consider taking advantage of this discount by talking to your supplier to make sure your product can be properly packaged and protected",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "rule-015",
+        "category": "General",
+        "trigger": "New brand-registered sellers",
+        "advice": "Apply for new seller incentives including 10% bonus on first $50,000 sales, $200 Vine credits, $100 shipping credits, $400 inbound placement credits, $50 PPC and coupon credits to offset fees.",
+        "confidence": "High",
+        "source": "Amazon actually has a program called new seller incentives and you can take advantage of these options to offset some of the Amazon fees... for brand registered sellers you can get a 10% bonus on your first $50,000 in sales $200 in Amazon Vine credits... $100 in credits in inventory shipping fees... $400 in credits that apply to the FBA inbound placement Serv service fee $50 in promotional clicks... $50 in coupon credits",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-eligibility-plan",
+        "category": "General",
+        "trigger": "Using Individual Seller Plan",
+        "advice": "Upgrade to Professional Amazon Seller Plan ($39.99/month) to be eligible to win the Buy Box.",
+        "confidence": "High",
+        "source": "in order to even be eligible to win the buy box you need to have a professional Amazon Seller plan that's the plan where you're paying $39.99 a month and this is where so many beers get confused if you have the free individual plan then you'll never be able to win the buy box",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-private-label",
+        "category": "General",
+        "trigger": "Selling private label products with Professional Plan",
+        "advice": "Ensure you always have and win the Buy Box as the only seller on your listing.",
+        "confidence": "High",
+        "source": "if you do have the professional plan and you're selling private label products then you should always have the buy box on your product listing page and you should always be the winner of the buy box since no other sellers should be on your listing",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-hijacker-detection",
+        "category": "Risk",
+        "trigger": "Sudden appearance of another seller or more buying options on listing",
+        "advice": "Identify hijacker and remove them from listing instead of engaging in price war; refer to detailed video for removal process.",
+        "confidence": "High",
+        "source": "if you had the buy box one day and then you suddenly notice that another seller has won the buy box then you've got a hijacker that's jumped onto your listing... don't get into a price war with the hijacker in an attempt to win the buy box back instead what you need to do is to get rid of them and have them removed from your listing",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-inventory-low",
+        "category": "Risk",
+        "trigger": "Low inventory levels or stock not spread across multiple warehouses",
+        "advice": "Maintain sufficient inventory distributed across multiple warehouses to ensure efficient fulfillment nationwide and avoid Buy Box rotation to competitors.",
+        "confidence": "High",
+        "source": "if you're not doing private label and you're competing with other sellers then even if you don't completely run out of stock if you just run low on stock you can lose the buy box... when you're low on stock you may only have inventory in one or two warehouses so Amazon won't be able to efficiently fulfill orders around the country Therefore your chances of winning the buy box will decrease",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-condition-new",
+        "category": "General",
+        "trigger": "Selling used items",
+        "advice": "Sell only new condition products to be eligible for the Buy Box.",
+        "confidence": "High",
+        "source": "you can't win the buy box if you're selling used items the buy box is only for products in the new condition only",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-fulfillment-fba",
+        "category": "General",
+        "trigger": "Using FBM (Fulfilled by Merchant) without SFP",
+        "advice": "Use FBA (Fulfilled by Amazon) for priority in winning Buy Box due to Prime eligibility and faster delivery; for FBM, qualify for SFP to get Prime badge by maintaining excellent sales record.",
+        "confidence": "High",
+        "source": "sellers that are doing FBA have an advantage... FBA sellers will get priority... to qualify for SFP sellers have to maintain an excellent sales record and meet all of these requirements here and this is why FBA and SFP sellers have a massive Advantage when it comes to winning the buy box over fbm sellers",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-seller-rating",
+        "category": "Risk",
+        "trigger": "Order defect rate >=1% or poor seller metrics (e.g., slow response, cancellations, A-to-Z claims)",
+        "advice": "Maintain seller rating above threshold by keeping order defect rate <1% and optimizing customer response time, cancellations, claims, and feedback to increase Buy Box win chances.",
+        "confidence": "High",
+        "source": "your seller account health and seller rating also play a role for winning the buy box... you need to maintain your Amazon order defect rate to less than 1% otherwise Amazon will penalize you and your chances of winning the Amazon buy box will be affected",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-price-low",
+        "category": "Pricing",
+        "trigger": "Price < $9.99",
+        "advice": "Avoid pricing below $9.99 to prevent product being classified as add-on item, which removes the Buy Box.",
+        "confidence": "High",
+        "source": "the buy box can also be lost if your price is too low if your price is lower than $9.99 Amazon might consider the product to be what's called an add-on item and therefore take away the buy box",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-price-high",
+        "category": "Pricing",
+        "trigger": "Price significantly higher than competitors",
+        "advice": "Avoid excessive pricing to prevent Amazon flagging as price gouging, which can lead to losing the Buy Box.",
+        "confidence": "High",
+        "source": "you can also lose the buy box if you've priced your product too high compared to your competitors Amazon sees this as price gouging",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-price-change-frequent",
+        "category": "Pricing",
+        "trigger": "Frequent price changes or drastic jumps (e.g., $5-10 increase)",
+        "advice": "Avoid frequent or large price changes; for large adjustments, test new price, revert if Buy Box lost, then increment $1-2 at a time until target reached.",
+        "confidence": "High",
+        "source": "you can also lose the buy box to yourself if you change your price too frequently... if you make a drastic price changes like if you make a sudden five or $10 jump in price... set the price back to what it was verify that the buy box is back then slowly raise the price $1 or $2 at a time until you get to your new Target price point",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-check-listing",
+        "category": "General",
+        "trigger": "Viewing own listing with seller account",
+        "advice": "Always check product listing using a non-seller Amazon account to verify Buy Box presence, as seller accounts never show it.",
+        "confidence": "High",
+        "source": "you need to check your product listing using an Amazon account that isn't your seller account because you can't buy your own products if you look at your own listing with your seller account there'll never be a buy box there",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-pricing-hack-sale",
+        "category": "Pricing",
+        "trigger": "Need to adjust prices without risking Buy Box loss",
+        "advice": "Set list price to highest imaginable, sale price to actual price, start date today, end date in future; this prevents drastic change flags, shows sale badges, strikeout pricing, and percentage off to attract buyers.",
+        "confidence": "High",
+        "source": "when you first create your product listing set the your price and the list price field to the highest price you can ever imagine selling your product for then then set the actual price you want to sell the product for in the sale price field make sure to set the start date to today's date and then the end date to sometime in the future... your listing will also show the product on sale and the search results like you can see here with the limited time deal badge as well as a strikeout price and even show a percentage off amount",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "bb-sales-impact",
+        "category": "General",
+        "trigger": "Losing the Buy Box",
+        "advice": "Prioritize winning Buy Box as 82% of sales occur through it; losing it reduces sales by over 85% and makes direct purchases harder for shoppers.",
+        "confidence": "High",
+        "source": "82% of sales are through the buy box... my sales dropped by over 85%",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-arbitrage-use-existing",
+        "category": "General",
+        "trigger": "Selling arbitrage products like books with existing ISBN",
+        "advice": "Use the existing manufacturer barcode (ISBN) on the product to list inventory on Amazon without needing to buy or add a new barcode",
+        "confidence": "High",
+        "source": "if you're doing wholesale or Arbitrage like I said earlier the products you purchase are already going to have the manufacturer's barcode or UPC printed on it so you don't need to worry about buying a barcode or putting the barcode on the product to list your inventory for sale on Amazon you can just type in the UPC barcode that's on the product to pull up the original product listing and add your inventory and set your price",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-fnsk-separation",
+        "category": "Risk",
+        "trigger": "Using FBA for arbitrage books to avoid commingling",
+        "advice": "Switch from default manufacturer barcode (ISBN) to Amazon barcode (FNSKU) in Seller Central settings to keep your inventory separate from other sellers and maintain control over product condition",
+        "confidence": "High",
+        "source": "what I suggest is regardless if you're doing wholesale Arbitrage or private label always use the Amazon barcode or FN skew so that your inventory is kept separate from everyone else's okay so that might have been a little confusing so let me summarize what I suggest is regardless if you're doing wholesale Arbitrage or private label always use the Amazon barcode or FN skew so that your inventory is kept separate from everyone else's",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-cover-existing",
+        "category": "General",
+        "trigger": "Switching to FNSKU on arbitrage books with existing ISBN",
+        "advice": "Cover the existing ISBN barcode with an opaque tape or marker, then apply the FNSKU label sticker on the outermost packaging to ensure only one scannable barcode is visible",
+        "confidence": "High",
+        "source": "if you're doing wholesale or Arbitrage you need to cover up the existing UPC barcode if you're going to switch to the fnq barcode the simplest and easiest way is to just cover the original UPC barcode with the new fnc barcode label sticker... remove cover or render unscannable any existing scannable barcodes on the outside of shipping boxes for example cover existing barcodes with opaque tape or use a black felt tip marker to render the barcode unscannable",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-bundle-unique",
+        "category": "General",
+        "trigger": "Selling book bundles or packs as one unit",
+        "advice": "Assign a unique barcode (ISBN or FNSKU) to each distinct bundle type, treating the entire pack as one unit regardless of the number of books inside",
+        "confidence": "High",
+        "source": "what if you want to sell a package or a bundle of products for example let's say you want to sell a pack of three like pillows well the entire pack or bundle is considered one unit... it doesn't matter how many items are included inside the pack or bundle it's still considered one unit so you only need to buy one barcode if you want to sell a pack of three blue pillows and also I sell a pack of all three pillows then you'll need to buy two UPC barcodes",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-fbm-no-label",
+        "category": "Risk",
+        "trigger": "Using FBM for book sales instead of FBA",
+        "advice": "No barcode is required on products for FBM shipments directly to customers, but still use the ISBN to create the Amazon listing",
+        "confidence": "High",
+        "source": "requiring a barcode on your products is only necessary if you're doing FBA meaning you're shipping your inventory to Amazon's Warehouse if you're doing fbm meaning you're shipping your products directly to your customers yourself then your products don't need to have any barcodes printed on them since Amazon isn't tracking your inventory and they're never going to see or handle your inventory but you still need to buy a UPC barcode to create your Amazon listing though",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-gs1-risk",
+        "category": "Risk",
+        "trigger": "Creating new listings for custom book products",
+        "advice": "Obtain UPC barcodes only from GS1 for $30 each to avoid invalid listings, account suspension, or removal of selling privileges; avoid third-party sellers and GTIN exemptions which require renewal every 6 months",
+        "confidence": "High",
+        "source": "we recommend obtaining your upcs directly from gs1 and not from other thirdparty selling UPC licenses... if you do not buy directly from gs1 all invalid product UPC listings will be removed and may result in your asent creation and selling privileges being temporarily or permanently removed... gs1 now offers individual barcodes for only $30... I don't suggest trying to save money by getting a gtin exemption it's not worth a hassle especially since a gtin exemption needs to be continually renewed every 6 months",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-wait-period",
+        "category": "General",
+        "trigger": "Newly purchased UPC from GS1 for book listing creation",
+        "advice": "Wait 24 to 72 hours after purchasing a UPC from GS1 for the database to update before using it to create a new Amazon product listing",
+        "confidence": "High",
+        "source": "in some cases when you enter your new UPC barcode here you might run into an error where it doesn't accept the barcode in this situation if you just purchase the UPC barcode from the gs1 website you may need to wait 24 to 72 hours for the gs1 database to update before you can use the new barcode to create your new product listing",
+        "date_added": "2026-02-12"
+    },
+    {
+        "id": "barcode-pro-tip-dual",
+        "category": "General",
+        "trigger": "Planning to sell books both on Amazon and in brick-and-mortar stores",
+        "advice": "Design packaging with the original ISBN printed on it, then cover it with FNSKU sticker only for Amazon FBA units to avoid creating separate packaging designs",
+        "confidence": "High",
+        "source": "a pro tip if you plan to sell your product at Brick and Mortar stores like Walmart or Target where they're going to require your products to have the UPC barcode on them and you also plan to sell it on Amazon instead of having to create two different package designs one with the UPC barcode and another with the Amazon barcode you can save some money by designing your product packaging with the UPC on it so that the UPC is already printed on the original product this way for the units that you're shipping to Amazon to sell on Amazon you can simply cover up that UPC barcode with the FN skq label",
+        "date_added": "2026-02-12"
     }
 ]
