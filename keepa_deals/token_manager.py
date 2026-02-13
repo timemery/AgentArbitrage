@@ -21,6 +21,7 @@ class TokenManager:
     REDIS_KEY_TOKENS = "keepa_tokens_left"
     REDIS_KEY_RATE = "keepa_refill_rate"
     REDIS_KEY_RECHARGE_MODE = "keepa_recharge_mode_active"
+    REDIS_KEY_TIMESTAMP = "keepa_token_timestamp"
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -87,6 +88,7 @@ class TokenManager:
             return
         try:
             self.redis_client.set(self.REDIS_KEY_TOKENS, str(tokens))
+            self.redis_client.set(self.REDIS_KEY_TIMESTAMP, str(time.time()))
             if rate:
                 self.redis_client.set(self.REDIS_KEY_RATE, str(rate))
         except Exception as e:
@@ -104,8 +106,49 @@ class TokenManager:
             if rate:
                 self.REFILL_RATE_PER_MINUTE = float(rate)
                 self._adjust_burst_threshold()
+
+            ts = self.redis_client.get(self.REDIS_KEY_TIMESTAMP)
+            if ts:
+                self.last_refill_timestamp = float(ts)
         except Exception as e:
             logger.error(f"Redis load state error: {e}")
+
+    def get_projected_tokens(self):
+        """
+        Estimates current tokens based on last known value and elapsed time.
+        """
+        if not self.redis_client:
+            return self.tokens
+
+        try:
+            self._load_state_from_redis()
+            elapsed_minutes = (time.time() - self.last_refill_timestamp) / 60.0
+            if elapsed_minutes < 0: elapsed_minutes = 0
+
+            projected = self.tokens + (elapsed_minutes * self.REFILL_RATE_PER_MINUTE)
+            return min(projected, self.max_tokens)
+        except Exception as e:
+            logger.error(f"Error projecting tokens: {e}")
+            return self.tokens
+
+    def should_skip_sync(self):
+        """
+        Returns True if we are in Recharge Mode AND projected tokens are still critical.
+        Used to prevent API spamming during deep freeze.
+        """
+        if not self.redis_client:
+            return False
+
+        is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE) == "1"
+        if not is_recharging:
+            return False
+
+        projected = self.get_projected_tokens()
+        # If we are projected to be well below the threshold, stay quiet.
+        if projected < self.BURST_THRESHOLD:
+            return True
+
+        return False
 
     def has_enough_tokens(self, estimated_cost):
         """

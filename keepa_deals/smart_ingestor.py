@@ -201,7 +201,12 @@ def run():
             return
 
         token_manager = TokenManager(api_key)
-        token_manager.sync_tokens()
+
+        # Optimization: Skip API sync if we are in deep recharge mode
+        if token_manager.should_skip_sync():
+            logger.info("Skipping sync (Recharge active, estimated tokens low).")
+        else:
+            token_manager.sync_tokens()
 
         logger.info("Step 1: Initializing Sync...")
         # Blocking wait (raises TokenRechargeError if wait is long)
