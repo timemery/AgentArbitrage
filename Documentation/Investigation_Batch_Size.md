@@ -64,26 +64,30 @@ We verified the usage of `offers` data in the codebase to determine the impact o
 
 ---
 
-## 4. Optimization Opportunities (The "Safe Way")
+## 4. Addressing User Concern: "Does this make our numbers a guess?"
 
-We identified a specific optimization that makes large batch sizes safe and effective.
+**The User's Fear:** "If we remove offers to speed things up, we lose shipping/seller info, making the data inaccurate."
 
-### A. Optimize the "Peek" Request
--   **Current:** `fetch_current_stats_batch` requests `stats=365` AND `offers=20` (hardcoded).
--   **Solution:** Modify `keepa_api.py` to accept an `offers` parameter.
-    -   **Peek:** Call with `offers=0`. Cost drops to ~1-2 tokens/ASIN.
-    -   **Lightweight Update:** Call with `offers=20`. Cost remains ~6-12 tokens/ASIN.
+**The Reality:** The proposed optimization is **100% Safe and Lossless** because it leverages a "Two-Stage" process for New Deals.
 
-### B. Decoupled Batching Strategy
-Once the Peek cost is reduced, we can split the batching logic:
+### 1. New Deal Discovery (The "Peek" Phase)
+-   **Action:** We fetch **50 items** cheaply (without offers).
+-   **Goal:** Quickly discard "dead" inventory (sales rank > 2M, price < $5).
+-   **Data Usage:** We *only* look at the `stats` (Sales Rank, Buy Box Price) to make a Yes/No decision. We do *not* save this data.
+-   **Safety:** Since we don't save this data, there is **no risk** of saving inaccurate prices.
 
-1.  **Peek Batch (Discovery):** Increase size to **50 ASINs**.
-    -   **Cost:** ~50-100 tokens (Safe).
-    -   **Benefit:** Reduces HTTP requests by 10x (1 request vs 10 requests for 50 items). Massive speedup in scanning.
+### 2. Deal Ingestion (The "Commit" Phase)
+-   **Action:** If an item survives the Peek filter (e.g., it looks profitable), we **immediately fetch it again** with full details (`offers=20`).
+-   **Goal:** Capture accurate Shipping, Seller ID, and Condition.
+-   **Data Usage:** This second fetch provides the *actual* data saved to the database.
+-   **Safety:** The final data includes full shipping/seller info. **Zero guessing.**
 
-2.  **Commit Batch (Enrichment):** Keep size at **5 ASINs** (or dynamic).
-    -   **Logic:** Only "Survivors" (promising deals) proceed to this stage.
-    -   **Safety:** Prevents token spikes. Even if 50 items are scanned, only ~5-10 might survive. We process them in small chunks to keep the token deficit manageable.
+### 3. Existing Deal Updates (The "Lightweight Update" Phase)
+-   **Action:** We continue to fetch with `offers=20`.
+-   **Goal:** Ensure price updates reflect current shipping costs.
+-   **Safety:** We acknowledge that removing offers here would be unsafe, so we **will not do it**.
+
+**Conclusion:** The speed increase comes from **rejecting bad deals faster**, not from lowering the quality of good deals. We only strip data from the initial "glance" (Peek), ensuring we don't waste tokens on items we're going to reject anyway.
 
 ---
 
