@@ -39,15 +39,36 @@ However, the "Peek" stage (checking stats) *should* be cheap, but is currently e
 
 ---
 
-## 3. Optimization Opportunities (The "Safe Way")
+## 3. "What Do We Lose?" (Risk Assessment)
+
+We verified the usage of `offers` data in the codebase to determine the impact of removing `offers=20` from the "Peek" stage.
+
+### A. Stage 1: Peek (New/Zombie Deals)
+-   **Function:** `smart_ingestor.py` -> `check_peek_viability(stats)`
+-   **Dependency:** This function **ONLY** uses the `stats` object (Sales Rank, Buy Box Price, 90/365d Avgs). It does **NOT** access the `offers` array.
+-   **Data Flow:** The result of this stage is merely a list of `new_candidates`. The actual data fetched here is discarded. Survivors proceed to Stage 2 (Commit), which performs a fresh, full fetch (including offers).
+-   **Verdict:** **Nothing is lost.** Removing `offers` from the Peek stage is 100% safe.
+
+### B. Stage 3: Lightweight Update (Existing Deals)
+-   **Function:** `processing.py` -> `_process_lightweight_update`
+-   **Dependency:** This function **DOES** use the `offers` array.
+    -   It iterates `product_data['offers']` to check shipping costs (`shipping_included_flag`).
+    -   It updates Seller ID, Seller Name, and FBA status, which rely on offer details.
+-   **Verdict:** **Functionality is lost.** Removing `offers` from the Lightweight Update stage would break shipping calculations and seller tracking.
+
+**Conclusion:** We must parameterize the API call. We can remove `offers` for **Peek (Stage 1)** but must retain it for **Lightweight Update (Stage 3)**.
+
+---
+
+## 4. Optimization Opportunities (The "Safe Way")
 
 We identified a specific optimization that makes large batch sizes safe and effective.
 
 ### A. Optimize the "Peek" Request
--   **Current:** `fetch_current_stats_batch` requests `stats=365` AND `offers=20`.
--   **Analysis:** The `check_peek_viability` function (which decides if a deal is good) **ONLY** uses the `stats` object (Sales Rank, Buy Box Price). It does **NOT** use the offer list.
--   **Solution:** Modify the Peek request to set `offers=0`.
--   **Projected Cost:** ~1-2 tokens per ASIN (down from ~6-12).
+-   **Current:** `fetch_current_stats_batch` requests `stats=365` AND `offers=20` (hardcoded).
+-   **Solution:** Modify `keepa_api.py` to accept an `offers` parameter.
+    -   **Peek:** Call with `offers=0`. Cost drops to ~1-2 tokens/ASIN.
+    -   **Lightweight Update:** Call with `offers=20`. Cost remains ~6-12 tokens/ASIN.
 
 ### B. Decoupled Batching Strategy
 Once the Peek cost is reduced, we can split the batching logic:
@@ -62,15 +83,17 @@ Once the Peek cost is reduced, we can split the batching logic:
 
 ---
 
-## 4. Conclusion & Recommendations
+## 5. Recommendations
 
 **Q: Is there any safe way to improve the speed of the data collection?**
-**A:** Yes. By removing the unused `offers=20` parameter from the Peek stage, we can drastically reduce costs. This allows us to safely increase the scanning batch size to 50, speeding up the discovery phase significantly.
+**A:** Yes. By removing the unused `offers=20` parameter **specifically from the Peek stage**, we can drastically reduce costs. This allows us to safely increase the scanning batch size to 50, speeding up the discovery phase significantly.
 
 **Q: Is it true that it was no more costly to collect 20 than 50?**
 **A:** No, not for the Product Enrichment API. Costs are linear (per-ASIN). However, with the proposed optimization (removing offers), the per-ASIN cost becomes negligible (1-2 tokens), making larger batches highly efficient relative to the speed gain.
 
 **Recommended Action Plan:**
-1.  **Code Change:** Update `keepa_api.py` or `smart_ingestor.py` to use `offers=0` for the Peek stage.
-2.  **Configuration:** Increase `MAX_ASINS_PER_BATCH` to **50** for the scanning loop.
-3.  **Safety Check:** Ensure the "Commit" loop processes survivors in smaller sub-batches (e.g., 5) to protect the token bucket.
+1.  **Code Change:** Update `keepa_api.py` to accept an `offers` parameter in `fetch_current_stats_batch`.
+2.  **Smart Ingestor Update:**
+    -   Call `fetch_current_stats_batch(..., offers=0)` for Stage 1 (Peek).
+    -   Call `fetch_current_stats_batch(..., offers=20)` for Stage 3 (Lightweight Update).
+3.  **Configuration:** Increase `MAX_ASINS_PER_BATCH` to **50** for the scanning loop (Peek), but throttle the Commit loop to 5 items at a time.
