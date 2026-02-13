@@ -9,6 +9,10 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+class TokenRechargeError(Exception):
+    """Raised when the system must pause for a long recharge duration."""
+    pass
+
 class TokenManager:
     """
     Manages Keepa API tokens, rate limiting, and refills using Redis for shared state.
@@ -17,6 +21,7 @@ class TokenManager:
     REDIS_KEY_TOKENS = "keepa_tokens_left"
     REDIS_KEY_RATE = "keepa_refill_rate"
     REDIS_KEY_RECHARGE_MODE = "keepa_recharge_mode_active"
+    REDIS_KEY_TIMESTAMP = "keepa_token_timestamp"
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -83,6 +88,7 @@ class TokenManager:
             return
         try:
             self.redis_client.set(self.REDIS_KEY_TOKENS, str(tokens))
+            self.redis_client.set(self.REDIS_KEY_TIMESTAMP, str(time.time()))
             if rate:
                 self.redis_client.set(self.REDIS_KEY_RATE, str(rate))
         except Exception as e:
@@ -100,8 +106,49 @@ class TokenManager:
             if rate:
                 self.REFILL_RATE_PER_MINUTE = float(rate)
                 self._adjust_burst_threshold()
+
+            ts = self.redis_client.get(self.REDIS_KEY_TIMESTAMP)
+            if ts:
+                self.last_refill_timestamp = float(ts)
         except Exception as e:
             logger.error(f"Redis load state error: {e}")
+
+    def get_projected_tokens(self):
+        """
+        Estimates current tokens based on last known value and elapsed time.
+        """
+        if not self.redis_client:
+            return self.tokens
+
+        try:
+            self._load_state_from_redis()
+            elapsed_minutes = (time.time() - self.last_refill_timestamp) / 60.0
+            if elapsed_minutes < 0: elapsed_minutes = 0
+
+            projected = self.tokens + (elapsed_minutes * self.REFILL_RATE_PER_MINUTE)
+            return min(projected, self.max_tokens)
+        except Exception as e:
+            logger.error(f"Error projecting tokens: {e}")
+            return self.tokens
+
+    def should_skip_sync(self):
+        """
+        Returns True if we are in Recharge Mode AND projected tokens are still critical.
+        Used to prevent API spamming during deep freeze.
+        """
+        if not self.redis_client:
+            return False
+
+        is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE) == "1"
+        if not is_recharging:
+            return False
+
+        projected = self.get_projected_tokens()
+        # If we are projected to be well below the threshold, stay quiet.
+        if projected < self.BURST_THRESHOLD:
+            return True
+
+        return False
 
     def has_enough_tokens(self, estimated_cost):
         """
@@ -172,6 +219,13 @@ class TokenManager:
                             if rate_for_calc <= 0: rate_for_calc = 1.0
 
                             wait_time = math.ceil((tokens_needed / rate_for_calc) * 60)
+
+                            # If the wait is long (e.g. > 60 seconds), we should not sleep and block the worker.
+                            # Instead, we raise an exception to let the caller (task) exit and retry later.
+                            if wait_time > 60:
+                                logger.warning(f"Recharge Mode: Tokens critically low ({self.tokens:.2f}). Required wait: {wait_time}s. Exiting task to free worker.")
+                                raise TokenRechargeError(f"Recharge needed: {wait_time}s")
+
                             if wait_time < 5: wait_time = 5 # Minimum sleep
                             self._wait_for_tokens(wait_time, self.BURST_THRESHOLD)
                             continue
@@ -293,6 +347,11 @@ class TokenManager:
                     wait_time = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
 
             if wait_time > 0:
+                # If we need to wait a long time to recover a minimum balance, exit instead of sleeping.
+                if wait_time > 60:
+                    logger.warning(f"Insufficient tokens (Current: {self.tokens:.2f}, Target: {target}). Wait {wait_time}s > 60s. Exiting task.")
+                    raise TokenRechargeError(f"Insufficient tokens: wait {wait_time}s")
+
                 logger.warning(f"Insufficient tokens (Current: {self.tokens:.2f}, Target: {target}). Waiting for {wait_time}s.")
                 self._wait_for_tokens(wait_time, recovery_target)
                 continue # Retry reservation loop

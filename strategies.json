@@ -58360,5 +58360,572 @@
         "confidence": "High",
         "source": "Both types can help attract customers and reduce overstocked or seasonal items.",
         "date_added": "2026-02-13"
+    },
+    {
+        "id": "promo-margin-1",
+        "category": "Pricing",
+        "trigger": "Need to increase sales while maintaining margin",
+        "advice": "Run Promotions as free offers like Percentage Off or Buy One Get One free to discount single-unit or tiered quantity purchases",
+        "confidence": "High",
+        "source": "Promotions are free offers you can run to help increase product sales while maintaining a comfortable margin. They come in the form of Percentage Off or Buy One, Get One free offers. With Percentage Off promotions, you can discount single-unit purchases or select a tiered discount structure that increases the discount as the purchased quantity increases.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "promo-inventory-2",
+        "category": "Risk",
+        "trigger": "High inventory levels risking liquidation",
+        "advice": "Use Promotions to reduce inventory and avoid liquidations",
+        "confidence": "High",
+        "source": "You can also leverage Promotions to reduce inventory and avoid liquidations.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "coupon-new-3",
+        "category": "General",
+        "trigger": "New sellers or products with no sales history or reviews",
+        "advice": "Create Coupons for discounts on single or multiple products; no sales history or reviews required",
+        "confidence": "High",
+        "source": "No sales history or customer reviews are required to create Coupons. This makes them a great tool for new sellers and can help you promote newer products which may not be eligible for other types of promotions. With Coupons, you can offer discounts on a single product or a set of products.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "coupon-fbm-4",
+        "category": "General",
+        "trigger": "Selling via FBM or FBA",
+        "advice": "Create Coupons for both FBM and FBA offers to increase customer attraction and sales",
+        "confidence": "High",
+        "source": "Coupons can be created for both Fulfillment by Merchant, or FBM, offers; as well as Fulfillment by Amazon, or FBA, offers. This feature increases the chances of attracting more customers, which can help increase your sales.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-exposure-5",
+        "category": "Pricing",
+        "trigger": "Seeking higher product exposure",
+        "advice": "Promote with Deals (Lightning up to 12 hours or Best Deals for limited days) for featuring on Deals page, home page, or social media",
+        "confidence": "High",
+        "source": "If you want even higher exposure for your product, consider promoting it with a Deal. Lightning Deals are featured for up to 12 hours. Best Deals are featured for a limited number of days. With Deals, your discounted product is featured on the Amazon Deals page, one of our most-visited pages, and may also be featured on the Amazon home page or through social media platforms.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-seasonal-6",
+        "category": "Seasonality",
+        "trigger": "Overstocked or seasonal items",
+        "advice": "Use Lightning or Best Deals to attract customers and reduce overstocked or seasonal items",
+        "confidence": "High",
+        "source": "Both types can help attract customers and reduce overstocked or seasonal items.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-condition-7",
+        "category": "Risk",
+        "trigger": "Creating Deals",
+        "advice": "Ensure products are in new condition only; no used, refurbished, or other conditions",
+        "confidence": "High",
+        "source": "Products featured through a Deal must be in new condition. They can\u2019t be used, refurbished, or any other condition type.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-variations-8",
+        "category": "General",
+        "trigger": "Products with multiple variations (size, color, style)",
+        "advice": "Include at least 65% of product variations in the Deal to meet customer preferences and eligibility",
+        "confidence": "High",
+        "source": "When products have multiple variations for size, color, style, or other features, their Deal should also include as many variations as possible. That\u2019s because customers looking for Deals tend to prefer options. Usually, at least 65% of a product\u2019s variations should be included in a Deal.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-eligibility-9",
+        "category": "Risk",
+        "trigger": "Certain product categories",
+        "advice": "Avoid Deals for restricted, offensive, or ineligible products like medical devices, medicines, alcohol, adult products, baby formula",
+        "confidence": "High",
+        "source": "To ensure a great customer experience, some products aren\u2019t eligible for Deals, including restricted products, products in certain categories, and products that may be deemed offensive or inappropriate. This includes but isn\u2019t limited to medical devices and medicines, alcohol, adult products, and baby formula.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-fulfillment-10",
+        "category": "General",
+        "trigger": "Creating Deals",
+        "advice": "Fulfill Deal orders at Prime speeds using FBA; some seller-fulfilled eligible if matching Prime speeds",
+        "confidence": "High",
+        "source": "Sellers also usually need to fulfill orders created through Deals at Prime speeds using FBA. But you may see some seller-fulfilled products eligible for Deals if you\u2019re able to fulfill orders at Prime speeds yourself.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "vine-new-11",
+        "category": "General",
+        "trigger": "Brand owner with new or slow-moving products needing reviews",
+        "advice": "Enroll in Amazon Vine for a flat fee to offer free units to approved reviewers for honest reviews and build trust",
+        "confidence": "High",
+        "source": "If you\u2019re a brand owner enrolled in Amazon Brand Registry, you can also enroll in the Amazon Vine program to help drive traffic to new or slow-moving products. Amazon Vine is a customer review program that enables brand owners to offer free units of their products to select, approved Vine reviewers in pursuit of getting customer reviews on newly launched products or products with limited existing reviews. For a flat fee, Vine shares products with vetted Amazon reviewers who were selected for their ability to post insightful reviews on their Amazon purchases.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-001",
+        "category": "Risk",
+        "trigger": "Low net proceeds for a product group",
+        "advice": "Investigate imbalance between costs and revenue, identify products needing attention or optimization",
+        "confidence": "High",
+        "source": "low net proceeds for a product group might signal an imbalance between costs and revenue.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-002",
+        "category": "Risk",
+        "trigger": "Advertising spend not generating enough sales to be profitable",
+        "advice": "Focus on improving marketing strategy using data insights",
+        "confidence": "High",
+        "source": "your advertising spend isn\u2019t generating enough sales to be profitable. With this information, you can focus on improving your marketing strategy.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-003",
+        "category": "Risk",
+        "trigger": "High storage costs as a percentage of sales",
+        "advice": "Sort products by storage costs percentage to reveal disproportionate expenses, focus optimization efforts on those items",
+        "confidence": "High",
+        "source": "sorting products by storage costs as a percentage of sales quickly reveals which items have disproportionate storage expenses relative to their revenue. This helps you identify where to focus your optimization efforts.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-004",
+        "category": "Pricing",
+        "trigger": "Products with high storage fees",
+        "advice": "Use scenario planning to evaluate running promotions, adjusting inventory levels, or requesting removals to improve profitability",
+        "confidence": "High",
+        "source": "select products with high storage fees and evaluate options like running promotions, adjusting inventory levels, or requesting removals to understand which action might be most beneficial.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-005",
+        "category": "General",
+        "trigger": "Need to analyze unit economics at ASIN level",
+        "advice": "Select time periods and use \u2018Per Unit\u2019 toggle to view granular metrics by unit, understand true cost structure of each product",
+        "confidence": "High",
+        "source": "Select time periods to view your unit economics data for your entire catalog at the ASIN level. You can also use the \u2018Per Unit\u2019 toggle to view metrics by unit. This granular view helps you understand the true cost structure of each product you sell",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-006",
+        "category": "General",
+        "trigger": "Untracked expenses affecting profitability",
+        "advice": "Add expenses not tracked by Amazon to get a complete picture of business costs and profitability",
+        "confidence": "High",
+        "source": "The tool also enables you to add expenses that aren\u2019t tracked by Amazon to see a complete picture of your business costs and profitability.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pa-007",
+        "category": "General",
+        "trigger": "Analyzing specific parts of business separately",
+        "advice": "Create custom product groups to spot trends and make decisions for different parts of your catalog",
+        "confidence": "High",
+        "source": "create custom product groups to analyze specific parts of your business separately. Grouping related products helps you spot trends and make decisions for different parts of your catalog.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pack-single-skew-5-boxes",
+        "category": "General",
+        "trigger": "Sending to one location or minimal shipment splits",
+        "advice": "Pack at least five single skew boxes per item to reach the five regions without additional processing",
+        "confidence": "High",
+        "source": "Pack at least five single skew boxes per item to reach the five regions without additional processing.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "pack-25-units-max",
+        "category": "General",
+        "trigger": "Fast-moving products sent to multiple locations or optimized shipment splits",
+        "advice": "Pack 25 units or less per box to reach many more fulfillment centers with each shipment",
+        "confidence": "High",
+        "source": "For fastmoving products, pack 25 units or less per box, and your products can reach many more fulfillment centers with each shipment.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "more-boxes-fewer-units",
+        "category": "General",
+        "trigger": "General shipments to fulfillment centers",
+        "advice": "Pack shipments in more boxes with fewer units per box to make distribution easier, increase delivery speed, boost sales, improve in-stock rates, and qualify for discounts",
+        "confidence": "High",
+        "source": "Packing your shipments in more boxes with fewer units per box makes it easier for us to distribute them to the right place the first time faster. This means you get higher sales, better in stock rates, and may even qualify for discounts.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "avoid-high-units-multi-skew",
+        "category": "Risk",
+        "trigger": "Boxes with higher number of units or multi-skew boxes",
+        "advice": "Avoid using boxes with higher units or multi-skew as they need to be opened and distributed, leading to additional processing",
+        "confidence": "High",
+        "source": "Boxes with a higher number of units or multis skew boxes need to be opened and distributed to reach the right destination.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "use-recommended-packing",
+        "category": "General",
+        "trigger": "Preferred shipping option",
+        "advice": "Use recommended packing to improve delivery speeds and lower costs with each shipment; find recommendations in Seller Central",
+        "confidence": "High",
+        "source": "Use recommended packing for your preferred shipping option. ... Find these packing recommendations directly in seller central so you can improve delivery speeds and lower your costs with each shipment.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "price1",
+        "category": "Pricing",
+        "trigger": "Setting misleading reference prices",
+        "advice": "Avoid setting misleading reference prices to maintain customer trust and account health",
+        "confidence": "High",
+        "source": "avoid setting misleading reference prices",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "price2",
+        "category": "Pricing",
+        "trigger": "Setting excessive shipping fees",
+        "advice": "Avoid setting excessive shipping fees to prevent policy violations",
+        "confidence": "High",
+        "source": "setting excessive shipping fees",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "price3",
+        "category": "Pricing",
+        "trigger": "Selling bundled units",
+        "advice": "Do not sell bundled units at a price greater than the prices of individual units sold together",
+        "confidence": "High",
+        "source": "or selling bundled units at a price greater than prices of individual units sold together",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "price4",
+        "category": "Pricing",
+        "trigger": "Pricing significantly higher than recent prices",
+        "advice": "Avoid pricing your product significantly higher than recent prices offered on or off Amazon",
+        "confidence": "High",
+        "source": "Avoid pricing your product significantly higher than recent prices offered on or off Amazon",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "price5",
+        "category": "Pricing",
+        "trigger": "Inconsistent pricing across product variations",
+        "advice": "Maintain consistent pricing across all variations of your product to protect account health",
+        "confidence": "High",
+        "source": "we recommend maintaining consistent pricing across all variations of your product",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "risk1",
+        "category": "Risk",
+        "trigger": "Violating pricing policies",
+        "advice": "Violating pricing policies may risk your Account Health Rating, put your account at risk of deactivation, or cause loss of Featured Offer eligibility",
+        "confidence": "High",
+        "source": "By violating this policy, you may risk your Account Health Rating, put your account at the risk of being deactivated, or lose the ability to become the Featured Offer",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "gen1",
+        "category": "General",
+        "trigger": "Developing pricing strategy",
+        "advice": "Price products based on supply and demand trends while prioritizing customer satisfaction for long-term success",
+        "confidence": "High",
+        "source": "you are in control of how you price your products based on supply and demand trends. We recommend prioritizing your customers\u2019 satisfaction, as your pricing strategy impacts your seller identity and long-term success",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "risk-001",
+        "category": "Risk",
+        "trigger": "Account receives performance notification",
+        "advice": "Address violations immediately to maintain selling privileges; review notifications via Seller Central > Performance > Performance Notifications",
+        "confidence": "High",
+        "source": "If your account receives a performance notification, it means Amazon has detected violations... It\u2019s important to address any violations immediately to maintain your selling privileges in the Amazon store. To review all your performance notifications by date, open the main menu in Seller Central, hover over \u2018Performance,\u2019 and select \u2018Performance Notifications.\u2019",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "risk-002",
+        "category": "Risk",
+        "trigger": "Policy violation detected",
+        "advice": "Navigate to Account Health dashboard, select the violated policy, review details including affected ASINs and actions, and submit appeal with root cause explanation and corrective actions taken",
+        "confidence": "High",
+        "source": "To address a policy violation, open the main menu in Seller Central, hover over \u2018Performance,\u2019 and select \u2018Account Health.\u2019 From the Account Health dashboard, select the name of the policy issue... To take action on a violation, click the \u2018Submit appeal\u2019 button under the \u2018Next Steps\u2019 column. If you understand the violation, take the necessary steps to correct the issue... Select \u201cI understand the policy and acknowledge the violation,\u201d and input the primary reasons for the root cause or the violation, as well as all actions you\u2019ve taken to correct the issue.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "risk-003",
+        "category": "Risk",
+        "trigger": "Belief that notification is in error",
+        "advice": "Submit evidence or documentation via appeal to demonstrate compliance with policies and Seller Code of Conduct",
+        "confidence": "High",
+        "source": "If you believe the notification was sent in error, select \u201cI understand the policy and have evidence or documentation to submit for review to confirm my compliance with the policy.\u201d Select the appropriate fields that accurately describe the error, and upload any evidence or documentation that demonstrates that your account complies with Amazon\u2019s customer product reviews policies and Seller Code of Conduct.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "risk-004",
+        "category": "Risk",
+        "trigger": "Successful appeal",
+        "advice": "Monitor email for decision and provide additional documents if required, such as letter of authorization or invoices; check appeal status in Performance Notifications",
+        "confidence": "High",
+        "source": "If your appeal is successful, your listing will be reactivated. We\u2019ll contact you via email with our decision, and let you know if we require more information. This might be a letter of authorization, invoices, or additional compliance documents. Return to the Performance Notifications page at any time to reference your appeal status and any correspondence between you and Amazon.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "risk-005",
+        "category": "Risk",
+        "trigger": "Account deactivation due to violation",
+        "advice": "Select \u2018Reactivate your account\u2019 on the Account Health page and follow provided instructions",
+        "confidence": "High",
+        "source": "If the violation led to deactivation of your account, select \u2018Reactivate your account\u2019 on the \u2018Account Health\u2019 page and follow the provided instructions.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "general-001",
+        "category": "General",
+        "trigger": "Working with business partners or third parties",
+        "advice": "Ensure all business partners, employees, and third-party partners understand and follow Amazon selling policies",
+        "confidence": "High",
+        "source": "Additionally, ensure that your business partners, employees, and any third-party partners you work with understand and follow these policies.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "general-002",
+        "category": "General",
+        "trigger": "Product detail page non-compliance",
+        "advice": "Update the listing to meet Amazon\u2019s policy requirements",
+        "confidence": "High",
+        "source": "For example, if your product detail page doesn\u2019t comply with Amazon\u2019s policies, update the listing to meet requirements.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-001",
+        "category": "General",
+        "trigger": "Access via Growth menu in Seller Central or New Selection Insights card",
+        "advice": "Use Marketplace Product Guidance Category Insights tool to understand category size, compare across stores, explore seasonal trends, benchmark top ASINs, and discover favorite product features for informed reselling decisions",
+        "confidence": "High",
+        "source": "\u2018Marketplace Product Guidance Category Insights\u2019 is a tool within Seller Central that helps you acheive three main benefits: 1) Understand the size of your category item type keyword and compare it in different stores, along with exploring seasonal trends, 2) benchmark the performance of top grossing or newly launched ASINs, and 3) discover customers\u2019 favorite product features.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-002",
+        "category": "Seasonality",
+        "trigger": "Exploring seasonal trends in selected categories",
+        "advice": "Adjust buying and selling strategies based on seasonal demand fluctuations identified in the tool to capitalize on peak periods",
+        "confidence": "High",
+        "source": "along with exploring seasonal trends",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-003",
+        "category": "General",
+        "trigger": "Select broad categories like Home & Kitchen, Electronics, or Sports & Outdoors, then narrow to specific product types or keywords",
+        "advice": "Narrow down to item type keywords using filters and search bar to get specific performance data for targeted arbitrage opportunities",
+        "confidence": "High",
+        "source": "Start by selecting your store, and then choose from broad categories like \u2018Home & Kitchen\u2019, \u2018Electronics\u2019, or \u2018Sports & Outdoors\u2019, followed by more specific product types. You can also adjust the filters by using the search bar to search directly for categories or keywords.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-004",
+        "category": "Buying",
+        "trigger": "High search rates with low purchase rates and below-average star ratings",
+        "advice": "Identify categories with customer interest but dissatisfaction with current offerings as potential entry points for better products in arbitrage",
+        "confidence": "High",
+        "source": "For example, high search rates with low purchase rates and below-average star ratings might indicate customer interest but dissatisfaction with current offerings\u2014a potential opportunity for your business.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-005",
+        "category": "Risk",
+        "trigger": "View return ratio percentage",
+        "advice": "Assess return ratios to gauge customer satisfaction and market risks before sourcing inventory for resale",
+        "confidence": "High",
+        "source": "The \u2018Search to purchase Ratio\u2019 indicates how often searches lead to sales, while \u2018Return Ratio\u2019 shows you the percentage of returned units.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-006",
+        "category": "General",
+        "trigger": "Switch to Top Grossing view",
+        "advice": "Analyze top 10 ASINs by revenue to benchmark performance and identify competitive pricing and features for arbitrage sourcing",
+        "confidence": "High",
+        "source": "If you change the view to \u201cTop Grossing,\u201d you\u2019ll see data for the top ten ASINs by revenue in that item type keyword.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-007",
+        "category": "Risk",
+        "trigger": "Switch to Newly launched view for ASINs in last six months",
+        "advice": "Review top 10 newly launched ASINs to assess market saturation and emerging trends, avoiding over-saturated areas in book arbitrage",
+        "confidence": "High",
+        "source": "The \u2018Newly launched\u2019 view shows the top 10 ASINs of all ASINs launched in that item type keyword in the last six months.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-008",
+        "category": "Buying",
+        "trigger": "Graphs showing units sold, net sales, search data, and glance views",
+        "advice": "Use demand metrics like units sold and net sales to identify high-volume categories for profitable book sourcing",
+        "confidence": "High",
+        "source": "you will see graphs about demand, including units sold, net sales, search data, and glance views.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-009",
+        "category": "Pricing",
+        "trigger": "Features section with price, material, size, color characteristics",
+        "advice": "Evaluate popular price points and feature combinations to set competitive pricing for resold books",
+        "confidence": "Medium",
+        "source": "In the \u2018Features\u2019 section, you\u2019ll find groups of characteristics like price, material, size, and color. Each feature\u2019s performance bar shows its popularity among customers.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-010",
+        "category": "General",
+        "trigger": "Select promising feature combinations",
+        "advice": "Save and download favorite feature combinations for offline analysis to guide product selection in arbitrage",
+        "confidence": "High",
+        "source": "After selecting a combination of features across the features groups, save promising feature combinations by clicking the \u2018Select favorite features\u2019 button. ... You can then save this list to view offline by selecting \u2018Download favorite features.\u2019",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-011",
+        "category": "Risk",
+        "trigger": "Offer & Selection Metrics section",
+        "advice": "Use metrics on market saturation and customer satisfaction to determine optimal timing and competition levels for entering categories",
+        "confidence": "High",
+        "source": "The next section about \u2018Offer & Selection Metrics\u2019 provides additional data to help you gauge market saturation and customer satisfaction, and help you determine where and when to compete.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat-012",
+        "category": "General",
+        "trigger": "Adjust timeframe for graphs and metrics",
+        "advice": "Regularly review updated metrics across different timeframes to adapt to changing market conditions in book arbitrage",
+        "confidence": "High",
+        "source": "You can update the timeframe for these graphs and metrics using the options at the top right. ... Remember to regularly review these metrics as market conditions change",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "global-demand-tool",
+        "category": "General",
+        "trigger": "Accessing Marketplace Product Guidance tool",
+        "advice": "Use the \u2018Global Demand for your products\u2019 tool in Seller Central under \u2018Growth\u2019 to get personalized recommendations for ASIN performance in target stores based on machine learning and over 200 attributes including sales trends and customer demand signals.",
+        "confidence": "High",
+        "source": "The \u2018Global Demand for your products\u2019 tool within the Marketplace Product Guidance tool provides personalized recommendations. This tool analyzes product performance and demand data... based on more than 200 attributes related to sales trends of similar ASINs in your target store, and customer demand signals like searches, glance views, and more.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "new-asins-tab",
+        "category": "Buying",
+        "trigger": "ASINs new to target store",
+        "advice": "Review the \u2018ASINs new to target store\u2019 tab to identify ASINs you sell in the source store that have no competition in the target store and predict their potential performance for cross-listing opportunities.",
+        "confidence": "High",
+        "source": "The \u2018ASINs new to target store\u2019 tab shows predictions for ASINs that you sell in the source store that aren\u2019t sold by anyone in the target store.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "existing-asins-tab",
+        "category": "General",
+        "trigger": "ASINs offered by other sellers in target store",
+        "advice": "Check the \u2018ASINs offered by other sellers in target store\u2019 tab to evaluate products already available in the target market and their forecasted demand for competitive analysis.",
+        "confidence": "High",
+        "source": "The \u2018ASINs offered by other sellers in target store\u2019 tab shows products currently offered in the target store.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "high-demand-label",
+        "category": "Buying",
+        "trigger": "Items labeled \u2018High Demand\u2019",
+        "advice": "Prioritize cross-listing items labeled \u2018High Demand\u2019 as they are expected to perform well in target stores based on projected sales and demand rationale.",
+        "confidence": "High",
+        "source": "Items labeled \u2018High Demand\u2019 are expected to perform well in target stores. For each product, you\u2019ll find a \u2018Rationale\u2019 explaining its projected sales and demand.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "forecast-periods",
+        "category": "General",
+        "trigger": "Forecast outlook selection",
+        "advice": "Use the default 12-month forecast for long-term planning or switch to 90-day outlook via the dropdown for shorter-term demand predictions when evaluating ASINs.",
+        "confidence": "High",
+        "source": "By default, this shows a 12-month forecast, but you can switch to a 90-day outlook using the dropdown menu in the table\u2019s upper right corner.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "similar-asins-benchmark",
+        "category": "Risk",
+        "trigger": "Expanding product information",
+        "advice": "Click the arrow to expand and view Similar ASINs to benchmark sales performance in the target store, helping assess potential risks and opportunities for your ASIN.",
+        "confidence": "High",
+        "source": "For some products, you\u2019ll have the option to click an arrow to expand the information and see Similar ASINs, which allows you to benchmark their sales performance in your selected target store.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "cross-listing-template",
+        "category": "Pricing",
+        "trigger": "Downloading for cross-listing",
+        "advice": "Select ASINs and use \u2018Manually Add Offers\u2019 to download a template, then add details like SKU, price, quantity, and condition before uploading via Listings workflow for arbitrage setup.",
+        "confidence": "High",
+        "source": "Then select \u2018Download Product List\u2019... In order to download a template that you can use to create a cross-listing, use the \u2018Manually Add Offers\u2019 option. This template contains just the ASIN information, so you\u2019ll need to add other details such as SKU, price, quantity, and condition. Save the completed spreadsheet... and upload it through the \u2018Spreadsheet\u2019 option.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "recommendation-feedback",
+        "category": "General",
+        "trigger": "Providing feedback on recommendations",
+        "advice": "Select multiple ASINs and use the \u2018Feedback\u2019 button to accept or reject recommendations, refining future tool insights for better arbitrage decisions.",
+        "confidence": "High",
+        "source": "In the \u2018Global demand for your products tool,\u2019 you can also select multiple ASINs and click the \u2018Feedback\u2019 button to accept or reject recommendations.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "guidance-not-guarantee",
+        "category": "Risk",
+        "trigger": "Relying on tool forecasts",
+        "advice": "Treat tool recommendations as strategic guidance rather than guaranteed outcomes, and use your judgment to decide on cross-listing for book arbitrage to manage risks.",
+        "confidence": "High",
+        "source": "While this tool and our other Marketplace Product Guidance resources offer powerful data-driven insights, they serve as strategic guidance rather than guaranteed outcomes. Use your judgment to decide if a recommendation is right for your business.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat1",
+        "category": "Risk",
+        "trigger": "Fulfilling orders via FBM with potential late deliveries",
+        "advice": "Select OTDR protected shipping labels to prevent impact on on-time delivery rate even if shipment arrives late",
+        "confidence": "High",
+        "source": "By using a shipping label that is OTDR protected, your on-time delivery rate will not be impacted, even if your shipment arrives late.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat2",
+        "category": "General",
+        "trigger": "Preparing to ship FBM orders",
+        "advice": "Use Amazon Buy Shipping to purchase and print labels with recommendations for lowest cost, on-time delivery carriers",
+        "confidence": "High",
+        "source": "Amazon Buy Shipping lets you purchase and print shipping labels and automatically confirms and tracks shipping in Seller Central... provides recommendations for shipping services in our network of trusted carriers that are highly likely to deliver on time, fit your preferences, and offer the lowest available cost.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat3",
+        "category": "Risk",
+        "trigger": "To access OTDR protected labels",
+        "advice": "Enable \u2018Shipping Settings Automation\u2019 and \u2018Automated Handling Time\u2019 on the Shipping Settings page",
+        "confidence": "High",
+        "source": "Note that you will need to have \u2018Shipping Settings Automation\u2019 and \u2018Automated Handling Time\u2019 on the \u2018Shipping Settings\u2019 page enabled to take advantage of OTDR protected labels.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat4",
+        "category": "Risk",
+        "trigger": "Potential A-to-z Guarantee claims due to delivery issues",
+        "advice": "Purchase shipping labels marked as \u2018Claims protected\u2019 to have Amazon cover claim costs and avoid OTDR impact",
+        "confidence": "High",
+        "source": "Amazon Buy Shipping can also protect you against A-to-z Guarantee claims related to delivery issues. We will cover the cost of these claims and stop them from impacting your OTDR if you purchased a shipping label marked as \u2018Claims protected.\u2019",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat5",
+        "category": "Risk",
+        "trigger": "Maintaining Valid Tracking Rate (VTR) for FBM shipments",
+        "advice": "Use Amazon Buy Shipping to automatically upload tracking information for all orders",
+        "confidence": "High",
+        "source": "We automatically upload tracking information for all orders that use Amazon Buy Shipping, which helps you maintain your Valid Tracking Rate, or VTR",
+        "date_added": "2026-02-13"
     }
 ]

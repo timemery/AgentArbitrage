@@ -227,7 +227,7 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
         return None, api_info_on_error, 0, None
 
-def fetch_current_stats_batch(api_key, asins_list, days=180):
+def fetch_current_stats_batch(api_key, asins_list, days=180, offers=20):
     """
     Fetches lightweight current stats for a batch of ASINs.
     Returns the response data, API info, tokens consumed, and tokens left.
@@ -237,11 +237,11 @@ def fetch_current_stats_batch(api_key, asins_list, days=180):
         logger.warning("fetch_current_stats_batch called with empty list.")
         return None, {'error_status_code': 'EMPTY_ASIN_LIST'}, 0, None
 
-    logger.info(f"Fetching lightweight stats (days={days}) for {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
+    logger.info(f"Fetching lightweight stats (days={days}, offers={offers}) for {len(asins_list)} ASINs: {','.join(asins_list[:3])}...")
 
     comma_separated_asins = ','.join(asins_list)
     # stats=days controls the stats window. history=0 disables the CSV history.
-    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&history=0&offers=20&rating=1&only_live_offers=1"
+    url = f"https://api.keepa.com/product?key={api_key}&domain=1&asin={comma_separated_asins}&stats={days}&history=0&offers={offers}&rating=1&only_live_offers=1"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.212'}
 
     try:

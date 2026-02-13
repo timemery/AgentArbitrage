@@ -10,7 +10,7 @@ import redis
 from worker import celery_app as celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark, DB_PATH
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_current_stats_batch
-from .token_manager import TokenManager
+from .token_manager import TokenManager, TokenRechargeError
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_seller_info_for_single_deal
 from .business_calculations import (
@@ -36,7 +36,9 @@ SMART_INGESTOR_VERSION = "3.0-Consolidated"
 # DB_PATH is imported from db_utils
 TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
-MAX_ASINS_PER_BATCH = 5
+MAX_ASINS_PER_BATCH = 5 # Legacy constant, preserved for safety
+SCAN_BATCH_SIZE = 50 # Optimized for Peek/Light Update
+COMMIT_BATCH_SIZE = 5 # Safety limit for expensive commits
 LOCK_KEY = "smart_ingestor_lock"
 LOCK_TIMEOUT = 60 * 30  # 30 minutes
 MAX_PAGES_PER_RUN = 50 # Safety limit
@@ -199,10 +201,15 @@ def run():
             return
 
         token_manager = TokenManager(api_key)
-        token_manager.sync_tokens()
+
+        # Optimization: Skip API sync if we are in deep recharge mode
+        if token_manager.should_skip_sync():
+            logger.info("Skipping sync (Recharge active, estimated tokens low).")
+        else:
+            token_manager.sync_tokens()
 
         logger.info("Step 1: Initializing Sync...")
-        # Blocking wait
+        # Blocking wait (raises TokenRechargeError if wait is long)
         token_manager.request_permission_for_call(5)
 
         # Dynamic Deal Limit
@@ -341,9 +348,8 @@ def run():
 
         # Processing Loop
         # Iterate chunks
-        current_batch_size = MAX_ASINS_PER_BATCH
-        # We no longer reduce batch size to 1 for low refill rates.
-        # We rely on the "Deficit Dip" strategy (Batch Size 5) to maximize throughput.
+        current_batch_size = SCAN_BATCH_SIZE
+        # We process large batches (50) for cheap "Peek" checks, but small batches (5) for expensive "Commits".
 
         with open(HEADERS_PATH) as f:
             headers = json.load(f)
@@ -362,9 +368,11 @@ def run():
             # --- STAGE 1: PEEK (For New/Zombie Deals) ---
             new_candidates = []
             if chunk_new_asins:
-                token_manager.request_permission_for_call(2 * len(chunk_new_asins))
-                # Use stats=365 for Peek
-                peek_resp, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_new_asins, days=365)
+                # Estimate: 5 tokens/ASIN (since offers=0 is invalid/unsupported, we use offers=20).
+                # Verification confirmed cost is ~5 tokens/ASIN. Batch 50 = 250 tokens (Safe within burst).
+                token_manager.request_permission_for_call(5 * len(chunk_new_asins))
+                # Use stats=365 for Peek. Explicit offers=20.
+                peek_resp, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_new_asins, days=365, offers=20)
                 if tokens_left: token_manager.update_after_call(tokens_left)
 
                 if peek_resp and 'products' in peek_resp:
@@ -376,17 +384,21 @@ def run():
 
             # --- STAGE 2: COMMIT (For Survivors) ---
             if new_candidates:
-                token_manager.request_permission_for_call(20 * len(new_candidates))
-                prod_resp, _, _, tokens_left = fetch_product_batch(api_key, new_candidates, days=365, history=1, offers=20)
-                if tokens_left: token_manager.update_after_call(tokens_left)
-                if prod_resp and 'products' in prod_resp:
-                    for p in prod_resp['products']:
-                        chunk_products[p['asin']] = p
+                # Process in sub-batches to prevent deficit shock
+                for j in range(0, len(new_candidates), COMMIT_BATCH_SIZE):
+                    sub_batch = new_candidates[j:j + COMMIT_BATCH_SIZE]
+                    token_manager.request_permission_for_call(20 * len(sub_batch))
+                    prod_resp, _, _, tokens_left = fetch_product_batch(api_key, sub_batch, days=365, history=1, offers=20)
+                    if tokens_left: token_manager.update_after_call(tokens_left)
+                    if prod_resp and 'products' in prod_resp:
+                        for p in prod_resp['products']:
+                            chunk_products[p['asin']] = p
 
             # --- EXISTING DEALS (Light Update) ---
             if chunk_existing_asins:
-                token_manager.request_permission_for_call(2 * len(chunk_existing_asins))
-                prod_resp_light, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_existing_asins, days=180)
+                # Estimate: 5 tokens/ASIN (offers=20)
+                token_manager.request_permission_for_call(5 * len(chunk_existing_asins))
+                prod_resp_light, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_existing_asins, days=180, offers=20)
                 if tokens_left: token_manager.update_after_call(tokens_left)
                 if prod_resp_light and 'products' in prod_resp_light:
                     for p in prod_resp_light['products']:
@@ -468,6 +480,11 @@ def run():
 
         logger.info(f"Task Complete: Processed {len(all_new_deals)} scanned, upserted {total_upserted}.")
 
+    except TokenRechargeError as e:
+        logger.warning(f"--- Task Paused: {e}. Releasing lock to free worker. ---")
+        return # Exit task, releasing lock
+
     finally:
-        lock.release()
-        logger.info("--- Task: smart_ingestor lock released. ---")
+        if lock.locked():
+            lock.release()
+            logger.info("--- Task: smart_ingestor lock released. ---")
