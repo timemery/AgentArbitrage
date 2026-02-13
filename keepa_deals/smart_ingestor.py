@@ -99,20 +99,27 @@ def check_peek_viability(stats):
 
     # 2. Determine Sell Price (Highest of Avg90 or Avg365)
     # We are optimistic here - find highest historical reference
+    # CRITICAL UPDATE: Only consider USED prices (Index 2, 21) to align with processing logic.
+    # New (1) and Amazon (0) prices are ignored to prevent processing deals with no Used history,
+    # which would otherwise be rejected later (wasting tokens).
     sell_candidates = []
 
     # Avg90
-    if len(avg90) > 0 and avg90[0] != -1: sell_candidates.append(avg90[0]) # Amazon
-    if len(avg90) > 1 and avg90[1] != -1: sell_candidates.append(avg90[1]) # New
     if len(avg90) > 2 and avg90[2] != -1: sell_candidates.append(avg90[2]) # Used
+    if len(avg90) > 19 and avg90[19] != -1: sell_candidates.append(avg90[19]) # Used - Like New
+    if len(avg90) > 20 and avg90[20] != -1: sell_candidates.append(avg90[20]) # Used - Very Good
+    if len(avg90) > 21 and avg90[21] != -1: sell_candidates.append(avg90[21]) # Used - Good
+    if len(avg90) > 22 and avg90[22] != -1: sell_candidates.append(avg90[22]) # Used - Acceptable
 
     # Avg365 (Capture seasonal peaks masked by recent 90-day lows)
-    if len(avg365) > 0 and avg365[0] != -1: sell_candidates.append(avg365[0]) # Amazon
-    if len(avg365) > 1 and avg365[1] != -1: sell_candidates.append(avg365[1]) # New
     if len(avg365) > 2 and avg365[2] != -1: sell_candidates.append(avg365[2]) # Used
+    if len(avg365) > 19 and avg365[19] != -1: sell_candidates.append(avg365[19]) # Used - Like New
+    if len(avg365) > 20 and avg365[20] != -1: sell_candidates.append(avg365[20]) # Used - Very Good
+    if len(avg365) > 21 and avg365[21] != -1: sell_candidates.append(avg365[21]) # Used - Good
+    if len(avg365) > 22 and avg365[22] != -1: sell_candidates.append(avg365[22]) # Used - Acceptable
 
     if not sell_candidates:
-        return False # No history
+        return False # No Used history
 
     # 3. Sales Velocity Check (Critical Optimization)
     # If the item has NO sales drops in the last year, it's dead inventory.
