@@ -43,7 +43,7 @@ class TokenManager:
         self.tokens = 100 # Local cache/fallback
         self.max_tokens = 300
         self.last_api_call_timestamp = time.time() - self.MIN_TIME_BETWEEN_CALLS_SECONDS
-        self.last_refill_timestamp = time.time()
+        self.last_refill_timestamp = 0
 
         # Redis Setup
         redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')
