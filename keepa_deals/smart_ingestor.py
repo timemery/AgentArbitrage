@@ -349,6 +349,11 @@ def run():
         # Processing Loop
         # Iterate chunks
         current_batch_size = SCAN_BATCH_SIZE
+        # Dynamic Batch Sizing: Reduce batch size for slow connections to avoid "Deficit Lockout".
+        if token_manager.REFILL_RATE_PER_MINUTE < 20:
+            current_batch_size = 20
+            logger.info(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to prevent Deficit Lockout.")
+
         # We process large batches (50) for cheap "Peek" checks, but small batches (5) for expensive "Commits".
 
         with open(HEADERS_PATH) as f:
