@@ -56,7 +56,11 @@ We verified the usage of `offers` data in the codebase to determine the impact o
     -   It updates Seller ID, Seller Name, and FBA status, which rely on offer details.
 -   **Verdict:** **Functionality is lost.** Removing `offers` from the Lightweight Update stage would break shipping calculations and seller tracking.
 
-**Conclusion:** We must parameterize the API call. We can remove `offers` for **Peek (Stage 1)** but must retain it for **Lightweight Update (Stage 3)**.
+**Q: Don't we already have the shipping and seller data from the initial Commit? Can't we just reuse it?**
+**A:** Technically, we have the *old* data, but we cannot safely reuse it to calculate the *current* price.
+-   **Shipping Costs:** If the `stats` object reports a new lower price (e.g., $10 -> $8), it likely comes from a *different seller* with different shipping terms (e.g., Free vs. $3.99). If we reuse the old shipping cost with the new item price, we create an inaccurate "Frankenstein" price that misrepresents the true cost.
+-   **Seller ID:** The `Lightweight Update` logic currently overwrites the Seller ID with "Unknown" if no offers are found. Even if we modified the code to preserve the old ID, we would be attributing the new price to the old seller, which is factually incorrect and breaks Trust Scores.
+-   **Conclusion:** For dynamic updates (Price/Stock), `offers=20` is mandatory to ensure data integrity.
 
 ---
 
