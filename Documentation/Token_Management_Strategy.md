@@ -37,7 +37,7 @@ Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers
 5.  **Recovery Phase (Revert):** If the reservation fails the check and Recharge Mode is not triggered, the worker **Reverts** the transaction and waits.
 
 ### Resilience & Crash Recovery (Zombie Locks)
-To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
+To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Redis Flush" strategy during shutdown:
 *   **Script:** `Diagnostics/kill_redis_safely.py` (invoked by `kill_everything_force.sh`).
 *   **Action:** Connects to Redis, executes `FLUSHALL` (clears memory), then `SAVE` (forces disk sync).
 *   **Result:** This ensures that when the system restarts, the token state and locks are completely reset, preventing "Task already running" errors.
