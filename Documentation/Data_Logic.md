@@ -14,7 +14,9 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   Basic attributes (ASIN, Title, Category) are pulled from the Keepa `/product` API.
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
     *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
-    *   **Batching:** Uses a fixed batch size of **5 ASINs** to maximize deficit spending efficiency (Smart Ingestor v3.0).
+    *   **Batching:** Uses a **Decoupled Batching Strategy** (Smart Ingestor v3.0):
+        *   **Peek (Discovery):** 50 ASINs per batch (or 20 if low refill rate).
+        *   **Commit (Analysis):** 5 ASINs per batch.
 
 2.  **Seller & Price Analysis**:
     *   **Logic:** `keepa_deals/seller_info.py` iterates through the live `offers` array.
@@ -27,7 +29,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     **CRITICAL INTEGRITY CHECK (Feb 2026):**
     *   **Negative Profit:** Any deal with `Profit <= 0` is strictly rejected at the ingestion stage.
     *   **Incomplete Data:** Deals missing critical fields like `List at` or `1yr. Avg.` are rejected.
-    *   **Self-Healing Backfill:** The Backfiller detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them. If repair fails (data still missing), they are then rejected by the integrity check.
+    *   **Self-Healing Backfill:** The Smart Ingestor detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them. If repair fails (data still missing), they are then rejected by the integrity check.
 
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
@@ -45,7 +47,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-        *   **Fallback (Silver Standard):** If Inferred Sales < 1 (insufficient data), the system falls back to using **`stats.avg365`** (Used or Used-Good).
+        *   **Fallback (Silver Standard):** If Inferred Sales < 1 (insufficient data), the system falls back to using **`stats.avg365`** from **ALL** Used sub-conditions: Used (2), Like New (19), Very Good (20), Good (21), and Acceptable (22).
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass two checks:
