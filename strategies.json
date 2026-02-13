@@ -57757,5 +57757,608 @@
         "confidence": "High",
         "source": "Here's my main tip. When starting out with FBA, you don't necessarily need to go allin. What we did with Kangaroo Hanger was we started out by shipping only our top selling SKUs to Amazon FBA and having them fulfilled through Amazon. And we kept our slower selling SKUs as in-house Amazon fulfilled by merchant.",
         "date_added": "2026-02-12"
+    },
+    {
+        "id": "ld-duration",
+        "category": "General",
+        "trigger": "Need to create urgency and drive quick sales with deep discount",
+        "advice": "Use Lightning Deals running for 4 to 12 hours to clear excess inventory and sell seasonal products",
+        "confidence": "High",
+        "source": "Lightning Deals run for 4 to 12 hours and are ideal when you want to create urgency and drive quick sales with a deep discount. They work best for clearing excess inventory and selling seasonal products.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "bd-duration",
+        "category": "General",
+        "trigger": "Have enough inventory for longer promotion",
+        "advice": "Use Best Deals running for up to seven days or throughout a high-velocity event for seasonal items needing more visibility",
+        "confidence": "High",
+        "source": "Best Deals run for up to seven days or throughout an entire high-velocity event. These are best suited for products where you have enough inventory to run a longer promotion and for seasonal items that benefit from more visibility.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "asin-recommendations",
+        "category": "General",
+        "trigger": "Creating new deals",
+        "advice": "Use weekly generated ASIN recommendations; if none active, consider Price Discounts or Coupons",
+        "confidence": "High",
+        "source": "ASIN recommendations are generated on a weekly basis. If you don\u2019t have active ASIN recommendations for deals, consider other promotion types such as Price Discounts or Coupons.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "bulk-creation",
+        "category": "General",
+        "trigger": "Creating multiple deals",
+        "advice": "Download up to 1,500 ASIN recommendations for bulk creation; processing may take up to 30 minutes",
+        "confidence": "High",
+        "source": "To create deals in bulk, select \u2018Download All recommendations\u2019 for up to 1,500 ASIN recommendations, or use filters to select specific ASINs. Note, template processing may take up to 30 minutes.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "variations-inclusion",
+        "category": "General",
+        "trigger": "Configuring deals for ASINs with variations",
+        "advice": "Include as many eligible product variations as possible in the deal",
+        "confidence": "High",
+        "source": "We recommend including as many variations as possible.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-fees",
+        "category": "Pricing",
+        "trigger": "Selecting deal schedule",
+        "advice": "Review fees which may change based on timing and other factors",
+        "confidence": "High",
+        "source": "Review the fee for your deal. Fees may change based on several factors such as timing.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "committed-units",
+        "category": "Risk",
+        "trigger": "Setting up deal configuration",
+        "advice": "Adjust committed units if required when setting offer prices and discounts",
+        "confidence": "High",
+        "source": "Set offer prices and discounts and adjust committed units if required.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat1",
+        "category": "General",
+        "trigger": "Beginning product research without specific idea",
+        "advice": "Analyze broader category and subcategory trends to discover popular niches",
+        "confidence": "High",
+        "source": "If you\u2019re beginning your product research journey, you might want to take a look at broader category and subcategory trends to start. This approach can help you discover popular niches without a specific product idea in mind.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat2",
+        "category": "General",
+        "trigger": "Have a specific product idea",
+        "advice": "Search for related product, feature, or category to see specific features customers are looking for",
+        "confidence": "High",
+        "source": "If you already have a specific product idea, you can take a more focused approach by searching for a related product, feature, or category. For example, let\u2019s say you sell home and kitchen products and want to enter the spice rack space. Searching for \u2018Spice Rack\u2019 will show you specific features that customers may be looking for, like \u2018magnetic spice rack,\u2019 \u2018wooden spice rack,\u2019 or \u2018expandable spice rack.\u2019",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat3",
+        "category": "General",
+        "trigger": "Exploring category performance",
+        "advice": "Sort results by clicking arrows next to column headers to see highest or lowest values for any metric",
+        "confidence": "High",
+        "source": "Sort your results by clicking the arrows next to each column header to see the highest or lowest values for any metric, giving you a better understanding of the overall category performance.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat4",
+        "category": "General",
+        "trigger": "Narrowing down search",
+        "advice": "Use \u2018Filter Results\u2019 to create specific filter combinations paired with sorting to focus on relevant niches",
+        "confidence": "High",
+        "source": "The \u2018Filter Results\u2019 feature helps you narrow down your search to identify opportunities that align with your goals. You can create highly specific filter combinations, paired with sorting, to focus on the most relevant niches to your strategy.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat5",
+        "category": "Pricing",
+        "trigger": "Finding products in target price range",
+        "advice": "Set price range using \u2018Average Price\u2019 filter, then sort by \u2018Search Volume\u2019 in descending order",
+        "confidence": "High",
+        "source": "For example, if you want to find popular products within your target price range, you can set a price range using the \u2018Average Price\u2019 filter, then sort by \u2018Search Volume\u2019 in descending order.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat6",
+        "category": "Risk",
+        "trigger": "Spotting growing demand with low competition",
+        "advice": "Sort by \u2018Number of Top Clicked Products\u2019 to identify niches where demand is growing but competition isn\u2019t high",
+        "confidence": "High",
+        "source": "If you sort again by \u2018Number of Top Clicked Products,\u2019 you can spot potential niches where demand is growing but competition isn\u2019t high.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat7",
+        "category": "Seasonality",
+        "trigger": "Analyzing niche further",
+        "advice": "Click niche to see in-depth metrics, navigate to \u2018Insights & Trends\u2019 tab, toggle views, select up to two metrics to plot in chart to view seasonal shopping patterns and spot growth opportunities",
+        "confidence": "High",
+        "source": "Once you\u2019ve identified a niche you\u2019d like to explore further, click the niche to see in-depth metrics. Navigate to the \u2018Insights & Trends\u2019 tab, and toggle between views to analyze your competition, and track your customer performance. Select up to two metrics to plot in the chart, and view seasonal shopping patterns and spot growth opportunities.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat8",
+        "category": "Seasonality",
+        "trigger": "Timing promotions or launches",
+        "advice": "Compare \u2018Search Volume\u2019 with \u2018Search Conversion Rate\u2019 to reveal when customers are searching versus buying",
+        "confidence": "High",
+        "source": "For example, comparing \u2018Search Volume\u2019 with \u2018Search Conversion Rate\u2019 can reveal when customers are searching versus when they\u2019re actually buying, which can be insightful for timing promotions or product launches.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat9",
+        "category": "Pricing",
+        "trigger": "Understanding price impact on sales",
+        "advice": "Use \u2018Average Selling Price\u2019 metric to see how price changes affect sales; if conversion increases when prices decline, build into margin and pricing model",
+        "confidence": "High",
+        "source": "Use the \u2018Average Selling Price\u2019 metric to understand how price changes affect sales. If you notice that search conversion only increases when prices decline, consider building this into your margin and pricing model before launching a new product in this space.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat10",
+        "category": "Pricing",
+        "trigger": "Staying competitive",
+        "advice": "Use pricing history to understand best time to run deals and drop prices",
+        "confidence": "High",
+        "source": "Use pricing history to understand the best time to run deals and drop prices to ensure you\u2019re staying competitive.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat11",
+        "category": "Risk",
+        "trigger": "High average price with high search conversion rates",
+        "advice": "Suggests less competitive niche or customers willing to pay premium; opportunity to develop high-quality offering at lower price or add offer to top listings if high out of stock",
+        "confidence": "High",
+        "source": "A high average price along with high search conversion rates may suggest a less competitive niche, or a space where customers are willing to pay a premium price for a popular product. If you create your own products, this could be an opportunity to develop a high-quality offering at a lower price. If you source products, this could be an opportunity to add an offer to top listings within the niche, especially if you notice a high out of stock rate.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat12",
+        "category": "Risk",
+        "trigger": "Assessing competition",
+        "advice": "Compare \u2018Selling Partner Count,\u2019 \u2018Brand Count,\u2019 or \u2018Product Count\u2019 alongside \u2018Search Volume\u2019",
+        "confidence": "High",
+        "source": "Comparing metrics like \u2018Selling Partner Count,\u2019 \u2018Brand Count,\u2019 or \u2018Product Count\u2019 alongside \u2018Search Volume\u2019 can help you assess how competitive a niche is.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat13",
+        "category": "Risk",
+        "trigger": "High demand with low selling partner or product count",
+        "advice": "Represents opportunity to enter less competitive niche",
+        "confidence": "High",
+        "source": "High demand with a low selling partner or product count can represent an opportunity to enter a less competitive niche",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat14",
+        "category": "Risk",
+        "trigger": "Consistently low brand count",
+        "advice": "Suggests niche dominated by particular brands",
+        "confidence": "High",
+        "source": "whereas a consistently low brand count can suggest that a niche is dominated by particular brands already in the space.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat15",
+        "category": "Risk",
+        "trigger": "High product count with steady growth",
+        "advice": "Suggests niche becoming more competitive",
+        "confidence": "High",
+        "source": "High product count with steady growth could suggest a niche is becoming more competitive.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat16",
+        "category": "General",
+        "trigger": "Analyzing search terms",
+        "advice": "Navigate to \u2018Search Terms\u2019 tab, sort by \u2018Total Count\u2019 and \u2018Search Conversion\u2019 in descending order; look for terms with high search volume and high conversion rates to reveal demand and valued features",
+        "confidence": "High",
+        "source": "Navigate to the \u2018Search Terms\u2019 tab, and sort by \u2018Total Count\u2019 and \u2018Search Conversion\u2019 in descending order. Look for terms with crossover between high search volume and high search conversion rates. This overlap helps reveal customer demand and valued features.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat17",
+        "category": "Risk",
+        "trigger": "High click share with low conversion",
+        "advice": "May suggest unmet customer demand",
+        "confidence": "High",
+        "source": "Be sure to pay attention to \u2018Click Share.\u2019 A high click share with low conversion may suggest an unmet customer demand.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strat18",
+        "category": "General",
+        "trigger": "Informing product selections",
+        "advice": "Use customer feedback strategy",
+        "confidence": "High",
+        "source": "Customer feedback is also a great strategy to use for informing your product selections. Watch the \u2018Customer Reviews Insights Overview\u2019 video in Seller Central to learn more.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-1",
+        "category": "General",
+        "trigger": "Pallet shipments with non-partnered carriers",
+        "advice": "Confirm carrier, number of pallets, and delivery window; change delivery window if needed but avoid options risking receive delays or unavailable due to capacity",
+        "confidence": "High",
+        "source": "For pallet shipments with non-partnered carriers, start by confirming the carrier you intend to ship with, the number of pallets you will be shipping, and the delivery window you selected in step 2. You may change the delivery window in this step, however some delivery windows may risk receive delays or be unavailable due to capacity.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-2",
+        "category": "General",
+        "trigger": "Generating FBA pallet ID labels",
+        "advice": "Print four labels per pallet and apply one label on each side, centered and near the top",
+        "confidence": "High",
+        "source": "Then, select \u2018Print\u2019 to generate FBA pallet ID labels. These are different than the FBA box ID labels you applied in step 3. Four labels will be provided for each pallet. Apply one label on each side of every pallet, centered and near the top.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-3",
+        "category": "Risk",
+        "trigger": "Non-partnered carrier pallet shipments",
+        "advice": "Enter PRO/Freight bill number and tracking information; must enter tracking for all non-partnered carrier shipments to avoid issues",
+        "confidence": "High",
+        "source": "In the final step, select \u2018Proceed to enter tracking details\u2019 to enter the PRO/Freight bill number provided by your carrier and tracking information. You must enter tracking information for all non-partnered carrier shipments.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-4",
+        "category": "General",
+        "trigger": "Amazon Partnered Carrier pallet shipments",
+        "advice": "Enter warehouse contact information; use existing or new contact, and change per shipment if multiple",
+        "confidence": "High",
+        "source": "If you selected an Amazon Partnered Carrier, you\u2019ll need to enter your warehouse contact information by selecting \u2018Add contact.\u2019 You can select an existing warehouse contact or provide a new contact for each shipment. If there are multiple shipments, we\u2019ll use the first selected contact. You can change the contact for each additional shipment by clicking the contact information drop-down arrow and selecting \u2018Change contact.\u2019",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-5",
+        "category": "Risk",
+        "trigger": "Setting freight class for pallet details",
+        "advice": "Enter freight class manually (ranked 50 to 500) as it determines billable weight and risk; alternatively use Amazon\u2019s estimates",
+        "confidence": "High",
+        "source": "Freight class is used to determine the billable weight and risk of a shipment. Ranked from 50 to 500, freight class can be entered manually. You can also choose to use Amazon\u2019s estimates instead.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-6",
+        "category": "General",
+        "trigger": "Freight declared value for pallets",
+        "advice": "Enter optional freight declared value; if blank, Amazon assumes $1.50 times the shipment weight",
+        "confidence": "High",
+        "source": "Freight declared value is optional. If left blank, we\u2019ll assume the value is $1.50 times the shipment weight.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-7",
+        "category": "General",
+        "trigger": "Reviewing pallet details",
+        "advice": "Enter or edit pallet weight, height, whether stacked, and number of pallets per configuration; confirm to get estimated carrier charges, which update if edited",
+        "confidence": "High",
+        "source": "Next, enter pallet weight and height, whether the pallets are stacked or not, and the number of pallets for each configuration. You can edit these details if anything is incorrect. Select \u2018Confirm\u2019 to receive estimated carrier charges. If you go back and edit your pallet details, charges will update accordingly.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "fba-pallet-8",
+        "category": "General",
+        "trigger": "Carrier selection for partnered carriers",
+        "advice": "Default to lowest-cost carrier; change if needed by filtering by name or mode to view costs, modes, and dates; avoid greyed-out dates indicating capacity issues",
+        "confidence": "High",
+        "source": "We\u2019ll show you the lowest-cost carrier by default, but you can choose a different one by selecting \u2018Change carrier.\u2019 In the carrier selection window, you can filter by carrier name or shipping mode to view estimated transportation cost, shipping mode, and available dates. If a date is grey, the carrier is at capacity for that day.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-1",
+        "category": "General",
+        "trigger": "Need to identify new product ideas or refine existing products",
+        "advice": "Explore the homepage of Product Opportunity Explorer for real-time insights including niches for top ASINs, recommended niches, rising or declining search terms, and niches where product quality could be improved",
+        "confidence": "High",
+        "source": "You\u2019ll find real-time insights like niches for your top ASINs, recommended niches, rising or declining search terms, and niches where product quality could be improved.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-2",
+        "category": "General",
+        "trigger": "Searching for specific product, feature, or category",
+        "advice": "Use the search bar to enter a keyword or ASIN, or browse by category using the \u2018Find opportunities by categories\u2019 menu",
+        "confidence": "High",
+        "source": "If you want to look for a specific product, related feature, or category, you can use the search bar at the top to enter a keyword or ASIN, or browse by category using the \u2018Find opportunities by categories\u2019 menu in the top-left corner.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-3",
+        "category": "Risk",
+        "trigger": "Error message \u2018No matching Niches\u2019",
+        "advice": "Recognize that the search term or product may not offer enough search volume to be included in the data set",
+        "confidence": "High",
+        "source": "Note that if your search returns the error message \u2018No matching Niches,\u2019 it might not offer enough search volume to be included in our data set.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-4",
+        "category": "General",
+        "trigger": "Analyzing niche performance",
+        "advice": "Click any niche name to open the \u2018Niche Details\u2019 page, which provides a high-level overview and tabs for Products, Insights & Trends, Search Terms, Customer Review Insights, and Returns",
+        "confidence": "High",
+        "source": "Click any niche name to open the \u2018Niche Details\u2019 page. At the top, you\u2019ll see a high-level overview of that niche\u2019s performance. Below that, multiple tabs break down data into key sections.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-5",
+        "category": "Seasonality",
+        "trigger": "Understanding customer demand and competition over time",
+        "advice": "Use the \u2018Insights & Trends\u2019 tab with up to 2 years of data and the customizable graph to compare two metrics side-by-side for analyzing seasonal shopping patterns and adjusting growth strategy",
+        "confidence": "High",
+        "source": "The \u2018Insights & Trends\u2019 tab gives you access to up to 2 years of data to help you understand customer demand, analyze your competition, and track your customer service performance. The customizable graph lets you compare two metrics side-by-side, helping you analyze seasonal shopping patterns and spot opportunities to adjust your growth strategy.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-6",
+        "category": "Risk",
+        "trigger": "Assessing product returns in a niche",
+        "advice": "Use the \u2018Returns\u2019 tab to view common return reasons as a percentage of total returns and trends over time via line graph",
+        "confidence": "High",
+        "source": "The \u2018Returns\u2019 tab uses customer return feedback to highlight the most common reasons products within a niche are returned. Each reason is shown as a percentage of total returns to help you gauge how frequently it occurs, and a line graph illustrates trends for these return reasons over time.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "poe-7",
+        "category": "General",
+        "trigger": "Staying updated on trends",
+        "advice": "Monitor niche metrics which refresh weekly and new niches added monthly",
+        "confidence": "High",
+        "source": "Niche metrics refresh weekly, and new niches are added monthly so you can stay up to date on emerging trends.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-001",
+        "category": "General",
+        "trigger": "Shipment eligible for AWD",
+        "advice": "Select Amazon Warehousing and Distribution option to access the AWD workflow if available.",
+        "confidence": "High",
+        "source": "If your shipment is eligible, you may see the option to select \u2018Amazon Warehousing and Distribution.\u2019 Selecting this option will take you to the Amazon Warehousing and Distribution (AWD) workflow.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-002",
+        "category": "General",
+        "trigger": "Choosing shipping carrier",
+        "advice": "Use Amazon Partnered Carrier to benefit from discounted rates and in-workflow label printing.",
+        "confidence": "High",
+        "source": "Using an Amazon Partnered Carrier offers discounted rates and in-workflow label printing.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-003",
+        "category": "Risk",
+        "trigger": "Using non-Amazon partnered carrier",
+        "advice": "Provide a specific calendar week as the delivery window for expected shipment arrival at Amazon.",
+        "confidence": "High",
+        "source": "If using a non-Amazon partnered carrier, you will be asked to provide a delivery window, which is the calendar week when you expect your shipments to arrive at Amazon.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-004",
+        "category": "Seasonality",
+        "trigger": "Busy periods with unavailable or delayed options",
+        "advice": "Adjust delivery window or freight ready date to reduce delays and recalculate shipping costs for better options.",
+        "confidence": "High",
+        "source": "During busy periods, certain shipment options may be unavailable or listed with potential for delays. You may also see an option to adjust your delivery window or freight ready date to reduce delays. You can adjust your selections to recalculate potential shipping costs and minimize delays until you find an option that best fits your business.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-005",
+        "category": "Risk",
+        "trigger": "Setting delivery or freight ready dates",
+        "advice": "Ensure delivery window or freight ready date is accurate to manage inventory properly and avoid receive delays.",
+        "confidence": "High",
+        "source": "however, it is essential that your delivery window or freight ready date is accurate. Accurate dates allow us to properly manage inventory and reduce delays, and any information related to receive delays or options being unavailable are specific to the dates provided.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-006",
+        "category": "General",
+        "trigger": "Small parcel delivery with non-Amazon carrier",
+        "advice": "Select the same carrier from the dropdown for all small parcel shipments in the workflow.",
+        "confidence": "High",
+        "source": "If you selected \u2018small parcel delivery\u2019 with a non-Amazon partnered carrier, you will need to select your carrier from the dropdown. The same carrier must be used for all small parcel shipments in a workflow.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-007",
+        "category": "Risk",
+        "trigger": "Making changes to shipment cards",
+        "advice": "Note that changes to shipment cards may impact estimated total cost and review updates accordingly.",
+        "confidence": "High",
+        "source": "Note that any changes made to the shipment cards may impact the estimated total cost.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "strategy-008",
+        "category": "General",
+        "trigger": "Before confirming shipping",
+        "advice": "Review estimated shipping and placement charges in the bottom-right corner to ensure they align with business needs.",
+        "confidence": "High",
+        "source": "Finally, review the estimated shipping and placement charges in the bottom-right corner before accepting and confirming shipping.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "book-gtin-exemption-risk",
+        "category": "Risk",
+        "trigger": "Product is a book and checking 'This product does not have a brand name'",
+        "advice": "GTIN exemption will be automatically declined; always use the book's ISBN as the Product ID to list in the Amazon catalog",
+        "confidence": "High",
+        "source": "or if your product is a book and you check \u2018This product does not have a brand name,\u2019 your GTIN exemption will be automatically declined.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-bulk-storage-cost",
+        "category": "General",
+        "trigger": "Large quantities of inventory",
+        "advice": "Send inventory in bulk to AWD facilities to reduce storage costs with lower per-unit fees compared to standard FBA",
+        "confidence": "High",
+        "source": "By sending your inventory in bulk to AWD facilities, you can take advantage of lower per-unit storage fees compared to standard FBA.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-replenishment",
+        "category": "General",
+        "trigger": "Need for inventory optimization in FBA",
+        "advice": "Utilize AWD to automatically replenish and optimize inventory in FBA fulfillment centers",
+        "confidence": "High",
+        "source": "AWD automatically replenishes and optimizes your inventory in FBA fulfillment centers.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-distribution-expand",
+        "category": "General",
+        "trigger": "Inventory stored in AWD facilities",
+        "advice": "Distribute inventory from AWD to Amazon store and other sales channels to expand reach",
+        "confidence": "High",
+        "source": "Your inventory stored in AWD facilities can be distributed to the Amazon store, as well as other sales channels.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-fee-coverage",
+        "category": "Pricing",
+        "trigger": "Shipping to AWD",
+        "advice": "Leverage AWD pricing which covers FBA inbound placement fees to simplify and reduce costs",
+        "confidence": "High",
+        "source": "Plus, AWD pricing covers FBA inbound placement fees, making AWD a simplified, cost-effective way to store and distribute your inventory",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-eligibility-carton",
+        "category": "General",
+        "trigger": "Preparing shipments to AWD",
+        "advice": "Ensure cartons/boxes have maximum dimensions of 25 x 25 x 25 inches and maximum weight of 50 lbs, containing one unique SKU each",
+        "confidence": "High",
+        "source": "Conveyable inventory with maximum carton/box dimensions of 25 x 25 x 25 inches and maximum weight of 50 lbs. Cartons/boxes must contain one unique SKU each, not a mix of SKUs.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-eligibility-sku",
+        "category": "General",
+        "trigger": "Individual SKUs in AWD cartons",
+        "advice": "Limit individual SKUs to maximum size of 18 x 14 x 8 inches and weight of 20 lbs",
+        "confidence": "High",
+        "source": "Individual SKUs inside a carton/box cannot be larger than 18 x 14 x 8 inches or weigh more than 20 lbs.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "awd-startup",
+        "category": "General",
+        "trigger": "Starting AWD program",
+        "advice": "Access via Seller Central Inventory > Warehousing and distribution (AWD) > Send to AWD; no startup fees, charges only on shipment",
+        "confidence": "High",
+        "source": "In Seller Central, go to the Inventory drop-down menu and select 'Warehousing and distribution (AWD)'. From the program page, click 'Send to AWD.' There are no fees to get started. You'll only be charged when you ship your inventory to our facilities.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "promo-margin",
+        "category": "Pricing",
+        "trigger": "When running promotions to increase sales",
+        "advice": "Use Percentage Off or Buy One Get One free offers while maintaining a comfortable margin",
+        "confidence": "High",
+        "source": "Promotions are free offers you can run to help increase product sales while maintaining a comfortable margin.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "promo-inventory",
+        "category": "Risk",
+        "trigger": "When needing to reduce inventory",
+        "advice": "Leverage Promotions to reduce inventory and avoid liquidations",
+        "confidence": "High",
+        "source": "You can also leverage Promotions to reduce inventory and avoid liquidations.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "coupon-new-sellers",
+        "category": "General",
+        "trigger": "For new sellers or products with no sales history",
+        "advice": "Create Coupons as no sales history or customer reviews are required",
+        "confidence": "High",
+        "source": "No sales history or customer reviews are required to create Coupons. This makes them a great tool for new sellers and can help you promote newer products.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "coupon-fulfillment",
+        "category": "General",
+        "trigger": "For FBM or FBA offers",
+        "advice": "Create Coupons for both Fulfillment by Merchant (FBM) or Fulfillment by Amazon (FBA) offers",
+        "confidence": "High",
+        "source": "Coupons can be created for both Fulfillment by Merchant, or FBM, offers; as well as Fulfillment by Amazon, or FBA, offers.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-lightning-duration",
+        "category": "Pricing",
+        "trigger": "When creating Lightning Deals",
+        "advice": "Feature products for up to 12 hours to attract customers",
+        "confidence": "High",
+        "source": "Lightning Deals are featured for up to 12 hours.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-best-duration",
+        "category": "Pricing",
+        "trigger": "When creating Best Deals",
+        "advice": "Feature products for a limited number of days to reduce overstock or seasonal items",
+        "confidence": "High",
+        "source": "Best Deals are featured for a limited number of days. Both types can help attract customers and reduce overstocked or seasonal items.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-condition",
+        "category": "Risk",
+        "trigger": "When preparing products for Deals",
+        "advice": "Ensure products are in new condition; cannot be used, refurbished, or other condition types",
+        "confidence": "High",
+        "source": "Products featured through a Deal must be in new condition. They can\u2019t be used, refurbished, or any other condition type.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-variations",
+        "category": "General",
+        "trigger": "When products have multiple variations (size, color, style)",
+        "advice": "Include at least 65% of a product\u2019s variations in the Deal to meet customer preferences",
+        "confidence": "High",
+        "source": "Usually, at least 65% of a product\u2019s variations should be included in a Deal.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-fulfillment",
+        "category": "General",
+        "trigger": "When creating Deals",
+        "advice": "Fulfill orders at Prime speeds using FBA; seller-fulfilled may be eligible if able to meet Prime speeds",
+        "confidence": "High",
+        "source": "Sellers also usually need to fulfill orders created through Deals at Prime speeds using FBA. But you may see some seller-fulfilled products eligible for Deals if you\u2019re able to fulfill orders at Prime speeds yourself.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-ineligible",
+        "category": "Risk",
+        "trigger": "For restricted or certain category products",
+        "advice": "Avoid creating Deals for ineligible products including medical devices, medicines, alcohol, adult products, and baby formula",
+        "confidence": "High",
+        "source": "Some products aren\u2019t eligible for Deals, including restricted products, products in certain categories, and products that may be deemed offensive or inappropriate. This includes but isn\u2019t limited to medical devices and medicines, alcohol, adult products, and baby formula.",
+        "date_added": "2026-02-13"
+    },
+    {
+        "id": "deal-seasonal",
+        "category": "Seasonality",
+        "trigger": "For overstocked or seasonal items",
+        "advice": "Use Deals to attract customers and reduce overstocked or seasonal items",
+        "confidence": "High",
+        "source": "Both types can help attract customers and reduce overstocked or seasonal items.",
+        "date_added": "2026-02-13"
     }
 ]
