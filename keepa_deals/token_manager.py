@@ -34,6 +34,7 @@ class TokenManager:
         # Dynamic Burst Threshold: For low-tier plans, waiting for 280 takes too long (~1hr).
         # We start with 280 but will adjust based on refill rate.
         self.BURST_THRESHOLD = 280
+        self.MAX_DEFICIT = -180  # Safety limit to prevent Keepa API lockout
 
         # Throttling for sync calls (to prevent drain)
         self.last_sync_request_timestamp = 0
@@ -265,7 +266,12 @@ class TokenManager:
                     # Case A: Above threshold - Always OK (Controlled Deficit)
                     # We allow the operation if we started with a healthy balance, even if the result is negative.
                     elif old_balance >= self.MIN_TOKEN_THRESHOLD:
-                        allowed = True
+                        # Safety Check: Prevent extreme deficits
+                        if self.tokens < self.MAX_DEFICIT:
+                            logger.warning(f"Request blocked: Projected balance {self.tokens:.2f} exceeds max deficit {self.MAX_DEFICIT}.")
+                            allowed = False
+                        else:
+                            allowed = True
 
                     # Case B: Priority Pass - Low cost, and strictly NOT negative
                     # Disabled for low refill rates (<10/min) to prevent starvation of high-cost tasks
@@ -316,6 +322,11 @@ class TokenManager:
             # We only need the STARTING balance to be >= Threshold.
             # So we need self.tokens (which mimics starting balance here) >= Threshold.
             required_standard = self.MIN_TOKEN_THRESHOLD
+
+            # Deficit Safety Check
+            required_for_deficit = cost_int + self.MAX_DEFICIT
+            if required_for_deficit > required_standard:
+                required_standard = required_for_deficit
 
             # Case B: Priority Pass (Cost <= 10 AND Tokens >= 0)
             # If cost is small, we just need to be non-negative.
