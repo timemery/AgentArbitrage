@@ -28,11 +28,16 @@
     - **Logic:** Explicitly sorts Keepa responses by `lastUpdate` (descending) to ensure strictly ordered processing.
     - **Watermark:** Implements a "Ratchet" mechanism (advances even if deals are rejected) and tolerates up to **24 hours** of future clock skew before clamping.
     - **Zombie Defense:** Automatically detects deals with missing critical data (e.g., `List at`) and forces a heavy re-fetch to repair them.
-    - **Throughput:** Uses a fixed batch size of **5 ASINs** (increased from 2) to maximize "Deficit Utilization" (spending below zero).
+    - **Throughput:** Uses a **Decoupled Batching Strategy**:
+        - **Peek / Light Update:** Batch size **50** (reduces to **20** if refill rate < 20/min).
+        - **Commit (Heavy Analysis):** Batch size **5** to prevent deficit shock.
+    - **Deficit Protection:** Enforces `MAX_DEFICIT = -180` to prevent API lockouts.
+    - **Lock Release:** Raises `TokenRechargeError` during long waits (> 60s) to release the Redis lock and free the worker.
 - **Janitor:** Deletes deals older than **72 hours**.
 - **Tokens:** `TokenManager` uses a "Burst Mode" strategy:
     - **Threshold:** `MIN_TOKEN_THRESHOLD` reduced to **1** to aggressively use the negative deficit allowance.
     - **Recharge Mode:** If tokens run out, system pauses until it reaches the **Burst Threshold** (40 for slow connections < 10/min, 280 for fast). This prevents "flapping" and starvation loops.
+    - **Optimization:** `should_skip_sync()` checks local estimates before API calls, preventing token drain during deep deficits.
     - **Shared State:** Uses Redis (`keepa_tokens_left`) to coordinate quotas across all workers.
 
 ## 4. Dashboard & UI
@@ -62,7 +67,7 @@
 - **Formatting:** `format_currency` handles string inputs defensively.
 - **Logs:** Do not read full `celery.log`.
 - **Context:** `Dev_Logs/Archive/*.md` files are historical archives. This file is the current reference.
-- **Batch Size:** Fixed at **5 ASINs** (Smart Ingestor) to maximize deficit spending efficiency.
+- **Batch Size:** Decoupled (50 for Peek, 5 for Commit) to maximize deficit spending efficiency while preventing shock.
 - **Redis Lock:** `smart_ingestor_lock` is the primary mutex. Timeout 30 minutes.
 - **Redis Cleanup:** `kill_everything_force.sh` performs a full wipe (FLUSHALL). `deploy_update.sh` adds surgical lock removal as a safety net.
 - **Janitor Grace Period:** **72 Hours**. Do not lower (causes data loss).

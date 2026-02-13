@@ -22,7 +22,8 @@ The `TokenManager` dynamically updates its `REFILL_RATE_PER_MINUTE` from the `re
 Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers compete for them, the system uses an **Optimistic Locking** strategy with Redis `incrbyfloat`.
 
 **Key Thresholds:**
-*   **`MIN_TOKEN_THRESHOLD`:** Reduced to **1**. This aggressive setting ensures that as long as we have a positive balance (even 1.0), we can initiate a request. Since API calls cost 10-20+ tokens, this effectively pushes the balance into the negative (Deficit), utilizing the full overdraft allowance.
+*   **`MIN_TOKEN_THRESHOLD`:** Reduced to **1**. This aggressive setting ensures that as long as we have a positive balance (even 1.0), we can initiate a request.
+*   **`MAX_DEFICIT` (Safety Limit):** Set to **-180**. If a projected request (Current Tokens - Cost) would push the balance below this limit, it is strictly blocked. This prevents hitting Keepa's hard lockout limit of -200, which would ban the API key for 24 hours.
 *   **`BURST_THRESHOLD` (Recharge Target):**
     *   **High Refill Rates (>= 10/min):** Target **280** tokens.
     *   **Low Refill Rates (< 10/min):** Target **40** tokens. Waiting for 280 tokens at 5/min takes ~50 minutes, creating a perception of "system stall". Lowering the target to 40 allows for frequent, smaller bursts of activity ("Empty the Bucket" strategy).
@@ -30,11 +31,12 @@ Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers
 **Logic Flow:**
 1.  **Atomic Reservation:** The worker unconditionally decrements the shared Redis counter (`incrbyfloat -cost`).
 2.  **Threshold Check:** It reads the new balance.
-3.  **Aggressive Phase:** If the starting balance was positive (>= 1), the operation proceeds, even if the result is negative.
+3.  **Aggressive Phase:** If the starting balance was positive (>= 1) AND the result is above `MAX_DEFICIT`, the operation proceeds.
 4.  **Recharge Mode (Low Rate Protection):** If the Keepa refill rate is < 10/min AND the balance drops below `MIN_TOKEN_THRESHOLD`, the system enters **Recharge Mode**.
     *   **Action:** All requests are blocked.
     *   **Exit Condition:** Wait until tokens reach the dynamic `BURST_THRESHOLD` (40 or 280). This prevents "flapping" (oscillating between 0 and 5 tokens).
 5.  **Recovery Phase (Revert):** If the reservation fails the check and Recharge Mode is not triggered, the worker **Reverts** the transaction and waits.
+6.  **TokenRechargeError (Lock Release):** If the calculated wait time exceeds **60 seconds**, the TokenManager raises a `TokenRechargeError` instead of sleeping. The calling task (Smart Ingestor) catches this exception and **immediately releases the Redis lock**. This allows the Celery worker to process other tasks (like Janitor or Gating Checks) while waiting for tokens to recharge, preventing worker starvation.
 
 ### Resilience & Crash Recovery (Zombie Locks)
 To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
@@ -44,7 +46,9 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
 
 ### Task-Specific Buffers
 *   **Smart Ingestor:**
-    *   **Fixed Batching:** Uses a batch size of **5 ASINs**. This creates a "Deficit Dip" large enough to maximize throughput (spending ~100 tokens at once) without overwhelming the deficit limit.
+    *   **Decoupled Batching:**
+        *   **Peek (Discovery):** Uses batch size **50** (or 20 for low rates). Lightweight stats cost ~5 tokens/ASIN. Large batch size leverages deficit spending efficiently.
+        *   **Commit (Analysis):** Uses batch size **5**. Full product data is expensive (20 tokens/ASIN). Small batches prevent "Deficit Shock" (instantly hitting -200) and allow granular control.
 *   **API Wrapper (`keepa_api.py`):**
     *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.
     *   **Behavior:** If provided, the wrapper calls `request_permission_for_call` *before* the API request. This enforces a blocking wait if tokens are low, preventing `429 Too Many Requests` errors during high-frequency ingestion loops.

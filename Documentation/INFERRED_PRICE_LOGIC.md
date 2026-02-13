@@ -78,7 +78,7 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (Silver Standard):** If Inferred Sales are insufficient, uses **`stats.avg365`** (Used or Used-Good). This allows the system to price items that are valid inventory but have sparse rank drops.
+    -   **Fallback 2 (Silver Standard):** If Inferred Sales are insufficient, uses **`stats.avg365`** (Maximum value from ALL Used sub-conditions: Used, Like New, Very Good, Good, Acceptable). This ensures items with valid used price history are not rejected due to sparse sales rank drops.
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
