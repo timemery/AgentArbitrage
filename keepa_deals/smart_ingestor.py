@@ -10,7 +10,7 @@ import redis
 from worker import celery_app as celery
 from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark, DB_PATH
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_current_stats_batch
-from .token_manager import TokenManager
+from .token_manager import TokenManager, TokenRechargeError
 from .field_mappings import FUNCTION_LIST
 from .seller_info import get_seller_info_for_single_deal
 from .business_calculations import (
@@ -204,7 +204,7 @@ def run():
         token_manager.sync_tokens()
 
         logger.info("Step 1: Initializing Sync...")
-        # Blocking wait
+        # Blocking wait (raises TokenRechargeError if wait is long)
         token_manager.request_permission_for_call(5)
 
         # Dynamic Deal Limit
@@ -475,6 +475,11 @@ def run():
 
         logger.info(f"Task Complete: Processed {len(all_new_deals)} scanned, upserted {total_upserted}.")
 
+    except TokenRechargeError as e:
+        logger.warning(f"--- Task Paused: {e}. Releasing lock to free worker. ---")
+        return # Exit task, releasing lock
+
     finally:
-        lock.release()
-        logger.info("--- Task: smart_ingestor lock released. ---")
+        if lock.locked():
+            lock.release()
+            logger.info("--- Task: smart_ingestor lock released. ---")

@@ -9,6 +9,10 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+class TokenRechargeError(Exception):
+    """Raised when the system must pause for a long recharge duration."""
+    pass
+
 class TokenManager:
     """
     Manages Keepa API tokens, rate limiting, and refills using Redis for shared state.
@@ -172,6 +176,13 @@ class TokenManager:
                             if rate_for_calc <= 0: rate_for_calc = 1.0
 
                             wait_time = math.ceil((tokens_needed / rate_for_calc) * 60)
+
+                            # If the wait is long (e.g. > 60 seconds), we should not sleep and block the worker.
+                            # Instead, we raise an exception to let the caller (task) exit and retry later.
+                            if wait_time > 60:
+                                logger.warning(f"Recharge Mode: Tokens critically low ({self.tokens:.2f}). Required wait: {wait_time}s. Exiting task to free worker.")
+                                raise TokenRechargeError(f"Recharge needed: {wait_time}s")
+
                             if wait_time < 5: wait_time = 5 # Minimum sleep
                             self._wait_for_tokens(wait_time, self.BURST_THRESHOLD)
                             continue
@@ -293,6 +304,11 @@ class TokenManager:
                     wait_time = math.ceil((tokens_needed / self.REFILL_RATE_PER_MINUTE) * 60)
 
             if wait_time > 0:
+                # If we need to wait a long time to recover a minimum balance, exit instead of sleeping.
+                if wait_time > 60:
+                    logger.warning(f"Insufficient tokens (Current: {self.tokens:.2f}, Target: {target}). Wait {wait_time}s > 60s. Exiting task.")
+                    raise TokenRechargeError(f"Insufficient tokens: wait {wait_time}s")
+
                 logger.warning(f"Insufficient tokens (Current: {self.tokens:.2f}, Target: {target}). Waiting for {wait_time}s.")
                 self._wait_for_tokens(wait_time, recovery_target)
                 continue # Retry reservation loop
