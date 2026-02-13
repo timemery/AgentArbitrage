@@ -405,22 +405,26 @@ def analyze_sales_performance(product, sale_events):
 
         # Used (Index 2)
         avg90 = stats.get('avg90', [])
-        if len(avg90) > 2 and avg90[2] is not None and avg90[2] > 0: candidates.append(avg90[2])
+        if len(avg90) > 2 and avg90[2] > 0: candidates.append(avg90[2])
 
         avg365 = stats.get('avg365', [])
-        if len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0: candidates.append(avg365[2])
+        if len(avg365) > 2 and avg365[2] > 0: candidates.append(avg365[2])
 
-        # New (Index 1) - Fallback if Used is missing
-        if len(avg90) > 1 and avg90[1] is not None and avg90[1] > 0: candidates.append(avg90[1])
-        if len(avg365) > 1 and avg365[1] is not None and avg365[1] > 0: candidates.append(avg365[1])
+        # Used - Like New (Index 19)
+        if len(avg90) > 19 and avg90[19] is not None and avg90[19] > 0: candidates.append(avg90[19])
+        if len(avg365) > 19 and avg365[19] is not None and avg365[19] > 0: candidates.append(avg365[19])
 
-        # Amazon (Index 0) - Fallback if New/Used missing
-        if len(avg90) > 0 and avg90[0] is not None and avg90[0] > 0: candidates.append(avg90[0])
-        if len(avg365) > 0 and avg365[0] is not None and avg365[0] > 0: candidates.append(avg365[0])
+        # Used - Very Good (Index 20)
+        if len(avg90) > 20 and avg90[20] is not None and avg90[20] > 0: candidates.append(avg90[20])
+        if len(avg365) > 20 and avg365[20] is not None and avg365[20] > 0: candidates.append(avg365[20])
 
         # Used - Good (Index 21) - often cleaner data
-        if len(avg90) > 21 and avg90[21] is not None and avg90[21] > 0: candidates.append(avg90[21])
-        if len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0: candidates.append(avg365[21])
+        if len(avg90) > 21 and avg90[21] > 0: candidates.append(avg90[21])
+        if len(avg365) > 21 and avg365[21] > 0: candidates.append(avg365[21])
+
+        # Used - Acceptable (Index 22)
+        if len(avg90) > 22 and avg90[22] is not None and avg90[22] > 0: candidates.append(avg90[22])
+        if len(avg365) > 22 and avg365[22] is not None and avg365[22] > 0: candidates.append(avg365[22])
 
         if candidates:
             peak_price_mode_cents = max(candidates)
