@@ -86,6 +86,14 @@ def get_1yr_avg_sale_price(product, logger=None):
         if avg365 and len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0:
             candidates.append(avg365[2])
 
+        # New (Index 1) - Fallback
+        if avg365 and len(avg365) > 1 and avg365[1] is not None and avg365[1] > 0:
+            candidates.append(avg365[1])
+
+        # Amazon (Index 0) - Fallback
+        if avg365 and len(avg365) > 0 and avg365[0] is not None and avg365[0] > 0:
+            candidates.append(avg365[0])
+
         # Used - Good (Index 21)
         if avg365 and len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0:
             candidates.append(avg365[21])
