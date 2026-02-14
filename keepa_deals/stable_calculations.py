@@ -541,6 +541,9 @@ def analyze_sales_performance(product, sale_events):
     if is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
         is_reasonable = True
+    elif price_source == 'Keepa Stats Fallback':
+        logger.info(f"ASIN {asin}: Price Source is 'Keepa Stats Fallback'. Skipping AI Reasonableness Check to prevent false negatives due to insufficient context.")
+        is_reasonable = True
     else:
         is_reasonable = _query_xai_for_reasonableness(
             title, category, peak_season_str, peak_price_mode_cents / 100.0, xai_api_key,

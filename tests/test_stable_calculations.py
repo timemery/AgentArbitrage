@@ -10,20 +10,21 @@ sys.path.append(os.getcwd())
 from keepa_deals.stable_calculations import analyze_sales_performance
 
 class TestStableCalculations(unittest.TestCase):
-    def test_zombie_fallback_removed(self):
+    def test_zombie_fallback_works(self):
         """
-        Test that analyze_sales_performance returns -1 for peak_price_mode_cents
-        when there are no inferred sales, even if monthlySold is high.
-        This verifies the removal of the 'Zombie Listing' fallback logic.
+        Test that analyze_sales_performance correctly uses the Silver Standard Fallback (avg365)
+        when inferred sales are missing, provided Keepa stats are available.
         """
-        # Mock product data matching a "Zombie Listing"
+        # Mock product data with valid stats but no sales
         product = {
-            'asin': 'TESTZOMBIE',
-            'monthlySold': 100, # High monthly sold
+            'asin': 'TESTFALLBACK',
+            'monthlySold': 0, # Low/Unknown
             'stats': {
-                'avg90': [None, None, 40000], # Used price index 2 = 40000 ($400)
+                'current': [50000, 50000, 50000, 50000], # Amazon, New, Used, Rank (Index 3)
+                'avg90': [None, None, 40000, 100000], # Used price index 2 = 40000 ($400)
+                'avg365': [None, None, 35000, 150000], # Used price index 2 = 35000 ($350)
             },
-            'title': 'Test Zombie Product',
+            'title': 'Test Fallback Product',
             'categoryTree': [{'name': 'Books'}],
             'binding': 'Paperback',
             'numberOfPages': 200,
@@ -32,13 +33,14 @@ class TestStableCalculations(unittest.TestCase):
 
         sale_events = [] # No inferred sales
 
-        # Patch _query_xai_for_reasonableness to avoid API calls
+        # Patch _query_xai_for_reasonableness to confirm it is called (for now) and returns True
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness', return_value=True):
             result = analyze_sales_performance(product, sale_events)
 
-        # Assert that the price is -1 (rejected), NOT the $400 fallback
-        self.assertEqual(result.get('peak_price_mode_cents'), -1,
-                         "Should return -1 for missing sales, not use fallback price.")
+        # Assert that the price is the fallback price (Max of avg90/avg365 = 40000)
+        self.assertEqual(result.get('peak_price_mode_cents'), 40000,
+                         "Should return fallback price ($400) when stats are present.")
+        self.assertEqual(result.get('price_source'), 'Keepa Stats Fallback')
         self.assertEqual(result.get('peak_season'), '-')
 
     def test_normal_calculation(self):
