@@ -20559,5 +20559,9 @@
     "seasonality:A Court of Frost and Starlight - BAM Exclusive|Books, Subjects|Bloomsbury YA": "Christmas",
     "seasonality:Certified Programming with Dependent Types: A Pragmatic Introduction to the Coq Proof Assistant|Books, Subjects, Computers & Technology, Computer Science|The MIT Press": "Textbook (Winter)",
     "seasonality:Pedophilia and Sexual Offending Against Children: Theory, Assessment, and Intervention|Books, Subjects, Health, Fitness & Dieting, Psychology & Counseling, Forensic Psychology|American Psychological Association": "Year-round",
-    "seasonality:Art|Books, Subjects, Arts & Photography, History & Criticism, History|Dorling Kindersley": "Year-round"
+    "seasonality:Art|Books, Subjects, Arts & Photography, History & Criticism, History|Dorling Kindersley": "Year-round",
+    "reasonableness:Shadows 7|Books > Subjects > Literature & Fiction > Genre Fiction|Mar|15.40|Mass Market Paperback|Current Rank: 5006844, 90-day Avg Rank: 5199055|DOWN (-19.2% over 3 years)|14.27": "True",
+    "reasonableness:American Exceptionalism: An Experiment in History|Books > Subjects > Politics & Social Sciences > Politics & Government > Political Science > History & Theory|Jan|65.99|Paperback|Current Rank: 1304193, 90-day Avg Rank: 1236337|UP (72.1% over 3 years)|48.53": "True",
+    "reasonableness:Angel: New poems|Books > Subjects|Nov|101.58|Hardcover|Current Rank: 5210561, 90-day Avg Rank: 3799968|Insufficient data|101.58": "True",
+    "reasonableness:Too Many Turkeys|Books > Subjects > Children's Books > Animals > Birds|Jul|56.80|Paperback|Current Rank: 3881062, 90-day Avg Rank: 3786774|FLAT (-2.5% over 3 years)|28.24": "True"
 }

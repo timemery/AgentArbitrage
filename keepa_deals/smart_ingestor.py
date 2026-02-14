@@ -357,7 +357,10 @@ def run():
         # Iterate chunks
         current_batch_size = SCAN_BATCH_SIZE
         # Dynamic Batch Sizing: Reduce batch size for slow connections to avoid "Deficit Lockout".
-        if token_manager.REFILL_RATE_PER_MINUTE < 20:
+        if token_manager.REFILL_RATE_PER_MINUTE < 10:
+            current_batch_size = 5
+            logger.info(f"Critically Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to match Burst Threshold (40).")
+        elif token_manager.REFILL_RATE_PER_MINUTE < 20:
             current_batch_size = 20
             logger.info(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to prevent Deficit Lockout.")
 
