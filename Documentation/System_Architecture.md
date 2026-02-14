@@ -46,7 +46,9 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
     1.  **Watermark Check:** Loads the `watermark_iso` timestamp from `system_state`. If missing or corrupt, defaults to 24 hours ago.
     2.  **Delta Fetch:** Queries Keepa for all products updated since the watermark.
     3.  **Decoupled Batching Strategy:**
-        *   **Stage 1: Peek (Discovery):** Fetches lightweight stats for **50 ASINs** at once (or 20 if refill rate is low). Checks `check_peek_viability` to filter out dead or irrelevant items (e.g., those with no Used history).
+        *   **Stage 1: Peek (Discovery):** Fetches lightweight stats for **50 ASINs** at once.
+            *   **Dynamic Scaling:** Automatically reduces to **20** if refill rate < 20/min, and to **5** if refill rate < 10/min.
+            *   **Filter:** Checks `check_peek_viability` to reject dead/irrelevant items (e.g., no Used history) before spending heavy tokens.
         *   **Stage 2: Commit (Analysis):** Survivors of the Peek filter are processed in smaller batches of **5 ASINs** (Heavy Fetch) to prevent "Deficit Shock" (instantly draining 1000+ tokens).
         *   **Stage 3: Light Update:** Existing deals are refreshed in large batches (50 ASINs) using lightweight stats.
     4.  **Watermark Ratchet:** The watermark is updated to the `lastUpdate` timestamp of the *last processed deal* in the current batch. This ensures progress is tracked even if all deals in a batch are rejected.

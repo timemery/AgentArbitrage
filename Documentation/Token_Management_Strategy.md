@@ -47,8 +47,11 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
 ### Task-Specific Buffers
 *   **Smart Ingestor:**
     *   **Decoupled Batching:**
-        *   **Peek (Discovery):** Uses batch size **50** (or 20 for low rates). Lightweight stats cost ~5 tokens/ASIN. Large batch size leverages deficit spending efficiently.
-        *   **Commit (Analysis):** Uses batch size **5**. Full product data is expensive (20 tokens/ASIN). Small batches prevent "Deficit Shock" (instantly hitting -200) and allow granular control.
+        *   **Peek (Discovery):** Uses a **Dynamic Batch Size** based on the refill rate:
+            *   **High Rate (>= 20/min):** Batch Size **50**. Optimized for speed.
+            *   **Low Rate (< 20/min):** Batch Size **20**. Prevents deficit lockout.
+            *   **Critically Low (< 10/min):** Batch Size **5**. Matches the "Burst Threshold" (40 tokens) to ensure progress even in extreme starvation conditions.
+        *   **Commit (Analysis):** Always uses batch size **5**. Full product data is expensive (20 tokens/ASIN). Small batches prevent "Deficit Shock" (instantly hitting -200) and allow granular control.
 *   **API Wrapper (`keepa_api.py`):**
     *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.
     *   **Behavior:** If provided, the wrapper calls `request_permission_for_call` *before* the API request. This enforces a blocking wait if tokens are low, preventing `429 Too Many Requests` errors during high-frequency ingestion loops.
