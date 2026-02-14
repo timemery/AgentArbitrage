@@ -57,9 +57,14 @@ def run_diagnostic():
     rejected_count = 0
 
     if log_path:
-        reason_peek = get_grep_count("Peek Filter: Rejected", log_path)
+        # Updated patterns for Smart Ingestor v3
+        reason_peek = get_grep_count("Peek Rejected: ASIN", log_path)
         reason_no_offer = get_grep_count("No used offer found", log_path)
-        reason_list_at = get_grep_count("Excluding deal because 'List at' is missing", log_path)
+        # Matches both "missing" and "Profit is zero or negative" which effectively means List at/Cost failed
+        reason_list_at_missing = get_grep_count("Excluding deal because 'List at' is missing", log_path)
+        reason_profit_neg = get_grep_count("Profit is zero or negative", log_path)
+        reason_list_at = reason_list_at_missing + reason_profit_neg
+
         reason_1yr_avg = get_grep_count("Excluding deal because '1yr. Avg.' is missing", log_path)
         rejected_count = reason_peek + reason_no_offer + reason_list_at + reason_1yr_avg
     else:

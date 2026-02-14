@@ -70,14 +70,7 @@ def analyze_db_state():
             return
 
         # 2. System State (Backfill Page)
-        # Note: Backfill Page is legacy but might still be there.
-        try:
-            cursor.execute("SELECT value FROM system_state WHERE key = 'backfill_page'")
-            row = cursor.fetchone()
-            backfill_page = row[0] if row else "Not Found (Legacy)"
-            print(f"Backfill Page (Legacy): {backfill_page}")
-        except sqlite3.OperationalError:
-            print("Could not read system_state table (might not exist).")
+        # Removed Legacy Backfill Page check as it is no longer relevant for Smart Ingestor v3
 
         # 3. Watermark
         try:
