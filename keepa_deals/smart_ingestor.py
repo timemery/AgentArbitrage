@@ -340,9 +340,10 @@ def run():
                 profit = r['Profit']
 
                 is_zombie = False
-                if not list_at or str(list_at).strip() in ['-', 'N/A', '0', '0.0', '0.00']: is_zombie = True
-                elif not yr_avg or str(yr_avg).strip() in ['-', 'N/A', '0', '0.0', '0.00']: is_zombie = True
-                elif profit is not None and isinstance(profit, (int, float)) and profit <= 0: is_zombie = True
+                # REMOVED: Allow "Bad Data" (Missing List/Avg or Negative Profit) to remain in DB and be updated via Light Update.
+                # if not list_at or str(list_at).strip() in ['-', 'N/A', '0', '0.0', '0.00']: is_zombie = True
+                # elif not yr_avg or str(yr_avg).strip() in ['-', 'N/A', '0', '0.0', '0.00']: is_zombie = True
+                # elif profit is not None and isinstance(profit, (int, float)) and profit <= 0: is_zombie = True
 
                 if is_zombie:
                     logger.info(f"ASIN {r['ASIN']}: Detected as ZOMBIE/BAD DATA. Forcing heavy re-fetch.")
