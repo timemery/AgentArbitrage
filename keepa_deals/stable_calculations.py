@@ -405,10 +405,10 @@ def analyze_sales_performance(product, sale_events):
 
         # Used (Index 2)
         avg90 = stats.get('avg90', [])
-        if len(avg90) > 2 and avg90[2] > 0: candidates.append(avg90[2])
+        if len(avg90) > 2 and avg90[2] is not None and avg90[2] > 0: candidates.append(avg90[2])
 
         avg365 = stats.get('avg365', [])
-        if len(avg365) > 2 and avg365[2] > 0: candidates.append(avg365[2])
+        if len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0: candidates.append(avg365[2])
 
         # Used - Like New (Index 19)
         if len(avg90) > 19 and avg90[19] is not None and avg90[19] > 0: candidates.append(avg90[19])
@@ -540,6 +540,9 @@ def analyze_sales_performance(product, sale_events):
 
     if is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
+        is_reasonable = True
+    elif price_source == 'Keepa Stats Fallback':
+        logger.info(f"ASIN {asin}: Price Source is 'Keepa Stats Fallback'. Skipping AI Reasonableness Check to prevent false negatives due to insufficient context.")
         is_reasonable = True
     else:
         is_reasonable = _query_xai_for_reasonableness(
