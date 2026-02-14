@@ -50,9 +50,10 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         *   **Fallback (Silver Standard):** If Inferred Sales < 1 (insufficient data), the system falls back to using **`stats.avg365`** from **ALL** Used sub-conditions: Used (2), Like New (19), Very Good (20), Good (21), and Acceptable (22).
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
-    *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass two checks:
-        1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg).
-        2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context (Binding, Page Count, Rank). If AI says "No", the deal is dropped.
+    *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
+        1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices.
+        2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context.
+            *   **Exception:** If the price is derived from **Keepa Stats Fallback** (Silver Standard), this check is **SKIPPED** to prevent false rejections.
     *   **Exclusion:** If validation fails, the deal is dropped.
 
 6.  **Business Math**:

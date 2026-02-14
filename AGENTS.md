@@ -167,4 +167,4 @@ Developers often split complex tasks into two stages:
 
 **Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
 
-*   **Backfill Chunk Size:** Default **20**, but dynamically reduces to **1** if Keepa refill rate is < 20/min to prevent starvation.
+*   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **5** (Critically Low < 10/min) to prevent starvation.
