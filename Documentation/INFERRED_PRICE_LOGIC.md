@@ -89,14 +89,14 @@ This determines the recommended listing price.
     -   **Fallback Exception (Feb 2026):** If the price source is **"Keepa Stats Fallback"** (Silver Standard), the AI Reasonableness Check is **SKIPPED**.
         -   *Rationale:* The Silver Standard is a historical average (`avg365`), which is inherently stable but lacks the seasonal context needed for the AI to make a valid judgment. Skipping the check prevents false negatives.
         -   *Safety:* The Amazon Ceiling check remains active and is sufficient to prevent egregious pricing errors.
-    -   If the AI rejects a non-fallback price (returns "No"), the deal is discarded.
+    -   If the AI rejects a non-fallback price (returns "No"), the deal is invalidated (and subsequently persisted as incomplete data).
 
 ### B. 1-Year Average (`1yr. Avg.`)
 Used for the "Percent Down" and "Trend" calculations.
 
 1.  Filters the sane sales list to include only those from the **last 365 days**.
 2.  Calculates the **Mean** of these prices.
-3.  **Threshold:** Requires at least **1** inferred sale. If 0, returns `None` (Deal excluded).
+3.  **Threshold:** Requires at least **1** inferred sale. If 0, returns `None` and the deal is persisted as **incomplete data** (filtered from the UI) rather than dropped.
 
 ------
 
@@ -104,7 +104,7 @@ Used for the "Percent Down" and "Trend" calculations.
 
 1.  **Mean vs Median:** We switched from Median to **Mean** for the 1-Year Average to better reflect the true market value across all transactions, after outlier removal proved effective.
 2.  **Mode for Peak:** We use **Mode** for the "List at" price because arbitrage sellers often target a specific "standard" market price that occurs frequently, rather than an average of fluctuations.
-3.  **Strict Validation:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it prefers to reject the deal rather than present a risky one.
+3.  **Strict Validation with Persistence:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it **persists the deal as incomplete** (for potential future recovery) but filters it from the user dashboard to maintain a clean experience.
 4.  **240-Hour Window:** Expanding the correlation window from 168h to 240h significantly improved capture rates for "Near Miss" sales events where rank reporting lagged behind offer drops.
 
 ------
@@ -130,4 +130,4 @@ A diagnostic script (`tests/trace_1yr_avg.py`) was created to trace the exact ex
 The calculation logic is **sound**. The data *does* exist, and the algorithm *can* find it. The reason these deals appeared broken on the dashboard was **Data Ingestion Stagnation** (deals getting stuck in a "lightweight update" loop that never re-fetched the full history needed for the calculation), not a flaw in the math itself.
 
 ### Resolution
-We implemented a **"Zombie Data Defense"** strategy in the `Smart Ingestor`. The system now detects these "Zombie" deals (missing data) and forces a full re-fetch (heavy update) to attempt to repair them. Additionally, the introduction of the **Validated Fallback** (avg365) ensures that items with sparse but valid history are no longer rejected, provided they pass the safety checks.
+We implemented a **"Zombie Data Defense"** strategy in the `Smart Ingestor`. The system now detects these "Zombie" deals (missing data) and forces a full re-fetch (heavy update) to attempt to repair them. Additionally, deals that truly lack data or have zero profit are now **persisted** (filtered from the UI) to allow for lightweight updates, rather than being rejected and entering an infinite re-fetch loop.
