@@ -1295,6 +1295,8 @@ def api_deals():
 
             if 'Condition' in deal and deal['Condition'] in condition_string_map:
                 deal['Condition'] = condition_string_map[deal['Condition']]
+            if 'Condition' in deal and deal['Condition'] in condition_string_map:
+                deal['Condition'] = condition_string_map[deal['Condition']]
 
     except sqlite3.Error as e:
         app.logger.error(f"Database query error: {e}")
