@@ -15,7 +15,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
     *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
     *   **Batching:** Uses a **Decoupled Batching Strategy** (Smart Ingestor v3.0):
-        *   **Peek (Discovery):** 50 ASINs per batch (or 20 if low refill rate).
+        *   **Peek (Discovery):** 50 ASINs per batch (reduces to 20 if refill rate < 20/min, and 5 if < 10/min).
         *   **Commit (Analysis):** 5 ASINs per batch.
 
 2.  **Seller & Price Analysis**:
@@ -27,9 +27,9 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Output:** `Price Now`, `Seller`, `Seller ID`, `Seller_Quality_Score`.
 
     **CRITICAL INTEGRITY CHECK (Feb 2026):**
-    *   **Negative Profit:** Any deal with `Profit <= 0` is strictly rejected at the ingestion stage.
-    *   **Incomplete Data:** Deals missing critical fields like `List at` or `1yr. Avg.` are rejected.
-    *   **Self-Healing Backfill:** The Smart Ingestor detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them. If repair fails (data still missing), they are then rejected by the integrity check.
+    *   **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing critical fields like `List at` / `1yr. Avg.` are now **persisted** to the database rather than rejected. This allows the system to track potentially valuable items and update them via lightweight scans if prices improve.
+    *   **Dashboard Filtering:** While these "unprofitable" or "incomplete" deals exist in the database, they are strictly **filtered out** from the user-facing Dashboard API to ensure a clean user experience.
+    *   **Self-Healing Backfill:** The Smart Ingestor detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them.
 
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
@@ -40,7 +40,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 4.  **Analytics & Seasonality**:
     *   **Logic:** `keepa_deals/new_analytics.py` and `seasonality_classifier.py`.
     *   **1yr. Avg.:** The mean price of all inferred sales in the last 365 days.
-    *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped.
+    *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped (unless persisted as incomplete data).
     *   **Seasonality:** AI (`grok-4-fast-reasoning`) classifies the book (e.g., "Fall Semester") based on title, category, and historical peak sales months.
 
 5.  **Price Benchmarks ("List at" & "Trough")**:
@@ -54,7 +54,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices.
         2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context.
             *   **Exception:** If the price is derived from **Keepa Stats Fallback** (Silver Standard), this check is **SKIPPED** to prevent false rejections.
-    *   **Exclusion:** If validation fails, the deal is dropped.
+    *   **Exclusion:** If validation fails, the price is invalidated (potentially leading to persistence as incomplete data).
 
 6.  **Business Math**:
     *   **Logic:** `keepa_deals/business_calculations.py`.
@@ -128,7 +128,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`1yr. Avg.`**:
     -   **Source**: `keepa_deals/new_analytics.py`.
     -   **Logic**: Mean of inferred sale prices over last 365 days.
-    -   **Threshold**: Requires **at least 1** inferred sale. If 0, returns None and deal is excluded.
+    -   **Threshold**: Requires **at least 1** inferred sale. If 0, returns None.
 
 -   **`Percent Down` (% ⇩)**:
     -   **Source**: `keepa_deals/new_analytics.py`.
@@ -160,7 +160,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: **Mode** of peak season prices (or `Used - 90d avg` fallback if high velocity).
     -   **Constraint**: Capped at 90% of Amazon New price.
-    -   **AI Check**: Validated by `grok-4-fast-reasoning`.
+    -   **AI Check**: Validated by `grok-4-fast-reasoning` (skipped for Fallbacks).
 
 -   **`Expected Trough Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
