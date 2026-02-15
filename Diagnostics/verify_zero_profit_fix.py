@@ -2,10 +2,11 @@ import sqlite3
 import os
 import sys
 
+# Version 1.1
 DB_PATH = 'deals.db'
 
 def verify_fix():
-    print("--- Verifying Zero Profit Fix ---")
+    print("--- Verifying Zero Profit Fix (Script v1.1) ---")
 
     if not os.path.exists(DB_PATH):
         print(f"Error: {DB_PATH} not found.")
@@ -15,11 +16,14 @@ def verify_fix():
     cursor = conn.cursor()
 
     # 1. Clean up previous test
-    cursor.execute("DELETE FROM deals WHERE ASIN = 'TEST_ZERO_PROFIT'")
-    conn.commit()
+    try:
+        cursor.execute("DELETE FROM deals WHERE ASIN = 'TEST_ZERO_PROFIT'")
+        conn.commit()
+    except Exception:
+        pass
 
     # 2. Insert Test Deal (Profit = -10.00)
-    # Using correct column names (List_at, 1yr_Avg)
+    # Using correct column names (List_at, 1yr_Avg) matching DB schema
     print("Inserting test deal: Profit = -10.00, Valid Price Data...")
     try:
         cursor.execute("""
@@ -34,6 +38,7 @@ def verify_fix():
         conn.commit()
     except Exception as e:
         print(f"ERROR Inserting: {e}")
+        print("Note: If this fails with 'no column', the DB schema might be different from expected 'List_at'.")
         return
 
     # 3. Verify Saved

@@ -335,8 +335,9 @@ def run():
             for r in rows:
                 # Zombie Data Defense (Self-Healing)
                 # Check for invalid critical data
-                list_at = r['List at']
-                yr_avg = r['1yr. Avg.']
+                # Use sanitized column names matching DB schema
+                list_at = r['List_at']
+                yr_avg = r['1yr_Avg']
                 profit = r['Profit']
 
                 is_zombie = False
