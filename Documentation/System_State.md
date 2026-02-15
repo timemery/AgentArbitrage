@@ -17,7 +17,8 @@
 ### Pricing & Inferred Sales
 - **"List at" Price:** Derived from Peak Season history (Mode).
     - **Fallback:** If Inferred Sales < 1, falls back to `Used - 365d Avg` (Silver Standard).
-    - **Validation:** **ALL** prices (including fallbacks) must pass the **Amazon Ceiling Check** (90% of lowest New price) and **XAI Reasonableness Check** to be accepted.
+    - **Validation:** **ALL** prices (including fallbacks) must pass the **Amazon Ceiling Check** (90% of lowest New price).
+    - **XAI Check:** The **XAI Reasonableness Check** is applied to standard prices but is **SKIPPED** for "Keepa Stats Fallback" prices (Silver Standard) to prevent false rejections.
 - **"Expected Trough" Price:** Median price of the identified trough month.
 - **Sales Inference:** Search window is **240 hours (10 days)**.
     - **Sparse Data:** Logic includes a **30-day lookahead** for rank drops to infer sales even when data points are sparse (e.g., slow movers).
@@ -27,9 +28,9 @@
 - **Smart Ingestor (v3.0):** The unified entry point for all deal ingestion (`keepa_deals.smart_ingestor`). Replaces legacy `backfiller` and `simple_task`.
     - **Logic:** Explicitly sorts Keepa responses by `lastUpdate` (descending) to ensure strictly ordered processing.
     - **Watermark:** Implements a "Ratchet" mechanism (advances even if deals are rejected) and tolerates up to **24 hours** of future clock skew before clamping.
-    - **Zombie Defense:** Automatically detects deals with missing critical data (e.g., `List at`) and forces a heavy re-fetch to repair them.
+    - **Zombie Defense:** Automatically detects deals with missing critical data (e.g., `List at`) and forces a heavy re-fetch to repair them. **Note:** Deals with zero profit or legitimate missing data are now **persisted** (not rejected) to prevent infinite re-fetch loops.
     - **Throughput:** Uses a **Decoupled Batching Strategy**:
-        - **Peek / Light Update:** Batch size **50** (reduces to **20** if refill rate < 20/min).
+        - **Peek / Light Update:** Batch size **50** (reduces to **20** if refill rate < 20/min, and **5** if < 10/min).
         - **Commit (Heavy Analysis):** Batch size **5** to prevent deficit shock.
     - **Deficit Protection:** Enforces `MAX_DEFICIT = -180` to prevent API lockouts.
     - **Lock Release:** Raises `TokenRechargeError` during long waits (> 60s) to release the Redis lock and free the worker.
