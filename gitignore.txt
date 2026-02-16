@@ -40,4 +40,4 @@ temp-*.rdb
 
 # Diagnostics Reports
 Diagnostics/health_report.json
-xai_token_state.json
+spike_log.txt
