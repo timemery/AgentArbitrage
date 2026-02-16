@@ -11,13 +11,13 @@ fi
 echo "Waiting $sleep_seconds seconds for the top of the minute ingest window..."
 sleep $sleep_seconds
 
-echo "Capturing 20-second snapshot across the minute boundary..."
+echo "Capturing 25-second snapshot across the minute boundary (XX:55 to XX:20)..."
 echo "Starting at: $(date -u +%H:%M:%S)"
 
-# Run the host's requested diagnostic command
-for i in {1..20}; do
+# Run the host's requested diagnostic command (UPDATED: 25 iterations, top 15 processes)
+for i in {1..25}; do
     date -u +%H:%M:%S
-    ps -eo pid,cmd,%cpu,%mem --sort=-%cpu | head -n 12
+    ps -eo pid,cmd,%cpu,%mem --sort=-%cpu | head -n 15
     sleep 1
     echo "----"
 done > spike_log.txt
