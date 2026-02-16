@@ -449,6 +449,7 @@ def run():
 
             # --- UPSERT & WATERMARK RATCHET ---
             if rows_to_upsert:
+                logger.info(f"Upserting {len(rows_to_upsert)} deals to DB. ASINs: {[r.get('ASIN') for r in rows_to_upsert[:10]]}...")
                 try:
                     with sqlite3.connect(DB_PATH, timeout=60) as conn:
                         cursor = conn.cursor()
