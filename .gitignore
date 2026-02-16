@@ -40,3 +40,4 @@ temp-*.rdb
 
 # Diagnostics Reports
 Diagnostics/health_report.json
+spike_log.txt
