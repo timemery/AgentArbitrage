@@ -1,0 +1,18 @@
+Hi [Host Name],
+
+**1. SSL Status**
+Yes, the SSL is configured via Let's Encrypt (`/etc/letsencrypt/live/agentarbitrage.co/`) and should be renewing automatically. If you see any errors, please let me know, but it should be fine.
+
+**2. Database Clarification**
+You mentioned "MySQL (very light)". Just to clarify: **This application uses SQLite (`deals.db` in WAL mode), not MySQL.**
+If `mysqld` is running on the VPS, it is likely a default service that is **completely unused** by my application. You can safely stop/disable the MySQL service to free up RAM/CPU for the actual application.
+
+**3. Exact Ingestion Timing for Testing**
+*   **Start Time:** **XX:00** (Top of the minute, :00 seconds).
+*   **Timezone:** **UTC** (The server and logs are configured for UTC).
+*   **Duration:** The spike typically lasts **5–15 seconds** starting exactly at the top of the minute.
+
+Please check the process list during that **00–15 second window**. You should see a `python` or `celery` process (the Smart Ingestor) spiking the CPU, competing with the `apache2` worker processes.
+
+Thanks,
+Tim
