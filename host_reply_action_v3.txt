@@ -1,0 +1,28 @@
+Here is the updated plan to handle the host's request for "per-thread CPU" analysis.
+
+**Step 1: Get the Updated Tool**
+I have updated `capture_spike.sh` to include the new command (`ps -eLo ...`) that breaks down CPU usage by individual thread.
+1.  Pull the latest changes: `git pull`
+
+**Step 2: Capture the Spike (Attempt 3)**
+1.  Run the helper script again: `bash capture_spike.sh`
+2.  Wait for the countdown (it will automatically align to XX:55).
+3.  The results will be saved to `spike_log.txt`.
+
+**Step 3: Reply to the Host**
+Copy the new `spike_log.txt` content and use this reply:
+
+***
+
+Hi [Host Name],
+
+Thanks for the patience. I have updated the capture to include the per-thread CPU usage (`-eLo pid,tid,psr...`) as requested.
+
+Attached is the 25-second snapshot spanning the XX:55–XX:20 window (UTC).
+
+[PASTE CONTENT OF spike_log.txt HERE]
+
+Please let me know if this pinpoints the specific worker thread causing the contention.
+
+Thanks,
+Tim
