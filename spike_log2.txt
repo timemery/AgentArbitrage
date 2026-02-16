@@ -55946,3 +55946,207 @@ nohup: ignoring input
       4       2 [rcu_par_gp]                 0.0  0.0
       5       2 [slub_flushwq]               0.0  0.0
 ----
+23:34:04
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 24.3  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 19.7  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  19.1  1.4
+ 656644  543742 git push origin main         4.0  0.1
+ 656564  656514 /var/www/agentarbitrage/ven  1.3  3.3
+ 656597  311130 /usr/sbin/apache2 -k start   0.8  0.3
+ 656427       1 /usr/bin/redis-server 127.0  0.5  0.2
+ 656558  656514 /var/www/agentarbitrage/ven  0.2  3.1
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+----
+23:34:05
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 23.3  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 18.9  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  16.7  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.2  3.3
+ 656597  311130 /usr/sbin/apache2 -k start   0.7  0.3
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656558  656514 /var/www/agentarbitrage/ven  0.2  3.1
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+----
+23:34:06
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 22.4  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 18.1  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  14.8  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.1  3.3
+ 656597  311130 /usr/sbin/apache2 -k start   0.6  0.3
+ 656427       1 /usr/bin/redis-server 127.0  0.5  0.2
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+----
+23:34:07
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 21.6  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 17.5  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  13.4  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.3
+ 656597  311130 /usr/sbin/apache2 -k start   0.6  0.3
+ 656427       1 /usr/bin/redis-server 127.0  0.5  0.2
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+----
+23:34:08
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 20.8  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 16.8  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  12.1  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.3
+ 656427       1 /usr/bin/redis-server 127.0  0.5  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.5  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+----
+23:34:09
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 20.1  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 16.3  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  11.1  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  0.9  3.3
+ 656597  311130 /usr/sbin/apache2 -k start   0.5  0.3
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+----
+23:34:10
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 19.5  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 15.7  4.2
+ 656596  311130 /usr/sbin/apache2 -k start  10.3  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.4
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.4  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+ 656563  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+----
+23:34:11
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 18.8  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 15.2  4.2
+ 656596  311130 /usr/sbin/apache2 -k start   9.5  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.4
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.4  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+      6       2 [netns]                      0.0  0.0
+----
+23:34:12
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 18.2  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 14.7  4.2
+ 656596  311130 /usr/sbin/apache2 -k start   8.9  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.5
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.4  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+      6       2 [netns]                      0.0  0.0
+----
+23:34:13
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 17.7  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 14.3  4.2
+ 656596  311130 /usr/sbin/apache2 -k start   8.3  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.5
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.3  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+      6       2 [netns]                      0.0  0.0
+----
+23:34:14
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 17.2  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 13.9  4.2
+ 656596  311130 /usr/sbin/apache2 -k start   7.8  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.5
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.3  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+      6       2 [netns]                      0.0  0.0
+----
+23:34:15
+    PID    PPID CMD                         %CPU %MEM
+ 656514  656512 /var/www/agentarbitrage/ven 16.7  4.3
+ 656517  656515 /var/www/agentarbitrage/ven 13.5  4.2
+ 656596  311130 /usr/sbin/apache2 -k start   7.4  1.4
+ 656564  656514 /var/www/agentarbitrage/ven  1.0  3.5
+ 656427       1 /usr/bin/redis-server 127.0  0.4  0.2
+ 656597  311130 /usr/sbin/apache2 -k start   0.3  0.3
+ 646461  311130 /usr/sbin/apache2 -k start   0.1  0.4
+ 656558  656514 /var/www/agentarbitrage/ven  0.1  3.1
+      1       0 /lib/systemd/systemd --syst  0.0  0.3
+      2       0 [kthreadd]                   0.0  0.0
+      3       2 [rcu_gp]                     0.0  0.0
+      4       2 [rcu_par_gp]                 0.0  0.0
+      5       2 [slub_flushwq]               0.0  0.0
+      6       2 [netns]                      0.0  0.0
+----
