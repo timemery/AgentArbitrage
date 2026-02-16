@@ -1,0 +1,550 @@
+22:15:55
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.7
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.9
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.1
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:15:56
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.6
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.9
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.1
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:15:57
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.5
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.8
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.1
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:15:58
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.5
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.8
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.1
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:15:59
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.4
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.7
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:00
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.4
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.7
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:01
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.3
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.6
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:02
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.2
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.6
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:03
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.2
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.5
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:04
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.1
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.5
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:05
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.1
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.4
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   1.0
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:06
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.0
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.4
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:07
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  4.0
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.3
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:08
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.9
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.3
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:09
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.9
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.3
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:10
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.9
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.2
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:11
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.8
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.2
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:12
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.8
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.1
+ 639017  639017   0 sshd: unknown [priv]         1.0
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.9
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+----
+22:16:13
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.7
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.1
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 639017  639017   0 sshd: unknown [priv]         0.5
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+----
+22:16:14
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.7
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.1
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:15
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.6
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.0
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:17
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.6
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.0
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:18
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.6
+ 638908  638908   0 /var/www/agentarbitrage/ven  3.0
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:19
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.5
+ 638908  638908   0 /var/www/agentarbitrage/ven  2.9
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
+22:16:20
+    PID     TID PSR CMD                         %CPU
+ 638905  638905   0 /var/www/agentarbitrage/ven  3.5
+ 638908  638908   0 /var/www/agentarbitrage/ven  2.9
+ 638919  638919   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638920   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638921   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638922   0 /usr/sbin/apache2 -k start   0.8
+ 638919  638923   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638924   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638925   0 /usr/sbin/apache2 -k start   0.0
+ 638919  638926   0 /usr/sbin/apache2 -k start   0.0
+ 638843  638843   0 /usr/bin/redis-server 127.0  0.2
+ 638843  638844   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638845   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638846   0 /usr/bin/redis-server 127.0  0.0
+ 638843  638847   0 /usr/bin/redis-server 127.0  0.0
+      1       1   0 /lib/systemd/systemd --syst  0.0
+      2       2   0 [kthreadd]                   0.0
+      3       3   0 [rcu_gp]                     0.0
+      4       4   0 [rcu_par_gp]                 0.0
+----
