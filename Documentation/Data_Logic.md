@@ -29,7 +29,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     **CRITICAL INTEGRITY CHECK (Feb 2026):**
     *   **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing critical fields like `List at` / `1yr. Avg.` are now **persisted** to the database rather than rejected. This allows the system to track potentially valuable items and update them via lightweight scans if prices improve.
     *   **Dashboard Filtering:** While these "unprofitable" or "incomplete" deals exist in the database, they are strictly **filtered out** from the user-facing Dashboard API to ensure a clean user experience.
-    *   **Self-Healing Backfill:** The Smart Ingestor detects existing "Zombie" deals (missing critical data) and forces a **Heavy Re-fetch** (treating them as new) to attempt to repair them.
+    *   **Self-Healing Persistence:** The Smart Ingestor previously forced a **Heavy Re-fetch** for "Zombie" deals (missing critical data), often causing infinite loops. Now, these deals are **persisted** as-is and flagged for **Lightweight Updates**, allowing them to be repaired naturally over time without wasting tokens.
 
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.

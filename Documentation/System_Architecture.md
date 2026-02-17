@@ -52,7 +52,7 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
         *   **Stage 2: Commit (Analysis):** Survivors of the Peek filter are processed in smaller batches of **5 ASINs** (Heavy Fetch) to prevent "Deficit Shock" (instantly draining 1000+ tokens).
         *   **Stage 3: Light Update:** Existing deals are refreshed in large batches (50 ASINs) using lightweight stats.
     4.  **Watermark Ratchet:** The watermark is updated to the `lastUpdate` timestamp of the *last processed deal* in the current batch. This ensures progress is tracked even if all deals in a batch are rejected.
-    5.  **Zombie Defense:** Automatically detects "Zombie" deals (missing critical data like `List at`) and forces a heavy re-fetch to repair them.
+    5.  **Data Persistence Strategy (formerly Zombie Defense):** The aggressive re-fetching logic for 'Zombie' deals (missing critical data like `List at`) was found to cause infinite loops and token waste. It has been replaced by a **Persistence Strategy** where deals with missing data are saved and updated via standard 'Lightweight Updates', allowing for gradual data repair without system strain.
 
 ### B. `clean_stale_deals` (The Janitor)
 *   **Purpose:** Removes "zombie" deals to ensure dashboard freshness.

@@ -28,7 +28,7 @@
 - **Smart Ingestor (v3.0):** The unified entry point for all deal ingestion (`keepa_deals.smart_ingestor`). Replaces legacy `backfiller` and `simple_task`.
     - **Logic:** Explicitly sorts Keepa responses by `lastUpdate` (descending) to ensure strictly ordered processing.
     - **Watermark:** Implements a "Ratchet" mechanism (advances even if deals are rejected) and tolerates up to **24 hours** of future clock skew before clamping.
-    - **Zombie Defense:** Automatically detects deals with missing critical data (e.g., `List at`) and forces a heavy re-fetch to repair them. **Note:** Deals with zero profit or legitimate missing data are now **persisted** (not rejected) to prevent infinite re-fetch loops.
+    -   **Data Persistence Strategy (formerly Zombie Defense):** The aggressive re-fetching logic for 'Zombie' deals (missing critical data like `List at`) was found to cause infinite loops and token waste. It has been replaced by a **Persistence Strategy** where deals with missing data are saved and updated via standard 'Lightweight Updates', allowing for gradual data repair without system strain.
     - **Throughput:** Uses a **Decoupled Batching Strategy**:
         - **Peek / Light Update:** Batch size **50** (reduces to **20** if refill rate < 20/min, and **5** if < 10/min).
         - **Commit (Heavy Analysis):** Batch size **5** to prevent deficit shock.

@@ -28,7 +28,7 @@ The dashboard uses a responsive grid layout. Columns are defined in `templates/d
 | **% ⇩** | `Percent_Down` | Percentage + "%". | Auto | Yes |
 | **Ago** | `last_price_change` | Trend Arrow + Time Ago (e.g., "⇩ 2h ago"). <br> **Trend:** ⇧ (Red/Up), ⇩ (Green/Down), ⇨ (Orange/Flat). | Auto | Yes |
 | **Seller** | `Seller_Quality_Score` | **Scale 0-10:** Derived from Wilson Score (e.g., "9 / 10"). "Unrated" or Name if text. | Auto | Yes |
-| **Estimate** | `Profit_Confidence` | Percentage + "%". | Auto | Yes |
+| **Estimate** | `Deal_Trust` | Percentage + "%". | Auto | Yes |
 | **All in** | `All_in_Cost` | Currency ($XX.XX). | Auto | Yes |
 | **Profit** | `Profit` | Currency ($XX.XX). | Auto | Yes |
 | **Margin** | `Margin` | Percentage + "%". | Auto | Yes |

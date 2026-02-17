@@ -58927,5 +58927,923 @@
         "confidence": "High",
         "source": "We automatically upload tracking information for all orders that use Amazon Buy Shipping, which helps you maintain your Valid Tracking Rate, or VTR",
         "date_added": "2026-02-13"
+    },
+    {
+        "id": "approval-check-1",
+        "category": "General",
+        "trigger": "Adding a product to Amazon inventory",
+        "advice": "Search for the product using product ID or GTIN like UPC, ISBN, EAN, or JAN to check if it requires approval; look for 'show limitations' link",
+        "confidence": "High",
+        "source": "search for your product by using a product id or gtin like a upc isbn e-a-n or j-a-n or search using an a-sin or other id paired with descriptive information like brand or product name next locate the product you want to sell in the search results if it requires approval you'll see a show limitations link",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "invoice-requirements-1",
+        "category": "Buying",
+        "trigger": "Submitting selling application for category approval",
+        "advice": "Upload a purchase invoice dated within 180 days that includes your name and address matching the selling account, manufacturer or distributor name and address, and shows a combined purchase of at least 10 units with paid balance",
+        "confidence": "High",
+        "source": "the purchase invoice you submit needs to be dated within 180 days and include your name and address matching the information in your selling account it also needs to include the name and address of the products manufacturer or distributor and show a combined purchase of at least 10 units that means the invoice should show a paid balance for at least 10 units",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "document-format-1",
+        "category": "General",
+        "trigger": "Uploading documents for selling application",
+        "advice": "Ensure the purchase invoice is a high resolution PDF file in the correct orientation",
+        "confidence": "High",
+        "source": "make sure it's a high resolution pdf file in the correct orientation",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "brand-approval-1",
+        "category": "Risk",
+        "trigger": "Selling products from a brand enrolled in Amazon Brand Registry",
+        "advice": "Submit either a purchase invoice meeting category requirements or an authorization letter dated within 180 days on the brand's letterhead including your name/address and brand's name/address",
+        "confidence": "High",
+        "source": "for a purchase invoice you'll need to submit a document that meets the same requirements we reviewed for a category approval for an authorization letter you'll need to submit a document that is dated within 180 days and includes your name and address matching the information in your selling account your letter also needs to be on the brand's letterhead and include the name and address of the brand",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "new-product-approval-1",
+        "category": "General",
+        "trigger": "Creating a new listing for a product",
+        "advice": "Search for existing listings first; if none, create new and check for category approval when selecting product type; for brands, look for error 5461 after entering brand name and submit application with authorization letter and product info",
+        "confidence": "High",
+        "source": "double checking that there's no existing listing for your item search for the product using the product adding tool if it doesn't appear in the search results click the create a new listing button you'll find out if your new product requires a category approval when you select a product type after entering or selecting the brand's name in the brand name field you'll receive error 5461 you can use the link in the error message to access the selling application",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "review-timeline-1",
+        "category": "General",
+        "trigger": "After submitting selling application",
+        "advice": "Expect confirmation within 24 hours and review completion within 3 business days; monitor status in Seller Central under Catalog > View selling applications",
+        "confidence": "High",
+        "source": "you'll receive confirmation within 24 hours that we're reviewing your approval request in most cases that review process is completed within three business days to monitor the status of a selling application hover over catalog in the seller central main menu and then click view selling applications",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "product_title_length",
+        "category": "General",
+        "trigger": "Product title exceeds 200 characters including spaces",
+        "advice": "Ensure titles do not exceed 200 characters, avoid promotional phrases like 'free shipping', exclude decorative characters, and include key product identifying information such as 'hiking boots' or 'umbrella'",
+        "confidence": "High",
+        "source": "titles must not exceed 200 characters including spaces not contain promotional phrases such as free shipping or 100 quality guaranteed not contain characters for decoration and contain key product identifying information such as hiking boots or umbrella",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "item_condition_new",
+        "category": "Risk",
+        "trigger": "Items listed as new arrive with scratches, wear, or damage",
+        "advice": "Send only brand new, unused items for 'new' condition listings; inspect for acceptable condition to avoid marking as unsellable",
+        "confidence": "High",
+        "source": "in order for inventory to be sold as new in the amazon store it must arrive at the fulfillment center in brand new unused condition items listed as new will be inspected and marked as unsellable if there are scratches wear or other damage beyond what's considered acceptable for a new item",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "item_condition_used",
+        "category": "Risk",
+        "trigger": "Used items are defective, unusable, mislabeled, or missing parts",
+        "advice": "For used listings, ensure items are not defective or missing parts to prevent unsellable status",
+        "confidence": "High",
+        "source": "if your item is listed as used it'll be marked as unsellable only if it's defective unusable mislabeled or missing parts",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "packaging_box_dimensions",
+        "category": "General",
+        "trigger": "Boxes containing multiple standard-size or oversized items exceed 25 inches on any side",
+        "advice": "Use boxes not exceeding 25 inches on any side for shipments with multiple standard-size or oversized items",
+        "confidence": "High",
+        "source": "boxes containing multiple standard size items or oversized items must not exceed 25 inches on any side",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "packaging_rigidity",
+        "category": "Risk",
+        "trigger": "Boxes are not rigid, suitably sized, six-sided with intact flaps, or insufficiently filled with packing material",
+        "advice": "Use a rigid, suitably sized six-sided box with intact flaps, filled with enough packing material to prevent collapse when stacked",
+        "confidence": "High",
+        "source": "it's important that you use a rigid suitably sized six-sided box with its flaps intact the box must be filled with enough packing material so that it doesn't collapse when heavier boxes are stacked on top of it",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "barcode_requirement",
+        "category": "General",
+        "trigger": "Product lacks manufacturer barcode (UPC, EAN, JAN, ISBN) or Amazon barcode (FNSKU)",
+        "advice": "Label each item with a manufacturer barcode like ISBN for books or an Amazon FNSKU if ineligible for virtual tracking; outsource to Amazon for a fee if needed",
+        "confidence": "High",
+        "source": "each item sent to an amazon fulfillment center requires labeling with either a manufacturer barcode such as a upc ean jan or isbn or an amazon barcode such as a finskew",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "shipping_labels",
+        "category": "General",
+        "trigger": "Boxes lack shipping label and FBA box ID label",
+        "advice": "Apply only a shipping label and FBA box ID label on the outside of each box; ensure labels are scannable and match SKU and unit counts",
+        "confidence": "High",
+        "source": "when shipping your products to fulfillment centers you need only two labels a shipping label and an fba box id label on the outside of your box",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "pallet_labeling",
+        "category": "General",
+        "trigger": "Pallets shipped without four labels, one on each side",
+        "advice": "For pallet shipments, apply four total pallet labels, one at the top center of each side",
+        "confidence": "High",
+        "source": "if you ship pallets four total pallet labels must be applied to each palette with one label at the top center of each side of your shipment",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "storage_limit_individual",
+        "category": "Risk",
+        "trigger": "Individual seller exceeds 10 cubic feet storage limit",
+        "advice": "Monitor storage usage; individual sellers have a fixed limit of 10 cubic feet; reduce inventory via sales, returns, or disposal if exceeded",
+        "confidence": "High",
+        "source": "individual sellers have a fixed storage limit of 10 cubic feet",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "storage_limit_professional",
+        "category": "Risk",
+        "trigger": "Professional seller with IPI below threshold exceeds minimum 25 cubic feet for standard-size, oversize, clothing, or footwear",
+        "advice": "Professional sellers have at least 25 cubic feet minimum; maintain IPI score at or above threshold to avoid limits on standard-size, oversize, clothing, and footwear items",
+        "confidence": "High",
+        "source": "professional sellers with storage limits will have a minimum of 25 cubic feet for standard size oversize clothing or footwear inventory professional sellers who maintain an ipi score at or above the required threshold won't be subject to storage volume limits for standard size oversized clothing and footwear items",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "box_content_info",
+        "category": "Risk",
+        "trigger": "Shipment lacks accurate box content information",
+        "advice": "Provide box content information during shipment creation using a packing template to avoid manual processing fees and shipment delays",
+        "confidence": "High",
+        "source": "without the proper box content information an fba manual processing fee and future shipment prevention may be incurred for send to amazon provide box content information by creating a packing template",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-req1",
+        "category": "General",
+        "trigger": "Non-professional selling account",
+        "advice": "Obtain a professional selling account to be eligible for the Featured Offer.",
+        "confidence": "High",
+        "source": "the seller who lists the offer needs to have a professional selling account",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-req2",
+        "category": "General",
+        "trigger": "Product not in new condition",
+        "advice": "List products only in new condition to compete for the Featured Offer.",
+        "confidence": "High",
+        "source": "product also needs to be in new condition",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-req3",
+        "category": "Pricing",
+        "trigger": "Price > lowest price from major external retailers",
+        "advice": "Set price less than or equal to the lowest price from major retailers outside Amazon to enter the eligible pool.",
+        "confidence": "High",
+        "source": "a price that is less than or equal to the lowest price for an item for major retailers outside of Amazon",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-strat1",
+        "category": "Pricing",
+        "trigger": "Competing in eligible pool",
+        "advice": "Set prices lower than other sellers in the pool to increase chances of becoming the Featured Offer.",
+        "confidence": "High",
+        "source": "set prices lower than those of other sellers within the pool",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-strat2",
+        "category": "General",
+        "trigger": "Standard shipping only",
+        "advice": "Provide free shipping or faster shipping than competitors to boost Featured Offer chances.",
+        "confidence": "High",
+        "source": "providing customers with free shipping or shipping that's faster than what other sellers provide",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-fba",
+        "category": "General",
+        "trigger": "Not using FBA",
+        "advice": "Use Fulfillment by Amazon (FBA) to automatically qualify for Amazon Prime free two-day shipping and improve Featured Offer eligibility.",
+        "confidence": "High",
+        "source": "if you use fulfillment by Amazon or FBA to fulfill orders your products are automatically eligible for Amazon Prime free two-day shipping",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-mfn",
+        "category": "General",
+        "trigger": "MFN seller with basic shipping",
+        "advice": "As an MFN seller, adjust shipping settings in Seller Central to offer free or faster shipping while meeting standard shipping requirements.",
+        "confidence": "High",
+        "source": "if you fulfill orders directly as an mfn seller you can provide free or faster shipping using settings in Seller Central",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-inv1",
+        "category": "Risk",
+        "trigger": "Out of stock or no inventory on order",
+        "advice": "Maintain sufficient stock and update inventory accurately, especially for fast-selling products, to remain eligible for Featured Offer.",
+        "confidence": "High",
+        "source": "your product can't become the featured offer if it's out of stock and none is on order so keep your inventory up to date and plan accordingly for products that sell quickly",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-odr",
+        "category": "Risk",
+        "trigger": "Order Defect Rate (ODR) >= 1%",
+        "advice": "Maintain ODR under 1% by minimizing negative feedback, A-to-Z claims, and chargebacks to stay eligible for Featured Offer.",
+        "confidence": "High",
+        "source": "require sellers to maintain an odr under one percent in order to sell in the Amazon store",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-lsr",
+        "category": "Risk",
+        "trigger": "Late Shipment Rate (LSR) >= 4%",
+        "advice": "Keep LSR below 4% for directly fulfilled orders to maintain good account health and Featured Offer eligibility.",
+        "confidence": "High",
+        "source": "aim to keep your LSR below four percent",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-cr",
+        "category": "Risk",
+        "trigger": "Cancellation Rate (CR) >= 2.5%",
+        "advice": "Keep pre-fulfillment Cancellation Rate (CR) below 2.5% to support Featured Offer chances.",
+        "confidence": "High",
+        "source": "your CR below two and a half percent",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-vtr",
+        "category": "Risk",
+        "trigger": "Valid Tracking Rate (VTR) <= 95%",
+        "advice": "Achieve VTR above 95% for directly fulfilled orders to ensure eligibility for Featured Offer.",
+        "confidence": "High",
+        "source": "your VTR above 95 percent",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-phd",
+        "category": "Pricing",
+        "trigger": "Offers ineligible or eligible but not featured",
+        "advice": "Use Pricing Health dashboard in Seller Central to identify and edit non-competitive offers for better Featured Offer positioning.",
+        "confidence": "High",
+        "source": "use our pricing Health dashboard to view a list of your offers that aren't competitively priced or that are competitively priced but not featured",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-sc",
+        "category": "Pricing",
+        "trigger": "No sales in last 7 days despite customer reviews",
+        "advice": "Lower standard price plus shipping to at or below the recent lower price to increase sales conversion.",
+        "confidence": "High",
+        "source": "select the sales conversion section of the pricing Health dashboard to view all your offers with customer reviews but no sales in the last seven days to help increase conversion for a product consider lowering your standard price plus shipping so that it's at or below the recent lower price listed",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-ap",
+        "category": "Pricing",
+        "trigger": "Need to respond to Featured Offer changes",
+        "advice": "Use Automate Pricing tool with predefined or customized rules to dynamically match or adjust to Featured Offer prices, setting minimum and optional maximum prices.",
+        "confidence": "High",
+        "source": "automate pricing lets professional sellers set Dynamic pricing rules that automatically adjust their prices in response to changes in the featured offer or other pricing events apply Amazon's predefined rule to products in your inventory to automatically match your standard offer price plus shipping with the current featured offer or create and apply a customized pricing rule that sets your standard offer price plus shipping to match or be above or below either the featured offer or lowest price in the Amazon store each time you use a pricing rule you set a minimum price and have the option to set a maximum price",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fo-ip",
+        "category": "Risk",
+        "trigger": "Low inventory alerts",
+        "advice": "Use Inventory Planning dashboard in Seller Central to monitor and restock products at risk of running out to keep offers Featured Offer eligible.",
+        "confidence": "High",
+        "source": "to help manage low inventory hover over inventory in the main menu in Seller Central then click inventory planning you'll be brought to your inventory dashboard which alerts you to products that may run out of stock soon you can restock to help keep your offers eligible for the featured offer",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-barcode-1",
+        "category": "General",
+        "trigger": "Media products without scannable UPC, EAN, JAN or ISBN",
+        "advice": "Apply Amazon barcodes to ineligible products for tracking inventory",
+        "confidence": "High",
+        "source": "non-brand registered sellers are required to apply Amazon barcodes to ineligible products Amazon barcodes must be applied to products that meet the following conditions they aren't tracked via the manufacturer barcode they're in used condition they don't have a scannable UPC, EAN, JAN or ISBN their media products",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-label-1",
+        "category": "General",
+        "trigger": "Printing Amazon barcode labels yourself",
+        "advice": "Use labels at least 1-2 inches tall and 2-3 inches wide, black ink on non-reflective paper, laser printer at 300 DPI",
+        "confidence": "High",
+        "source": "if you want to print and apply Amazon barcode labels yourself you'll need correctly sized blank mailing labels and a laser printer make sure labels are at least one to two inches tall and two to three inches wide use Black Ink on non-reflective printing paper with adhesive backing for best results use a laser printer and print at 300 DPI",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-set-1",
+        "category": "General",
+        "trigger": "Multiple volume book sets",
+        "advice": "Contain each unit within a single secure package; do not accept units requiring multi-piece assembly",
+        "confidence": "High",
+        "source": "each unit including multiple volume book sets must be contained within a single secure package we don't accept units that require multi-piece assembly",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-series-1",
+        "category": "General",
+        "trigger": "Series of books packaged by manufacturer",
+        "advice": "Treat as case packaged products with matching SKUs, conditions, and equal quantities",
+        "confidence": "High",
+        "source": "case packaged products on the other hand are packaged and shipped in the same box but have matching skus conditions and equal quantities generally applies to products packaged by the manufacturer instead of the seller examples of case packaged sets include a DVD collection or a series of books",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-set-label-1",
+        "category": "General",
+        "trigger": "Products sold as a set like a series of books not officially bundled",
+        "advice": "Package together and add a label stating 'sold as set', 'ready to ship', or 'this is a set do not separate'",
+        "confidence": "High",
+        "source": "products that aren't an official set but sold as such like a set of toy cars sold as one unit need to be packaged together and marked as a set on the outside of the packaging add a label to the unit that clearly states that the products are to be received and sold as a single unit recommended phrases to use on these labels include sold as set ready to ship or this is a set do not separate",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-prep-1",
+        "category": "Risk",
+        "trigger": "Preparing inventory for shipment to fulfillment centers",
+        "advice": "Ensure products are free of dust, dirt, and damage to avoid issues during unpacking and shelving",
+        "confidence": "High",
+        "source": "when preparing your products make sure they're free of dust dirt and damage",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-barcode-cover-1",
+        "category": "General",
+        "trigger": "Products requiring extra packaging or with original barcodes",
+        "advice": "Cover any original barcodes like UPCs, EANs, or ISBNs; place labels on the outside for easy scanning",
+        "confidence": "High",
+        "source": "if your product doesn't need extra packaging cover any original barcodes like upcs eans or isbns if your product requires extra packaging such as bubble wrap or other protection add labels on the outside so they're easily scannable at fulfillment centers",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "book-sku-1",
+        "category": "General",
+        "trigger": "Using FNSKUs for book variations",
+        "advice": "Ensure each variation type such as size or color has a different unique FNSKU corresponding to one unique product",
+        "confidence": "High",
+        "source": "any thin SKU you use needs to be unique and correspond to one unique product for example each variation type such as size or color must have a different fin skew",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-seasonal-1",
+        "category": "Seasonality",
+        "trigger": "Seasonal spikes in demand",
+        "advice": "Use MCF with Amazon's scalable storage and fulfillment to manage increased demand without raising fixed costs",
+        "confidence": "High",
+        "source": "you can use Amazon's fulfillment operations and scalable storage capacity to manage seasonal spikes in demand for your products",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-general-1",
+        "category": "General",
+        "trigger": "Multiple online sales channels",
+        "advice": "Leverage MCF to fulfill orders from any channel using a single Amazon inventory source while maintaining control over sales and inventory",
+        "confidence": "High",
+        "source": "with mcf businesses of any size using any online sales channels can take advantage of Amazon's product storage and Order fulfillment it allows you to maintain control over your sales and inventory while letting Amazon fulfill your online orders from a single inventory source",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-setup-1",
+        "category": "General",
+        "trigger": "Existing Amazon selling account",
+        "advice": "Send inventory to Amazon fulfillment centers without separate enrollment to enable MCF",
+        "confidence": "High",
+        "source": "there's no separate enrollment process for mcf if you have an Amazon selling account all you'll need to do is send your inventory to Amazon's fulfillment centers",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-order-1",
+        "category": "General",
+        "trigger": "Need to create multiple fulfillment orders",
+        "advice": "Use bulk spreadsheet upload or automatic integrations/APIs for efficient order creation instead of one at a time",
+        "confidence": "High",
+        "source": "you can create orders one at a time second you can upload a spreadsheet to create orders in bulk third you can create an automatic order through pre-built Integrations or apis",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-delivery-1",
+        "category": "General",
+        "trigger": "Customer order placement",
+        "advice": "Expect 1-2 day delivery after shipment from fulfillment center with real-time tracking for MCF orders",
+        "confidence": "High",
+        "source": "your customers can receive their mcf orders as quickly as one to two days after shipment from a fulfillment center and track those orders in real time",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-pricing-1",
+        "category": "Pricing",
+        "trigger": "MCF inventory storage",
+        "advice": "Account for storage fees varying by product size tier, monthly volume, average daily units, and dangerous goods status; review rate card PDF for details",
+        "confidence": "High",
+        "source": "storage costs vary depending on product size tier current month product volume average daily units and dangerous goods classification status to review mcf pricing and get a description of these storage fee categories visit sellercentral.amazon.com mcf and select download the rate card PDF",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mcf-risk-1",
+        "category": "Risk",
+        "trigger": "MCF order returns or issues",
+        "advice": "Handle all customer service including delivery inquiries, replacements, refunds, and returns yourself, while Amazon processes returns to fulfillment centers",
+        "confidence": "High",
+        "source": "as with other Amazon orders items can be returned to an Amazon fulfillment center for processing sellers are responsible however for providing customer service for these orders including addressing delivery inquiries and managing requests for Replacements refunds and returns",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "handling-time-default",
+        "category": "General",
+        "trigger": "Can prepare and ship orders within 1 business day or same day",
+        "advice": "Set default handling time to 1 day or same-day (ship by end of business day or same day before 2 p.m. cutoff) to shorten Customer Delivery Promise and increase chances of winning Featured Offer",
+        "confidence": "High",
+        "source": "If you can prepare orders quickly, shortening your handling time will make your offers more appealing to customers. If you ship your orders out on the Same-day that you receive them, you may want to switch to same-day default handling time.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "handling-time-change-limit",
+        "category": "General",
+        "trigger": "Adjusting default handling time",
+        "advice": "Can only change default handling time once every 24 hours; it may take up to 30 minutes to reflect in delivery promise",
+        "confidence": "High",
+        "source": "Because setting a new default handling time means adjusting the Customer Delivery Promise for all of your ASINs, you can only change your handling time once every 24 hours. It may take up to 30 minutes for the new handling time to be reflected in your delivery promise.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "order-capacity-spikes",
+        "category": "Risk",
+        "trigger": "Expected or unexpected order spikes (e.g., holidays, brand popularity)",
+        "advice": "Set order handling capacity to limit orders fulfillable within default time (e.g., 100 orders); excess orders automatically get +1 day handling and count toward next day's capacity to protect Account Health",
+        "confidence": "High",
+        "source": "You may be worried that setting a short handling time could cause a problem if you receive a sudden spike in orders. Sometimes you can see spikes coming, like around the holiday season. Order handling capacity sets a limit on the number of orders you can fulfill within your default handling time. So, if your order capacity is 100 orders and you get 120, the extra 20 are put toward the next day\u2019s order capacity.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "handling-capacity-scope",
+        "category": "General",
+        "trigger": "Non-Prime orders with handling times of 0-2 days",
+        "advice": "Order handling capacity only applies to non-Prime orders with 0-2 day handling; ASINs with >2 days are exempt",
+        "confidence": "High",
+        "source": "Note that order handling capacity only affects non-Prime orders with handling times between zero and two days. If you\u2019ve set a handling time greater than two days for a specific ASIN, orders for that ASIN won\u2019t count toward your handling capacity.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "weekend-operations",
+        "category": "General",
+        "trigger": "Able to ship on weekends",
+        "advice": "Enable weekend operations to count Saturdays/Sundays as business days in handling time, making delivery promises shorter (e.g., Friday order ships Tuesday instead of Wednesday)",
+        "confidence": "High",
+        "source": "If you\u2019re able to ship products on the weekend, however, you can make your listings more appealing to customers by enabling weekend operations. In addition, Saturday and Sunday won't count toward your handling time for a product purchased on Friday\u2014which you'll be expected to ship on Tuesday.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "asin-specific-handling",
+        "category": "General",
+        "trigger": "ASIN requires more or less time than default (e.g., delicate product needs special prep)",
+        "advice": "Set ASIN-specific handling time (e.g., 2 days) via Manage Inventory page or bulk upload to provide accurate delivery promises without affecting default for other items",
+        "confidence": "High",
+        "source": "Setting ASIN-specific handling times can be the solution. If you have a product that you can ship out faster than your default time or one that needs more time than normal, you can use an ASIN-specific handling time to give customers more accurate delivery promises. As an example, if you\u2019ve set a same-day default handling time, but one particularly delicate product needs special prep before it gets shipped out, you could set that ASIN to a two-day handling time.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "overestimation-study",
+        "category": "Risk",
+        "trigger": "Default handling time set to 1-2 days",
+        "advice": "Avoid overestimating handling time (US merchants overestimate by 53% on average); use shortest accurate time to avoid longer delivery promises and missed sales opportunities",
+        "confidence": "High",
+        "source": "A 2019 study found that merchant fulfilled sellers in the US overestimate domestic handling times by an average of 53%. That means that their Customer Delivery Promises are longer than they need to be, which makes for missed opportunities.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "seasonal-spikes",
+        "category": "Seasonality",
+        "trigger": "Around holiday season or sudden popularity",
+        "advice": "Prepare for order spikes by setting handling capacity instead of extending default time to maintain short delivery promises",
+        "confidence": "High",
+        "source": "Sometimes you can see spikes coming, like around the holiday season. Other spikes may be unexpected, like if your brand suddenly becomes popular or a customer places a large order. Keeping the Customer Delivery Promise is important, but you don\u2019t need to extend your default handling time to accommodate potential spikes in ordering. Instead, you can set your order handling capacity.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-new-selection-enroll",
+        "category": "General",
+        "trigger": "New to FBA",
+        "advice": "Enroll in the FBA New Selection Program to receive free monthly storage, removals, and return processing for eligible new-to-FBA parent ASINs, up to $200 for sponsored ads, and a $100 discount on Amazon Partnered Carrier shipping.",
+        "confidence": "High",
+        "source": "Benefits of the FBA New Selection Program include: free monthly storage, removals, and return processing for all eligible new-to-FBA parent ASINs. Sellers new to FBA can also get up to $200 for sponsored ads and a $100 discount on Amazon Partnered Carrier shipping.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-registration",
+        "category": "General",
+        "trigger": "Not yet registered for FBA",
+        "advice": "Sign in to Seller Central, go to Account Info > Your Services > Manage, select Fulfillment by Amazon under 'You can sign up for', and click Register.",
+        "confidence": "High",
+        "source": "To register for FBA, sign in to Seller Central. Hover over the settings icon and select \u2018Account Info.\u2019 From here, locate \u2018Your Services\u2019 and click \u2018Manage.\u2019 Under \u2018You can sign up for\u2019, select \u2018Fulfillment by Amazon\u2019 and click \u2018Register.\u2019",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "convert-to-fba",
+        "category": "General",
+        "trigger": "Existing listings not using FBA",
+        "advice": "Open main menu in Seller Central, hover over Inventory > FBA Inventory, go to Shipments > Send to Amazon to access and convert listings to FBA using the workflow: Choose inventory, Pack individual units, Confirm shipping, Print box labels, Confirm carrier and pallet information, Print pallet labels.",
+        "confidence": "High",
+        "source": "Now it\u2019s time to convert your existing listings to FBA. To get started open the main menu in Seller Central, hover over \u2018Inventory,\u2019 then click \u2018FBA Inventory.\u2019 Go to the top menu, hover over \u2018Shipments\u2019 and click \u2018Send to Amazon.\u2019 Now, you can access these listings on the Send to Amazon page. On the Send to Amazon page, follow the steps in the workflow. The Send to Amazon workflow is broken down into the following steps: Step 1: Choose inventory to send, Step 1b: Pack individual units, Step 2: Confirm shipping, Step 3: Print box labels, Step 4: Confirm carrier and pallet information, And Step 5: Print pallet labels.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "track-shipments",
+        "category": "General",
+        "trigger": "Shipment sent to fulfillment center",
+        "advice": "Track progress on the Shipping Queue page by clicking Manage shipments under Shipments.",
+        "confidence": "High",
+        "source": "After your shipment is on its way to the fulfillment center, you can track its progress on the Shipping Queue page by clicking \u2018Manage shipments\u2019 under \u2018Shipments.\u2019",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "ns1",
+        "category": "General",
+        "trigger": "Less than 90 days since first product listing",
+        "advice": "Access and enroll in the New Seller Guide on Seller Central homepage to utilize six programs for maximizing first-year sales",
+        "confidence": "High",
+        "source": "If it is been less than 90 days since you listed your first product, you'll see the New Seller Guide on the Seller Central homepage. In it, you\u2019ll find six programs that help sellers generate more first-year sales, according to Amazon data scientists.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "ns2",
+        "category": "Pricing",
+        "trigger": "Need to maintain competitive pricing",
+        "advice": "Enroll in Automate Pricing, select listings, set price limits and rules to enable automatic price adjustments for competitiveness and Featured Offer eligibility",
+        "confidence": "High",
+        "source": "Automate Pricing, a tool that allows you to adjust prices instantly, helps keep your prices competitive with other sellers. This tool can also help your products become the Featured Offer. Automate Pricing is easy to set up. You can select the listings you want to include and set price limits. Then, based on the rules you set, Amazon will adjust your prices to stay competitive.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "ns3",
+        "category": "General",
+        "trigger": "Outsourcing order fulfillment required",
+        "advice": "Use FBA to send products to fulfillment centers for Amazon to handle picking, packing, shipping, customer service, and returns; enables Prime eligibility and free shipping to boost sales and reviews",
+        "confidence": "High",
+        "source": "FBA allows you to outsource order fulfillment to Amazon. You'll send your products to fulfillment centers, then we'll pick, pack, and ship orders for you. We can also provide customer service and process returns. Using FBA helps you provide a high-quality shipping experience for your customers. which can encourage positive reviews and increase sales. FBA products also become eligible for free shipping and Amazon Prime one and two-day delivery.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "ns4",
+        "category": "General",
+        "trigger": "Increasing product visibility needed",
+        "advice": "Utilize Amazon advertising tools like Sponsored Products, Sponsored Brands, Deals, or Coupons to appear in search results, product pages, and engage customers",
+        "confidence": "High",
+        "source": "Amazon offers a variety of advertising tools that can help increase your products\u2019 visibility and as a result, your sales. Sponsored ads, such as Sponsored Products or Sponsored Brands campaigns, appear in search results and on product detail pages. You can also run Deals or offer Coupons to engage more customers.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "ns5",
+        "category": "General",
+        "trigger": "First 90 days of selling",
+        "advice": "Enroll in available programs including Automate Pricing, FBA, and Advertising via Seller Central dashboard to maximize first-year sales",
+        "confidence": "High",
+        "source": "We encourage you to utilize these programs in your first 90 days to help maximize your first-year sales in the Amazon store.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-001",
+        "category": "General",
+        "trigger": "After setting up business and adding products to catalog",
+        "advice": "Access the Growth Opportunities tool via Seller Central under Growth menu to identify personalized recommendations for improving ASIN performance",
+        "confidence": "High",
+        "source": "after setting up your business and adding products to your catalog it can be challenging to know which Amazon tools to leverage to help grow your business the growth opportunities tool is geared to help you identify",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-002",
+        "category": "General",
+        "trigger": "Recommendations ranked by estimated effect and relevance",
+        "advice": "Prioritize top 50 opportunities ranked under the rank column, focusing on categories like improve sales, reduce cost, and drive traffic",
+        "confidence": "High",
+        "source": "we rank your recommendations for you by evaluating the estimated effect and relevance to your products the ranking order is personalized to each seller you can find all recommendations ranked under the rank column browse your top 50 opportunities",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-003",
+        "category": "General",
+        "trigger": "ASIN has high value (HV) badge",
+        "advice": "Prioritize ASINs with HV badge for improvement actions to maximize impact on sales or traffic",
+        "confidence": "High",
+        "source": "asens with a high value or HV badge can help you prioritize which asens to improve hover over the badge to learn more",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-004",
+        "category": "General",
+        "trigger": "Opportunity under drive traffic category",
+        "advice": "Click create sponsored products ad recommendation to get suggested keywords and launch campaign in ads console",
+        "confidence": "High",
+        "source": "for example when you click create sponsor products ad under drive traffic recommendations we'll suggest keywords to use when creating your campaign click review and launch in ads console to take action",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-005",
+        "category": "Risk",
+        "trigger": "Unwanted recommendation",
+        "advice": "Select snooze to hide an opportunity for one month to make room for more relevant ones",
+        "confidence": "High",
+        "source": "but also select snooze to hide an opportunity for one month making room for another",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-006",
+        "category": "General",
+        "trigger": "Daily updates to opportunities",
+        "advice": "Check back daily to top 50 opportunities as they are updated to act on the most relevant for business growth",
+        "confidence": "High",
+        "source": "your top 50 opportunities are updated daily check back as often as you'd like to locate and act on the ones that matter most to your business",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "go-007",
+        "category": "General",
+        "trigger": "Evaluating impact metric",
+        "advice": "Use impact metric showing potential sales lift from 90 days prior based on your sales and similar products to prioritize actions",
+        "confidence": "High",
+        "source": "one of these metrics is impact which represents the potential sales lift you could have earned if you'd taken the recommended action on that as 90 days prior to inform this estimate we use your sales performance for the As and any actual sales lifts experienced by sellers selling similar products",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "low-inventory-fee-trigger",
+        "category": "Risk",
+        "trigger": "Long-term (90 days) and short-term (30 days) historical days of supply both below 28 days for standard-sized products",
+        "advice": "Monitor and maintain average daily inventory units divided by average daily shipped units to ensure days of supply >=28 days to avoid low-inventory-level fee charged at fulfillment",
+        "confidence": "High",
+        "source": "It\u2019s based on a historical days of supply metric, which we calculate based on your average daily inventory units divided by your average daily shipped units. The fee will apply when your long-term historical days of supply (the last 90 days) and short-term historical days of supply (the last 30 days) are both below 28 days.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "mil-monitoring",
+        "category": "General",
+        "trigger": "On-hand inventory drops below Minimum Inventory Level (MIL)",
+        "advice": "Check MIL weekly on FBA Inventory page and ensure next inbound shipment arrives before inventory falls below MIL to meet demand and reduce risk of low-inventory-level fee",
+        "confidence": "High",
+        "source": "Your MIL is the recommended number of units you should keep in stock for each of your FBA products. It\u2019s based on our forecast of customer demand... We recommend you ensure your next inbound shipment reaches Amazon fulfillment centers before your on-hand inventory drops below your MIL.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "long-term-storage-avoidance",
+        "category": "Risk",
+        "trigger": "Inventory in fulfillment center for more than 180 days",
+        "advice": "Use Recommended Removal report to identify and remove items up to 30 days before long-term storage fee charge date to avoid fees in the US",
+        "confidence": "High",
+        "source": "For example, any inventory that\u2019s been in a fulfillment center for more than 180 days will be subject to long-term storage fees in the US. You can use the \u2018Recommended Removal\u2019 report to determine which items are subject to these fees up to 30 days before each charge date.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "revenue-calculator-use",
+        "category": "Pricing",
+        "trigger": "Estimating fees for new or existing products before adding to inventory",
+        "advice": "Use Revenue Calculator to input ASIN/SKU, adjust sales price, shipping, and costs to compare FBA vs. seller-fulfilled profits and margins, including inbound placement fees based on shipment split and region",
+        "confidence": "High",
+        "source": "The \u2018Revenue calculator\u2019, allows you to estimate and compare fees, profits, and margins for a product by fulfillment method... You can also review and adjust estimated FBA fees, selecting additional services and entering an average cost for shipping a unit to Amazon... Directly below those fields, you can estimate inbound placement service fees for your FBA shipments.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fee-preview-bulk",
+        "category": "General",
+        "trigger": "Need to estimate fees for multiple products or upcoming changes",
+        "advice": "Download Fee Preview report from Reports > Fulfillment > Payments to get CSV/TXT with fee totals, core selling, and FBA fees for current inventory over a date range, useful for comparing across products",
+        "confidence": "High",
+        "source": "The \u2018Fee Preview\u2019 report allows you to estimate core selling and FBA fees for your current FBA inventory. You can also use it to estimate upcoming fee changes... After opening the file, you\u2019ll see a row for each product... And the last set contains estimated fee information, including a fee total and core selling and FBA fees.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "risk-low-inventory-fee",
+        "category": "Risk",
+        "trigger": "Historical days of supply (last 90 days and last 30 days) both below 28 days",
+        "advice": "Maintain inventory levels above the Minimum Inventory Level (MIL) to avoid the low-inventory-level fee charged at fulfillment for standard-sized products like books",
+        "confidence": "High",
+        "source": "It\u2019s based on a historical days of supply metric, which we calculate based on your average daily inventory units divided by your average daily shipped units. The fee will apply when your long-term historical days of supply (the last 90 days) and short-term historical days of supply (the last 30 days) are both below 28 days.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "general-mil-monitoring",
+        "category": "General",
+        "trigger": "On-hand inventory drops below Minimum Inventory Level (MIL)",
+        "advice": "Check the FBA Inventory page weekly for updated MIL recommendations and ensure next inbound shipment arrives before inventory falls below MIL to meet demand and reduce fee risks",
+        "confidence": "High",
+        "source": "Your MIL is the recommended number of units you should keep in stock for each of your FBA products. It\u2019s based on our forecast of customer demand... We recommend you ensure your next inbound shipment reaches Amazon fulfillment centers before your on-hand inventory drops below your MIL.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "risk-long-term-storage",
+        "category": "Risk",
+        "trigger": "Inventory in fulfillment center for more than 180 days",
+        "advice": "Use the Recommended Removal report to identify and remove items up to 30 days before charge dates to avoid long-term storage fees",
+        "confidence": "High",
+        "source": "For example, any inventory that\u2019s been in a fulfillment center for more than 180 days will be subject to long-term storage fees in the US. You can use the \u2018Recommended Removal\u2019 report to determine which items are subject to these fees up to 30 days before each charge date.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "buying-revenue-calculator",
+        "category": "Buying",
+        "trigger": "Evaluating a potential book product not yet in inventory",
+        "advice": "Use the Revenue Calculator in Seller Central to search by ASIN or product name, input costs including cost of goods sold and inbound shipping, and estimate fees, profits, and margins to decide on purchase viability",
+        "confidence": "High",
+        "source": "The \u2018Revenue calculator\u2019, allows you to estimate and compare fees, profits, and margins for a product by fulfillment method... This is useful for items that aren't yet part of your inventory. You\u2019ll then search for the product in the Amazon catalog using an ASIN, SKU, product ID, or product name... We include a separate field for cost of goods sold.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "pricing-revenue-adjust",
+        "category": "Pricing",
+        "trigger": "Assessing profitability for a book listing",
+        "advice": "In the Revenue Calculator, adjust sales price, shipping charges, and fulfillment costs individually for FBA vs. seller-fulfilled to compare margins and select optimal pricing strategy",
+        "confidence": "High",
+        "source": "You can adjust the sales price for each method individually and the shipping charge for a seller-fulfilled estimate... As you adjust items in the \u2018Revenue calculator\u2019, use the updated amounts at the bottom to understand their impact on your estimated fees, profits, and margins.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "general-fee-preview-bulk",
+        "category": "General",
+        "trigger": "Planning shipments with multiple books",
+        "advice": "Download the Fee Preview report from Reports > Fulfillment > Payments to estimate core selling and FBA fees for multiple products in bulk, including upcoming changes, to monitor and compare across inventory",
+        "confidence": "High",
+        "source": "The \u2018Fee Preview\u2019 report allows you to estimate core selling and FBA fees for your current FBA inventory. You can also use it to estimate upcoming fee changes... When estimating fees for a typical shipment containing multiple products, you can use the \u2018Estimate in Bulk\u2019 feature in the \u2018Revenue calculator\u2019.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-title-1",
+        "category": "General",
+        "trigger": "Product titles exceeding 200 characters including spaces",
+        "advice": "Ensure product titles do not exceed 200 characters, including spaces, to avoid suppression from Amazon search results",
+        "confidence": "High",
+        "source": "Titles must: Not exceed 200 characters, including spaces;",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-title-2",
+        "category": "General",
+        "trigger": "Product titles containing promotional phrases",
+        "advice": "Avoid promotional phrases like 'Free shipping' or '100% quality guaranteed' in titles to comply with requirements",
+        "confidence": "High",
+        "source": "Not contain promotional phrases, such as \"Free shipping\" or \"100% quality guaranteed\";",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-title-3",
+        "category": "General",
+        "trigger": "Product titles with decorative characters",
+        "advice": "Do not use characters for decoration in product titles to ensure compliance",
+        "confidence": "High",
+        "source": "Not contain characters for decoration;",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-title-4",
+        "category": "General",
+        "trigger": "Product titles lacking key identifying information",
+        "advice": "Include key product-identifying information such as 'hiking boots' or 'umbrella' in titles for accurate promotion",
+        "confidence": "High",
+        "source": "and contain key product-identifying information, such as \"hiking boots\" or \"umbrella\".",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-condition-1",
+        "category": "Risk",
+        "trigger": "Inventory listed as new with scratches, wear, or damage",
+        "advice": "Ensure items arrive in brand-new, unused condition for 'new' listings; they will be inspected and marked unsellable if damaged",
+        "confidence": "High",
+        "source": "In order for inventory to be sold as new in the Amazon store, it must arrive at the fulfillment center in brand-new, unused condition. Items listed as new will be inspected and marked as unsellable if there are scratches, wear, or other damage beyond what\u2019s considered acceptable for a new item.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-condition-2",
+        "category": "Risk",
+        "trigger": "Used items that are defective, unusable, mislabeled, or missing parts",
+        "advice": "For used listings, ensure items are not defective, unusable, mislabeled, or missing parts to avoid being marked unsellable",
+        "confidence": "High",
+        "source": "If your item is listed as used, it\u2019ll be marked as unsellable only if it\u2019s defective, unusable, mislabeled, or missing parts.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-packaging-1",
+        "category": "General",
+        "trigger": "Incorrect packaging and prep",
+        "advice": "Follow product-specific packaging and prep requirements to avoid preparation fees, refusal, return, or repackaging at your expense",
+        "confidence": "High",
+        "source": "Inventory that\u2019s incorrectly prepped and labeled may incur a preparation fee. Amazon may also refuse, return or repackage your inventory at your expense.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-packaging-2",
+        "category": "General",
+        "trigger": "Boxes not rigid, suitably sized, or with intact flaps",
+        "advice": "Use a rigid, suitably sized, six-sided box with intact flaps, filled with enough packing material to prevent collapse when stacked",
+        "confidence": "High",
+        "source": "It\u2019s important that you use a rigid, suitably sized, six-sided box with its flaps intact. The box must be filled with enough packing material so that it doesn\u2019t collapse when heavier boxes are stacked on top of it.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-packaging-3",
+        "category": "General",
+        "trigger": "Boxes exceeding weight requirements or incorrect values",
+        "advice": "Ensure all cartons meet weight requirements and correct values provided for every shipment",
+        "confidence": "High",
+        "source": "All cartons must meet the weight requirement and correct values provided for every shipment.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-packaging-4",
+        "category": "General",
+        "trigger": "Boxes containing multiple standard-size or oversized items exceeding 25 inches",
+        "advice": "Boxes with multiple standard-size or oversized items must not exceed 25 inches on any side",
+        "confidence": "High",
+        "source": "And boxes containing multiple standard-size items or oversized items must not exceed 25 inches on any side.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-barcode-1",
+        "category": "General",
+        "trigger": "Products without manufacturer barcode like UPC, EAN, JAN, or ISBN",
+        "advice": "Apply Amazon barcode labels (FNSKU) yourself or outsource to Amazon for a per-item fee if no manufacturer barcode exists",
+        "confidence": "High",
+        "source": "If your product doesn\u2019t have a manufacturer barcode, you can either print Amazon barcode labels and apply them yourself, or outsource label printing to Amazon for a per-item fee.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-barcode-2",
+        "category": "General",
+        "trigger": "Media products ineligible for virtual tracking with manufacturer barcode",
+        "advice": "Use Amazon barcode (FNSKU) for media products, restricted items, consumables, or products with expiration dates",
+        "confidence": "High",
+        "source": "A product might be ineligible for virtual tracking if it\u2019s restricted, a media product, a consumable product, or a product with an expiration date.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-shipping-label-1",
+        "category": "General",
+        "trigger": "Missing shipping labels or FBA box ID labels",
+        "advice": "Apply only a shipping label and an FBA box ID label on the outside of each box for safe and quick arrival",
+        "confidence": "High",
+        "source": "When shipping your products to fulfillment centers, you need only two labels: a shipping label and an FBA box ID label on the outside of your box.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-shipping-label-2",
+        "category": "Risk",
+        "trigger": "Incorrect or unreadable labels on boxes",
+        "advice": "Ensure all labels are scannable and readable, with correct SKU and unit counts matching box content information to avoid delays",
+        "confidence": "High",
+        "source": "Ensure all labels are scannable and readable. Also, to avoid delays, make sure to put the correct label on the correct box. Verify that the SKU and number of units in each box match the SKU and number of units in the box content information you provide.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-shipping-1",
+        "category": "Risk",
+        "trigger": "Shipments without advanced dock appointment",
+        "advice": "Require carriers to make an advanced dock appointment for all shipments to prevent refusal",
+        "confidence": "High",
+        "source": "Additionally, all shipments require an advanced dock appointment made by your carrier. Without a dock appointment, your shipment will be refused.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-capacity-1",
+        "category": "General",
+        "trigger": "Individual sellers reaching 15 cubic feet capacity limit",
+        "advice": "Monitor fixed capacity limit of 15 cubic feet for individual sellers; professional sellers may have varying limits based on IPI score",
+        "confidence": "High",
+        "source": "Individual sellers have a fixed capacity limit of 15 cubic feet.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-capacity-2",
+        "category": "General",
+        "trigger": "Exceeding FBA capacity limits for storage types",
+        "advice": "Cannot create new shipments if exceeding limits; reduce inventory by selling, returning, or disposing to free up space",
+        "confidence": "High",
+        "source": "Note that, if you exceed your FBA capacity limit, you won\u2019t be able to create a new shipment until your inventory level drops below your limit for that storage type. You can reduce your inventory by selling more of it, having it returned to you, or disposing of it via a removal order.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-inventory-1",
+        "category": "General",
+        "trigger": "SKUs in Out of stock, Low stock, or Excess categories",
+        "advice": "Aim to maintain 'Healthy' inventory levels for each SKU to meet demand and offer faster delivery; view levels in FBA Inventory dashboard",
+        "confidence": "High",
+        "source": "We assign each SKU to one of four inventory-level categories. These categories are; Out of stock, Low stock, Excess, and Healthy. Maintaining \u2018Healthy\u2019 inventory levels helps us meet customer demand and offer faster delivery speeds.",
+        "date_added": "2026-02-17"
+    },
+    {
+        "id": "fba-box-content-1",
+        "category": "Risk",
+        "trigger": "Missing box content information",
+        "advice": "Provide box content information via packing template during shipment creation to speed receipt and avoid manual processing fees or shipment prevention",
+        "confidence": "High",
+        "source": "Without the proper box content information, an FBA manual processing fee and future shipment prevention may incur. For Send to Amazon, provide box content information by creating a packing template.",
+        "date_added": "2026-02-17"
     }
 ]
