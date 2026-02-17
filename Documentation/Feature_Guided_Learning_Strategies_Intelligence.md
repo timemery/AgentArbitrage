@@ -96,3 +96,19 @@ Over time, the agent's knowledge base (`intelligence.json` and `strategies.json`
     *   **Prompt:** Instructions to "Merge identical concepts, preserve unique nuances, and delete exact duplicates."
 3.  **Persistence:** The merged results are written back to the JSON files.
 4.  **Status Tracking:** Progress is tracked in Redis (`homogenization_status` key). The frontend polls `/api/homogenize/status` to show a progress bar.
+
+---
+
+## 5. Deduplication API
+
+The system provides endpoints to programmatically remove duplicate entries from the knowledge base files. This uses content hashing (or exact string matching for Intelligence) to identify and remove redundancies.
+
+**Endpoints:**
+*   `/api/remove-duplicates/strategies` (POST): Deduplicates `strategies.json`.
+*   `/api/remove-duplicates/intelligence` (POST): Deduplicates `intelligence.json`.
+*   `/api/remove-duplicates/all` (POST): Runs both.
+
+**Logic:**
+*   **Strategies:** Identifies duplicates based on a composite key of `category | trigger | advice`. ID and Date Added are ignored for comparison.
+*   **Intelligence:** Identifies duplicates based on exact string matching of the content.
+*   **Response:** JSON object with `status`, `removed_count`, and `message`.
