@@ -16,6 +16,7 @@ import time
 import scipy.stats as st
 from .xai_token_manager import XaiTokenManager
 from .xai_cache import XaiCache
+from .xai_sales_inference import infer_sales_with_xai
 
 # Initialize cache and token manager at the module level
 xai_cache = XaiCache()
@@ -232,6 +233,16 @@ def infer_sale_events(product):
 
         if not all_offer_drops_list:
             logger.info(f"ASIN {asin}: No instances of any offer count decreasing were found.")
+
+            # --- XAI Rescue Attempt (Hidden Sales / Stock Depth) ---
+            try:
+                xai_sales = infer_sales_with_xai(product)
+                if xai_sales:
+                    logger.info(f"ASIN {asin}: XAI rescued {len(xai_sales)} sale events (Hidden Sales)!")
+                    return xai_sales, 0
+            except Exception as e:
+                logger.error(f"ASIN {asin}: Error during XAI rescue attempt: {e}")
+
             return [], 0
 
         offer_drops = pd.concat(all_offer_drops_list).sort_values('timestamp').reset_index(drop=True)
@@ -300,6 +311,17 @@ def infer_sale_events(product):
         
         if not confirmed_sales:
             logger.info(f"ASIN {asin}: Found 0 confirmed sale events out of {total_offer_drops_count} offer drops.")
+
+            # --- XAI Rescue Attempt ---
+            # Try to infer sales using XAI if algorithmic approach failed completely
+            try:
+                xai_sales = infer_sales_with_xai(product)
+                if xai_sales:
+                    logger.info(f"ASIN {asin}: XAI rescued {len(xai_sales)} sale events!")
+                    return xai_sales, total_offer_drops_count
+            except Exception as e:
+                logger.error(f"ASIN {asin}: Error during XAI rescue attempt: {e}")
+
             return [], total_offer_drops_count
 
         # --- Symmetrical Outlier Rejection ---
