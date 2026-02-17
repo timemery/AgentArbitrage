@@ -129,7 +129,9 @@ def check_peek_viability(stats):
 
     # Threshold: 4 drops/year (~1 per quarter).
     # Anything less is too slow/risky to waste 20 tokens on heavy analysis.
-    if drops365 != -1 and drops365 < 4:
+    # UPDATE (Feb 2026): Reduced to 1 drop/year to allow "Silver Standard" fallback candidates (1-3 sales)
+    # to pass through. 0 drops is still rejected as "Dead Inventory".
+    if drops365 != -1 and drops365 < 1:
         return False
 
     # Also check 90 days for fresher deadness, though seasonal items might have 0 drops in 90d.
