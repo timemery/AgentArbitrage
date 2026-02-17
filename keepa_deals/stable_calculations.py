@@ -387,7 +387,9 @@ def analyze_sales_performance(product, sale_events):
     asin = product.get('asin', 'N/A')
     xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
 
-    MIN_SALES_FOR_ANALYSIS = 1
+    # Increased from 1 to 3 to force "fragile" deals (1-2 sales) into the safer Fallback path.
+    # Fallback uses avg365 (Silver Standard) and SKIPS the XAI check, preventing false negatives.
+    MIN_SALES_FOR_ANALYSIS = 3
 
     # Initialize variables with defaults
     peak_price_mode_cents = -1
