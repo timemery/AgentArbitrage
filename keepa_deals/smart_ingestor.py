@@ -359,8 +359,10 @@ def run():
         current_batch_size = SCAN_BATCH_SIZE
         # Dynamic Batch Sizing: Reduce batch size for slow connections to avoid "Deficit Lockout".
         if token_manager.REFILL_RATE_PER_MINUTE < 10:
-            current_batch_size = 5
-            logger.info(f"Critically Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to match Burst Threshold (40).")
+            # Increased from 5 to 15 to improve throughput.
+            # With Peek cost corrected to 2, 15 items cost 30 tokens, fitting safely within the 40 token Burst.
+            current_batch_size = 15
+            logger.info(f"Critically Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} (Cost ~30 tokens).")
         elif token_manager.REFILL_RATE_PER_MINUTE < 20:
             current_batch_size = 20
             logger.info(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to prevent Deficit Lockout.")
@@ -384,9 +386,10 @@ def run():
             # --- STAGE 1: PEEK (For New/Zombie Deals) ---
             new_candidates = []
             if chunk_new_asins:
-                # Estimate: 5 tokens/ASIN (since offers=0 is invalid/unsupported, we use offers=20).
-                # Verification confirmed cost is ~5 tokens/ASIN. Batch 50 = 250 tokens (Safe within burst).
-                token_manager.request_permission_for_call(5 * len(chunk_new_asins))
+                # Estimate: Reduced from 5 to 2 tokens/ASIN.
+                # fetch_current_stats_batch uses history=0, which is cheap (1 token + offers cost).
+                # Reserving 5 was overly pessimistic and caused premature stalling.
+                token_manager.request_permission_for_call(2 * len(chunk_new_asins))
                 # Use stats=365 for Peek. Explicit offers=20.
                 peek_resp, _, _, tokens_left = fetch_current_stats_batch(api_key, chunk_new_asins, days=365, offers=20)
                 if tokens_left: token_manager.update_after_call(tokens_left)
