@@ -82,13 +82,22 @@ def run_diagnostic():
         cursor.execute("SELECT COUNT(*) FROM deals")
         raw_db_count = cursor.fetchone()[0]
 
-        # Filtered Count (Dashboard Logic: Margin >= 0)
-        # Note: We check if Margin column exists first to be safe, though it should.
+        # Filtered Count (Strict Dashboard Logic)
+        # Matches wsgi_handler.py api_deals logic to ensure consistency.
         try:
-            cursor.execute("SELECT COUNT(*) FROM deals WHERE Margin >= 0")
+            query = """
+                SELECT COUNT(*) FROM deals
+                WHERE "Profit" > 0
+                  AND "List_at" IS NOT NULL
+                  AND "List_at" > 0
+                  AND "1yr_Avg" IS NOT NULL
+                  AND "1yr_Avg" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')
+                  AND "1yr_Avg" != 0
+            """
+            cursor.execute(query)
             dashboard_visible_count = cursor.fetchone()[0]
         except sqlite3.OperationalError:
-            # Fallback if Margin column is missing (old DB schema)
+            # Fallback if columns are missing
             dashboard_visible_count = 0
 
         conn.close()
@@ -119,7 +128,7 @@ def run_diagnostic():
 
     print(f"Total Processed:       {total_processed}")
     print(f"Successfully Saved:    {raw_db_count}")
-    print(f"Dashboard Visible:     {dashboard_visible_count}  <-- (Margin >= 0%)")
+    print(f"Dashboard Visible:     {dashboard_visible_count}  <-- (Strict: Profit > 0, Data Complete)")
     print(f"Total Rejected:        {rejected_count}")
     print(f"Rejection Rate:        {rejection_rate:.2f}%")
     print("")
@@ -153,27 +162,28 @@ def run_diagnostic():
         print("--- DATA INTEGRITY VERIFICATION ---")
         os.environ["DATABASE_URL"] = db_path
 
-        # Verify Raw Count
-        with app.test_request_context('/api/deal-count'):
+        # Verify Raw Count (via /api/deals metadata)
+        with app.test_request_context('/api/deals'):
             session['logged_in'] = True
             try:
-                response = deal_count()
+                response = api_deals()
                 if hasattr(response, 'get_json'):
                     data = response.get_json()
                 else:
                     data = json.loads(response.data)
 
-                api_raw_count = data.get('count', -1)
+                api_db_total = data.get('pagination', {}).get('total_db_records', -1)
 
-                if api_raw_count == raw_db_count:
-                    print(f"[MATCH] DB Raw Count ({raw_db_count}) matches API Total ({api_raw_count})")
+                if api_db_total == raw_db_count:
+                    print(f"[MATCH] DB Raw Count ({raw_db_count}) matches API Metadata ({api_db_total})")
                 else:
-                    print(f"[MISMATCH] DB Raw Count ({raw_db_count}) != API Total ({api_raw_count})")
+                    print(f"[MISMATCH] DB Raw Count ({raw_db_count}) != API Metadata ({api_db_total})")
             except Exception as e:
                 print(f"Error checking API raw count: {e}")
 
         # Verify Filtered Count
-        with app.test_request_context('/api/deal-count?margin_gte=0'):
+        # We use default params because wsgi_handler enforces strict filters by default
+        with app.test_request_context('/api/deal-count'):
             session['logged_in'] = True
             try:
                 response = deal_count()
