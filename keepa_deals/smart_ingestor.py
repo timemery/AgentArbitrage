@@ -361,10 +361,10 @@ def run():
         current_batch_size = SCAN_BATCH_SIZE
         # Dynamic Batch Sizing: Reduce batch size for slow connections to avoid "Deficit Lockout".
         if token_manager.REFILL_RATE_PER_MINUTE < 10:
-            # Reduced to 3 to safely fit within Burst Threshold (80 tokens) even with heavy commits.
-            # Peek (3*2=6) + Commit (3*20=60) = 66 tokens. Max safety against Livelock.
-            current_batch_size = 3
-            logger.info(f"Critically Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} (Max potential cost 66 tokens).")
+            # Reduced to 1 to safely fit within Burst Threshold (40 tokens).
+            # Peek (1*2=2) + Commit (1*20=20) = 22 tokens. Fits comfortably in 40.
+            current_batch_size = 1
+            logger.info(f"Critically Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} (Max potential cost 22 tokens).")
         elif token_manager.REFILL_RATE_PER_MINUTE < 20:
             current_batch_size = 20
             logger.info(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to prevent Deficit Lockout.")
