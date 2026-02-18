@@ -443,20 +443,42 @@ def analyze_sales_performance(product, sale_events):
         if len(avg365) > 20 and avg365[20] is not None and avg365[20] > 0: candidates.append(avg365[20])
 
         # Used - Good (Index 21) - often cleaner data
-        if len(avg90) > 21 and avg90[21] > 0: candidates.append(avg90[21])
-        if len(avg365) > 21 and avg365[21] > 0: candidates.append(avg365[21])
+        if len(avg90) > 21 and avg90[21] is not None and avg90[21] > 0: candidates.append(avg90[21])
+        if len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0: candidates.append(avg365[21])
 
         # Used - Acceptable (Index 22)
         if len(avg90) > 22 and avg90[22] is not None and avg90[22] > 0: candidates.append(avg90[22])
         if len(avg365) > 22 and avg365[22] is not None and avg365[22] > 0: candidates.append(avg365[22])
+
+        # Collectible - Like New (Index 23)
+        if len(avg90) > 23 and avg90[23] is not None and avg90[23] > 0: candidates.append(avg90[23])
+        if len(avg365) > 23 and avg365[23] is not None and avg365[23] > 0: candidates.append(avg365[23])
+
+        # Collectible - Very Good (Index 24)
+        if len(avg90) > 24 and avg90[24] is not None and avg90[24] > 0: candidates.append(avg90[24])
+        if len(avg365) > 24 and avg365[24] is not None and avg365[24] > 0: candidates.append(avg365[24])
+
+        # Collectible - Good (Index 25)
+        if len(avg90) > 25 and avg90[25] is not None and avg90[25] > 0: candidates.append(avg90[25])
+        if len(avg365) > 25 and avg365[25] is not None and avg365[25] > 0: candidates.append(avg365[25])
+
+        # Collectible - Acceptable (Index 26)
+        if len(avg90) > 26 and avg90[26] is not None and avg90[26] > 0: candidates.append(avg90[26])
+        if len(avg365) > 26 and avg365[26] is not None and avg365[26] > 0: candidates.append(avg365[26])
 
         if candidates:
             peak_price_mode_cents = max(candidates)
             price_source = 'Keepa Stats Fallback'
             logger.info(f"ASIN {asin}: Fallback succeeded using Keepa Stats (Max Used Avg): ${peak_price_mode_cents/100:.2f}")
             # Do NOT return here. Continue to Reasonableness Check.
+        elif sale_events:
+            # Sparse Sales Rescue (1-2 sales): If Keepa stats failed but we have valid inferred sales, use them.
+            prices = [s['inferred_sale_price_cents'] for s in sale_events]
+            peak_price_mode_cents = float(np.median(prices))  # Use Median for safety on small sample
+            price_source = 'Inferred Sales (Sparse)'
+            logger.info(f"ASIN {asin}: Keepa Stats Fallback failed, but found {len(sale_events)} sparse sales. Rescued using Median: ${peak_price_mode_cents/100:.2f}")
         else:
-            logger.warning(f"ASIN {asin}: Fallback failed. No valid Used price history in stats.")
+            logger.warning(f"ASIN {asin}: Fallback failed. No valid Used price history in stats AND no sparse sales found.")
             # If fallback fails entirely, we return early as -1 price, triggering exclusion.
             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-', 'price_source': 'None'}
 
@@ -565,8 +587,8 @@ def analyze_sales_performance(product, sale_events):
     if is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
         is_reasonable = True
-    elif price_source == 'Keepa Stats Fallback':
-        logger.info(f"ASIN {asin}: Price Source is 'Keepa Stats Fallback'. Skipping AI Reasonableness Check to prevent false negatives due to insufficient context.")
+    elif price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)':
+        logger.info(f"ASIN {asin}: Price Source is '{price_source}'. Skipping AI Reasonableness Check to prevent false negatives due to insufficient context.")
         is_reasonable = True
     else:
         is_reasonable = _query_xai_for_reasonableness(
