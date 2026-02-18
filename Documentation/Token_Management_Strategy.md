@@ -50,7 +50,7 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
         *   **Peek (Discovery):** Uses a **Dynamic Batch Size** based on the refill rate. The system reserves **2 tokens per ASIN** (reduced from 5) for this lightweight check.
             *   **High Rate (>= 20/min):** Batch Size **50**. Optimized for speed.
             *   **Low Rate (< 20/min):** Batch Size **20**. Prevents deficit lockout.
-            *   **Critically Low (< 10/min):** Batch Size **15**. Optimized to fit within the "Burst Threshold" (40 tokens) while maximizing throughput (Cost: ~30 tokens).
+            *   **Critically Low (< 10/min):** Batch Size **1**. Optimized to fit within the "Burst Threshold" (40 tokens) while ensuring completion (Cost: ~22 tokens).
         *   **Commit (Analysis):** Always uses batch size **5**. Full product data is expensive (20 tokens/ASIN). Small batches prevent "Deficit Shock" (instantly hitting -200) and allow granular control.
 *   **API Wrapper (`keepa_api.py`):**
     *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.

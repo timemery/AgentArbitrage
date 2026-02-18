@@ -154,7 +154,8 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 - **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not attempt to "guess" shipping costs for MFN sellers.
 - **Seller Name Preservation:** To save tokens, the system performs "Lightweight Updates" that lack seller names. It uses the `Seller ID` to preserve the existing human-readable name. If you modify `processing.py`, ensure this logic remains intact to avoid overwriting names with raw IDs.
 - **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing critical data (`List at`) are now **persisted** (not rejected) to prevent infinite re-fetch loops. They are filtered from the Dashboard.
-- **Keepa Stats Fallback:** Fallback prices (`avg365`) are accepted (Silver Standard) and **SKIP** the XAI Reasonableness Check to prevent false negatives.
+- **Keepa Stats Fallback:** Fallback prices (`avg365`) are accepted (Silver Standard) using all Used (2, 19-22) and Collectible (23-26) conditions. These **SKIP** the XAI Reasonableness Check to prevent false negatives.
+- **Sparse Sales Rescue:** If fallback stats are missing, the system uses the **Median** of inferred sales (1-2 events) as a "Sparse Rescue" price, also skipping XAI checks.
 - **Deficit Protection:** Enforced `MAX_DEFICIT = -180` to prevent API lockouts.
 
 ## Definition of Done: The Logic Check
@@ -171,4 +172,4 @@ Developers often split complex tasks into two stages:
 
 **Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
 
-*   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **15** (Critically Low < 10/min) to maximize throughput within the token burst window.
+*   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **1** (Critically Low < 10/min) to safely fit within the token burst window (40 tokens) without livelock.
