@@ -46,9 +46,17 @@ def main():
             is_visible = True
             hidden_reason = []
 
+            # Helper for safe float conversion
+            def safe_float(val):
+                if val is None: return 0.0
+                try:
+                    return float(val)
+                except (ValueError, TypeError):
+                    return 0.0
+
             # Check Profit
-            # wsgi: "Profit" > 0 (if filter not set)
-            if deal['Profit'] is None or deal['Profit'] <= 0:
+            profit = safe_float(deal['Profit'])
+            if profit <= 0:
                 is_visible = False
                 hidden_reason.append("Profit <= 0")
                 reasons["Profit <= 0"] += 1
@@ -56,8 +64,8 @@ def main():
                     samples["Profit <= 0"].append(deal)
 
             # Check List_at
-            # wsgi: "List_at" IS NOT NULL AND "List_at" > 0
-            if deal['List_at'] is None or deal['List_at'] <= 0:
+            list_at = safe_float(deal['List_at'])
+            if list_at <= 0:
                 is_visible = False
                 hidden_reason.append("List_at Missing/Zero")
                 reasons["List_at Missing/Zero"] += 1
@@ -65,9 +73,9 @@ def main():
                     samples["List_at Missing/Zero"].append(deal)
 
             # Check 1yr_Avg
-            # wsgi: "1yr_Avg" IS NOT NULL AND "1yr_Avg" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00') AND "1yr_Avg" != 0
-            avg_1yr = deal['1yr_Avg']
-            if avg_1yr is None or str(avg_1yr) in ['-', 'N/A', '', '0', '0.00', '$0.00'] or avg_1yr == 0:
+            avg_1yr_val = safe_float(deal['1yr_Avg'])
+            avg_1yr_str = str(deal['1yr_Avg'])
+            if avg_1yr_val == 0 or avg_1yr_str in ['-', 'N/A', '', '0', '0.00', '$0.00']:
                 is_visible = False
                 hidden_reason.append("1yr_Avg Missing/Invalid")
                 reasons["1yr_Avg Missing/Invalid"] += 1
