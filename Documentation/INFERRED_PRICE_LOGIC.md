@@ -56,6 +56,19 @@ When a sale is confirmed, the system associates a price with it using `pandas.me
 
 ------
 
+## 2.5 Stage 1.5: XAI Rescue Mechanism ("Hidden Sales")
+
+**Introduced:** Feb 2026 (`xai_sales_inference.py`)
+
+If the algorithmic approach (Stage 1) finds **0 confirmed sales** or detects **no offer drops** (which is mathematically impossible for a sold item unless stock depth > 1), the system triggers a "Rescue" attempt.
+
+1.  **Context Assembly:** The system constructs a markdown table representing ~365 days of history, aligning Rank, Price, and Offer Count time-series data.
+2.  **AI Analysis:** This table is sent to **xAI (Grok)** with a specific prompt to identify "Hidden Sales"—instances where Sales Rank improved (dropped) significantly without a corresponding drop in Offer Count (implying the seller had multiple units).
+3.  **Integration:** Sales identified by the AI are injected back into the pipeline as valid "Inferred Sales," allowing the deal to proceed to analysis instead of being rejected.
+4.  **Safety:** To preserve tokens, this rescue is skipped if the item's current Sales Rank is > 2,000,000 ("Dead Inventory").
+
+------
+
 ## 3. Stage 2: Data Sanitization
 
 After collecting raw events, the data is sanitized to remove statistical outliers.
@@ -78,7 +91,7 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (Silver Standard):** If Inferred Sales are insufficient, uses **`stats.avg365`** (Maximum value from ALL Used sub-conditions: Used, Like New, Very Good, Good, Acceptable). This ensures items with valid used price history are not rejected due to sparse sales rank drops.
+    -   **Fallback 2 (Silver Standard):** If Inferred Sales < **3** (insufficient data), uses **`stats.avg365`** (Maximum value from ALL Used sub-conditions: Used, Like New, Very Good, Good, Acceptable). This ensures items with valid used price history but low velocity (1-2 sales) are not rejected.
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
@@ -96,7 +109,8 @@ Used for the "Percent Down" and "Trend" calculations.
 
 1.  Filters the sane sales list to include only those from the **last 365 days**.
 2.  Calculates the **Mean** of these prices.
-3.  **Threshold:** Requires at least **1** inferred sale. If 0, returns `None` and the deal is persisted as **incomplete data** (filtered from the UI) rather than dropped.
+3.  **Threshold:** Requires at least **1** inferred sale.
+4.  **Fallback:** If 0 inferred sales are found, the system attempts to use **`stats.avg365`** (Used). If that also fails, it returns `None` and the deal is persisted as **incomplete data** (filtered from the UI).
 
 ------
 

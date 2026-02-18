@@ -35,7 +35,8 @@ To ensure the stability and performance of the development environment, the foll
    *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
    *   Use `ls -F` (non-recursive) or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files. **AVOID** `ls -R` as it generates excessive output.
    *   **DO NOT READ** the following large system state files:
-       - `xai_cache.json`
+       - `xai_cache.json` (Runtime Cache - Do not read)
+       - `xai_token_state.json` (Runtime State - Do not read)
        - `strategies.json`
    *   **READ** `README.md`, this `AGENTS.md` file, and `Documentation/System_State.md` in full.
    *   **READ** the 3-5 most recent logs in `Dev_Logs/` to understand the latest changes.
@@ -170,4 +171,4 @@ Developers often split complex tasks into two stages:
 
 **Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
 
-*   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **5** (Critically Low < 10/min) to prevent starvation.
+*   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **15** (Critically Low < 10/min) to maximize throughput within the token burst window.

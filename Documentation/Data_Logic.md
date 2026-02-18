@@ -15,7 +15,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
     *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
     *   **Batching:** Uses a **Decoupled Batching Strategy** (Smart Ingestor v3.0):
-        *   **Peek (Discovery):** 50 ASINs per batch (reduces to 20 if refill rate < 20/min, and 5 if < 10/min).
+        *   **Peek (Discovery):** 50 ASINs per batch (reduces to 20 if refill rate < 20/min, and 15 if < 10/min).
+        *   **Peek Filter:** Rejects dead inventory, but accepts items with as few as **1 sale rank drop per year** (down from 4) to capture slow-moving "Silver Standard" candidates.
         *   **Commit (Analysis):** 5 ASINs per batch.
 
 2.  **Seller & Price Analysis**:
@@ -34,6 +35,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 3.  **Inferred Sales (The Engine)**:
     *   **Logic:** `keepa_deals/stable_calculations.py` -> `infer_sale_events`.
     *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed by a drop in **Sales Rank** (Amazon registered the sale) within a **240-hour** (10-day) window.
+    *   **XAI Rescue (Hidden Sales):** If the standard mechanism finds 0 confirmed sales or no offer drops, it triggers an **xAI Rescue**. The system sends ~365 days of history to the LLM to identify "Hidden Sales" (Rank drops without Offer drops), rescuing valid deals that would otherwise be rejected.
     *   **Sparse Data Fallback:** If no rank drop is found immediately, the system looks ahead **30 days**. If the next available rank is lower (better) than the rank before the offer drop, a sale is inferred. This allows capturing sales for slow-moving items with sparse rank history.
     *   **Output:** A list of `sale_events` used for all downstream analytics.
 
@@ -47,7 +49,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-        *   **Fallback (Silver Standard):** If Inferred Sales < 1 (insufficient data), the system falls back to using **`stats.avg365`** from **ALL** Used sub-conditions: Used (2), Like New (19), Very Good (20), Good (21), and Acceptable (22).
+        *   **Fallback (Silver Standard):** If Inferred Sales < 3 (insufficient data), the system falls back to using **`stats.avg365`** from **ALL** Used sub-conditions: Used (2), Like New (19), Very Good (20), Good (21), and Acceptable (22).
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
