@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import psutil
 import time
 from datetime import datetime
@@ -9,8 +10,19 @@ def log(msg):
     ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     entry = f"{ts} - {msg}"
     print(entry)
-    with open(LOG_FILE, 'a') as f:
-        f.write(entry + "\n")
+    # Ensure directory exists before writing
+    log_dir = os.path.dirname(LOG_FILE)
+    if not os.path.exists(log_dir):
+        # Fallback to current directory if system path is not writable/existing in dev
+        if not os.access(os.path.dirname(LOG_FILE), os.W_OK):
+             entry += " (Warning: Log file not writable)"
+             return
+
+    try:
+        with open(LOG_FILE, 'a') as f:
+            f.write(entry + "\n")
+    except Exception as e:
+        print(f"Warning: Could not write to log file: {e}")
 
 def check_phantom_processes():
     log("Scanning for Phantom Python Processes (Running > 1 hour)...")
