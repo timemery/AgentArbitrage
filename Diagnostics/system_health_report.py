@@ -205,10 +205,7 @@ class HealthChecker:
                 cursor.execute("SELECT key, value FROM system_state")
                 rows = dict(cursor.fetchall())
 
-                bf_page = rows.get('backfill_page', 'N/A')
                 watermark = rows.get('watermark_iso', 'N/A')
-
-                self.log_result("application_state", "Backfill Page", "PASS" if bf_page != 'N/A' else "WARN", bf_page)
                 self.log_result("application_state", "Watermark", "PASS" if watermark != 'N/A' else "WARN", watermark)
             except:
                 self.log_result("application_state", "System State", "FAIL", "Could not read system_state")
@@ -217,17 +214,30 @@ class HealthChecker:
         except:
             pass
 
-        # Locks
+        # Redis Checks (Locks & Queue)
         try:
             r = redis.Redis.from_url('redis://127.0.0.1:6379/0')
+
+            # Check Ingestor Lock
             lock_key = "smart_ingestor_lock"
             if r.exists(lock_key):
                 ttl = r.ttl(lock_key)
                 self.log_result("application_state", "Ingestor Lock", "WARN", f"Active (TTL: {ttl}s)")
             else:
                 self.log_result("application_state", "Ingestor Lock", "PASS", "Free")
-        except:
-            pass
+
+            # Check Queue Depth (New Feature)
+            # Default Celery queue key is 'celery' (a list)
+            queue_len = r.llen('celery')
+            if queue_len < 100:
+                 self.log_result("application_state", "Queue Depth", "PASS", f"{queue_len} tasks")
+            elif queue_len < 1000:
+                 self.log_result("application_state", "Queue Depth", "WARN", f"{queue_len} tasks (Backlog)")
+            else:
+                 self.log_result("application_state", "Queue Depth", "FAIL", f"{queue_len} tasks (CRITICAL BACKLOG)")
+
+        except Exception as e:
+            self.log_result("application_state", "Redis State", "FAIL", str(e))
 
     def check_logs(self):
         print(f"\n{BOLD}--- Log Analysis ---{RESET}")

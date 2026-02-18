@@ -39,6 +39,11 @@ class TokenManager:
         # Throttling for sync calls (to prevent drain)
         self.last_sync_request_timestamp = 0
 
+        # High Frequency Monitor (Phantom Process Trap)
+        self.api_call_count_minute = 0
+        self.last_monitor_reset = time.time()
+        self.process_pid = os.getpid()
+
         # State variables
         self.tokens = 100 # Local cache/fallback
         self.max_tokens = 300
@@ -170,6 +175,19 @@ class TokenManager:
         Checks if an API call can be made and waits if necessary.
         Uses optimistic atomic reservation (decrby) to handle concurrency.
         """
+        # --- High Frequency Monitor (Phantom Process Trap) ---
+        now = time.time()
+        if now - self.last_monitor_reset > 60:
+            self.api_call_count_minute = 0
+            self.last_monitor_reset = now
+
+        self.api_call_count_minute += 1
+        if self.api_call_count_minute > 60:
+            logger.warning(f"PHANTOM TRAP: Process {self.process_pid} is spamming API calls! Count: {self.api_call_count_minute}/min. Cost: {estimated_cost}")
+            # Consider forcing a sleep here to throttle the phantom
+            time.sleep(1)
+        # -----------------------------------------------------
+
         cost_int = math.ceil(estimated_cost)
 
         while True:

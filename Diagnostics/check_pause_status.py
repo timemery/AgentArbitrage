@@ -1,9 +1,13 @@
 import redis
 import os
+import sys
 import json
 import time
 from datetime import datetime
 from dotenv import load_dotenv
+
+# Add project root to path for imports (MOVED UP)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 load_dotenv()
 
@@ -33,6 +37,21 @@ def check_pause_status():
     print(f"Redis Connection: OK")
 
     print("\n[Token State]")
+
+    # If keys are missing (fresh start), try to fetch from Keepa API once
+    if tokens is None or rate is None:
+        try:
+            from keepa_deals.token_manager import TokenManager
+            api_key = os.getenv('KEEPA_API_KEY')
+            if api_key:
+                tm = TokenManager(api_key)
+                tm.sync_tokens() # This populates Redis
+                tokens = tm.tokens
+                rate = tm.REFILL_RATE_PER_MINUTE
+                print("  (Fetched fresh data from Keepa API)")
+        except Exception as e:
+            print(f"  (Failed to fetch fresh data: {e})")
+
     print(f"  Tokens Available: {tokens if tokens is not None else 'Unknown (Key missing)'}")
     print(f"  Refill Rate:      {rate if rate is not None else 'Unknown (Key missing)'}/min")
 

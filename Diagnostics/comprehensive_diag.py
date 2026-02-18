@@ -3,6 +3,7 @@ import sys
 import sqlite3
 import subprocess
 import json
+from datetime import datetime, timedelta, timezone
 
 # Ensure we can import modules from the root directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -66,13 +67,21 @@ def run_diagnostic():
         reason_list_at = reason_list_at_missing + reason_profit_neg
 
         reason_1yr_avg = get_grep_count("Excluding deal because '1yr. Avg.' is missing", log_path)
+
+        # XAI Checks
+        xai_rescue_fail = get_grep_count("XAI Rescue Failed", log_path)
+        xai_api_error = get_grep_count("XAI API Error", log_path)
+
         rejected_count = reason_peek + reason_no_offer + reason_list_at + reason_1yr_avg
     else:
         print("Warning: celery_worker.log not found. Rejection stats will be 0.")
+        xai_rescue_fail = 0
+        xai_api_error = 0
 
     # 3. Database Statistics
     raw_db_count = 0
     dashboard_visible_count = 0
+    zombie_count = 0
 
     try:
         conn = sqlite3.connect(db_path)
@@ -81,6 +90,14 @@ def run_diagnostic():
         # Raw Count
         cursor.execute("SELECT COUNT(*) FROM deals")
         raw_db_count = cursor.fetchone()[0]
+
+        # Zombie Count (last_seen_utc > 24 hours old)
+        try:
+             cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+             cursor.execute("SELECT COUNT(*) FROM deals WHERE last_seen_utc < ?", (cutoff,))
+             zombie_count = cursor.fetchone()[0]
+        except Exception:
+             zombie_count = 0
 
         # Filtered Count (Strict Dashboard Logic)
         # Matches wsgi_handler.py api_deals logic to ensure consistency.
@@ -151,8 +168,19 @@ def run_diagnostic():
         print("")
         print(f"4. Missing '1yr Avg':   {reason_1yr_avg} ({p_1yr_avg:.1f}%)")
         print("   (Insufficient sales history/data points)")
+
+        if xai_rescue_fail > 0 or xai_api_error > 0:
+            print("")
+            print(f"⚠️  XAI ISSUES DETECTED:")
+            print(f"   - Rescue Failed: {xai_rescue_fail}")
+            print(f"   - API Errors:    {xai_api_error}")
     else:
         print("No rejections found (or log missing).")
+
+    if zombie_count > 0:
+        print("")
+        print(f"⚠️  ZOMBIE ALERT: {zombie_count} deals have not updated in 24 hours.")
+        print("   (Run Diagnostics/diagnose_dwindling_deals.py for details)")
 
     print("========================================")
     print("")
