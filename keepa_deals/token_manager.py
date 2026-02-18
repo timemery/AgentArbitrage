@@ -224,8 +224,31 @@ class TokenManager:
                             # If the wait is long (e.g. > 60 seconds), we should not sleep and block the worker.
                             # Instead, we raise an exception to let the caller (task) exit and retry later.
                             if wait_time > 60:
-                                logger.warning(f"Recharge Mode: Tokens critically low ({self.tokens:.2f}). Required wait: {wait_time}s. Exiting task to free worker.")
-                                raise TokenRechargeError(f"Recharge needed: {wait_time}s")
+                                # LAST RESORT CHECK: If wait time is huge, maybe our local state is stale?
+                                # (e.g., timestamp was reset by another process without valid token update)
+                                logger.warning(f"Recharge Mode: Tokens critically low ({self.tokens:.2f}). Required wait: {wait_time}s. Executing FORCE SYNC to verify state.")
+                                self.sync_tokens(force=True)
+
+                                # Check again after sync
+                                if self.tokens >= self.BURST_THRESHOLD:
+                                    logger.info(f"Burst threshold reached after Force Sync ({self.tokens:.2f} >= {self.BURST_THRESHOLD}). Exiting Recharge Mode.")
+                                    self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
+                                    self.redis_client.delete("keepa_recharge_start_time")
+                                    continue
+                                else:
+                                    # Recalculate wait time with fresh data
+                                    tokens_needed = self.BURST_THRESHOLD - self.tokens
+                                    if tokens_needed < 0: tokens_needed = 0
+                                    wait_time = math.ceil((tokens_needed / rate_for_calc) * 60)
+
+                                    if wait_time > 60:
+                                        logger.warning(f"Recharge Mode: Still critically low after Sync ({self.tokens:.2f}). Required wait: {wait_time}s. Exiting task.")
+                                        raise TokenRechargeError(f"Recharge needed: {wait_time}s")
+                                    else:
+                                        # Proceed to wait if small enough
+                                        if wait_time < 5: wait_time = 5
+                                        self._wait_for_tokens(wait_time, self.BURST_THRESHOLD)
+                                        continue
 
                             if wait_time < 5: wait_time = 5 # Minimum sleep
                             self._wait_for_tokens(wait_time, self.BURST_THRESHOLD)
