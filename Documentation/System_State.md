@@ -16,9 +16,9 @@
 ## 3. Data Pipeline & Logic
 ### Pricing & Inferred Sales
 - **"List at" Price:** Derived from Peak Season history (Mode).
-    - **Fallback:** If Inferred Sales < 1, falls back to `Used - 365d Avg` (Silver Standard).
+    -   **Fallback:** If Inferred Sales < 3, falls back to `Used/Collectible - 365d Avg` (Silver Standard). If stats missing, uses **Median of Inferred Sales** (Sparse Rescue).
     - **Validation:** **ALL** prices (including fallbacks) must pass the **Amazon Ceiling Check** (90% of lowest New price).
-    - **XAI Check:** The **XAI Reasonableness Check** is applied to standard prices but is **SKIPPED** for "Keepa Stats Fallback" prices (Silver Standard) to prevent false rejections.
+    -   **XAI Check:** The **XAI Reasonableness Check** is applied to standard prices but is **SKIPPED** for "Keepa Stats Fallback" and "Sparse Rescue" prices to prevent false rejections.
 - **"Expected Trough" Price:** Median price of the identified trough month.
 - **Sales Inference:** Search window is **240 hours (10 days)**.
     - **XAI Rescue (Hidden Sales):** If the standard algorithm finds 0 confirmed sales or no offer drops, the system calls **xAI** to identify "Hidden Sales" (rank drops without offer drops), rescuing potentially valid deals.
@@ -31,7 +31,7 @@
     - **Watermark:** Implements a "Ratchet" mechanism (advances even if deals are rejected) and tolerates up to **24 hours** of future clock skew before clamping.
     -   **Data Persistence Strategy (formerly Zombie Defense):** The aggressive re-fetching logic for 'Zombie' deals (missing critical data like `List at`) was found to cause infinite loops and token waste. It has been replaced by a **Persistence Strategy** where deals with missing data are saved and updated via standard 'Lightweight Updates', allowing for gradual data repair without system strain.
     - **Throughput:** Uses a **Decoupled Batching Strategy**:
-        - **Peek / Light Update:** Batch size **50** (reduces to **20** if refill rate < 20/min, and **15** if < 10/min).
+        - **Peek / Light Update:** Batch size **50** (reduces to **20** if refill rate < 20/min, and **1** if < 10/min).
         - **Peek Filter:** `salesRankDrops365` threshold reduced to **1** (from 4) to capture "Silver Standard" deals.
         - **Commit (Heavy Analysis):** Batch size **5** to prevent deficit shock.
     - **Deficit Protection:** Enforces `MAX_DEFICIT = -180` to prevent API lockouts.
@@ -70,7 +70,7 @@
 - **Formatting:** `format_currency` handles string inputs defensively.
 - **Logs:** Do not read full `celery.log`.
 - **Context:** `Dev_Logs/Archive/*.md` files are historical archives. This file is the current reference.
-- **Batch Size:** Decoupled (50 for Peek, 15/5 for Low Rate/Commit) to maximize deficit spending efficiency while preventing shock.
+- **Batch Size:** Decoupled (50 for Peek, 1/5 for Critically Low Rate/Commit) to maximize deficit spending efficiency while preventing shock.
 - **Redis Lock:** `smart_ingestor_lock` is the primary mutex. Timeout 30 minutes.
 - **Redis Cleanup:** `kill_everything_force.sh` performs a full wipe (FLUSHALL). `deploy_update.sh` adds surgical lock removal as a safety net.
 - **Janitor Grace Period:** **72 Hours**. Do not lower (causes data loss).

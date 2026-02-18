@@ -28,7 +28,7 @@ This caused massive deal rejection rates because it often grabbed stale, high-pr
 
 **The New "Silver Standard" (Feb 2026)**
 To address data sparsity without sacrificing safety, we introduced a **Validated Fallback**:
-> *If Inferred Sales < 1, use `stats.avg365` (Used).*
+> *If Inferred Sales < 3, use `stats.avg365` (Used + Collectible).*
 **Crucially**, this fallback price is NOT trusted blindly, but it is validated differently than inferred sales:
 1.  **Amazon Ceiling:** Must be < 90% of New Price. (Always Enforced)
 2.  **XAI Reasonableness:** **SKIPPED** for fallbacks to prevent false rejections due to lack of context.
@@ -91,7 +91,8 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (Silver Standard):** If Inferred Sales < **3** (insufficient data), uses **`stats.avg365`** (Maximum value from ALL Used sub-conditions: Used, Like New, Very Good, Good, Acceptable). This ensures items with valid used price history but low velocity (1-2 sales) are not rejected.
+    -   **Fallback 2 (Silver Standard):** If Inferred Sales < **3** (insufficient data), uses **`stats.avg365`** (Maximum value from ALL Used sub-conditions: 2, 19-22, and Collectible sub-conditions: 23-26).
+    -   **Rescue (Sparse):** If stats fallbacks fail, uses the **Median** of any available inferred sales (1-2 events).
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
@@ -99,7 +100,7 @@ This determines the recommended listing price.
 4.  **AI Reasonableness Check:**
     -   **Primary Check:** For standard inferred prices, the calculated price is sent to **xAI (Grok)** along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**.
     -   **Prompt Context:** The prompt explicitly instructs the AI that for seasonal items (especially Textbooks), a Peak Season price can validly be **200-400% higher** than the 3-Year Average to prevent false positive rejections.
-    -   **Fallback Exception (Feb 2026):** If the price source is **"Keepa Stats Fallback"** (Silver Standard), the AI Reasonableness Check is **SKIPPED**.
+    -   **Fallback Exception (Feb 2026):** If the price source is **"Keepa Stats Fallback"** (Silver Standard) or **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is **SKIPPED**.
         -   *Rationale:* The Silver Standard is a historical average (`avg365`), which is inherently stable but lacks the seasonal context needed for the AI to make a valid judgment. Skipping the check prevents false negatives.
         -   *Safety:* The Amazon Ceiling check remains active and is sufficient to prevent egregious pricing errors.
     -   If the AI rejects a non-fallback price (returns "No"), the deal is invalidated (and subsequently persisted as incomplete data).
