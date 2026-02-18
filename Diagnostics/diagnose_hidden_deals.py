@@ -50,6 +50,9 @@ def main():
             def safe_float(val):
                 if val is None: return 0.0
                 try:
+                    if isinstance(val, str):
+                        # Remove '$' and ',' before converting
+                        val = val.replace('$', '').replace(',', '')
                     return float(val)
                 except (ValueError, TypeError):
                     return 0.0
