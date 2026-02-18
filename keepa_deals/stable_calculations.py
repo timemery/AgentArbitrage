@@ -450,6 +450,22 @@ def analyze_sales_performance(product, sale_events):
         if len(avg90) > 22 and avg90[22] is not None and avg90[22] > 0: candidates.append(avg90[22])
         if len(avg365) > 22 and avg365[22] is not None and avg365[22] > 0: candidates.append(avg365[22])
 
+        # Collectible - Like New (Index 23)
+        if len(avg90) > 23 and avg90[23] is not None and avg90[23] > 0: candidates.append(avg90[23])
+        if len(avg365) > 23 and avg365[23] is not None and avg365[23] > 0: candidates.append(avg365[23])
+
+        # Collectible - Very Good (Index 24)
+        if len(avg90) > 24 and avg90[24] is not None and avg90[24] > 0: candidates.append(avg90[24])
+        if len(avg365) > 24 and avg365[24] is not None and avg365[24] > 0: candidates.append(avg365[24])
+
+        # Collectible - Good (Index 25)
+        if len(avg90) > 25 and avg90[25] is not None and avg90[25] > 0: candidates.append(avg90[25])
+        if len(avg365) > 25 and avg365[25] is not None and avg365[25] > 0: candidates.append(avg365[25])
+
+        # Collectible - Acceptable (Index 26)
+        if len(avg90) > 26 and avg90[26] is not None and avg90[26] > 0: candidates.append(avg90[26])
+        if len(avg365) > 26 and avg365[26] is not None and avg365[26] > 0: candidates.append(avg365[26])
+
         if candidates:
             peak_price_mode_cents = max(candidates)
             price_source = 'Keepa Stats Fallback'
