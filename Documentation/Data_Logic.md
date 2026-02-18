@@ -57,7 +57,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
         1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices.
         2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context.
-            *   **Exception:** If the price is derived from **Keepa Stats Fallback** (Silver Standard) or **Inferred Sales (Sparse)**, this check is **SKIPPED** to prevent false rejections due to lack of historical context.
+            *   **Exception:** If the price is derived from **Keepa Stats Fallback** (Silver Standard) or **Inferred Sales (Sparse)**, this check is conditionally **SKIPPED**.
+            *   **Suspiciously High Fallback:** If the fallback price is **> 300% (3x)** of the current Used price, the check is **FORCED** to prevent accepting manipulated prices.
     *   **Exclusion:** If validation fails, the price is invalidated (potentially leading to persistence as incomplete data).
 
 6.  **Business Math**:
