@@ -100,10 +100,11 @@ This determines the recommended listing price.
 4.  **AI Reasonableness Check:**
     -   **Primary Check:** For standard inferred prices, the calculated price is sent to **xAI (Grok)** along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**.
     -   **Prompt Context:** The prompt explicitly instructs the AI that for seasonal items (especially Textbooks), a Peak Season price can validly be **200-400% higher** than the 3-Year Average to prevent false positive rejections.
-    -   **Fallback Exception (Feb 2026):** If the price source is **"Keepa Stats Fallback"** (Silver Standard) or **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is **SKIPPED**.
-        -   *Rationale:* The Silver Standard is a historical average (`avg365`), which is inherently stable but lacks the seasonal context needed for the AI to make a valid judgment. Skipping the check prevents false negatives.
-        -   *Safety:* The Amazon Ceiling check remains active and is sufficient to prevent egregious pricing errors.
-    -   If the AI rejects a non-fallback price (returns "No"), the deal is invalidated (and subsequently persisted as incomplete data).
+    -   **Fallback Exception (Feb 2026):** If the price source is **"Keepa Stats Fallback"** (Silver Standard) or **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is conditionally **SKIPPED** to prevent false rejections.
+        -   *Rationale:* The Silver Standard is a historical average (`avg365`), which is inherently stable but lacks the seasonal context needed for the AI to make a valid judgment.
+        -   **Suspiciously High Fallback Check:** If the calculated fallback price is **> 300% (3x)** of the current Used price, the deal is flagged as "Suspiciously High". In this case, the AI Reasonableness Check is **FORCED** (not skipped) to prevent accepting inflated prices caused by market manipulation or outlier listings (e.g., Collectible prices).
+        -   *Safety:* The Amazon Ceiling check remains active and is sufficient to prevent egregious pricing errors in normal cases.
+    -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
 
 ### B. 1-Year Average (`1yr. Avg.`)
 Used for the "Percent Down" and "Trend" calculations.

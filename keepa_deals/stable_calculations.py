@@ -584,10 +584,25 @@ def analyze_sales_performance(product, sale_events):
 
     logger.info(f"ASIN {asin}: Preparing for XAI check. Title='{title}', Category='{category}', Peak Season='{peak_season_str}', Price='${peak_price_mode_cents / 100.0:.2f}', Rank='{rank_info}', Trend='{trend_info}', 3yrAvg='${avg_3yr_usd}'")
 
+    # --- Suspiciously High Fallback Check ---
+    is_suspiciously_high = False
+    if price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)':
+        current_used_cents = -1
+        current_stats = stats.get('current', [])
+        # Index 2 is Used
+        if len(current_stats) > 2 and current_stats[2] is not None:
+            current_used_cents = current_stats[2]
+
+        if current_used_cents > 0:
+            ratio = peak_price_mode_cents / current_used_cents
+            if ratio > 3.0: # Threshold: >300% markup implies a likely outlier/mismatch
+                is_suspiciously_high = True
+                logger.warning(f"ASIN {asin}: Fallback price ${peak_price_mode_cents/100:.2f} is suspiciously high (>3x current used ${current_used_cents/100:.2f}, Ratio: {ratio:.1f}x). Forcing AI Reasonableness Check.")
+
     if is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
         is_reasonable = True
-    elif price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)':
+    elif (price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)') and not is_suspiciously_high:
         logger.info(f"ASIN {asin}: Price Source is '{price_source}'. Skipping AI Reasonableness Check to prevent false negatives due to insufficient context.")
         is_reasonable = True
     else:
