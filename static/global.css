@@ -2112,7 +2112,7 @@ body.home-background::before {
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    margin-bottom: 22px; /* User Req: 22px gap below */
+    margin-bottom: 0px; /* User Req: Reduce spacing to fix double margin issue */
 }
 
 .filter-bar {
@@ -2450,7 +2450,7 @@ body.home-background::before {
     max-width: 1200px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    top: calc(var(--filter-panel-height) + 246px); /* Adjusted: 221 + 25 */
+    top: 289px; /* Correctly aligned to bottom of sticky headers (264px + 25px height) */
     box-shadow: none;
     z-index: 180;
     pointer-events: none;

@@ -144,6 +144,7 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 ### UI & SVG Standards
 - **Icons:** Navigation icons are SVGs with their `viewBox` reset to the content bounding box (removing internal padding) and are strictly sized to **20px** height in CSS (`static/global.css`).
 - **Header:** The main header container (`.main-header`) has a strictly fixed height of **134px**. Altering this risks breaking the "sticky" filter panel alignment.
+- **Sticky Headers:** The dashboard data table relies on a precise stack of `top` offsets (177px, 233px, 264px, 289px) that are hardcoded based on the heights of the Main Header and Filter Panel. The `.filter-panel` MUST have `margin-bottom: 0px` to prevent layout breaks.
 
 ### Keepa Query Standards
 - **Date Range:** `dateRange: 4` (All Combined) is permissible and recommended to capture the maximum 3-year history for AI analysis.

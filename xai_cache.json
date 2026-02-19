@@ -21424,5 +21424,19 @@
     "seasonality:The Park Book Zolotow|Books, Subjects|Harper & Row": "Year-round",
     "seasonality:El Libro De Bolsillo Para Misioneros|Books, Subjects, Religion & Spirituality, Christian Books & Bibles|-": "Year-round",
     "seasonality:Breakfast at Tiffany's|Books, Subjects, History, Europe, Germany|Random House": "Year-round",
-    "seasonality:Magical Unicorn Color by Numbers|Books, Subjects, Children's Books, Activities, Crafts & Games, Activity Books|Arcturus": "Year-round"
+    "seasonality:Magical Unicorn Color by Numbers|Books, Subjects, Children's Books, Activities, Crafts & Games, Activity Books|Arcturus": "Year-round",
+    "seasonality:Sounds of the Metropolis: The 19th Century Popular Music Revolution in London, New York, Paris and Vienna|Books, Subjects, Arts & Photography, Music, History & Criticism|Oxford University Press": "Year-round",
+    "seasonality:Alice in the Country of Clover: Knight's Knowledge Vol. 3 by QuinRose (2014-11-04)|Books, Subjects|Seven Seas": "Year-round",
+    "seasonality:Children at the Lord's Table?: Assessing the Case for Paedocommunion|Books, Subjects, Religion & Spirituality, Christian Books & Bibles, Christian Living|Reformation Heritage Books": "Year-round",
+    "seasonality:Deadpool Minibus|Books, Subjects, Comics & Graphic Novels, Graphic Novels, Superheroes|Marvel Enterprises": "Year-round",
+    "seasonality:The Movie Theater Mystery #7 (The Whodunit Detective Agency)|Books, Subjects, Children's Books, Animals, Dogs|Grosset & Dunlap": "Year-round",
+    "seasonality:El toque de Midas (Spanish Edition)|Books, Subjects, Business & Money, Personal Finance|Aguilar": "Year-round",
+    "seasonality:My Favourite Ingredients|Books, Subjects|Quadrille": "Year-round",
+    "reasonableness:The Petting Zoo|Books > Subjects > Children's Books|-|689.71|hardcover|Current Rank: 7677734, 90-day Avg Rank: 7478723|Insufficient data|26.47": "False",
+    "reasonableness:Musical Direction for Improv and Sketch Comedy:|Books > Subjects > Arts & Photography > Performing Arts > Theater|Jun|287.99|Paperback|Current Rank: 5052419, 90-day Avg Rank: 4849221|DOWN (-82.8% over 3 years)|208.64": "True",
+    "reasonableness:The Ninja: Ancient Shadow Warriors of Japan (The Secret History of Ninjutsu)|Books > Subjects > History > Asia > Japan|Jun|45.02|Hardcover|Current Rank: 2736705, 90-day Avg Rank: 2755788|DOWN (-7.8% over 3 years)|29.83": "True",
+    "reasonableness:The List (The Grant Series)|Books > Subjects > Literature & Fiction > Genre Fiction > Coming of Age|Nov|1209.61|Paperback|Current Rank: 5227960, 90-day Avg Rank: 5127724|Flat|516.67": "True",
+    "reasonableness:Hoarding for Law Enforcement and Other Public Officials|Books > Subjects > Education & Teaching > Schools & Teaching|-|416.41|Paperback|Current Rank: 7512254, 90-day Avg Rank: 7168781|Insufficient data|N/A": "False",
+    "reasonableness:The Island|Books > Subjects|Dec|118.54|hardcover|Current Rank: 4431410, 90-day Avg Rank: 4172516|UP (560.5% over 3 years)|55.02": "True",
+    "reasonableness:Algebra and Trigonometry: Functions and Applications, Tests|Books > Subjects > Science & Math > Mathematics > Trigonometry|Apr|95.96|Paperback|Current Rank: 4489143, 90-day Avg Rank: 3719883|FLAT (2.6% over 3 years)|94.83": "True"
 }
