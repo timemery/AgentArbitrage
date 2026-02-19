@@ -990,7 +990,7 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Flush with Group Header (134 + 56) */
+    top: 233px; /* UPDATED from 212px */
     z-index: 180;
     transition: top 0.3s ease;
 }
@@ -1062,7 +1062,7 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 134px); /* Adjusted: Matches Filter Panel Bottom */
+    top: 177px; /* UPDATED from 156px */
     z-index: 190;
     transition: top 0.3s ease;
 }
@@ -1167,7 +1167,7 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 221px); /* Adjusted: Flush with Column Header (190 + 31) */
+    top: 264px; /* UPDATED from 243px */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
@@ -2102,74 +2102,75 @@ body.home-background::before {
     width: 100%;
     max-width: 1200px; /* User Req: Max 1200px */
     background-color: transparent;
-    border: 1px solid #000000;
-    border-radius: 8px;
     margin: 0 auto; /* Centered horizontally */
     box-sizing: border-box;
-    transition: height 0.3s ease;
-    overflow: hidden;
     /* Sticky Positioning */
     position: sticky;
     top: 134px;
     z-index: var(--filter-panel-z);
-
-     /* Approx 135px from top given header height ~120px */
+    /* Approx 135px from top given header height ~120px */
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin-bottom: 22px; /* User Req: 22px gap below */
 }
 
-.filter-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: #13161a; /* Blocker: Site Background */
-    z-index: -2; /* Bottom Layer */
-    border-radius: 0; /* Square corners to block bleed-through */
-}
-
-.filter-panel::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: #1f293c; /* Visual: Panel Background */
-    z-index: -1; /* Middle Layer */
-    border-radius: 8px; /* Rounded Corners */
-}
-
-.filter-panel-closed {
+.filter-bar {
     height: 43px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1f293c; /* Match Column Header Color */
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 0 18px; /* Match previous padding */
+    position: relative;
+    z-index: 201; /* Ensure above dropdown */
+    box-sizing: border-box;
+    transition: border-radius 0.2s, border-bottom 0.2s; /* Smooth transition */
 }
 
-.filter-panel-open {
-    height: 100px;
-    min-height: 100px;
+.filter-bar.open {
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
-/* Common Flex Layouts */
-.panel-content-closed, .panel-content-open {
+/* Dropdown Container */
+.filter-dropdown {
+    position: absolute;
+    top: 100%;
+    /* Align perfectly with parent's outer border */
+    left: 0; /* Updated: 0 */
+    right: 0; /* Updated: 0 */
+    /* Remove width calc to rely on left/right anchors */
+    width: auto;
+    box-sizing: border-box;
+    background-color: #1f293c; /* Match Column Header Color */
+    z-index: 200;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    border: 1px solid #000000;
+    border-top: none; /* Separator handled by pseudo */
+    border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+    padding: 10px 16px 10px 18px; /* Match open state padding */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
-    box-sizing: border-box;
+    min-height: 57px; /* Adjust height as needed */
+    margin-top: 0;
+    flex-wrap: nowrap; /* User Req: Ensure buttons stay on right */
 }
 
-.panel-content-closed {
-    padding: 0 18px 0 18px;
-}
-
-.panel-content-open {
-    padding: 0 16px 0 18px; /* 16px from right edge */
-    /* Padding-top removed for better vertical centering via flexbox */
-}
-
-/* Hide content based on state */
-.filter-panel-closed .panel-content-open {
-    display: none;
-}
-.filter-panel-open .panel-content-closed {
-    display: none;
+/* Separator Line */
+.filter-dropdown::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 2px;
+    background-color: #2a3b4c; /* Updated Separator Color */
+    z-index: 202;
 }
 
 /* Left Side: Icon & Text */
@@ -2183,15 +2184,7 @@ body.home-background::before {
     width: 38px;
     height: 18px;
     cursor: pointer;
-    margin-right: 0;
-}
-
-/* Open state padding adjustment */
-.filter-panel-open .filter-icon-toggle {
-    margin-right: 20px; /* Padding reduced to 20px */
-}
-.filter-panel-closed .filter-icon-toggle {
-    margin-right: 16px; /* Padding of 16px between the filter icon and the text */
+    margin-right: 16px; /* Default spacing */
 }
 
 /* Closed State Text */
@@ -2251,6 +2244,9 @@ body.home-background::before {
     row-gap: 10px; /* Add vertical spacing when wrapped */
     padding-top: 0;
     padding-bottom: 0;
+    /* Ensure it doesn't push buttons off if wrapped?
+       No, let space-between handle it. But to prevent button wrap-left: */
+    flex-grow: 1;
 }
 
 .filter-item {
@@ -2333,6 +2329,8 @@ body.home-background::before {
     justify-content: center;
     gap: 4px; /* 4px padding separating the two buttons */
     height: 100%;
+    /* Ensure it stays to the right */
+    margin-left: auto; /* Push to right if wrapping occurs on same line */
 }
 
 .filter-btn {
