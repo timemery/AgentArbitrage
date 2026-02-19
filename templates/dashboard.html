@@ -858,11 +858,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function toggleFilterPanel(open) {
         localStorage.setItem('filterPanelOpen', open);
+        const filterBar = document.getElementById('filter-bar');
         if (open) {
             filterDropdown.style.display = 'flex';
+            filterBar.classList.add('open');
             filterIconToggle.src = "{{ url_for('static', filename='filter_Close.svg') }}";
         } else {
             filterDropdown.style.display = 'none';
+            filterBar.classList.remove('open');
             filterIconToggle.src = "{{ url_for('static', filename='filter_Open.svg') }}";
         }
     }

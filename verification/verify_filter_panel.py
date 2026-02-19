@@ -11,20 +11,23 @@ def verify_filter_panel():
         print("Navigating to login page...")
         try:
             page.goto("http://localhost:5000/")
-            # Login
+            # Login if needed
             if page.locator("button.login-button").is_visible():
                 page.click("button.login-button")
                 time.sleep(0.5)
-
-            page.fill("input[name='username']", "tester")
-            page.fill("input[name='password']", "OnceUponaBurgerTree-12monkeys")
-            page.click("form.login-form button[type='submit']")
-            page.wait_for_url("**/dashboard", timeout=10000)
-            print("Login successful, dashboard loaded.")
+                page.fill("input[name='username']", "tester")
+                page.fill("input[name='password']", "OnceUponaBurgerTree-12monkeys")
+                page.click("form.login-form button[type='submit']")
+                page.wait_for_url("**/dashboard", timeout=10000)
+            elif "/dashboard" not in page.url:
+                 # Already logged in maybe? Or failed.
+                 pass
         except Exception as e:
-            print(f"Login failed: {e}")
-            if "/dashboard" not in page.url:
-                return
+            print(f"Login process check: {e}")
+
+        if "/dashboard" not in page.url:
+             print("Not on dashboard. Exiting.")
+             return
 
         try:
             page.wait_for_selector(".filter-bar", timeout=10000)
@@ -32,47 +35,60 @@ def verify_filter_panel():
              print("Timeout waiting for .filter-bar.")
              return
 
-        # Check Initial State
+        filter_bar = page.locator(".filter-bar")
         dropdown = page.locator(".filter-dropdown")
-        buttons = page.locator(".panel-right-buttons")
 
-        # Ensure open
+        # Ensure Open
         if not dropdown.is_visible():
+            print("Panel Closed. Opening...")
             page.click("#filter-icon-toggle")
             page.wait_for_timeout(1000)
 
         # Verify Open State
-        is_visible = dropdown.is_visible()
-        print(f"Dropdown visible: {is_visible}")
+        print(f"Dropdown visible: {dropdown.is_visible()}")
+
+        # Check 'open' class
+        classes = filter_bar.get_attribute("class")
+        print(f"Filter Bar Classes: {classes}")
+        if "open" in classes:
+             print("Class 'open' PRESENT on filter-bar.")
+        else:
+             print("Class 'open' MISSING from filter-bar.")
 
         # Check background color
-        filter_bar = page.locator(".filter-bar")
         bg_color = filter_bar.evaluate("el => getComputedStyle(el).backgroundColor")
-        if "rgb(19, 29, 57)" in bg_color or "#131d39" in bg_color:
+        # #1f293c is rgb(31, 41, 60)
+        print(f"Filter Bar Background Color: {bg_color}")
+        if "rgb(31, 41, 60)" in bg_color or "#1f293c" in bg_color:
              print("Filter Bar Background Color CORRECT")
         else:
              print(f"Filter Bar Background Color INCORRECT: {bg_color}")
 
-        # Check Separator Line
-        separator_bg = dropdown.evaluate("el => getComputedStyle(el, '::before').backgroundColor")
-        if "rgb(42, 59, 76)" in separator_bg or "#2a3b4c" in separator_bg:
-                print("Separator Color CORRECT")
+        # Check Border Radius (Bottom Left)
+        radius = filter_bar.evaluate("el => getComputedStyle(el).borderBottomLeftRadius")
+        print(f"Bottom Left Radius: {radius}")
+        if radius == "0px":
+             print("Bottom Left Radius CORRECT (0px)")
         else:
-                print(f"Separator Color INCORRECT: {separator_bg}")
+             print(f"Bottom Left Radius INCORRECT: {radius}")
 
-        # Check Button Alignment
-        dropdown_box = dropdown.bounding_box()
-        buttons_box = buttons.bounding_box()
-
-        if buttons_box and dropdown_box:
-            midpoint = dropdown_box['x'] + dropdown_box['width'] / 2
-            if buttons_box['x'] > midpoint:
-                print("Buttons are on the RIGHT side.")
-            else:
-                print("Buttons are on the LEFT side.")
+        # Check Bottom Border
+        border_bottom = filter_bar.evaluate("el => getComputedStyle(el).borderBottomWidth")
+        print(f"Bottom Border Width: {border_bottom}")
+        # It should be 0px if border-style is none, or width 0
+        if border_bottom == "0px":
+             print("Bottom Border Width CORRECT (0px)")
+        else:
+             # Sometimes computed style returns width even if style is none, so check style
+             border_style = filter_bar.evaluate("el => getComputedStyle(el).borderBottomStyle")
+             print(f"Bottom Border Style: {border_style}")
+             if border_style == "none":
+                 print("Bottom Border Style CORRECT (none)")
+             else:
+                 print("Bottom Border INCORRECT")
 
         # Screenshot Open
-        page.screenshot(path="verification/filter_panel_final.png")
+        page.screenshot(path="verification/filter_panel_refined.png")
 
         browser.close()
 
