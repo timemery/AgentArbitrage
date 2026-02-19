@@ -260,6 +260,9 @@ def run():
 
         logger.info("Step 2: Paginating through deals to find new ones...")
         while True:
+            # Heartbeat to prevent stall detection during pagination
+            token_manager.emit_heartbeat()
+
             if page >= MAX_PAGES_PER_RUN:
                 logger.warning(f"Safety Limit Reached: Stopped pagination after {MAX_PAGES_PER_RUN} pages.")
                 break
@@ -377,6 +380,9 @@ def run():
         total_upserted = 0
 
         for i in range(0, len(all_new_deals), current_batch_size):
+            # Heartbeat to prevent stall detection during heavy processing
+            token_manager.emit_heartbeat()
+
             chunk_deals = all_new_deals[i:i + current_batch_size]
             chunk_asins = [d['asin'] for d in chunk_deals]
 
