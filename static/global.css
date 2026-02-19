@@ -990,7 +990,7 @@ button:disabled {
     box-sizing: border-box !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 190px); /* Adjusted: Flush with Group Header (134 + 56) */
+    top: 233px; /* UPDATED from 212px */
     z-index: 180;
     transition: top 0.3s ease;
 }
@@ -1062,7 +1062,7 @@ button:disabled {
     padding-bottom: 0 !important;
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 134px); /* Adjusted: Matches Filter Panel Bottom */
+    top: 177px; /* UPDATED from 156px */
     z-index: 190;
     transition: top 0.3s ease;
 }
@@ -1167,7 +1167,7 @@ button:disabled {
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
     position: sticky;
-    top: calc(var(--filter-panel-height) + 221px); /* Adjusted: Flush with Column Header (190 + 31) */
+    top: 264px; /* UPDATED from 243px */
     z-index: 170;
     transition: top 0.3s ease;
     vertical-align: middle !important;
@@ -2112,6 +2112,7 @@ body.home-background::before {
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin-bottom: 22px; /* User Req: 22px gap below */
 }
 
 .filter-bar {
@@ -2139,13 +2140,12 @@ body.home-background::before {
 .filter-dropdown {
     position: absolute;
     top: 100%;
-    /* Parent (.filter-bar) has 1px border.
-       We want dropdown to align with the OUTSIDE of the parent border.
-       left: -1px shifts it left by 1px to overlap the parent's left border.
-       width: calc(100% + 2px) makes it encompass the parent's full width (including borders).
-    */
-    left: -1px;
-    width: calc(100% + 2px);
+    /* Align perfectly with parent's outer border */
+    left: 0; /* Updated: 0 */
+    right: 0; /* Updated: 0 */
+    /* Remove width calc to rely on left/right anchors */
+    width: auto;
+    box-sizing: border-box;
     background-color: #1f293c; /* Match Column Header Color */
     z-index: 200;
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
