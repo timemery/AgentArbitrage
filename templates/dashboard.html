@@ -6,90 +6,85 @@
 </div>
 <div class="dashboard-content-wrapper">
     <div id="sticky-header-shadow-line"></div>
-    <div class="filter-panel filter-panel-open" id="filter-panel">
-        <!-- CLOSED STATE -->
-        <div class="panel-content-closed" id="panel-closed">
+    <div class="filter-panel" id="filter-panel">
+        <div class="filter-bar" id="filter-bar">
             <div class="panel-left">
-                <img src="{{ url_for('static', filename='filter_Close.svg') }}" class="filter-icon-toggle" id="filter-icon-closed" alt="Filter">
-                <span class="deals-found-text" id="deal-counter-closed">0 Deals Found</span>
+                <img src="{{ url_for('static', filename='filter_Open.svg') }}" class="filter-icon-toggle" id="filter-icon-toggle" alt="Filter">
+                <span class="deals-found-text" id="deal-counter">0 Deals Found</span>
             </div>
             <div class="panel-right">
                 <span class="new-deals-text" id="new-deals-text" style="display: none;">0 New Deals found</span>
-                <a href="#" class="refresh-link-panel" id="refresh-link-closed">
+                <a href="#" class="refresh-link-panel" id="refresh-link">
                     <img src="{{ url_for('static', filename='refresh.svg') }}" alt="Refresh">
-                    <span class="refresh-text-white" id="refresh-text-closed">Refresh Now</span>
+                    <span class="refresh-text-white" id="refresh-text">Refresh Now</span>
                 </a>
             </div>
         </div>
 
-        <!-- OPEN STATE -->
-        <div class="panel-content-open" id="panel-open">
-            <div class="panel-left">
-                 <img src="{{ url_for('static', filename='filter_Open.svg') }}" class="filter-icon-toggle" id="filter-icon-open" alt="Filter">
-                 <form id="filter-form-new" class="sliders-wrapper">
-                     <!-- Min. Below Avg. -->
-                     <div class="filter-item">
-                        <label for="percent_down_slider">Min. Below Avg.: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
-                        <div class="slider-container-new">
-                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
-                            <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
-                        </div>
+        <div class="filter-dropdown" id="filter-dropdown" style="display: none;">
+             <form id="filter-form-new" class="sliders-wrapper">
+                 <!-- Min. Below Avg. -->
+                 <div class="filter-item">
+                    <label for="percent_down_slider">Min. Below Avg.: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
+                    <div class="slider-container-new">
+                        <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
+                        <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
                     </div>
-                    <!-- Min. Profit -->
-                    <div class="filter-item">
-                        <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
-                        <div class="slider-container-new">
-                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
-                            <input type="hidden" id="profit" name="profit_gte" value="0">
-                        </div>
+                </div>
+                <!-- Min. Profit -->
+                <div class="filter-item">
+                    <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
+                    <div class="slider-container-new">
+                        <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
+                        <input type="hidden" id="profit" name="profit_gte" value="0">
                     </div>
-                    <!-- Min. Margin -->
-                    <div class="filter-item">
-                        <label for="min_profit_margin_slider">Min. Margin: <span id="profit-margin-value" class="slider-value-readout">Any</span></label>
-                        <div class="slider-container-new">
-                            <input type="range" min="0" max="20" value="0" class="custom-slider" id="min_profit_margin_slider">
-                            <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
-                        </div>
+                </div>
+                <!-- Min. Margin -->
+                <div class="filter-item">
+                    <label for="min_profit_margin_slider">Min. Margin: <span id="profit-margin-value" class="slider-value-readout">Any</span></label>
+                    <div class="slider-container-new">
+                        <input type="range" min="0" max="20" value="0" class="custom-slider" id="min_profit_margin_slider">
+                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
                     </div>
-                    <!-- Max. Sales Rank -->
-                    <div class="filter-item">
-                        <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
-                        <div class="slider-container-new">
-                            <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
-                            <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
-                        </div>
+                </div>
+                <!-- Max. Sales Rank -->
+                <div class="filter-item">
+                    <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
+                    <div class="slider-container-new">
+                        <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
+                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
                     </div>
-                    <!-- Min. Deal Trust -->
-                    <div class="filter-item">
-                        <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
-                        <div class="slider-container-new">
-                            <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
-                            <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
-                        </div>
+                </div>
+                <!-- Min. Deal Trust -->
+                <div class="filter-item">
+                    <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
+                    <div class="slider-container-new">
+                        <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
+                        <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
                     </div>
-                    <!-- Min. Seller Trust -->
-                    <div class="filter-item">
-                        <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
-                        <div class="slider-container-new">
-                            <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
-                            <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
-                        </div>
+                </div>
+                <!-- Min. Seller Trust -->
+                <div class="filter-item">
+                    <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
+                    <div class="slider-container-new">
+                        <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
+                        <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
                     </div>
+                </div>
 
-                     <!-- New Checkboxes -->
-                     <div class="checkboxes-wrapper">
-                         <div class="checkbox-item">
-                             <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
-                             <label for="hide_gated">Hide Gated</label>
-                         </div>
-                         <div class="checkbox-item">
-                             <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
-                             <label for="hide_amz">Hide AMZ Offers</label>
-                         </div>
+                 <!-- New Checkboxes -->
+                 <div class="checkboxes-wrapper">
+                     <div class="checkbox-item">
+                         <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
+                         <label for="hide_gated">Hide Gated</label>
                      </div>
-                 </form>
-            </div>
-            <div class="panel-right-buttons">
+                     <div class="checkbox-item">
+                         <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
+                         <label for="hide_amz">Hide AMZ Offers</label>
+                     </div>
+                 </div>
+             </form>
+             <div class="panel-right-buttons">
                 <button type="button" class="filter-btn" id="btn-apply">Apply</button>
                 <button type="button" class="filter-btn" id="btn-reset">Reset</button>
             </div>
@@ -203,8 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnApply = document.getElementById('btn-apply');
     const btnReset = document.getElementById('btn-reset');
     const filterPanel = document.getElementById('filter-panel');
-    const filterIconClosed = document.getElementById('filter-icon-closed');
-    const filterIconOpen = document.getElementById('filter-icon-open');
+    const filterDropdown = document.getElementById('filter-dropdown');
+    const filterIconToggle = document.getElementById('filter-icon-toggle');
     const tooltip = document.getElementById('custom-tooltip');
 
     const salesRankSlider = document.getElementById('max_sales_rank_slider');
@@ -234,9 +229,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const hideGatedInput = document.getElementById('hide_gated');
     const hideAmzInput = document.getElementById('hide_amz');
 
-    const dealCounterClosed = document.getElementById('deal-counter-closed');
-    const refreshLinkClosed = document.getElementById('refresh-link-closed');
-    const refreshTextClosed = document.getElementById('refresh-text-closed');
+    const dealCounter = document.getElementById('deal-counter');
+    const refreshLink = document.getElementById('refresh-link');
+    const refreshText = document.getElementById('refresh-text');
     const newDealsText = document.getElementById('new-deals-text');
 
     // --- New Slider Logic ---
@@ -812,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const dealCount = pagination.total_records || 0;
         currentTotalRecords = dealCount; // Update global tracker with current FILTERED count
-        dealCounterClosed.textContent = `${dealCount.toLocaleString()} Deals Found`;
+        dealCounter.textContent = `${dealCount.toLocaleString()} Deals Found`;
 
         if (totalPages <= 1) return;
 
@@ -864,13 +859,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleFilterPanel(open) {
         localStorage.setItem('filterPanelOpen', open);
         if (open) {
-            filterPanel.classList.remove('filter-panel-closed');
-            filterPanel.classList.add('filter-panel-open');
-            document.documentElement.style.setProperty('--filter-panel-height', '100px');
+            filterDropdown.style.display = 'block';
+            filterIconToggle.src = "{{ url_for('static', filename='filter_Close.svg') }}";
         } else {
-            filterPanel.classList.remove('filter-panel-open');
-            filterPanel.classList.add('filter-panel-closed');
-            document.documentElement.style.setProperty('--filter-panel-height', '43px');
+            filterDropdown.style.display = 'none';
+            filterIconToggle.src = "{{ url_for('static', filename='filter_Open.svg') }}";
         }
     }
 
@@ -881,8 +874,10 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleFilterPanel(isOpen);
     }
 
-    filterIconClosed.addEventListener('click', () => toggleFilterPanel(true));
-    filterIconOpen.addEventListener('click', () => toggleFilterPanel(false));
+    filterIconToggle.addEventListener('click', () => {
+         const isCurrentlyOpen = filterDropdown.style.display !== 'none';
+         toggleFilterPanel(!isCurrentlyOpen);
+    });
 
     // Initialize state on load
     initFilterPanelState();
@@ -996,19 +991,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Refresh Logic ---
     let currentTotalRecords = 0;
 
-    refreshLinkClosed.addEventListener('click', async (e) => {
+    refreshLink.addEventListener('click', async (e) => {
         e.preventDefault();
-        refreshTextClosed.textContent = 'Refreshing...';
+        refreshText.textContent = 'Refreshing...';
 
         try {
             await fetchDeals(currentPage, currentSort.by, currentSort.order);
-            refreshTextClosed.textContent = 'Refresh Now';
+            refreshText.textContent = 'Refresh Now';
             newDealsText.textContent = '0 New Deals found'; // Reset new count
             newDealsText.style.display = 'none'; // Hide it
         } catch (err) {
             console.error('Refresh failed:', err);
-            refreshTextClosed.textContent = 'Refresh Failed';
-            setTimeout(() => { refreshTextClosed.textContent = 'Refresh Now'; }, 3000);
+            refreshText.textContent = 'Refresh Failed';
+            setTimeout(() => { refreshText.textContent = 'Refresh Now'; }, 3000);
         }
     });
 

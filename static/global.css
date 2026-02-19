@@ -2102,74 +2102,69 @@ body.home-background::before {
     width: 100%;
     max-width: 1200px; /* User Req: Max 1200px */
     background-color: transparent;
-    border: 1px solid #000000;
-    border-radius: 8px;
     margin: 0 auto; /* Centered horizontally */
     box-sizing: border-box;
-    transition: height 0.3s ease;
-    overflow: hidden;
     /* Sticky Positioning */
     position: sticky;
     top: 134px;
     z-index: var(--filter-panel-z);
-
-     /* Approx 135px from top given header height ~120px */
+    /* Approx 135px from top given header height ~120px */
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.filter-panel::before {
+.filter-bar {
+    height: 43px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1f293c; /* Match visual layer */
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 0 18px; /* Match previous padding */
+    position: relative;
+    z-index: 201; /* Ensure above dropdown */
+    box-sizing: border-box;
+}
+
+.filter-bar::before {
     content: '';
     position: absolute;
     inset: 0;
     background-color: #13161a; /* Blocker: Site Background */
     z-index: -2; /* Bottom Layer */
-    border-radius: 0; /* Square corners to block bleed-through */
+    border-radius: 8px; /* Match bar radius */
 }
 
-.filter-panel::after {
-    content: '';
+/* Dropdown Container */
+.filter-dropdown {
     position: absolute;
-    inset: 0;
-    background-color: #1f293c; /* Visual: Panel Background */
-    z-index: -1; /* Middle Layer */
-    border-radius: 8px; /* Rounded Corners */
-}
-
-.filter-panel-closed {
-    height: 43px;
-}
-
-.filter-panel-open {
-    height: 100px;
-    min-height: 100px;
-}
-
-/* Common Flex Layouts */
-.panel-content-closed, .panel-content-open {
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #1f293c;
+    z-index: 200;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    border: 1px solid #000000;
+    border-top: 1px solid #336699; /* Blue separator */
+    border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+    padding: 10px 16px 10px 18px; /* Match open state padding */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
-    box-sizing: border-box;
+    min-height: 57px; /* Adjust height as needed */
+    margin-top: 0;
+    flex-wrap: wrap; /* Allow wrapping */
 }
 
-.panel-content-closed {
-    padding: 0 18px 0 18px;
-}
-
-.panel-content-open {
-    padding: 0 16px 0 18px; /* 16px from right edge */
-    /* Padding-top removed for better vertical centering via flexbox */
-}
-
-/* Hide content based on state */
-.filter-panel-closed .panel-content-open {
-    display: none;
-}
-.filter-panel-open .panel-content-closed {
-    display: none;
+.filter-dropdown::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a; /* Blocker */
+    z-index: -2;
+    border-radius: 0 0 8px 8px;
 }
 
 /* Left Side: Icon & Text */
@@ -2183,15 +2178,7 @@ body.home-background::before {
     width: 38px;
     height: 18px;
     cursor: pointer;
-    margin-right: 0;
-}
-
-/* Open state padding adjustment */
-.filter-panel-open .filter-icon-toggle {
-    margin-right: 20px; /* Padding reduced to 20px */
-}
-.filter-panel-closed .filter-icon-toggle {
-    margin-right: 16px; /* Padding of 16px between the filter icon and the text */
+    margin-right: 16px; /* Default spacing */
 }
 
 /* Closed State Text */
