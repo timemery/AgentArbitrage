@@ -36,6 +36,10 @@ class TokenManager:
         self.BURST_THRESHOLD = 280
         self.MAX_DEFICIT = -180  # Safety limit to prevent Keepa API lockout
 
+        # Soft Buffer & Stall Detection
+        self.SOFT_BUFFER_FLOOR = 20
+        self.STALL_THRESHOLD = 290
+
         # Throttling for sync calls (to prevent drain)
         self.last_sync_request_timestamp = 0
 
@@ -64,6 +68,17 @@ class TokenManager:
         # Try to load initial state from Redis
         self._load_state_from_redis()
         self._adjust_burst_threshold()
+
+    def emit_heartbeat(self):
+        """
+        Signals that the worker is active to prevent 'Stall Detection' timeouts.
+        """
+        if self.redis_client:
+            try:
+                self.redis_client.set("keepa_worker_last_heartbeat", str(time.time()))
+            except Exception as e:
+                # Non-critical failure
+                pass
 
     def _adjust_burst_threshold(self):
         """
@@ -190,6 +205,23 @@ class TokenManager:
 
         cost_int = math.ceil(estimated_cost)
 
+        # Soft Floor Check
+        # If tokens are running low (below 20), we allow THIS call to proceed (Graceful Stop),
+        # but we trigger Recharge Mode so the NEXT call will wait.
+        skip_recharge_check = False
+        if self.tokens < self.SOFT_BUFFER_FLOOR:
+            # Check if we are already recharging to avoid redundant logs/writes
+            is_recharging = False
+            if self.redis_client:
+                is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE) == "1"
+
+            if not is_recharging:
+                logger.warning(f"Soft Floor Reached ({self.tokens:.2f} < {self.SOFT_BUFFER_FLOOR}). allowing current call, but triggering Recharge Mode.")
+                if self.redis_client:
+                    self.redis_client.set(self.REDIS_KEY_RECHARGE_MODE, "1")
+                    self.redis_client.set("keepa_recharge_start_time", str(time.time()))
+                skip_recharge_check = True
+
         while True:
             # 0. Check Recharge Mode (Redis)
             # If we are in "Recharge Mode" (low-tier strategy), we must wait until the bucket is full.
@@ -198,7 +230,7 @@ class TokenManager:
             # This prevents "flapping" where a transient rate spike unlocks the system prematurely.
             if self.redis_client:
                 is_recharging = self.redis_client.get(self.REDIS_KEY_RECHARGE_MODE)
-                if is_recharging == "1":
+                if is_recharging == "1" and not skip_recharge_check:
                     # --- SAFETY: Check for Recharge Timeout (Stuck Logic) ---
                     recharge_start_str = self.redis_client.get("keepa_recharge_start_time")
                     start_time = None
@@ -430,6 +462,11 @@ class TokenManager:
 
         remaining = initial_wait
         while remaining > 0:
+            # Heartbeat: Signal we are alive even during long sleeps
+            self.emit_heartbeat()
+            if initial_wait > 60:
+                logger.info(f"[Heartbeat] Waiting for tokens... Current: {self.tokens:.2f}. Target: {target}. Remaining: {remaining}s")
+
             sleep_chunk = min(remaining, 300) # Max sleep 5 mins at a time
             time.sleep(sleep_chunk)
             remaining -= sleep_chunk
@@ -472,6 +509,10 @@ class TokenManager:
         if status_data and 'tokensLeft' in status_data:
             refill_rate = status_data.get('refillRate')
             self._sync_tokens_from_response(status_data['tokensLeft'], refill_rate=refill_rate)
+
+            # Stall Detection
+            if self.tokens > self.STALL_THRESHOLD:
+                logger.warning(f"POTENTIAL STALL: Tokens at Max Capacity ({self.tokens}). Is the worker stuck?")
         else:
             logger.error("Failed to sync tokens. API did not return valid token data.")
 
