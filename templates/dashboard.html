@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleFilterPanel(open) {
         localStorage.setItem('filterPanelOpen', open);
         if (open) {
-            filterDropdown.style.display = 'block';
+            filterDropdown.style.display = 'flex';
             filterIconToggle.src = "{{ url_for('static', filename='filter_Close.svg') }}";
         } else {
             filterDropdown.style.display = 'none';
