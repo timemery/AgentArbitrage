@@ -23,64 +23,99 @@
 
         <div class="filter-dropdown" id="filter-dropdown" style="display: none;">
              <form id="filter-form-new" class="sliders-wrapper">
-                 <!-- Min. Below Avg. -->
-                 <div class="filter-item">
-                    <label for="percent_down_slider">Min. Below Avg.: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
-                    <div class="slider-container-new">
-                        <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
-                        <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
-                    </div>
-                </div>
-                <!-- Min. Profit -->
-                <div class="filter-item">
-                    <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
-                    <div class="slider-container-new">
-                        <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
-                        <input type="hidden" id="profit" name="profit_gte" value="0">
-                    </div>
-                </div>
-                <!-- Min. Margin -->
-                <div class="filter-item">
-                    <label for="min_profit_margin_slider">Min. Margin: <span id="profit-margin-value" class="slider-value-readout">Any</span></label>
-                    <div class="slider-container-new">
-                        <input type="range" min="0" max="20" value="0" class="custom-slider" id="min_profit_margin_slider">
-                        <input type="hidden" id="min_profit_margin" name="margin_gte" value="0">
-                    </div>
-                </div>
-                <!-- Max. Sales Rank -->
-                <div class="filter-item">
-                    <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
-                    <div class="slider-container-new">
-                        <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
-                        <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
-                    </div>
-                </div>
-                <!-- Min. Deal Trust -->
-                <div class="filter-item">
-                    <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
-                    <div class="slider-container-new">
-                        <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
-                        <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
-                    </div>
-                </div>
-                <!-- Min. Seller Trust -->
-                <div class="filter-item">
-                    <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
-                    <div class="slider-container-new">
-                        <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
-                        <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
-                    </div>
-                </div>
-
-                 <!-- New Checkboxes -->
-                 <div class="checkboxes-wrapper">
-                     <div class="checkbox-item">
-                         <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
-                         <label for="hide_gated">Hide Gated</label>
+                 <div class="filter-group-column">
+                     <h4 class="filter-group-header">Financials</h4>
+                     <div class="filter-group-row">
+                        <!-- Min. Profit -->
+                        <div class="filter-item">
+                            <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
+                                <input type="hidden" id="profit" name="profit_gte" value="0">
+                            </div>
+                        </div>
+                        <!-- Min. ROI (Replaced Margin) -->
+                        <div class="filter-item">
+                            <label for="roi_slider">Min. ROI: <span id="roi-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="20" value="0" class="custom-slider" id="roi_slider">
+                                <input type="hidden" id="roi" name="roi_gte" value="0">
+                            </div>
+                        </div>
+                         <!-- Min. Below Avg. -->
+                         <div class="filter-item">
+                            <label for="percent_down_slider">Min. Below Avg: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
+                                <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
+                            </div>
+                        </div>
                      </div>
-                     <div class="checkbox-item">
-                         <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
-                         <label for="hide_amz">Hide AMZ Offers</label>
+                 </div>
+
+                 <div class="filter-group-column">
+                     <h4 class="filter-group-header">Velocity & Demand</h4>
+                     <div class="filter-group-row">
+                        <!-- Min. Drops -->
+                        <div class="filter-item">
+                            <label for="drops_slider">Min. Drops (30d): <span id="drops-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="20" value="0" class="custom-slider" id="drops_slider">
+                                <input type="hidden" id="drops_30" name="drops_30_gte" value="0">
+                            </div>
+                        </div>
+                        <!-- Max. Sales Rank -->
+                        <div class="filter-item">
+                            <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
+                                <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                            </div>
+                        </div>
+                     </div>
+                 </div>
+
+                 <div class="filter-group-column">
+                     <h4 class="filter-group-header">Trust & Safety</h4>
+                     <div class="filter-group-row">
+                        <!-- Min. Deal Trust -->
+                        <div class="filter-item">
+                            <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
+                                <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
+                            </div>
+                        </div>
+                        <!-- Min. Seller Trust -->
+                        <div class="filter-item">
+                            <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
+                            <div class="slider-container-new">
+                                <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
+                                <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
+                            </div>
+                        </div>
+                     </div>
+                 </div>
+
+                 <div class="filter-group-column">
+                     <!-- Empty header for spacing/alignment if needed, or conditions header -->
+                     <!-- Checkboxes -->
+                     <div class="filter-group-row checkboxes-group" style="margin-top: 25px;"> <!-- Align with sliders roughly -->
+                         <div class="checkboxes-wrapper">
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
+                                 <label for="hide_gated">Hide Gated</label>
+                             </div>
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
+                                 <label for="hide_amz">Hide AMZ</label>
+                             </div>
+                              <!-- Optimal Filters Checkbox -->
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="optimal_filters" name="optimal_filters" class="custom-checkbox">
+                                 <label for="optimal_filters">Optimal Filters</label>
+                             </div>
+                         </div>
                      </div>
                  </div>
              </form>
@@ -206,9 +241,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const salesRankValueSpan = document.getElementById('sales-rank-value');
     const hiddenSalesRankInput = document.getElementById('max_sales_rank');
 
-    const profitMarginSlider = document.getElementById('min_profit_margin_slider');
-    const profitMarginValueSpan = document.getElementById('profit-margin-value');
-    const hiddenProfitMarginInput = document.getElementById('min_profit_margin');
+    // New ROI Slider
+    const roiSlider = document.getElementById('roi_slider');
+    const roiValueSpan = document.getElementById('roi-value');
+    const hiddenRoiInput = document.getElementById('roi');
+
+    // New Drops Slider
+    const dropsSlider = document.getElementById('drops_slider');
+    const dropsValueSpan = document.getElementById('drops-value');
+    const hiddenDropsInput = document.getElementById('drops_30');
 
     const dealTrustSlider = document.getElementById('deal_trust_slider');
     const dealTrustValueSpan = document.getElementById('deal-trust-value');
@@ -228,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const hideGatedInput = document.getElementById('hide_gated');
     const hideAmzInput = document.getElementById('hide_amz');
+    const optimalFiltersCheckbox = document.getElementById('optimal_filters');
 
     const dealCounter = document.getElementById('deal-counter');
     const refreshLink = document.getElementById('refresh-link');
@@ -237,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- New Slider Logic ---
     const salesRankSteps = [
         { value: 10000, label: '10k' }, { value: 50000, label: '50k' }, { value: 100000, label: '100k' },
-        { value: 200000, label: '200k' }, { value: 300000, label: '300k' }, { value: 400000, label: '400k' },
+        { value: 200000, label: '200k' }, { value: 250000, label: '250k' }, { value: 300000, label: '300k' }, { value: 400000, label: '400k' },
         { value: 500000, label: '500k' }, { value: 600000, label: '600k' }, { value: 700000, label: '700k' },
         { value: 800000, label: '800k' }, { value: 900000, label: '900k' }, { value: 1000000, label: '1m' },
         { value: 1500000, label: '1.5m' }, { value: 2000000, label: '2m' }, { value: 2500000, label: '2.5m' },
@@ -245,9 +287,9 @@ document.addEventListener('DOMContentLoaded', function() {
         { value: 4500000, label: '4.5m' }, { value: 5000000, label: '5m' }, { value: Infinity, label: 'Any' }
     ];
 
-    const profitMarginSteps = [
+    const roiSteps = [
         { value: 0, label: 'Any' }, { value: 10, label: '10%' }, { value: 20, label: '20%' }, { value: 30, label: '30%' },
-        { value: 40, label: '40%' }, { value: 50, label: '50%' }, { value: 60, label: '60%' },
+        { value: 35, label: '35%' }, { value: 40, label: '40%' }, { value: 50, label: '50%' }, { value: 60, label: '60%' },
         { value: 70, label: '70%' }, { value: 80, label: '80%' }, { value: 90, label: '90%' },
         { value: 100, label: '100%' }, { value: 150, label: '150%' }, { value: 200, label: '200%' },
         { value: 250, label: '250%' }, { value: 300, label: '300%' }, { value: 350, label: '350%' },
@@ -255,17 +297,30 @@ document.addEventListener('DOMContentLoaded', function() {
         { value: Infinity, label: '∞' }
     ];
 
-    // Set initial slider values based on defaults
-    const initialSalesRankIndex = salesRankSteps.findIndex(s => s.value === Infinity);
-    salesRankSlider.value = initialSalesRankIndex;
-    salesRankValueSpan.textContent = salesRankSteps[initialSalesRankIndex].label;
-    hiddenSalesRankInput.value = (salesRankSteps[initialSalesRankIndex].value === Infinity) ? '99999999' : salesRankSteps[initialSalesRankIndex].value;
+    const dropsSteps = [
+        { value: 0, label: 'Any' }, { value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' },
+        { value: 5, label: '5' }, { value: 10, label: '10' }, { value: 15, label: '15' }, { value: 20, label: '20' },
+        { value: 30, label: '30' }, { value: 50, label: '50' }, { value: 75, label: '75' }, { value: 100, label: '100+' }
+    ];
 
-    const initialProfitMarginIndex = profitMarginSteps.findIndex(p => p.value === 0);
-    if (initialProfitMarginIndex !== -1) {
-        profitMarginSlider.value = initialProfitMarginIndex;
-        profitMarginValueSpan.textContent = profitMarginSteps[initialProfitMarginIndex].label;
-        hiddenProfitMarginInput.value = profitMarginSteps[initialProfitMarginIndex].value;
+    // Helper to set slider by value
+    function setSliderByValue(slider, hiddenInput, valueSpan, steps, targetValue) {
+        const stepIndex = steps.findIndex(s => s.value === targetValue);
+        if (stepIndex !== -1) {
+            slider.value = stepIndex;
+            valueSpan.textContent = steps[stepIndex].label;
+            hiddenInput.value = (steps[stepIndex].value === Infinity) ? ((slider === salesRankSlider) ? '99999999' : '9999') : steps[stepIndex].value;
+        } else if (targetValue === Infinity || targetValue === '99999999' || targetValue === '9999') {
+             // Handle Any
+             const anyIndex = steps.findIndex(s => s.value === Infinity || s.value === 0); // Logic varies slightly
+             // Actually, find explicit Any
+             const exactAny = steps.findIndex(s => s.label === 'Any');
+             if (exactAny !== -1) {
+                slider.value = exactAny;
+                valueSpan.textContent = 'Any';
+                hiddenInput.value = (steps[exactAny].value === Infinity) ? ((slider === salesRankSlider) ? '99999999' : '9999') : steps[exactAny].value;
+             }
+        }
     }
 
 
@@ -460,7 +515,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Manually get values from the form elements, including hidden inputs
         // const keyword = document.getElementById('keyword_search').value; // Removed
         const salesRank = hiddenSalesRankInput.value;
-        const profitMargin = hiddenProfitMarginInput.value;
+        const roi = hiddenRoiInput.value; // Replaced Margin
+        const drops = hiddenDropsInput.value; // New
         const dealTrust = hiddenDealTrustInput.value;
         const sellerTrust = hiddenSellerTrustInput.value;
         const profit = hiddenProfitInput.value;
@@ -470,7 +526,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Only add filters if they deviate from "Show All" default logic ("Any")
         if (salesRank && salesRank !== '99999999') filters['sales_rank_current_lte'] = salesRank;
-        if (profitMargin !== '') filters['margin_gte'] = profitMargin; // Send 0 to filter negatives
+        if (roi !== '' && roi !== '0') filters['roi_gte'] = roi;
+        if (drops !== '' && drops !== '0') filters['drops_30_gte'] = drops;
         if (dealTrust && dealTrust !== '0') filters['deal_trust_gte'] = dealTrust;
         if (sellerTrust && sellerTrust !== '0') filters['seller_trust_gte'] = sellerTrust;
         if (profit !== '') filters['profit_gte'] = profit; // Send 0 to filter negatives
@@ -885,54 +942,180 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize state on load
     initFilterPanelState();
 
+    // --- Persistence & Optimal Logic ---
+
+    // Save state to LocalStorage
+    function saveFilterState() {
+        const state = {
+            salesRank: hiddenSalesRankInput.value,
+            roi: hiddenRoiInput.value,
+            drops: hiddenDropsInput.value,
+            dealTrust: hiddenDealTrustInput.value,
+            sellerTrust: hiddenSellerTrustInput.value,
+            profit: hiddenProfitInput.value,
+            percentDown: hiddenPercentDownInput.value,
+            hideGated: hideGatedInput.checked,
+            hideAmz: hideAmzInput.checked,
+            optimal: optimalFiltersCheckbox.checked
+        };
+        localStorage.setItem('dashboard_filter_state', JSON.stringify(state));
+    }
+
+    // Load state from LocalStorage
+    function loadFilterState() {
+        const saved = localStorage.getItem('dashboard_filter_state');
+        if (!saved) {
+            // Default Init (Already set by default HTML/JS, but we call optimal check logic if needed)
+            // Just ensure sliders are at defaults
+            setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, Infinity);
+            setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 0);
+            setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 0);
+            return;
+        }
+
+        try {
+            const state = JSON.parse(saved);
+
+            // Restore Sliders
+            if (state.salesRank) setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, parseInt(state.salesRank));
+            if (state.roi) setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, parseInt(state.roi));
+            if (state.drops) setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, parseInt(state.drops));
+
+            if (state.dealTrust) {
+                 dealTrustSlider.value = state.dealTrust;
+                 dealTrustSlider.dispatchEvent(new Event('input')); // Trigger visual update
+            }
+            if (state.sellerTrust) {
+                 sellerTrustSlider.value = state.sellerTrust;
+                 sellerTrustSlider.dispatchEvent(new Event('input'));
+            }
+             if (state.profit) {
+                 profitSlider.value = state.profit;
+                 profitSlider.dispatchEvent(new Event('input'));
+            }
+             if (state.percentDown) {
+                 percentDownSlider.value = state.percentDown;
+                 percentDownSlider.dispatchEvent(new Event('input'));
+            }
+
+            // Restore Checkboxes
+            hideGatedInput.checked = state.hideGated || false;
+            hideAmzInput.checked = state.hideAmz || false;
+            optimalFiltersCheckbox.checked = state.optimal || false;
+
+        } catch (e) {
+            console.error("Failed to load filter state", e);
+        }
+    }
+
+    // Optimal Filters Logic
+    function applyOptimalFilters() {
+        if (!optimalFiltersCheckbox.checked) return;
+
+        // "Smart" Preset Values:
+        // Profit: $4.00, ROI: 35%, Drops: 1, Rank: 250,000, Deal Trust: 70%, Seller Trust: Any (0), Hide Gated: ON, Hide AMZ: ON
+
+        profitSlider.value = 4;
+        profitSlider.dispatchEvent(new Event('input'));
+
+        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 35);
+        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 1);
+        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 250000);
+
+        dealTrustSlider.value = 70;
+        dealTrustSlider.dispatchEvent(new Event('input'));
+
+        sellerTrustSlider.value = 0; // Any
+        sellerTrustSlider.dispatchEvent(new Event('input'));
+
+        hideGatedInput.checked = true;
+        hideAmzInput.checked = true;
+    }
+
+    // Event Listener for Optimal Filters
+    optimalFiltersCheckbox.addEventListener('change', () => {
+        if (optimalFiltersCheckbox.checked) {
+            applyOptimalFilters();
+            fetchDeals(currentPage, currentSort.by, currentSort.order); // Auto-apply? Plan says "Action: moves sliders... leaving them adjustable"
+            // Usually we wait for "Apply" but instant feedback is nice.
+            // The requirement says "Checking the box moves the sliders".
+            // It doesn't explicitly say it fetches. But users expect it.
+            // I'll leave fetch to the Apply button to be consistent with other filters unless requested otherwise.
+            // Wait, "Visual Feedback: The 'Optimal' checkbox remains checked as long as values match".
+            // So if I check it, it sets values.
+        }
+    });
+
+    // Detect deviation from Optimal
+    function checkOptimalDeviation() {
+        if (!optimalFiltersCheckbox.checked) return;
+
+        const currentProfit = parseInt(hiddenProfitInput.value);
+        const currentRoi = parseInt(hiddenRoiInput.value);
+        const currentDrops = parseInt(hiddenDropsInput.value);
+        const currentRank = parseInt(hiddenSalesRankInput.value);
+        const currentDealTrust = parseInt(hiddenDealTrustInput.value);
+        const currentSellerTrust = parseInt(hiddenSellerTrustInput.value);
+        const gated = hideGatedInput.checked;
+        const amz = hideAmzInput.checked;
+
+        // Optimal Definition
+        const isOptimal = (
+            currentProfit === 4 &&
+            currentRoi === 35 &&
+            currentDrops === 1 &&
+            currentRank === 250000 &&
+            currentDealTrust === 70 &&
+            currentSellerTrust === 0 &&
+            gated === true &&
+            amz === true
+        );
+
+        if (!isOptimal) {
+            optimalFiltersCheckbox.checked = false;
+        }
+    }
+
     btnApply.addEventListener('click', () => {
         currentPage = 1;
+        saveFilterState(); // Save on Apply
         fetchDeals(currentPage, currentSort.by, currentSort.order);
-        // Removed toggleFilterPanel(false) to respect user preference
     });
 
     btnReset.addEventListener('click', (e) => {
-        // Prevent default form reset to handle it manually for better control
         e.preventDefault();
 
         // Reset Sliders UI
-        const initialSalesRankIndex = salesRankSteps.findIndex(s => s.value === Infinity);
-        salesRankSlider.value = initialSalesRankIndex;
-        salesRankValueSpan.textContent = 'Any';
-
-        profitMarginSlider.value = 0; // Index 0 is 0%
-        profitMarginValueSpan.textContent = 'Any';
+        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, Infinity);
+        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 0);
+        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 0);
 
         dealTrustSlider.value = 0;
         dealTrustValueSpan.textContent = 'Any';
+        hiddenDealTrustInput.value = 0;
 
         sellerTrustSlider.value = 0;
         sellerTrustValueSpan.textContent = 'Any';
+        hiddenSellerTrustInput.value = 0;
 
         profitSlider.value = 0;
         profitValueSpan.textContent = 'Any';
+        hiddenProfitInput.value = 0;
 
         percentDownSlider.value = 0;
         percentDownValueSpan.textContent = 'Any';
-
-        // Reset Hidden Inputs to defaults
-        hiddenSalesRankInput.value = '99999999';
-        hiddenProfitMarginInput.value = '0';
-        hiddenDealTrustInput.value = '0';
-        hiddenSellerTrustInput.value = '0';
-        hiddenProfitInput.value = '0';
-        hiddenPercentDownInput.value = '0';
+        hiddenPercentDownInput.value = 0;
 
         // Reset Checkboxes
         hideGatedInput.checked = false;
         hideAmzInput.checked = false;
+        optimalFiltersCheckbox.checked = false;
 
         // Reset State
         currentPage = 1;
         currentSort = { by: 'id', order: 'asc' };
 
-        // Do NOT fetch immediately on reset as per requirements
-        // "reset them to default 'Any' and then clicks the 'Apply' button"
+        saveFilterState(); // Save reset state
     });
 
     salesRankSlider.addEventListener('input', () => {
@@ -940,13 +1123,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const step = salesRankSteps[stepIndex];
         salesRankValueSpan.textContent = step.label;
         hiddenSalesRankInput.value = (step.value === Infinity) ? '99999999' : step.value;
+        checkOptimalDeviation();
     });
 
-    profitMarginSlider.addEventListener('input', () => {
-        const stepIndex = parseInt(profitMarginSlider.value);
-        const step = profitMarginSteps[stepIndex];
-        profitMarginValueSpan.textContent = step.label;
-        hiddenProfitMarginInput.value = (step.value === Infinity) ? '9999' : step.value;
+    roiSlider.addEventListener('input', () => {
+        const stepIndex = parseInt(roiSlider.value);
+        const step = roiSteps[stepIndex];
+        roiValueSpan.textContent = step.label;
+        hiddenRoiInput.value = (step.value === Infinity) ? '9999' : step.value;
+        checkOptimalDeviation();
+    });
+
+    dropsSlider.addEventListener('input', () => {
+        const stepIndex = parseInt(dropsSlider.value);
+        const step = dropsSteps[stepIndex];
+        dropsValueSpan.textContent = step.label;
+        hiddenDropsInput.value = (step.value === Infinity) ? '0' : step.value; // Any drops usually means >=0, but filter ignores 0
+        checkOptimalDeviation();
     });
 
     dealTrustSlider.addEventListener('input', () => {
@@ -957,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dealTrustValueSpan.textContent = val + '%';
         }
         hiddenDealTrustInput.value = val;
+        checkOptimalDeviation();
     });
 
     sellerTrustSlider.addEventListener('input', () => {
@@ -967,6 +1161,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sellerTrustValueSpan.textContent = val + '/10';
         }
         hiddenSellerTrustInput.value = val;
+        checkOptimalDeviation();
     });
 
     profitSlider.addEventListener('input', () => {
@@ -979,6 +1174,7 @@ document.addEventListener('DOMContentLoaded', function() {
             profitValueSpan.textContent = '$' + val;
         }
         hiddenProfitInput.value = val;
+        checkOptimalDeviation();
     });
 
     percentDownSlider.addEventListener('input', () => {
@@ -990,6 +1186,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         hiddenPercentDownInput.value = val;
     });
+
+    hideGatedInput.addEventListener('change', checkOptimalDeviation);
+    hideAmzInput.addEventListener('change', checkOptimalDeviation);
+
+    // Load state on init
+    loadFilterState();
 
     // --- Refresh Logic ---
     let currentTotalRecords = 0;

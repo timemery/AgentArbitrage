@@ -1155,7 +1155,8 @@ def api_deals():
     # --- Filtering ---
     filters = {
         "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
-        "margin_gte": request.args.get('margin_gte', type=int),
+        "roi_gte": request.args.get('roi_gte', type=int),
+        "drops_30_gte": request.args.get('drops_30_gte', type=int),
         "keyword": request.args.get('keyword', type=str),
         "deal_trust_gte": request.args.get('deal_trust_gte', type=int),
         "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
@@ -1171,9 +1172,18 @@ def api_deals():
     if filters.get("sales_rank_current_lte") is not None:
         where_clauses.append("\"Sales_Rank_Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
-    if filters.get("margin_gte") is not None and filters["margin_gte"] > 0:
-        where_clauses.append("\"Margin\" >= ?")
-        filter_params.append(filters["margin_gte"])
+
+    # New ROI Filter: (Profit / All_in_Cost) * 100
+    if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
+        # Prevent division by zero and negative/zero cost issues by ensuring Cost > 0
+        where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+        filter_params.append(filters["roi_gte"])
+
+    # New Drops Filter
+    if filters.get("drops_30_gte") is not None and filters["drops_30_gte"] > 0:
+        where_clauses.append("\"Sales_Rank_Drops_last_30_days\" >= ?")
+        filter_params.append(filters["drops_30_gte"])
+
     if filters.get("keyword"):
         keyword_like = f"%{filters['keyword']}%"
         keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
@@ -1574,7 +1584,8 @@ def deal_count():
             # Filtering Logic (Same as api_deals)
             filters = {
                 "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
-                "margin_gte": request.args.get('margin_gte', type=int),
+                "roi_gte": request.args.get('roi_gte', type=int),
+                "drops_30_gte": request.args.get('drops_30_gte', type=int),
                 "keyword": request.args.get('keyword', type=str),
                 "deal_trust_gte": request.args.get('deal_trust_gte', type=int),
                 "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
@@ -1608,9 +1619,17 @@ def deal_count():
             if filters.get("sales_rank_current_lte") is not None:
                 where_clauses.append("\"Sales_Rank_Current\" <= ?")
                 filter_params.append(filters["sales_rank_current_lte"])
-            if filters.get("margin_gte") is not None and filters["margin_gte"] > 0:
-                where_clauses.append("\"Margin\" >= ?")
-                filter_params.append(filters["margin_gte"])
+
+            # New ROI Filter
+            if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
+                where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+                filter_params.append(filters["roi_gte"])
+
+            # New Drops Filter
+            if filters.get("drops_30_gte") is not None and filters["drops_30_gte"] > 0:
+                where_clauses.append("\"Sales_Rank_Drops_last_30_days\" >= ?")
+                filter_params.append(filters["drops_30_gte"])
+
             if filters.get("keyword"):
                 keyword_like = f"%{filters['keyword']}%"
                 keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
