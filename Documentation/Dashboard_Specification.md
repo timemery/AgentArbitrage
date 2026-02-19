@@ -185,3 +185,16 @@ The action bar adapts based on the user's restriction status:
 -   **Header:**
     -   `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.
     -   **Header Height:** The main header container (`.main-header`) has a strictly fixed height of `134px`.
+
+### Sticky Header Layout (Critical)
+The data table headers use `position: sticky` and rely on a strict stack of hardcoded `top` offsets. These values are dependent on the fixed height of the `.main-header` (134px) and the `.filter-panel`.
+
+**Component Offsets:**
+1.  **Group Headers:** `top: 177px`
+2.  **Column Headers:** `top: 233px`
+3.  **Sort Arrows:** `top: 264px`
+4.  **Shadow Line:** `top: 289px` (Provides depth cue below sort arrows).
+
+**Dependency Warning:**
+-   The `.filter-panel` MUST have `margin-bottom: 0px`. Any margin here will double the visual spacing (e.g., to 44px) and break the vertical rhythm.
+-   Changing the height of any element in this stack requires manually recalculating all subsequent `top` values.
