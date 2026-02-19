@@ -2774,3 +2774,82 @@ body.home-background::before {
         font-size: 0.8em;
     }
 }
+
+/* Update Filter Panel Layout to Column-based */
+.sliders-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    height: 100%;
+    flex-wrap: wrap; /* Ensure filters wrap on smaller screens */
+    align-content: flex-start;
+    padding-top: 10px; /* Space for headers */
+    padding-bottom: 10px;
+    justify-content: flex-start; /* Align left */
+    flex-grow: 1;
+}
+
+.filter-group-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 5px; /* Space between Header and Row */
+    margin-right: 15px; /* Separation between columns */
+}
+
+.filter-group-header {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #566e9c; /* Requested Color */
+    margin: 0 0 5px 0;
+    padding: 0;
+    text-transform: none; /* Keep natural case */
+}
+
+.filter-group-row {
+    display: flex;
+    flex-direction: row;
+    gap: 15px; /* Space between sliders in a row */
+    align-items: flex-end; /* Align sliders bottom */
+}
+
+/* Adjust filter items to fit new layout */
+.filter-item {
+    margin-bottom: 0; /* Remove extra margin */
+}
+
+/* Specific checkboxes group alignment */
+.checkboxes-group {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure checkboxes wrapper flows correctly */
+.checkboxes-wrapper {
+    margin-left: 0; /* Reset previous margin */
+    gap: 8px;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+/* Mobile Responsiveness for Columns */
+@media (max-width: 1100px) {
+    .sliders-wrapper {
+        flex-direction: column; /* Stack columns vertically on small screens? Or wrap rows? */
+        /* Actually, wrap is already set. */
+        gap: 15px;
+    }
+
+    .filter-group-column {
+        width: 100%; /* Take full width if wrapping */
+        margin-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1); /* Separator */
+        padding-bottom: 10px;
+    }
+
+    .filter-group-row {
+        flex-wrap: wrap; /* Sliders wrap inside the group */
+    }
+}
