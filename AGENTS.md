@@ -173,3 +173,4 @@ Developers often split complex tasks into two stages:
 **Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
 
 *   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **1** (Critically Low < 10/min) to safely fit within the token burst window (40 tokens) without livelock.
+*   **Stall Watchdog:** Use `Diagnostics/watchdog_stall_detector.py` to identify if the worker is stuck (Tokens > 290 and no Heartbeat for 15 mins).

@@ -24,6 +24,7 @@ Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers
 **Key Thresholds:**
 *   **`MIN_TOKEN_THRESHOLD`:** Reduced to **1**. This aggressive setting ensures that as long as we have a positive balance (even 1.0), we can initiate a request.
 *   **`MAX_DEFICIT` (Safety Limit):** Set to **-180**. If a projected request (Current Tokens - Cost) would push the balance below this limit, it is strictly blocked. This prevents hitting Keepa's hard lockout limit of -200, which would ban the API key for 24 hours.
+*   **`SOFT_BUFFER_FLOOR` (Graceful Stop):** Set to **20**. If tokens drop below this floor, the current request is allowed to proceed (Graceful Stop), but "Recharge Mode" is immediately triggered for subsequent requests. This prevents "Hitting the Wall" (0 tokens) and smooths out the stop-start cycle.
 *   **`BURST_THRESHOLD` (Recharge Target):**
     *   **High Refill Rates (>= 10/min):** Target **280** tokens.
     *   **Low Refill Rates (< 10/min):** Target **40** tokens. Waiting for 280 tokens at 5/min takes ~50 minutes, creating a perception of "system stall". Lowering the target to 40 allows for frequent, smaller bursts of activity ("Empty the Bucket" strategy).
@@ -37,6 +38,13 @@ Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers
     *   **Exit Condition:** Wait until tokens reach the dynamic `BURST_THRESHOLD` (40 or 280). This prevents "flapping" (oscillating between 0 and 5 tokens).
 5.  **Recovery Phase (Revert):** If the reservation fails the check and Recharge Mode is not triggered, the worker **Reverts** the transaction and waits.
 6.  **TokenRechargeError (Lock Release):** If the calculated wait time exceeds **60 seconds**, the TokenManager raises a `TokenRechargeError` instead of sleeping. The calling task (Smart Ingestor) catches this exception and **immediately releases the Redis lock**. This allows the Celery worker to process other tasks (like Janitor or Gating Checks) while waiting for tokens to recharge, preventing worker starvation.
+
+### Stall Detection (Watchdog & Heartbeats)
+To prevent "Silent Failures" where a worker hangs but holds the lock/tokens:
+*   **Heartbeats:** The `TokenManager` emits a heartbeat timestamp to Redis (`keepa_worker_last_heartbeat`) during long wait loops and heavy processing tasks.
+*   **Watchdog:** A diagnostic script (`Diagnostics/watchdog_stall_detector.py`) monitors the system.
+    *   **Trigger:** If Tokens > **290** (System Idle) AND Heartbeat > **15 minutes** (Worker Silent).
+    *   **Action:** Automatically executes `kill_everything_force.sh` to restart the system.
 
 ### Resilience & Crash Recovery (Zombie Locks)
 To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
