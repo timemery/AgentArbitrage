@@ -1178,15 +1178,17 @@ def api_deals():
 
         for c in cond_list:
             if c == 'New':
-                where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
+                # Strict check for New to avoid excluding 'New, other' if desired, or exclude all New variations?
+                # Usually 'New' means new condition.
+                where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New' AND \"Condition\" NOT LIKE 'New, %')")
             elif c == 'U-Like New':
-                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
+                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" NOT LIKE '%Used%Like New%')")
             elif c == 'U-Very Good':
-                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
+                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" NOT LIKE '%Used%Very Good%')")
             elif c == 'U-Good':
-                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
+                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" NOT LIKE '%Used%Good%')")
             elif c == 'U-Acceptable':
-                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
+                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" NOT LIKE '%Used%Acceptable%')")
             elif c == 'Collectible':
                 # Exclude anything starting with Collectible or C-
                 where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
@@ -1640,15 +1642,15 @@ def deal_count():
 
                 for c in cond_list:
                     if c == 'New':
-                        where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
+                        where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New' AND \"Condition\" NOT LIKE 'New, %')")
                     elif c == 'U-Like New':
-                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
+                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" NOT LIKE '%Used%Like New%')")
                     elif c == 'U-Very Good':
-                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
+                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" NOT LIKE '%Used%Very Good%')")
                     elif c == 'U-Good':
-                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
+                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" NOT LIKE '%Used%Good%')")
                     elif c == 'U-Acceptable':
-                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
+                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" NOT LIKE '%Used%Acceptable%')")
                     elif c == 'Collectible':
                         where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
 
