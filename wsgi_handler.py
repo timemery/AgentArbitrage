@@ -1201,7 +1201,10 @@ def api_deals():
     # New ROI Filter: (Profit / All_in_Cost) * 100
     if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
         # Prevent division by zero and negative/zero cost issues by ensuring Cost > 0
-        where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+        # Robustly handle currency symbols (e.g., "$15.00") by stripping $ and , before casting
+        sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
+        sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
+        where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= ?)")
         filter_params.append(filters["roi_gte"])
 
     # New Drops Filter
@@ -1230,10 +1233,12 @@ def api_deals():
         filter_params.append(seller_trust_db_value)
 
     # Enforce Profit > 0 by default to exclude negative/zero profit deals
+    # Robustly handle currency symbols
+    sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
     if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
-        where_clauses.append("\"Profit\" > 0")
+        where_clauses.append(f"{sanitized_profit} > 0")
     else:
-        where_clauses.append("\"Profit\" >= ?")
+        where_clauses.append(f"{sanitized_profit} >= ?")
         filter_params.append(filters["profit_gte"])
 
     # Enforce Data Completeness (Global Filters)
@@ -1681,7 +1686,9 @@ def deal_count():
 
             # New ROI Filter
             if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
-                where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+                sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
+                sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
+                where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= ?)")
                 filter_params.append(filters["roi_gte"])
 
             # New Drops Filter
@@ -1707,10 +1714,11 @@ def deal_count():
                 filter_params.append(seller_trust_db_value)
 
             # Enforce Profit > 0 by default to exclude negative/zero profit deals
+            sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
             if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
-                where_clauses.append("\"Profit\" > 0")
+                where_clauses.append(f"{sanitized_profit} > 0")
             else:
-                where_clauses.append("\"Profit\" >= ?")
+                where_clauses.append(f"{sanitized_profit} >= ?")
                 filter_params.append(filters["profit_gte"])
 
             # Enforce Data Completeness (Global Filters) to match api_deals
