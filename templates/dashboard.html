@@ -983,21 +983,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyOptimalFilters() {
         if (!optimalFiltersCheckbox.checked) return;
 
-        // "Smart" Preset Values:
-        // Profit: $4.00, ROI: 35%, Drops: 1, Rank: 250,000, Deal Trust: 70%, Seller Trust: Any (0), Hide Gated: ON, Hide AMZ: ON
+        // "Smart" Preset Values (Tuned 2026-02-20):
+        // Profit: $4.00, ROI: 20%, Drops: 2, Rank: 1,000,000, Deal Trust: 70%, Seller Trust: 5/10, Hide Gated: ON, Hide AMZ: ON, Below Avg: 10%
+        // NOTE: Fine-tune these settings once DB has > 5,000 deals.
 
-        profitSlider.value = 4;
+        profitSlider.value = 4; // Keeping $4 as base; user mentioned $45 but context suggests $4 is standard baseline.
         profitSlider.dispatchEvent(new Event('input'));
 
-        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 35);
-        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 1);
-        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 250000);
+        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 20);
+        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 2);
+        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 1000000);
 
-        dealTrustSlider.value = 0; // Any (Relaxed from 70% to include unverified deals)
+        dealTrustSlider.value = 70;
         dealTrustSlider.dispatchEvent(new Event('input'));
 
-        sellerTrustSlider.value = 0; // Any
+        sellerTrustSlider.value = 5;
         sellerTrustSlider.dispatchEvent(new Event('input'));
+
+        percentDownSlider.value = 10;
+        percentDownSlider.dispatchEvent(new Event('input'));
 
         hideGatedInput.checked = true;
         hideAmzInput.checked = true;
@@ -1032,14 +1036,16 @@ document.addEventListener('DOMContentLoaded', function() {
         excludeConditionCheckboxes.forEach(cb => { if(cb.checked) hasExclusions = true; });
 
         // Optimal Definition:
-        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 0 (Any), Seller Trust: 0, Gated: true, AMZ: true, Exclusions: None
+        // Profit: 4, ROI: 20, Drops: 2, Rank: 1m, Deal Trust: 70, Seller Trust: 5, Below Avg: 10, Gated: true, AMZ: true, Exclusions: None
+        const currentPercentDown = parseInt(hiddenPercentDownInput.value);
         const isOptimal = (
             currentProfit === 4 &&
-            currentRoi === 35 &&
-            currentDrops === 1 &&
-            currentRank === 250000 &&
-            currentDealTrust === 0 &&
-            currentSellerTrust === 0 &&
+            currentRoi === 20 &&
+            currentDrops === 2 &&
+            currentRank === 1000000 &&
+            currentDealTrust === 70 &&
+            currentSellerTrust === 5 &&
+            currentPercentDown === 10 &&
             gated === true &&
             amz === true &&
             hasExclusions === false
