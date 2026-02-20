@@ -984,10 +984,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!optimalFiltersCheckbox.checked) return;
 
         // "Smart" Preset Values (Tuned 2026-02-20):
-        // Profit: $4.00, ROI: 20%, Drops: 2, Rank: 1,000,000, Deal Trust: 70%, Seller Trust: 5/10, Hide Gated: ON, Hide AMZ: ON, Below Avg: 10%
+        // Profit: $45.00, ROI: 20%, Drops: 2, Rank: 1,000,000, Deal Trust: 70%, Seller Trust: 5/10, Hide Gated: ON, Hide AMZ: ON, Below Avg: 10%
         // NOTE: Fine-tune these settings once DB has > 5,000 deals.
 
-        profitSlider.value = 4; // Keeping $4 as base; user mentioned $45 but context suggests $4 is standard baseline.
+        profitSlider.value = 45; // User specifically requested $45 min profit
         profitSlider.dispatchEvent(new Event('input'));
 
         setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 20);
@@ -1036,10 +1036,10 @@ document.addEventListener('DOMContentLoaded', function() {
         excludeConditionCheckboxes.forEach(cb => { if(cb.checked) hasExclusions = true; });
 
         // Optimal Definition:
-        // Profit: 4, ROI: 20, Drops: 2, Rank: 1m, Deal Trust: 70, Seller Trust: 5, Below Avg: 10, Gated: true, AMZ: true, Exclusions: None
+        // Profit: 45, ROI: 20, Drops: 2, Rank: 1m, Deal Trust: 70, Seller Trust: 5, Below Avg: 10, Gated: true, AMZ: true, Exclusions: None
         const currentPercentDown = parseInt(hiddenPercentDownInput.value);
         const isOptimal = (
-            currentProfit === 4 &&
+            currentProfit === 45 &&
             currentRoi === 20 &&
             currentDrops === 2 &&
             currentRank === 1000000 &&

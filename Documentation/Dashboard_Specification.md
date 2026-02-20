@@ -58,7 +58,7 @@ All sliders utilize a standardized "Any" state logic:
 ### Checkbox Filters
 -   **Optimal Filters (Magic Button):**
     -   Automatically applies a "Smart" preset designed to find high-quality deals.
-    -   **Settings (Feb 2026 Tuned):** Profit >= $4, ROI >= 20%, Rank <= 1M, Drops >= 2, Trust >= 70%*, Seller >= 5/10, Below Avg >= 10%, Hide Gated, Hide AMZ.
+    -   **Settings (Feb 2026 Tuned):** Profit >= $45, ROI >= 20%, Rank <= 1M, Drops >= 2, Trust >= 70%*, Seller >= 5/10, Below Avg >= 10%, Hide Gated, Hide AMZ.
     -   *Note: Trust threshold logic ensures filtering is applied safely even if 'Deal Trust' score is pending.*
 -   **Hide Gated**: Excludes deals where `is_restricted = 1`.
 -   **Hide AMZ Offers**: Excludes deals where `AMZ` is '⚠️'.
