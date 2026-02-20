@@ -1115,16 +1115,16 @@ def deals():
 
 @app.route('/api/deals')
 def api_deals():
-    DB_PATH = DATABASE_URL
-    TABLE_NAME = 'deals'
-    RESTRICTIONS_TABLE = 'user_restrictions'
-
-    # Check SP-API connection status from session
-    is_sp_api_connected = session.get('sp_api_connected', False)
-    user_id = session.get('sp_api_user_id')
-
-    # --- Connect and get column names ---
     try:
+        DB_PATH = DATABASE_URL
+        TABLE_NAME = 'deals'
+        RESTRICTIONS_TABLE = 'user_restrictions'
+
+        # Check SP-API connection status from session
+        is_sp_api_connected = session.get('sp_api_connected', False)
+        user_id = session.get('sp_api_user_id')
+
+        # --- Connect and get column names ---
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -1178,18 +1178,20 @@ def api_deals():
 
         for c in cond_list:
             if c == 'New':
-                where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
+                # Strict check for New to avoid excluding 'New, other' if desired, or exclude all New variations?
+                # Usually 'New' means new condition.
+                where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New' AND \"Condition\" NOT LIKE 'New, %')")
             elif c == 'U-Like New':
-                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
+                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'like new' AND \"Condition\" != 'Used - Like New')")
             elif c == 'U-Very Good':
-                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
+                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'very good' AND \"Condition\" != 'Used - Very Good')")
             elif c == 'U-Good':
-                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
+                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'good' AND \"Condition\" != 'Used - Good')")
             elif c == 'U-Acceptable':
-                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
+                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'acceptable' AND \"Condition\" != 'Used - Acceptable')")
             elif c == 'Collectible':
                 # Exclude anything starting with Collectible or C-
-                where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
+                where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C-%' AND \"Condition\" NOT LIKE 'C -%')")
 
     # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
@@ -1199,7 +1201,10 @@ def api_deals():
     # New ROI Filter: (Profit / All_in_Cost) * 100
     if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
         # Prevent division by zero and negative/zero cost issues by ensuring Cost > 0
-        where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+        # Robustly handle currency symbols (e.g., "$15.00") by stripping $ and , before casting
+        sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
+        sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
+        where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= ?)")
         filter_params.append(filters["roi_gte"])
 
     # New Drops Filter
@@ -1215,7 +1220,8 @@ def api_deals():
 
     # New Filters
     if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
-        where_clauses.append("\"Deal_Trust\" >= ?")
+        # Cast to INTEGER to handle text values like '75%' correctly against numerical threshold
+        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
         filter_params.append(filters["deal_trust_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
@@ -1227,10 +1233,12 @@ def api_deals():
         filter_params.append(seller_trust_db_value)
 
     # Enforce Profit > 0 by default to exclude negative/zero profit deals
+    # Robustly handle currency symbols
+    sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
     if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
-        where_clauses.append("\"Profit\" > 0")
+        where_clauses.append(f"{sanitized_profit} > 0")
     else:
-        where_clauses.append("\"Profit\" >= ?")
+        where_clauses.append(f"{sanitized_profit} >= ?")
         filter_params.append(filters["profit_gte"])
 
     # Enforce Data Completeness (Global Filters)
@@ -1247,7 +1255,8 @@ def api_deals():
     where_clauses.append("\"1yr_Avg\" != 0")
 
     if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
-        where_clauses.append("\"Percent_Down\" >= ?")
+        # Cast to INTEGER to handle text values like '20%' correctly against numerical threshold
+        where_clauses.append("CAST(\"Percent_Down\" AS INTEGER) >= ?")
         filter_params.append(filters["percent_down_gte"])
 
     if filters.get("hide_gated") == 1:
@@ -1306,6 +1315,10 @@ def api_deals():
             sort_clause = 'deals."id"'
 
         data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY {sort_clause} {order} LIMIT ? OFFSET ?"
+
+        # Log the query for debugging
+        app.logger.debug(f"Executing Deals Query: {data_query} | Params: {query_params}")
+
         deal_rows = cursor.execute(data_query, query_params).fetchall()
         deals_list = [dict(row) for row in deal_rows]
 
@@ -1338,11 +1351,11 @@ def api_deals():
             if 'Condition' in deal and deal['Condition'] in condition_string_map:
                 deal['Condition'] = condition_string_map[deal['Condition']]
 
-    except sqlite3.Error as e:
-        app.logger.error(f"Database query error: {e}")
-        return jsonify({"error": "Database query failed", "message": str(e)}), 500
+    except Exception as e:
+        app.logger.error(f"API Deals Error: {e}", exc_info=True)
+        return jsonify({"error": "Server Error", "message": str(e)}), 500
     finally:
-        if conn:
+        if 'conn' in locals() and conn:
             conn.close()
 
     # --- Format and Return Response ---
@@ -1636,17 +1649,17 @@ def deal_count():
 
                 for c in cond_list:
                     if c == 'New':
-                        where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
+                        where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New' AND \"Condition\" NOT LIKE 'New, %')")
                     elif c == 'U-Like New':
-                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
+                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'like new' AND \"Condition\" != 'Used - Like New')")
                     elif c == 'U-Very Good':
-                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
+                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'very good' AND \"Condition\" != 'Used - Very Good')")
                     elif c == 'U-Good':
-                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
+                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'good' AND \"Condition\" != 'Used - Good')")
                     elif c == 'U-Acceptable':
-                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
+                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'acceptable' AND \"Condition\" != 'Used - Acceptable')")
                     elif c == 'Collectible':
-                        where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
+                        where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C-%' AND \"Condition\" NOT LIKE 'C -%')")
 
             # Determine connection status for Gated check
             # We need to join user_restrictions for the count if hide_gated is used.
@@ -1673,7 +1686,9 @@ def deal_count():
 
             # New ROI Filter
             if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
-                where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+                sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
+                sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
+                where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= ?)")
                 filter_params.append(filters["roi_gte"])
 
             # New Drops Filter
@@ -1688,7 +1703,7 @@ def deal_count():
                 filter_params.extend([keyword_like] * len(keyword_clauses))
 
             if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
-                where_clauses.append("\"Deal_Trust\" >= ?")
+                where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
                 filter_params.append(filters["deal_trust_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
@@ -1699,10 +1714,11 @@ def deal_count():
                 filter_params.append(seller_trust_db_value)
 
             # Enforce Profit > 0 by default to exclude negative/zero profit deals
+            sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
             if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
-                where_clauses.append("\"Profit\" > 0")
+                where_clauses.append(f"{sanitized_profit} > 0")
             else:
-                where_clauses.append("\"Profit\" >= ?")
+                where_clauses.append(f"{sanitized_profit} >= ?")
                 filter_params.append(filters["profit_gte"])
 
             # Enforce Data Completeness (Global Filters) to match api_deals
@@ -1713,7 +1729,7 @@ def deal_count():
             where_clauses.append("\"1yr_Avg\" != 0")
 
             if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
-                where_clauses.append("\"Percent_Down\" >= ?")
+                where_clauses.append("CAST(\"Percent_Down\" AS INTEGER) >= ?")
                 filter_params.append(filters["percent_down_gte"])
 
             if filters.get("hide_gated") == 1:

@@ -596,14 +596,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const response = await fetch(`/api/deals?${query}`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                // Try to parse the error message from the JSON response
+                try {
+                    const errData = await response.json();
+                    if (errData && errData.message) {
+                        throw new Error(`${errData.message}`);
+                    }
+                } catch (parseError) {
+                    // Ignore JSON parse error, use default status error
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             currentDeals = data.deals; // Store the deals
             renderTable(data.deals);
             renderPagination(data.pagination);
+
+            // Update Deal Counter
+            if (dealCounter && data.pagination) {
+                dealCounter.textContent = `${data.pagination.total_records} Deals Found`;
+            }
+
+            // Update baseline for notifications
+            if (data.pagination && data.pagination.total_db_records) {
+                currentTotalRecords = data.pagination.total_db_records;
+            }
         } catch (error) {
             console.error('Error fetching deals:', error);
-            tableContainer.innerHTML = '<p>Error loading deals. Please try again later.</p>';
+            tableContainer.innerHTML = `<div class="error-message" style="color: red; padding: 20px; text-align: center;">Error loading deals: ${error.message}</div>`;
         }
     }
 
@@ -962,21 +983,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyOptimalFilters() {
         if (!optimalFiltersCheckbox.checked) return;
 
-        // "Smart" Preset Values:
-        // Profit: $4.00, ROI: 35%, Drops: 1, Rank: 250,000, Deal Trust: 70%, Seller Trust: Any (0), Hide Gated: ON, Hide AMZ: ON
+        // "Smart" Preset Values (Tuned 2026-02-20):
+        // Profit: $45.00, ROI: 20%, Drops: 2, Rank: 1,000,000, Deal Trust: 70%, Seller Trust: 5/10, Hide Gated: ON, Hide AMZ: ON, Below Avg: 10%
+        // NOTE: Fine-tune these settings once DB has > 5,000 deals.
 
-        profitSlider.value = 4;
+        profitSlider.value = 45; // User specifically requested $45 min profit
         profitSlider.dispatchEvent(new Event('input'));
 
-        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 35);
-        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 1);
-        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 250000);
+        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 20);
+        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 2);
+        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 1000000);
 
         dealTrustSlider.value = 70;
         dealTrustSlider.dispatchEvent(new Event('input'));
 
-        sellerTrustSlider.value = 0; // Any
+        sellerTrustSlider.value = 5;
         sellerTrustSlider.dispatchEvent(new Event('input'));
+
+        percentDownSlider.value = 10;
+        percentDownSlider.dispatchEvent(new Event('input'));
 
         hideGatedInput.checked = true;
         hideAmzInput.checked = true;
@@ -1011,14 +1036,16 @@ document.addEventListener('DOMContentLoaded', function() {
         excludeConditionCheckboxes.forEach(cb => { if(cb.checked) hasExclusions = true; });
 
         // Optimal Definition:
-        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 70, Seller Trust: 0, Gated: true, AMZ: true, Exclusions: None
+        // Profit: 45, ROI: 20, Drops: 2, Rank: 1m, Deal Trust: 70, Seller Trust: 5, Below Avg: 10, Gated: true, AMZ: true, Exclusions: None
+        const currentPercentDown = parseInt(hiddenPercentDownInput.value);
         const isOptimal = (
-            currentProfit === 4 &&
-            currentRoi === 35 &&
-            currentDrops === 1 &&
-            currentRank === 250000 &&
+            currentProfit === 45 &&
+            currentRoi === 20 &&
+            currentDrops === 2 &&
+            currentRank === 1000000 &&
             currentDealTrust === 70 &&
-            currentSellerTrust === 0 &&
+            currentSellerTrust === 5 &&
+            currentPercentDown === 10 &&
             gated === true &&
             amz === true &&
             hasExclusions === false
@@ -1532,6 +1559,107 @@ document.addEventListener('DOMContentLoaded', function() {
             shadowLine.style.display = 'none';
         }
     });
+
+    // --- Missing Functions Implementation ---
+
+    function renderPagination(pagination) {
+        const container = document.getElementById('pagination-container');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (pagination.total_pages <= 1) return;
+
+        const createButton = (text, page, isActive = false, isDisabled = false) => {
+            const btn = document.createElement('button');
+            btn.textContent = text;
+            btn.className = `page-btn ${isActive ? 'active' : ''}`;
+            if (isDisabled) btn.disabled = true;
+            else btn.onclick = () => {
+                currentPage = page;
+                fetchDeals(currentPage, currentSort.by, currentSort.order);
+                // Scroll to top of table
+                document.getElementById('deals-table').scrollIntoView({ behavior: 'smooth' });
+            };
+            return btn;
+        };
+
+        // Prev Button
+        container.appendChild(createButton('Prev', pagination.current_page - 1, false, pagination.current_page === 1));
+
+        // Logic for page numbers (window of 5)
+        let startPage = Math.max(1, pagination.current_page - 2);
+        let endPage = Math.min(pagination.total_pages, startPage + 4);
+
+        if (endPage - startPage < 4) {
+            startPage = Math.max(1, endPage - 4);
+        }
+
+        if (startPage > 1) {
+            container.appendChild(createButton('1', 1, pagination.current_page === 1));
+            if (startPage > 2) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'page-ellipsis';
+                ellipsis.textContent = '...';
+                container.appendChild(ellipsis);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            container.appendChild(createButton(i, i, pagination.current_page === i));
+        }
+
+        if (endPage < pagination.total_pages) {
+            if (endPage < pagination.total_pages - 1) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'page-ellipsis';
+                ellipsis.textContent = '...';
+                container.appendChild(ellipsis);
+            }
+            container.appendChild(createButton(pagination.total_pages, pagination.total_pages, pagination.current_page === pagination.total_pages));
+        }
+
+        // Next Button
+        container.appendChild(createButton('Next', pagination.current_page + 1, false, pagination.current_page === pagination.total_pages));
+    }
+
+    function updateResponsiveLayout() {
+        // The CSS handles most responsive logic via media queries.
+        // This function exists to satisfy the call in renderTable.
+        // We can use it to force a layout recalculation if needed or log for debug.
+        // console.log("Updating responsive layout...");
+    }
+
+    function addEventListeners() {
+        // Sorting
+        document.querySelectorAll('.sort-arrow').forEach(arrow => {
+            arrow.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const column = arrow.dataset.column;
+                const order = arrow.dataset.order;
+                currentSort = { by: column, order: order };
+                fetchDeals(currentPage, currentSort.by, currentSort.order);
+            });
+        });
+
+        // Row Click (Deal Overlay)
+        document.querySelectorAll('.deal-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const asin = row.dataset.asin;
+                // Find deal data from currentDeals
+                const deal = currentDeals.find(d => {
+                    let dAsin = d.ASIN ? String(d.ASIN).replace(/=|\"/g, '') : '';
+                    if (dAsin.length === 9) dAsin = '0' + dAsin;
+                    return dAsin === asin;
+                });
+
+                if (deal) {
+                    populateOverlay(deal);
+                    document.getElementById('deal-overlay').style.display = 'block';
+                }
+            });
+        });
+    }
 
 });
 </script>

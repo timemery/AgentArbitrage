@@ -49,14 +49,20 @@ All sliders utilize a standardized "Any" state logic:
 **Supported Filters:**
 1.  **Min. Below Avg. (%)**: Filter by `Percent_Down`.
 2.  **Min. Profit ($)**: Filter by `Profit`.
-3.  **Min. Margin (%)**: Filter by `Margin`.
-4.  **Max. Sales Rank**: Filter by `Sales_Rank_Current`.
-5.  **Min. Deal Trust**: Filter by `Deal_Trust`.
-6.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
+3.  **Min. ROI (%)**: Filter by `ROI` (Profit / All-in-Cost * 100). *Replaces Min. Margin.*
+4.  **Min. Drops (30d)**: Filter by `Sales_Rank_Drops_last_30_days`.
+5.  **Max. Sales Rank**: Filter by `Sales_Rank_Current`.
+6.  **Min. Deal Trust**: Filter by `Deal_Trust`.
+7.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
 
 ### Checkbox Filters
--   **Hide Gated**: Excludes deals where `is_restricted = 1`. (Pending/Error states remain visible).
--   **Hide AMZ Offers**: Excludes deals where the `AMZ` column contains the warning icon ('⚠️').
+-   **Optimal Filters (Magic Button):**
+    -   Automatically applies a "Smart" preset designed to find high-quality deals.
+    -   **Settings (Feb 2026 Tuned):** Profit >= $45, ROI >= 20%, Rank <= 1M, Drops >= 2, Trust >= 70%*, Seller >= 5/10, Below Avg >= 10%, Hide Gated, Hide AMZ.
+    -   *Note: Trust threshold logic ensures filtering is applied safely even if 'Deal Trust' score is pending.*
+-   **Hide Gated**: Excludes deals where `is_restricted = 1`.
+-   **Hide AMZ Offers**: Excludes deals where `AMZ` is '⚠️'.
+-   **Exclude Conditions**: Specific checkboxes to filter out "New", "U-Like New", etc.
 
 ### Special Filters
 -   **Deal Count**: The badge in the header shows the total number of deals matching the *current* filters.
