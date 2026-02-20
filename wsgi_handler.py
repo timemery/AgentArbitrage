@@ -1115,16 +1115,16 @@ def deals():
 
 @app.route('/api/deals')
 def api_deals():
-    DB_PATH = DATABASE_URL
-    TABLE_NAME = 'deals'
-    RESTRICTIONS_TABLE = 'user_restrictions'
-
-    # Check SP-API connection status from session
-    is_sp_api_connected = session.get('sp_api_connected', False)
-    user_id = session.get('sp_api_user_id')
-
-    # --- Connect and get column names ---
     try:
+        DB_PATH = DATABASE_URL
+        TABLE_NAME = 'deals'
+        RESTRICTIONS_TABLE = 'user_restrictions'
+
+        # Check SP-API connection status from session
+        is_sp_api_connected = session.get('sp_api_connected', False)
+        user_id = session.get('sp_api_user_id')
+
+        # --- Connect and get column names ---
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -1306,6 +1306,10 @@ def api_deals():
             sort_clause = 'deals."id"'
 
         data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY {sort_clause} {order} LIMIT ? OFFSET ?"
+
+        # Log the query for debugging
+        app.logger.debug(f"Executing Deals Query: {data_query} | Params: {query_params}")
+
         deal_rows = cursor.execute(data_query, query_params).fetchall()
         deals_list = [dict(row) for row in deal_rows]
 
@@ -1338,11 +1342,11 @@ def api_deals():
             if 'Condition' in deal and deal['Condition'] in condition_string_map:
                 deal['Condition'] = condition_string_map[deal['Condition']]
 
-    except sqlite3.Error as e:
-        app.logger.error(f"Database query error: {e}")
-        return jsonify({"error": "Database query failed", "message": str(e)}), 500
+    except Exception as e:
+        app.logger.error(f"API Deals Error: {e}", exc_info=True)
+        return jsonify({"error": "Server Error", "message": str(e)}), 500
     finally:
-        if conn:
+        if 'conn' in locals() and conn:
             conn.close()
 
     # --- Format and Return Response ---

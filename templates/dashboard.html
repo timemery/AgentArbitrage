@@ -596,14 +596,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const response = await fetch(`/api/deals?${query}`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                // Try to parse the error message from the JSON response
+                try {
+                    const errData = await response.json();
+                    if (errData && errData.message) {
+                        throw new Error(`${errData.message}`);
+                    }
+                } catch (parseError) {
+                    // Ignore JSON parse error, use default status error
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             currentDeals = data.deals; // Store the deals
             renderTable(data.deals);
             renderPagination(data.pagination);
         } catch (error) {
             console.error('Error fetching deals:', error);
-            tableContainer.innerHTML = '<p>Error loading deals. Please try again later.</p>';
+            tableContainer.innerHTML = `<div class="error-message" style="color: red; padding: 20px; text-align: center;">Error loading deals: ${error.message}</div>`;
         }
     }
 
