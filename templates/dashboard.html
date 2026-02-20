@@ -1544,6 +1544,107 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // --- Missing Functions Implementation ---
+
+    function renderPagination(pagination) {
+        const container = document.getElementById('pagination-container');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (pagination.total_pages <= 1) return;
+
+        const createButton = (text, page, isActive = false, isDisabled = false) => {
+            const btn = document.createElement('button');
+            btn.textContent = text;
+            btn.className = `page-btn ${isActive ? 'active' : ''}`;
+            if (isDisabled) btn.disabled = true;
+            else btn.onclick = () => {
+                currentPage = page;
+                fetchDeals(currentPage, currentSort.by, currentSort.order);
+                // Scroll to top of table
+                document.getElementById('deals-table').scrollIntoView({ behavior: 'smooth' });
+            };
+            return btn;
+        };
+
+        // Prev Button
+        container.appendChild(createButton('Prev', pagination.current_page - 1, false, pagination.current_page === 1));
+
+        // Logic for page numbers (window of 5)
+        let startPage = Math.max(1, pagination.current_page - 2);
+        let endPage = Math.min(pagination.total_pages, startPage + 4);
+
+        if (endPage - startPage < 4) {
+            startPage = Math.max(1, endPage - 4);
+        }
+
+        if (startPage > 1) {
+            container.appendChild(createButton('1', 1, pagination.current_page === 1));
+            if (startPage > 2) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'page-ellipsis';
+                ellipsis.textContent = '...';
+                container.appendChild(ellipsis);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            container.appendChild(createButton(i, i, pagination.current_page === i));
+        }
+
+        if (endPage < pagination.total_pages) {
+            if (endPage < pagination.total_pages - 1) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'page-ellipsis';
+                ellipsis.textContent = '...';
+                container.appendChild(ellipsis);
+            }
+            container.appendChild(createButton(pagination.total_pages, pagination.total_pages, pagination.current_page === pagination.total_pages));
+        }
+
+        // Next Button
+        container.appendChild(createButton('Next', pagination.current_page + 1, false, pagination.current_page === pagination.total_pages));
+    }
+
+    function updateResponsiveLayout() {
+        // The CSS handles most responsive logic via media queries.
+        // This function exists to satisfy the call in renderTable.
+        // We can use it to force a layout recalculation if needed or log for debug.
+        // console.log("Updating responsive layout...");
+    }
+
+    function addEventListeners() {
+        // Sorting
+        document.querySelectorAll('.sort-arrow').forEach(arrow => {
+            arrow.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const column = arrow.dataset.column;
+                const order = arrow.dataset.order;
+                currentSort = { by: column, order: order };
+                fetchDeals(currentPage, currentSort.by, currentSort.order);
+            });
+        });
+
+        // Row Click (Deal Overlay)
+        document.querySelectorAll('.deal-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const asin = row.dataset.asin;
+                // Find deal data from currentDeals
+                const deal = currentDeals.find(d => {
+                    let dAsin = d.ASIN ? String(d.ASIN).replace(/=|\"/g, '') : '';
+                    if (dAsin.length === 9) dAsin = '0' + dAsin;
+                    return dAsin === asin;
+                });
+
+                if (deal) {
+                    populateOverlay(deal);
+                    document.getElementById('deal-overlay').style.display = 'block';
+                }
+            });
+        });
+    }
+
 });
 </script>
 {% endblock %}
