@@ -1163,10 +1163,45 @@ def api_deals():
         "profit_gte": request.args.get('profit_gte', type=float),
         "percent_down_gte": request.args.get('percent_down_gte', type=int),
         "hide_gated": request.args.get('hide_gated', type=int),
-        "hide_amz": request.args.get('hide_amz', type=int)
+        "hide_amz": request.args.get('hide_amz', type=int),
+        "conditions": request.args.get('conditions', type=str)
     }
     where_clauses = []
     filter_params = []
+
+    # Condition Filtering
+    if filters.get("conditions"):
+        cond_list = filters["conditions"].split(',')
+        cond_clauses = []
+        # No new params list needed, we append to filter_params sequentially
+
+        # Mapping UI values to DB values
+        # DB uses codes: 1=New, 2=Like New, 3=Very Good, 4=Good, 5=Acceptable
+        # Collectible might be text or codes. Assuming text matching for robustness.
+
+        for c in cond_list:
+            if c == 'New':
+                cond_clauses.append("\"Condition\" = ?")
+                filter_params.append("1")
+            elif c == 'U-Like New':
+                cond_clauses.append("\"Condition\" = ?")
+                filter_params.append("2")
+            elif c == 'U-Very Good':
+                cond_clauses.append("\"Condition\" = ?")
+                filter_params.append("3")
+            elif c == 'U-Good':
+                cond_clauses.append("\"Condition\" = ?")
+                filter_params.append("4")
+            elif c == 'U-Acceptable':
+                cond_clauses.append("\"Condition\" = ?")
+                filter_params.append("5")
+            elif c == 'Collectible':
+                # Match anything starting with Collectible or C-
+                cond_clauses.append("(\"Condition\" LIKE ? OR \"Condition\" LIKE ?)")
+                filter_params.extend(["Collectible%", "C -%"])
+
+        if cond_clauses:
+            where_clauses.append(f"({' OR '.join(cond_clauses)})")
 
     # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
@@ -1592,10 +1627,39 @@ def deal_count():
                 "profit_gte": request.args.get('profit_gte', type=float),
                 "percent_down_gte": request.args.get('percent_down_gte', type=int),
                 "hide_gated": request.args.get('hide_gated', type=int),
-                "hide_amz": request.args.get('hide_amz', type=int)
+                "hide_amz": request.args.get('hide_amz', type=int),
+                "conditions": request.args.get('conditions', type=str)
             }
             where_clauses = []
             filter_params = []
+
+            # Condition Filtering
+            if filters.get("conditions"):
+                cond_list = filters["conditions"].split(',')
+                cond_clauses = []
+
+                for c in cond_list:
+                    if c == 'New':
+                        cond_clauses.append("\"Condition\" = ?")
+                        filter_params.append("1")
+                    elif c == 'U-Like New':
+                        cond_clauses.append("\"Condition\" = ?")
+                        filter_params.append("2")
+                    elif c == 'U-Very Good':
+                        cond_clauses.append("\"Condition\" = ?")
+                        filter_params.append("3")
+                    elif c == 'U-Good':
+                        cond_clauses.append("\"Condition\" = ?")
+                        filter_params.append("4")
+                    elif c == 'U-Acceptable':
+                        cond_clauses.append("\"Condition\" = ?")
+                        filter_params.append("5")
+                    elif c == 'Collectible':
+                        cond_clauses.append("(\"Condition\" LIKE ? OR \"Condition\" LIKE ?)")
+                        filter_params.extend(["Collectible%", "C -%"])
+
+                if cond_clauses:
+                    where_clauses.append(f"({' OR '.join(cond_clauses)})")
 
             # Determine connection status for Gated check
             # We need to join user_restrictions for the count if hide_gated is used.

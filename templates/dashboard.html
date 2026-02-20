@@ -98,24 +98,58 @@
                  </div>
 
                  <div class="filter-group-column">
-                     <!-- Empty header for spacing/alignment if needed, or conditions header -->
-                     <!-- Checkboxes -->
-                     <div class="filter-group-row checkboxes-group" style="margin-top: 25px;"> <!-- Align with sliders roughly -->
+                     <h4 class="filter-group-header">Exclude:</h4>
+                     <div class="filter-group-row checkboxes-group">
                          <div class="checkboxes-wrapper">
                              <div class="checkbox-item">
                                  <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
-                                 <label for="hide_gated">Hide Gated</label>
+                                 <label for="hide_gated">Gated</label>
                              </div>
                              <div class="checkbox-item">
                                  <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
-                                 <label for="hide_amz">Hide AMZ</label>
-                             </div>
-                              <!-- Optimal Filters Checkbox -->
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="optimal_filters" name="optimal_filters" class="custom-checkbox">
-                                 <label for="optimal_filters">Optimal Filters</label>
+                                 <label for="hide_amz">AMZ Offers</label>
                              </div>
                          </div>
+                     </div>
+                 </div>
+
+                 <div class="filter-group-column">
+                     <h4 class="filter-group-header">Include Conditions:</h4>
+                     <div class="filter-group-row checkboxes-group">
+                         <div class="checkboxes-wrapper">
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="cond_new" name="cond_new" class="custom-checkbox condition-checkbox" value="New">
+                                 <label for="cond_new">New</label>
+                             </div>
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="cond_like_new" name="cond_like_new" class="custom-checkbox condition-checkbox" value="U-Like New">
+                                 <label for="cond_like_new">U-Like New</label>
+                             </div>
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="cond_very_good" name="cond_very_good" class="custom-checkbox condition-checkbox" value="U-Very Good">
+                                 <label for="cond_very_good">U-Very Good</label>
+                             </div>
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="cond_good" name="cond_good" class="custom-checkbox condition-checkbox" value="U-Good">
+                                 <label for="cond_good">U-Good</label>
+                             </div>
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="cond_acceptable" name="cond_acceptable" class="custom-checkbox condition-checkbox" value="U-Acceptable">
+                                 <label for="cond_acceptable">U-Acceptable</label>
+                             </div>
+                             <div class="checkbox-item">
+                                 <input type="checkbox" id="cond_collectible" name="cond_collectible" class="custom-checkbox condition-checkbox" value="Collectible">
+                                 <label for="cond_collectible">Collectible</label>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <div class="filter-group-column" style="justify-content: flex-end;">
+                      <!-- Optimal Filters Checkbox -->
+                     <div class="checkbox-item" style="margin-bottom: 5px;">
+                         <input type="checkbox" id="optimal_filters" name="optimal_filters" class="custom-checkbox">
+                         <label for="optimal_filters">Optimal Filters</label>
                      </div>
                  </div>
              </form>
@@ -269,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const hideGatedInput = document.getElementById('hide_gated');
     const hideAmzInput = document.getElementById('hide_amz');
+    const conditionCheckboxes = document.querySelectorAll('.condition-checkbox');
     const optimalFiltersCheckbox = document.getElementById('optimal_filters');
 
     const dealCounter = document.getElementById('deal-counter');
@@ -535,6 +570,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (hideGatedInput.checked) filters['hide_gated'] = 1;
         if (hideAmzInput.checked) filters['hide_amz'] = 1;
+
+        // Conditions
+        const selectedConditions = [];
+        conditionCheckboxes.forEach(cb => {
+            if (cb.checked) selectedConditions.push(cb.value);
+        });
+        if (selectedConditions.length > 0) {
+            filters['conditions'] = selectedConditions.join(',');
+        }
 
         return filters;
     }
@@ -956,7 +1000,8 @@ document.addEventListener('DOMContentLoaded', function() {
             percentDown: hiddenPercentDownInput.value,
             hideGated: hideGatedInput.checked,
             hideAmz: hideAmzInput.checked,
-            optimal: optimalFiltersCheckbox.checked
+            optimal: optimalFiltersCheckbox.checked,
+            conditions: Array.from(conditionCheckboxes).filter(cb => cb.checked).map(cb => cb.value)
         };
         localStorage.setItem('dashboard_filter_state', JSON.stringify(state));
     }
@@ -1002,6 +1047,13 @@ document.addEventListener('DOMContentLoaded', function() {
             hideGatedInput.checked = state.hideGated || false;
             hideAmzInput.checked = state.hideAmz || false;
             optimalFiltersCheckbox.checked = state.optimal || false;
+
+            // Restore Conditions
+            if (state.conditions) {
+                conditionCheckboxes.forEach(cb => {
+                    cb.checked = state.conditions.includes(cb.value);
+                });
+            }
 
         } catch (e) {
             console.error("Failed to load filter state", e);
@@ -1111,9 +1163,10 @@ document.addEventListener('DOMContentLoaded', function() {
         hideAmzInput.checked = false;
         optimalFiltersCheckbox.checked = false;
 
+        conditionCheckboxes.forEach(cb => cb.checked = false);
+
         // Reset State
         currentPage = 1;
-        currentSort = { by: 'id', order: 'asc' };
 
         saveFilterState(); // Save reset state
     });
