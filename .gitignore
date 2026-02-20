@@ -41,3 +41,8 @@ temp-*.rdb
 # Diagnostics Reports
 Diagnostics/health_report.json
 dev_deals.db
+join_test.db
+migration_test.db
+verify_fix.py
+debug_join.py
+test_agent_sanity.txt
