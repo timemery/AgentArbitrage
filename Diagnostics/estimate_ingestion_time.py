@@ -89,7 +89,7 @@ def simulate_ingestion(label, refill_rate, peek_batch_size, burst_threshold, sur
 
     avg_tokens_per_deal = (total_peek_cost + total_commit_cost) / TOTAL_DEALS_TARGET
 
-    print(f"  > Time: {minutes_elapsed} min ({hours:.1f} hours)")
+    print(f"  > Time: {hours:.1f} hours ({days:.1f} days)")
     print(f"  > Efficiency: {avg_tokens_per_deal:.1f} tokens/deal")
 
     return minutes_elapsed
@@ -127,9 +127,9 @@ if __name__ == "__main__":
     )
 
     print("\n=== SUMMARY ===")
-    print(f"1. Fast Mode (20/min): {t_fast/60:.1f} hours")
-    print(f"2. Safe Mode (5/min):  {t_slow/60:.1f} hours")
-    print(f"3. Critical Mode (Batch 1): {t_critical/60:.1f} hours")
+    print(f"1. Fast Mode (20/min): {t_fast/60:.1f} hours ({t_fast/60/24:.1f} days)")
+    print(f"2. Safe Mode (5/min):  {t_slow/60:.1f} hours ({t_slow/60/24:.1f} days)")
+    print(f"3. Critical Mode (Batch 1): {t_critical/60:.1f} hours ({t_critical/60/24:.1f} days)")
 
     print("\n=== NOTE ON REJECTION RATES ===")
     print("The 90% rejection rate is the primary driver of speed.")
