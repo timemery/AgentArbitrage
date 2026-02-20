@@ -612,6 +612,11 @@ document.addEventListener('DOMContentLoaded', function() {
             currentDeals = data.deals; // Store the deals
             renderTable(data.deals);
             renderPagination(data.pagination);
+
+            // Update Deal Counter
+            if (dealCounter && data.pagination) {
+                dealCounter.textContent = `${data.pagination.total_records} Deals Found`;
+            }
         } catch (error) {
             console.error('Error fetching deals:', error);
             tableContainer.innerHTML = `<div class="error-message" style="color: red; padding: 20px; text-align: center;">Error loading deals: ${error.message}</div>`;
