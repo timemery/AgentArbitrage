@@ -993,7 +993,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 1);
         setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 250000);
 
-        dealTrustSlider.value = 70;
+        dealTrustSlider.value = 0; // Any (Relaxed from 70% to include unverified deals)
         dealTrustSlider.dispatchEvent(new Event('input'));
 
         sellerTrustSlider.value = 0; // Any
@@ -1032,13 +1032,13 @@ document.addEventListener('DOMContentLoaded', function() {
         excludeConditionCheckboxes.forEach(cb => { if(cb.checked) hasExclusions = true; });
 
         // Optimal Definition:
-        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 70, Seller Trust: 0, Gated: true, AMZ: true, Exclusions: None
+        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 0 (Any), Seller Trust: 0, Gated: true, AMZ: true, Exclusions: None
         const isOptimal = (
             currentProfit === 4 &&
             currentRoi === 35 &&
             currentDrops === 1 &&
             currentRank === 250000 &&
-            currentDealTrust === 70 &&
+            currentDealTrust === 0 &&
             currentSellerTrust === 0 &&
             gated === true &&
             amz === true &&
