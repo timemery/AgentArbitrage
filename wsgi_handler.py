@@ -1181,19 +1181,19 @@ def api_deals():
 
         for c in cond_list:
             if c == 'New':
-                cond_clauses.append("\"Condition\" = ?")
+                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'New')")
                 filter_params.append("1")
             elif c == 'U-Like New':
-                cond_clauses.append("\"Condition\" = ?")
+                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Like New')")
                 filter_params.append("2")
             elif c == 'U-Very Good':
-                cond_clauses.append("\"Condition\" = ?")
+                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Very Good')")
                 filter_params.append("3")
             elif c == 'U-Good':
-                cond_clauses.append("\"Condition\" = ?")
+                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Good')")
                 filter_params.append("4")
             elif c == 'U-Acceptable':
-                cond_clauses.append("\"Condition\" = ?")
+                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Acceptable')")
                 filter_params.append("5")
             elif c == 'Collectible':
                 # Match anything starting with Collectible or C-
@@ -1264,8 +1264,11 @@ def api_deals():
 
     if filters.get("hide_gated") == 1:
         # Exclude restricted items (is_restricted = 1).
-        # Include NULL (Pending), 0 (Not Restricted), -1 (Error).
-        where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+        # Only apply if connected, otherwise ignore this filter to prevent SQL error (missing 'ur' alias).
+        if is_sp_api_connected and user_id:
+             # Include NULL (Pending), 0 (Not Restricted), -1 (Error).
+             where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+        # If not connected, we can't filter gated items, so we default to showing them (safe fail-open).
 
     if filters.get("hide_amz") == 1:
         # Exclude items where Amazon is selling (AMZ column has warning icon '⚠️').
@@ -1640,19 +1643,19 @@ def deal_count():
 
                 for c in cond_list:
                     if c == 'New':
-                        cond_clauses.append("\"Condition\" = ?")
+                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'New')")
                         filter_params.append("1")
                     elif c == 'U-Like New':
-                        cond_clauses.append("\"Condition\" = ?")
+                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Like New')")
                         filter_params.append("2")
                     elif c == 'U-Very Good':
-                        cond_clauses.append("\"Condition\" = ?")
+                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Very Good')")
                         filter_params.append("3")
                     elif c == 'U-Good':
-                        cond_clauses.append("\"Condition\" = ?")
+                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Good')")
                         filter_params.append("4")
                     elif c == 'U-Acceptable':
-                        cond_clauses.append("\"Condition\" = ?")
+                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Acceptable')")
                         filter_params.append("5")
                     elif c == 'Collectible':
                         cond_clauses.append("(\"Condition\" LIKE ? OR \"Condition\" LIKE ?)")
@@ -1729,9 +1732,10 @@ def deal_count():
                 where_clauses.append("\"Percent_Down\" >= ?")
                 filter_params.append(filters["percent_down_gte"])
 
-            if filters.get("hide_gated") == 1 and is_sp_api_connected and user_id:
-                # Same logic as api_deals
-                where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+            if filters.get("hide_gated") == 1:
+                # Same logic as api_deals: Only apply if connected
+                if is_sp_api_connected and user_id:
+                     where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
 
             if filters.get("hide_amz") == 1:
                 where_clauses.append("(deals.\"AMZ\" IS NULL OR deals.\"AMZ\" != '⚠️')")

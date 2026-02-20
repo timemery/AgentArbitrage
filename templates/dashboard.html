@@ -22,141 +22,143 @@
         </div>
 
         <div class="filter-dropdown" id="filter-dropdown" style="display: none;">
-             <form id="filter-form-new" class="sliders-wrapper">
-                 <div class="filter-group-column">
-                     <h4 class="filter-group-header">Financials</h4>
-                     <div class="filter-group-row">
-                        <!-- Min. Profit -->
-                        <div class="filter-item">
-                            <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
-                                <input type="hidden" id="profit" name="profit_gte" value="0">
+             <form id="filter-form-new" class="filter-content">
+                 <!-- Top Row: Sliders -->
+                 <div class="filter-row top-row">
+                     <!-- Financials -->
+                     <div class="filter-group-column">
+                         <h4 class="filter-group-header">Financials</h4>
+                         <div class="filter-group-row">
+                            <div class="filter-item">
+                                <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
+                                    <input type="hidden" id="profit" name="profit_gte" value="0">
+                                </div>
                             </div>
-                        </div>
-                        <!-- Min. ROI (Replaced Margin) -->
-                        <div class="filter-item">
-                            <label for="roi_slider">Min. ROI: <span id="roi-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="20" value="0" class="custom-slider" id="roi_slider">
-                                <input type="hidden" id="roi" name="roi_gte" value="0">
+                            <div class="filter-item">
+                                <label for="roi_slider">Min. ROI: <span id="roi-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="20" value="0" class="custom-slider" id="roi_slider">
+                                    <input type="hidden" id="roi" name="roi_gte" value="0">
+                                </div>
                             </div>
-                        </div>
-                         <!-- Min. Below Avg. -->
-                         <div class="filter-item">
-                            <label for="percent_down_slider">Min. Below Avg: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
-                                <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
+                             <div class="filter-item">
+                                <label for="percent_down_slider">Min. Below Avg: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
+                                    <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
+                                </div>
                             </div>
-                        </div>
+                         </div>
                      </div>
-                 </div>
 
-                 <div class="filter-group-column">
-                     <h4 class="filter-group-header">Velocity & Demand</h4>
-                     <div class="filter-group-row">
-                        <!-- Min. Drops -->
-                        <div class="filter-item">
-                            <label for="drops_slider">Min. Drops (30d): <span id="drops-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="20" value="0" class="custom-slider" id="drops_slider">
-                                <input type="hidden" id="drops_30" name="drops_30_gte" value="0">
+                     <!-- Velocity -->
+                     <div class="filter-group-column">
+                         <h4 class="filter-group-header">Velocity & Demand</h4>
+                         <div class="filter-group-row">
+                            <div class="filter-item">
+                                <label for="drops_slider">Min. Drops (30d): <span id="drops-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="20" value="0" class="custom-slider" id="drops_slider">
+                                    <input type="hidden" id="drops_30" name="drops_30_gte" value="0">
+                                </div>
                             </div>
-                        </div>
-                        <!-- Max. Sales Rank -->
-                        <div class="filter-item">
-                            <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
-                                <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                            <div class="filter-item">
+                                <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
+                                    <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
+                                </div>
                             </div>
-                        </div>
+                         </div>
                      </div>
-                 </div>
 
-                 <div class="filter-group-column">
-                     <h4 class="filter-group-header">Trust & Safety</h4>
-                     <div class="filter-group-row">
-                        <!-- Min. Deal Trust -->
-                        <div class="filter-item">
-                            <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
-                                <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
+                     <!-- Trust -->
+                     <div class="filter-group-column">
+                         <h4 class="filter-group-header">Trust & Safety</h4>
+                         <div class="filter-group-row">
+                            <div class="filter-item">
+                                <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
+                                    <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
+                                </div>
                             </div>
-                        </div>
-                        <!-- Min. Seller Trust -->
-                        <div class="filter-item">
-                            <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
-                            <div class="slider-container-new">
-                                <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
-                                <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
+                            <div class="filter-item">
+                                <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
+                                <div class="slider-container-new">
+                                    <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
+                                    <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
+                                </div>
                             </div>
-                        </div>
-                     </div>
-                 </div>
-
-                 <div class="filter-group-column">
-                     <h4 class="filter-group-header">Exclude:</h4>
-                     <div class="filter-group-row checkboxes-group">
-                         <div class="checkboxes-wrapper">
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
-                                 <label for="hide_gated">Gated</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
-                                 <label for="hide_amz">AMZ Offers</label>
-                             </div>
                          </div>
                      </div>
                  </div>
 
-                 <div class="filter-group-column">
-                     <h4 class="filter-group-header">Include Conditions:</h4>
-                     <div class="filter-group-row checkboxes-group">
-                         <div class="checkboxes-wrapper">
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="cond_new" name="cond_new" class="custom-checkbox condition-checkbox" value="New">
-                                 <label for="cond_new">New</label>
+                 <!-- Bottom Row: Checkboxes & Actions -->
+                 <div class="filter-row bottom-row">
+                     <div class="bottom-left-section">
+                         <!-- Exclude -->
+                         <div class="filter-group-column">
+                             <h4 class="filter-group-header">Exclude:</h4>
+                             <div class="checkboxes-wrapper horizontal">
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="hide_gated" name="hide_gated" class="custom-checkbox">
+                                     <label for="hide_gated">Gated</label>
+                                 </div>
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="hide_amz" name="hide_amz" class="custom-checkbox">
+                                     <label for="hide_amz">AMZ Offers</label>
+                                 </div>
                              </div>
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="cond_like_new" name="cond_like_new" class="custom-checkbox condition-checkbox" value="U-Like New">
-                                 <label for="cond_like_new">U-Like New</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="cond_very_good" name="cond_very_good" class="custom-checkbox condition-checkbox" value="U-Very Good">
-                                 <label for="cond_very_good">U-Very Good</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="cond_good" name="cond_good" class="custom-checkbox condition-checkbox" value="U-Good">
-                                 <label for="cond_good">U-Good</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="cond_acceptable" name="cond_acceptable" class="custom-checkbox condition-checkbox" value="U-Acceptable">
-                                 <label for="cond_acceptable">U-Acceptable</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="checkbox" id="cond_collectible" name="cond_collectible" class="custom-checkbox condition-checkbox" value="Collectible">
-                                 <label for="cond_collectible">Collectible</label>
+                         </div>
+
+                         <!-- Include Conditions -->
+                         <div class="filter-group-column conditions-group">
+                             <h4 class="filter-group-header">Include Conditions:</h4>
+                             <div class="checkboxes-wrapper horizontal">
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="cond_new" name="cond_new" class="custom-checkbox condition-checkbox" value="New">
+                                     <label for="cond_new">New</label>
+                                 </div>
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="cond_like_new" name="cond_like_new" class="custom-checkbox condition-checkbox" value="U-Like New">
+                                     <label for="cond_like_new">U-Like New</label>
+                                 </div>
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="cond_very_good" name="cond_very_good" class="custom-checkbox condition-checkbox" value="U-Very Good">
+                                     <label for="cond_very_good">U-Very Good</label>
+                                 </div>
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="cond_good" name="cond_good" class="custom-checkbox condition-checkbox" value="U-Good">
+                                     <label for="cond_good">U-Good</label>
+                                 </div>
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="cond_acceptable" name="cond_acceptable" class="custom-checkbox condition-checkbox" value="U-Acceptable">
+                                     <label for="cond_acceptable">U-Acceptable</label>
+                                 </div>
+                                 <div class="checkbox-item">
+                                     <input type="checkbox" id="cond_collectible" name="cond_collectible" class="custom-checkbox condition-checkbox" value="Collectible">
+                                     <label for="cond_collectible">Collectible</label>
+                                 </div>
                              </div>
                          </div>
                      </div>
-                 </div>
 
-                 <div class="filter-group-column" style="justify-content: flex-end;">
-                      <!-- Optimal Filters Checkbox -->
-                     <div class="checkbox-item" style="margin-bottom: 5px;">
-                         <input type="checkbox" id="optimal_filters" name="optimal_filters" class="custom-checkbox">
-                         <label for="optimal_filters">Optimal Filters</label>
+                     <div class="bottom-right-section">
+                          <!-- Optimal Filters Checkbox -->
+                         <div class="checkbox-item optimal-item">
+                             <input type="checkbox" id="optimal_filters" name="optimal_filters" class="custom-checkbox">
+                             <label for="optimal_filters">Optimal Filters</label>
+                         </div>
+                         <div class="action-buttons">
+                            <button type="button" class="filter-btn" id="btn-apply">Apply Filters</button>
+                            <button type="button" class="filter-btn" id="btn-reset">Reset</button>
+                        </div>
                      </div>
                  </div>
              </form>
-             <div class="panel-right-buttons">
-                <button type="button" class="filter-btn" id="btn-apply">Apply</button>
-                <button type="button" class="filter-btn" id="btn-reset">Reset</button>
-            </div>
         </div>
     </div>
     <div class="table-container">
@@ -848,115 +850,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addEventListeners();
     }
 
-    function updateResponsiveLayout() {
-        const width = window.innerWidth;
-        const ghBookDetails = document.getElementById('gh-book-details');
-        const ghTrust = document.getElementById('gh-trust');
-
-        if (ghBookDetails) {
-            // <= 700px: ASIN Hidden -> Colspan 2
-            if (width <= 700) {
-                ghBookDetails.colSpan = 2;
-            } else {
-                ghBookDetails.colSpan = 3;
-            }
-        }
-
-        if (ghTrust) {
-            // <= 700px: Trust Hidden -> Colspan 0 (Hide header too)
-            if (width <= 700) {
-                ghTrust.style.display = 'none';
-            } else {
-                ghTrust.style.display = 'table-cell';
-                ghTrust.colSpan = 2;
-            }
-        }
-    }
-
-    window.addEventListener('resize', updateResponsiveLayout);
-    
-    function addEventListeners() {
-        document.querySelectorAll('#deals-table tbody tr').forEach(row => {
-            row.addEventListener('click', () => {
-                const asin = row.dataset.asin;
-                const deal = currentDeals.find(d => d.ASIN === asin);
-                if (deal) {
-                    populateOverlay(deal);
-                    overlay.style.display = 'block';
-                }
-            });
-        });
-
-        document.querySelectorAll('.sort-arrow').forEach(arrow => {
-            arrow.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent row click navigation
-                const sortBy = arrow.dataset.column;
-                const order = arrow.dataset.order;
-                if (sortBy && order) {
-                    currentSort = { by: sortBy, order: order };
-                    fetchDeals(currentPage, currentSort.by, currentSort.order);
-                }
-            });
-        });
-    }
-
-    function renderPagination(pagination) {
-        currentPage = pagination.current_page;
-        totalPages = pagination.total_pages;
-        const paginationContainer = document.getElementById('pagination-container');
-        paginationContainer.innerHTML = ''; // Clear existing controls
-
-        const dealCount = pagination.total_records || 0;
-        currentTotalRecords = dealCount; // Update global tracker with current FILTERED count
-        dealCounter.textContent = `${dealCount.toLocaleString()} Deals Found`;
-
-        if (totalPages <= 1) return;
-
-        let paginationHTML = '';
-
-        // First & Previous Buttons
-        paginationHTML += `<button class="page-btn" data-page="1" ${currentPage === 1 ? 'disabled' : ''}>First</button>`;
-        paginationHTML += `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
-
-        // Helper functions for page number logic
-        const getPageButton = (page) => `<button class="page-btn ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>`;
-        const ellipsis = `<span class="page-ellipsis">...</span>`;
-
-        if (totalPages <= 7) { // Show all pages if 7 or fewer
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHTML += getPageButton(i);
-            }
-        } else {
-            paginationHTML += getPageButton(1); // Always show first page
-            if (currentPage > 3) {
-                paginationHTML += ellipsis;
-            }
-            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-                paginationHTML += getPageButton(i);
-            }
-            if (currentPage < totalPages - 2) {
-                paginationHTML += ellipsis;
-            }
-            paginationHTML += getPageButton(totalPages); // Always show last page
-        }
-
-        // Next & Last Buttons
-        paginationHTML += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
-        paginationHTML += `<button class="page-btn" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>`;
-
-        paginationContainer.innerHTML = paginationHTML;
-
-        // Add event listeners to new buttons
-        paginationContainer.querySelectorAll('.page-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const page = parseInt(button.dataset.page);
-                if (page && page !== currentPage && !button.disabled) {
-                    fetchDeals(page, currentSort.by, currentSort.order);
-                }
-            });
-        });
-    }
-
     function toggleFilterPanel(open) {
         localStorage.setItem('filterPanelOpen', open);
         const filterBar = document.getElementById('filter-bar');
@@ -1088,13 +981,7 @@ document.addEventListener('DOMContentLoaded', function() {
     optimalFiltersCheckbox.addEventListener('change', () => {
         if (optimalFiltersCheckbox.checked) {
             applyOptimalFilters();
-            fetchDeals(currentPage, currentSort.by, currentSort.order); // Auto-apply? Plan says "Action: moves sliders... leaving them adjustable"
-            // Usually we wait for "Apply" but instant feedback is nice.
-            // The requirement says "Checking the box moves the sliders".
-            // It doesn't explicitly say it fetches. But users expect it.
-            // I'll leave fetch to the Apply button to be consistent with other filters unless requested otherwise.
-            // Wait, "Visual Feedback: The 'Optimal' checkbox remains checked as long as values match".
-            // So if I check it, it sets values.
+            // Optional: Auto-fetch on check? Currently relying on explicit Apply
         }
     });
 
@@ -1111,7 +998,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const gated = hideGatedInput.checked;
         const amz = hideAmzInput.checked;
 
-        // Optimal Definition
+        // Optimal Definition:
+        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 70, Seller Trust: 0, Gated: true, AMZ: true
         const isOptimal = (
             currentProfit === 4 &&
             currentRoi === 35 &&
