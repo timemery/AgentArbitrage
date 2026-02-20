@@ -1265,18 +1265,24 @@ def api_deals():
 
     # --- Build and Execute Query ---
     try:
-        select_clause = "d.*"
-        from_clause = f"FROM {TABLE_NAME} AS d"
+        # Refactored to remove 'd' alias and use 'deals' explicitly to match deal_count success pattern
+        select_clause = "deals.*"
+        from_clause = f"FROM {TABLE_NAME}"
         query_params = []
 
         if is_sp_api_connected and user_id:
             select_clause += ", ur.is_restricted, ur.approval_url"
-            from_clause += f" LEFT JOIN {RESTRICTIONS_TABLE} AS ur ON d.ASIN = ur.asin AND ur.user_id = ?"
+            from_clause += f" LEFT JOIN {RESTRICTIONS_TABLE} AS ur ON deals.\"ASIN\" = ur.asin AND ur.user_id = ?"
             query_params.append(user_id)
         
         query_params.extend(filter_params)
 
-        where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
+        # Ensure where clauses use table name if they were using alias 'd.'
+        final_where_clauses = []
+        for clause in where_clauses:
+            final_where_clauses.append(clause.replace('d.', 'deals.'))
+
+        where_sql = " WHERE " + " AND ".join(final_where_clauses) if final_where_clauses else ""
 
         # Get total count (filtered)
         count_query = f"SELECT COUNT(*) {from_clause}{where_sql}"
@@ -1293,11 +1299,11 @@ def api_deals():
             if is_sp_api_connected and user_id:
                 sort_clause = 'ur.is_restricted'
             else:
-                sort_clause = 'd."id"'
+                sort_clause = 'deals."id"'
         elif sort_by in available_columns:
-            sort_clause = f'd."{sort_by}"'
+            sort_clause = f'deals."{sort_by}"'
         else:
-            sort_clause = 'd."id"'
+            sort_clause = 'deals."id"'
 
         data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY {sort_clause} {order} LIMIT ? OFFSET ?"
         deal_rows = cursor.execute(data_query, query_params).fetchall()
