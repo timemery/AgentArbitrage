@@ -114,33 +114,33 @@
                              </div>
                          </div>
 
-                         <!-- Include Conditions -->
+                         <!-- Exclude Conditions -->
                          <div class="filter-group-column conditions-group">
-                             <h4 class="filter-group-header">Include Conditions:</h4>
+                             <h4 class="filter-group-header">Exclude Conditions:</h4>
                              <div class="checkboxes-wrapper horizontal">
                                  <div class="checkbox-item">
-                                     <input type="checkbox" id="cond_new" name="cond_new" class="custom-checkbox condition-checkbox" value="New">
-                                     <label for="cond_new">New</label>
+                                     <input type="checkbox" id="exclude_new" name="exclude_new" class="custom-checkbox exclude-condition-checkbox" value="New">
+                                     <label for="exclude_new">New</label>
                                  </div>
                                  <div class="checkbox-item">
-                                     <input type="checkbox" id="cond_like_new" name="cond_like_new" class="custom-checkbox condition-checkbox" value="U-Like New">
-                                     <label for="cond_like_new">U-Like New</label>
+                                     <input type="checkbox" id="exclude_like_new" name="exclude_like_new" class="custom-checkbox exclude-condition-checkbox" value="U-Like New">
+                                     <label for="exclude_like_new">U-Like New</label>
                                  </div>
                                  <div class="checkbox-item">
-                                     <input type="checkbox" id="cond_very_good" name="cond_very_good" class="custom-checkbox condition-checkbox" value="U-Very Good">
-                                     <label for="cond_very_good">U-Very Good</label>
+                                     <input type="checkbox" id="exclude_very_good" name="exclude_very_good" class="custom-checkbox exclude-condition-checkbox" value="U-Very Good">
+                                     <label for="exclude_very_good">U-Very Good</label>
                                  </div>
                                  <div class="checkbox-item">
-                                     <input type="checkbox" id="cond_good" name="cond_good" class="custom-checkbox condition-checkbox" value="U-Good">
-                                     <label for="cond_good">U-Good</label>
+                                     <input type="checkbox" id="exclude_good" name="exclude_good" class="custom-checkbox exclude-condition-checkbox" value="U-Good">
+                                     <label for="exclude_good">U-Good</label>
                                  </div>
                                  <div class="checkbox-item">
-                                     <input type="checkbox" id="cond_acceptable" name="cond_acceptable" class="custom-checkbox condition-checkbox" value="U-Acceptable">
-                                     <label for="cond_acceptable">U-Acceptable</label>
+                                     <input type="checkbox" id="exclude_acceptable" name="exclude_acceptable" class="custom-checkbox exclude-condition-checkbox" value="U-Acceptable">
+                                     <label for="exclude_acceptable">U-Acceptable</label>
                                  </div>
                                  <div class="checkbox-item">
-                                     <input type="checkbox" id="cond_collectible" name="cond_collectible" class="custom-checkbox condition-checkbox" value="Collectible">
-                                     <label for="cond_collectible">Collectible</label>
+                                     <input type="checkbox" id="exclude_collectible" name="exclude_collectible" class="custom-checkbox exclude-condition-checkbox" value="Collectible">
+                                     <label for="exclude_collectible">Collectible</label>
                                  </div>
                              </div>
                          </div>
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const hideGatedInput = document.getElementById('hide_gated');
     const hideAmzInput = document.getElementById('hide_amz');
-    const conditionCheckboxes = document.querySelectorAll('.condition-checkbox');
+    const excludeConditionCheckboxes = document.querySelectorAll('.exclude-condition-checkbox');
     const optimalFiltersCheckbox = document.getElementById('optimal_filters');
 
     const dealCounter = document.getElementById('deal-counter');
@@ -573,13 +573,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hideGatedInput.checked) filters['hide_gated'] = 1;
         if (hideAmzInput.checked) filters['hide_amz'] = 1;
 
-        // Conditions
-        const selectedConditions = [];
-        conditionCheckboxes.forEach(cb => {
-            if (cb.checked) selectedConditions.push(cb.value);
+        // Excluded Conditions
+        const excludedConditions = [];
+        excludeConditionCheckboxes.forEach(cb => {
+            if (cb.checked) excludedConditions.push(cb.value);
         });
-        if (selectedConditions.length > 0) {
-            filters['conditions'] = selectedConditions.join(',');
+        if (excludedConditions.length > 0) {
+            filters['excluded_conditions'] = excludedConditions.join(',');
         }
 
         return filters;
@@ -894,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hideGated: hideGatedInput.checked,
             hideAmz: hideAmzInput.checked,
             optimal: optimalFiltersCheckbox.checked,
-            conditions: Array.from(conditionCheckboxes).filter(cb => cb.checked).map(cb => cb.value)
+            excludedConditions: Array.from(excludeConditionCheckboxes).filter(cb => cb.checked).map(cb => cb.value)
         };
         localStorage.setItem('dashboard_filter_state', JSON.stringify(state));
     }
@@ -941,11 +941,16 @@ document.addEventListener('DOMContentLoaded', function() {
             hideAmzInput.checked = state.hideAmz || false;
             optimalFiltersCheckbox.checked = state.optimal || false;
 
-            // Restore Conditions
-            if (state.conditions) {
-                conditionCheckboxes.forEach(cb => {
-                    cb.checked = state.conditions.includes(cb.value);
+            // Restore Excluded Conditions
+            // Note: If migrating from old "conditions" key (include), we ignore it or could try to invert logic,
+            // but simpler to just start fresh or use 'excludedConditions' if present.
+            if (state.excludedConditions) {
+                excludeConditionCheckboxes.forEach(cb => {
+                    cb.checked = state.excludedConditions.includes(cb.value);
                 });
+            } else {
+                // If no excluded conditions found (e.g. first load after update), ensure all are UNCHECKED (include all)
+                excludeConditionCheckboxes.forEach(cb => cb.checked = false);
             }
 
         } catch (e) {
@@ -975,6 +980,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         hideGatedInput.checked = true;
         hideAmzInput.checked = true;
+
+        // Optimal shouldn't exclude any conditions by default (Include All)
+        excludeConditionCheckboxes.forEach(cb => cb.checked = false);
     }
 
     // Event Listener for Optimal Filters
@@ -998,8 +1006,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const gated = hideGatedInput.checked;
         const amz = hideAmzInput.checked;
 
+        // Check if any exclusions are checked (Deviation from Optimal)
+        let hasExclusions = false;
+        excludeConditionCheckboxes.forEach(cb => { if(cb.checked) hasExclusions = true; });
+
         // Optimal Definition:
-        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 70, Seller Trust: 0, Gated: true, AMZ: true
+        // Profit: 4, ROI: 35, Drops: 1, Rank: 250000, Deal Trust: 70, Seller Trust: 0, Gated: true, AMZ: true, Exclusions: None
         const isOptimal = (
             currentProfit === 4 &&
             currentRoi === 35 &&
@@ -1008,13 +1020,19 @@ document.addEventListener('DOMContentLoaded', function() {
             currentDealTrust === 70 &&
             currentSellerTrust === 0 &&
             gated === true &&
-            amz === true
+            amz === true &&
+            hasExclusions === false
         );
 
         if (!isOptimal) {
             optimalFiltersCheckbox.checked = false;
         }
     }
+
+    // Add listeners for exclusion checkboxes
+    excludeConditionCheckboxes.forEach(cb => {
+        cb.addEventListener('change', checkOptimalDeviation);
+    });
 
     btnApply.addEventListener('click', () => {
         currentPage = 1;
@@ -1051,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hideAmzInput.checked = false;
         optimalFiltersCheckbox.checked = false;
 
-        conditionCheckboxes.forEach(cb => cb.checked = false);
+        excludeConditionCheckboxes.forEach(cb => cb.checked = false);
 
         // Reset State
         currentPage = 1;

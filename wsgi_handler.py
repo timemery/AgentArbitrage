@@ -20,6 +20,7 @@ from celery_app import celery_app
 from keepa_deals.db_utils import (
     create_user_restrictions_table_if_not_exists,
     create_user_credentials_table_if_not_exists,
+    create_deals_table_if_not_exists,
     save_user_credentials,
     get_all_user_credentials,
     get_system_state,
@@ -1164,44 +1165,31 @@ def api_deals():
         "percent_down_gte": request.args.get('percent_down_gte', type=int),
         "hide_gated": request.args.get('hide_gated', type=int),
         "hide_amz": request.args.get('hide_amz', type=int),
-        "conditions": request.args.get('conditions', type=str)
+        "excluded_conditions": request.args.get('excluded_conditions', type=str)
     }
     where_clauses = []
     filter_params = []
 
-    # Condition Filtering
-    if filters.get("conditions"):
-        cond_list = filters["conditions"].split(',')
-        cond_clauses = []
-        # No new params list needed, we append to filter_params sequentially
-
-        # Mapping UI values to DB values
-        # DB uses codes: 1=New, 2=Like New, 3=Very Good, 4=Good, 5=Acceptable
-        # Collectible might be text or codes. Assuming text matching for robustness.
+    # Exclude Condition Filtering
+    if filters.get("excluded_conditions"):
+        cond_list = filters["excluded_conditions"].split(',')
+        # We process exclusions by adding AND clauses.
+        # Since DB can have '1' OR 'New', we must exclude BOTH representations.
 
         for c in cond_list:
             if c == 'New':
-                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'New')")
-                filter_params.append("1")
+                where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
             elif c == 'U-Like New':
-                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Like New')")
-                filter_params.append("2")
+                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
             elif c == 'U-Very Good':
-                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Very Good')")
-                filter_params.append("3")
+                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
             elif c == 'U-Good':
-                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Good')")
-                filter_params.append("4")
+                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
             elif c == 'U-Acceptable':
-                cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Acceptable')")
-                filter_params.append("5")
+                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
             elif c == 'Collectible':
-                # Match anything starting with Collectible or C-
-                cond_clauses.append("(\"Condition\" LIKE ? OR \"Condition\" LIKE ?)")
-                filter_params.extend(["Collectible%", "C -%"])
-
-        if cond_clauses:
-            where_clauses.append(f"({' OR '.join(cond_clauses)})")
+                # Exclude anything starting with Collectible or C-
+                where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
 
     # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
@@ -1631,38 +1619,28 @@ def deal_count():
                 "percent_down_gte": request.args.get('percent_down_gte', type=int),
                 "hide_gated": request.args.get('hide_gated', type=int),
                 "hide_amz": request.args.get('hide_amz', type=int),
-                "conditions": request.args.get('conditions', type=str)
+                "excluded_conditions": request.args.get('excluded_conditions', type=str)
             }
             where_clauses = []
             filter_params = []
 
-            # Condition Filtering
-            if filters.get("conditions"):
-                cond_list = filters["conditions"].split(',')
-                cond_clauses = []
+            # Exclude Condition Filtering
+            if filters.get("excluded_conditions"):
+                cond_list = filters["excluded_conditions"].split(',')
 
                 for c in cond_list:
                     if c == 'New':
-                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'New')")
-                        filter_params.append("1")
+                        where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
                     elif c == 'U-Like New':
-                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Like New')")
-                        filter_params.append("2")
+                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
                     elif c == 'U-Very Good':
-                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Very Good')")
-                        filter_params.append("3")
+                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
                     elif c == 'U-Good':
-                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Good')")
-                        filter_params.append("4")
+                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
                     elif c == 'U-Acceptable':
-                        cond_clauses.append("(\"Condition\" = ? OR \"Condition\" = 'Used - Acceptable')")
-                        filter_params.append("5")
+                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
                     elif c == 'Collectible':
-                        cond_clauses.append("(\"Condition\" LIKE ? OR \"Condition\" LIKE ?)")
-                        filter_params.extend(["Collectible%", "C -%"])
-
-                if cond_clauses:
-                    where_clauses.append(f"({' OR '.join(cond_clauses)})")
+                        where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
 
             # Determine connection status for Gated check
             # We need to join user_restrictions for the count if hide_gated is used.
@@ -1871,6 +1849,8 @@ def mentor_chat():
 # Ensure tables exist on module load (for WSGI environment)
 create_user_restrictions_table_if_not_exists()
 create_user_credentials_table_if_not_exists()
+# Verify/Update Deals schema (Critical for missing columns like Drops)
+create_deals_table_if_not_exists()
 
 if __name__ == '__main__':
     app.run(debug=True)
