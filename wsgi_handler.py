@@ -1182,16 +1182,16 @@ def api_deals():
                 # Usually 'New' means new condition.
                 where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New' AND \"Condition\" NOT LIKE 'New, %')")
             elif c == 'U-Like New':
-                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" NOT LIKE '%Used%Like New%')")
+                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'like new' AND \"Condition\" != 'Used - Like New')")
             elif c == 'U-Very Good':
-                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" NOT LIKE '%Used%Very Good%')")
+                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'very good' AND \"Condition\" != 'Used - Very Good')")
             elif c == 'U-Good':
-                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" NOT LIKE '%Used%Good%')")
+                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'good' AND \"Condition\" != 'Used - Good')")
             elif c == 'U-Acceptable':
-                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" NOT LIKE '%Used%Acceptable%')")
+                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'acceptable' AND \"Condition\" != 'Used - Acceptable')")
             elif c == 'Collectible':
                 # Exclude anything starting with Collectible or C-
-                where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
+                where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C-%' AND \"Condition\" NOT LIKE 'C -%')")
 
     # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
@@ -1217,7 +1217,8 @@ def api_deals():
 
     # New Filters
     if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
-        where_clauses.append("\"Deal_Trust\" >= ?")
+        # Cast to INTEGER to handle text values like '75%' correctly against numerical threshold
+        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
         filter_params.append(filters["deal_trust_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
@@ -1249,7 +1250,8 @@ def api_deals():
     where_clauses.append("\"1yr_Avg\" != 0")
 
     if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
-        where_clauses.append("\"Percent_Down\" >= ?")
+        # Cast to INTEGER to handle text values like '20%' correctly against numerical threshold
+        where_clauses.append("CAST(\"Percent_Down\" AS INTEGER) >= ?")
         filter_params.append(filters["percent_down_gte"])
 
     if filters.get("hide_gated") == 1:
@@ -1644,15 +1646,15 @@ def deal_count():
                     if c == 'New':
                         where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New' AND \"Condition\" NOT LIKE 'New, %')")
                     elif c == 'U-Like New':
-                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" NOT LIKE '%Used%Like New%')")
+                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'like new' AND \"Condition\" != 'Used - Like New')")
                     elif c == 'U-Very Good':
-                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" NOT LIKE '%Used%Very Good%')")
+                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'very good' AND \"Condition\" != 'Used - Very Good')")
                     elif c == 'U-Good':
-                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" NOT LIKE '%Used%Good%')")
+                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'good' AND \"Condition\" != 'Used - Good')")
                     elif c == 'U-Acceptable':
-                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" NOT LIKE '%Used%Acceptable%')")
+                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'acceptable' AND \"Condition\" != 'Used - Acceptable')")
                     elif c == 'Collectible':
-                        where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
+                        where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C-%' AND \"Condition\" NOT LIKE 'C -%')")
 
             # Determine connection status for Gated check
             # We need to join user_restrictions for the count if hide_gated is used.
@@ -1694,7 +1696,7 @@ def deal_count():
                 filter_params.extend([keyword_like] * len(keyword_clauses))
 
             if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
-                where_clauses.append("\"Deal_Trust\" >= ?")
+                where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
                 filter_params.append(filters["deal_trust_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
@@ -1719,7 +1721,7 @@ def deal_count():
             where_clauses.append("\"1yr_Avg\" != 0")
 
             if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
-                where_clauses.append("\"Percent_Down\" >= ?")
+                where_clauses.append("CAST(\"Percent_Down\" AS INTEGER) >= ?")
                 filter_params.append(filters["percent_down_gte"])
 
             if filters.get("hide_gated") == 1:
