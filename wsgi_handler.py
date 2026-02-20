@@ -20,6 +20,7 @@ from celery_app import celery_app
 from keepa_deals.db_utils import (
     create_user_restrictions_table_if_not_exists,
     create_user_credentials_table_if_not_exists,
+    create_deals_table_if_not_exists,
     save_user_credentials,
     get_all_user_credentials,
     get_system_state,
@@ -1155,25 +1156,57 @@ def api_deals():
     # --- Filtering ---
     filters = {
         "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
-        "margin_gte": request.args.get('margin_gte', type=int),
+        "roi_gte": request.args.get('roi_gte', type=int),
+        "drops_30_gte": request.args.get('drops_30_gte', type=int),
         "keyword": request.args.get('keyword', type=str),
         "deal_trust_gte": request.args.get('deal_trust_gte', type=int),
         "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
         "profit_gte": request.args.get('profit_gte', type=float),
         "percent_down_gte": request.args.get('percent_down_gte', type=int),
         "hide_gated": request.args.get('hide_gated', type=int),
-        "hide_amz": request.args.get('hide_amz', type=int)
+        "hide_amz": request.args.get('hide_amz', type=int),
+        "excluded_conditions": request.args.get('excluded_conditions', type=str)
     }
     where_clauses = []
     filter_params = []
+
+    # Exclude Condition Filtering
+    if filters.get("excluded_conditions"):
+        cond_list = filters["excluded_conditions"].split(',')
+        # We process exclusions by adding AND clauses.
+        # Since DB can have '1' OR 'New', we must exclude BOTH representations.
+
+        for c in cond_list:
+            if c == 'New':
+                where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
+            elif c == 'U-Like New':
+                where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
+            elif c == 'U-Very Good':
+                where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
+            elif c == 'U-Good':
+                where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
+            elif c == 'U-Acceptable':
+                where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
+            elif c == 'Collectible':
+                # Exclude anything starting with Collectible or C-
+                where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
 
     # (Existing filter logic remains the same...)
     if filters.get("sales_rank_current_lte") is not None:
         where_clauses.append("\"Sales_Rank_Current\" <= ?")
         filter_params.append(filters["sales_rank_current_lte"])
-    if filters.get("margin_gte") is not None and filters["margin_gte"] > 0:
-        where_clauses.append("\"Margin\" >= ?")
-        filter_params.append(filters["margin_gte"])
+
+    # New ROI Filter: (Profit / All_in_Cost) * 100
+    if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
+        # Prevent division by zero and negative/zero cost issues by ensuring Cost > 0
+        where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+        filter_params.append(filters["roi_gte"])
+
+    # New Drops Filter
+    if filters.get("drops_30_gte") is not None and filters["drops_30_gte"] > 0:
+        where_clauses.append("\"Sales_Rank_Drops_last_30_days\" >= ?")
+        filter_params.append(filters["drops_30_gte"])
+
     if filters.get("keyword"):
         keyword_like = f"%{filters['keyword']}%"
         keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
@@ -1219,8 +1252,11 @@ def api_deals():
 
     if filters.get("hide_gated") == 1:
         # Exclude restricted items (is_restricted = 1).
-        # Include NULL (Pending), 0 (Not Restricted), -1 (Error).
-        where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+        # Only apply if connected, otherwise ignore this filter to prevent SQL error (missing 'ur' alias).
+        if is_sp_api_connected and user_id:
+             # Include NULL (Pending), 0 (Not Restricted), -1 (Error).
+             where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+        # If not connected, we can't filter gated items, so we default to showing them (safe fail-open).
 
     if filters.get("hide_amz") == 1:
         # Exclude items where Amazon is selling (AMZ column has warning icon '⚠️').
@@ -1229,18 +1265,24 @@ def api_deals():
 
     # --- Build and Execute Query ---
     try:
-        select_clause = "d.*"
-        from_clause = f"FROM {TABLE_NAME} AS d"
+        # Refactored to remove 'd' alias and use 'deals' explicitly to match deal_count success pattern
+        select_clause = "deals.*"
+        from_clause = f"FROM {TABLE_NAME}"
         query_params = []
 
         if is_sp_api_connected and user_id:
             select_clause += ", ur.is_restricted, ur.approval_url"
-            from_clause += f" LEFT JOIN {RESTRICTIONS_TABLE} AS ur ON d.ASIN = ur.asin AND ur.user_id = ?"
+            from_clause += f" LEFT JOIN {RESTRICTIONS_TABLE} AS ur ON deals.\"ASIN\" = ur.asin AND ur.user_id = ?"
             query_params.append(user_id)
         
         query_params.extend(filter_params)
 
-        where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
+        # Ensure where clauses use table name if they were using alias 'd.'
+        final_where_clauses = []
+        for clause in where_clauses:
+            final_where_clauses.append(clause.replace('d.', 'deals.'))
+
+        where_sql = " WHERE " + " AND ".join(final_where_clauses) if final_where_clauses else ""
 
         # Get total count (filtered)
         count_query = f"SELECT COUNT(*) {from_clause}{where_sql}"
@@ -1257,11 +1299,11 @@ def api_deals():
             if is_sp_api_connected and user_id:
                 sort_clause = 'ur.is_restricted'
             else:
-                sort_clause = 'd."id"'
+                sort_clause = 'deals."id"'
         elif sort_by in available_columns:
-            sort_clause = f'd."{sort_by}"'
+            sort_clause = f'deals."{sort_by}"'
         else:
-            sort_clause = 'd."id"'
+            sort_clause = 'deals."id"'
 
         data_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY {sort_clause} {order} LIMIT ? OFFSET ?"
         deal_rows = cursor.execute(data_query, query_params).fetchall()
@@ -1574,17 +1616,37 @@ def deal_count():
             # Filtering Logic (Same as api_deals)
             filters = {
                 "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
-                "margin_gte": request.args.get('margin_gte', type=int),
+                "roi_gte": request.args.get('roi_gte', type=int),
+                "drops_30_gte": request.args.get('drops_30_gte', type=int),
                 "keyword": request.args.get('keyword', type=str),
                 "deal_trust_gte": request.args.get('deal_trust_gte', type=int),
                 "seller_trust_gte": request.args.get('seller_trust_gte', type=int),
                 "profit_gte": request.args.get('profit_gte', type=float),
                 "percent_down_gte": request.args.get('percent_down_gte', type=int),
                 "hide_gated": request.args.get('hide_gated', type=int),
-                "hide_amz": request.args.get('hide_amz', type=int)
+                "hide_amz": request.args.get('hide_amz', type=int),
+                "excluded_conditions": request.args.get('excluded_conditions', type=str)
             }
             where_clauses = []
             filter_params = []
+
+            # Exclude Condition Filtering
+            if filters.get("excluded_conditions"):
+                cond_list = filters["excluded_conditions"].split(',')
+
+                for c in cond_list:
+                    if c == 'New':
+                        where_clauses.append("(\"Condition\" != '1' AND \"Condition\" != 'New')")
+                    elif c == 'U-Like New':
+                        where_clauses.append("(\"Condition\" != '2' AND \"Condition\" != 'Used - Like New')")
+                    elif c == 'U-Very Good':
+                        where_clauses.append("(\"Condition\" != '3' AND \"Condition\" != 'Used - Very Good')")
+                    elif c == 'U-Good':
+                        where_clauses.append("(\"Condition\" != '4' AND \"Condition\" != 'Used - Good')")
+                    elif c == 'U-Acceptable':
+                        where_clauses.append("(\"Condition\" != '5' AND \"Condition\" != 'Used - Acceptable')")
+                    elif c == 'Collectible':
+                        where_clauses.append("(\"Condition\" NOT LIKE 'Collectible%' AND \"Condition\" NOT LIKE 'C -%')")
 
             # Determine connection status for Gated check
             # We need to join user_restrictions for the count if hide_gated is used.
@@ -1608,9 +1670,17 @@ def deal_count():
             if filters.get("sales_rank_current_lte") is not None:
                 where_clauses.append("\"Sales_Rank_Current\" <= ?")
                 filter_params.append(filters["sales_rank_current_lte"])
-            if filters.get("margin_gte") is not None and filters["margin_gte"] > 0:
-                where_clauses.append("\"Margin\" >= ?")
-                filter_params.append(filters["margin_gte"])
+
+            # New ROI Filter
+            if filters.get("roi_gte") is not None and filters["roi_gte"] > 0:
+                where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= ?)")
+                filter_params.append(filters["roi_gte"])
+
+            # New Drops Filter
+            if filters.get("drops_30_gte") is not None and filters["drops_30_gte"] > 0:
+                where_clauses.append("\"Sales_Rank_Drops_last_30_days\" >= ?")
+                filter_params.append(filters["drops_30_gte"])
+
             if filters.get("keyword"):
                 keyword_like = f"%{filters['keyword']}%"
                 keyword_clauses = ["\"Title\" LIKE ?", "\"Categories_Sub\" LIKE ?", "\"Detailed_Seasonality\" LIKE ?", "\"Manufacturer\" LIKE ?", "\"Author\" LIKE ?", "\"Seller\" LIKE ?"]
@@ -1646,9 +1716,10 @@ def deal_count():
                 where_clauses.append("\"Percent_Down\" >= ?")
                 filter_params.append(filters["percent_down_gte"])
 
-            if filters.get("hide_gated") == 1 and is_sp_api_connected and user_id:
-                # Same logic as api_deals
-                where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
+            if filters.get("hide_gated") == 1:
+                # Same logic as api_deals: Only apply if connected
+                if is_sp_api_connected and user_id:
+                     where_clauses.append("(ur.is_restricted IS NULL OR ur.is_restricted != 1)")
 
             if filters.get("hide_amz") == 1:
                 where_clauses.append("(deals.\"AMZ\" IS NULL OR deals.\"AMZ\" != '⚠️')")
@@ -1784,6 +1855,8 @@ def mentor_chat():
 # Ensure tables exist on module load (for WSGI environment)
 create_user_restrictions_table_if_not_exists()
 create_user_credentials_table_if_not_exists()
+# Verify/Update Deals schema (Critical for missing columns like Drops)
+create_deals_table_if_not_exists()
 
 if __name__ == '__main__':
     app.run(debug=True)

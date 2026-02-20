@@ -2774,3 +2774,139 @@ body.home-background::before {
         font-size: 0.8em;
     }
 }
+
+/* Dashboard Filters Layout Update */
+
+/* Base Layout */
+.filter-dropdown {
+    /* Existing styles remain, ensuring flex layout */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* Ensure padding for contents */
+    padding: 15px 18px;
+}
+
+.filter-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px; /* Vertical gap between rows */
+}
+
+/* Rows */
+.filter-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.top-row {
+    gap: 40px; /* Space between slider groups */
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1); /* Subtle separator */
+}
+
+.bottom-row {
+    justify-content: space-between;
+    align-items: center; /* Vertically center items */
+    padding-top: 5px;
+}
+
+/* Columns / Groups */
+.filter-group-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group-header {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #566e9c; /* Requested Color */
+    text-transform: none;
+}
+
+.filter-group-row {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Space between sliders within a group */
+}
+
+/* Checkboxes Horizontal Layout */
+.checkboxes-wrapper.horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    margin-left: 0;
+}
+
+/* Bottom Sections */
+.bottom-left-section {
+    display: flex;
+    flex-direction: row;
+    gap: 40px; /* Space between Exclude and Include groups */
+    align-items: center;
+}
+
+.bottom-right-section {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Optimal Filter Item */
+.optimal-item {
+    margin-right: 10px;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling Update */
+.filter-btn {
+    width: auto; /* Allow auto width for text */
+    min-width: 80px;
+    padding: 0 15px;
+    height: 32px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .top-row {
+        gap: 20px;
+    }
+    .filter-group-row {
+        gap: 10px; /* Tighter sliders */
+    }
+    .bottom-left-section {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .filter-row {
+        flex-wrap: wrap;
+    }
+    .top-row {
+        gap: 20px;
+    }
+    .bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .bottom-right-section {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
