@@ -6,7 +6,10 @@ To enable **Profit & Inventory Tracking**, your Amazon SP-API Application requir
 
 1.  Log in to [Amazon Seller Central](https://sellercentral.amazon.com/).
 2.  Navigate to **Menu** > **Partner Network** > **Develop Apps**.
-3.  Find your application ("Agent Arbitrage") in the list.
+3.  Find your application in the list.
+    *   **Target App:** `AgentArbitrage-Prod`
+    *   **App ID:** `amzn1.sp.solution.b2317d23-19e3-4a8d-9c49-960b6e793d82`
+    *   *(Note: This matches your active server configuration. Do not edit the draft/test version)*
 4.  Click the arrow next to "Edit App" and select **Edit App**.
 5.  Under **LWA Credentials**, ensure your Client ID matches what is in your `.env` file. (Do not change this unless necessary).
 6.  Scroll down to **Roles**. You must check/enable the following:
