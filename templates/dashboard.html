@@ -619,8 +619,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Update baseline for notifications
-            if (data.pagination && data.pagination.total_db_records) {
-                currentTotalRecords = data.pagination.total_db_records;
+            if (data.pagination && typeof data.pagination.total_records !== 'undefined') {
+                currentTotalRecords = data.pagination.total_records;
             }
         } catch (error) {
             console.error('Error fetching deals:', error);
