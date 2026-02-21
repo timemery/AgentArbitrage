@@ -10,52 +10,10 @@ from datetime import datetime
 import os
 import httpx
 from worker import celery_app as celery
-from keepa_deals.amazon_sp_api import check_restrictions
+from keepa_deals.amazon_sp_api import check_restrictions, refresh_sp_api_token
 from keepa_deals.db_utils import DB_PATH, get_all_user_credentials
 
 logger = logging.getLogger(__name__)
-
-def _refresh_sp_api_token(refresh_token: str) -> str | None:
-    """
-    Refreshes the SP-API access token using the refresh token.
-    This is a helper function to be used within the Celery task.
-    """
-    logger.info("Attempting to refresh SP-API access token from within Celery task.")
-
-    client_id = os.getenv("SP_API_CLIENT_ID")
-    client_secret = os.getenv("SP_API_CLIENT_SECRET")
-    token_url = "https://api.amazon.com/auth/o2/token"
-
-    if not all([client_id, client_secret]):
-        logger.error("SP_API_CLIENT_ID or SP_API_CLIENT_SECRET are not configured.")
-        return None
-
-    refresh_payload = {
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token,
-        'client_id': client_id,
-        'client_secret': client_secret
-    }
-
-    try:
-        with httpx.Client() as client:
-            response = client.post(token_url, data=refresh_payload)
-            response.raise_for_status()
-            token_data = response.json()
-
-        new_access_token = token_data.get('access_token')
-        if new_access_token:
-            logger.info("Successfully refreshed SP-API access token.")
-            return new_access_token
-        else:
-            logger.error("Token refresh response did not contain an access_token.")
-            return None
-    except httpx.HTTPStatusError as e:
-        logger.error(f"Failed to refresh SP-API token: {e.response.text}")
-        return None
-    except Exception as e:
-        logger.error(f"An unexpected error occurred during token refresh: {e}", exc_info=True)
-        return None
 
 
 @celery.task(name='keepa_deals.sp_api_tasks.check_all_restrictions_for_user', bind=True)
@@ -73,7 +31,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
         auth_failed = False
         if not access_token or access_token == 'manual_placeholder':
             logger.info("Access token missing or placeholder. Attempting to refresh.")
-            access_token = _refresh_sp_api_token(refresh_token)
+            access_token = refresh_sp_api_token(refresh_token)
             if not access_token:
                 logger.error("Failed to obtain access token via refresh. Will mark items as restricted/check-failed.")
                 auth_failed = True
@@ -233,7 +191,7 @@ def check_restriction_for_asins(asins: list[str]):
 
         try:
             # Refresh the access token for the user
-            access_token = _refresh_sp_api_token(refresh_token)
+            access_token = refresh_sp_api_token(refresh_token)
 
             # Fetch conditions for these ASINs from the database (Done early to handle both success/failure cases)
             items = []
