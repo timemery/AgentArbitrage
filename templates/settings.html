@@ -72,6 +72,16 @@
                         <hr class="hr-custom">
                         <p class="tidy-text mb-0">Seller ID: {{ session.sp_api_user_id }}</p>
                         <hr class="hr-custom">
+
+                        <!-- Upgrade Permissions Note -->
+                        <div style="background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2);">
+                            <h6 class="tidy-header mt-0" style="font-size: 13px; color: #eef2f6;">Permissions Upgrade</h6>
+                            <p class="tidy-text small text-muted-custom" style="margin-bottom: 8px;">
+                                To enable Inventory & Profit Tracking, your app must have the <b>"Inventory and Order Tracking"</b> role enabled in Seller Central.
+                            </p>
+                            <a href="{{ url_for('connect_amazon') }}" class="tidy-button" style="background-color: #336699; border-color: #336699; height: 28px; font-size: 11px;">Re-Authorize for New Features</a>
+                        </div>
+
                         <form action="{{ url_for('trigger_restriction_check') }}" method="POST">
                             <button type="submit" class="tidy-button" style="background-color: transparent; border-color: #28a745; color: #28a745;">Re-check Restrictions for All Deals</button>
                             <small class="tidy-text text-muted-custom">
@@ -82,7 +92,14 @@
                 </div>
             {% else %}
                 {% if session.role == 'admin' %}
-                    <p class="tidy-text">Connect your Amazon Seller Central account to check for product restrictions.</p>
+                    <p class="tidy-text">Connect your Amazon Seller Central account to check for product restrictions and sync inventory.</p>
+
+                    <div style="background-color: rgba(255, 193, 7, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(255, 193, 7, 0.3);">
+                        <p class="tidy-text small" style="margin-bottom: 0; color: #ffc107;">
+                            <b>Important:</b> Ensure you select the <b>"Inventory and Order Tracking"</b> role when authorizing the app to enable the new Profit & Inventory features.
+                        </p>
+                    </div>
+
                     <a href="{{ url_for('connect_amazon') }}" class="tidy-button" style="background-color: #ffc107; border-color: #ffc107; color: #333; display: inline-flex; height: 32px; align-items: center; padding: 0 16px;">Connect Your Amazon Account</a>
 
                     <hr class="hr-custom">
