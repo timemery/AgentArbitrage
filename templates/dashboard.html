@@ -261,6 +261,29 @@
 </div>
 
 <script>
+window.recordPotentialBuy = async function(asin, title, price) {
+    try {
+        let cleanPrice = price;
+        if (typeof price === 'string') {
+            cleanPrice = parseFloat(price.replace('$', '').replace(',', ''));
+        }
+        if (isNaN(cleanPrice)) cleanPrice = null;
+
+        await fetch('/api/inventory/potential', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                asin: asin,
+                title: title,
+                price: cleanPrice
+            })
+        });
+        console.log('Potential buy recorded for ASIN:', asin);
+    } catch (e) {
+        console.error('Error recording potential buy:', e);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     /* Container logic removed as per instructions to remove layout container */
 
@@ -758,7 +781,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 break;
                             case 'not_restricted':
                                 // Show Buy button (Greenish)
-                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link btn-buy" onclick="event.stopPropagation()">Buy</a>`;
+                                gatedContent = `<a href="https://www.amazon.com/dp/${cleanAsin}?psc=1&aod=1" target="_blank" class="approval-link btn-buy" onclick="window.recordPotentialBuy('${cleanAsin}', this.getAttribute('data-title'), this.getAttribute('data-price')); event.stopPropagation()" data-title="${deal.Title ? deal.Title.replace(/"/g, '&quot;') : ''}" data-price="${deal.Price_Now}">Buy</a>`;
                                 break;
                             case 'error':
                                 gatedContent = '<span class="status-icon error" title="API Error">⚠</span>';
@@ -1435,7 +1458,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Approved
             messageHtml = 'You are <strong class="action-strong-white">Approved</strong> to sell this title: ';
             const buyUrl = deal.ASIN ? `https://www.amazon.com/dp/${deal.ASIN}?psc=1&aod=1` : '#';
-            buttonHtml = `<a href="${buyUrl}" target="_blank" class="overlay-action-btn overlay-btn-buy">Buy Now</a>`;
+            buttonHtml = `<a href="${buyUrl}" target="_blank" class="overlay-action-btn overlay-btn-buy" onclick="window.recordPotentialBuy('${deal.ASIN}', this.getAttribute('data-title'), this.getAttribute('data-price'))" data-title="${deal.Title ? deal.Title.replace(/"/g, '&quot;') : ''}" data-price="${deal.Price_Now}">Buy Now</a>`;
         } else if (deal.restriction_status === 'pending_check') {
              messageHtml = 'Checking approval status... <span class="spinner-small"></span>';
         } else {
