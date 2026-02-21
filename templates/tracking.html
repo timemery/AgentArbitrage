@@ -25,8 +25,9 @@
         <div class="tidy-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Active Inventory</h2>
-                <div>
-                    <button class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
+                    <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
                     <button class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
                     <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
                 </div>
@@ -234,16 +235,28 @@
     async function triggerImport() {
         if (!confirm('Start inventory sync from Amazon? This may take a few minutes.')) return;
 
+        const btn = document.getElementById('btn-sync');
+        const originalText = btn.textContent;
+        btn.textContent = 'Syncing...';
+        btn.disabled = true;
+
         try {
             const response = await fetch('/api/inventory/import', { method: 'POST' });
             const res = await response.json();
             if (res.status === 'success') {
-                alert('Sync started! Task ID: ' + res.task_id);
+                alert('Sync started in background! Check back in a few minutes.');
             } else {
                 alert('Error: ' + res.error);
             }
         } catch (err) {
             console.error(err);
+            alert('Request failed');
+        } finally {
+            // Re-enable button after a delay to prevent spamming
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 5000);
         }
     }
 

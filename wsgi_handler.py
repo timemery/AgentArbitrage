@@ -2,7 +2,7 @@ import sys
 import logging
 import os
 import subprocess
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify, Response
 import httpx
 from bs4 import BeautifulSoup
 import sqlite3
@@ -30,7 +30,7 @@ from keepa_deals.db_utils import (
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
-from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload
+from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload, export_missing_costs_csv
 import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
@@ -475,6 +475,23 @@ def upload_costs():
         return jsonify({'status': 'success', 'updated_count': updated_count})
     except Exception as e:
         app.logger.error(f"Error uploading costs: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/export-missing-costs', methods=['GET'])
+def export_missing_costs():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        csv_content = export_missing_costs_csv()
+
+        return Response(
+            csv_content,
+            mimetype="text/csv",
+            headers={"Content-disposition": "attachment; filename=missing_costs_template.csv"}
+        )
+    except Exception as e:
+        app.logger.error(f"Error exporting missing costs: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 

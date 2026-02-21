@@ -265,3 +265,35 @@ def process_bulk_cost_upload(csv_content):
     except Exception as e:
         logger.error(f"Error processing bulk cost upload: {e}", exc_info=True)
         raise e
+
+def export_missing_costs_csv():
+    """
+    Generates a CSV string for items with missing buy costs.
+    Columns: SKU, Title, ASIN, Buy Cost, Purchase Date
+    """
+    try:
+        output = io.StringIO()
+        writer = csv.writer(output)
+
+        # Headers
+        writer.writerow(['SKU', 'Title', 'ASIN', 'Buy Cost', 'Purchase Date'])
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            # Select items where buy_cost is NULL or 0
+            cursor.execute("""
+                SELECT sku, title, asin
+                FROM inventory_ledger
+                WHERE buy_cost IS NULL OR buy_cost = 0
+                ORDER BY title
+            """)
+
+            rows = cursor.fetchall()
+            for row in rows:
+                # SKU, Title, ASIN, Buy Cost (Empty), Purchase Date (Empty)
+                writer.writerow([row[0], row[1], row[2], '', ''])
+
+        return output.getvalue()
+    except Exception as e:
+        logger.error(f"Error generating missing costs CSV: {e}", exc_info=True)
+        raise e
