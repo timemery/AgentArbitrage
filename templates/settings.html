@@ -88,6 +88,25 @@
                                 Click this if you see loading spinners on the dashboard. This will force a new check for all items in your database.
                             </small>
                         </form>
+
+                        <hr class="hr-custom">
+                        <h6 class="tidy-header mt-0 font-bold" style="font-size: 13px;">Manual Credentials Update</h6>
+                        <p class="tidy-text small text-muted-custom">
+                            Use this if you are getting an MD9100 error or using a Private App (Self-Auth). Generate a new Refresh Token in Seller Central after updating roles, and paste it here.
+                        </p>
+                        <button class="tidy-button" type="button" onclick="const form = document.getElementById('manualUpdateForm'); form.style.display = form.style.display === 'none' ? 'block' : 'none';" style="background-color: #6c757d; border-color: #6c757d; font-size: 11px; height: 28px;">Toggle Manual Update Form</button>
+
+                        <form id="manualUpdateForm" action="{{ url_for('manual_sp_api_token') }}" method="POST" style="display: none; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+                            <div class="form-group-mb">
+                                <label for="update_seller_id" class="label-block tidy-text">Seller ID</label>
+                                <input type="text" class="styled-text-field input-full-width" id="update_seller_id" name="seller_id" value="{{ session.sp_api_user_id }}" required>
+                            </div>
+                            <div class="form-group-mb">
+                                <label for="update_refresh_token" class="label-block tidy-text">New Refresh Token</label>
+                                <input type="text" class="styled-text-field input-full-width" id="update_refresh_token" name="refresh_token" placeholder="Your New Refresh Token (starts with Atzr|...)" required>
+                            </div>
+                            <button type="submit" class="tidy-button" style="background-color: #28a745; border-color: #28a745;">Update Credentials</button>
+                        </form>
                     {% endif %}
                 </div>
             {% else %}
