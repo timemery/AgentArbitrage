@@ -13,7 +13,8 @@ from keepa_deals.amazon_sp_api import refresh_sp_api_token
 
 logger = logging.getLogger(__name__)
 
-SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sandbox.sellingpartnerapi-na.amazon.com")
+# Default to Production URL for safety in deployed environments.
+SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
 
 @celery_app.task(name='keepa_deals.inventory_import.fetch_existing_inventory_task')
 def fetch_existing_inventory_task():

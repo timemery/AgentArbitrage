@@ -18,6 +18,7 @@ from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_app import celery_app
 from keepa_deals.db_utils import (
+    DB_PATH,
     create_user_restrictions_table_if_not_exists,
     create_user_credentials_table_if_not_exists,
     create_deals_table_if_not_exists,
@@ -47,7 +48,8 @@ logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitr
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-DATABASE_URL = os.getenv("DATABASE_URL", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db'))
+# Use DB_PATH from db_utils for consistency
+# DATABASE_URL = os.getenv("DATABASE_URL", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db'))
 
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
 INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'intelligence.json')
@@ -351,7 +353,7 @@ def get_inventory():
         return jsonify({'error': 'Unauthorized'}), 401
 
     try:
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
@@ -382,7 +384,7 @@ def add_potential_buy():
         if not asin:
             return jsonify({'error': 'ASIN required'}), 400
 
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO inventory_ledger (asin, title, buy_cost, status, source)
@@ -411,7 +413,7 @@ def confirm_purchase():
         if not ledger_id or not buy_cost or not qty or not sku:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 UPDATE inventory_ledger
@@ -434,7 +436,7 @@ def dismiss_potential():
         data = request.json
         ledger_id = data.get('id')
 
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE inventory_ledger SET status = 'DISMISSED' WHERE id = ?", (ledger_id,))
             conn.commit()
@@ -1266,7 +1268,7 @@ def deals():
 @app.route('/api/deals')
 def api_deals():
     try:
-        DB_PATH = DATABASE_URL
+        # DB_PATH is now imported from db_utils
         TABLE_NAME = 'deals'
         RESTRICTIONS_TABLE = 'user_restrictions'
 
@@ -1769,7 +1771,7 @@ def deal_count():
          return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
     try:
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             # Ensure the table exists before querying
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='deals'")
@@ -1910,7 +1912,7 @@ def get_ava_advice(asin):
         return jsonify({'error': 'Not authenticated'}), 401
 
     try:
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
