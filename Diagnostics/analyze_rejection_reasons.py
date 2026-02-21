@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from keepa_deals.keepa_api import fetch_deals_for_deals, fetch_product_batch
 from keepa_deals.stable_calculations import infer_sale_events, analyze_sales_performance
 from keepa_deals.token_manager import TokenManager
+from keepa_deals.smart_ingestor import check_peek_viability
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -20,16 +21,25 @@ def deep_dive_asin(product):
     title = product.get('title')
     print(f"\n--- Deep Dive for ASIN: {asin} ({title}) ---")
 
+    # 0. Check Peek Viability (Stage 1)
+    stats = product.get('stats', {})
+    peek_passed = check_peek_viability(stats)
+    print(f"Stage 1 (Peek Filter): {'PASSED' if peek_passed else 'FAILED'}")
+    if not peek_passed:
+        print("  -> NOTE: In a real run, this deal would be rejected here to save tokens.")
+        print("     (Proceeding with full analysis anyway for diagnostics...)")
+
     # 1. Infer Sale Events
     sale_events, total_offer_drops = infer_sale_events(product)
     print(f"Total Offer Drops: {total_offer_drops}")
     print(f"Confirmed Sale Events: {len(sale_events)}")
 
+    has_fallback = False
+    candidates = []
+
     if len(sale_events) < 1:
         print("  -> INFERRED SALES FAILED (Count < 1)")
         # Check Fallback Candidates
-        stats = product.get('stats', {})
-        candidates = []
 
         # Check specific indices used in fallback
         indices_to_check = [
@@ -37,14 +47,18 @@ def deep_dive_asin(product):
             (19, 'Used - Like New'),
             (20, 'Used - Very Good'),
             (21, 'Used - Good'),
-            (22, 'Used - Acceptable')
+            (22, 'Used - Acceptable'),
+            (23, 'Collectible - Like New'),
+            (24, 'Collectible - Very Good'),
+            (25, 'Collectible - Good'),
+            (26, 'Collectible - Acceptable')
         ]
 
         avg90_raw = stats.get('avg90', [])
         avg365_raw = stats.get('avg365', [])
 
         print("  -> Checking Fallback Candidates (Keepa Stats):")
-        has_fallback = False
+
         for idx, label in indices_to_check:
             val_90 = avg90_raw[idx] if len(avg90_raw) > idx else None
             val_365 = avg365_raw[idx] if len(avg365_raw) > idx else None
@@ -83,9 +97,9 @@ def deep_dive_asin(product):
         print("  -> FINAL RESULT: REJECTED (Missing List at)")
 
         # Determine why
-        if len(sale_events) < 1 and not candidates:
+        if len(sale_events) < 1 and not has_fallback:
              print("     Reason: Inferred Sales < 1 AND Fallback Failed.")
-        elif len(sale_events) >= 1 or candidates:
+        elif len(sale_events) >= 1 or has_fallback:
              # If we had candidates or sales, but result is -1, it must be XAI or Ceiling logic weirdness.
              # Note: Ceiling logic doesn't return -1, it caps.
              # So it must be XAI rejection.
