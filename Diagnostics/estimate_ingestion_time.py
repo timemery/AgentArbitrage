@@ -3,7 +3,7 @@ import math
 import sys
 
 # --- Constants ---
-TOTAL_DEALS_TARGET = 10000
+TARGET_VISIBLE_DEALS = 10000
 MAX_TOKENS = 300.0
 MIN_THRESHOLD = 1.0
 
@@ -16,14 +16,19 @@ def simulate_ingestion(label, refill_rate, peek_batch_size, burst_threshold, sur
     """
     Simulates time to ingest deals using the Smart Ingestor v3.1 logic.
     """
+    # Calculate how many items we need to scan to get the target visible deals
+    total_items_to_scan = int(TARGET_VISIBLE_DEALS / survivor_rate)
+
     print(f"\n--- Simulation: {label} ---")
     print(f"  > Refill Rate: {refill_rate}/min")
     print(f"  > Peek Batch Size: {peek_batch_size}")
     print(f"  > Burst Threshold: {burst_threshold}")
     print(f"  > Survivor Rate: {int(survivor_rate*100)}% (Rejection Rate: {int((1-survivor_rate)*100)}%)")
+    print(f"  > Target: {TARGET_VISIBLE_DEALS} Visible Deals (Scanning ~{total_items_to_scan} items)")
 
     current_tokens = MAX_TOKENS # Start full
     deals_processed = 0
+    visible_deals_found = 0
     minutes_elapsed = 0
     is_paused = False
 
@@ -31,7 +36,7 @@ def simulate_ingestion(label, refill_rate, peek_batch_size, burst_threshold, sur
     total_peek_cost = 0
     total_commit_cost = 0
 
-    while deals_processed < TOTAL_DEALS_TARGET:
+    while deals_processed < total_items_to_scan:
         minutes_elapsed += 1
 
         # 1. Refill
@@ -48,12 +53,12 @@ def simulate_ingestion(label, refill_rate, peek_batch_size, burst_threshold, sur
 
         # 3. Processing Logic
         # Try to process as many batches as possible in this minute
-        while current_tokens >= MIN_THRESHOLD and deals_processed < TOTAL_DEALS_TARGET:
+        while current_tokens >= MIN_THRESHOLD and deals_processed < total_items_to_scan:
 
             # --- Calculate Cost for ONE Peek Batch ---
             # 1. Peek Cost
             # If remaining deals < batch size, just take remaining
-            actual_batch_size = min(peek_batch_size, TOTAL_DEALS_TARGET - deals_processed)
+            actual_batch_size = min(peek_batch_size, total_items_to_scan - deals_processed)
             cost_peek = actual_batch_size * COST_PEEK_PER_ASIN
 
             # 2. Commit Cost (Survivors)
@@ -73,6 +78,7 @@ def simulate_ingestion(label, refill_rate, peek_batch_size, burst_threshold, sur
 
             current_tokens -= total_batch_cost
             deals_processed += actual_batch_size
+            visible_deals_found += expected_survivors
 
             total_peek_cost += cost_peek
             total_commit_cost += cost_commit
@@ -87,16 +93,17 @@ def simulate_ingestion(label, refill_rate, peek_batch_size, burst_threshold, sur
     hours = minutes_elapsed / 60
     days = hours / 24
 
-    avg_tokens_per_deal = (total_peek_cost + total_commit_cost) / TOTAL_DEALS_TARGET
+    avg_tokens_per_visible_deal = (total_peek_cost + total_commit_cost) / TARGET_VISIBLE_DEALS
+    avg_tokens_per_scanned_deal = (total_peek_cost + total_commit_cost) / deals_processed
 
     print(f"  > Time: {hours:.1f} hours ({days:.1f} days)")
-    print(f"  > Efficiency: {avg_tokens_per_deal:.1f} tokens/deal")
+    print(f"  > Efficiency: {avg_tokens_per_visible_deal:.1f} tokens per VISIBLE deal ({avg_tokens_per_scanned_deal:.1f} per scanned item)")
 
     return minutes_elapsed
 
 if __name__ == "__main__":
     print(f"=== Smart Ingestor v3.1 Performance Estimator ===")
-    print(f"Target: {TOTAL_DEALS_TARGET} Deals")
+    print(f"Target: {TARGET_VISIBLE_DEALS} Visible Deals (on Dashboard)")
     print(f"Assumption: {int((1-0.1)*100)}% Rejection Rate (10% Survivors)")
 
     # Scenario 1: Fast Connection (Upgrade)
