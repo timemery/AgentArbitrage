@@ -179,7 +179,28 @@ New users arrive with inventory physically at Amazon (or FBM) but with no record
 *   **Risk:** Importing items that are at Amazon but damaged/unfulfillable might clutter the view.
 *   **Mitigation:** The Report parser should filter for `disposition` = 'SELLABLE' to keep the ledger clean.
 
-## 9. Implementation Steps for Agent
+## 9. Integration & Coexistence Strategy (Crucial Update)
+
+### A. The "Single Token" Architecture
+We currently use SP-API for "Gating Checks" (Restrictions), storing credentials in the `user_credentials` table. The new Inventory features must **share** this same credential storage. We will not create a parallel auth system.
+
+### B. Scope Management & Migration
+*   **Current State:** Existing tokens likely only have `listings` scope.
+*   **Requirement:** New features require `sellingpartnerapi::orders` (for Sales) and `sellingpartnerapi::reports` (for Inventory Import).
+*   **Migration Path:**
+    *   The "Connect Amazon" OAuth URL must be updated to request *all* scopes.
+    *   **Existing Users:** Will encounter 403 errors on the new features. We must implement a "Re-authorization Required" detection logic. If an API call fails due to missing scopes, the UI must prompt the user to "Update Permissions" (re-run the Connect flow).
+
+### C. Code Refactoring (Shared Auth)
+*   **Problem:** `_refresh_sp_api_token` is currently buried inside `sp_api_tasks.py`.
+*   **Solution:** Move this logic to `keepa_deals/amazon_sp_api.py` (or a new `sp_api_auth.py`) so it can be imported by:
+    1.  `sp_api_tasks.py` (Gating)
+    2.  `inventory_import.py` (Bulk Import)
+    3.  `order_fetcher.py` (Sales Tracking)
+
+This ensures all features use the same token management and refresh logic.
+
+## 10. Implementation Steps for Agent
 
 1.  *Update `keepa_deals/db_utils.py` to include schema definitions.*
     -   Add `create_inventory_ledger_table`, `create_sales_ledger_table`, and `create_reconciliation_log_table` functions with the specified SQL.
@@ -196,7 +217,11 @@ New users arrive with inventory physically at Amazon (or FBM) but with no record
     -   Create `templates/tracking.html` to implement the UI for the Potential Buys, Active Inventory, and Sales tabs.
     -   In the `active_inventory` tab, implement the "Missing Cost" warning banner and the "Bulk Edit" button.
     -   Update `wsgi_handler.py` to serve the `/tracking` route.
-5.  *Complete pre commit steps*
+5.  *Refactor SP-API Auth Logic.*
+    -   Move `_refresh_sp_api_token` from `keepa_deals/sp_api_tasks.py` to `keepa_deals/amazon_sp_api.py` or a shared utility.
+    -   Update `keepa_deals/sp_api_tasks.py` to use the shared function.
+    -   Update `keepa_deals/inventory_import.py` and `keepa_deals/order_fetcher.py` to use the shared function.
+6.  *Complete pre commit steps*
     -   Complete pre commit steps to make sure proper testing, verification, review, and reflection are done.
-6.  *Submit the changes.*
+7.  *Submit the changes.*
     -   Submit the changes with a descriptive commit message.
