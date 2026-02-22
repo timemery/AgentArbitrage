@@ -72,17 +72,53 @@
                         <hr class="hr-custom">
                         <p class="tidy-text mb-0">Seller ID: {{ session.sp_api_user_id }}</p>
                         <hr class="hr-custom">
+
+                        <!-- Upgrade Permissions Note -->
+                        <div style="background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2);">
+                            <h6 class="tidy-header mt-0" style="font-size: 13px; color: #eef2f6;">Permissions Upgrade</h6>
+                            <p class="tidy-text small text-muted-custom" style="margin-bottom: 8px;">
+                                To enable Inventory & Profit Tracking, your app must have the <b>"Inventory and Order Tracking"</b> role enabled in Seller Central.
+                            </p>
+                            <a href="{{ url_for('connect_amazon') }}" class="tidy-button" style="background-color: #336699; border-color: #336699; height: 28px; font-size: 11px;">Re-Authorize for New Features</a>
+                        </div>
+
                         <form action="{{ url_for('trigger_restriction_check') }}" method="POST">
                             <button type="submit" class="tidy-button" style="background-color: transparent; border-color: #28a745; color: #28a745;">Re-check Restrictions for All Deals</button>
                             <small class="tidy-text text-muted-custom">
                                 Click this if you see loading spinners on the dashboard. This will force a new check for all items in your database.
                             </small>
                         </form>
+
+                        <hr class="hr-custom">
+                        <h6 class="tidy-header mt-0 font-bold" style="font-size: 13px;">Manual Credentials Update</h6>
+                        <p class="tidy-text small text-muted-custom">
+                            Use this if you are getting an MD9100 error or using a Private App (Self-Auth). Generate a new Refresh Token in Seller Central after updating roles, and paste it here.
+                        </p>
+                        <button class="tidy-button" type="button" onclick="const form = document.getElementById('manualUpdateForm'); form.style.display = form.style.display === 'none' ? 'block' : 'none';" style="background-color: #6c757d; border-color: #6c757d; font-size: 11px; height: 28px;">Toggle Manual Update Form</button>
+
+                        <form id="manualUpdateForm" action="{{ url_for('manual_sp_api_token') }}" method="POST" style="display: none; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+                            <div class="form-group-mb">
+                                <label for="update_seller_id" class="label-block tidy-text">Seller ID</label>
+                                <input type="text" class="styled-text-field input-full-width" id="update_seller_id" name="seller_id" value="{{ session.sp_api_user_id }}" required>
+                            </div>
+                            <div class="form-group-mb">
+                                <label for="update_refresh_token" class="label-block tidy-text">New Refresh Token</label>
+                                <input type="text" class="styled-text-field input-full-width" id="update_refresh_token" name="refresh_token" placeholder="Your New Refresh Token (starts with Atzr|...)" required>
+                            </div>
+                            <button type="submit" class="tidy-button" style="background-color: #28a745; border-color: #28a745;">Update Credentials</button>
+                        </form>
                     {% endif %}
                 </div>
             {% else %}
                 {% if session.role == 'admin' %}
-                    <p class="tidy-text">Connect your Amazon Seller Central account to check for product restrictions.</p>
+                    <p class="tidy-text">Connect your Amazon Seller Central account to check for product restrictions and sync inventory.</p>
+
+                    <div style="background-color: rgba(255, 193, 7, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(255, 193, 7, 0.3);">
+                        <p class="tidy-text small" style="margin-bottom: 0; color: #ffc107;">
+                            <b>Important:</b> Ensure you select the <b>"Inventory and Order Tracking"</b> role when authorizing the app to enable the new Profit & Inventory features.
+                        </p>
+                    </div>
+
                     <a href="{{ url_for('connect_amazon') }}" class="tidy-button" style="background-color: #ffc107; border-color: #ffc107; color: #333; display: inline-flex; height: 32px; align-items: center; padding: 0 16px;">Connect Your Amazon Account</a>
 
                     <hr class="hr-custom">

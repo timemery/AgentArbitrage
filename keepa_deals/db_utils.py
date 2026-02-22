@@ -102,6 +102,11 @@ def create_deals_table_if_not_exists():
     # Ensure system state table exists
     create_system_state_table_if_not_exists()
 
+    # Ensure Inventory & Sales tables exist (Added Feb 2026)
+    create_inventory_ledger_table_if_not_exists()
+    create_sales_ledger_table_if_not_exists()
+    create_reconciliation_log_table_if_not_exists()
+
     logger.info(f"Database check: Ensuring table '{TABLE_NAME}' at '{DB_PATH}' is correctly configured.")
     try:
         with sqlite3.connect(DB_PATH) as conn:
@@ -449,5 +454,97 @@ def clear_deals_table():
     conn.commit()
     conn.close()
     logging.info("Deals table cleared.")
-# Refreshed
-# Refreshed
+
+def create_inventory_ledger_table_if_not_exists():
+    """Ensures the 'inventory_ledger' table exists."""
+    table_name = 'inventory_ledger'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f"""
+                    CREATE TABLE {table_name} (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        asin TEXT NOT NULL,
+                        title TEXT,
+                        sku TEXT,
+                        purchase_date TIMESTAMP,
+                        buy_cost REAL,
+                        quantity_purchased INTEGER DEFAULT 1,
+                        quantity_remaining INTEGER DEFAULT 0,
+                        status TEXT DEFAULT 'POTENTIAL',
+                        source TEXT,
+                        notes TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+                cursor.execute(f"CREATE INDEX idx_inv_asin ON {table_name}(asin)")
+                cursor.execute(f"CREATE INDEX idx_inv_sku ON {table_name}(sku)")
+                cursor.execute(f"CREATE INDEX idx_inv_status ON {table_name}(status)")
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise
+
+def create_sales_ledger_table_if_not_exists():
+    """Ensures the 'sales_ledger' table exists."""
+    table_name = 'sales_ledger'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f"""
+                    CREATE TABLE {table_name} (
+                        amazon_order_id TEXT PRIMARY KEY,
+                        asin TEXT,
+                        sku TEXT,
+                        sale_date TIMESTAMP NOT NULL,
+                        sale_price REAL,
+                        amazon_fees REAL,
+                        quantity_sold INTEGER NOT NULL,
+                        order_status TEXT,
+                        reconciliation_status TEXT DEFAULT 'UNMATCHED',
+                        fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+                cursor.execute(f"CREATE INDEX idx_sales_asin ON {table_name}(asin)")
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise
+
+def create_reconciliation_log_table_if_not_exists():
+    """Ensures the 'reconciliation_log' table exists."""
+    table_name = 'reconciliation_log'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f"""
+                    CREATE TABLE {table_name} (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        sales_ledger_id TEXT NOT NULL,
+                        inventory_ledger_id INTEGER NOT NULL,
+                        quantity_matched INTEGER NOT NULL,
+                        realized_profit REAL,
+                        match_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY(sales_ledger_id) REFERENCES sales_ledger(amazon_order_id),
+                        FOREIGN KEY(inventory_ledger_id) REFERENCES inventory_ledger(id)
+                    )
+                """)
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise

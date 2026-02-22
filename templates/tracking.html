@@ -1,10 +1,287 @@
+
 {% extends "layout.html" %}
-
-{% block title %}Tracking - Agent Arbitrage{% endblock %}
-
+{% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Tracking</h1>
-    <p>This page is a placeholder for future functionality.</p>
+<div class="tidy-container settings-width">
+    <h1>Profit & Inventory Tracking</h1>
+
+    <div class="tab-nav">
+        <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
+        <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
+        <button class="tab-link" onclick="openTab(event, 'sales-profit')">Sales & Profit</button>
+    </div>
+
+    <!-- Potential Buys Tab -->
+    <div id="potential-buys" class="tab-content active">
+        <div class="tidy-card">
+            <h2>Inbox: Potential Buys</h2>
+            <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
+            <div id="potential-table-container">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Active Inventory Tab -->
+    <div id="active-inventory" class="tab-content">
+        <div class="tidy-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Active Inventory</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
+                    <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
+                    <button class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
+                    <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
+                </div>
+            </div>
+            <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
+            <div id="active-table-container">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Sales & Profit Tab -->
+    <div id="sales-profit" class="tab-content">
+        <div class="tidy-card">
+            <h2>Sales & Profit Ledger</h2>
+            <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
+            <p><i>Coming Soon...</i></p>
+        </div>
+    </div>
 </div>
+
+<!-- Confirm Purchase Modal -->
+<div id="confirm-modal" class="deal-overlay">
+    <div class="deal-overlay-content" style="width: 500px; padding: 30px;">
+        <span class="close-overlay" onclick="closeModal()">&times;</span>
+        <h3>Confirm Purchase</h3>
+        <form id="confirm-form">
+            <input type="hidden" id="confirm-id">
+            <div class="form-group-mb">
+                <label class="label-block">Title</label>
+                <input type="text" id="confirm-title" class="styled-text-field input-full-width" readonly>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">ASIN</label>
+                <input type="text" id="confirm-asin" class="styled-text-field input-full-width" readonly>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">SKU (Required)</label>
+                <input type="text" id="confirm-sku" class="styled-text-field input-full-width" required>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Buy Cost ($)</label>
+                <input type="number" step="0.01" id="confirm-cost" class="styled-text-field input-full-width" required>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Quantity</label>
+                <input type="number" id="confirm-qty" class="styled-text-field input-full-width" value="1" required>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Purchase Date</label>
+                <input type="date" id="confirm-date" class="styled-text-field input-full-width" required>
+            </div>
+            <button type="submit" class="tidy-button btn-success-style">Confirm & Move to Inventory</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchInventory();
+
+        // Set default date to today
+        document.getElementById('confirm-date').valueAsDate = new Date();
+    });
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.className += " active";
+    }
+
+    async function fetchInventory() {
+        try {
+            const response = await fetch('/api/inventory');
+            const data = await response.json();
+
+            renderPotential(data.potential);
+            renderActive(data.active);
+        } catch (error) {
+            console.error('Error fetching inventory:', error);
+        }
+    }
+
+    function renderPotential(items) {
+        const container = document.getElementById('potential-table-container');
+        if (!items || items.length === 0) {
+            container.innerHTML = '<p>No potential buys found.</p>';
+            return;
+        }
+
+        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+
+        items.forEach(item => {
+            html += `<tr>
+                <td class="strategies-cell">${item.title || '-'}</td>
+                <td class="strategies-cell"><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
+                <td class="strategies-cell">$${item.buy_cost || '-'}</td>
+                <td class="strategies-cell">${new Date(item.created_at).toLocaleDateString()}</td>
+                <td class="strategies-cell">
+                    <button class="tidy-button btn-success-style" onclick='openConfirmModal(${JSON.stringify(item)})'>Confirm</button>
+                    <button class="tidy-button btn-danger-style" onclick="dismissItem(${item.id})">Dismiss</button>
+                </td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function renderActive(items) {
+        const container = document.getElementById('active-table-container');
+        if (!items || items.length === 0) {
+            container.innerHTML = '<p>No active inventory found.</p>';
+            return;
+        }
+
+        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>SKU</th><th>Title</th><th>Qty</th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+
+        items.forEach(item => {
+            const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
+
+            html += `<tr>
+                <td class="strategies-cell">${item.sku || '-'}</td>
+                <td class="strategies-cell">${item.title || '-'}</td>
+                <td class="strategies-cell">${item.quantity_remaining}</td>
+                <td class="strategies-cell">${costDisplay}</td>
+                <td class="strategies-cell">
+                    <button class="tidy-button" onclick="editItem(${item.id})">Edit</button>
+                </td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function openConfirmModal(item) {
+        document.getElementById('confirm-id').value = item.id;
+        document.getElementById('confirm-title').value = item.title;
+        document.getElementById('confirm-asin').value = item.asin;
+        document.getElementById('confirm-cost').value = item.buy_cost || '';
+        // Generate a SKU suggestion?
+        document.getElementById('confirm-sku').value = '';
+
+        document.getElementById('confirm-modal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('confirm-modal').style.display = 'none';
+    }
+
+    document.getElementById('confirm-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const data = {
+            id: document.getElementById('confirm-id').value,
+            sku: document.getElementById('confirm-sku').value,
+            buy_cost: document.getElementById('confirm-cost').value,
+            quantity: document.getElementById('confirm-qty').value,
+            purchase_date: document.getElementById('confirm-date').value
+        };
+
+        try {
+            const response = await fetch('/api/inventory/confirm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                closeModal();
+                fetchInventory(); // Refresh tables
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error confirming purchase');
+        }
+    });
+
+    async function dismissItem(id) {
+        if (!confirm('Are you sure you want to dismiss this item?')) return;
+
+        try {
+            await fetch('/api/inventory/dismiss', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id})
+            });
+            fetchInventory();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function triggerImport() {
+        if (!confirm('Start inventory sync from Amazon? This may take a few minutes.')) return;
+
+        const btn = document.getElementById('btn-sync');
+        const originalText = btn.textContent;
+        btn.textContent = 'Syncing...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('/api/inventory/import', { method: 'POST' });
+            const res = await response.json();
+            if (res.status === 'success') {
+                alert('Sync started in background! Check back in a few minutes.');
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Request failed');
+        } finally {
+            // Re-enable button after a delay to prevent spamming
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 5000);
+        }
+    }
+
+    async function uploadCosts(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/api/inventory/upload-costs', {
+                method: 'POST',
+                body: formData
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                alert(`Updated ${res.updated_count} items.`);
+                fetchInventory();
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+</script>
 {% endblock %}

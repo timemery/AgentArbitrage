@@ -17,6 +17,47 @@ SP_API_BASE_URL_NA = os.getenv("SP_API_URL", "https://sandbox.sellingpartnerapi-
 MARKETPLACE_ID_US = "ATVPDKIKX0DER"
 
 
+def refresh_sp_api_token(refresh_token: str) -> str | None:
+    """
+    Refreshes the SP-API access token using the refresh token.
+    """
+    logger.info("Attempting to refresh SP-API access token.")
+
+    client_id = os.getenv("SP_API_CLIENT_ID")
+    client_secret = os.getenv("SP_API_CLIENT_SECRET")
+    token_url = "https://api.amazon.com/auth/o2/token"
+
+    if not all([client_id, client_secret]):
+        logger.error("SP_API_CLIENT_ID or SP_API_CLIENT_SECRET are not configured.")
+        return None
+
+    refresh_payload = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
+        'client_id': client_id,
+        'client_secret': client_secret
+    }
+
+    try:
+        response = requests.post(token_url, data=refresh_payload, timeout=30)
+        response.raise_for_status()
+        token_data = response.json()
+
+        new_access_token = token_data.get('access_token')
+        if new_access_token:
+            logger.info("Successfully refreshed SP-API access token.")
+            return new_access_token
+        else:
+            logger.error("Token refresh response did not contain an access_token.")
+            return None
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to refresh SP-API token: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during token refresh: {e}", exc_info=True)
+        return None
+
+
 def map_condition_to_sp_api(condition_input: str) -> str | None:
     """
     Maps internal condition strings or codes to Amazon SP-API conditionType enum.

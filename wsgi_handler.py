@@ -2,7 +2,7 @@ import sys
 import logging
 import os
 import subprocess
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify, Response
 import httpx
 from bs4 import BeautifulSoup
 import sqlite3
@@ -18,6 +18,7 @@ from youtube_transcript_api.proxies import GenericProxyConfig
 import click
 from celery_app import celery_app
 from keepa_deals.db_utils import (
+    DB_PATH,
     create_user_restrictions_table_if_not_exists,
     create_user_credentials_table_if_not_exists,
     create_deals_table_if_not_exists,
@@ -30,6 +31,7 @@ from keepa_deals.db_utils import (
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
+from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload, export_missing_costs_csv
 import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
@@ -46,7 +48,8 @@ logging.getLogger('app').info(f"Loaded wsgi_handler.py from /var/www/agentarbitr
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-DATABASE_URL = os.getenv("DATABASE_URL", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db'))
+# Use DB_PATH from db_utils for consistency
+# DATABASE_URL = os.getenv("DATABASE_URL", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deals.db'))
 
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strategies.json')
 INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'intelligence.json')
@@ -343,6 +346,155 @@ def tracking():
     if not session.get('logged_in'):
         return redirect(url_for('index'))
     return render_template('tracking.html')
+
+@app.route('/api/inventory', methods=['GET'])
+def get_inventory():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Fetch Potential
+            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
+            potential = [dict(row) for row in cursor.fetchall()]
+
+            # Fetch Active
+            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'PURCHASED' AND quantity_remaining > 0 ORDER BY purchase_date DESC")
+            active = [dict(row) for row in cursor.fetchall()]
+
+            return jsonify({'potential': potential, 'active': active})
+    except Exception as e:
+        app.logger.error(f"Error fetching inventory: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/potential', methods=['POST'])
+def add_potential_buy():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.json
+        asin = data.get('asin')
+        title = data.get('title')
+        price = data.get('price')
+
+        if not asin:
+            return jsonify({'error': 'ASIN required'}), 400
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO inventory_ledger (asin, title, buy_cost, status, source)
+                VALUES (?, ?, ?, 'POTENTIAL', 'Dashboard')
+            """, (asin, title, price))
+            conn.commit()
+
+        return jsonify({'status': 'success', 'message': 'Added to potential buys'})
+    except Exception as e:
+        app.logger.error(f"Error adding potential buy: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/confirm', methods=['POST'])
+def confirm_purchase():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.json
+        ledger_id = data.get('id')
+        buy_cost = data.get('buy_cost')
+        qty = data.get('quantity')
+        sku = data.get('sku')
+        purchase_date = data.get('purchase_date')
+
+        if not ledger_id or not buy_cost or not qty or not sku:
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE inventory_ledger
+                SET status = 'PURCHASED', buy_cost = ?, quantity_purchased = ?, quantity_remaining = ?, sku = ?, purchase_date = ?
+                WHERE id = ?
+            """, (buy_cost, qty, qty, sku, purchase_date, ledger_id))
+            conn.commit()
+
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        app.logger.error(f"Error confirming purchase: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/dismiss', methods=['POST'])
+def dismiss_potential():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.json
+        ledger_id = data.get('id')
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE inventory_ledger SET status = 'DISMISSED' WHERE id = ?", (ledger_id,))
+            conn.commit()
+
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        app.logger.error(f"Error dismissing potential buy: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/import', methods=['POST'])
+def trigger_inventory_import():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        # Trigger Celery Task
+        task = fetch_existing_inventory_task.delay()
+        return jsonify({'status': 'success', 'task_id': task.id})
+    except Exception as e:
+        app.logger.error(f"Error triggering inventory import: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/upload-costs', methods=['POST'])
+def upload_costs():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    try:
+        content = file.read()
+        updated_count = process_bulk_cost_upload(content)
+        return jsonify({'status': 'success', 'updated_count': updated_count})
+    except Exception as e:
+        app.logger.error(f"Error uploading costs: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/export-missing-costs', methods=['GET'])
+def export_missing_costs():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        csv_content = export_missing_costs_csv()
+
+        return Response(
+            csv_content,
+            mimetype="text/csv",
+            headers={"Content-disposition": "attachment; filename=missing_costs_template.csv"}
+        )
+    except Exception as e:
+        app.logger.error(f"Error exporting missing costs: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/learn', methods=['POST'])
@@ -1116,7 +1268,7 @@ def deals():
 @app.route('/api/deals')
 def api_deals():
     try:
-        DB_PATH = DATABASE_URL
+        # DB_PATH is now imported from db_utils
         TABLE_NAME = 'deals'
         RESTRICTIONS_TABLE = 'user_restrictions'
 
@@ -1619,7 +1771,7 @@ def deal_count():
          return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
     try:
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             # Ensure the table exists before querying
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='deals'")
@@ -1760,7 +1912,7 @@ def get_ava_advice(asin):
         return jsonify({'error': 'Not authenticated'}), 401
 
     try:
-        with sqlite3.connect(DATABASE_URL) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
