@@ -172,7 +172,7 @@ def _download_and_process_report(url, compression, user_id, report_type):
 
     reader = csv.DictReader(io.StringIO(text_content), delimiter='\t')
 
-    # 2. Strip whitespace from headers (proactive fix)
+    # 2. Strip whitespace from headers
     if reader.fieldnames:
         reader.fieldnames = [x.strip() for x in reader.fieldnames]
 
@@ -218,6 +218,11 @@ def _download_and_process_report(url, compression, user_id, report_type):
         else:
             logger.warning(f"Unknown report type: {report_type}")
             continue
+
+        # --- Hardening: Strip whitespace from keys values to prevent mismatch ---
+        if sku: sku = sku.strip()
+        if asin: asin = asin.strip()
+        # ----------------------------------------------------------------------
 
         if not sku:
             continue
