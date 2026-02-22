@@ -232,8 +232,9 @@ def main():
     # 3. Check Permissions
     reports_to_check = [
         "GET_MERCHANT_LISTINGS_ALL_DATA",
-        "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA",
-        "GET_AFN_INVENTORY_DATA"
+        "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
+        # Removed GET_AFN_INVENTORY_DATA as it requires extra permissions (Amazon Fulfillment)
+        # and is not critical since FBA MYI works.
     ]
 
     results = {}

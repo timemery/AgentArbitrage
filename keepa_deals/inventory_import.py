@@ -18,7 +18,6 @@ SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.c
 
 REPORT_TYPE_MERCHANT = "GET_MERCHANT_LISTINGS_ALL_DATA"
 REPORT_TYPE_FBA = "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
-REPORT_TYPE_AFN = "GET_AFN_INVENTORY_DATA"
 
 @celery_app.task(name='keepa_deals.inventory_import.fetch_existing_inventory_task')
 def fetch_existing_inventory_task():
@@ -27,7 +26,6 @@ def fetch_existing_inventory_task():
     Report Types:
     1. GET_MERCHANT_LISTINGS_ALL_DATA (Active Listings)
     2. GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA (FBA Inventory)
-    3. GET_AFN_INVENTORY_DATA (FBA Inventory Fallback)
     """
     logger.info("Starting inventory import task.")
 
@@ -58,7 +56,7 @@ def _sync_user_inventory(user_id, access_token):
     """
     Orchestrates the report request, download, and parsing for both Merchant and FBA reports.
     """
-    report_types = [REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA, REPORT_TYPE_AFN]
+    report_types = [REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA]
 
     for report_type in report_types:
         try:
@@ -157,11 +155,27 @@ def _download_and_process_report(url, compression, user_id, report_type):
 
     reader = csv.DictReader(io.StringIO(text_content), delimiter='\t')
 
+    # --- Debug Logging: Log Headers ---
+    try:
+        headers = reader.fieldnames
+        logger.info(f"CSV Headers for {report_type}: {headers}")
+    except Exception as e:
+        logger.warning(f"Could not log CSV headers: {e}")
+
     items_to_insert = []
 
+    row_count = 0
+    MAX_DEBUG_ROWS = 5
+
     for row in reader:
+        row_count += 1
+
+        # --- Debug Logging: Log Raw Row Data (First few rows) ---
+        if row_count <= MAX_DEBUG_ROWS:
+            logger.info(f"Processing Row {row_count} ({report_type}): {row}")
+
         if report_type == REPORT_TYPE_MERCHANT:
-            # Merchant Listings Report headers roughly: item-name, item-description, listing-id, seller-sku, price, quantity, open-date, image-url, item-is-marketplace, product-id-type, zshop-shipping-fee, item-note, item-condition, zshop-category1, zshop-browse-path, zshop-storefront-feature, asin1, option-payment-type, generic-keywords, item-is-merchant-shipping, fulfillment-channel, zshop-boldface, product-id, merchant-shipping-group-name, progress-type
+            # Merchant Listings Report headers
             sku = row.get('seller-sku')
             asin = row.get('asin1')
             title = row.get('item-name')
@@ -172,26 +186,13 @@ def _download_and_process_report(url, compression, user_id, report_type):
             is_fba = fulfillment_channel == 'AMAZON_NA'
 
         elif report_type == REPORT_TYPE_FBA:
-            # FBA Inventory Report headers roughly: sku, fnsku, asin, product-name, condition, your-price, mfn-listing-exists, mfn-fulfillable-quantity, afn-listing-exists, afn-warehouse-quantity, afn-fulfillable-quantity, afn-unsellable-quantity, afn-reserved-quantity, afn-total-quantity, per-unit-volume, afn-inbound-working-quantity, afn-inbound-shipped-quantity, afn-inbound-receiving-quantity, afn-researching-quantity, afn-reserved-future-supply, afn-future-supply-buyable
+            # FBA Inventory Report headers
             sku = row.get('sku')
             asin = row.get('asin')
             title = row.get('product-name')
             # Use afn-fulfillable-quantity (Available)
             qty = row.get('afn-fulfillable-quantity')
             is_fba = True
-
-        elif report_type == REPORT_TYPE_AFN:
-            # FBA Amazon Fulfilled Inventory Report
-            # Headers: seller-sku, fulfillment-center-id, quantity-available, quantity-inbound-to-fulfillment-center, quantity-inbound-working, quantity-inbound-shipped, quantity-inbound-receiving
-            sku = row.get('seller-sku')
-            qty = row.get('quantity-available')
-            is_fba = True
-
-            # This report usually LACKS ASIN and Title.
-            # We can only update existing records or rely on future enhancement to fetch product info.
-            # For now, we set ASIN/Title to None if missing, and handle in SQL logic (only update if exists).
-            asin = None
-            title = None
 
         else:
             logger.warning(f"Unknown report type: {report_type}")
@@ -204,6 +205,10 @@ def _download_and_process_report(url, compression, user_id, report_type):
             qty = int(qty) if qty else 0
         except:
             qty = 0
+
+        # Log if we find FBA inventory > 0
+        if is_fba and qty > 0 and row_count <= MAX_DEBUG_ROWS:
+             logger.info(f"Found FBA Stock > 0: SKU={sku}, Qty={qty}")
 
         # Create item object
         item = {
@@ -238,13 +243,13 @@ def _download_and_process_report(url, compression, user_id, report_type):
                 existing_qty_purchased = existing[2] or 0
 
                 # Update Logic:
-                # If Report is FBA (MYI or AFN), update quantity_remaining with FBA quantity.
+                # If Report is FBA (MYI), update quantity_remaining with FBA quantity.
                 # If Report is Merchant, update quantity_remaining IF it's MFN. If it's FBA, ignore quantity (as it's often 0).
 
                 new_qty_remaining = existing_qty_remaining
                 new_qty_purchased = existing_qty_purchased
 
-                if report_type in [REPORT_TYPE_FBA, REPORT_TYPE_AFN]:
+                if report_type == REPORT_TYPE_FBA:
                     # FBA report is authoritative for FBA stock
                     new_qty_remaining = item['quantity']
                     # Also update purchased if remaining > purchased (e.g. initial sync)
@@ -267,8 +272,6 @@ def _download_and_process_report(url, compression, user_id, report_type):
 
             else:
                 # Insert new item
-                # Only insert if we have ASIN (which we should from Merchant or FBA MYI reports).
-                # AFN report lacks ASIN, so we skip inserting entirely new items from AFN report to avoid bad data.
                 if item['asin']:
                     cursor.execute("""
                         INSERT INTO inventory_ledger (asin, title, sku, quantity_purchased, quantity_remaining, status, source, buy_cost, purchase_date)

@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 # Add parent directory to path to import keepa_deals
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from keepa_deals.inventory_import import _download_and_process_report, REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA, REPORT_TYPE_AFN
+from keepa_deals.inventory_import import _download_and_process_report, REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA
 from keepa_deals.db_utils import DB_PATH, create_inventory_ledger_table_if_not_exists
 
 class TestInventoryImport(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestInventoryImport(unittest.TestCase):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
 
-    def test_merchant_fba_afn_report_sync(self):
+    def test_merchant_and_fba_report_sync(self):
         # 1. Process Merchant Report (FBA Qty 0)
         # This report seeds the ASIN and SKU, but has 0 qty for FBA.
         merchant_report_content = (
@@ -86,28 +86,6 @@ class TestInventoryImport(unittest.TestCase):
             fba_qty_rem, fba_qty_pur = cursor.fetchone()
             self.assertEqual(fba_qty_rem, 10, "FBA Item should have 10 qty after FBA MYI Report")
             self.assertEqual(fba_qty_pur, 10, "FBA Item should have 10 qty purchased after FBA MYI Report")
-
-        # 3. Process AFN Report (The fallback one, just SKU and Qty)
-        # Let's say stock dropped to 8 in this later report
-        afn_report_content = (
-            "seller-sku\tfulfillment-center-id\tquantity-available\tquantity-inbound-to-fulfillment-center\tquantity-inbound-working\tquantity-inbound-shipped\tquantity-inbound-receiving\n"
-            "FBA_SKU\tAMZ1\t8\t0\t0\t0\t0\n"
-        ).encode('utf-8')
-
-        with patch('keepa_deals.inventory_import.requests.get') as mock_get:
-            mock_get.return_value.status_code = 200
-            mock_get.return_value.content = afn_report_content
-            _download_and_process_report('http://mock.url/afn', None, 'user123', REPORT_TYPE_AFN)
-
-        # Check DB State 3
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-
-            # Check FBA SKU (should be updated to 8)
-            cursor.execute("SELECT quantity_remaining, quantity_purchased FROM inventory_ledger WHERE sku = 'FBA_SKU'")
-            fba_qty_rem, fba_qty_pur = cursor.fetchone()
-            self.assertEqual(fba_qty_rem, 8, "FBA Item should have 8 qty remaining after AFN Report")
-            self.assertEqual(fba_qty_pur, 10, "FBA Item should keep 10 qty purchased (max seen)")
 
 if __name__ == '__main__':
     unittest.main()
