@@ -16,11 +16,16 @@ logger = logging.getLogger(__name__)
 # Default to Production URL for safety in deployed environments.
 SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
 
+REPORT_TYPE_MERCHANT = "GET_MERCHANT_LISTINGS_ALL_DATA"
+REPORT_TYPE_FBA = "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
+
 @celery_app.task(name='keepa_deals.inventory_import.fetch_existing_inventory_task')
 def fetch_existing_inventory_task():
     """
     Fetches existing inventory from Amazon via SP-API Reports API.
-    Report Type: GET_MERCHANT_LISTINGS_ALL_DATA
+    Report Types:
+    1. GET_MERCHANT_LISTINGS_ALL_DATA (Active Listings)
+    2. GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA (FBA Inventory)
     """
     logger.info("Starting inventory import task.")
 
@@ -49,34 +54,43 @@ def fetch_existing_inventory_task():
 
 def _sync_user_inventory(user_id, access_token):
     """
-    Orchestrates the report request, download, and parsing.
+    Orchestrates the report request, download, and parsing for both Merchant and FBA reports.
     """
-    # 1. Request Report
-    report_id = _request_report(access_token)
-    if not report_id:
-        return
+    report_types = [REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA]
 
-    # 2. Poll for Status
-    document_id = _poll_report_status(report_id, access_token)
-    if not document_id:
-        return
+    for report_type in report_types:
+        try:
+            logger.info(f"Requesting report: {report_type}")
+            # 1. Request Report
+            report_id = _request_report(access_token, report_type)
+            if not report_id:
+                continue
 
-    # 3. Get Document URL
-    url, compression = _get_report_document_url(document_id, access_token)
-    if not url:
-        return
+            # 2. Poll for Status
+            document_id = _poll_report_status(report_id, access_token)
+            if not document_id:
+                continue
 
-    # 4. Download & Parse
-    _download_and_process_report(url, compression, user_id)
+            # 3. Get Document URL
+            url, compression = _get_report_document_url(document_id, access_token)
+            if not url:
+                continue
 
-def _request_report(access_token):
+            # 4. Download & Parse
+            _download_and_process_report(url, compression, user_id, report_type)
+
+        except Exception as e:
+            logger.error(f"Error processing report {report_type} for user {user_id}: {e}", exc_info=True)
+            # Continue to next report type even if one fails
+
+def _request_report(access_token, report_type):
     url = f"{SP_API_BASE_URL}/reports/2021-06-30/reports"
     headers = {
         'x-amz-access-token': access_token,
         'Content-Type': 'application/json'
     }
     payload = {
-        "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+        "reportType": report_type,
         "marketplaceIds": ["ATVPDKIKX0DER"] # US
     }
 
@@ -86,7 +100,7 @@ def _request_report(access_token):
         logger.info(f"Report requested. ID: {report_id}")
         return report_id
     else:
-        logger.error(f"Failed to request report: {resp.text}")
+        logger.error(f"Failed to request report {report_type}: {resp.text}")
         return None
 
 def _poll_report_status(report_id, access_token):
@@ -126,33 +140,47 @@ def _get_report_document_url(document_id, access_token):
         logger.error(f"Failed to get document URL: {resp.text}")
         return None, None
 
-def _download_and_process_report(url, compression, user_id):
-    logger.info("Downloading report...")
+def _download_and_process_report(url, compression, user_id, report_type):
+    logger.info(f"Downloading report {report_type}...")
     resp = requests.get(url)
     resp.raise_for_status()
 
     content = resp.content
     # Handle compression if needed (GZIP is common but depends on API version/params)
-    # The 'compressionAlgorithm' field tells us.
     if compression == 'GZIP':
         import gzip
         content = gzip.decompress(content)
 
     text_content = content.decode('utf-8', errors='replace') # TSV is usually ISO-8859-1 or UTF-8
 
-    # Parse TSV
-    # Merchant Listings Report headers roughly: item-name, item-description, listing-id, seller-sku, price, quantity, open-date, image-url, item-is-marketplace, product-id-type, zshop-shipping-fee, item-note, item-condition, zshop-category1, zshop-browse-path, zshop-storefront-feature, asin1, option-payment-type, generic-keywords, item-is-merchant-shipping, fulfillment-channel, zshop-boldface, product-id, merchant-shipping-group-name, progress-type
-
     reader = csv.DictReader(io.StringIO(text_content), delimiter='\t')
 
     items_to_insert = []
 
     for row in reader:
-        # We need SKU, ASIN, Title, Quantity
-        sku = row.get('seller-sku')
-        asin = row.get('asin1')
-        title = row.get('item-name')
-        qty = row.get('quantity')
+        if report_type == REPORT_TYPE_MERCHANT:
+            # Merchant Listings Report headers roughly: item-name, item-description, listing-id, seller-sku, price, quantity, open-date, image-url, item-is-marketplace, product-id-type, zshop-shipping-fee, item-note, item-condition, zshop-category1, zshop-browse-path, zshop-storefront-feature, asin1, option-payment-type, generic-keywords, item-is-merchant-shipping, fulfillment-channel, zshop-boldface, product-id, merchant-shipping-group-name, progress-type
+            sku = row.get('seller-sku')
+            asin = row.get('asin1')
+            title = row.get('item-name')
+            qty = row.get('quantity')
+
+            # Identify source
+            fulfillment_channel = row.get('fulfillment-channel', 'DEFAULT')
+            is_fba = fulfillment_channel == 'AMAZON_NA'
+
+        elif report_type == REPORT_TYPE_FBA:
+            # FBA Inventory Report headers roughly: sku, fnsku, asin, product-name, condition, your-price, mfn-listing-exists, mfn-fulfillable-quantity, afn-listing-exists, afn-warehouse-quantity, afn-fulfillable-quantity, afn-unsellable-quantity, afn-reserved-quantity, afn-total-quantity, per-unit-volume, afn-inbound-working-quantity, afn-inbound-shipped-quantity, afn-inbound-receiving-quantity, afn-researching-quantity, afn-reserved-future-supply, afn-future-supply-buyable
+            sku = row.get('sku')
+            asin = row.get('asin')
+            title = row.get('product-name')
+            # Use afn-fulfillable-quantity (Available)
+            qty = row.get('afn-fulfillable-quantity')
+            is_fba = True
+
+        else:
+            logger.warning(f"Unknown report type: {report_type}")
+            continue
 
         if not sku or not asin:
             continue
@@ -162,53 +190,77 @@ def _download_and_process_report(url, compression, user_id):
         except:
             qty = 0
 
-        # Only import if quantity > 0? Or import all?
-        # User might want to see history. But for "Active Inventory", qty > 0.
-        # Let's import all for ledger completeness, status 'PURCHASED' (since we own it).
-        # If qty is 0, it might be sold out.
-        # But for initial import, we care about what's in stock.
-        # Actually, "Active Inventory" tab displays quantity_remaining > 0.
-
-        items_to_insert.append({
+        # Create item object
+        item = {
             'asin': asin,
             'title': title,
             'sku': sku,
-            'quantity_purchased': qty,
-            'quantity_remaining': qty,
+            'quantity': qty,
+            'is_fba': is_fba,
             'status': 'PURCHASED',
             'source': 'Imported',
-            'buy_cost': None, # Unknown
             'purchase_date': datetime.utcnow() # Approximate
-        })
+        }
+        items_to_insert.append(item)
 
     if not items_to_insert:
-        logger.info("No items found in report.")
+        logger.info(f"No items found in report {report_type}.")
         return
 
-    logger.info(f"Inserting/Updating {len(items_to_insert)} items into ledger.")
+    logger.info(f"Processing {len(items_to_insert)} items from report {report_type}.")
 
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
 
         for item in items_to_insert:
-            # Check if exists by SKU to avoid duplicates on re-run
-            cursor.execute("SELECT id FROM inventory_ledger WHERE sku = ?", (item['sku'],))
+            # Check if exists by SKU
+            cursor.execute("SELECT id, quantity_remaining, quantity_purchased FROM inventory_ledger WHERE sku = ?", (item['sku'],))
             existing = cursor.fetchone()
 
             if existing:
-                # Update quantity? Or skip?
-                # Ideally we update quantity if it changed.
-                # For now, let's update quantity_remaining
+                existing_id = existing[0]
+                existing_qty_remaining = existing[1] or 0
+                existing_qty_purchased = existing[2] or 0
+
+                # Update Logic:
+                # If Report is FBA, update quantity_remaining with FBA quantity.
+                # If Report is Merchant, update quantity_remaining IF it's MFN. If it's FBA, ignore quantity (as it's often 0).
+
+                new_qty_remaining = existing_qty_remaining
+                new_qty_purchased = existing_qty_purchased
+
+                if report_type == REPORT_TYPE_FBA:
+                    # FBA report is authoritative for FBA stock
+                    new_qty_remaining = item['quantity']
+                    # Also update purchased if remaining > purchased (e.g. initial sync)
+                    new_qty_purchased = max(existing_qty_purchased, item['quantity'])
+
+                elif report_type == REPORT_TYPE_MERCHANT:
+                    if not item['is_fba']:
+                        # MFN item in Merchant report is authoritative for MFN stock
+                        new_qty_remaining = item['quantity']
+                        new_qty_purchased = max(existing_qty_purchased, item['quantity'])
+                    else:
+                        # FBA item in Merchant report usually has qty 0.
+                        # But if we don't have an FBA report yet, we might want to know it exists.
+                        # If existing quantity is 0, and this report says 0, no change.
+                        # If existing quantity is > 0 (from previous FBA report), DO NOT overwrite with 0 from Merchant report.
+                        pass
+
                 cursor.execute("""
                     UPDATE inventory_ledger
-                    SET quantity_remaining = ?, quantity_purchased = MAX(quantity_purchased, ?)
+                    SET quantity_remaining = ?, quantity_purchased = ?
                     WHERE id = ?
-                """, (item['quantity_remaining'], item['quantity_purchased'], existing[0]))
+                """, (new_qty_remaining, new_qty_purchased, existing_id))
+
             else:
+                # Insert new item
+                # If it's FBA item from Merchant report with 0 qty, insert with 0 qty.
+                # If later FBA report comes, it will update it.
                 cursor.execute("""
                     INSERT INTO inventory_ledger (asin, title, sku, quantity_purchased, quantity_remaining, status, source, buy_cost, purchase_date)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (item['asin'], item['title'], item['sku'], item['quantity_purchased'], item['quantity_remaining'], item['status'], item['source'], item['buy_cost'], item['purchase_date']))
+                """, (item['asin'], item['title'], item['sku'], item['quantity'], item['quantity'], item['status'], item['source'], None, item['purchase_date']))
 
         conn.commit()
 

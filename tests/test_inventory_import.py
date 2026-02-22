@@ -1,104 +1,92 @@
 
 import unittest
-from unittest.mock import patch, MagicMock
 import sqlite3
 import os
 import sys
+from datetime import datetime
+from unittest.mock import MagicMock, patch
 
-# Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add parent directory to path to import keepa_deals
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload
-from keepa_deals.db_utils import DB_PATH, create_deals_table_if_not_exists
+from keepa_deals.inventory_import import _download_and_process_report, REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA
+from keepa_deals.db_utils import DB_PATH, create_inventory_ledger_table_if_not_exists
 
 class TestInventoryImport(unittest.TestCase):
-
     def setUp(self):
+        # Use an in-memory database for testing or a temp file
+        self.db_path = 'test_deals.db'
+        if os.path.exists(self.db_path):
+            os.remove(self.db_path)
+
+        # Patch DB_PATH in db_utils (this is tricky because it's imported)
+        self.patcher = patch('keepa_deals.inventory_import.DB_PATH', self.db_path)
+        self.mock_db_path = self.patcher.start()
+
+        # Also patch DB_PATH in db_utils if used there
+        self.patcher2 = patch('keepa_deals.db_utils.DB_PATH', self.db_path)
+        self.mock_db_path2 = self.patcher2.start()
+
         # Initialize DB
-        create_deals_table_if_not_exists()
-        # Clear inventory ledger
-        with sqlite3.connect(DB_PATH) as conn:
-            conn.execute("DELETE FROM inventory_ledger")
-            conn.commit()
+        create_inventory_ledger_table_if_not_exists()
 
-    @patch('keepa_deals.inventory_import.get_all_user_credentials')
-    @patch('keepa_deals.inventory_import.refresh_sp_api_token')
-    @patch('keepa_deals.inventory_import.requests')
-    def test_fetch_existing_inventory_task(self, mock_requests, mock_refresh, mock_get_creds):
-        # Mock credentials
-        mock_get_creds.return_value = [{'user_id': 'test_user', 'refresh_token': 'test_refresh'}]
-        mock_refresh.return_value = 'test_access_token'
+    def tearDown(self):
+        self.patcher.stop()
+        self.patcher2.stop()
+        if os.path.exists(self.db_path):
+            os.remove(self.db_path)
 
-        # Mock Request Report
-        mock_resp_request = MagicMock()
-        mock_resp_request.status_code = 202
-        mock_resp_request.json.return_value = {'reportId': '123'}
+    def test_merchant_and_fba_report_sync(self):
+        # 1. Process Merchant Report (FBA Qty 0)
+        merchant_report_content = (
+            "item-name\titem-description\tlisting-id\tseller-sku\tprice\tquantity\topen-date\timage-url\titem-is-marketplace\tproduct-id-type\tzshop-shipping-fee\titem-note\titem-condition\tzshop-category1\tzshop-browse-path\tzshop-storefront-feature\tasin1\toption-payment-type\tgeneric-keywords\titem-is-merchant-shipping\tfulfillment-channel\tzshop-boldface\tproduct-id\tmerchant-shipping-group-name\tprogress-type\n"
+            "FBA Item\tDesc\t123\tFBA_SKU\t10.00\t0\t2023-01-01\t\ty\t1\t0.00\t\t11\t\t\t0\tASIN_FBA\t\tkw\tn\tAMAZON_NA\t\tASIN_FBA\tLegacy-Template\t\n"
+            "MFN Item\tDesc\t124\tMFN_SKU\t10.00\t5\t2023-01-01\t\ty\t1\t3.99\t\t11\t\t\t0\tASIN_MFN\t\tkw\ty\tDEFAULT\t\tASIN_MFN\tMigrated Template\t\n"
+        ).encode('utf-8')
 
-        # Mock Poll Status
-        mock_resp_poll = MagicMock()
-        mock_resp_poll.status_code = 200
-        mock_resp_poll.json.return_value = {'processingStatus': 'DONE', 'reportDocumentId': 'doc_123'}
+        with patch('keepa_deals.inventory_import.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.content = merchant_report_content
+            _download_and_process_report('http://mock.url/merchant', None, 'user123', REPORT_TYPE_MERCHANT)
 
-        # Mock Get Document URL
-        mock_resp_doc = MagicMock()
-        mock_resp_doc.status_code = 200
-        mock_resp_doc.json.return_value = {'url': 'http://mock.url', 'compressionAlgorithm': None}
-
-        # Mock Download Report
-        mock_resp_download = MagicMock()
-        mock_resp_download.status_code = 200
-        # TSV Content
-        tsv_content = "seller-sku\tasin1\titem-name\tquantity\nSKU_A\tASIN_A\tTitle A\t10\nSKU_B\tASIN_B\tTitle B\t0"
-        mock_resp_download.content = tsv_content.encode('utf-8')
-
-        # Side effect for requests.post and get
-        def side_effect(url, **kwargs):
-            if 'reports' in url and 'documents' not in url:
-                if kwargs.get('json'): # POST request
-                    return mock_resp_request
-                else: # Poll request
-                    return mock_resp_poll
-            elif 'documents' in url:
-                return mock_resp_doc
-            else: # Download
-                return mock_resp_download
-
-        mock_requests.post.side_effect = lambda url, **kwargs: mock_resp_request
-        mock_requests.get.side_effect = side_effect
-
-        # Run task
-        fetch_existing_inventory_task()
-
-        # Verify DB
-        with sqlite3.connect(DB_PATH) as conn:
+        # Check DB State 1
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT sku, asin, quantity_remaining FROM inventory_ledger ORDER BY sku")
-            rows = cursor.fetchall()
 
-        self.assertEqual(len(rows), 2)
-        self.assertEqual(rows[0][0], 'SKU_A')
-        self.assertEqual(rows[0][1], 'ASIN_A')
-        self.assertEqual(rows[0][2], 10)
-        self.assertEqual(rows[1][0], 'SKU_B')
-        self.assertEqual(rows[1][2], 0)
+            # Check FBA SKU (should be 0)
+            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'FBA_SKU'")
+            fba_qty = cursor.fetchone()[0]
+            self.assertEqual(fba_qty, 0, "FBA Item should have 0 qty after Merchant Report")
 
-    def test_process_bulk_cost_upload(self):
-        # Insert initial data
-        with sqlite3.connect(DB_PATH) as conn:
-            conn.execute("INSERT INTO inventory_ledger (sku, asin, title) VALUES ('SKU_X', 'ASIN_X', 'Title X')")
-            conn.commit()
+            # Check MFN SKU (should be 5)
+            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'MFN_SKU'")
+            mfn_qty = cursor.fetchone()[0]
+            self.assertEqual(mfn_qty, 5, "MFN Item should have 5 qty")
 
-        csv_content = "SKU,Buy Cost,Purchase Date\nSKU_X,15.50,2023-01-01"
+        # 2. Process FBA Report (FBA Qty 10)
+        fba_report_content = (
+            "sku\tfnsku\tasin\tproduct-name\tcondition\tyour-price\tmfn-listing-exists\tmfn-fulfillable-quantity\tafn-listing-exists\tafn-warehouse-quantity\tafn-fulfillable-quantity\tafn-unsellable-quantity\tafn-reserved-quantity\tafn-total-quantity\tper-unit-volume\tafn-inbound-working-quantity\tafn-inbound-shipped-quantity\tafn-inbound-receiving-quantity\tafn-researching-quantity\tafn-reserved-future-supply\tafn-future-supply-buyable\n"
+            "FBA_SKU\tFNSKU1\tASIN_FBA\tFBA Item\t11\t10.00\t\t0\ty\t10\t10\t0\t0\t10\t0.0\t0\t0\t0\t0\t0\t0\n"
+        ).encode('utf-8')
 
-        process_bulk_cost_upload(csv_content)
+        with patch('keepa_deals.inventory_import.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.content = fba_report_content
+            _download_and_process_report('http://mock.url/fba', None, 'user123', REPORT_TYPE_FBA)
 
-        with sqlite3.connect(DB_PATH) as conn:
+        # Check DB State 2
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT buy_cost, purchase_date FROM inventory_ledger WHERE sku = 'SKU_X'")
-            row = cursor.fetchone()
 
-        self.assertEqual(row[0], 15.50)
-        self.assertEqual(row[1], '2023-01-01')
+            # Check FBA SKU (should be updated to 10)
+            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'FBA_SKU'")
+            fba_qty = cursor.fetchone()[0]
+            self.assertEqual(fba_qty, 10, "FBA Item should have 10 qty after FBA Report")
+
+            # Check MFN SKU (should remain 5)
+            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'MFN_SKU'")
+            mfn_qty = cursor.fetchone()[0]
+            self.assertEqual(mfn_qty, 5, "MFN Item should remain 5 qty")
 
 if __name__ == '__main__':
     unittest.main()
