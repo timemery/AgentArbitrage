@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 # Add parent directory to path to import keepa_deals
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from keepa_deals.inventory_import import _download_and_process_report, REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA
+from keepa_deals.inventory_import import _download_and_process_report, REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA, REPORT_TYPE_AFN
 from keepa_deals.db_utils import DB_PATH, create_inventory_ledger_table_if_not_exists
 
 class TestInventoryImport(unittest.TestCase):
@@ -36,8 +36,9 @@ class TestInventoryImport(unittest.TestCase):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
 
-    def test_merchant_and_fba_report_sync(self):
+    def test_merchant_fba_afn_report_sync(self):
         # 1. Process Merchant Report (FBA Qty 0)
+        # This report seeds the ASIN and SKU, but has 0 qty for FBA.
         merchant_report_content = (
             "item-name\titem-description\tlisting-id\tseller-sku\tprice\tquantity\topen-date\timage-url\titem-is-marketplace\tproduct-id-type\tzshop-shipping-fee\titem-note\titem-condition\tzshop-category1\tzshop-browse-path\tzshop-storefront-feature\tasin1\toption-payment-type\tgeneric-keywords\titem-is-merchant-shipping\tfulfillment-channel\tzshop-boldface\tproduct-id\tmerchant-shipping-group-name\tprogress-type\n"
             "FBA Item\tDesc\t123\tFBA_SKU\t10.00\t0\t2023-01-01\t\ty\t1\t0.00\t\t11\t\t\t0\tASIN_FBA\t\tkw\tn\tAMAZON_NA\t\tASIN_FBA\tLegacy-Template\t\n"
@@ -54,16 +55,18 @@ class TestInventoryImport(unittest.TestCase):
             cursor = conn.cursor()
 
             # Check FBA SKU (should be 0)
-            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'FBA_SKU'")
-            fba_qty = cursor.fetchone()[0]
-            self.assertEqual(fba_qty, 0, "FBA Item should have 0 qty after Merchant Report")
+            cursor.execute("SELECT quantity_remaining, quantity_purchased FROM inventory_ledger WHERE sku = 'FBA_SKU'")
+            fba_qty_rem, fba_qty_pur = cursor.fetchone()
+            self.assertEqual(fba_qty_rem, 0, "FBA Item should have 0 qty remaining after Merchant Report")
+            self.assertEqual(fba_qty_pur, 0, "FBA Item should have 0 qty purchased after Merchant Report")
 
             # Check MFN SKU (should be 5)
             cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'MFN_SKU'")
             mfn_qty = cursor.fetchone()[0]
             self.assertEqual(mfn_qty, 5, "MFN Item should have 5 qty")
 
-        # 2. Process FBA Report (FBA Qty 10)
+        # 2. Process FBA MYI Report (The robust one with Titles/ASINs)
+        # Updates FBA SKU to 10
         fba_report_content = (
             "sku\tfnsku\tasin\tproduct-name\tcondition\tyour-price\tmfn-listing-exists\tmfn-fulfillable-quantity\tafn-listing-exists\tafn-warehouse-quantity\tafn-fulfillable-quantity\tafn-unsellable-quantity\tafn-reserved-quantity\tafn-total-quantity\tper-unit-volume\tafn-inbound-working-quantity\tafn-inbound-shipped-quantity\tafn-inbound-receiving-quantity\tafn-researching-quantity\tafn-reserved-future-supply\tafn-future-supply-buyable\n"
             "FBA_SKU\tFNSKU1\tASIN_FBA\tFBA Item\t11\t10.00\t\t0\ty\t10\t10\t0\t0\t10\t0.0\t0\t0\t0\t0\t0\t0\n"
@@ -79,14 +82,32 @@ class TestInventoryImport(unittest.TestCase):
             cursor = conn.cursor()
 
             # Check FBA SKU (should be updated to 10)
-            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'FBA_SKU'")
-            fba_qty = cursor.fetchone()[0]
-            self.assertEqual(fba_qty, 10, "FBA Item should have 10 qty after FBA Report")
+            cursor.execute("SELECT quantity_remaining, quantity_purchased FROM inventory_ledger WHERE sku = 'FBA_SKU'")
+            fba_qty_rem, fba_qty_pur = cursor.fetchone()
+            self.assertEqual(fba_qty_rem, 10, "FBA Item should have 10 qty after FBA MYI Report")
+            self.assertEqual(fba_qty_pur, 10, "FBA Item should have 10 qty purchased after FBA MYI Report")
 
-            # Check MFN SKU (should remain 5)
-            cursor.execute("SELECT quantity_remaining FROM inventory_ledger WHERE sku = 'MFN_SKU'")
-            mfn_qty = cursor.fetchone()[0]
-            self.assertEqual(mfn_qty, 5, "MFN Item should remain 5 qty")
+        # 3. Process AFN Report (The fallback one, just SKU and Qty)
+        # Let's say stock dropped to 8 in this later report
+        afn_report_content = (
+            "seller-sku\tfulfillment-center-id\tquantity-available\tquantity-inbound-to-fulfillment-center\tquantity-inbound-working\tquantity-inbound-shipped\tquantity-inbound-receiving\n"
+            "FBA_SKU\tAMZ1\t8\t0\t0\t0\t0\n"
+        ).encode('utf-8')
+
+        with patch('keepa_deals.inventory_import.requests.get') as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.content = afn_report_content
+            _download_and_process_report('http://mock.url/afn', None, 'user123', REPORT_TYPE_AFN)
+
+        # Check DB State 3
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+
+            # Check FBA SKU (should be updated to 8)
+            cursor.execute("SELECT quantity_remaining, quantity_purchased FROM inventory_ledger WHERE sku = 'FBA_SKU'")
+            fba_qty_rem, fba_qty_pur = cursor.fetchone()
+            self.assertEqual(fba_qty_rem, 8, "FBA Item should have 8 qty remaining after AFN Report")
+            self.assertEqual(fba_qty_pur, 10, "FBA Item should keep 10 qty purchased (max seen)")
 
 if __name__ == '__main__':
     unittest.main()

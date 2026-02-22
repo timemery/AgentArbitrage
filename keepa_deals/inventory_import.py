@@ -18,6 +18,7 @@ SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.c
 
 REPORT_TYPE_MERCHANT = "GET_MERCHANT_LISTINGS_ALL_DATA"
 REPORT_TYPE_FBA = "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
+REPORT_TYPE_AFN = "GET_AFN_INVENTORY_DATA"
 
 @celery_app.task(name='keepa_deals.inventory_import.fetch_existing_inventory_task')
 def fetch_existing_inventory_task():
@@ -26,6 +27,7 @@ def fetch_existing_inventory_task():
     Report Types:
     1. GET_MERCHANT_LISTINGS_ALL_DATA (Active Listings)
     2. GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA (FBA Inventory)
+    3. GET_AFN_INVENTORY_DATA (FBA Inventory Fallback)
     """
     logger.info("Starting inventory import task.")
 
@@ -56,7 +58,7 @@ def _sync_user_inventory(user_id, access_token):
     """
     Orchestrates the report request, download, and parsing for both Merchant and FBA reports.
     """
-    report_types = [REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA]
+    report_types = [REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA, REPORT_TYPE_AFN]
 
     for report_type in report_types:
         try:
@@ -178,11 +180,24 @@ def _download_and_process_report(url, compression, user_id, report_type):
             qty = row.get('afn-fulfillable-quantity')
             is_fba = True
 
+        elif report_type == REPORT_TYPE_AFN:
+            # FBA Amazon Fulfilled Inventory Report
+            # Headers: seller-sku, fulfillment-center-id, quantity-available, quantity-inbound-to-fulfillment-center, quantity-inbound-working, quantity-inbound-shipped, quantity-inbound-receiving
+            sku = row.get('seller-sku')
+            qty = row.get('quantity-available')
+            is_fba = True
+
+            # This report usually LACKS ASIN and Title.
+            # We can only update existing records or rely on future enhancement to fetch product info.
+            # For now, we set ASIN/Title to None if missing, and handle in SQL logic (only update if exists).
+            asin = None
+            title = None
+
         else:
             logger.warning(f"Unknown report type: {report_type}")
             continue
 
-        if not sku or not asin:
+        if not sku:
             continue
 
         try:
@@ -223,13 +238,13 @@ def _download_and_process_report(url, compression, user_id, report_type):
                 existing_qty_purchased = existing[2] or 0
 
                 # Update Logic:
-                # If Report is FBA, update quantity_remaining with FBA quantity.
+                # If Report is FBA (MYI or AFN), update quantity_remaining with FBA quantity.
                 # If Report is Merchant, update quantity_remaining IF it's MFN. If it's FBA, ignore quantity (as it's often 0).
 
                 new_qty_remaining = existing_qty_remaining
                 new_qty_purchased = existing_qty_purchased
 
-                if report_type == REPORT_TYPE_FBA:
+                if report_type in [REPORT_TYPE_FBA, REPORT_TYPE_AFN]:
                     # FBA report is authoritative for FBA stock
                     new_qty_remaining = item['quantity']
                     # Also update purchased if remaining > purchased (e.g. initial sync)
@@ -242,9 +257,6 @@ def _download_and_process_report(url, compression, user_id, report_type):
                         new_qty_purchased = max(existing_qty_purchased, item['quantity'])
                     else:
                         # FBA item in Merchant report usually has qty 0.
-                        # But if we don't have an FBA report yet, we might want to know it exists.
-                        # If existing quantity is 0, and this report says 0, no change.
-                        # If existing quantity is > 0 (from previous FBA report), DO NOT overwrite with 0 from Merchant report.
                         pass
 
                 cursor.execute("""
@@ -255,12 +267,15 @@ def _download_and_process_report(url, compression, user_id, report_type):
 
             else:
                 # Insert new item
-                # If it's FBA item from Merchant report with 0 qty, insert with 0 qty.
-                # If later FBA report comes, it will update it.
-                cursor.execute("""
-                    INSERT INTO inventory_ledger (asin, title, sku, quantity_purchased, quantity_remaining, status, source, buy_cost, purchase_date)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (item['asin'], item['title'], item['sku'], item['quantity'], item['quantity'], item['status'], item['source'], None, item['purchase_date']))
+                # Only insert if we have ASIN (which we should from Merchant or FBA MYI reports).
+                # AFN report lacks ASIN, so we skip inserting entirely new items from AFN report to avoid bad data.
+                if item['asin']:
+                    cursor.execute("""
+                        INSERT INTO inventory_ledger (asin, title, sku, quantity_purchased, quantity_remaining, status, source, buy_cost, purchase_date)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (item['asin'], item['title'], item['sku'], item['quantity'], item['quantity'], item['status'], item['source'], None, item['purchase_date']))
+                else:
+                    logger.warning(f"Skipping new item insert for SKU {item['sku']} from report {report_type} due to missing ASIN.")
 
         conn.commit()
 
