@@ -45,12 +45,9 @@ def get_lwa_access_token(client_id, client_secret, refresh_token):
         logger.error(f"Error getting LWA token: {e}")
         return None
 
-def check_inventory_permission(access_token):
-    """
-    Attempts to request the GET_MERCHANT_LISTINGS_ALL_DATA report.
-    This report type specifically requires the 'Inventory and Order Tracking' role.
-    """
-    logger.info("Checking permission for 'GET_MERCHANT_LISTINGS_ALL_DATA'...")
+def check_single_report_permission(access_token, report_type):
+    """Checks permission for a single report type."""
+    logger.info(f"Checking permission for '{report_type}'...")
 
     url = f"{SP_API_BASE_URL}/reports/2021-06-30/reports"
 
@@ -60,9 +57,8 @@ def check_inventory_permission(access_token):
         'User-Agent': 'AgentArbitrageDiagnostic/1.0'
     }
 
-    # Requesting a report for the last 24 hours just to test access
     payload = {
-        "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+        "reportType": report_type,
         "marketplaceIds": ["ATVPDKIKX0DER"], # US Marketplace
         "dataStartTime": datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
     }
@@ -72,31 +68,26 @@ def check_inventory_permission(access_token):
 
         if response.status_code == 202:
             report_id = response.json().get('reportId')
-            logger.info(f"SUCCESS (202 Accepted): Permission Verified. Report ID: {report_id}")
-            print("\n[RESULT] SUCCESS: Your token HAS the 'Inventory and Order Tracking' permission.")
-            return True
+            logger.info(f"SUCCESS (202 Accepted): Permission Verified for {report_type}. Report ID: {report_id}")
+            return True, report_id
 
         elif response.status_code == 403:
-            logger.error(f"FAILURE (403 Forbidden): Permission Denied.")
+            logger.error(f"FAILURE (403 Forbidden): Permission Denied for {report_type}.")
             logger.error(f"Response Body: {response.text}")
-            print("\n[RESULT] FAILURE (403): Your token LACKS the 'Inventory and Order Tracking' role.")
-            print("Please confirm in Seller Central that the role is active for your application.")
-            return False
+            return False, "403 Forbidden"
 
         elif response.status_code == 401:
             logger.error(f"FAILURE (401 Unauthorized): Authentication Failed.")
-            print("\n[RESULT] FAILURE (401): The Access Token is invalid or expired immediately.")
-            return False
+            return False, "401 Unauthorized"
 
         else:
-            logger.error(f"FAILURE ({response.status_code}): Unexpected status.")
+            logger.error(f"FAILURE ({response.status_code}): Unexpected status for {report_type}.")
             logger.error(f"Response: {response.text}")
-            print(f"\n[RESULT] FAILURE ({response.status_code}): API request failed unexpectedly.")
-            return False
+            return False, f"{response.status_code} Error"
 
     except requests.exceptions.RequestException as e:
         logger.error(f"Network Error: {e}")
-        return False
+        return False, str(e)
 
 def main():
     print("==================================================")
@@ -113,11 +104,38 @@ def main():
     # 1. Get Access Token
     access_token = get_lwa_access_token(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN)
 
-    if access_token:
-        # 2. Check Permission
-        check_inventory_permission(access_token)
-    else:
+    if not access_token:
         print("\n[RESULT] FAILURE: Could not obtain Access Token. Check Client ID/Secret and Refresh Token.")
+        return
+
+    # 2. Check Permissions
+    reports_to_check = [
+        "GET_MERCHANT_LISTINGS_ALL_DATA",
+        "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
+    ]
+
+    results = {}
+
+    for report_type in reports_to_check:
+        success, msg = check_single_report_permission(access_token, report_type)
+        results[report_type] = (success, msg)
+
+    print("\n================ REPORT SUMMARY ================")
+    all_success = True
+    for r_type, (success, msg) in results.items():
+        status = "PASSED" if success else "FAILED"
+        print(f"Report: {r_type}")
+        print(f"Status: {status}")
+        if not success:
+            print(f"Reason: {msg}")
+            all_success = False
+        print("------------------------------------------------")
+
+    if all_success:
+        print("\n[OVERALL RESULT] SUCCESS: All permissions verified.")
+    else:
+        print("\n[OVERALL RESULT] FAILURE: Some permissions are missing.")
+        print("Please confirm in Seller Central that the 'Inventory and Order Tracking' role is active.")
 
 if __name__ == "__main__":
     main()
