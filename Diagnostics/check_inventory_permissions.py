@@ -4,6 +4,7 @@ import requests
 import json
 import logging
 import time
+import sqlite3
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -25,6 +26,34 @@ CLIENT_SECRET = os.getenv("SP_API_CLIENT_SECRET", "")
 # SP-API Endpoints
 TOKEN_URL = "https://api.amazon.com/auth/o2/token"
 SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
+
+# Database Path
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'deals.db')
+
+def get_db_credentials():
+    """Fetches credentials from the database as a fallback."""
+    if not os.path.exists(DB_PATH):
+        logger.warning(f"Database not found at {DB_PATH}")
+        return None, None
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            # Check if user_credentials table exists
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='user_credentials'")
+            if not cursor.fetchone():
+                logger.warning("user_credentials table not found in DB.")
+                return None, None
+
+            cursor.execute("SELECT user_id, refresh_token FROM user_credentials ORDER BY updated_at DESC LIMIT 1")
+            row = cursor.fetchone()
+            if row:
+                logger.info(f"Found credentials in DB for User ID: {row[0]}")
+                return row[0], row[1]
+    except Exception as e:
+        logger.error(f"Error reading credentials from DB: {e}")
+
+    return None, None
 
 def get_lwa_access_token(client_id, client_secret, refresh_token):
     """Exchanges Refresh Token for LWA Access Token."""
@@ -161,22 +190,46 @@ def main():
     print("   Agent Arbitrage: SP-API Permission Diagnostic  ")
     print("==================================================")
 
-    # Check for credentials
-    if not all([CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN]):
-        print("ERROR: Missing Credentials in environment variables.")
-        print("Diagnostic script updated to load .env automatically.")
-        print(f"Loaded .env from: {dotenv_path}")
-        print("Please ensure SP_API_CLIENT_ID, SP_API_CLIENT_SECRET, and SP_API_REFRESH_TOKEN are set in your .env file.")
+    # 1. Credentials Strategy
+    seller_id = SELLER_ID
+    refresh_token = REFRESH_TOKEN
+    client_id = CLIENT_ID
+    client_secret = CLIENT_SECRET
+
+    source = "Environment (.env)"
+
+    # Fallback to DB if Refresh Token is missing
+    if not refresh_token:
+        print("Refresh Token missing in environment. Checking database...")
+        db_user_id, db_refresh_token = get_db_credentials()
+        if db_refresh_token:
+            refresh_token = db_refresh_token
+            # If Seller ID is also missing in env, use DB user_id (usually same)
+            if not seller_id:
+                seller_id = db_user_id
+            source = "Database (deals.db)"
+        else:
+            print("No credentials found in Database either.")
+
+    print(f"Using Credentials Source: {source}")
+
+    if not all([client_id, client_secret, refresh_token]):
+        print("ERROR: Missing Credentials.")
+        print(f"Client ID present? {'Yes' if client_id else 'No'}")
+        print(f"Client Secret present? {'Yes' if client_secret else 'No'}")
+        print(f"Refresh Token present? {'Yes' if refresh_token else 'No'}")
+        print("Please export SP_API_CLIENT_ID and SP_API_CLIENT_SECRET in your .env file.")
+        print("Refresh Token can be in .env OR added via Manual Update in Settings.")
         return
 
-    # 1. Get Access Token
-    access_token = get_lwa_access_token(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN)
+    # 2. Get Access Token
+    access_token = get_lwa_access_token(client_id, client_secret, refresh_token)
 
     if not access_token:
         print("\n[RESULT] FAILURE: Could not obtain Access Token. Check Client ID/Secret and Refresh Token.")
         return
 
-    # 2. Check Permissions
+    # 3. Check Permissions
     reports_to_check = [
         "GET_MERCHANT_LISTINGS_ALL_DATA",
         "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA",
