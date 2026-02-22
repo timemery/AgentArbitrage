@@ -94,8 +94,8 @@ def check_single_report_permission(access_token, report_type):
     payload = {
         "reportType": report_type,
         "marketplaceIds": ["ATVPDKIKX0DER"], # US Marketplace
-        # Request data for last 24 hours to ensure freshness
-        "dataStartTime": datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+        # Note: Removing dataStartTime to match application logic and test if it helps with FATAL/CANCELLED
+        # "dataStartTime": datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
     }
 
     try:
@@ -233,8 +233,6 @@ def main():
     reports_to_check = [
         "GET_MERCHANT_LISTINGS_ALL_DATA",
         "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
-        # Removed GET_AFN_INVENTORY_DATA as it requires extra permissions (Amazon Fulfillment)
-        # and is not critical since FBA MYI works.
     ]
 
     results = {}

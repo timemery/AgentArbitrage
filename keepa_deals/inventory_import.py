@@ -55,33 +55,49 @@ def fetch_existing_inventory_task():
 def _sync_user_inventory(user_id, access_token):
     """
     Orchestrates the report request, download, and parsing for both Merchant and FBA reports.
+    Includes retry logic for intermittent report generation failures.
     """
     report_types = [REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA]
 
     for report_type in report_types:
-        try:
-            logger.info(f"Requesting report: {report_type}")
-            # 1. Request Report
-            report_id = _request_report(access_token, report_type)
-            if not report_id:
-                continue
+        success = False
+        attempts = 0
+        max_attempts = 3
 
-            # 2. Poll for Status
-            document_id = _poll_report_status(report_id, access_token)
-            if not document_id:
-                continue
+        while not success and attempts < max_attempts:
+            attempts += 1
+            try:
+                logger.info(f"Requesting report: {report_type} (Attempt {attempts}/{max_attempts})")
 
-            # 3. Get Document URL
-            url, compression = _get_report_document_url(document_id, access_token)
-            if not url:
-                continue
+                # 1. Request Report
+                report_id = _request_report(access_token, report_type)
+                if not report_id:
+                    time.sleep(5) # Short wait before retry request
+                    continue
 
-            # 4. Download & Parse
-            _download_and_process_report(url, compression, user_id, report_type)
+                # 2. Poll for Status
+                document_id = _poll_report_status(report_id, access_token)
+                if not document_id:
+                    logger.warning(f"Report {report_type} failed/cancelled. Retrying...")
+                    time.sleep(30) # Wait before retrying entire flow
+                    continue
 
-        except Exception as e:
-            logger.error(f"Error processing report {report_type} for user {user_id}: {e}", exc_info=True)
-            # Continue to next report type even if one fails
+                # 3. Get Document URL
+                url, compression = _get_report_document_url(document_id, access_token)
+                if not url:
+                    continue
+
+                # 4. Download & Parse
+                _download_and_process_report(url, compression, user_id, report_type)
+                success = True # Mark as success to exit retry loop
+
+            except Exception as e:
+                logger.error(f"Error processing report {report_type} for user {user_id}: {e}", exc_info=True)
+                time.sleep(10) # Wait before retry
+                # Continue to next attempt
+
+        if not success:
+            logger.error(f"Failed to process report {report_type} after {max_attempts} attempts.")
 
 def _request_report(access_token, report_type):
     url = f"{SP_API_BASE_URL}/reports/2021-06-30/reports"
