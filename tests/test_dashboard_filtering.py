@@ -64,7 +64,7 @@ class TestApiFiltering(unittest.TestCase):
 
         # Point the app to the test DB
         import wsgi_handler
-        wsgi_handler.DATABASE_URL = TEST_DB
+        wsgi_handler.DB_PATH = TEST_DB
 
     def tearDown(self):
         if os.path.exists(TEST_DB):

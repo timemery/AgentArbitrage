@@ -5,6 +5,7 @@ import json
 import logging
 import time
 import sqlite3
+import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -191,6 +192,8 @@ def main():
     print("==================================================")
 
     # 1. Credentials Strategy
+    global SELLER_ID, REFRESH_TOKEN, CLIENT_ID, CLIENT_SECRET
+
     seller_id = SELLER_ID
     refresh_token = REFRESH_TOKEN
     client_id = CLIENT_ID
@@ -213,13 +216,21 @@ def main():
 
     print(f"Using Credentials Source: {source}")
 
+    # Prompt for missing credentials
+    if not client_id:
+        print("\n[MISSING] SP_API_CLIENT_ID not found in environment.")
+        client_id = input("Please enter your SP-API Client ID: ").strip()
+
+    if not client_secret:
+        print("\n[MISSING] SP_API_CLIENT_SECRET not found in environment.")
+        client_secret = input("Please enter your SP-API Client Secret: ").strip()
+
+    if not refresh_token:
+        print("\n[MISSING] Refresh Token not found in .env or database.")
+        refresh_token = input("Please enter your SP-API Refresh Token: ").strip()
+
     if not all([client_id, client_secret, refresh_token]):
-        print("ERROR: Missing Credentials.")
-        print(f"Client ID present? {'Yes' if client_id else 'No'}")
-        print(f"Client Secret present? {'Yes' if client_secret else 'No'}")
-        print(f"Refresh Token present? {'Yes' if refresh_token else 'No'}")
-        print("Please export SP_API_CLIENT_ID and SP_API_CLIENT_SECRET in your .env file.")
-        print("Refresh Token can be in .env OR added via Manual Update in Settings.")
+        print("ERROR: Still missing credentials. Cannot proceed.")
         return
 
     # 2. Get Access Token
