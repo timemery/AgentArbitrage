@@ -167,9 +167,14 @@ def _download_and_process_report(url, compression, user_id, report_type):
         import gzip
         content = gzip.decompress(content)
 
-    text_content = content.decode('utf-8', errors='replace') # TSV is usually ISO-8859-1 or UTF-8
+    # 1. Decode with UTF-8-SIG to handle potential BOM
+    text_content = content.decode('utf-8-sig', errors='replace')
 
     reader = csv.DictReader(io.StringIO(text_content), delimiter='\t')
+
+    # 2. Strip whitespace from headers (proactive fix)
+    if reader.fieldnames:
+        reader.fieldnames = [x.strip() for x in reader.fieldnames]
 
     # --- Debug Logging: Log Headers ---
     try:
