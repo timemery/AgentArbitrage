@@ -152,7 +152,7 @@
             return;
         }
 
-        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>SKU</th><th>Title</th><th>Qty</th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>SKU</th><th>Title</th><th title="Includes Active & Inbound">Qty ℹ️</th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
