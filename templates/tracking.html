@@ -28,7 +28,7 @@
                 <div style="display: flex; gap: 10px;">
                     <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
                     <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
-                    <button class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
+                    <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
                     <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
                 </div>
             </div>
@@ -79,6 +79,38 @@
                 <input type="date" id="confirm-date" class="styled-text-field input-full-width" required>
             </div>
             <button type="submit" class="tidy-button btn-success-style">Confirm & Move to Inventory</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div id="edit-modal" class="deal-overlay">
+    <div class="deal-overlay-content" style="width: 500px; padding: 30px;">
+        <span class="close-overlay" onclick="closeEditModal()">&times;</span>
+        <h3>Edit Inventory Item</h3>
+        <form id="edit-form">
+            <input type="hidden" id="edit-id">
+            <div class="form-group-mb">
+                <label class="label-block">Title</label>
+                <input type="text" id="edit-title" class="styled-text-field input-full-width" readonly>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">SKU</label>
+                <input type="text" id="edit-sku" class="styled-text-field input-full-width" readonly>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Buy Cost ($)</label>
+                <input type="number" step="0.01" id="edit-cost" class="styled-text-field input-full-width">
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Quantity</label>
+                <input type="number" id="edit-qty" class="styled-text-field input-full-width">
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Purchase Date</label>
+                <input type="date" id="edit-date" class="styled-text-field input-full-width">
+            </div>
+            <button type="submit" class="tidy-button btn-info-style">Save Changes</button>
         </form>
     </div>
 </div>
@@ -186,13 +218,14 @@
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
 
+            // Pass item object to editItem via data attribute to avoid JSON stringify issues in HTML
             html += `<tr>
                 <td class="strategies-cell">${item.sku || '-'}</td>
                 <td class="strategies-cell">${item.title || '-'}</td>
                 <td class="strategies-cell">${item.quantity_remaining}</td>
                 <td class="strategies-cell">${costDisplay}</td>
                 <td class="strategies-cell">
-                    <button class="tidy-button" onclick="editItem(${item.id})">Edit</button>
+                    <button class="tidy-button" onclick='openEditModal(${JSON.stringify(item)})'>Edit</button>
                 </td>
             </tr>`;
         });
@@ -293,6 +326,12 @@
         const file = input.files[0];
         if (!file) return;
 
+        // Feedback UI
+        const btn = document.getElementById('btn-upload');
+        const originalText = btn.textContent;
+        btn.textContent = 'Uploading...';
+        btn.disabled = true;
+
         const formData = new FormData();
         formData.append('file', file);
 
@@ -303,14 +342,75 @@
             });
             const res = await response.json();
             if (res.status === 'success') {
-                alert(`Updated ${res.updated_count} items.`);
+                alert(`Success! Updated ${res.updated_count} items.`);
                 fetchInventory();
             } else {
                 alert('Error: ' + res.error);
             }
         } catch (err) {
             console.error(err);
+            alert('Request failed');
+        } finally {
+            // Reset Button
+            btn.textContent = originalText;
+            btn.disabled = false;
+            // Clear input so same file can be selected again if needed
+            input.value = '';
         }
     }
+
+    function openEditModal(item) {
+        document.getElementById('edit-id').value = item.id;
+        document.getElementById('edit-title').value = item.title || '';
+        document.getElementById('edit-sku').value = item.sku || '';
+        document.getElementById('edit-cost').value = item.buy_cost || '';
+        document.getElementById('edit-qty').value = item.quantity_remaining || '';
+
+        // Format Date for Input
+        if (item.purchase_date) {
+            // Take YYYY-MM-DD part
+            const dateStr = new Date(item.purchase_date).toISOString().split('T')[0];
+            document.getElementById('edit-date').value = dateStr;
+        } else {
+            document.getElementById('edit-date').value = '';
+        }
+
+        document.getElementById('edit-modal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    // Edit Form Submission
+    document.addEventListener('submit', async function(e) {
+        if (e.target && e.target.id === 'edit-form') {
+            e.preventDefault();
+            const data = {
+                id: document.getElementById('edit-id').value,
+                buy_cost: document.getElementById('edit-cost').value,
+                quantity: document.getElementById('edit-qty').value,
+                purchase_date: document.getElementById('edit-date').value
+            };
+
+            try {
+                const response = await fetch('/api/inventory/update_item', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+                if (res.status === 'success') {
+                    closeEditModal();
+                    fetchInventory();
+                } else {
+                    alert('Error: ' + res.error);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Update failed');
+            }
+        }
+    });
 </script>
 {% endblock %}

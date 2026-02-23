@@ -342,6 +342,7 @@ def process_bulk_cost_upload(csv_content):
     """
     Parses a CSV upload to update buy costs.
     Expected columns: SKU, Buy Cost, Purchase Date
+    Includes retry logic for SQLite database locks.
     """
     try:
         # Handle potential BOM or encoding issues
@@ -350,43 +351,70 @@ def process_bulk_cost_upload(csv_content):
 
         reader = csv.DictReader(io.StringIO(csv_content))
 
+        # Pre-process rows to minimize transaction time
+        updates = []
+        for row in reader:
+            sku = row.get('SKU')
+            buy_cost = row.get('Buy Cost')
+            purchase_date = row.get('Purchase Date')
+
+            if not sku or not buy_cost:
+                continue
+
+            # Sanitize
+            try:
+                buy_cost = float(buy_cost.replace('$', '').replace(',', ''))
+            except ValueError:
+                continue # Skip invalid cost
+
+            updates.append({
+                'sku': sku,
+                'buy_cost': buy_cost,
+                'purchase_date': purchase_date
+            })
+
+        if not updates:
+            return 0
+
         updated_count = 0
 
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
+        # Retry Logic for Database Locks
+        max_retries = 5
+        retry_delay = 1.0 # Start with 1s
 
-            for row in reader:
-                sku = row.get('SKU')
-                buy_cost = row.get('Buy Cost')
-                purchase_date = row.get('Purchase Date')
+        for attempt in range(max_retries):
+            try:
+                with sqlite3.connect(DB_PATH, timeout=10) as conn: # Increased timeout
+                    cursor = conn.cursor()
 
-                if not sku or not buy_cost:
-                    continue
+                    for update in updates:
+                        sql = "UPDATE inventory_ledger SET buy_cost = ?"
+                        params = [update['buy_cost']]
 
-                # Sanitize
-                try:
-                    buy_cost = float(buy_cost.replace('$', '').replace(',', ''))
-                except ValueError:
-                    continue # Skip invalid cost
+                        if update['purchase_date']:
+                            sql += ", purchase_date = ?"
+                            params.append(update['purchase_date'])
 
-                # Update
-                # Only update if currently NULL or we want to overwrite?
-                # Overwriting is better for "Fixing" mistakes.
+                        sql += " WHERE sku = ?"
+                        params.append(update['sku'])
 
-                sql = "UPDATE inventory_ledger SET buy_cost = ?"
-                params = [buy_cost]
+                        cursor.execute(sql, params)
+                        updated_count += cursor.rowcount
 
-                if purchase_date:
-                    sql += ", purchase_date = ?"
-                    params.append(purchase_date)
+                    conn.commit()
+                    return updated_count # Success, exit loop
 
-                sql += " WHERE sku = ?"
-                params.append(sku)
-
-                cursor.execute(sql, params)
-                updated_count += cursor.rowcount
-
-            conn.commit()
+            except sqlite3.OperationalError as e:
+                if 'locked' in str(e):
+                    if attempt < max_retries - 1:
+                        logger.warning(f"Database locked during cost upload. Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
+                        time.sleep(retry_delay)
+                        retry_delay *= 2 # Exponential backoff
+                    else:
+                        logger.error("Max retries reached for database lock during cost upload.")
+                        raise e
+                else:
+                    raise e
 
         return updated_count
     except Exception as e:

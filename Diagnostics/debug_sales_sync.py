@@ -8,8 +8,13 @@ from datetime import datetime, timedelta
 # Add project root to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from dotenv import load_dotenv
 from keepa_deals.db_utils import DB_PATH, get_all_user_credentials
 from keepa_deals.amazon_sp_api import refresh_sp_api_token, fetch_orders, fetch_order_items
+
+# Load .env explicitly
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+load_dotenv(dotenv_path)
 
 # Configure logging to stdout
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

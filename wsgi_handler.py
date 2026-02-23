@@ -467,6 +467,55 @@ def trigger_inventory_import():
         app.logger.error(f"Error triggering inventory import: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/inventory/update_item', methods=['POST'])
+def update_inventory_item():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.json
+        ledger_id = data.get('id')
+        buy_cost = data.get('buy_cost')
+        qty = data.get('quantity')
+        purchase_date = data.get('purchase_date')
+
+        if not ledger_id:
+            return jsonify({'error': 'Missing ID'}), 400
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            # Construct dynamic update query based on provided fields
+            updates = []
+            params = []
+
+            if buy_cost is not None and buy_cost != '':
+                updates.append("buy_cost = ?")
+                params.append(buy_cost)
+
+            if qty is not None and qty != '':
+                updates.append("quantity_remaining = ?")
+                updates.append("quantity_purchased = ?") # Assuming edit updates both for simplicity unless we track separately strictly
+                params.append(qty)
+                params.append(qty)
+
+            if purchase_date:
+                updates.append("purchase_date = ?")
+                params.append(purchase_date)
+
+            if not updates:
+                return jsonify({'status': 'no_change'})
+
+            params.append(ledger_id)
+            sql = f"UPDATE inventory_ledger SET {', '.join(updates)} WHERE id = ?"
+
+            cursor.execute(sql, params)
+            conn.commit()
+
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        app.logger.error(f"Error updating item: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/inventory/upload-costs', methods=['POST'])
 def upload_costs():
     if not session.get('logged_in'):
