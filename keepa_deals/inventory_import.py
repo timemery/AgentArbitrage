@@ -14,7 +14,8 @@ from keepa_deals.amazon_sp_api import refresh_sp_api_token
 logger = logging.getLogger(__name__)
 
 # Default to Production URL for safety in deployed environments.
-SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
+# Strict multi-user design: Do not rely on .env for API credentials.
+SP_API_BASE_URL = "https://sellingpartnerapi-na.amazon.com"
 
 REPORT_TYPE_MERCHANT = "GET_MERCHANT_LISTINGS_ALL_DATA"
 REPORT_TYPE_FBA = "GET_FBA_MYI_ALL_INVENTORY_DATA"

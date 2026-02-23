@@ -12,8 +12,8 @@ from urllib.parse import urlencode
 logger = logging.getLogger(__name__)
 
 # Constants for the SP-API
-# Default to Sandbox for Private/Draft apps. Override with SP_API_URL env var for Production.
-SP_API_BASE_URL_NA = os.getenv("SP_API_URL", "https://sandbox.sellingpartnerapi-na.amazon.com")
+# Default to Production. Use SP_API_URL env var to override (e.g. for Sandbox testing).
+SP_API_BASE_URL_NA = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
 MARKETPLACE_ID_US = "ATVPDKIKX0DER"
 
 

@@ -194,25 +194,26 @@ def main():
     # 1. Credentials Strategy
     global SELLER_ID, REFRESH_TOKEN, CLIENT_ID, CLIENT_SECRET
 
-    seller_id = SELLER_ID
-    refresh_token = REFRESH_TOKEN
+    # Priority: DB -> Env -> Prompt
+
+    db_user_id, db_refresh_token = get_db_credentials()
+
+    if db_refresh_token:
+        refresh_token = db_refresh_token
+        seller_id = db_user_id
+        source = "Database (deals.db)"
+    elif REFRESH_TOKEN:
+        refresh_token = REFRESH_TOKEN
+        seller_id = SELLER_ID
+        source = "Environment (.env)"
+    else:
+        refresh_token = None
+        seller_id = None
+        source = "None (Will Prompt)"
+
+    # Client ID/Secret usually come from env (App level), but could prompt
     client_id = CLIENT_ID
     client_secret = CLIENT_SECRET
-
-    source = "Environment (.env)"
-
-    # Fallback to DB if Refresh Token is missing
-    if not refresh_token:
-        print("Refresh Token missing in environment. Checking database...")
-        db_user_id, db_refresh_token = get_db_credentials()
-        if db_refresh_token:
-            refresh_token = db_refresh_token
-            # If Seller ID is also missing in env, use DB user_id (usually same)
-            if not seller_id:
-                seller_id = db_user_id
-            source = "Database (deals.db)"
-        else:
-            print("No credentials found in Database either.")
 
     print(f"Using Credentials Source: {source}")
 
@@ -226,7 +227,7 @@ def main():
         client_secret = input("Please enter your SP-API Client Secret: ").strip()
 
     if not refresh_token:
-        print("\n[MISSING] Refresh Token not found in .env or database.")
+        print("\n[MISSING] Refresh Token not found in database or .env.")
         refresh_token = input("Please enter your SP-API Refresh Token: ").strip()
 
     if not all([client_id, client_secret, refresh_token]):
