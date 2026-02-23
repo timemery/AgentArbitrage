@@ -74,3 +74,12 @@
 - **Redis Lock:** `smart_ingestor_lock` is the primary mutex. Timeout 30 minutes.
 - **Redis Cleanup:** `kill_everything_force.sh` performs a full wipe (FLUSHALL). `deploy_update.sh` adds surgical lock removal as a safety net.
 - **Janitor Grace Period:** **72 Hours**. Do not lower (causes data loss).
+
+## Profit & Inventory Tracking (Feb 2026 Update)
+- **FBA Data Source:** Now uses `GET_FBA_MYI_ALL_INVENTORY_DATA` to ensure comprehensive coverage and avoid FATAL errors.
+- **Inventory Definition:** "Active" quantity = `afn-fulfillable-quantity` + Inbound (`working`, `shipped`, `receiving`).
+- **Credential Architecture:**
+    - **User Credentials (Seller ID, Refresh Token):** Stored in `deals.db` (`user_credentials` table). Loaded via `db_utils.get_all_user_credentials()`.
+    - **App Credentials (Client ID, Secret):** Stored in `.env` (Global).
+    - **Diagnostics:** Tools like `check_inventory_permissions.py` and `inject_credentials.py` now support this hybrid model and include interactive fallbacks.
+- **Environment:** Production SP-API URL is hardcoded to prevent Sandbox leakage.

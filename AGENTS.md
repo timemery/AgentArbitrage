@@ -179,5 +179,6 @@ Developers often split complex tasks into two stages:
 ---
 
 ## Recent Fixes (Feb 2026)
-- **FBA Inventory Sync:** Switched to `GET_FBA_MYI_ALL_INVENTORY_DATA` to resolve FATAL errors. Updated logic to include Inbound inventory.
-- **Credentials:** Refactored to prioritize Database over `.env` for multi-user support.
+- **FBA Inventory Sync:** Fixed "No active inventory found" by switching to `GET_FBA_MYI_ALL_INVENTORY_DATA` (resolving FATAL errors from the unsuppressed report). Logic now includes **Inbound** inventory (Working, Shipped, Receiving) in the total count.
+- **Credential Management:** Refactored backend and diagnostics to strictly prioritize Database (`deals.db`) lookup for Seller ID and Refresh Tokens. `.env` is reserved for global app config (Client ID/Secret) only.
+- **Safety:** Hardcoded `https://sellingpartnerapi-na.amazon.com` (Production) as the default SP-API URL to prevent accidental Sandbox connections.
