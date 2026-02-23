@@ -254,3 +254,134 @@ def check_restrictions(items: list, access_token: str, seller_id: str) -> dict:
 
     logger.info("SP-API restriction check complete.")
     return results
+
+def fetch_orders(access_token: str, last_updated_after: str = None, created_after: str = None) -> list:
+    """
+    Fetches orders from Amazon SP-API using the Orders API v0.
+    Handles pagination automatically.
+
+    Args:
+        access_token: The OAuth access token.
+        last_updated_after: ISO 8601 date string (e.g., '2023-01-01T00:00:00Z').
+                            Returns orders updated after this date.
+        created_after: ISO 8601 date string. Returns orders created after this date.
+                       (Note: Use either last_updated_after OR created_after, rarely both).
+
+    Returns:
+        A list of order dictionaries (flattened/simplified if needed, or raw).
+    """
+    logger.info("Starting SP-API fetch_orders.")
+    all_orders = []
+
+    if not access_token:
+        logger.error("No access token provided for fetch_orders.")
+        return []
+
+    headers = {
+        'x-amz-access-token': access_token,
+        'Content-Type': 'application/json',
+        'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
+    }
+
+    url = f"{SP_API_BASE_URL_NA}/orders/v0/orders"
+
+    # Marketplace ID for US
+    params = {
+        'MarketplaceIds': MARKETPLACE_ID_US,
+        'MaxResultsPerPage': 100
+    }
+
+    if last_updated_after:
+        params['LastUpdatedAfter'] = last_updated_after
+    elif created_after:
+        params['CreatedAfter'] = created_after
+    else:
+        # Default to fetch last 30 days if nothing specified?
+        # Or better, let the caller decide.
+        # For safety, if no date provided, API requires CreatedAfter or LastUpdatedAfter.
+        # We'll default to a reasonable window if missing to prevent 400 errors.
+        # However, caller should really provide it.
+        pass
+
+    try:
+        session = requests.Session()
+        session.headers.update(headers)
+
+        while True:
+            logger.info(f"Requesting Orders URL: {url} with params: {params}")
+            response = session.get(url, params=params, timeout=30)
+
+            if response.status_code == 429:
+                logger.warning("Rate limit exceeded (429). Waiting 60s...")
+                time.sleep(60)
+                continue
+
+            response.raise_for_status()
+            data = response.json()
+
+            payload = data.get('payload', {})
+            orders = payload.get('Orders', [])
+            all_orders.extend(orders)
+
+            # Check for NextToken
+            next_token = payload.get('NextToken')
+            if next_token:
+                logger.info("Pagination: Found NextToken, fetching next page...")
+                params = {'NextToken': next_token} # Only NextToken is needed for subsequent calls
+                # Rate limiting sleep
+                time.sleep(1)
+            else:
+                break
+
+        logger.info(f"Successfully fetched {len(all_orders)} orders.")
+        return all_orders
+
+    except Exception as e:
+        logger.error(f"Error fetching orders: {e}", exc_info=True)
+        return all_orders # Return whatever we got so far
+
+def fetch_order_items(access_token: str, order_id: str) -> list:
+    """
+    Fetches specific line items for a given Amazon Order ID.
+    Required to get ASIN, SKU, and Price details (Order object only has total).
+    """
+    if not access_token or not order_id:
+        return []
+
+    headers = {
+        'x-amz-access-token': access_token,
+        'Content-Type': 'application/json',
+        'User-Agent': 'AgentArbitrage/1.0 (Language=Python/3.12)'
+    }
+
+    url = f"{SP_API_BASE_URL_NA}/orders/v0/orders/{order_id}/orderItems"
+
+    try:
+        logger.info(f"Fetching items for Order ID: {order_id}")
+
+        # Simple Retry Logic for Rate Limits
+        max_retries = 3
+        for attempt in range(max_retries):
+            response = requests.get(url, headers=headers, timeout=30)
+
+            if response.status_code == 200:
+                break
+            elif response.status_code == 429:
+                sleep_time = 2 ** (attempt + 1) # Exponential backoff: 2, 4, 8
+                logger.warning(f"Rate limit 429 for order {order_id}. Retrying in {sleep_time}s...")
+                time.sleep(sleep_time)
+            else:
+                response.raise_for_status()
+
+        if response.status_code != 200:
+             logger.error(f"Failed to fetch items for order {order_id} after retries. Status: {response.status_code}")
+             return []
+
+        data = response.json()
+
+        items = data.get('payload', {}).get('OrderItems', [])
+        return items
+
+    except Exception as e:
+        logger.error(f"Error fetching items for order {order_id}: {e}", exc_info=True)
+        return []
