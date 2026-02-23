@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from keepa_deals.inventory_import import parse_inventory_report_content, REPORT_TYPE_FBA, REPORT_TYPE_MERCHANT
 
 # Sample FBA Report Data (Tab-separated)
-# Based on Amazon documentation for GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA
+# Based on Amazon documentation for GET_FBA_MYI_ALL_INVENTORY_DATA (Format is identical for columns used)
 SAMPLE_FBA_REPORT = """sku\tfnsku\tasin\tproduct-name\tcondition\tyour-price\tmfn-listing-exists\tmfn-fulfillable-quantity\tafn-listing-exists\tafn-warehouse-quantity\tafn-fulfillable-quantity\tafn-unsellable-quantity\tafn-reserved-quantity\tafn-total-quantity\tafn-inbound-working-quantity\tafn-inbound-shipped-quantity\tafn-inbound-receiving-quantity
 SKU-123\tFNSKU1\tASIN123\tTest Product 1\tNew\t19.99\tNo\t0\tYes\t10\t5\t0\t0\t5\t2\t3\t0
 SKU-456\tFNSKU2\tASIN456\tTest Product 2\tUsed\t15.00\tNo\t0\tYes\t0\t0\t0\t0\t0\t10\t0\t5

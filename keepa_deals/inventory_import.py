@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
 
 REPORT_TYPE_MERCHANT = "GET_MERCHANT_LISTINGS_ALL_DATA"
-REPORT_TYPE_FBA = "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
+REPORT_TYPE_FBA = "GET_FBA_MYI_ALL_INVENTORY_DATA"
 
 @celery_app.task(name='keepa_deals.inventory_import.fetch_existing_inventory_task')
 def fetch_existing_inventory_task():
@@ -25,7 +25,7 @@ def fetch_existing_inventory_task():
     Fetches existing inventory from Amazon via SP-API Reports API.
     Report Types:
     1. GET_MERCHANT_LISTINGS_ALL_DATA (Active Listings)
-    2. GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA (FBA Inventory)
+    2. GET_FBA_MYI_ALL_INVENTORY_DATA (FBA Inventory)
     """
     logger.info("Starting inventory import task.")
 
