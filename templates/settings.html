@@ -77,9 +77,9 @@
                         <div style="background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2);">
                             <h6 class="tidy-header mt-0" style="font-size: 13px; color: #eef2f6;">Permissions Upgrade</h6>
                             <p class="tidy-text small text-muted-custom" style="margin-bottom: 8px;">
-                                To enable Inventory & Profit Tracking, your app must have the <b>"Inventory and Order Tracking"</b> role enabled in Seller Central.
+                                To enable Inventory & Profit Tracking, ensure your app has the <b>"Inventory and Order Tracking"</b> role enabled in Seller Central.
                             </p>
-                            <a href="{{ url_for('connect_amazon') }}" class="tidy-button" style="background-color: #336699; border-color: #336699; height: 28px; font-size: 11px;">Re-Authorize for New Features</a>
+                            <!-- OAuth Button Removed for Private App Mode -->
                         </div>
 
                         <form action="{{ url_for('trigger_restriction_check') }}" method="POST">
@@ -92,11 +92,11 @@
                         <hr class="hr-custom">
                         <h6 class="tidy-header mt-0 font-bold" style="font-size: 13px;">Manual Credentials Update</h6>
                         <p class="tidy-text small text-muted-custom">
-                            Use this if you are getting an MD9100 error or using a Private App (Self-Auth). Generate a new Refresh Token in Seller Central after updating roles, and paste it here.
+                            Use this to update your keys after changing roles in Seller Central. Generate a new Refresh Token and paste it here.
                         </p>
-                        <button class="tidy-button" type="button" onclick="const form = document.getElementById('manualUpdateForm'); form.style.display = form.style.display === 'none' ? 'block' : 'none';" style="background-color: #6c757d; border-color: #6c757d; font-size: 11px; height: 28px;">Toggle Manual Update Form</button>
 
-                        <form id="manualUpdateForm" action="{{ url_for('manual_sp_api_token') }}" method="POST" style="display: none; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+                        <!-- Manual form always visible now for clarity -->
+                        <form id="manualUpdateForm" action="{{ url_for('manual_sp_api_token') }}" method="POST" style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
                             <div class="form-group-mb">
                                 <label for="update_seller_id" class="label-block tidy-text">Seller ID</label>
                                 <input type="text" class="styled-text-field input-full-width" id="update_seller_id" name="seller_id" value="{{ session.sp_api_user_id }}" required>
@@ -119,11 +119,9 @@
                         </p>
                     </div>
 
-                    <a href="{{ url_for('connect_amazon') }}" class="tidy-button" style="background-color: #ffc107; border-color: #ffc107; color: #333; display: inline-flex; height: 32px; align-items: center; padding: 0 16px;">Connect Your Amazon Account</a>
-
-                    <hr class="hr-custom">
-                    <h6 class="tidy-header mt-0 font-bold" style="font-size: 13px;">Alternative: Manual Connection</h6>
-                    <p class="tidy-text small text-muted-custom">If the button above fails (e.g. MD9100 error), you can manually authorize the app in Seller Central and paste the credentials here.</p>
+                    <!-- OAuth Button Removed for Private App Mode -->
+                    <h6 class="tidy-header mt-0 font-bold" style="font-size: 13px;">Connect via Manual Credentials (Private App)</h6>
+                    <p class="tidy-text small text-muted-custom">Authorize the app in Seller Central (Self-Authorize) and paste your credentials here.</p>
                     <form action="{{ url_for('manual_sp_api_token') }}" method="POST">
                         <div class="form-group-mb">
                             <label for="manual_seller_id" class="label-block tidy-text">Seller ID</label>

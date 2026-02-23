@@ -311,10 +311,11 @@ def check_restriction_for_asins(asins: list[str]):
 from keepa_deals.amazon_sp_api import fetch_orders, fetch_order_items
 
 @celery.task(name='keepa_deals.sp_api_tasks.fetch_amazon_orders_task')
-def fetch_amazon_orders_task(days_back: int = 7):
+def fetch_amazon_orders_task(days_back: int = 365):
     """
     Fetches Amazon orders for all connected users.
-    Defaults to looking back 7 days to capture updates/new orders.
+    Defaults to looking back 365 days to capture historical sales context.
+    The API handles pagination, so this is safe.
     """
     logger.info(f"Starting Amazon Orders fetch (lookback: {days_back} days).")
 
@@ -341,8 +342,10 @@ def fetch_amazon_orders_task(days_back: int = 7):
             orders = fetch_orders(access_token, last_updated_after=cutoff_date)
 
             if not orders:
-                logger.info(f"No new orders found for user {user_id}.")
+                logger.info(f"No new orders found for user {user_id} since {cutoff_date}.")
                 continue
+
+            logger.info(f"Found {len(orders)} orders for user {user_id}. Processing details...")
 
             # Process Orders
             with sqlite3.connect(DB_PATH) as conn:
