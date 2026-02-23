@@ -65,48 +65,46 @@
 
             <!-- Display connection status -->
             {% if session.sp_api_connected %}
-                <div class="alert-success-custom" role="alert">
-                    <h5 class="tidy-header mt-0" style="font-size: 14px;">Connected!</h5>
-                    <p class="tidy-text">Your Amazon Seller Account is connected. Restriction data will be updated in the background.</p>
-                    {% if session.role == 'admin' %}
-                        <hr class="hr-custom">
-                        <p class="tidy-text mb-0">Seller ID: {{ session.sp_api_user_id }}</p>
-                        <hr class="hr-custom">
-
-                        <!-- Upgrade Permissions Note -->
-                        <div style="background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2);">
-                            <h6 class="tidy-header mt-0" style="font-size: 13px; color: #eef2f6;">Permissions Upgrade</h6>
-                            <p class="tidy-text small text-muted-custom" style="margin-bottom: 8px;">
-                                To enable Inventory & Profit Tracking, ensure your app has the <b>"Inventory and Order Tracking"</b> role enabled in Seller Central.
-                            </p>
-                            <!-- OAuth Button Removed for Private App Mode -->
+                <div class="alert-success-custom" role="alert" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Header Status -->
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h5 class="tidy-header mt-0" style="font-size: 16px; margin-bottom: 5px;">Connected ✅</h5>
+                            <p class="tidy-text mb-0" style="opacity: 0.8;">Seller ID: <strong>{{ session.sp_api_user_id }}</strong></p>
                         </div>
-
-                        <form action="{{ url_for('trigger_restriction_check') }}" method="POST">
-                            <button type="submit" class="tidy-button" style="background-color: transparent; border-color: #28a745; color: #28a745;">Re-check Restrictions for All Deals</button>
-                            <small class="tidy-text text-muted-custom">
-                                Click this if you see loading spinners on the dashboard. This will force a new check for all items in your database.
-                            </small>
+                        <form action="{{ url_for('trigger_restriction_check') }}" method="POST" style="margin: 0;">
+                            <button type="submit" class="tidy-button" style="background-color: transparent; border: 1px solid #28a745; color: #28a745; font-size: 11px; padding: 4px 10px; height: auto;">
+                                ↻ Re-check Restrictions
+                            </button>
                         </form>
+                    </div>
 
-                        <hr class="hr-custom">
-                        <h6 class="tidy-header mt-0 font-bold" style="font-size: 13px;">Manual Credentials Update</h6>
-                        <p class="tidy-text small text-muted-custom">
-                            Use this to update your keys after changing roles in Seller Central. Generate a new Refresh Token and paste it here.
-                        </p>
+                    {% if session.role == 'admin' %}
+                        <!-- Collapsible Management Section -->
+                        <div style="background-color: rgba(0, 0, 0, 0.2); border-radius: 8px; overflow: hidden; margin-top: 10px;">
+                            <button class="tidy-button" type="button" onclick="const p = document.getElementById('mgmtPanel'); p.style.display = p.style.display === 'none' ? 'block' : 'none';"
+                                style="width: 100%; background-color: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; padding: 10px 15px; color: #a3aec0; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <span>⚙️ Connection Management</span>
+                                <span>▼</span>
+                            </button>
 
-                        <!-- Manual form always visible now for clarity -->
-                        <form id="manualUpdateForm" action="{{ url_for('manual_sp_api_token') }}" method="POST" style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
-                            <div class="form-group-mb">
-                                <label for="update_seller_id" class="label-block tidy-text">Seller ID</label>
-                                <input type="text" class="styled-text-field input-full-width" id="update_seller_id" name="seller_id" value="{{ session.sp_api_user_id }}" required>
+                            <div id="mgmtPanel" style="display: none; padding: 15px;">
+                                <p class="tidy-text small text-muted-custom" style="margin-bottom: 10px;">
+                                    Update your credentials here if you have generated a new Refresh Token or upgraded permissions (e.g. added "Inventory and Order Tracking").
+                                </p>
+                                <form id="manualUpdateForm" action="{{ url_for('manual_sp_api_token') }}" method="POST">
+                                    <div class="form-group-mb">
+                                        <label for="update_seller_id" class="label-block tidy-text" style="margin-bottom: 4px;">Seller ID</label>
+                                        <input type="text" class="styled-text-field input-full-width" id="update_seller_id" name="seller_id" value="{{ session.sp_api_user_id }}" required>
+                                    </div>
+                                    <div class="form-group-mb">
+                                        <label for="update_refresh_token" class="label-block tidy-text" style="margin-bottom: 4px;">New Refresh Token</label>
+                                        <input type="text" class="styled-text-field input-full-width" id="update_refresh_token" name="refresh_token" placeholder="Starts with Atzr|..." required>
+                                    </div>
+                                    <button type="submit" class="tidy-button" style="background-color: #28a745; border-color: #28a745; width: 100%;">Update Credentials</button>
+                                </form>
                             </div>
-                            <div class="form-group-mb">
-                                <label for="update_refresh_token" class="label-block tidy-text">New Refresh Token</label>
-                                <input type="text" class="styled-text-field input-full-width" id="update_refresh_token" name="refresh_token" placeholder="Your New Refresh Token (starts with Atzr|...)" required>
-                            </div>
-                            <button type="submit" class="tidy-button" style="background-color: #28a745; border-color: #28a745;">Update Credentials</button>
-                        </form>
+                        </div>
                     {% endif %}
                 </div>
             {% else %}
