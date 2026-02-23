@@ -32,6 +32,7 @@ from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
 from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload, export_missing_costs_csv
+from keepa_deals.sp_api_tasks import fetch_amazon_orders_task
 import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
@@ -365,7 +366,11 @@ def get_inventory():
             cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'PURCHASED' AND quantity_remaining > 0 ORDER BY purchase_date DESC")
             active = [dict(row) for row in cursor.fetchall()]
 
-            return jsonify({'potential': potential, 'active': active})
+            # Fetch Sales (Limit 100 for now)
+            cursor.execute("SELECT * FROM sales_ledger ORDER BY sale_date DESC LIMIT 100")
+            sales = [dict(row) for row in cursor.fetchall()]
+
+            return jsonify({'potential': potential, 'active': active, 'sales': sales})
     except Exception as e:
         app.logger.error(f"Error fetching inventory: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
@@ -452,9 +457,12 @@ def trigger_inventory_import():
         return jsonify({'error': 'Unauthorized'}), 401
 
     try:
-        # Trigger Celery Task
-        task = fetch_existing_inventory_task.delay()
-        return jsonify({'status': 'success', 'task_id': task.id})
+        # Trigger Inventory Task
+        task_inv = fetch_existing_inventory_task.delay()
+        # Trigger Orders Task (Chain or Parallel)
+        task_orders = fetch_amazon_orders_task.delay()
+
+        return jsonify({'status': 'success', 'task_id_inv': task_inv.id, 'task_id_orders': task_orders.id})
     except Exception as e:
         app.logger.error(f"Error triggering inventory import: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500

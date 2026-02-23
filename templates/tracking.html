@@ -42,7 +42,7 @@
         <div class="tidy-card">
             <h2>Sales & Profit Ledger</h2>
             <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
-            <p><i>Coming Soon...</i></p>
+            <div id="sales-table-container">Loading...</div>
         </div>
     </div>
 </div>
@@ -114,9 +114,38 @@
 
             renderPotential(data.potential);
             renderActive(data.active);
+            renderSales(data.sales);
         } catch (error) {
             console.error('Error fetching inventory:', error);
         }
+    }
+
+    function renderSales(items) {
+        const container = document.getElementById('sales-table-container');
+        if (!items || items.length === 0) {
+            container.innerHTML = '<p>No sales found.</p>';
+            return;
+        }
+
+        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>Date</th><th>Order ID</th><th>SKU</th><th>Price</th><th>Status</th></tr></thead><tbody>';
+
+        items.forEach(item => {
+            let dateStr = '-';
+            if (item.sale_date) {
+                dateStr = new Date(item.sale_date).toLocaleDateString();
+            }
+
+            html += `<tr>
+                <td class="strategies-cell">${dateStr}</td>
+                <td class="strategies-cell">${item.amazon_order_id || '-'}</td>
+                <td class="strategies-cell">${item.sku || '-'}</td>
+                <td class="strategies-cell">$${(item.sale_price || 0).toFixed(2)}</td>
+                <td class="strategies-cell">${item.order_status || '-'}</td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
     }
 
     function renderPotential(items) {
