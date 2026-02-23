@@ -2,7 +2,13 @@
 import unittest
 import io
 import csv
+import sys
+import os
 from datetime import datetime
+
+# Add project root to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from keepa_deals.inventory_import import parse_inventory_report_content, REPORT_TYPE_FBA, REPORT_TYPE_MERCHANT
 
 # Sample FBA Report Data (Tab-separated)
