@@ -5,6 +5,7 @@ import json
 import logging
 import time
 import sqlite3
+import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -191,35 +192,46 @@ def main():
     print("==================================================")
 
     # 1. Credentials Strategy
-    seller_id = SELLER_ID
-    refresh_token = REFRESH_TOKEN
+    global SELLER_ID, REFRESH_TOKEN, CLIENT_ID, CLIENT_SECRET
+
+    # Priority: DB -> Env -> Prompt
+
+    db_user_id, db_refresh_token = get_db_credentials()
+
+    if db_refresh_token:
+        refresh_token = db_refresh_token
+        seller_id = db_user_id
+        source = "Database (deals.db)"
+    elif REFRESH_TOKEN:
+        refresh_token = REFRESH_TOKEN
+        seller_id = SELLER_ID
+        source = "Environment (.env)"
+    else:
+        refresh_token = None
+        seller_id = None
+        source = "None (Will Prompt)"
+
+    # Client ID/Secret usually come from env (App level), but could prompt
     client_id = CLIENT_ID
     client_secret = CLIENT_SECRET
 
-    source = "Environment (.env)"
-
-    # Fallback to DB if Refresh Token is missing
-    if not refresh_token:
-        print("Refresh Token missing in environment. Checking database...")
-        db_user_id, db_refresh_token = get_db_credentials()
-        if db_refresh_token:
-            refresh_token = db_refresh_token
-            # If Seller ID is also missing in env, use DB user_id (usually same)
-            if not seller_id:
-                seller_id = db_user_id
-            source = "Database (deals.db)"
-        else:
-            print("No credentials found in Database either.")
-
     print(f"Using Credentials Source: {source}")
 
+    # Prompt for missing credentials
+    if not client_id:
+        print("\n[MISSING] SP_API_CLIENT_ID not found in environment.")
+        client_id = input("Please enter your SP-API Client ID: ").strip()
+
+    if not client_secret:
+        print("\n[MISSING] SP_API_CLIENT_SECRET not found in environment.")
+        client_secret = input("Please enter your SP-API Client Secret: ").strip()
+
+    if not refresh_token:
+        print("\n[MISSING] Refresh Token not found in database or .env.")
+        refresh_token = input("Please enter your SP-API Refresh Token: ").strip()
+
     if not all([client_id, client_secret, refresh_token]):
-        print("ERROR: Missing Credentials.")
-        print(f"Client ID present? {'Yes' if client_id else 'No'}")
-        print(f"Client Secret present? {'Yes' if client_secret else 'No'}")
-        print(f"Refresh Token present? {'Yes' if refresh_token else 'No'}")
-        print("Please export SP_API_CLIENT_ID and SP_API_CLIENT_SECRET in your .env file.")
-        print("Refresh Token can be in .env OR added via Manual Update in Settings.")
+        print("ERROR: Still missing credentials. Cannot proceed.")
         return
 
     # 2. Get Access Token

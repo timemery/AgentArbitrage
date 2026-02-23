@@ -2,6 +2,11 @@ import unittest
 import sqlite3
 import os
 import json
+import sys
+
+# Add project root to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from wsgi_handler import app
 
 # Create a temporary DB
@@ -64,7 +69,7 @@ class TestApiFiltering(unittest.TestCase):
 
         # Point the app to the test DB
         import wsgi_handler
-        wsgi_handler.DATABASE_URL = TEST_DB
+        wsgi_handler.DB_PATH = TEST_DB
 
     def tearDown(self):
         if os.path.exists(TEST_DB):

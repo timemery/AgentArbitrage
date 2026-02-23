@@ -14,10 +14,11 @@ from keepa_deals.amazon_sp_api import refresh_sp_api_token
 logger = logging.getLogger(__name__)
 
 # Default to Production URL for safety in deployed environments.
-SP_API_BASE_URL = os.getenv("SP_API_URL", "https://sellingpartnerapi-na.amazon.com")
+# Strict multi-user design: Do not rely on .env for API credentials.
+SP_API_BASE_URL = "https://sellingpartnerapi-na.amazon.com"
 
 REPORT_TYPE_MERCHANT = "GET_MERCHANT_LISTINGS_ALL_DATA"
-REPORT_TYPE_FBA = "GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA"
+REPORT_TYPE_FBA = "GET_FBA_MYI_ALL_INVENTORY_DATA"
 
 @celery_app.task(name='keepa_deals.inventory_import.fetch_existing_inventory_task')
 def fetch_existing_inventory_task():
@@ -25,7 +26,7 @@ def fetch_existing_inventory_task():
     Fetches existing inventory from Amazon via SP-API Reports API.
     Report Types:
     1. GET_MERCHANT_LISTINGS_ALL_DATA (Active Listings)
-    2. GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA (FBA Inventory)
+    2. GET_FBA_MYI_ALL_INVENTORY_DATA (FBA Inventory)
     """
     logger.info("Starting inventory import task.")
 
@@ -156,23 +157,20 @@ def _get_report_document_url(document_id, access_token):
         logger.error(f"Failed to get document URL: {resp.text}")
         return None, None
 
-def _download_and_process_report(url, compression, user_id, report_type):
-    logger.info(f"Downloading report {report_type}...")
-    resp = requests.get(url)
-    resp.raise_for_status()
+def safe_int(val):
+    """Helper to robustly convert values to integer, defaulting to 0."""
+    try:
+        return int(val) if val else 0
+    except (ValueError, TypeError):
+        return 0
 
-    content = resp.content
-    # Handle compression if needed (GZIP is common but depends on API version/params)
-    if compression == 'GZIP':
-        import gzip
-        content = gzip.decompress(content)
-
-    # 1. Decode with UTF-8-SIG to handle potential BOM
-    text_content = content.decode('utf-8-sig', errors='replace')
-
+def parse_inventory_report_content(text_content, report_type):
+    """
+    Parses the text content of an inventory report and returns a list of items to insert.
+    """
     reader = csv.DictReader(io.StringIO(text_content), delimiter='\t')
 
-    # 2. Strip whitespace from headers
+    # Strip whitespace from headers
     if reader.fieldnames:
         reader.fieldnames = [x.strip() for x in reader.fieldnames]
 
@@ -184,7 +182,6 @@ def _download_and_process_report(url, compression, user_id, report_type):
         logger.warning(f"Could not log CSV headers: {e}")
 
     items_to_insert = []
-
     row_count = 0
     MAX_DEBUG_ROWS = 5
 
@@ -211,8 +208,22 @@ def _download_and_process_report(url, compression, user_id, report_type):
             sku = row.get('sku')
             asin = row.get('asin')
             title = row.get('product-name')
-            # Use afn-fulfillable-quantity (Available)
-            qty = row.get('afn-fulfillable-quantity')
+
+            # --- FBA Quantity Calculation (Feb 2026) ---
+            # Sum of Fulfillable + Inbound (Working, Shipped, Receiving)
+            # This ensures we count stock that is on the way to Amazon or being processed.
+
+            fulfillable = safe_int(row.get('afn-fulfillable-quantity'))
+            inbound_working = safe_int(row.get('afn-inbound-working-quantity'))
+            inbound_shipped = safe_int(row.get('afn-inbound-shipped-quantity'))
+            inbound_receiving = safe_int(row.get('afn-inbound-receiving-quantity'))
+
+            qty = fulfillable + inbound_working + inbound_shipped + inbound_receiving
+
+            # Debug log for breakdown if quantity > 0
+            if qty > 0 and row_count <= MAX_DEBUG_ROWS:
+                logger.info(f"FBA Qty Breakdown for {sku}: Total={qty} (Fulfillable={fulfillable}, Working={inbound_working}, Shipped={inbound_shipped}, Receiving={inbound_receiving})")
+
             is_fba = True
 
         else:
@@ -232,8 +243,8 @@ def _download_and_process_report(url, compression, user_id, report_type):
         except:
             qty = 0
 
-        # Log if we find FBA inventory > 0
-        if is_fba and qty > 0 and row_count <= MAX_DEBUG_ROWS:
+        # Log if we find FBA inventory > 0 (Already logged breakdown above for FBA)
+        if is_fba and qty > 0 and row_count <= MAX_DEBUG_ROWS and report_type != REPORT_TYPE_FBA:
              logger.info(f"Found FBA Stock > 0: SKU={sku}, Qty={qty}")
 
         # Create item object
@@ -248,6 +259,25 @@ def _download_and_process_report(url, compression, user_id, report_type):
             'purchase_date': datetime.utcnow() # Approximate
         }
         items_to_insert.append(item)
+
+    return items_to_insert
+
+def _download_and_process_report(url, compression, user_id, report_type):
+    logger.info(f"Downloading report {report_type}...")
+    resp = requests.get(url)
+    resp.raise_for_status()
+
+    content = resp.content
+    # Handle compression if needed (GZIP is common but depends on API version/params)
+    if compression == 'GZIP':
+        import gzip
+        content = gzip.decompress(content)
+
+    # 1. Decode with UTF-8-SIG to handle potential BOM
+    text_content = content.decode('utf-8-sig', errors='replace')
+
+    # 2. Parse Content
+    items_to_insert = parse_inventory_report_content(text_content, report_type)
 
     if not items_to_insert:
         logger.info(f"No items found in report {report_type}.")

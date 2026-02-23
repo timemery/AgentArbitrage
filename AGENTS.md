@@ -175,3 +175,10 @@ Developers often split complex tasks into two stages:
 
 *   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **1** (Critically Low < 10/min) to safely fit within the token burst window (40 tokens) without livelock.
 *   **Stall Watchdog:** Use `Diagnostics/watchdog_stall_detector.py` to identify if the worker is stuck (Tokens > 290 and no Heartbeat for 15 mins).
+
+---
+
+## Recent Fixes (Feb 2026)
+- **FBA Inventory Sync:** Fixed "No active inventory found" by switching to `GET_FBA_MYI_ALL_INVENTORY_DATA` (resolving FATAL errors from the unsuppressed report). Logic now includes **Inbound** inventory (Working, Shipped, Receiving) in the total count.
+- **Credential Management:** Refactored backend and diagnostics to strictly prioritize Database (`deals.db`) lookup for Seller ID and Refresh Tokens. `.env` is reserved for global app config (Client ID/Secret) only.
+- **Safety:** Hardcoded `https://sellingpartnerapi-na.amazon.com` (Production) as the default SP-API URL to prevent accidental Sandbox connections.
