@@ -347,36 +347,36 @@ def fetch_amazon_orders_task(days_back: int = 365):
 
             logger.info(f"Found {len(orders)} orders for user {user_id}. Processing details...")
 
+            import time
+
             # Process Orders
-            with sqlite3.connect(DB_PATH) as conn:
-                cursor = conn.cursor()
+            for order in orders:
+                amazon_order_id = order.get('AmazonOrderId')
+                purchase_date = order.get('PurchaseDate')
+                order_status = order.get('OrderStatus')
+                order_total = float(order.get('OrderTotal', {}).get('Amount', 0.0))
 
-                for order in orders:
-                    amazon_order_id = order.get('AmazonOrderId')
-                    purchase_date = order.get('PurchaseDate')
-                    order_status = order.get('OrderStatus')
-                    order_total = float(order.get('OrderTotal', {}).get('Amount', 0.0))
+                # Rate limiting protection (0.5 req/s = 2s delay)
+                # We perform this OUTSIDE the DB lock to prevent blocking other writers
+                time.sleep(2.1)
 
-                    # We need detailed items to populate the sales_ledger fully (ASIN/SKU)
-                    # Fetch items for this order
-                    # Optimization: Check if we already have this order in a 'Shipped' state?
-                    # For now, always fetch details to ensure we catch updates.
+                items = fetch_order_items(access_token, amazon_order_id)
 
-                    # Rate limiting protection (0.5 req/s = 2s delay)
-                    import time
-                    time.sleep(2.1)
+                if not items:
+                    logger.warning(f"No items found (or fetch failed) for Order {amazon_order_id}")
+                    continue
 
-                    items = fetch_order_items(access_token, amazon_order_id)
-
-                    if items:
+                # Short DB Transaction per Order to minimize locking time
+                try:
+                    with sqlite3.connect(DB_PATH, timeout=10) as conn:
+                        cursor = conn.cursor()
                         for item in items:
                             asin = item.get('ASIN')
                             sku = item.get('SellerSKU')
-                            order_item_id = item.get('OrderItemId') # Store this if possible
+                            order_item_id = item.get('OrderItemId')
                             qty_sold = item.get('QuantityOrdered', 0)
                             item_price = float(item.get('ItemPrice', {}).get('Amount', 0.0))
 
-                            # Upsert into sales_ledger (Composite PK: amazon_order_id, sku)
                             try:
                                 cursor.execute("""
                                     INSERT INTO sales_ledger (
@@ -390,13 +390,10 @@ def fetch_amazon_orders_task(days_back: int = 365):
                                 total_new_orders += 1
                             except sqlite3.IntegrityError as e:
                                 logger.error(f"DB Error inserting order {amazon_order_id} SKU {sku}: {e}")
-                    else:
-                        # Logic to handle missing items (e.g. rate limit failure that wasn't retried inside fetch)
-                        # We should ideally mark this order as 'Pending Details' if we couldn't fetch items?
-                        # For now, just log warning.
-                        logger.warning(f"No items found (or fetch failed) for Order {amazon_order_id}")
 
-                conn.commit()
+                        conn.commit()
+                except Exception as db_e:
+                    logger.error(f"Failed to save order {amazon_order_id} to DB: {db_e}")
 
         except Exception as e:
             logger.error(f"Error fetching orders for user {user_id}: {e}", exc_info=True)

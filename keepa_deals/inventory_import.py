@@ -437,7 +437,7 @@ def export_missing_costs_csv():
             cursor = conn.cursor()
             # Select items where buy_cost is NULL or 0
             cursor.execute("""
-                SELECT sku, title, asin
+                SELECT sku, title, asin, purchase_date
                 FROM inventory_ledger
                 WHERE buy_cost IS NULL OR buy_cost = 0
                 ORDER BY title
@@ -445,8 +445,17 @@ def export_missing_costs_csv():
 
             rows = cursor.fetchall()
             for row in rows:
-                # SKU, Title, ASIN, Buy Cost (Empty), Purchase Date (Empty)
-                writer.writerow([row[0], row[1], row[2], '', ''])
+                # Format existing date if available (YYYY-MM-DD)
+                existing_date = ''
+                if row[3]:
+                    try:
+                        # Handle full timestamp or simple date
+                        existing_date = row[3].split(' ')[0]
+                    except:
+                        pass
+
+                # SKU, Title, ASIN, Buy Cost (Empty), Purchase Date (Pre-filled if exists)
+                writer.writerow([row[0], row[1], row[2], '', existing_date])
 
         return output.getvalue()
     except Exception as e:
