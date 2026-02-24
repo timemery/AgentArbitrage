@@ -2,6 +2,50 @@
 {% extends "layout.html" %}
 {% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
+<style>
+    /* Dashboard-like Table Style Override */
+    .strategies-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .strategies-header th {
+        background-color: #1f293c; /* Dashboard Header Color */
+        color: #a3aec0; /* Dashboard Text Color */
+        border: none;
+        border-bottom: 2px solid #13161a;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 12px 15px;
+        text-align: left;
+    }
+    .strategies-cell {
+        background-color: rgba(0, 0, 0, 0.2); /* Transparent/Dark */
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        color: #ffffff;
+        padding: 12px 15px;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+    .strategies-table tr:hover .strategies-cell {
+        background-color: #304163; /* Dashboard Hover Color */
+    }
+    /* Rounded Corners */
+    .strategies-header th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+    .strategies-header th:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+    .strategies-table tbody tr td:first-child { border-left: none; }
+    .strategies-table tbody tr td:last-child { border-right: none; }
+
+    /* First/Last row rounded corners for body */
+    .strategies-table tbody tr:first-child td:first-child { border-top-left-radius: 8px; }
+    .strategies-table tbody tr:first-child td:last-child { border-top-right-radius: 8px; }
+    .strategies-table tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
+    .strategies-table tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
+</style>
 <div class="tidy-container settings-width">
     <h1>Profit & Inventory Tracking</h1>
 
@@ -28,12 +72,13 @@
                 <div style="display: flex; gap: 10px;">
                     <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
                     <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
-                    <button class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
+                    <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
                     <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
                 </div>
             </div>
             <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
             <div id="active-table-container">Loading...</div>
+            <div id="active-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
         </div>
     </div>
 
@@ -42,7 +87,8 @@
         <div class="tidy-card">
             <h2>Sales & Profit Ledger</h2>
             <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
-            <p><i>Coming Soon...</i></p>
+            <div id="sales-table-container">Loading...</div>
+            <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
         </div>
     </div>
 </div>
@@ -83,9 +129,46 @@
     </div>
 </div>
 
+<!-- Edit Item Modal -->
+<div id="edit-modal" class="deal-overlay">
+    <div class="deal-overlay-content" style="width: 500px; padding: 30px;">
+        <span class="close-overlay" onclick="closeEditModal()">&times;</span>
+        <h3>Edit Inventory Item</h3>
+        <form id="edit-form">
+            <input type="hidden" id="edit-id">
+            <div class="form-group-mb">
+                <label class="label-block">Title</label>
+                <input type="text" id="edit-title" class="styled-text-field input-full-width" readonly>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">SKU</label>
+                <input type="text" id="edit-sku" class="styled-text-field input-full-width" readonly>
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Buy Cost ($)</label>
+                <input type="number" step="0.01" id="edit-cost" class="styled-text-field input-full-width">
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Quantity</label>
+                <input type="number" id="edit-qty" class="styled-text-field input-full-width">
+            </div>
+            <div class="form-group-mb">
+                <label class="label-block">Purchase Date</label>
+                <input type="date" id="edit-date" class="styled-text-field input-full-width">
+            </div>
+            <button type="submit" class="tidy-button btn-info-style">Save Changes</button>
+        </form>
+    </div>
+</div>
+
 <script>
+    let activePage = 1;
+    let salesPage = 1;
+
     document.addEventListener('DOMContentLoaded', function() {
-        fetchInventory();
+        fetchPotential();
+        fetchActiveInventory(activePage);
+        fetchSalesHistory(salesPage);
 
         // Set default date to today
         document.getElementById('confirm-date').valueAsDate = new Date();
@@ -107,16 +190,98 @@
         evt.currentTarget.className += " active";
     }
 
-    async function fetchInventory() {
+    async function fetchPotential() {
         try {
-            const response = await fetch('/api/inventory');
+            const response = await fetch('/api/tracking/potential');
             const data = await response.json();
-
-            renderPotential(data.potential);
-            renderActive(data.active);
+            renderPotential(data.data || data.potential || []); // Handle both formats just in case
         } catch (error) {
-            console.error('Error fetching inventory:', error);
+            console.error('Error fetching potential:', error);
         }
+    }
+
+    async function fetchActiveInventory(page) {
+        try {
+            const response = await fetch(`/api/tracking/active?page=${page}&limit=50`);
+            const result = await response.json();
+
+            if (result.error) {
+                console.error(result.error);
+                return;
+            }
+
+            renderActive(result.data);
+            renderPaginationControls('active-pagination', result.pagination, fetchActiveInventory);
+        } catch (error) {
+            console.error('Error fetching active inventory:', error);
+        }
+    }
+
+    async function fetchSalesHistory(page) {
+        try {
+            const response = await fetch(`/api/tracking/sales?page=${page}&limit=50`);
+            const result = await response.json();
+
+            if (result.error) {
+                console.error(result.error);
+                return;
+            }
+
+            renderSales(result.data);
+            renderPaginationControls('sales-pagination', result.pagination, fetchSalesHistory);
+        } catch (error) {
+            console.error('Error fetching sales history:', error);
+        }
+    }
+
+    function renderPaginationControls(containerId, pagination, fetchFunction) {
+        const container = document.getElementById(containerId);
+        if (!pagination || pagination.pages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        if (pagination.page > 1) {
+            html += `<button class="page-btn" onclick="${fetchFunction.name}(${pagination.page - 1})">Previous</button> `;
+        }
+
+        html += `<span class="page-ellipsis">Page ${pagination.page} of ${pagination.pages}</span>`;
+
+        if (pagination.page < pagination.pages) {
+            html += `<button class="page-btn" onclick="${fetchFunction.name}(${pagination.page + 1})">Next</button>`;
+        }
+
+        container.innerHTML = html;
+    }
+
+    function renderSales(items) {
+        const container = document.getElementById('sales-table-container');
+        if (!items || items.length === 0) {
+            container.innerHTML = '<p>No sales found.</p>';
+            return;
+        }
+
+        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th><div class="tooltip-header">Fees (Est) ℹ️<span class="tooltip-text">Sync coming soon</span></div></th><th>Status</th></tr></thead><tbody>';
+
+        items.forEach(item => {
+            let dateStr = '-';
+            if (item.sale_date) {
+                dateStr = new Date(item.sale_date).toLocaleDateString();
+            }
+
+            html += `<tr>
+                <td class="strategies-cell">${dateStr}</td>
+                <td class="strategies-cell">${item.amazon_order_id || '-'}</td>
+                <td class="strategies-cell">${item.sku || '-'}</td>
+                <td class="strategies-cell">$${(item.sale_price || 0).toFixed(2)}</td>
+                <td class="strategies-cell" style="color: #888;">$0.00</td>
+                <td class="strategies-cell">${item.order_status || '-'}</td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
     }
 
     function renderPotential(items) {
@@ -152,7 +317,7 @@
             return;
         }
 
-        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>SKU</th><th>Title</th><th>Qty</th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
@@ -163,7 +328,7 @@
                 <td class="strategies-cell">${item.quantity_remaining}</td>
                 <td class="strategies-cell">${costDisplay}</td>
                 <td class="strategies-cell">
-                    <button class="tidy-button" onclick="editItem(${item.id})">Edit</button>
+                    <button class="tidy-button" onclick='openEditModal(${JSON.stringify(item)})'>Edit</button>
                 </td>
             </tr>`;
         });
@@ -177,9 +342,7 @@
         document.getElementById('confirm-title').value = item.title;
         document.getElementById('confirm-asin').value = item.asin;
         document.getElementById('confirm-cost').value = item.buy_cost || '';
-        // Generate a SKU suggestion?
         document.getElementById('confirm-sku').value = '';
-
         document.getElementById('confirm-modal').style.display = 'block';
     }
 
@@ -189,7 +352,6 @@
 
     document.getElementById('confirm-form').addEventListener('submit', async function(e) {
         e.preventDefault();
-
         const data = {
             id: document.getElementById('confirm-id').value,
             sku: document.getElementById('confirm-sku').value,
@@ -207,7 +369,8 @@
             const res = await response.json();
             if (res.status === 'success') {
                 closeModal();
-                fetchInventory(); // Refresh tables
+                fetchPotential(); // Refresh tables
+                fetchActiveInventory(activePage);
             } else {
                 alert('Error: ' + res.error);
             }
@@ -219,14 +382,13 @@
 
     async function dismissItem(id) {
         if (!confirm('Are you sure you want to dismiss this item?')) return;
-
         try {
             await fetch('/api/inventory/dismiss', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({id: id})
             });
-            fetchInventory();
+            fetchPotential();
         } catch (err) {
             console.error(err);
         }
@@ -234,7 +396,6 @@
 
     async function triggerImport() {
         if (!confirm('Start inventory sync from Amazon? This may take a few minutes.')) return;
-
         const btn = document.getElementById('btn-sync');
         const originalText = btn.textContent;
         btn.textContent = 'Syncing...';
@@ -252,7 +413,6 @@
             console.error(err);
             alert('Request failed');
         } finally {
-            // Re-enable button after a delay to prevent spamming
             setTimeout(() => {
                 btn.textContent = originalText;
                 btn.disabled = false;
@@ -263,7 +423,10 @@
     async function uploadCosts(input) {
         const file = input.files[0];
         if (!file) return;
-
+        const btn = document.getElementById('btn-upload');
+        const originalText = btn.textContent;
+        btn.textContent = 'Uploading...';
+        btn.disabled = true;
         const formData = new FormData();
         formData.append('file', file);
 
@@ -274,14 +437,67 @@
             });
             const res = await response.json();
             if (res.status === 'success') {
-                alert(`Updated ${res.updated_count} items.`);
-                fetchInventory();
+                alert(`Success! Updated ${res.updated_count} items.`);
+                fetchActiveInventory(activePage);
             } else {
                 alert('Error: ' + res.error);
             }
         } catch (err) {
             console.error(err);
+            alert('Request failed');
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+            input.value = '';
         }
     }
+
+    function openEditModal(item) {
+        document.getElementById('edit-id').value = item.id;
+        document.getElementById('edit-title').value = item.title || '';
+        document.getElementById('edit-sku').value = item.sku || '';
+        document.getElementById('edit-cost').value = item.buy_cost || '';
+        document.getElementById('edit-qty').value = item.quantity_remaining || '';
+        if (item.purchase_date) {
+            const dateStr = new Date(item.purchase_date).toISOString().split('T')[0];
+            document.getElementById('edit-date').value = dateStr;
+        } else {
+            document.getElementById('edit-date').value = '';
+        }
+        document.getElementById('edit-modal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    document.addEventListener('submit', async function(e) {
+        if (e.target && e.target.id === 'edit-form') {
+            e.preventDefault();
+            const data = {
+                id: document.getElementById('edit-id').value,
+                buy_cost: document.getElementById('edit-cost').value,
+                quantity: document.getElementById('edit-qty').value,
+                purchase_date: document.getElementById('edit-date').value
+            };
+            try {
+                const response = await fetch('/api/inventory/update_item', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+                if (res.status === 'success') {
+                    closeEditModal();
+                    fetchActiveInventory(activePage);
+                } else {
+                    alert('Error: ' + res.error);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Update failed');
+            }
+        }
+    });
 </script>
 {% endblock %}

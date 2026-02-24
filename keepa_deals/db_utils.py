@@ -498,11 +498,28 @@ def create_sales_ledger_table_if_not_exists():
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
-            if not cursor.fetchone():
-                logger.info(f"Table '{table_name}' not found. Creating it now.")
+
+            # Check if table exists
+            table_exists = cursor.fetchone()
+
+            # If table exists, check if it has the old schema (single PK)
+            if table_exists:
+                cursor.execute(f"PRAGMA table_info({table_name})")
+                columns = cursor.fetchall()
+                pk_count = sum(1 for col in columns if col[5] > 0) # col[5] is 'pk'
+
+                # If only 1 PK (amazon_order_id), we need to migrate/recreate
+                if pk_count == 1:
+                    logger.warning(f"Table '{table_name}' has outdated schema (Single PK). Recreating...")
+                    cursor.execute(f"DROP TABLE {table_name}")
+                    table_exists = False # Force recreation logic below
+
+            if not table_exists:
+                logger.info(f"Table '{table_name}' not found (or dropped). Creating it now.")
                 cursor.execute(f"""
                     CREATE TABLE {table_name} (
-                        amazon_order_id TEXT PRIMARY KEY,
+                        amazon_order_id TEXT NOT NULL,
+                        order_item_id TEXT,
                         asin TEXT,
                         sku TEXT,
                         sale_date TIMESTAMP NOT NULL,
@@ -511,7 +528,8 @@ def create_sales_ledger_table_if_not_exists():
                         quantity_sold INTEGER NOT NULL,
                         order_status TEXT,
                         reconciliation_status TEXT DEFAULT 'UNMATCHED',
-                        fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (amazon_order_id, sku)
                     )
                 """)
                 cursor.execute(f"CREATE INDEX idx_sales_asin ON {table_name}(asin)")
