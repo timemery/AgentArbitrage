@@ -350,29 +350,118 @@ def tracking():
 
 @app.route('/api/inventory', methods=['GET'])
 def get_inventory():
+    """Legacy endpoint: Redirects or returns simplified structure if needed."""
     if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 401
+
+    # Still returning potential buys as a fallback for now, but clients should use new endpoints
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
+            potential = [dict(row) for row in cursor.fetchall()]
+            return jsonify({'potential': potential, 'active': [], 'sales': []}) # Deprecated active/sales here
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/potential', methods=['GET'])
+def get_potential_inventory():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
+            data = [dict(row) for row in cursor.fetchall()]
+            return jsonify({'data': data})
+    except Exception as e:
+        app.logger.error(f"Error fetching potential inventory: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/active', methods=['GET'])
+def get_active_inventory():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 50, type=int)
+    offset = (page - 1) * limit
 
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
-            # Fetch Potential
-            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
-            potential = [dict(row) for row in cursor.fetchall()]
+            # Count Total
+            cursor.execute("SELECT COUNT(*) FROM inventory_ledger WHERE status = 'PURCHASED' AND quantity_remaining > 0")
+            total = cursor.fetchone()[0]
 
-            # Fetch Active
-            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'PURCHASED' AND quantity_remaining > 0 ORDER BY purchase_date DESC")
-            active = [dict(row) for row in cursor.fetchall()]
+            # Fetch Page
+            cursor.execute("""
+                SELECT * FROM inventory_ledger
+                WHERE status = 'PURCHASED' AND quantity_remaining > 0
+                ORDER BY purchase_date DESC
+                LIMIT ? OFFSET ?
+            """, (limit, offset))
+            data = [dict(row) for row in cursor.fetchall()]
 
-            # Fetch Sales (Limit 100 for now)
-            cursor.execute("SELECT * FROM sales_ledger ORDER BY sale_date DESC LIMIT 100")
-            sales = [dict(row) for row in cursor.fetchall()]
-
-            return jsonify({'potential': potential, 'active': active, 'sales': sales})
+            return jsonify({
+                'data': data,
+                'pagination': {
+                    'total': total,
+                    'page': page,
+                    'limit': limit,
+                    'pages': (total + limit - 1) // limit
+                }
+            })
     except Exception as e:
-        app.logger.error(f"Error fetching inventory: {e}", exc_info=True)
+        app.logger.error(f"Error fetching active inventory: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/sales', methods=['GET'])
+def get_sales_history():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 50, type=int)
+    offset = (page - 1) * limit
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Count Total
+            cursor.execute("SELECT COUNT(*) FROM sales_ledger")
+            total = cursor.fetchone()[0]
+
+            # Fetch Page
+            # We explicitly select columns to ensure 'sale_price' is clearly available
+            cursor.execute("""
+                SELECT
+                    amazon_order_id, order_item_id, asin, sku, sale_date,
+                    sale_price, amazon_fees, quantity_sold, order_status,
+                    reconciliation_status
+                FROM sales_ledger
+                ORDER BY sale_date DESC
+                LIMIT ? OFFSET ?
+            """, (limit, offset))
+            data = [dict(row) for row in cursor.fetchall()]
+
+            return jsonify({
+                'data': data,
+                'pagination': {
+                    'total': total,
+                    'page': page,
+                    'limit': limit,
+                    'pages': (total + limit - 1) // limit
+                }
+            })
+    except Exception as e:
+        app.logger.error(f"Error fetching sales history: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/inventory/potential', methods=['POST'])
