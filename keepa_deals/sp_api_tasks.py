@@ -307,3 +307,95 @@ def check_restriction_for_asins(asins: list[str]):
                 logger.error(f"CRITICAL: Failed to save outer fallback state: {db_e}", exc_info=True)
 
     return f"Completed restriction check for {len(asins)} ASINs for {len(user_credentials)} users."
+
+from keepa_deals.amazon_sp_api import fetch_orders, fetch_order_items
+
+@celery.task(name='keepa_deals.sp_api_tasks.fetch_amazon_orders_task')
+def fetch_amazon_orders_task(days_back: int = 365):
+    """
+    Fetches Amazon orders for all connected users.
+    Defaults to looking back 365 days to capture historical sales context.
+    The API handles pagination, so this is safe.
+    """
+    logger.info(f"Starting Amazon Orders fetch (lookback: {days_back} days).")
+
+    users = get_all_user_credentials()
+    if not users:
+        return "No users connected."
+
+    total_new_orders = 0
+
+    # Calculate LastUpdatedAfter date
+    from datetime import timedelta
+    cutoff_date = (datetime.utcnow() - timedelta(days=days_back)).isoformat()
+
+    for user in users:
+        user_id = user['user_id']
+        refresh_token = user['refresh_token']
+
+        try:
+            access_token = refresh_sp_api_token(refresh_token)
+            if not access_token:
+                logger.error(f"Failed to refresh token for user {user_id}. Skipping orders fetch.")
+                continue
+
+            orders = fetch_orders(access_token, last_updated_after=cutoff_date)
+
+            if not orders:
+                logger.info(f"No new orders found for user {user_id} since {cutoff_date}.")
+                continue
+
+            logger.info(f"Found {len(orders)} orders for user {user_id}. Processing details...")
+
+            import time
+
+            # Process Orders
+            for order in orders:
+                amazon_order_id = order.get('AmazonOrderId')
+                purchase_date = order.get('PurchaseDate')
+                order_status = order.get('OrderStatus')
+                order_total = float(order.get('OrderTotal', {}).get('Amount', 0.0))
+
+                # Rate limiting protection (0.5 req/s = 2s delay)
+                # We perform this OUTSIDE the DB lock to prevent blocking other writers
+                time.sleep(2.1)
+
+                items = fetch_order_items(access_token, amazon_order_id)
+
+                if not items:
+                    logger.warning(f"No items found (or fetch failed) for Order {amazon_order_id}")
+                    continue
+
+                # Short DB Transaction per Order to minimize locking time
+                try:
+                    with sqlite3.connect(DB_PATH, timeout=10) as conn:
+                        cursor = conn.cursor()
+                        for item in items:
+                            asin = item.get('ASIN')
+                            sku = item.get('SellerSKU')
+                            order_item_id = item.get('OrderItemId')
+                            qty_sold = item.get('QuantityOrdered', 0)
+                            item_price = float(item.get('ItemPrice', {}).get('Amount', 0.0))
+
+                            try:
+                                cursor.execute("""
+                                    INSERT INTO sales_ledger (
+                                        amazon_order_id, order_item_id, asin, sku, sale_date, sale_price,
+                                        quantity_sold, order_status, amazon_fees
+                                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
+                                    ON CONFLICT(amazon_order_id, sku) DO UPDATE SET
+                                        order_status = excluded.order_status,
+                                        fetched_at = CURRENT_TIMESTAMP
+                                """, (amazon_order_id, order_item_id, asin, sku, purchase_date, item_price, qty_sold, order_status))
+                                total_new_orders += 1
+                            except sqlite3.IntegrityError as e:
+                                logger.error(f"DB Error inserting order {amazon_order_id} SKU {sku}: {e}")
+
+                        conn.commit()
+                except Exception as db_e:
+                    logger.error(f"Failed to save order {amazon_order_id} to DB: {db_e}")
+
+        except Exception as e:
+            logger.error(f"Error fetching orders for user {user_id}: {e}", exc_info=True)
+
+    return f"Fetched and processed orders. Total interactions: {total_new_orders}"

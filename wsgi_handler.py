@@ -32,6 +32,7 @@ from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
 from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload, export_missing_costs_csv
+from keepa_deals.sp_api_tasks import fetch_amazon_orders_task
 import redis
 # from keepa_deals.recalculator import recalculate_deals # This causes a hang
 # from keepa_deals.Keepa_Deals import run_keepa_script
@@ -349,25 +350,118 @@ def tracking():
 
 @app.route('/api/inventory', methods=['GET'])
 def get_inventory():
+    """Legacy endpoint: Redirects or returns simplified structure if needed."""
     if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 401
+
+    # Still returning potential buys as a fallback for now, but clients should use new endpoints
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
+            potential = [dict(row) for row in cursor.fetchall()]
+            return jsonify({'potential': potential, 'active': [], 'sales': []}) # Deprecated active/sales here
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/potential', methods=['GET'])
+def get_potential_inventory():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
+            data = [dict(row) for row in cursor.fetchall()]
+            return jsonify({'data': data})
+    except Exception as e:
+        app.logger.error(f"Error fetching potential inventory: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/active', methods=['GET'])
+def get_active_inventory():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 50, type=int)
+    offset = (page - 1) * limit
 
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
-            # Fetch Potential
-            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
-            potential = [dict(row) for row in cursor.fetchall()]
+            # Count Total
+            cursor.execute("SELECT COUNT(*) FROM inventory_ledger WHERE status = 'PURCHASED' AND quantity_remaining > 0")
+            total = cursor.fetchone()[0]
 
-            # Fetch Active
-            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'PURCHASED' AND quantity_remaining > 0 ORDER BY purchase_date DESC")
-            active = [dict(row) for row in cursor.fetchall()]
+            # Fetch Page
+            cursor.execute("""
+                SELECT * FROM inventory_ledger
+                WHERE status = 'PURCHASED' AND quantity_remaining > 0
+                ORDER BY purchase_date DESC
+                LIMIT ? OFFSET ?
+            """, (limit, offset))
+            data = [dict(row) for row in cursor.fetchall()]
 
-            return jsonify({'potential': potential, 'active': active})
+            return jsonify({
+                'data': data,
+                'pagination': {
+                    'total': total,
+                    'page': page,
+                    'limit': limit,
+                    'pages': (total + limit - 1) // limit
+                }
+            })
     except Exception as e:
-        app.logger.error(f"Error fetching inventory: {e}", exc_info=True)
+        app.logger.error(f"Error fetching active inventory: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/sales', methods=['GET'])
+def get_sales_history():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 50, type=int)
+    offset = (page - 1) * limit
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Count Total
+            cursor.execute("SELECT COUNT(*) FROM sales_ledger")
+            total = cursor.fetchone()[0]
+
+            # Fetch Page
+            # We explicitly select columns to ensure 'sale_price' is clearly available
+            cursor.execute("""
+                SELECT
+                    amazon_order_id, order_item_id, asin, sku, sale_date,
+                    sale_price, amazon_fees, quantity_sold, order_status,
+                    reconciliation_status
+                FROM sales_ledger
+                ORDER BY sale_date DESC
+                LIMIT ? OFFSET ?
+            """, (limit, offset))
+            data = [dict(row) for row in cursor.fetchall()]
+
+            return jsonify({
+                'data': data,
+                'pagination': {
+                    'total': total,
+                    'page': page,
+                    'limit': limit,
+                    'pages': (total + limit - 1) // limit
+                }
+            })
+    except Exception as e:
+        app.logger.error(f"Error fetching sales history: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/inventory/potential', methods=['POST'])
@@ -452,11 +546,63 @@ def trigger_inventory_import():
         return jsonify({'error': 'Unauthorized'}), 401
 
     try:
-        # Trigger Celery Task
-        task = fetch_existing_inventory_task.delay()
-        return jsonify({'status': 'success', 'task_id': task.id})
+        # Trigger Inventory Task
+        task_inv = fetch_existing_inventory_task.delay()
+        # Trigger Orders Task (Chain or Parallel)
+        task_orders = fetch_amazon_orders_task.delay()
+
+        return jsonify({'status': 'success', 'task_id_inv': task_inv.id, 'task_id_orders': task_orders.id})
     except Exception as e:
         app.logger.error(f"Error triggering inventory import: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/inventory/update_item', methods=['POST'])
+def update_inventory_item():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.json
+        ledger_id = data.get('id')
+        buy_cost = data.get('buy_cost')
+        qty = data.get('quantity')
+        purchase_date = data.get('purchase_date')
+
+        if not ledger_id:
+            return jsonify({'error': 'Missing ID'}), 400
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            # Construct dynamic update query based on provided fields
+            updates = []
+            params = []
+
+            if buy_cost is not None and buy_cost != '':
+                updates.append("buy_cost = ?")
+                params.append(buy_cost)
+
+            if qty is not None and qty != '':
+                updates.append("quantity_remaining = ?")
+                updates.append("quantity_purchased = ?") # Assuming edit updates both for simplicity unless we track separately strictly
+                params.append(qty)
+                params.append(qty)
+
+            if purchase_date:
+                updates.append("purchase_date = ?")
+                params.append(purchase_date)
+
+            if not updates:
+                return jsonify({'status': 'no_change'})
+
+            params.append(ledger_id)
+            sql = f"UPDATE inventory_ledger SET {', '.join(updates)} WHERE id = ?"
+
+            cursor.execute(sql, params)
+            conn.commit()
+
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        app.logger.error(f"Error updating item: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/inventory/upload-costs', methods=['POST'])
