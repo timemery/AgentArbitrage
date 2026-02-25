@@ -186,7 +186,7 @@ def requeue_stuck_restrictions():
     except Exception as e:
         logger.error(f"Error in requeue_stuck_restrictions: {e}")
 
-def rescue_stale_deals(token_manager, limit=5):
+def rescue_stale_deals(token_manager, limit=20):
     """
     Finds deals that are approaching the Janitor's 72h deadline (e.g. > 48h old)
     and forces a refresh to prevent them from being deleted if they are still valid.
@@ -252,6 +252,12 @@ def rescue_stale_deals(token_manager, limit=5):
                 processed_row = clean_numeric_values(processed_row)
                 processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                 processed_row['source'] = 'stale_rescue'
+
+                # Check for hidden unprofitability
+                profit = processed_row.get('Profit')
+                if profit is not None and isinstance(profit, (int, float)) and profit <= 0:
+                    logger.warning(f"Stale Rescue: ASIN {asin} updated but Profit is now ${profit:.2f}. It will be hidden from the dashboard.")
+
                 rows_to_upsert.append(processed_row)
 
         if rows_to_upsert:
@@ -312,7 +318,7 @@ def run():
         # 0.5. Stale Deal Rescue (Prevent Diminishing Deals)
         # Run this BEFORE the main sync to ensure we prioritize saving existing deals
         # from the Janitor over finding new ones.
-        rescue_stale_deals(token_manager, limit=5)
+        rescue_stale_deals(token_manager, limit=20)
 
         logger.info("Step 1: Initializing Sync...")
         # Blocking wait (raises TokenRechargeError if wait is long)
