@@ -134,6 +134,48 @@ class TestDiminishingDeals(unittest.TestCase):
         self.assertGreater(last_seen, self.stale_time)
         self.assertEqual(source, 'stale_rescue')
 
+    @patch('keepa_deals.stable_products.amazon_current')
+    def test_lightweight_update_enforces_ceiling(self, mock_amz_current):
+        """
+        Verify that _process_lightweight_update clamps 'List at' if Amazon price has dropped.
+        """
+        from keepa_deals.processing import _process_lightweight_update
+
+        # Scenario:
+        # Old Deal: List at $50.00
+        # New Market: Amazon New Price is $30.00
+        # Expected: List at clamped to $27.00 (90% of $30)
+
+        existing_row = {
+            'ASIN': 'TEST_CEILING',
+            'List at': 50.00,
+            'Price Now': 15.00,
+            'Seller ID': 'OLD_SELLER',
+            '1yr. Avg.': 40.00
+        }
+
+        product_data = {
+            'asin': 'TEST_CEILING',
+            'offers': [], # No offers needed for this test
+            'stats': {'current': [3000, 3000]} # Amazon Price = 3000 cents ($30)
+        }
+
+        # Mock Amazon Current extraction to return $30
+        mock_amz_current.return_value = {
+            'Amazon - Current': 30.00,
+            'Amazon - 90 days avg.': 35.00 # Higher, should pick lowest (30)
+        }
+
+        updated_row = _process_lightweight_update(existing_row, product_data)
+
+        self.assertIsNotNone(updated_row)
+        new_list_at = updated_row.get('List at')
+
+        print(f"Old List at: {existing_row['List at']}")
+        print(f"New List at: {new_list_at}")
+
+        self.assertEqual(new_list_at, 27.00, "Failed to clamp List Price to 90% of Amazon Ceiling")
+
     def test_janitor_deletes_stale_deal(self):
         """
         Verify that Janitor deletes the deal if it gets too old.
