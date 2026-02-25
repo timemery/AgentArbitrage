@@ -431,7 +431,8 @@ def _process_lightweight_update(existing_row, product_data):
         # Helper to parse safe float from amz_data which might return strings or numbers
         def safe_get_amz(key):
             val = amz_data.get(key)
-            if isinstance(val, (int, float)) and val > 0: return float(val)
+            parsed = _parse_price(val)
+            if parsed > 0: return parsed
             return None
 
         # Gather candidates
