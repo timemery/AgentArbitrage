@@ -186,6 +186,98 @@ def requeue_stuck_restrictions():
     except Exception as e:
         logger.error(f"Error in requeue_stuck_restrictions: {e}")
 
+def rescue_stale_deals(token_manager, limit=5):
+    """
+    Finds deals that are approaching the Janitor's 72h deadline (e.g. > 48h old)
+    and forces a refresh to prevent them from being deleted if they are still valid.
+    """
+    try:
+        # 1. Check Refill Rate - Don't rescue if we are starving
+        if token_manager.REFILL_RATE_PER_MINUTE < 10:
+            logger.info(f"Skipping Stale Rescue: Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min).")
+            return
+
+        # 2. Find oldest deals seen > 48 hours ago
+        stale_rows = []
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            query = """
+                SELECT * FROM deals
+                WHERE last_seen_utc < datetime('now', '-48 hours')
+                ORDER BY last_seen_utc ASC
+                LIMIT ?
+            """
+            cursor.execute(query, (limit,))
+            stale_rows = cursor.fetchall()
+
+        if not stale_rows:
+            return
+
+        stale_asins = [row['ASIN'] for row in stale_rows]
+        logger.info(f"Stale Deal Rescue: Found {len(stale_asins)} deals > 48h old. Refreshing: {stale_asins}")
+
+        # 3. Fetch Stats (Light Update)
+        # Estimate cost: ~3 tokens/ASIN
+        token_manager.request_permission_for_call(3 * len(stale_asins))
+
+        # Use same params as light update: days=180, offers=20
+        api_key = os.getenv("KEEPA_API_KEY")
+        prod_resp, _, _, tokens_left = fetch_current_stats_batch(api_key, stale_asins, days=180, offers=20)
+
+        if tokens_left:
+            token_manager.update_after_call(tokens_left)
+
+        if not prod_resp or 'products' not in prod_resp:
+            logger.warning("Stale Deal Rescue: Keepa returned no products.")
+            return
+
+        # 4. Process & Upsert
+        rows_to_upsert = []
+        with open(HEADERS_PATH) as f:
+            headers_list = json.load(f)
+
+        for p in prod_resp['products']:
+            asin = p.get('asin')
+            # Find corresponding existing row
+            existing_row = next((r for r in stale_rows if r['ASIN'] == asin), None)
+            if not existing_row:
+                continue
+
+            # Convert sqlite3.Row to dict
+            existing_row_dict = dict(existing_row)
+
+            processed_row = _process_lightweight_update(existing_row_dict, p)
+            if processed_row:
+                processed_row = clean_numeric_values(processed_row)
+                processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
+                processed_row['source'] = 'stale_rescue'
+                rows_to_upsert.append(processed_row)
+
+        if rows_to_upsert:
+            with sqlite3.connect(DB_PATH) as conn:
+                cursor = conn.cursor()
+                sanitized_headers = [sanitize_col_name(h) for h in headers_list]
+                sanitized_headers.extend(['last_seen_utc', 'source'])
+
+                data_for_upsert = []
+                for row_dict in rows_to_upsert:
+                    row_tuple = tuple(row_dict.get(h) for h in sanitized_headers)
+                    data_for_upsert.append(row_tuple)
+
+                cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
+                vals_str = ', '.join(['?'] * len(sanitized_headers))
+                # Explicitly exclude ASIN from update set to keep syntax valid
+                update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
+                upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
+
+                cursor.executemany(upsert_sql, data_for_upsert)
+                conn.commit()
+                logger.info(f"Stale Deal Rescue: Successfully refreshed {len(rows_to_upsert)} deals.")
+
+    except Exception as e:
+        logger.error(f"Error in rescue_stale_deals: {e}", exc_info=True)
+
 @celery.task(name='keepa_deals.smart_ingestor.run')
 def run():
     redis_client = redis.Redis.from_url(celery.conf.broker_url)
@@ -216,6 +308,11 @@ def run():
             logger.info("Skipping sync (Recharge active, estimated tokens low).")
         else:
             token_manager.sync_tokens()
+
+        # 0.5. Stale Deal Rescue (Prevent Diminishing Deals)
+        # Run this BEFORE the main sync to ensure we prioritize saving existing deals
+        # from the Janitor over finding new ones.
+        rescue_stale_deals(token_manager, limit=5)
 
         logger.info("Step 1: Initializing Sync...")
         # Blocking wait (raises TokenRechargeError if wait is long)
