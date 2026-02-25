@@ -418,6 +418,38 @@ def _process_lightweight_update(existing_row, product_data):
         list_at_price = _parse_price(list_at_val) if list_at_val else 0.0
         now_price = row_data.get('Price Now', 0.0)
 
+        # --- CEILING CHECK: Ensure List Price is Realistic (Feb 2026) ---
+        # Even though we are preserving the old 'List at', the market ceiling (Amazon New Price)
+        # may have dropped significantly. We must clamp the List Price to avoid fake profits.
+        from .stable_products import amazon_current
+        amz_data = amazon_current(product_data)
+
+        # Determine current ceiling: 90% of Lowest Valid Amazon Metric
+        # We check Current, 90d, 180d, 365d to be safe/conservative
+        amz_prices = []
+
+        # Helper to parse safe float from amz_data which might return strings or numbers
+        def safe_get_amz(key):
+            val = amz_data.get(key)
+            parsed = _parse_price(val)
+            if parsed > 0: return parsed
+            return None
+
+        # Gather candidates
+        for key in ['Amazon - Current', 'Amazon - 90 days avg.', 'Amazon - 180 days avg.', 'Amazon - 365 days avg.']:
+             p = safe_get_amz(key)
+             if p: amz_prices.append(p)
+
+        if amz_prices:
+            lowest_amz = min(amz_prices)
+            ceiling_price = lowest_amz * 0.90
+
+            if list_at_price > ceiling_price:
+                old_list = list_at_price
+                list_at_price = round(ceiling_price, 2)
+                row_data['List at'] = list_at_price # Update the row data with clamped price
+                logger.info(f"ASIN {asin}: Lightweight Update - Clamped 'List at' from {old_list} to {list_at_price} (Ceiling: {lowest_amz})")
+
         # FBA Fees - try to extract from stats if available, else fallback default
         fba_fees_obj = product_data.get('fbaFees') or {}
         pick_and_pack = fba_fees_obj.get('pickAndPackFee')

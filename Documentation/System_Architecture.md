@@ -46,12 +46,16 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
     1.  **Watermark Check:** Loads the `watermark_iso` timestamp from `system_state`. If missing or corrupt, defaults to 24 hours ago.
     2.  **Delta Fetch:** Queries Keepa for all products updated since the watermark.
     3.  **Decoupled Batching Strategy:**
+        *   **Stage 0.5: Stale Deal Rescue:** Before the main sync, the system proactively queries for deals older than **48 hours**.
+            *   **Action:** Fetches fresh lightweight stats for up to **20** such deals per minute.
+            *   **Purpose:** Prevents valid, stable deals (which may not appear in Keepa's delta feed) from expiring and being deleted by the Janitor after 72 hours.
         *   **Stage 1: Peek (Discovery):** Fetches lightweight stats for **50 ASINs** at once.
             *   **Dynamic Scaling:** Automatically reduces to **20** if refill rate < 20/min, and to **15** if refill rate < 10/min (optimized to fit within the 40-token burst).
             *   **Filter:** Checks `check_peek_viability` to reject dead/irrelevant items. `salesRankDrops365` threshold lowered to **1** (from 4) to capture "Silver Standard" (low velocity) candidates.
         *   **Stage 1.5: XAI Rescue:** If initial analysis finds 0 confirmed sales or no offer drops, the system calls **xAI** to identify "Hidden Sales" (rank drops without offer drops), rescuing potentially valid deals from rejection.
         *   **Stage 2: Commit (Analysis):** Survivors of the Peek filter are processed in smaller batches of **5 ASINs** (Heavy Fetch) to prevent "Deficit Shock" (instantly draining 1000+ tokens).
         *   **Stage 3: Light Update:** Existing deals are refreshed in large batches (50 ASINs) using lightweight stats.
+            *   **Ceiling Check:** Enforces that the `List at` price does not exceed 90% of the current Amazon New Price, preventing "fake profit" on preserved deals.
     4.  **Watermark Ratchet:** The watermark is updated to the `lastUpdate` timestamp of the *last processed deal* in the current batch. This ensures progress is tracked even if all deals in a batch are rejected.
     5.  **Data Persistence Strategy (formerly Zombie Defense):** The aggressive re-fetching logic for 'Zombie' deals (missing critical data like `List at`) was found to cause infinite loops and token waste. It has been replaced by a **Persistence Strategy** where deals with missing data are saved and updated via standard 'Lightweight Updates', allowing for gradual data repair without system strain.
 

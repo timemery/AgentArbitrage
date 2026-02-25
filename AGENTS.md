@@ -179,6 +179,8 @@ Developers often split complex tasks into two stages:
 ---
 
 ## Recent Fixes (Feb 2026)
+- **Stale Deal Rescue:** Implemented `rescue_stale_deals` in `keepa_deals/smart_ingestor.py` to prevent "diminishing deals". The system proactively refreshes deals older than 48 hours to ensure they are not deleted by the Janitor (72h limit).
+- **Amazon Ceiling Check:** Added a safety check in `keepa_deals/processing.py` during lightweight updates. If `List at` > 90% of the current Amazon New Price, it is clamped down to that ceiling. This prevents deals from showing "fake profit" when the market price drops.
 - **FBA Inventory Sync:** Fixed "No active inventory found" by switching to `GET_FBA_MYI_ALL_INVENTORY_DATA` (resolving FATAL errors from the unsuppressed report). Logic now includes **Inbound** inventory (Working, Shipped, Receiving) in the total count.
 - **Credential Management:** Refactored backend and diagnostics to strictly prioritize Database (`deals.db`) lookup for Seller ID and Refresh Tokens. `.env` is reserved for global app config (Client ID/Secret) only.
 - **Safety:** Hardcoded `https://sellingpartnerapi-na.amazon.com` (Production) as the default SP-API URL to prevent accidental Sandbox connections.
