@@ -62,3 +62,45 @@ Combined with minor daily fluctuations in the survivor rate (e.g., finding 6% on
 The 400-500 limit is a direct, hard-coded consequence of running the Smart Ingestor v3.0 on a **5 tokens/minute** Keepa subscription.
 
 The low refill rate triggers a safety mechanism that completely disables `rescue_stale_deals`. As a result, the database is mathematically capped at (Daily Ingestion Rate * 3 Days). Upgrading the Keepa API tier to a minimum of 10 tokens/minute (or 20/min for optimal performance) is the only way to unlock the Stale Rescue feature, which will immediately allow the database to retain stable deals and grow into the thousands.
+## Reaching 4,500 Deals: Token Tier Projections
+
+To reach and maintain a database of ~4,500 profitable used books, the system must do two things simultaneously:
+1.  **Maintain Existing Deals:** Keep the 4,500 deals alive by refreshing them every 48 hours to prevent the 72-hour Janitor deletion.
+2.  **Discover New Deals:** Scan enough new ASINs to find the ~5% that are profitable to replace the natural attrition of deals that become unprofitable.
+
+### The Maintenance Cost (Stale Rescue)
+To maintain 4,500 deals, they must be refreshed every 48 hours (2,880 minutes).
+*   **Deals to refresh per minute:** 4,500 / 2,880 = **1.56 deals/minute**.
+*   **Cost per refresh:** ~3 tokens per deal.
+*   **Total Maintenance Cost:** 1.56 * 3 = **~4.7 tokens/minute**.
+
+*Note: This is why the 5 tokens/minute tier disables Stale Rescue entirely. If it didn't, maintaining 4,500 deals would consume 94% of the daily token budget, leaving only 0.3 tokens/minute for finding new deals, effectively halting the system.*
+
+### Option A: The 10 Tokens/Minute Tier (Minimum Required)
+At this tier, `rescue_stale_deals` unlocks.
+*   **Total Tokens/Day:** 14,400
+*   **Maintenance Cost for 4,500 deals:** ~6,768 tokens/day.
+*   **Remaining for Discovery:** 7,632 tokens/day.
+*   **New ASINs Scanned/Day:** 7,632 / 3 tokens = 2,544 scans.
+*   **New Profitable Deals/Day (5%):** ~127 deals.
+*   **Time to reach 4,500 deals:** At +127 new deals per day, it would take **~35 days** to fill the database from zero to 4,500, assuming zero attrition (unlikely). In reality, due to deals naturally expiring, it might take 2-3 months to hit equilibrium.
+
+### Option B: The 20 Tokens/Minute Tier (Recommended)
+This tier provides a comfortable balance for steady growth.
+*   **Total Tokens/Day:** 28,800
+*   **Maintenance Cost for 4,500 deals:** ~6,768 tokens/day.
+*   **Remaining for Discovery:** 22,032 tokens/day.
+*   **New ASINs Scanned/Day:** 22,032 / 3 tokens = 7,344 scans.
+*   **New Profitable Deals/Day (5%):** ~367 deals.
+*   **Time to reach 4,500 deals:** At +367 new deals per day, it would take **~12 days** to fill the database from zero.
+
+### Option C: The 60 Tokens/Minute Tier (Aggressive Growth)
+*   **Total Tokens/Day:** 86,400
+*   **Maintenance Cost for 4,500 deals:** ~6,768 tokens/day (Only 8% of total budget).
+*   **Remaining for Discovery:** 79,632 tokens/day.
+*   **New ASINs Scanned/Day:** 26,544 scans.
+*   **New Profitable Deals/Day (5%):** ~1,327 deals.
+*   **Time to reach 4,500 deals:** **~3.5 days**.
+
+### Summary Recommendation
+To realistically capture and maintain the remaining ~4,000 profitable books in a reasonable timeframe (under 2 weeks), you need a Keepa subscription that provides at least **20 tokens per minute**. A tier of 10 tokens/minute will work mathematically, but the initial accumulation phase will be extremely slow (over a month).
