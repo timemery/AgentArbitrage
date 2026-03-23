@@ -21,10 +21,14 @@ def main():
     print(f"This will delete ALL data in '{DB_PATH}'.")
     print("Tables to be cleared: 'deals', 'user_restrictions'")
 
-    confirm = input("Are you sure you want to proceed? (Type 'YES' to confirm): ")
-    if confirm.strip() != "YES":
-        print("Reset aborted.")
-        return
+    # Allow bypass of interactive prompt via command line argument
+    if len(sys.argv) > 1 and sys.argv[1] == "--force":
+        print("Force flag detected. Proceeding without confirmation.")
+    else:
+        confirm = input("Are you sure you want to proceed? (Type 'YES' to confirm) or run with --force: ")
+        if confirm.strip() != "YES":
+            print("Reset aborted.")
+            return
 
     try:
         logger.info("Starting database reset...")
