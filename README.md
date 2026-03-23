@@ -75,10 +75,16 @@ KEEPA_API_KEY="your_keepa_api_key"
 4.  **Update Dependencies:**
     `source venv/bin/activate`
     `pip install -r requirements.txt`
-5.  **Apply and Restart:** To apply code changes and restart the application, run the `touch` command on the WSGI entry point and restart Apache:
+5.  **Optional: Clear Old Deals Data:** To clear old deals data without affecting inventory/credentials, run:
     ```bash
-    touch wsgi.py
-    sudo systemctl restart apache2
+    ./clear_deals.sh
+    ```
+6.  **Apply and Restart:** To apply code changes and restart the application, run the `deploy_update.sh` script or restart manually:
+    ```bash
+    ./deploy_update.sh
+    # OR manually:
+    # touch wsgi.py
+    # sudo systemctl restart apache2
     ```
 ---
 
@@ -96,4 +102,4 @@ KEEPA_API_KEY="your_keepa_api_key"
 - **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
-*Last Updated: February 19, 2026 (v3.1 Smart Ingestor & UI Alignment Fixes)*
+*Last Updated: March 23, 2026 (v3.2 Astronomical Profits Fix & Cleanup Script)*
