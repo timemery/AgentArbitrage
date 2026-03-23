@@ -57,6 +57,7 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
     You are an expert Arbitrage Advisor.
     CONTEXT: The "3-Year Average Price" is a simple mean of all sales, including off-season lows.
     For seasonal items (especially Textbooks), the "Peak Season" price can validly be 200-400% higher than the average.
+    However, any used book price over $500 should face intense scrutiny and is highly likely unreasonable unless it is a known textbook or rare collectible, and prices over $1,000 are almost always unreasonable.
 
     Given the following book details, is a peak selling price of ${price_usd:.2f} reasonable during {season}?
     Respond with only "Yes" or "No".
@@ -586,20 +587,33 @@ def analyze_sales_performance(product, sale_events):
 
     # --- Suspiciously High Fallback Check ---
     is_suspiciously_high = False
-    if price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)':
-        current_used_cents = -1
-        current_stats = stats.get('current', [])
-        # Index 2 is Used
-        if len(current_stats) > 2 and current_stats[2] is not None:
-            current_used_cents = current_stats[2]
 
-        if current_used_cents > 0:
-            ratio = peak_price_mode_cents / current_used_cents
-            if ratio > 3.0: # Threshold: >300% markup implies a likely outlier/mismatch
-                is_suspiciously_high = True
-                logger.warning(f"ASIN {asin}: Fallback price ${peak_price_mode_cents/100:.2f} is suspiciously high (>3x current used ${current_used_cents/100:.2f}, Ratio: {ratio:.1f}x). Forcing AI Reasonableness Check.")
+    # HARD CEILING SAFETY CHECK: Any calculated price > $1500 is automatically rejected without AI check
+    # to prevent astronomical fake profits (e.g. $4000) from polluting the dashboard.
+    is_absurdly_high = False
+    if peak_price_mode_cents > 150000:  # > $1500.00
+        is_absurdly_high = True
+        logger.warning(f"ASIN {asin}: Calculated List Price ${peak_price_mode_cents/100:.2f} exceeds absolute hard ceiling of $1500. Rejecting automatically.")
+        peak_price_mode_cents = -1
 
-    if is_capped_by_ceiling:
+    # We now apply the 3x ratio check to ALL price sources, not just fallbacks.
+    # Inferred Sales with sparse points can also mathematically skew and require AI scrutiny.
+    current_used_cents = -1
+    current_stats = stats.get('current', [])
+    # Index 2 is Used
+    if len(current_stats) > 2 and current_stats[2] is not None:
+        current_used_cents = current_stats[2]
+
+    if current_used_cents > 0 and not is_absurdly_high:
+        ratio = peak_price_mode_cents / current_used_cents
+        if ratio > 3.0: # Threshold: >300% markup implies a likely outlier/mismatch
+            is_suspiciously_high = True
+            logger.warning(f"ASIN {asin}: Calculated List price ${peak_price_mode_cents/100:.2f} is suspiciously high (>3x current used ${current_used_cents/100:.2f}, Ratio: {ratio:.1f}x). Forcing AI Reasonableness Check.")
+
+    if is_absurdly_high:
+        logger.info(f"ASIN {asin}: Price is absurdly high. Skipping AI Reasonableness Check and rejecting.")
+        is_reasonable = False
+    elif is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
         is_reasonable = True
     elif (price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)') and not is_suspiciously_high:
