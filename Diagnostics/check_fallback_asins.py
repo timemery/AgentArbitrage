@@ -2,11 +2,10 @@ import sys
 import os
 import json
 import logging
+import requests
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from keepa_deals.keepa_api import get_keepa_api_key
-import requests
 from keepa_deals.stable_calculations import analyze_sales_performance, infer_sale_events
 from dotenv import load_dotenv
 
@@ -16,9 +15,9 @@ logging.basicConfig(level=logging.INFO)
 asins_to_check = ['B01FIW4WL2', '163220293X', '0804007381', '0387257659']
 
 def diagnose_asins():
-    api_key = get_keepa_api_key()
+    api_key = os.getenv('KEEPA_API_KEY')
     if not api_key:
-        print("ERROR: Could not find Keepa API key. Cannot diagnose.")
+        print("ERROR: Could not find KEEPA_API_KEY in environment variables. Cannot diagnose.")
         return
 
     print("Diagnosing ASINs to see if they relied on Keepa Stats Fallback...")
