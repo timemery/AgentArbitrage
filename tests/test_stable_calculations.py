@@ -37,9 +37,9 @@ class TestStableCalculations(unittest.TestCase):
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness', return_value=True):
             result = analyze_sales_performance(product, sale_events)
 
-        # Assert that the price is the fallback price (Max of avg90/avg365 = 40000)
-        self.assertEqual(result.get('peak_price_mode_cents'), 40000,
-                         "Should return fallback price ($400) when stats are present.")
+        # Assert that the price is the fallback price (Min of avg90/avg365 = 35000)
+        self.assertEqual(result.get('peak_price_mode_cents'), 35000,
+                         "Should return fallback price ($350) when stats are present using min.")
         self.assertEqual(result.get('price_source'), 'Keepa Stats Fallback')
         self.assertEqual(result.get('peak_season'), '-')
 
