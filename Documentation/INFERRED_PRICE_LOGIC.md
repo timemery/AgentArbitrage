@@ -26,15 +26,13 @@ The system previously contained an *unsafe* fallback logic:
 > *If no sales are inferred, but `monthlySold > 20`, use the `Used - 90 days avg` price.*
 This caused massive deal rejection rates because it often grabbed stale, high-priced Used listings for books that only sold as New. This logic has been **REMOVED**.
 
-**The "Safe Fallback" Compromise (Mar 2026)**
-To address data sparsity without sacrificing safety, we introduced a **Validated Fallback** (the "Silver Standard"). However, using the maximum available average price (including Collectibles) proved too optimistic, resulting in astronomical profit estimates.
+**The "Safe Fallback" Compromise and Subsequent Removal (Mar 2026)**
+To address data sparsity without sacrificing safety, we briefly introduced a **Validated Fallback** (the "Silver Standard"). It attempted to use the **Minimum** of `stats.avg90` and `stats.avg365` for **Standard Used** conditions only when inferred sales < 3.
 
-> *If Inferred Sales < 3, use the **Minimum** of `stats.avg90` and `stats.avg365` for **Standard Used** conditions only (Acceptable, Good, Very Good).*
-**Crucially**, this fallback price is NOT trusted blindly, but it is validated differently than inferred sales:
-1.  **Amazon Ceiling:** Must be < 90% of New Price. (Always Enforced)
-2.  **XAI Reasonableness:** **SKIPPED** for fallbacks to prevent false rejections due to lack of context.
+**REMOVAL REASONING:**
+The user subsequently observed that this fallback logic—while safely preventing astronomical profits via `min()`—still essentially relied on *listing prices* rather than *true inferred sale prices*. This tactic, originally designed to increase the volume of deals found, compromised the core promise of only providing "true deals."
 
-**Principle:** Fallbacks are permitted if they represent a stable historical average and respect the Amazon Ceiling, even if AI validation is skipped.
+**Current Principle:** Fallbacks to listing averages are **strictly prohibited**. We now ONLY rely on inferred sale prices (derived from offer drops correlating with rank drops) to calculate profits. Sparse inferred sales (1-2 events) are still permitted as they represent true historical sales, but Keepa stats averages are not.
 
 ------
 
@@ -92,8 +90,8 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (Safe Fallback / Silver Standard):** If Inferred Sales < **3** (insufficient data), uses the **Minimum** available 90-day/365-day average from standard Used sub-conditions (2, 19-22). Collectible conditions (23-26) are strictly excluded to prevent artificially high listing prices.
-    -   **Rescue (Sparse):** If stats fallbacks fail, uses the **Median** of any available inferred sales (1-2 events).
+    -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
+    -   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales.)*
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
@@ -101,8 +99,7 @@ This determines the recommended listing price.
 4.  **AI Reasonableness Check:**
     -   **Primary Check:** For standard inferred prices, the calculated price is sent to **xAI (Grok)** along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**.
     -   **Prompt Context:** The prompt explicitly instructs the AI that for seasonal items (especially Textbooks), a Peak Season price can validly be **200-400% higher** than the 3-Year Average to prevent false positive rejections.
-    -   **Fallback Exception (Feb 2026):** If the price source is **"Keepa Stats Fallback"** (Silver Standard) or **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is conditionally **SKIPPED** to prevent false rejections.
-        -   *Rationale:* The Silver Standard is a historical average (`avg365`), which is inherently stable but lacks the seasonal context needed for the AI to make a valid judgment.
+    -   **Fallback Exception (Feb 2026):** If the price source is **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is conditionally **SKIPPED** to prevent false rejections.
         -   **Suspiciously High Markup Check (Mar 2026):** If the calculated price (from *any* source, not just fallbacks) is **> 300% (3x)** of the current Used price, the deal is flagged as "Suspiciously High". The AI Reasonableness Check is **FORCED** (not skipped) to prevent accepting inflated prices caused by sparse data or market manipulation.
         -   **Hard Ceiling Safety (Mar 2026):** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.

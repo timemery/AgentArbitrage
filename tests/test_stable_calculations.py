@@ -10,10 +10,10 @@ sys.path.append(os.getcwd())
 from keepa_deals.stable_calculations import analyze_sales_performance
 
 class TestStableCalculations(unittest.TestCase):
-    def test_zombie_fallback_works(self):
+    def test_fallback_removed_rejects_deal(self):
         """
-        Test that analyze_sales_performance correctly uses the Silver Standard Fallback (avg365)
-        when inferred sales are missing, provided Keepa stats are available.
+        Test that analyze_sales_performance correctly rejects deals when inferred sales are missing,
+        even if Keepa stats are available, because the Keepa Stats Fallback logic was removed.
         """
         # Mock product data with valid stats but no sales
         product = {
@@ -37,10 +37,11 @@ class TestStableCalculations(unittest.TestCase):
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness', return_value=True):
             result = analyze_sales_performance(product, sale_events)
 
-        # Assert that the price is the fallback price (Min of avg90/avg365 = 35000)
-        self.assertEqual(result.get('peak_price_mode_cents'), 35000,
-                         "Should return fallback price ($350) when stats are present using min.")
-        self.assertEqual(result.get('price_source'), 'Keepa Stats Fallback')
+        # Assert that the deal is rejected due to strict inferred-only policy
+        self.assertEqual(result.get('peak_price_mode_cents'), -1,
+                         "Should reject the deal (return -1) when no inferred sales are present, as fallback was removed.")
+        self.assertEqual(result.get('price_source'), 'None',
+                         "Price source should be None.")
         self.assertEqual(result.get('peak_season'), '-')
 
     def test_normal_calculation(self):
