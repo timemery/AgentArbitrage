@@ -423,48 +423,36 @@ def analyze_sales_performance(product, sale_events):
 
     # --- Check Data Sufficiency ---
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
-        logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for performance analysis. Attempting fallback to Keepa Stats.")
+        logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for robust performance analysis.")
 
-        stats = product.get('stats', {})
-        candidates = []
+        # --- KEEPA STATS FALLBACK REMOVED (MARCH 2026) ---
+        # PREVIOUS LOGIC: The system used to fall back to calculating the minimum of Keepa's
+        # 90-day and 365-day average prices for standard Used conditions (the "Silver Standard")
+        # when it found fewer than 3 inferred sales.
+        #
+        # REASON FOR REMOVAL: The user observed that this fallback logic—while safely preventing
+        # astronomical profits via min()—still essentially relied on *listing prices* rather than
+        # *true inferred sale prices*. This tactic, originally designed to increase the volume of
+        # deals found, compromised the core promise of only providing "true deals."
+        #
+        # NEW POLICY: We now STRICTLY rely on inferred sale prices (derived from offer drops
+        # correlating with rank drops) to calculate profits. We only provide true deals that
+        # can be relied on by subscribers.
+        #
+        # Note: If there are 1 or 2 inferred sales, we still utilize them via "Sparse Sales Rescue",
+        # because those ARE true inferred sales, just limited in quantity.
+        # See Documentation/INFERRED_PRICE_LOGIC.md for historical details.
+        # -------------------------------------------------
 
-        # Used (Index 2)
-        avg90 = stats.get('avg90', [])
-        if len(avg90) > 2 and avg90[2] is not None and avg90[2] > 0: candidates.append(avg90[2])
-
-        avg365 = stats.get('avg365', [])
-        if len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0: candidates.append(avg365[2])
-
-        # Used - Like New (Index 19)
-        if len(avg90) > 19 and avg90[19] is not None and avg90[19] > 0: candidates.append(avg90[19])
-        if len(avg365) > 19 and avg365[19] is not None and avg365[19] > 0: candidates.append(avg365[19])
-
-        # Used - Very Good (Index 20)
-        if len(avg90) > 20 and avg90[20] is not None and avg90[20] > 0: candidates.append(avg90[20])
-        if len(avg365) > 20 and avg365[20] is not None and avg365[20] > 0: candidates.append(avg365[20])
-
-        # Used - Good (Index 21) - often cleaner data
-        if len(avg90) > 21 and avg90[21] is not None and avg90[21] > 0: candidates.append(avg90[21])
-        if len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0: candidates.append(avg365[21])
-
-        # Used - Acceptable (Index 22)
-        if len(avg90) > 22 and avg90[22] is not None and avg90[22] > 0: candidates.append(avg90[22])
-        if len(avg365) > 22 and avg365[22] is not None and avg365[22] > 0: candidates.append(avg365[22])
-
-        if candidates:
-            peak_price_mode_cents = min(candidates)
-            price_source = 'Keepa Stats Fallback'
-            logger.info(f"ASIN {asin}: Fallback succeeded using Keepa Stats (Min Used Avg): ${peak_price_mode_cents/100:.2f}")
-            # Do NOT return here. Continue to Reasonableness Check.
-        elif sale_events:
-            # Sparse Sales Rescue (1-2 sales): If Keepa stats failed but we have valid inferred sales, use them.
+        if sale_events:
+            # Sparse Sales Rescue (1-2 sales): We have valid inferred sales, so we use them.
             prices = [s['inferred_sale_price_cents'] for s in sale_events]
             peak_price_mode_cents = float(np.median(prices))  # Use Median for safety on small sample
             price_source = 'Inferred Sales (Sparse)'
-            logger.info(f"ASIN {asin}: Keepa Stats Fallback failed, but found {len(sale_events)} sparse sales. Rescued using Median: ${peak_price_mode_cents/100:.2f}")
+            logger.info(f"ASIN {asin}: Found {len(sale_events)} sparse inferred sales. Rescued using Median: ${peak_price_mode_cents/100:.2f}")
         else:
-            logger.warning(f"ASIN {asin}: Fallback failed. No valid Used price history in stats AND no sparse sales found.")
-            # If fallback fails entirely, we return early as -1 price, triggering exclusion.
+            logger.warning(f"ASIN {asin}: No inferred sales found. Deal rejected to maintain strict inferred-only policy.")
+            # If no sales exist, we return early as -1 price, triggering exclusion.
             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-', 'price_source': 'None'}
 
     else:

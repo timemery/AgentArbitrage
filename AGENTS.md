@@ -94,10 +94,11 @@ To prevent regressions and ensure that "hard-won" code remains stable, I will ad
 
 This section contains valuable context and learnings from previous development tasks. Consult these notes before working on related parts of the codebase.
 
-### Fallback Data Warning (CRITICAL - Jan 2026)
-**Do NOT use unverified fallback data to fill missing fields.**
-Previous attempts to "solve" data gaps by using fallback values (e.g., using `monthlySold` velocity to justify using a stale `avg90` Used price) resulted in massive rejection rates and dwindling deal counts.
--   **Principle:** If the primary data source (e.g., confirmed inferred sales) is missing, it is better to return `None` (and reject the deal) than to guess. Incorrect guesses lead to "Zombie Listings" passing initial checks but failing downstream validation (AI checks), wasting resources and obscuring real issues.
+### Fallback Data Warning (CRITICAL - Jan & Mar 2026)
+**Do NOT use unverified fallback data to fill missing fields or estimate prices.**
+Previous attempts to "solve" data gaps by using fallback values (e.g., using Keepa Stats listing averages like `avg90` or `avg365` when inferred sales were sparse) resulted in artificially elevated list prices and "fake profits."
+-   **Principle:** If the primary data source (confirmed true inferred sales via drops vs. offers) is missing, it is **required** to reject the deal (e.g., return `None` or `-1`). Incorrect guesses based on listing prices lead to wildly inaccurate margins and damage subscriber trust.
+-   **March 2026 Addendum:** The "Keepa Stats Fallback" (Silver Standard) logic was explicitly and entirely removed from `stable_calculations.py` for this reason. **Do not reintroduce fallback logic that relies on listing prices to artificially inflate deal volume.** If there are 0 inferred sales, the deal MUST be rejected.
 
 ### Role-Based Access Control (RBAC)
 -   **User Roles:** The system distinguishes between `admin` and `user` roles.
@@ -155,8 +156,8 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 - **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not attempt to "guess" shipping costs for MFN sellers.
 - **Seller Name Preservation:** To save tokens, the system performs "Lightweight Updates" that lack seller names. It uses the `Seller ID` to preserve the existing human-readable name. If you modify `processing.py`, ensure this logic remains intact to avoid overwriting names with raw IDs.
 - **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing critical data (`List at`) are now **persisted** (not rejected) to prevent infinite re-fetch loops. They are filtered from the Dashboard.
-- **Keepa Stats Fallback (Safe Fallback):** Fallback prices are used when inferred sales < 3. To prevent astronomical profit estimates, the system uses the **Minimum** (not Maximum) 90/365-day average of standard Used conditions (2, 19-22). Collectible conditions (23-26) are strictly excluded. These **SKIP** the XAI Reasonableness Check to prevent false negatives.
-- **Sparse Sales Rescue:** If fallback stats are missing, the system uses the **Median** of inferred sales (1-2 events) as a "Sparse Rescue" price, also skipping XAI checks.
+- **Keepa Stats Fallback (REMOVED MAR 2026):** We previously used listing averages when inferred sales were < 3. This was removed because it produced artificially elevated prices compared to actual sales. The system now strictly requires inferred true sales to list a price.
+- **Sparse Sales Rescue:** The system uses the **Median** of inferred sales (1-2 events) as a "Sparse Rescue" price, because these still represent true inferred sales. These skip XAI checks to prevent false negatives from missing context.
 - **Deficit Protection:** Enforced `MAX_DEFICIT = -180` to prevent API lockouts.
 
 ## Definition of Done: The Logic Check
