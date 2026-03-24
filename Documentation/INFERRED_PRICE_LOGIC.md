@@ -26,9 +26,10 @@ The system previously contained an *unsafe* fallback logic:
 > *If no sales are inferred, but `monthlySold > 20`, use the `Used - 90 days avg` price.*
 This caused massive deal rejection rates because it often grabbed stale, high-priced Used listings for books that only sold as New. This logic has been **REMOVED**.
 
-**The New "Silver Standard" (Feb 2026)**
-To address data sparsity without sacrificing safety, we introduced a **Validated Fallback**:
-> *If Inferred Sales < 3, use `stats.avg365` (Used + Collectible).*
+**The "Safe Fallback" Compromise (Mar 2026)**
+To address data sparsity without sacrificing safety, we introduced a **Validated Fallback** (the "Silver Standard"). However, using the maximum available average price (including Collectibles) proved too optimistic, resulting in astronomical profit estimates.
+
+> *If Inferred Sales < 3, use the **Minimum** of `stats.avg90` and `stats.avg365` for **Standard Used** conditions only (Acceptable, Good, Very Good).*
 **Crucially**, this fallback price is NOT trusted blindly, but it is validated differently than inferred sales:
 1.  **Amazon Ceiling:** Must be < 90% of New Price. (Always Enforced)
 2.  **XAI Reasonableness:** **SKIPPED** for fallbacks to prevent false rejections due to lack of context.
@@ -91,7 +92,7 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Fallback 2 (Silver Standard):** If Inferred Sales < **3** (insufficient data), uses **`stats.avg365`** (Maximum value from ALL Used sub-conditions: 2, 19-22, and Collectible sub-conditions: 23-26).
+    -   **Fallback 2 (Safe Fallback / Silver Standard):** If Inferred Sales < **3** (insufficient data), uses the **Minimum** available 90-day/365-day average from standard Used sub-conditions (2, 19-22). Collectible conditions (23-26) are strictly excluded to prevent artificially high listing prices.
     -   **Rescue (Sparse):** If stats fallbacks fail, uses the **Median** of any available inferred sales (1-2 events).
 3.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
