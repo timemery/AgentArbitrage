@@ -2754,6 +2754,7 @@ body.home-background::before {
     .col-last-price-change,
     .col-profit,
     .col-margin,
+    .col-roi,
     .col-gated {
         display: table-cell !important;
         padding: 0 2px !important; /* Minimal padding */
