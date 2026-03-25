@@ -1607,6 +1607,10 @@ def api_deals():
                 sort_clause = 'ur.is_restricted'
             else:
                 sort_clause = 'deals."id"'
+        elif sort_by == 'ROI':
+            # Dynamically calculate and sort by ROI: (Profit / All_in_Cost)
+            # Use CAST and NULLIF to prevent division by zero errors in SQLite
+            sort_clause = '(CAST(deals."Profit" AS REAL) / NULLIF(CAST(deals."All_in_Cost" AS REAL), 0))'
         elif sort_by in available_columns:
             sort_clause = f'deals."{sort_by}"'
         else:

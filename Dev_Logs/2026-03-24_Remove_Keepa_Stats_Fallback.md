@@ -23,3 +23,18 @@ Although the original hypothesis (that fallbacks caused the elevated prices) was
 4. A permanent diagnostic script `Diagnostics/check_fallback_asins.py` was committed to allow easy auditing of live Keepa API ASIN behavior.
 
 The task was entirely successful. The system now guarantees that every listed profit margin is backed by at least one true inferred sale event.
+
+---
+
+## Addendum: Dynamic ROI Column & 1200px Table Constraints
+After verifying the high-margin deals were legitimate, the user requested adding **ROI** to the dashboard alongside Margin.
+
+1. **Zero-Downtime Deployment:** To avoid a database migration, `ROI` was added as a dynamically calculated column. 
+    - *Frontend Display:* `deal.ROI = (deal.Profit / deal.All_in_Cost) * 100` was added to `dashboard.html`.
+    - *Backend Sorting:* Because ROI is not a database column, sorting by clicking the ROI header failed. This was fixed in `wsgi_handler.py` by adding a dynamic SQL clause `(CAST(Profit AS REAL) / NULLIF(CAST(All_in_Cost AS REAL), 0))` to the `ORDER BY` statement.
+2. **Horizontal Space Constraints:** The dashboard table (`#deals-table`) has a strict `1200px` max-width limit. Adding the 15th column caused horizontal overflow and broken layouts.
+    - *Solution:* To regain the necessary ~18-30 pixels, we opted for a high-impact structural UI tweak rather than reducing structural cell padding (which risked clipping headers). We explicitly dropped the decimal places (`minimumFractionDigits: 0`) from the largest numerical fields: `Profit` and `All_in_Cost` in `dashboard.html`. For example, `$1,456.45` became `$1,456`, instantly saving the exact amount of space needed.
+    - Actual buy/sell prices (`Price_Now`, `1yr_Avg`) retained their 2-decimal precision.
+    - The `Detailed_Seasonality` text column was strictly clamped to `max-width: 105px`.
+
+This dual-layer dynamic approach allowed us to safely add and sort a new metric while perfectly balancing the UI constraints of the existing system.

@@ -962,7 +962,10 @@ button:disabled {
 }
 
 #deals-table th, #deals-table td {
-    padding: 0 8px !important; /* User Req: 8px padding */
+    /* User specified 9px 8px but meant horizontal/vertical.
+       0 top/bottom prevents header clipping on 25px max-height cells.
+       8px horizontal maintains readability while dropping decimals saves the overall table width. */
+    padding: 0 8px !important;
     text-align: left;
     white-space: nowrap; /* Prevent wrapping on all columns */
     border: none; /* No default borders */
@@ -1122,6 +1125,15 @@ button:disabled {
     padding: 0 4px !important;
 }
 
+/* Optimize Season Column Width */
+#deals-table th.col-detailed-seasonality,
+#deals-table td.col-detailed-seasonality {
+    max-width: 105px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Row Styles */
 .deal-row {
     height: 47px; /* Adjusted target height */
@@ -1162,7 +1174,7 @@ button:disabled {
     height: 25px !important; /* Adjusted to 25px */
     min-height: 25px !important;
     max-height: 25px !important;
-    padding: 0 8px !important; /* User Req: 8px */
+    padding: 0 8px !important;
     line-height: 25px !important; /* Adjusted */
     border: none !important; /* Ascending/Descending Row Border - NONE */
     /* Sticky Positioning */
@@ -2754,6 +2766,7 @@ body.home-background::before {
     .col-last-price-change,
     .col-profit,
     .col-margin,
+    .col-roi,
     .col-gated {
         display: table-cell !important;
         padding: 0 2px !important; /* Minimal padding */
