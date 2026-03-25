@@ -146,6 +146,10 @@ A critical regression occurred when the system interpreted Keepa timestamps usin
 - **Icons:** Navigation icons are SVGs with their `viewBox` reset to the content bounding box (removing internal padding) and are strictly sized to **20px** height in CSS (`static/global.css`).
 - **Header:** The main header container (`.main-header`) has a strictly fixed height of **134px**. Altering this risks breaking the "sticky" filter panel alignment.
 - **Sticky Headers:** The dashboard data table relies on a precise stack of `top` offsets (177px, 233px, 264px, 289px) that are hardcoded based on the heights of the Main Header and Filter Panel. The `.filter-panel` MUST have `margin-bottom: 0px` to prevent layout breaks.
+- **Table Width Constraints:** The dashboard table (`#deals-table`) has a strict `1200px` max-width limit. To accommodate 15+ columns without horizontal overflow, numerical data must be heavily formatted.
+  - Large financial values (Profit, All_in_Cost) must drop their decimals (e.g., `minimumFractionDigits: 0`).
+  - Text-heavy columns like `Detailed_Seasonality` must use a strict `max-width` (e.g., `105px`) with `text-overflow: ellipsis`.
+  - Cell padding must be strictly managed (e.g., `padding: 0 8px`) to maximize data real estate without clipping vertical headers. Do not pad the top/bottom of sortable headers.
 
 ### Keepa Query Standards
 - **Date Range:** `dateRange: 4` (All Combined) is permissible and recommended to capture the maximum 3-year history for AI analysis.
