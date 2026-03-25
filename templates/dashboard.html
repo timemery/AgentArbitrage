@@ -764,7 +764,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             value = formatSalesRank(numValue);
                         } else if (col === 'Margin' || col === 'ROI') {
                             value = `${Math.round(numValue)}%`;
-                        } else if (col.includes('Price') || col.includes('Profit') || col.includes('Cost') || col === '1yr_Avg') {
+                        } else if (col === 'Profit' || col === 'All_in_Cost') {
+                            // Drop decimals only on these high-value fields to save horizontal space
+                            value = `$${Math.round(numValue).toLocaleString('en-US')}`;
+                        } else if (col.includes('Price') || col.includes('Cost') || col === '1yr_Avg') {
+                            // Keep 2 decimal places for actual buy/sell prices
                             value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         }
                     } else if (col === 'Binding') {
