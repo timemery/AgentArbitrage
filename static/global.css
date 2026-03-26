@@ -1128,7 +1128,7 @@ button:disabled {
 /* Optimize Season Column Width */
 #deals-table th.col-detailed-seasonality,
 #deals-table td.col-detailed-seasonality {
-    max-width: 105px;
+    max-width: 90px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1266,8 +1266,8 @@ button:disabled {
 }
 
 .season-detail-cell {
-    width: 100px; /* User Req: Increase default to 100px */
-    max-width: 100px;
+    width: 90px; /* User Req: Reduce to 90px */
+    max-width: 90px;
     min-width: 40px; /* Allow shrinking */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1292,11 +1292,11 @@ button:disabled {
 }
 
 /* Hover effect for truncated cells */
-.title-cell:hover,
-.seller-cell:hover,
-.genre-cell:hover,
-.season-detail-cell:hover {
-    overflow: visible; /* Allow the inner span to overflow the cell bounds */
+#deals-table td.title-cell:hover,
+#deals-table td.seller-cell:hover,
+#deals-table td.genre-cell:hover,
+#deals-table td.season-detail-cell:hover {
+    overflow: visible !important; /* Allow the inner span to overflow the cell bounds */
 }
 
 /* Style the inner span on hover */
@@ -1309,6 +1309,7 @@ button:disabled {
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,0.4);
     padding: 2px 5px; /* Add some padding for better appearance */
+    white-space: nowrap; /* Ensure full text doesn't wrap in the popout */
 }
 
 /* New Dashboard Layout Styles */
