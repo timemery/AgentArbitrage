@@ -181,7 +181,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         -   `-1`: API Error (Broken Icon).
     -   **Approval URL Fallback**: If restricted but no specific link is returned, defaults to `https://sellercentral.amazon.com/hz/approvalrequest?asin={ASIN}`.
 
--   **`Advice` (Overlay Feature)**:
+-   **`My Mentor` (Overlay Feature)**:
     -   **Source**: `keepa_deals/ava_advisor.py`.
     -   **Logic**: Real-time call to `grok-4-fast-reasoning` generating specific, actionable advice (50-80 words).
     -   **Context**: Uses deal metrics + `strategies.json`.
