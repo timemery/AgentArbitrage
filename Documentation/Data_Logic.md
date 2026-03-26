@@ -51,8 +51,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
-        *   **Fallback (Silver Standard):** If Inferred Sales < 3 (insufficient data), the system falls back to using **`stats.avg365`** from **ALL** Used sub-conditions: Used (2), Like New (19), Very Good (20), Good (21), and Acceptable (22), as well as **Collectible** sub-conditions: Like New (23), Very Good (24), Good (25), and Acceptable (26).
-        *   **Rescue (Sparse):** If stats fallbacks fail, uses the **Median** of any available inferred sales (1-2 events).
+        *   **Rescue (Sparse Sales):** If Inferred Sales < 3 (but > 0), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
+        *   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales. Deals with 0 inferred sales are rejected.)*
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
@@ -181,7 +181,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
         -   `-1`: API Error (Broken Icon).
     -   **Approval URL Fallback**: If restricted but no specific link is returned, defaults to `https://sellercentral.amazon.com/hz/approvalrequest?asin={ASIN}`.
 
--   **`Advice` (Overlay Feature)**:
+-   **`My Mentor` (Overlay Feature)**:
     -   **Source**: `keepa_deals/ava_advisor.py`.
     -   **Logic**: Real-time call to `grok-4-fast-reasoning` generating specific, actionable advice (50-80 words).
     -   **Context**: Uses deal metrics + `strategies.json`.
@@ -201,6 +201,11 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Margin`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
     -   **Formula**: `(Profit / List at) * 100`.
+
+-   **`ROI` (Return on Investment)**:
+    -   **Source**: Dynamically calculated on frontend (`dashboard.html`) and backend query (`wsgi_handler.py`).
+    -   **Formula**: `(Profit / All-in Cost) * 100`.
+    -   **Explanation**: Represents the cash-on-cash leverage. It is not stored in the database schema.
 
 -   **`Min. Listing Price`**:
     -   **Source**: `keepa_deals/business_calculations.py`.

@@ -33,9 +33,9 @@ The "Gated" column indicates the user's restriction status on Amazon:
 *   **Red X:** Restricted. (Clicking opens "Apply to Sell").
 *   **Broken Icon (⚠):** API Error (e.g., Timeout, 403 Forbidden). Hovering shows "API Error".
 
-### Advice from Ava (AI Overlay)
+### My Mentor (AI Overlay)
 When expanding a deal's details:
-*   An "Advice from Ava" section appears prominently at the top of the overlay.
+*   A "My Mentor" section appears prominently at the top of the overlay.
 *   **Choose Your Mentor:** Users can switch between 4 AI personas to get different perspectives:
     *   **CFO:** Risk-averse, profit-focused.
     *   **Flipper:** Speed/Volume focused.
@@ -48,7 +48,7 @@ When expanding a deal's details:
 ### Mentor Chat Integration
 A persistent, client-side chat interface accessible via the "Mentor" navigation item.
 *   **Visual:** Fixed overlay (505x540px) at the bottom-right of the screen.
-*   **Shared State:** The active persona (e.g., "Olyvia") is synchronized between this Chat Window and the Deal Details "Advice" overlay using `localStorage`. Changing one updates the other instantly.
+*   **Shared State:** The active persona (e.g., "Olyvia") is synchronized between this Chat Window and the Deal Details "My Mentor" overlay using `localStorage`. Changing one updates the other instantly.
 *   **Behavior:** Features a "Click to Submit" model (Enter key disabled) to prevent accidental sends.
 *   **Rendering:** Mentor responses are rendered as trusted HTML (supporting bold/line breaks), while user input is strictly treated as text to prevent XSS.
 
