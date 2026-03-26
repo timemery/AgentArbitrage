@@ -29,9 +29,10 @@ The dashboard uses a responsive grid layout. Columns are defined in `templates/d
 | **Ago** | `last_price_change` | Trend Arrow + Time Ago (e.g., "⇩ 2h ago"). <br> **Trend:** ⇧ (Red/Up), ⇩ (Green/Down), ⇨ (Orange/Flat). | Auto | Yes |
 | **Seller** | `Seller_Quality_Score` | **Scale 0-10:** Derived from Wilson Score (e.g., "9 / 10"). "Unrated" or Name if text. | Auto | Yes |
 | **Estimate** | `Deal_Trust` | Percentage + "%". | Auto | Yes |
-| **All in** | `All_in_Cost` | Currency ($XX.XX). | Auto | Yes |
-| **Profit** | `Profit` | Currency ($XX.XX). | Auto | Yes |
+| **All in** | `All_in_Cost` | Currency ($XX). Decimals dropped for width. | Auto | Yes |
+| **Profit** | `Profit` | Currency ($XX). Decimals dropped for width. | Auto | Yes |
 | **Margin** | `Margin` | Percentage + "%". | Auto | Yes |
+| **ROI** | `ROI` | Percentage + "%" (Dynamically calculated). | Auto | Yes |
 | **Action** | `Gated` (Logic) | **Buttons (56x32px):** <br> **Buy** (Green): If Not Restricted. <br> **Apply** (Orange): If Restricted (Links to Approval). <br> **View** (Grey): Fallback/Unknown. <br> **Icons:** ⏳ (Spinner), ⚠ (Error). | 60px | Yes |
 
 ---
@@ -188,6 +189,10 @@ The action bar adapts based on the user's restriction status:
     -   **Warning Icon:** SVG asset (`AMZ_Warn.svg`).
     -   **Icons:** SVGs must have `viewBox` cropped to the bounding box (0 internal padding) and be sized to `20px` height.
     -   **Truncated Text:** Elements with `.truncated` class (e.g., Title, Binding) do **not** use the `cursor: help` property to avoid user confusion (as they are not clickable help elements).
+-   **Table Width Constraints:**
+    -   The dashboard table (`#deals-table`) has a strict `1200px` max-width limit.
+    -   To accommodate the 15th column (`ROI`), large financial values (`Profit`, `All_in_Cost`) must explicitly drop their decimal places (e.g., `minimumFractionDigits: 0`).
+    -   Text-heavy columns like `Detailed_Seasonality` must use a strict `max-width` (e.g., `105px`) with `text-overflow: ellipsis`.
 -   **Header:**
     -   `<h1>` tags are explicitly removed from the main layout to maximize vertical screen real estate. Context is provided by the active navigation tab.
     -   **Header Height:** The main header container (`.main-header`) has a strictly fixed height of `134px`.
