@@ -123,13 +123,20 @@ def recalculate_deals():
                         ref_fee = 15.0
 
                     shipping_included = str(deal_data.get('Shipping_Included', 'no')).lower() == 'yes'
-                    all_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, ref_fee, business_settings, shipping_included)
-                    profit_margin = calculate_profit_and_margin(list_at_price, all_cost)
+                    all_cost = calculate_all_in_cost(now_price, business_settings, shipping_included)
+
+                    # Calculate Amazon fees separately
+                    referral_fee_amount = 0.0
+                    if isinstance(list_at_price, (int, float)) and list_at_price > 0:
+                        referral_fee_amount = list_at_price * (ref_fee / 100.0)
+                    total_amz_fees = referral_fee_amount + fba_fee
+
+                    profit_margin = calculate_profit_and_margin(list_at_price, all_cost, total_amz_fees)
 
                     row_updates.update({
                         'All_in_Cost': all_cost,
                         'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
-                        'Min_Listing_Price': calculate_min_listing_price(all_cost, business_settings)
+                        'Min_Listing_Price': calculate_min_listing_price(all_cost, fba_fee, ref_fee, business_settings)
                     })
             except (ValueError, TypeError, KeyError) as e:
                  logger.error(f"Recalc (Biz Calcs): Error for ASIN {deal_data['ASIN']}. Error: {e}", exc_info=True)

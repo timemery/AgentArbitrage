@@ -43,6 +43,7 @@ class TestSmartIngestorBatching(unittest.TestCase):
 
         mock_tm = mock_token_manager_cls.return_value
         mock_tm.REFILL_RATE_PER_MINUTE = 20
+        type(mock_tm).REFILL_RATE_PER_MINUTE = unittest.mock.PropertyMock(return_value=20)
         # Ensure should_skip_sync is False for standard test
         mock_tm.should_skip_sync.return_value = False
 
@@ -94,6 +95,7 @@ class TestSmartIngestorBatching(unittest.TestCase):
     def test_recharge_exception_handling(self, mock_token_manager_cls, mock_redis):
         # Mock TokenManager to raise exception immediately
         mock_tm = mock_token_manager_cls.return_value
+        type(mock_tm).REFILL_RATE_PER_MINUTE = unittest.mock.PropertyMock(return_value=20)
         mock_tm.request_permission_for_call.side_effect = TokenRechargeError("Test Recharge")
         # Ensure should_skip_sync is False so we proceed to request_permission
         mock_tm.should_skip_sync.return_value = False
@@ -116,6 +118,7 @@ class TestSmartIngestorBatching(unittest.TestCase):
     def test_skip_sync_logic(self, mock_token_manager_cls, mock_redis):
         # Mock TokenManager to indicate we should skip sync
         mock_tm = mock_token_manager_cls.return_value
+        type(mock_tm).REFILL_RATE_PER_MINUTE = unittest.mock.PropertyMock(return_value=20)
         mock_tm.should_skip_sync.return_value = True
         # Also ensure request_permission eventually raises the error (since we are recharging)
         mock_tm.request_permission_for_call.side_effect = TokenRechargeError("Recharge needed")

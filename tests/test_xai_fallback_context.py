@@ -30,9 +30,9 @@ class TestXAIFallbackContext(unittest.TestCase):
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness', return_value=True) as mock_xai:
             result = analyze_sales_performance(product, sale_events)
 
-            # Check Result
-            self.assertEqual(result.get('peak_price_mode_cents'), 4000) # Max of avg90 ($40) and avg365 ($35)
-            self.assertEqual(result.get('price_source'), 'Keepa Stats Fallback')
+            # Since fallback was disabled, this deal should be rejected with -1
+            self.assertEqual(result.get('peak_price_mode_cents'), -1)
+            self.assertEqual(result.get('price_source'), 'None')
 
             # Check Context Passed to XAI - SHOULD BE NONE
             mock_xai.assert_not_called()
