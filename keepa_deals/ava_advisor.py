@@ -16,6 +16,8 @@ XAI_API_URL = "https://api.x.ai/v1/chat/completions"
 STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'strategies.json')
 INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'intelligence.json')
 
+from .platform_knowledge import get_platform_knowledge
+
 MENTOR_PERSONAS = {
     'olyvia': {
         'name': 'Olyvia',
@@ -257,6 +259,71 @@ def format_currency(value):
     except (ValueError, TypeError):
         return str(value)
 
+def generate_tooltip_advice(term, xai_api_key=None):
+    """
+    Generates a succinct tooltip for a UI term using platform knowledge.
+    """
+    try:
+        platform_knowledge = get_platform_knowledge()
+
+        prompt = f"""
+        You are an expert assistant for the Agent Arbitrage platform.
+        Your task is to provide a very brief, contextual tooltip explanation for the following UI term/feature: "{term}".
+
+        **Platform Knowledge Base:**
+        {platform_knowledge}
+
+        **Rules for Tooltips (CRITICAL):**
+        *   **Be Succinct:** 2-5 words is ideal.
+        *   **Character Limit:** 20-30 characters preferred. Absolute maximum is 150 characters.
+        *   **No "Walls of Text":** Maximum 3 lines.
+        *   **Focus:** Explain a single action or define a term.
+        *   **Format:** Sentence case.
+        *   **Style:** Use "Verb + Noun" when applicable.
+        *   **Non-Redundant:** Do not just repeat the visible label.
+        *   Do NOT explain underlying code mechanics. Only explain how to use the tool or what the data means based on the documentation.
+
+        **Provide the tooltip text ONLY:**
+        """
+
+        payload = {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a UX copywriter for Agent Arbitrage."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "model": "grok-4-fast-reasoning",
+            "stream": False,
+            "temperature": 0.2,
+            "max_tokens": 100
+        }
+
+        result = query_xai_api(payload, api_key=xai_api_key)
+
+        if "error" in result:
+            logger.error(f"Error generating tooltip for {term}: {result['error']}")
+            return "Help currently unavailable."
+
+        try:
+            advice = result['choices'][0]['message']['content'].strip()
+            # Strip quotes if the LLM added them
+            if advice.startswith('"') and advice.endswith('"'):
+                advice = advice[1:-1]
+            return advice
+        except (KeyError, IndexError):
+            logger.error(f"Unexpected response format from xAI for tooltip: {term}")
+            return "Help currently unavailable."
+    except Exception as e:
+        logger.error(f"Exception in generate_tooltip_advice: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return "Help currently unavailable."
+
 def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
     """
     Generates advice for a specific deal using xAI.
@@ -286,9 +353,20 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
         {strategies_text}
         """
 
+        # Load Platform Knowledge
+        platform_knowledge = get_platform_knowledge()
+        platform_section = ""
+        if platform_knowledge:
+            platform_section = f"""
+        **Platform Knowledge Base (Use to answer questions about the platform itself, do not explain underlying code mechanics):**
+        {platform_knowledge}
+        """
+
         # Construct a detailed prompt
         prompt = f"""
         You are {mentor['name']}, {mentor['role']}. Your goal is to give advice to a user who is considering buying this book to resell.
+
+        {platform_section}
 
         **Book Details:**
         *   **Title:** {title}
