@@ -161,9 +161,16 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
                      shipping_included_flag = (offer_csv[1] == 0)
                      break
 
-        all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_percent, business_settings, shipping_included_flag)
-        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost)
-        min_listing = calculate_min_listing_price(all_in_cost, business_settings)
+        all_in_cost = calculate_all_in_cost(now_price, business_settings, shipping_included_flag)
+
+        # Calculate Amazon Fees manually since it was removed from All-in Cost
+        referral_fee_amount = 0.0
+        if isinstance(list_at_price, (int, float)) and list_at_price > 0:
+            referral_fee_amount = list_at_price * (referral_percent / 100.0)
+        total_amz_fees = referral_fee_amount + fba_fee
+
+        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost, total_amz_fees)
+        min_listing = calculate_min_listing_price(all_in_cost, fba_fee, referral_percent, business_settings)
 
         row_data.update({
             'All-in Cost': all_in_cost,
@@ -471,9 +478,16 @@ def _process_lightweight_update(existing_row, product_data):
                      shipping_included_flag = (offer_csv[1] == 0)
                      break
 
-        all_in_cost = calculate_all_in_cost(now_price, list_at_price, fba_fee, referral_percent, business_settings, shipping_included_flag)
-        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost)
-        min_listing = calculate_min_listing_price(all_in_cost, business_settings)
+        all_in_cost = calculate_all_in_cost(now_price, business_settings, shipping_included_flag)
+
+        # Calculate Amazon Fees manually
+        referral_fee_amount = 0.0
+        if isinstance(list_at_price, (int, float)) and list_at_price > 0:
+            referral_fee_amount = list_at_price * (referral_percent / 100.0)
+        total_amz_fees = referral_fee_amount + fba_fee
+
+        profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost, total_amz_fees)
+        min_listing = calculate_min_listing_price(all_in_cost, fba_fee, referral_percent, business_settings)
 
         row_data.update({
             'All-in Cost': all_in_cost,
