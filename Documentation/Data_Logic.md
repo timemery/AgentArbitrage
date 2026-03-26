@@ -190,12 +190,13 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`All-in Cost`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
-    -   **Formula**: `Price Now + Tax + Prep Fee + FBA Fee + Referral Fee + Shipping`.
-    -   **Referral Fee**: Calculated based on the **List at** price (not Price Now).
+    -   **Formula**: `Price Now + Tax + Prep Fee + Shipping`.
+    -   **Explanation**: This represents the initial, out-of-pocket acquisition cost required to purchase the book and send it to Amazon. It intentionally **excludes** Amazon selling fees (FBA and Referral fees). Amazon fees are deducted from the gross revenue at the time of sale, rather than being an upfront cash expense. Including them here would artificially inflate the baseline cost, thereby miscalculating (crushing) the Return on Investment (ROI).
 
 -   **`Profit`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
-    -   **Formula**: `List at - All-in Cost`.
+    -   **Formula**: `List at - All-in Cost - Total AMZ fees`.
+    -   **Explanation**: This calculates the true net profit. While Amazon fees are excluded from the initial `All-in Cost` investment, they are correctly subtracted from the gross revenue (`List at`) alongside the out-of-pocket costs to accurately predict your final take-home profit. (`Total AMZ fees` = FBA Fee + Referral Fee. Note: Referral Fee is calculated based on the final **List at** price, not the buy cost).
 
 -   **`Margin`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
@@ -203,7 +204,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`Min. Listing Price`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
-    -   **Formula**: `All-in Cost / (1 - Default Markup %)`.
+    -   **Formula**: `(All-in Cost + FBA Fee) / (1 - Default Markup % - Referral Fee %)`.
 
 ### AI Knowledge Extraction (Guided Learning)
 

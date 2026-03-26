@@ -72,7 +72,7 @@ class TestAuthPhase1(unittest.TestCase):
 
         response = self.client.get('/settings')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Connect Your Amazon Account", response.data)
+        self.assertIn(b"Amazon SP-API Integration", response.data)
 
 if __name__ == '__main__':
     unittest.main()
