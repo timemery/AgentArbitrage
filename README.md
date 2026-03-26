@@ -75,7 +75,7 @@ KEEPA_API_KEY="your_keepa_api_key"
 4.  **Update Dependencies:**
     `source venv/bin/activate`
     `pip install -r requirements.txt`
-5.  **Optional: Clear Old Deals Data:** To clear old deals data without affecting inventory/credentials, run:
+5.  **Optional: Clear Old Deals Data:** To non-interactively clear old deals data (`deals` and `user_restrictions` tables) without affecting inventory or credentials, run:
     ```bash
     ./clear_deals.sh
     ```
