@@ -13,6 +13,7 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
     - **Unified Experience:** All users (including Admins) are redirected here upon login.
     - **My Mentor**: AI-powered analysis overlay with "Choose Your Mentor" personas (CFO, Flipper, Professor, Quant).
     - **Mentor Chat**: Persistent, persona-driven AI assistant available via the navigation bar. Synchronizes with My Mentor to provide consistent advice across the platform.
+    - **Self-Aware Tooltips:** Hover over any column header or filter label to instantly view AI-generated context (cached via `tooltip_cache.json`) explaining the platform's logic based on its own documentation.
 - **Settings**: Configure business costs, fees, and API credentials. (User Access)
 - **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI. (Admin Only)
 - **Intelligence & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
@@ -102,4 +103,4 @@ KEEPA_API_KEY="your_keepa_api_key"
 - **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
-*Last Updated: March 24, 2026 (v3.4 True Inferred Sales, Fallback Removed)*
+*Last Updated: March 27, 2026 (v3.5 Self-Aware Mentor & Hover Tooltips)*

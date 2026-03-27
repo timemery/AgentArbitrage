@@ -30,21 +30,21 @@
                          <h4 class="filter-group-header">Financials</h4>
                          <div class="filter-group-row">
                             <div class="filter-item">
-                                <label for="profit_slider">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
+                                <label for="profit_slider" class="ai-tooltip-trigger" data-term="Min. Profit Filter">Min. Profit: <span id="profit-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="100" value="0" class="custom-slider" id="profit_slider">
                                     <input type="hidden" id="profit" name="profit_gte" value="0">
                                 </div>
                             </div>
                             <div class="filter-item">
-                                <label for="roi_slider">Min. ROI: <span id="roi-value" class="slider-value-readout">Any</span></label>
+                                <label for="roi_slider" class="ai-tooltip-trigger" data-term="Min. ROI Filter">Min. ROI: <span id="roi-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="20" value="0" class="custom-slider" id="roi_slider">
                                     <input type="hidden" id="roi" name="roi_gte" value="0">
                                 </div>
                             </div>
                              <div class="filter-item">
-                                <label for="percent_down_slider">Min. Below Avg: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
+                                <label for="percent_down_slider" class="ai-tooltip-trigger" data-term="Min. Below Avg Filter">Min. Below Avg: <span id="percent-down-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="100" value="0" class="custom-slider" id="percent_down_slider">
                                     <input type="hidden" id="percent_down" name="percent_down_gte" value="0">
@@ -58,14 +58,14 @@
                          <h4 class="filter-group-header">Velocity & Demand</h4>
                          <div class="filter-group-row">
                             <div class="filter-item">
-                                <label for="drops_slider">Min. Drops (30d): <span id="drops-value" class="slider-value-readout">Any</span></label>
+                                <label for="drops_slider" class="ai-tooltip-trigger" data-term="Min. Drops Filter">Min. Drops (30d): <span id="drops-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="20" value="0" class="custom-slider" id="drops_slider">
                                     <input type="hidden" id="drops_30" name="drops_30_gte" value="0">
                                 </div>
                             </div>
                             <div class="filter-item">
-                                <label for="max_sales_rank_slider">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
+                                <label for="max_sales_rank_slider" class="ai-tooltip-trigger" data-term="Max. Sales Rank Filter">Max. Sales Rank: <span id="sales-rank-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="20" value="20" class="custom-slider" id="max_sales_rank_slider">
                                     <input type="hidden" id="max_sales_rank" name="sales_rank_current_lte" value="99999999">
@@ -79,14 +79,14 @@
                          <h4 class="filter-group-header">Trust & Safety</h4>
                          <div class="filter-group-row">
                             <div class="filter-item">
-                                <label for="deal_trust_slider">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
+                                <label for="deal_trust_slider" class="ai-tooltip-trigger" data-term="Min. Deal Trust Filter">Min. Deal Trust: <span id="deal-trust-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="100" value="0" class="custom-slider" id="deal_trust_slider">
                                     <input type="hidden" id="deal_trust" name="deal_trust_gte" value="0">
                                 </div>
                             </div>
                             <div class="filter-item">
-                                <label for="seller_trust_slider">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
+                                <label for="seller_trust_slider" class="ai-tooltip-trigger" data-term="Min. Seller Trust Filter">Min. Seller Trust: <span id="seller-trust-value" class="slider-value-readout">Any</span></label>
                                 <div class="slider-container-new">
                                     <input type="range" min="0" max="10" value="0" class="custom-slider" id="seller_trust_slider">
                                     <input type="hidden" id="seller_trust" name="seller_trust_gte" value="0">
@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let headerText = headerTitleMap[header] || header.replace(/_/g, ' ');
             let groupClass = groupEndColumns.includes(header) ? 'group-end' : '';
             let colClass = 'col-' + header.toLowerCase().replace(/_/g, '-');
-            table += `<th data-sort="${header}" class="${groupClass} ${colClass}">${headerText}</th>`;
+            table += `<th data-sort="${header}" class="${groupClass} ${colClass} ai-tooltip-trigger" data-term="${headerText}">${headerText}</th>`;
         });
         table += '</tr>';
 
@@ -902,6 +902,92 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add event listeners for navigation and sorting
         addEventListeners();
+        addTooltipListeners();
+    }
+
+    const tooltipCache = {};
+    let tooltipTimeout = null;
+
+    function addTooltipListeners() {
+        document.querySelectorAll('.ai-tooltip-trigger').forEach(trigger => {
+            trigger.addEventListener('mouseenter', async (e) => {
+                const term = e.target.dataset.term;
+
+                // Position and show initial loading state
+                tooltip.textContent = 'Loading...';
+                tooltip.style.display = 'block';
+                positionTooltip(e, tooltip);
+
+                if (tooltipCache[term]) {
+                    tooltip.textContent = tooltipCache[term];
+                    positionTooltip(e, tooltip); // Reposition just in case size changed
+                } else {
+                    try {
+                        const response = await fetch(`/api/tooltip/${encodeURIComponent(term)}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.tooltip) {
+                                tooltipCache[term] = data.tooltip;
+                                // Only update if still hovering this specific trigger
+                                if (tooltip.style.display === 'block') {
+                                    tooltip.textContent = data.tooltip;
+                                    positionTooltip(e, tooltip);
+                                }
+                            }
+                        } else {
+                             tooltip.textContent = 'Help unavailable';
+                             positionTooltip(e, tooltip);
+                        }
+                    } catch (err) {
+                        tooltip.textContent = 'Help unavailable';
+                        positionTooltip(e, tooltip);
+                    }
+                }
+            });
+
+            trigger.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+
+        });
+    }
+
+    function positionTooltip(e, tooltipEl) {
+        const target = e.target;
+        const rect = target.getBoundingClientRect();
+
+        // Calculate center of target element
+        const targetCenterX = rect.left + (rect.width / 2);
+
+        // Calculate tooltip dimensions
+        // Make it visible to get dimensions, but keep opacity 0
+        tooltipEl.style.display = 'block';
+        tooltipEl.style.opacity = '0';
+        const tooltipRect = tooltipEl.getBoundingClientRect();
+
+        // Position above by default
+        let top = rect.top + window.scrollY - tooltipRect.height - 10; // 10px offset for arrow
+        let left = targetCenterX + window.scrollX - (tooltipRect.width / 2);
+
+        // Add arrow class
+        tooltipEl.className = 'custom-tooltip arrow-bottom';
+
+        // If it goes off the top of the screen, show it below instead
+        if (top < window.scrollY) {
+            top = rect.bottom + window.scrollY + 10;
+            tooltipEl.className = 'custom-tooltip arrow-top';
+        }
+
+        // Keep within horizontal bounds
+        if (left < 10) {
+            left = 10;
+        } else if (left + tooltipRect.width > window.innerWidth - 10) {
+            left = window.innerWidth - tooltipRect.width - 10;
+        }
+
+        tooltipEl.style.left = left + 'px';
+        tooltipEl.style.top = top + 'px';
+        tooltipEl.style.opacity = '1';
     }
 
     function toggleFilterPanel(open) {
