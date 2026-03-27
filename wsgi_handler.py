@@ -29,7 +29,7 @@ from keepa_deals.db_utils import (
     create_system_state_table_if_not_exists
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
-from keepa_deals.ava_advisor import generate_ava_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
+from keepa_deals.ava_advisor import generate_ava_advice, generate_tooltip_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
 from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload, export_missing_costs_csv
 from keepa_deals.sp_api_tasks import fetch_amazon_orders_task
@@ -2055,6 +2055,22 @@ def deal_count():
     except sqlite3.Error as e:
         app.logger.error(f"Database error in deal_count: {e}")
         return jsonify({'error': 'Database error', 'message': str(e)}), 500
+
+@app.route('/api/tooltip/<string:term>')
+def get_tooltip_advice(term):
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    # Try to decode if encoded, but flask routing handles basic URL encoding
+    import urllib.parse
+    decoded_term = urllib.parse.unquote(term)
+
+    try:
+        advice = generate_tooltip_advice(decoded_term)
+        return jsonify({'tooltip': advice})
+    except Exception as e:
+        app.logger.error(f"Error in tooltip endpoint for term {term}: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/ava-advice/<string:asin>')
 def get_ava_advice(asin):
