@@ -259,10 +259,32 @@ def format_currency(value):
     except (ValueError, TypeError):
         return str(value)
 
+TOOLTIP_CACHE_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'tooltip_cache.json')
+
+def load_tooltip_cache():
+    if os.path.exists(TOOLTIP_CACHE_FILE):
+        try:
+            with open(TOOLTIP_CACHE_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def save_tooltip_cache(cache):
+    try:
+        with open(TOOLTIP_CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(cache, f, indent=4)
+    except Exception as e:
+        logger.error(f"Failed to save tooltip cache: {e}")
+
 def generate_tooltip_advice(term, xai_api_key=None):
     """
     Generates a succinct tooltip for a UI term using platform knowledge.
     """
+    cache = load_tooltip_cache()
+    if term in cache:
+        return cache[term]
+
     try:
         platform_knowledge = get_platform_knowledge()
 
@@ -281,6 +303,7 @@ def generate_tooltip_advice(term, xai_api_key=None):
         *   **Format:** Sentence case.
         *   **Style:** Use "Verb + Noun" when applicable.
         *   **Non-Redundant:** Do not just repeat the visible label.
+        *   **Specific Instructions**: For arrows in columns like "Age", explicitly mention their meaning based on documentation (e.g. Up = Price increased, Down = Price decreased).
         *   Do NOT explain underlying code mechanics. Only explain how to use the tool or what the data means based on the documentation.
 
         **Provide the tooltip text ONLY:**
@@ -314,6 +337,9 @@ def generate_tooltip_advice(term, xai_api_key=None):
             # Strip quotes if the LLM added them
             if advice.startswith('"') and advice.endswith('"'):
                 advice = advice[1:-1]
+
+            cache[term] = advice
+            save_tooltip_cache(cache)
             return advice
         except (KeyError, IndexError):
             logger.error(f"Unexpected response format from xAI for tooltip: {term}")
