@@ -78,6 +78,11 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 
 ## 4. AI Components (xAI Integration)
 
+### Platform Knowledge (Self-Awareness)
+*   **Module:** `keepa_deals/platform_knowledge.py`
+*   **Purpose:** Reads and caches specific Markdown documentation files from the `Documentation/` directory.
+*   **Integration:** This text is injected into AI system prompts, allowing models to answer questions based on the platform's actual logic and specifications, effectively making the AI "self-aware."
+
 ### Guided Learning
 *   **Input:** Admin user submits URL/Text to `/learn`.
 *   **Processing:**
@@ -97,6 +102,11 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
     *   **Personas:** Supports 4 distinct personas (Olyvia/CFO, Joel/Flipper, Evelyn/Professor, Errol/Quant) defined in `ava_advisor.py`.
     *   **Context:** Injects the full "Strategies" and "Intelligence" knowledge base into the system prompt.
     *   **Model:** Uses `grok-4-fast-reasoning` (Temperature 0.5) for detailed, contextual responses.
+
+### AI-Triggered Hover Tooltips
+*   **Route:** `/api/tooltip/<term>`
+*   **Purpose:** Provides instant context for UI elements (headers, filters) on the Deals Dashboard.
+*   **Mechanism:** Queries the AI using the `platform_knowledge` context to define UI terms. To ensure zero latency and save tokens, responses are stored permanently in `tooltip_cache.json`.
 
 ---
 
