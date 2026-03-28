@@ -1652,6 +1652,8 @@ def api_deals():
 
             if 'Condition' in deal and deal['Condition'] in condition_string_map:
                 deal['Condition'] = condition_string_map[deal['Condition']]
+            if 'Condition' in deal and deal['Condition'] in condition_string_map:
+                deal['Condition'] = condition_string_map[deal['Condition']]
 
     except Exception as e:
         app.logger.error(f"API Deals Error: {e}", exc_info=True)
