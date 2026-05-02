@@ -50,3 +50,18 @@ This document outlines the hypothetical task for implementing the new "Best Deal
 ### 5. Backend Integration (Optional based on Architecture)
 **File to modify (if necessary):** `keepa_deals/wsgi_handler.py` or similar backend route handler.
 - If pagination/filtering is handled server-side, modify the query builder for `/api/tracking/active_inventory` or `/api/deals` to respect the requested limit and sort by "best" criteria (e.g., highest profit or ROI) when the "Best Deals Now" feature is passed in the query parameters.
+
+### 6. Defining a "Best Deal" and On-Demand Data Gathering
+**Files to modify:** `keepa_deals/wsgi_handler.py`, `keepa_deals/xai_advisor.py` (or new module)
+- **Definition of "Best Deal":** A deal is not simply the one with the highest raw profit or ROI, as those metrics can sometimes represent noisy data or extreme outliers. Instead, the agent should define "Best Deals" by evaluating the current database inventory against the refined, curated knowledge base.
+- **Leveraging Guided Learning Intelligence:**
+  - The system contains stored intelligence and mental models within `intelligence.json`, `strategies.json`, and `agent_brain.json` (populated by the Guided Learning features).
+  - The backend logic processing the "Best Deals Now" request should read and interpret these strategy files to establish the heuristic criteria for a "Best Deal" (e.g., specific velocity patterns, historical stability, acceptable risk profiles, and optimal price tiers based on the learned personas).
+- **On-Demand Data Gathering:**
+  - When the user activates the filter and clicks "Apply", the frontend will send an API request (e.g., to `/api/deals/best_deals` or via a special flag in the main deals endpoint) passing the requested limit `N`.
+  - The backend will fetch a pool of top candidates from the `deals.db` database (e.g., fetching the top `N * 5` deals sorted by a baseline metric like `Deal Trust` or a composite score).
+- **xAI Reasonableness Check:**
+  - After gathering the candidate pool, the backend must feed these candidates through an xAI (or equivalent LLM) reasonableness check.
+  - The AI should be prompted with the candidate deals' context (ASIN, current price, inferred historical data, drops) alongside the criteria established from the Guided Learning strategies.
+  - The AI will score, filter, and rank the candidates to verify that they are *truly* the best, safe, and most logical deals available, eliminating any mathematically sound but logically flawed outliers.
+  - The final top `N` verified deals are then returned to the frontend to populate the dashboard table.
