@@ -52,24 +52,22 @@ This document outlines the hypothetical task for implementing the new "Best Deal
 - If pagination/filtering is handled server-side, modify the query builder for `/api/tracking/active_inventory` or `/api/deals` to respect the requested limit and sort by "best" criteria (e.g., highest profit or ROI) when the "Best Deals Now" feature is passed in the query parameters.
 
 ### 6. Defining a "Best Deal" and On-Demand Data Gathering
-**Files to modify:** `keepa_deals/wsgi_handler.py` (or new module)
+**Files to modify:** `keepa_deals/wsgi_handler.py`, `templates/dashboard.html` (or equivalent backend/frontend logic files)
 
-- **Definition of "Best Deal":** A "Best Deal" is not simply the item with the highest raw profit or ROI, as those metrics alone can represent noisy data, one-off anomalies, or extreme outliers. Based on the system's learned intelligence (found in `intelligence.json` and `strategies.json`), a "Best Deal" is defined heuristically as an arbitrage opportunity that exhibits specific, stable historical patterns:
-  1.  **Seasonal Arbitrage Potential:** Books/items that show clear "wave patterns" in historical data—prices and competition are low in off-seasons (e.g., summer) and reliably spike during high-demand periods (e.g., Q4/holidays).
-  2.  **Supply-Demand Dynamics:** A strong indicator of a "Best Deal" is a historical pattern where the *offer count drops significantly* (e.g., from 30+ down to near zero) during peak seasons, which naturally drives the price up.
-  3.  **Sales Velocity (Rank):** A corresponding drop in Sales Rank (indicating increased popularity) exactly when the offer count depletes.
-  4.  **Negligible Storage Risk:** Items that meet these criteria are considered "Best Deals" even if they won't sell immediately, because the strategy explicitly values them as long-term assets where Amazon FBA storage fees (e.g., 3-4 cents over several months) are negligible compared to the eventual high-margin payoff.
+- **Definition of "Best Deal" (The Hybrid Approach):** A "Best Deal" is defined heuristically as an arbitrage opportunity that exhibits specific, stable historical patterns based on the system's learned intelligence (`intelligence.json`, `strategies.json`). To maintain user trust, we use a "Hybrid / Soft Floor" approach. We define an absolute minimum baseline (a floor) that a deal must meet to be considered "Best." We never show deals below this floor, even if it means returning fewer deals than the user requested.
+  - **The Soft Floor Criteria:**
+    1.  **Verified Activity:** Must have at least a minimum threshold of inferred sales (e.g., > 1 real drop).
+    2.  **Valid Profitability:** Must have a positive ROI and reasonable profit margins, explicitly filtering out astronomical "fake profits" (e.g., capping List Price at $1500).
+    3.  **Pattern Recognition:** Ideally exhibits seasonal "wave patterns" and offer count depletion during high-demand periods.
+    4.  **Trust Score:** Must have a high `Deal Trust` score.
 
 - **On-Demand Data Gathering (Heuristic Filtering):**
-  - When the user activates the filter and clicks "Apply", the frontend will send an API request passing the requested limit `N`.
-  - Instead of a slow, expensive real-time xAI check for every deal, the backend should use a robust **SQL/Heuristic query** to filter and sort the `deals.db` database.
-  - The query should rank deals by prioritizing:
-    - High `Deal Trust` score (indicating data reliability).
-    - Consistent historical inferred sales drops (`Drops > X`).
-    - Favorable offer count trends (if tracked in the DB).
-    - Expected ROI and Profit that fit within reasonable, non-astronomical bounds (e.g., filtering out `$1000+` fake profits).
-  - This heuristic approach efficiently surfaces the top `N` deals that mathematically match the learned strategies without the latency or cost of an on-the-fly LLM evaluation.
+  - When the user activates the filter and clicks "Apply", the frontend sends an API request passing the requested limit `N`.
+  - The backend uses a robust **SQL/Heuristic query** to filter the `deals.db` database.
+  - The query strictly filters out any deals that fall below the "Soft Floor".
+  - It then sorts the remaining qualified deals by relative strength (e.g., highest `Deal Trust` combined with strongest historical drops) and limits the result to `N`.
+  - This avoids slow, expensive real-time xAI checks per deal, relying instead on pre-calculated intelligence and strict database constraints.
 
-- **Note on xAI Reasonableness Checks:**
-  - The xAI check is **not recommended** for on-demand filtering when the user clicks "Apply" due to API latency, token costs, and rate limits.
-  - Instead, the intelligence gathered from the strategies should be hardcoded into the backend's SQL query parameters and Python sorting logic. The pre-calculated `Deal Trust` and existing backend reasonableness caps (e.g., max $1,500 list price) already serve as the primary defense against hallucinations.
+- **Handling the Edge Case (Fewer Deals than Requested):**
+  - If the user requests 20 deals, but the database only has 12 that meet the "Soft Floor" criteria, the system MUST return only 12.
+  - **UI Requirement:** The frontend must gracefully handle this scenario to build user trust. If the returned array length is less than `N`, the UI should display a message above or near the table, such as: *"We found [12] slam-dunk deals right now. We refuse to show you bad deals just to hit [20]."*
