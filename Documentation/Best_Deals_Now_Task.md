@@ -1,4 +1,4 @@
-# Task Description: Implement "Best Deals Now" Filter
+# Task Description: Implement "Agent's Choice" Filter
 
 ## Overview
 This document outlines the hypothetical task for implementing the new "Best Deals Now" filter in the Agent Arbitrage dashboard, replacing the "Optimal Filters" feature. **No code execution or testing is required for this current assessment phase.** This guide serves as a blueprint for a future Agent.
@@ -26,48 +26,42 @@ This document outlines the hypothetical task for implementing the new "Best Deal
 - Comment out its HTML, adding a note that it is being preserved for potential future use.
 - Comment out the associated JavaScript logic (e.g., `applyOptimalFilters()` and its event listeners) that handles its functionality, also adding a preservation note.
 
-### 3. Implement "Best Deals Now" UI
+### 3. Implement "Agent's Choice" UI
 **File to modify:** `templates/dashboard.html`
 - Create a new UI block to replace the spot where "Optimal Filters" was located.
-- **Header:** Add a header `Best Deals Now:` styled with the `filter-group-header` class. It must be visually aligned in the same row as the `Exclude Conditions:` header.
+- **Header:** Add a header `Agent's Choice:` styled with the `filter-group-header` class. It must be visually aligned in the same row as the `Exclude Conditions:` header.
 - **Layout Alignment:** The inputs below this header must align horizontally with the `New`, `U-Acceptable`, and `Collectible` checkboxes. You will likely need to wrap this in a `.filter-group-column` to match the structure.
 - **Controls Design:**
-  - Create a custom control with the text: `Show the top [ 2 ] 🔽 🔼 Best Deals Now.`
-  - Include a checkbox to toggle the feature (checked = active, unchecked = inactive).
-  - The `[ 2 ]` element acts as a display for the currently selected number of deals.
-  - The default value is `2`.
-  - The valid choices for this number are strictly: `2, 4, 6, 8, 10, 20, 30, 40, 50, 100`.
-  - Implement two buttons for the up (`🔼`) and down (`🔽`) arrows. These should be styled exactly like the ascending/descending arrows used in the table column headers.
+  - Create a simple checkbox control with the label: `Top Tier Only`
+  - The checkbox toggles the feature (checked = active, unchecked = inactive).
+  - *Note: This replaces the previous complex numerical/arrow design with a streamlined, single-click toggle.*
 
-### 4. Implement "Best Deals Now" JavaScript Logic
+### 4. Implement "Agent's Choice" JavaScript Logic
 **File to modify:** `templates/dashboard.html` (inside the `<script>` tag)
-- Create state variables for the feature's active status and its currently selected value from the allowed list `[2, 4, 6, 8, 10, 20, 30, 40, 50, 100]`.
-- Add event listeners to the up/down arrows to cycle through this specific array of values.
-- Ensure that clicking the arrows prevents default behavior, does not submit the form unnecessarily if not applied, and strictly bounds the value between `2` and `100` according to the allowed choices.
-- Add an event listener to the "Best Deals Now" checkbox to toggle the feature's active state.
-- Update the main filtering/fetching logic (e.g., `fetchDeals()`) to include the "Best Deals Now" parameters in its payload when active, so the backend can apply the `LIMIT X` or handle sorting appropriately (or do it client-side if the current architecture applies filters after fetching all).
+- Create a state variable for the feature's active status.
+- Add an event listener to the `Top Tier Only` checkbox to toggle the feature's active state.
+- Update the main filtering/fetching logic (e.g., `fetchDeals()`) to include an `agents_choice=true` parameter in its payload when active, so the backend can apply the elastic filtering and heuristic sorting logic.
 
 ### 5. Backend Integration (Optional based on Architecture)
 **File to modify (if necessary):** `keepa_deals/wsgi_handler.py` or similar backend route handler.
 - If pagination/filtering is handled server-side, modify the query builder for `/api/tracking/active_inventory` or `/api/deals` to respect the requested limit and sort by "best" criteria (e.g., highest profit or ROI) when the "Best Deals Now" feature is passed in the query parameters.
 
-### 6. Defining a "Best Deal" and On-Demand Data Gathering
-**Files to modify:** `keepa_deals/wsgi_handler.py`, `templates/dashboard.html` (or equivalent backend/frontend logic files)
+### 6. Defining "Agent's Choice" and Heuristic Filtering
+**Files to modify:** `keepa_deals/wsgi_handler.py` (or new module)
 
-- **Definition of "Best Deal" (The Hybrid Approach):** A "Best Deal" is defined heuristically as an arbitrage opportunity that exhibits specific, stable historical patterns based on the system's learned intelligence (`intelligence.json`, `strategies.json`). To maintain user trust, we use a "Hybrid / Soft Floor" approach. We define an absolute minimum baseline (a floor) that a deal must meet to be considered "Best." We never show deals below this floor, even if it means returning fewer deals than the user requested.
-  - **The Soft Floor Criteria:**
-    1.  **Verified Activity:** Must have at least a minimum threshold of inferred sales (e.g., > 1 real drop).
-    2.  **Valid Profitability:** Must have a positive ROI and reasonable profit margins, explicitly filtering out astronomical "fake profits" (e.g., capping List Price at $1500).
-    3.  **Pattern Recognition:** Ideally exhibits seasonal "wave patterns" and offer count depletion during high-demand periods.
-    4.  **Trust Score:** Must have a high `Deal Trust` score.
+- **Definition of "Best Deal":** A "Best Deal" is not simply the item with the highest raw profit or ROI. Based on the system's learned intelligence (`intelligence.json`, `strategies.json`), a "Best Deal" is defined heuristically as an arbitrage opportunity that exhibits specific, stable historical patterns (seasonal wave patterns, significant offer count drops, and high Deal Trust).
 
-- **On-Demand Data Gathering (Heuristic Filtering):**
-  - When the user activates the filter and clicks "Apply", the frontend sends an API request passing the requested limit `N`.
-  - The backend uses a robust **SQL/Heuristic query** to filter the `deals.db` database.
-  - The query strictly filters out any deals that fall below the "Soft Floor".
-  - It then sorts the remaining qualified deals by relative strength (e.g., highest `Deal Trust` combined with strongest historical drops) and limits the result to `N`.
-  - This avoids slow, expensive real-time xAI checks per deal, relying instead on pre-calculated intelligence and strict database constraints.
+- **On-Demand Data Gathering (The Elastic Floor):**
+  - Due to API token limitations, the active database may only contain ~300 deals at any given time. A strict, hardcoded numerical floor would frequently result in 0 deals being shown, causing a poor user experience.
+  - Instead, implement an **Elastic Floor**. When the `Top Tier Only` filter is active:
+    1.  **Baseline Validation:** The SQL query first filters out any toxic deals (e.g., negative profit, astronomical List Prices > $1500, zero inferred sales).
+    2.  **Relative Skimming:** From the remaining valid pool, the system selects the Top X% (e.g., top 5% or 10%). This dynamic slicing ensures the system almost always returns a small, highly curated selection of the *best available* deals, whether that means returning 3 deals or 15 deals, without forcing a specific quota.
 
-- **Handling the Edge Case (Fewer Deals than Requested):**
-  - If the user requests 20 deals, but the database only has 12 that meet the "Soft Floor" criteria, the system MUST return only 12.
-  - **UI Requirement:** The frontend must gracefully handle this scenario to build user trust. If the returned array length is less than `N`, the UI should display a message above or near the table, such as: *"We found [12] slam-dunk deals right now. We refuse to show you bad deals just to hit [20]."*
+- **Freshness and Time Decay Sorting:**
+  - In arbitrage, the age of a deal is critical; a great deal found 48 hours ago is likely gone, whereas a good deal found 10 minutes ago is highly actionable.
+  - **Time Decay Penalty:** The SQL or Python sorting logic must incorporate a time decay factor based on `last_seen_utc`.
+  - A deal's composite score (based on Profit, ROI, and Drops) should be multiplied by a decay coefficient that reduces as the deal ages (e.g., 10 minutes old = 1.0x, 24 hours old = 0.7x).
+  - This guarantees that the freshest high-quality opportunities naturally bubble to the top of the `Top Tier Only` view.
+
+- **Note on xAI Reasonableness Checks:**
+  - Real-time xAI checks are **not recommended** for on-demand filtering due to API latency and token costs. The heuristic SQL approach (using pre-calculated Deal Trust, the Elastic Floor, and Time Decay) is the required method for surfacing these deals efficiently.
