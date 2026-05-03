@@ -32,14 +32,14 @@ This document outlines the hypothetical task for implementing the new "Best Deal
 - **Header:** Add a header `Agent's Choice:` styled with the `filter-group-header` class. It must be visually aligned in the same row as the `Exclude Conditions:` header.
 - **Layout Alignment:** The inputs below this header must align horizontally with the `New`, `U-Acceptable`, and `Collectible` checkboxes. You will likely need to wrap this in a `.filter-group-column` to match the structure.
 - **Controls Design:**
-  - Create a simple checkbox control with the label: `Top Tier Only`
+  - Create a simple checkbox control with the label: `Prime Picks Only`
   - The checkbox toggles the feature (checked = active, unchecked = inactive).
   - *Note: This replaces the previous complex numerical/arrow design with a streamlined, single-click toggle.*
 
 ### 4. Implement "Agent's Choice" JavaScript Logic
 **File to modify:** `templates/dashboard.html` (inside the `<script>` tag)
 - Create a state variable for the feature's active status.
-- Add an event listener to the `Top Tier Only` checkbox to toggle the feature's active state.
+- Add an event listener to the `Prime Picks Only` checkbox to toggle the feature's active state.
 - Update the main filtering/fetching logic (e.g., `fetchDeals()`) to include an `agents_choice=true` parameter in its payload when active, so the backend can apply the elastic filtering and heuristic sorting logic.
 
 ### 5. Backend Integration (Optional based on Architecture)
@@ -53,7 +53,7 @@ This document outlines the hypothetical task for implementing the new "Best Deal
 
 - **On-Demand Data Gathering (The Elastic Floor):**
   - Due to API token limitations, the active database may only contain ~300 deals at any given time. A strict, hardcoded numerical floor would frequently result in 0 deals being shown, causing a poor user experience.
-  - Instead, implement an **Elastic Floor**. When the `Top Tier Only` filter is active:
+  - Instead, implement an **Elastic Floor**. When the `Prime Picks Only` filter is active:
     1.  **Baseline Validation:** The SQL query first filters out any toxic deals (e.g., negative profit, astronomical List Prices > $1500, zero inferred sales).
     2.  **Relative Skimming:** From the remaining valid pool, the system selects the Top X% (e.g., top 5% or 10%). This dynamic slicing ensures the system almost always returns a small, highly curated selection of the *best available* deals, whether that means returning 3 deals or 15 deals, without forcing a specific quota.
 
@@ -61,7 +61,7 @@ This document outlines the hypothetical task for implementing the new "Best Deal
   - In arbitrage, the age of a deal is critical; a great deal found 48 hours ago is likely gone, whereas a good deal found 10 minutes ago is highly actionable.
   - **Time Decay Penalty:** The SQL or Python sorting logic must incorporate a time decay factor based on `last_seen_utc`.
   - A deal's composite score (based on Profit, ROI, and Drops) should be multiplied by a decay coefficient that reduces as the deal ages (e.g., 10 minutes old = 1.0x, 24 hours old = 0.7x).
-  - This guarantees that the freshest high-quality opportunities naturally bubble to the top of the `Top Tier Only` view.
+  - This guarantees that the freshest high-quality opportunities naturally bubble to the top of the `Prime Picks Only` view.
 
 - **Note on xAI Reasonableness Checks:**
   - Real-time xAI checks are **not recommended** for on-demand filtering due to API latency and token costs. The heuristic SQL approach (using pre-calculated Deal Trust, the Elastic Floor, and Time Decay) is the required method for surfacing these deals efficiently.
