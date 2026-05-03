@@ -46,22 +46,31 @@ This document outlines the hypothetical task for implementing the new "Best Deal
 **File to modify (if necessary):** `keepa_deals/wsgi_handler.py` or similar backend route handler.
 - If pagination/filtering is handled server-side, modify the query builder for `/api/tracking/active_inventory` or `/api/deals` to respect the requested limit and sort by "best" criteria (e.g., highest profit or ROI) when the "Best Deals Now" feature is passed in the query parameters.
 
-### 6. Defining "Agent's Choice" and Heuristic Filtering
-**Files to modify:** `keepa_deals/wsgi_handler.py` (or new module)
+### 6. Defining "Agent's Choice" (The Two-Pass System)
+**Files to modify:** `keepa_deals/wsgi_handler.py`, `keepa_deals/xai_advisor.py` (or create a new service module).
 
-- **Definition of "Best Deal":** A "Best Deal" is not simply the item with the highest raw profit or ROI. Based on the system's learned intelligence (`intelligence.json`, `strategies.json`), a "Best Deal" is defined heuristically as an arbitrage opportunity that exhibits specific, stable historical patterns (seasonal wave patterns, significant offer count drops, and high Deal Trust).
+To prevent the filter from being a "dumb" mathematical sort (e.g., just returning anything with `profit > 0`), the future agent MUST implement a **Two-Pass Pipeline** that marries high-speed SQL filtering with the nuanced intelligence found in our Guided Learning repositories (`intelligence.json`, `strategies.json`).
 
-- **On-Demand Data Gathering (The Elastic Floor):**
-  - Due to API token limitations, the active database may only contain ~300 deals at any given time. A strict, hardcoded numerical floor would frequently result in 0 deals being shown, causing a poor user experience.
-  - Instead, implement an **Elastic Floor**. When the `Prime Picks Only` filter is active:
-    1.  **Baseline Validation:** The SQL query first filters out any toxic deals (e.g., negative profit, astronomical List Prices > $1500, zero inferred sales).
-    2.  **Relative Skimming:** From the remaining valid pool, the system selects the Top X% (e.g., top 5% or 10%). This dynamic slicing ensures the system almost always returns a small, highly curated selection of the *best available* deals, whether that means returning 3 deals or 15 deals, without forcing a specific quota.
+#### Pass 1: The Fast SQL Net (The Soft Floor)
+The backend must first execute a rigid, mathematical SQL query against `deals.db` to quickly eliminate noise and surface only fundamentally sound candidates. This prevents wasting LLM tokens on bad deals.
+- **Strict Profitability & Trust Floor:**
+  - `Profit >= 15.00`
+  - `ROI >= 30%`
+  - `Deal_Trust >= 70`
+  - `List_At <= 1500` (Reasonableness cap)
+- **Velocity & Freshness Factor:**
+  - Calculate a base mathematical score: `(Profit * ROI) * Time_Decay_Factor` (where older deals are penalized).
+  - Sort the qualifying deals by this score and **LIMIT to the top 15-20 candidates**.
 
-- **Freshness and Time Decay Sorting:**
-  - In arbitrage, the age of a deal is critical; a great deal found 48 hours ago is likely gone, whereas a good deal found 10 minutes ago is highly actionable.
-  - **Time Decay Penalty:** The SQL or Python sorting logic must incorporate a time decay factor based on `last_seen_utc`.
-  - A deal's composite score (based on Profit, ROI, and Drops) should be multiplied by a decay coefficient that reduces as the deal ages (e.g., 10 minutes old = 1.0x, 24 hours old = 0.7x).
-  - This guarantees that the freshest high-quality opportunities naturally bubble to the top of the `Prime Picks Only` view.
+#### Pass 2: The xAI Strategy Evaluation (The Mastermind)
+Once the top 15-20 mathematical candidates are isolated, the system must utilize the xAI API to perform a final, strategic evaluation.
+- **Context Injection:** Load the contents of `intelligence.json` and `strategies.json` into the system prompt.
+- **Batch Evaluation:** Pass the candidate deals (including their historical drops, current offer counts, and prices) to the LLM in a single batch.
+- **Strategic Prompting:** Instruct the AI to evaluate the candidates specifically against the injected strategies:
+  - *Look for seasonal "wave patterns" (is this a Q4 book showing signs of life?).*
+  - *Analyze the Supply/Demand dynamics (is the offer count dropping significantly, allowing us to dictate price?).*
+  - *Identify long-term asset potential with negligible storage risk.*
+- **The Output:** The LLM must return a heavily scrutinized subset of these candidates (the true "Prime Picks") along with a confidence score and a 1-sentence reasoning for *why* it fits the strategy.
+- **Empty State Handling:** If the LLM determines that none of the candidates truly meet the high standards of a "Prime Pick," the system must gracefully handle the empty array by displaying a UI message: *"We evaluated the database, but no deals currently meet our strict 'Prime Picks' criteria. Check back soon."*
 
-- **Note on xAI Reasonableness Checks:**
-  - Real-time xAI checks are **not recommended** for on-demand filtering due to API latency and token costs. The heuristic SQL approach (using pre-calculated Deal Trust, the Elastic Floor, and Time Decay) is the required method for surfacing these deals efficiently.
+This architecture ensures the filter is not just a mathematical sort, but a true AI-driven curation that leverages all collected platform intelligence.
