@@ -72,11 +72,12 @@ The top 20 mathematical candidates are now evaluated strategically using xAI. Th
 **2. Batch Evaluation Request:**
 - Send a single batch request to xAI containing the 20 candidates (including Rank, Current Offers, and historical drop context if available).
 - **Prompt Instructions:**
-  - Evaluate candidates against the provided strategies.
-  - Look for seasonal "wave patterns" (e.g., Q4 spikes).
-  - Analyze Supply/Demand (is the offer count dropping significantly?).
-  - Identify low-risk assets (negligible storage fees for off-season holds).
-  - Select ONLY the items that strongly align with these principles.
+  - **CRITICAL:** The AI must evaluate candidates holistically against **ALL** strategies and intelligence present in the provided JSON files.
+  - *Examples of strategies to consider (refer to JSON for full list):*
+    - Look for seasonal "wave patterns" (e.g., Q4 spikes).
+    - Analyze Supply/Demand (is the offer count dropping significantly?).
+    - Identify low-risk assets (negligible storage fees for off-season holds).
+  - Select ONLY the items that strongly align with the cumulative intelligence from the files.
 
 **3. Final Output:**
 - The LLM must return a structured JSON array of selected ASINs.
