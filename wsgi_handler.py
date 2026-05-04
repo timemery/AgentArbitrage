@@ -1520,7 +1520,7 @@ def api_deals():
     # New Filters
     if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
         # Cast to INTEGER to handle text values like '75%' correctly against numerical threshold
-        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
+        where_clauses.append("CAST(REPLACE(\"Deal_Trust\", '%', '') AS INTEGER) >= ?")
         filter_params.append(filters["deal_trust_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
@@ -1539,7 +1539,7 @@ def api_deals():
         # The Smart Floor
         where_clauses.append(f"{sanitized_profit} >= 10")
         where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= 15)")
-        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= 40")
+        where_clauses.append("CAST(REPLACE(\"Deal_Trust\", '%', '') AS INTEGER) >= 40")
         where_clauses.append("\"List_at\" <= 1500")
 
         # Enforce Data Completeness (Global Filters) - Keep them for Smart Floor
@@ -2184,7 +2184,7 @@ def deal_count():
                 filter_params.extend([keyword_like] * len(keyword_clauses))
 
             if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
-                where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
+                where_clauses.append("CAST(REPLACE(\"Deal_Trust\", '%', '') AS INTEGER) >= ?")
                 filter_params.append(filters["deal_trust_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
