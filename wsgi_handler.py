@@ -1722,11 +1722,6 @@ def api_deals():
                         with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
                             strategies_data = json.load(f)
 
-                    intelligence_data = []
-                    if os.path.exists(INTELLIGENCE_FILE):
-                        with open(INTELLIGENCE_FILE, 'r', encoding='utf-8') as f:
-                            intelligence_data = json.load(f)
-
                     # Structure the top 20 candidates for the AI prompt
                     candidates_for_ai = []
                     for d in top_20:
@@ -1745,19 +1740,16 @@ def api_deals():
                     You are the xAI Mastermind evaluating the top 20 candidate deals.
 
                     **Evaluation Strategy:**
-                    You MUST evaluate candidates holistically against ALL strategies and intelligence present in the provided JSON rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
+                    You MUST evaluate candidates holistically against ALL strategies present in the provided JSON rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
 
                     Strategies:
                     {json.dumps(strategies_data, indent=2)}
-
-                    Intelligence:
-                    {json.dumps(intelligence_data, indent=2)}
 
                     **Candidates:**
                     {json.dumps(candidates_for_ai, indent=2)}
 
                     **Instructions:**
-                    Select the items (ASINs) that represent solid arbitrage opportunities based on the intelligence. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
+                    Select the items (ASINs) that represent solid arbitrage opportunities based on the strategies. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
                     You MUST return ONLY a JSON array of strings containing the selected ASINs. No markdown formatting, no explanations.
                     Example: ["0123456789", "B01ABCD123"]
                     """
