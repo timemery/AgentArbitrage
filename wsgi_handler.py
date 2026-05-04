@@ -1647,6 +1647,8 @@ def api_deals():
             deal_rows = cursor.execute(agents_choice_query, agents_choice_params).fetchall()
             deals_list = [dict(row) for row in deal_rows]
 
+            app.logger.info(f"Agent's Choice Pass 1 (Smart Floor): Fetched {len(deals_list)} candidate deals from DB.")
+
             # Now calculate the dynamic Score
             def get_hours_since(date_str):
                 if not date_str:
@@ -1714,6 +1716,8 @@ def api_deals():
             scored_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)
             top_20 = scored_deals[:20]
 
+            app.logger.info(f"Agent's Choice Pass 1 (Scoring): Top {len(top_20)} candidates selected for AI evaluation.")
+
             # Pass 2: The xAI Mastermind
             if top_20:
                 try:
@@ -1769,6 +1773,7 @@ def api_deals():
                     selected_asins = []
                     if response_data and 'choices' in response_data and response_data['choices']:
                         content = response_data['choices'][0].get('message', {}).get('content', '').strip()
+                        app.logger.info(f"Agent's Choice Pass 2 (xAI): Raw AI Response:\n{content}")
                         # Strip markdown if present
                         content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content.strip(), flags=re.MULTILINE).strip()
                         try:
@@ -1782,6 +1787,7 @@ def api_deals():
 
                     # Filter top 20 down to selected ASINs
                     deals_list = [d for d in top_20 if str(d.get("ASIN")) in selected_asins]
+                    app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
                 except Exception as e:
                     app.logger.error(f"Error in xAI Mastermind pass: {e}", exc_info=True)
                     deals_list = top_20 # Fallback to top 20 if AI fails
