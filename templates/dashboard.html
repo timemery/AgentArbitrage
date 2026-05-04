@@ -1281,6 +1281,13 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Include current filters in the poll request
             const filters = getFilters();
+
+            // Skip background polling if Agent's Choice is active, as it requires AI processing
+            // and the Smart Floor count alone is misleading.
+            if (filters['agents_choice'] === 'true') {
+                return;
+            }
+
             let query = `?_t=${new Date().getTime()}`; // Always include timestamp
             const params = [];
             for (const key in filters) {
