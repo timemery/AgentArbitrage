@@ -1537,9 +1537,9 @@ def api_deals():
     sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
     if filters.get("agents_choice"):
         # The Smart Floor
-        where_clauses.append(f"{sanitized_profit} >= 15")
-        where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= 30)")
-        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= 70")
+        where_clauses.append(f"{sanitized_profit} >= 10")
+        where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= 15)")
+        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= 40")
         where_clauses.append("\"List_at\" <= 1500")
 
         # Enforce Data Completeness (Global Filters) - Keep them for Smart Floor
@@ -1745,7 +1745,7 @@ def api_deals():
                     You are the xAI Mastermind evaluating the top 20 candidate deals.
 
                     **Evaluation Strategy:**
-                    You MUST evaluate candidates holistically against ALL strategies and intelligence present in the provided JSON rules.
+                    You MUST evaluate candidates holistically against ALL strategies and intelligence present in the provided JSON rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
 
                     Strategies:
                     {json.dumps(strategies_data, indent=2)}
@@ -1757,7 +1757,7 @@ def api_deals():
                     {json.dumps(candidates_for_ai, indent=2)}
 
                     **Instructions:**
-                    Select ONLY the items (ASINs) that strongly align with the cumulative intelligence from the files.
+                    Select the items (ASINs) that represent solid arbitrage opportunities based on the intelligence. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
                     You MUST return ONLY a JSON array of strings containing the selected ASINs. No markdown formatting, no explanations.
                     Example: ["0123456789", "B01ABCD123"]
                     """
