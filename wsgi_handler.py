@@ -1765,7 +1765,7 @@ def api_deals():
                             {"role": "system", "content": "You are a precise JSON-only output bot."},
                             {"role": "user", "content": prompt}
                         ],
-                        "model": "grok-4-fast-reasoning",
+                        "model": "grok-beta",
                         "stream": False,
                         "temperature": 0.2
                     }
