@@ -1,42 +1,53 @@
+# Python
+__pycache__/
 venv/
+*.pyc
+
+# Environment & secrets
+.env
+*.bak.env.save
 *.pem
 *.key
 /etc/letsencrypt/
-__pycache__/
-.env
-app.log
-celery.log
-*.bak.env.save
+
+# Logs
 *.log
+celery.log
+app.log
+celery_log.tmp
+celerybeat-schedule
+
+# Databases & backups
 deals.db
 dump.rdb
-My_Notes/
+temp-*.rdb
+db_backups/
+db_backups/*.bak
+db_backups/data_quality_filters.patch
+
+# Cache & state files
+xai_cache.json
+xai_token_state.json
+strategies.json
+intelligence.json
+tooltip_cache.json
 
 # Status files
 recalc_status.json
 scan_status.json
 
-# Environment variables
-.env
-
-# Temporary test scripts
-trigger_task.py*.log
-watermark.json
-cjar
-celerybeat-schedule
-xai_token_state.json
-db_backups/data_quality_filters.patch
-task_description.md
-migrate_db.py
-
-# Large Files & Backups
-db_backups/*.bak
-*.mp4
-*.jpg
-*.png
-xai_cache.json
-AgentArbitrage_BeforeGateCheckFeature2/
-temp-*.rdb
-
-# Diagnostics Reports
+# Diagnostics & notes
 Diagnostics/health_report.json
+My_Notes/
+
+# Temporary / migration scripts
+trigger_task.py*.log
+migrate_db.py
+task_description.md
+
+# Media & assets
+*.mp4
+watermark.json
+
+# Misc
+cjar
