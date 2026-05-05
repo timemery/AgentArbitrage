@@ -1015,12 +1015,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const filterBar = document.getElementById('filter-bar');
         if (open) {
             filterDropdown.style.display = 'flex';
+            // Force a reflow so the transition applies from display:none to display:flex
+            void filterDropdown.offsetWidth;
+            filterDropdown.classList.add('show');
             filterBar.classList.add('open');
             filterIconToggle.src = "{{ url_for('static', filename='filter_Close.svg') }}";
         } else {
-            filterDropdown.style.display = 'none';
+            filterDropdown.classList.remove('show');
             filterBar.classList.remove('open');
             filterIconToggle.src = "{{ url_for('static', filename='filter_Open.svg') }}";
+
+            // Wait for transition to complete before setting display: none
+            setTimeout(() => {
+                if (!filterDropdown.classList.contains('show')) {
+                    filterDropdown.style.display = 'none';
+                }
+            }, 300); // 300ms matches the CSS transition time
         }
     }
 
@@ -1028,11 +1038,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const savedState = localStorage.getItem('filterPanelOpen');
         // Default to Open (true) if not set, otherwise parse string
         const isOpen = savedState === null ? true : (savedState === 'true');
-        toggleFilterPanel(isOpen);
+
+        // Skip animation on initial load
+        if (!isOpen) {
+            filterDropdown.style.display = 'none';
+            filterDropdown.classList.remove('show');
+        } else {
+            filterDropdown.style.display = 'flex';
+            filterDropdown.classList.add('show');
+        }
+
+        const filterBar = document.getElementById('filter-bar');
+        if (isOpen) {
+            filterBar.classList.add('open');
+            filterIconToggle.src = "{{ url_for('static', filename='filter_Close.svg') }}";
+        } else {
+            filterBar.classList.remove('open');
+            filterIconToggle.src = "{{ url_for('static', filename='filter_Open.svg') }}";
+        }
     }
 
     filterIconToggle.addEventListener('click', () => {
-         const isCurrentlyOpen = filterDropdown.style.display !== 'none';
+         const isCurrentlyOpen = filterDropdown.classList.contains('show');
          toggleFilterPanel(!isCurrentlyOpen);
     });
 
@@ -1143,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPage = 1;
         saveFilterState(); // Save on Apply
         fetchDeals(currentPage, currentSort.by, currentSort.order);
+        toggleFilterPanel(false); // Auto-close filter panel on apply
     });
 
     btnReset.addEventListener('click', (e) => {
