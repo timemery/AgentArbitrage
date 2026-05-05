@@ -1765,7 +1765,7 @@ def api_deals():
                             {"role": "system", "content": "You are a precise JSON-only output bot."},
                             {"role": "user", "content": prompt}
                         ],
-                        "model": "grok-beta",
+                        "model": "grok-4.1-fast-reasoning",
                         "stream": False,
                         "temperature": 0.2
                     }
@@ -1776,7 +1776,8 @@ def api_deals():
                     ai_failed = False
 
                     if not response_data or "error" in response_data:
-                        app.logger.error(f"xAI API returned an error: {response_data.get('error', 'Unknown Error')}")
+                        error_msg = response_data.get('error', 'Unknown Error') if response_data else 'No response'
+                        app.logger.error(f"xAI API returned an error: {error_msg}")
                         ai_failed = True
                     elif 'choices' in response_data and response_data['choices']:
                         content = response_data['choices'][0].get('message', {}).get('content', '').strip()

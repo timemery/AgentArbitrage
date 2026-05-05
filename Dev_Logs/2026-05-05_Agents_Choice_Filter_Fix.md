@@ -17,7 +17,7 @@ The "Agent's Choice" filter (Pass 2 pipeline) was consistently returning 0 deals
 
 3. **Hallucinated xAI Model:**
     - *Challenge:* The previous agent changed the AI model in the payload to `grok-4-1-fast-non-reasoning`, which was not the standard model.
-    - *Solution:* Restored the payload to use `grok-beta` as the standard, robust model per the user's instructions and system norms.
+    - *Solution:* Restored the payload to use `grok-4.1-fast-reasoning` as the standard, robust model per the user's instructions and system norms.
 
 4. **UI Panel Animation:**
     - *Challenge:* The user requested the filter panel automatically close with an animation after clicking "Apply Filters", but the existing implementation used an immediate `display: none` which cannot be CSS animated smoothly.
