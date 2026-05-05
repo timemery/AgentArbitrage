@@ -122,6 +122,8 @@
                                      <input type="checkbox" id="exclude_new" name="exclude_new" class="custom-checkbox exclude-condition-checkbox" value="New">
                                      <label for="exclude_new">New</label>
                                  </div>
+                                 <!-- These features are disabled but kept for potential reactivation by future agents/developers -->
+                                 <!--
                                  <div class="checkbox-item">
                                      <input type="checkbox" id="exclude_like_new" name="exclude_like_new" class="custom-checkbox exclude-condition-checkbox" value="U-Like New">
                                      <label for="exclude_like_new">U-Like New</label>
@@ -134,6 +136,7 @@
                                      <input type="checkbox" id="exclude_good" name="exclude_good" class="custom-checkbox exclude-condition-checkbox" value="U-Good">
                                      <label for="exclude_good">U-Good</label>
                                  </div>
+                                 -->
                                  <div class="checkbox-item">
                                      <input type="checkbox" id="exclude_acceptable" name="exclude_acceptable" class="custom-checkbox exclude-condition-checkbox" value="U-Acceptable">
                                      <label for="exclude_acceptable">U-Acceptable</label>
@@ -147,11 +150,20 @@
                      </div>
 
                      <div class="bottom-right-section">
+                         <div class="filter-group-column">
+                             <h4 class="filter-group-header">Agent's Choice:</h4>
+                             <div class="checkbox-item optimal-item">
+                                 <input type="checkbox" id="agents_choice" name="agents_choice" class="custom-checkbox">
+                                 <label for="agents_choice">Prime Picks Only</label>
+                             </div>
+                         </div>
                           <!-- Optimal Filters Checkbox -->
+                         <!--
                          <div class="checkbox-item optimal-item">
                              <input type="checkbox" id="optimal_filters" name="optimal_filters" class="custom-checkbox">
                              <label for="optimal_filters">Optimal Filters</label>
                          </div>
+                         -->
                          <div class="action-buttons">
                             <button type="button" class="filter-btn" id="btn-apply">Apply Filters</button>
                             <button type="button" class="filter-btn" id="btn-reset">Reset</button>
@@ -329,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hideGatedInput = document.getElementById('hide_gated');
     const hideAmzInput = document.getElementById('hide_amz');
     const excludeConditionCheckboxes = document.querySelectorAll('.exclude-condition-checkbox');
+    const agentsChoiceCheckbox = document.getElementById('agents_choice');
     const optimalFiltersCheckbox = document.getElementById('optimal_filters');
 
     const dealCounter = document.getElementById('deal-counter');
@@ -596,6 +609,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (hideGatedInput.checked) filters['hide_gated'] = 1;
         if (hideAmzInput.checked) filters['hide_amz'] = 1;
+
+        if (agentsChoiceCheckbox.checked) filters['agents_choice'] = 'true';
 
         // Excluded Conditions
         const excludedConditions = [];
@@ -892,7 +907,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 table += `<tr class="spacer-row"><td colspan="${columnsToShow.length}">&nbsp;</td></tr>`;
             });
         } else {
-            table += `<tr><td colspan="${columnsToShow.length}" class="no-deals-message">No deals found matching the criteria.</td></tr>`;
+            const filters = getFilters();
+            if (filters['agents_choice'] === 'true') {
+                table += `<tr><td colspan="${columnsToShow.length}" class="no-deals-message">We evaluated the database, but no deals currently meet our strict 'Prime Picks' criteria. Check back soon.</td></tr>`;
+            } else {
+                table += `<tr><td colspan="${columnsToShow.length}" class="no-deals-message">No deals found matching the criteria.</td></tr>`;
+            }
         }
 
         tableContainer.innerHTML = table + '</tbody></table>';
@@ -1033,7 +1053,8 @@ document.addEventListener('DOMContentLoaded', function() {
             percentDown: hiddenPercentDownInput.value,
             hideGated: hideGatedInput.checked,
             hideAmz: hideAmzInput.checked,
-            optimal: optimalFiltersCheckbox.checked,
+            agentsChoice: agentsChoiceCheckbox.checked,
+            optimal: optimalFiltersCheckbox ? optimalFiltersCheckbox.checked : false,
             excludedConditions: Array.from(excludeConditionCheckboxes).filter(cb => cb.checked).map(cb => cb.value)
         };
         localStorage.setItem('dashboard_filter_state', JSON.stringify(state));
@@ -1079,7 +1100,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Restore Checkboxes
             hideGatedInput.checked = state.hideGated || false;
             hideAmzInput.checked = state.hideAmz || false;
-            optimalFiltersCheckbox.checked = state.optimal || false;
+            agentsChoiceCheckbox.checked = state.agentsChoice || false;
+            if (optimalFiltersCheckbox) {
+                optimalFiltersCheckbox.checked = state.optimal || false;
+            }
 
             // Restore Excluded Conditions
             // Note: If migrating from old "conditions" key (include), we ignore it or could try to invert logic,
@@ -1099,80 +1123,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Optimal Filters Logic
-    function applyOptimalFilters() {
-        if (!optimalFiltersCheckbox.checked) return;
-
-        // "Smart" Preset Values (Tuned 2026-02-20):
-        // Profit: $45.00, ROI: 20%, Drops: 2, Rank: 1,000,000, Deal Trust: 70%, Seller Trust: 5/10, Hide Gated: ON, Hide AMZ: ON, Below Avg: 10%
-        // NOTE: Fine-tune these settings once DB has > 5,000 deals.
-
-        profitSlider.value = 45; // User specifically requested $45 min profit
-        profitSlider.dispatchEvent(new Event('input'));
-
-        setSliderByValue(roiSlider, hiddenRoiInput, roiValueSpan, roiSteps, 20);
-        setSliderByValue(dropsSlider, hiddenDropsInput, dropsValueSpan, dropsSteps, 2);
-        setSliderByValue(salesRankSlider, hiddenSalesRankInput, salesRankValueSpan, salesRankSteps, 1000000);
-
-        dealTrustSlider.value = 70;
-        dealTrustSlider.dispatchEvent(new Event('input'));
-
-        sellerTrustSlider.value = 5;
-        sellerTrustSlider.dispatchEvent(new Event('input'));
-
-        percentDownSlider.value = 10;
-        percentDownSlider.dispatchEvent(new Event('input'));
-
-        hideGatedInput.checked = true;
-        hideAmzInput.checked = true;
-
-        // Optimal shouldn't exclude any conditions by default (Include All)
-        excludeConditionCheckboxes.forEach(cb => cb.checked = false);
-    }
+    // function applyOptimalFilters() { ... }
 
     // Event Listener for Optimal Filters
-    optimalFiltersCheckbox.addEventListener('change', () => {
-        if (optimalFiltersCheckbox.checked) {
-            applyOptimalFilters();
-            // Optional: Auto-fetch on check? Currently relying on explicit Apply
-        }
-    });
+    // optimalFiltersCheckbox.addEventListener('change', ...);
 
     // Detect deviation from Optimal
     function checkOptimalDeviation() {
-        if (!optimalFiltersCheckbox.checked) return;
-
-        const currentProfit = parseInt(hiddenProfitInput.value);
-        const currentRoi = parseInt(hiddenRoiInput.value);
-        const currentDrops = parseInt(hiddenDropsInput.value);
-        const currentRank = parseInt(hiddenSalesRankInput.value);
-        const currentDealTrust = parseInt(hiddenDealTrustInput.value);
-        const currentSellerTrust = parseInt(hiddenSellerTrustInput.value);
-        const gated = hideGatedInput.checked;
-        const amz = hideAmzInput.checked;
-
-        // Check if any exclusions are checked (Deviation from Optimal)
-        let hasExclusions = false;
-        excludeConditionCheckboxes.forEach(cb => { if(cb.checked) hasExclusions = true; });
-
-        // Optimal Definition:
-        // Profit: 45, ROI: 20, Drops: 2, Rank: 1m, Deal Trust: 70, Seller Trust: 5, Below Avg: 10, Gated: true, AMZ: true, Exclusions: None
-        const currentPercentDown = parseInt(hiddenPercentDownInput.value);
-        const isOptimal = (
-            currentProfit === 45 &&
-            currentRoi === 20 &&
-            currentDrops === 2 &&
-            currentRank === 1000000 &&
-            currentDealTrust === 70 &&
-            currentSellerTrust === 5 &&
-            currentPercentDown === 10 &&
-            gated === true &&
-            amz === true &&
-            hasExclusions === false
-        );
-
-        if (!isOptimal) {
-            optimalFiltersCheckbox.checked = false;
-        }
+        // if (!optimalFiltersCheckbox.checked) return;
+        // ...
     }
 
     // Add listeners for exclusion checkboxes
@@ -1213,7 +1172,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset Checkboxes
         hideGatedInput.checked = false;
         hideAmzInput.checked = false;
-        optimalFiltersCheckbox.checked = false;
+        agentsChoiceCheckbox.checked = false;
+        if (optimalFiltersCheckbox) optimalFiltersCheckbox.checked = false;
 
         excludeConditionCheckboxes.forEach(cb => cb.checked = false);
 
