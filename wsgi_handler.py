@@ -1453,6 +1453,7 @@ def api_deals():
 
     # --- Filtering ---
     filters = {
+        "agents_choice": request.args.get('agents_choice', type=str) == 'true',
         "sales_rank_current_lte": request.args.get('sales_rank_current_lte', type=int),
         "roi_gte": request.args.get('roi_gte', type=int),
         "drops_30_gte": request.args.get('drops_30_gte', type=int),
@@ -1519,7 +1520,7 @@ def api_deals():
     # New Filters
     if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
         # Cast to INTEGER to handle text values like '75%' correctly against numerical threshold
-        where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
+        where_clauses.append("CAST(REPLACE(\"Deal_Trust\", '%', '') AS REAL) >= ?")
         filter_params.append(filters["deal_trust_gte"])
 
     if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
@@ -1533,24 +1534,41 @@ def api_deals():
     # Enforce Profit > 0 by default to exclude negative/zero profit deals
     # Robustly handle currency symbols
     sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
-    if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
-        where_clauses.append(f"{sanitized_profit} > 0")
+    sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
+    if filters.get("agents_choice"):
+        # The Smart Floor
+        where_clauses.append("\"Profit\" >= 10")
+        where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= 15)")
+        where_clauses.append("CAST(\"Deal_Trust\" AS REAL) >= 40")
+
+        sanitized_list_at = "CAST(REPLACE(REPLACE(\"List_at\", '$', ''), ',', '') AS REAL)"
+        where_clauses.append(f"{sanitized_list_at} <= 1500")
+
+        # Enforce Data Completeness (Global Filters) - Keep them for Smart Floor
+        where_clauses.append("\"List_at\" IS NOT NULL")
+        where_clauses.append(f"{sanitized_list_at} > 0")
+        where_clauses.append("\"1yr_Avg\" IS NOT NULL")
+        where_clauses.append("\"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')")
+        where_clauses.append("\"1yr_Avg\" != 0")
     else:
-        where_clauses.append(f"{sanitized_profit} >= ?")
-        filter_params.append(filters["profit_gte"])
+        if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
+            where_clauses.append(f"{sanitized_profit} > 0")
+        else:
+            where_clauses.append(f"{sanitized_profit} >= ?")
+            filter_params.append(filters["profit_gte"])
 
-    # Enforce Data Completeness (Global Filters)
-    # Using correct column names from DB schema: 'List_at' (sanitized, but originally had space) and '1yr_Avg'
-    # Wait, 'List at' sanitizes to 'List_at' in db_utils.py, but pragma output showed 'List_at' and '1yr_Avg'.
-    # The grep output confirms: 14|1yr_Avg|TEXT and 236|List_at|REAL.
-    # So underscores ARE correct in the DB schema for these specific columns.
+        # Enforce Data Completeness (Global Filters)
+        # Using correct column names from DB schema: 'List_at' (sanitized, but originally had space) and '1yr_Avg'
+        # Wait, 'List at' sanitizes to 'List_at' in db_utils.py, but pragma output showed 'List_at' and '1yr_Avg'.
+        # The grep output confirms: 14|1yr_Avg|TEXT and 236|List_at|REAL.
+        # So underscores ARE correct in the DB schema for these specific columns.
 
-    where_clauses.append("\"List_at\" IS NOT NULL")
-    where_clauses.append("\"List_at\" > 0")
-    where_clauses.append("\"1yr_Avg\" IS NOT NULL")
-    # Filter out common placeholders for missing data in TEXT column and ensure numeric validity
-    where_clauses.append("\"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')")
-    where_clauses.append("\"1yr_Avg\" != 0")
+        where_clauses.append("\"List_at\" IS NOT NULL")
+        where_clauses.append("\"List_at\" > 0")
+        where_clauses.append("\"1yr_Avg\" IS NOT NULL")
+        # Filter out common placeholders for missing data in TEXT column and ensure numeric validity
+        where_clauses.append("\"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')")
+        where_clauses.append("\"1yr_Avg\" != 0")
 
     if filters.get("percent_down_gte") is not None and filters["percent_down_gte"] > 0:
         # Cast to INTEGER to handle text values like '20%' correctly against numerical threshold
@@ -1621,8 +1639,171 @@ def api_deals():
         # Log the query for debugging
         app.logger.debug(f"Executing Deals Query: {data_query} | Params: {query_params}")
 
-        deal_rows = cursor.execute(data_query, query_params).fetchall()
-        deals_list = [dict(row) for row in deal_rows]
+        if filters.get("agents_choice"):
+            # If agent's choice is enabled, we first grab all matching Smart Floor deals
+            # We don't apply limit/offset here because we need to sort by custom score first
+            # We will grab all of them (or a large enough subset if performance is an issue, but we'll grab all for now)
+            agents_choice_query = f"SELECT {select_clause} {from_clause}{where_sql}"
+            # We pass the query params minus the limit and offset
+            agents_choice_params = query_params[:-2]
+            deal_rows = cursor.execute(agents_choice_query, agents_choice_params).fetchall()
+            deals_list = [dict(row) for row in deal_rows]
+
+            app.logger.info(f"Agent's Choice Pass 1 (Smart Floor): Fetched {len(deals_list)} candidate deals from DB.")
+
+            # Now calculate the dynamic Score
+            def get_hours_since(date_str):
+                if not date_str:
+                    return 0
+                try:
+                    # Attempt ISO format parsing (e.g., from last_seen_utc)
+                    dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    # last_seen_utc is typically UTC
+                    now = datetime.utcnow()
+                    # Make dt naive if it has tzinfo for comparison
+                    if dt.tzinfo:
+                        dt = dt.replace(tzinfo=None)
+                    delta = now - dt
+                    return max(0, delta.total_seconds() / 3600.0)
+                except ValueError:
+                    # Fallback to Deal_found parsing if needed
+                    # e.g., "05/12/23 14:30"
+                    try:
+                        dt = datetime.strptime(date_str, '%m/%d/%y %H:%M')
+                        now = datetime.utcnow()
+                        delta = now - dt
+                        return max(0, delta.total_seconds() / 3600.0)
+                    except ValueError:
+                        return 0
+
+            def parse_offers(offers_str):
+                if not offers_str or offers_str == '-': return 0
+                m = re.search(r'(\d+)', str(offers_str))
+                if m:
+                    return int(m.group(1))
+                return 0
+
+            scored_deals = []
+            for deal in deals_list:
+                profit_str = str(deal.get('Profit', '0')).replace('$', '').replace(',', '')
+                cost_str = str(deal.get('All_in_Cost', '0')).replace('$', '').replace(',', '')
+                try:
+                    profit = float(profit_str)
+                    cost = float(cost_str)
+                    roi = (profit / cost) * 100 if cost > 0 else 0
+                except ValueError:
+                    profit = 0
+                    roi = 0
+
+                hours_since = get_hours_since(deal.get('last_seen_utc') or deal.get('Deal_found'))
+
+                sales_rank = deal.get('Sales_Rank_Current')
+                if sales_rank is None or sales_rank == '':
+                    sales_rank = 1000000 # fallback
+                else:
+                    try:
+                        sales_rank = float(str(sales_rank).replace(',', ''))
+                    except ValueError:
+                        sales_rank = 1000000
+
+                offers = parse_offers(deal.get('Offers'))
+
+                base_half_life = 24 + (sales_rank / 2000000.0) * 144
+                final_half_life = base_half_life * (1 - min(0.5, offers * 0.02))
+
+                score = (profit * roi) * (0.5 ** (hours_since / max(0.001, final_half_life)))
+                deal['_score'] = score
+                scored_deals.append(deal)
+
+            scored_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)
+            top_10 = scored_deals[:10]
+
+            app.logger.info(f"Agent's Choice Pass 1 (Scoring): Top {len(top_10)} candidates selected for AI evaluation.")
+
+            # Pass 2: The xAI Mastermind
+            if top_10:
+                try:
+                    strategies_data = []
+                    if os.path.exists(STRATEGIES_FILE):
+                        with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+                            strategies_data = json.load(f)
+
+                    # Structure the top 10 candidates for the AI prompt
+                    candidates_for_ai = []
+                    for d in top_10:
+                        candidates_for_ai.append({
+                            "ASIN": d.get("ASIN"),
+                            "Title": d.get("Title", "")[:100], # limit title length
+                            "Sales_Rank_Current": d.get("Sales_Rank_Current"),
+                            "Offers": d.get("Offers"),
+                            "Sales_Rank_Drops_last_180_days": d.get("Sales_Rank_Drops_last_180_days"),
+                            "Profit": d.get("Profit"),
+                            "Detailed_Seasonality": d.get("Detailed_Seasonality"),
+                            "Percent_Down": d.get("Percent_Down")
+                        })
+
+                    prompt = f"""
+                    You are the xAI Mastermind evaluating the top 10 candidate deals.
+
+                    **Evaluation Strategy:**
+                    You MUST evaluate candidates holistically against ALL strategies present in the provided JSON rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
+
+                    Strategies:
+                    {json.dumps(strategies_data, indent=2)}
+
+                    **Candidates:**
+                    {json.dumps(candidates_for_ai, indent=2)}
+
+                    **Instructions:**
+                    Select the items (ASINs) that represent solid arbitrage opportunities based on the strategies. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
+                    You MUST return ONLY a JSON array of strings containing the selected ASINs. No markdown formatting, no explanations.
+                    Example: ["0123456789", "B01ABCD123"]
+                    """
+
+                    payload = {
+                        "messages": [
+                            {"role": "system", "content": "You are a precise JSON-only output bot."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        "model": "grok-4-1-fast-non-reasoning",
+                        "stream": False,
+                        "temperature": 0.2
+                    }
+
+                    response_data = query_xai_api(payload)
+
+                    selected_asins = []
+                    if response_data and 'choices' in response_data and response_data['choices']:
+                        content = response_data['choices'][0].get('message', {}).get('content', '').strip()
+                        app.logger.info(f"Agent's Choice Pass 2 (xAI): Raw AI Response:\n{content}")
+                        # Strip markdown if present
+                        content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content.strip(), flags=re.MULTILINE).strip()
+                        try:
+                            parsed = json.loads(content)
+                            if isinstance(parsed, list):
+                                selected_asins = [str(x) for x in parsed]
+                            elif isinstance(parsed, dict) and "asins" in parsed:
+                                selected_asins = [str(x) for x in parsed["asins"]]
+                        except json.JSONDecodeError:
+                            app.logger.error(f"Failed to parse xAI output as JSON: {content}")
+
+                    # Filter top 10 down to selected ASINs
+                    deals_list = [d for d in top_10 if str(d.get("ASIN")) in selected_asins]
+                    app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
+                except Exception as e:
+                    app.logger.error(f"Error in xAI Mastermind pass: {e}", exc_info=True)
+                    deals_list = top_10 # Fallback to top 10 if AI fails
+            else:
+                deals_list = []
+
+            # Override pagination for Agent's Choice since we return a specific filtered set
+            total_records = len(deals_list)
+            total_pages = 1
+            page = 1
+
+        else:
+            deal_rows = cursor.execute(data_query, query_params).fetchall()
+            deals_list = [dict(row) for row in deal_rows]
 
         # --- Post-processing and Formatting ---
         for deal in deals_list:
@@ -2005,7 +2186,7 @@ def deal_count():
                 filter_params.extend([keyword_like] * len(keyword_clauses))
 
             if filters.get("deal_trust_gte") is not None and filters["deal_trust_gte"] > 0:
-                where_clauses.append("CAST(\"Deal_Trust\" AS INTEGER) >= ?")
+                where_clauses.append("CAST(REPLACE(\"Deal_Trust\", '%', '') AS REAL) >= ?")
                 filter_params.append(filters["deal_trust_gte"])
 
             if filters.get("seller_trust_gte") is not None and filters["seller_trust_gte"] > 0:
