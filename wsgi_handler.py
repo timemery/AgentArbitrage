@@ -1537,9 +1537,9 @@ def api_deals():
     sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
     if filters.get("agents_choice"):
         # The Smart Floor
-        where_clauses.append("\"Profit\" >= 10")
-        where_clauses.append("(\"All_in_Cost\" > 0 AND ((\"Profit\" * 1.0 / \"All_in_Cost\") * 100) >= 15)")
-        where_clauses.append("CAST(\"Deal_Trust\" AS REAL) >= 40")
+        where_clauses.append(f"{sanitized_profit} >= 10")
+        where_clauses.append(f"({sanitized_cost} > 0 AND (({sanitized_profit} * 1.0 / {sanitized_cost}) * 100) >= 15)")
+        where_clauses.append("CAST(REPLACE(\"Deal_Trust\", '%', '') AS REAL) >= 40")
 
         sanitized_list_at = "CAST(REPLACE(REPLACE(\"List_at\", '$', ''), ',', '') AS REAL)"
         where_clauses.append(f"{sanitized_list_at} <= 1500")
@@ -1765,7 +1765,7 @@ def api_deals():
                             {"role": "system", "content": "You are a precise JSON-only output bot."},
                             {"role": "user", "content": prompt}
                         ],
-                        "model": "grok-4-1-fast-non-reasoning",
+                        "model": "grok-beta",
                         "stream": False,
                         "temperature": 0.2
                     }
@@ -1773,7 +1773,12 @@ def api_deals():
                     response_data = query_xai_api(payload)
 
                     selected_asins = []
-                    if response_data and 'choices' in response_data and response_data['choices']:
+                    ai_failed = False
+
+                    if not response_data or "error" in response_data:
+                        app.logger.error(f"xAI API returned an error: {response_data.get('error', 'Unknown Error')}")
+                        ai_failed = True
+                    elif 'choices' in response_data and response_data['choices']:
                         content = response_data['choices'][0].get('message', {}).get('content', '').strip()
                         app.logger.info(f"Agent's Choice Pass 2 (xAI): Raw AI Response:\n{content}")
                         # Strip markdown if present
@@ -1786,10 +1791,17 @@ def api_deals():
                                 selected_asins = [str(x) for x in parsed["asins"]]
                         except json.JSONDecodeError:
                             app.logger.error(f"Failed to parse xAI output as JSON: {content}")
+                            ai_failed = True
+                    else:
+                        ai_failed = True
 
-                    # Filter top 10 down to selected ASINs
-                    deals_list = [d for d in top_10 if str(d.get("ASIN")) in selected_asins]
-                    app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
+                    # Filter top 10 down to selected ASINs, or fallback if AI failed
+                    if ai_failed:
+                        deals_list = top_10
+                        app.logger.info(f"Agent's Choice Pass 2 Complete: Fallback to {len(deals_list)} deals due to AI failure.")
+                    else:
+                        deals_list = [d for d in top_10 if str(d.get("ASIN")) in selected_asins]
+                        app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
                 except Exception as e:
                     app.logger.error(f"Error in xAI Mastermind pass: {e}", exc_info=True)
                     deals_list = top_10 # Fallback to top 10 if AI fails

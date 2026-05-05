@@ -2205,7 +2205,20 @@ body.home-background::before {
     justify-content: space-between;
     min-height: 57px; /* Adjust height as needed */
     margin-top: 0;
+
     flex-wrap: nowrap; /* User Req: Ensure buttons stay on right */
+
+    /* Animation styling */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.filter-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 /* Separator Line */
