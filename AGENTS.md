@@ -30,18 +30,44 @@ To ensure the stability and performance of the development environment, the foll
        *   **`celery_monitor.log`**: Contains resiliency logs.
        *   **`celery.log`**: This is a **LEGACY/ABANDONED** file. **DO NOT READ IT.** It contains old, irrelevant data and is massive.
 
-2. **Initial Codebase Exploration ("Filesystem Tour"):**
+2. **Initial Codebase Exploration — STRICT FILE READING RULES:**
 
-   *   At the beginning of any new task, perform a "filesystem tour" to understand the layout and structure of the codebase.
-   *   Use `ls -F` (non-recursive) or targeted `ls` commands on key directories (e.g., `ls -F keepa_deals/`) to list files. **AVOID** `ls -R` as it generates excessive output.
-   *   **DO NOT READ** the following large system state files:
-       - `xai_cache.json` (Runtime Cache - Do not read)
-       - `xai_token_state.json` (Runtime State - Do not read)
-       - `strategies.json`
-   *   **READ** `README.md`, this `AGENTS.md` file, and `Documentation/System_State.md` in full.
-   *   **READ** the 3-5 most recent logs in `Dev_Logs/` to understand the latest changes.
-   *   **DO NOT** read old logs in `Dev_Logs/Archive/` unless specifically investigating a regression related to that time period. `Documentation/System_State.md` is your primary source of truth.
-   *   This initial exploration provides essential context, helps locate relevant code modules, and prevents unnecessary file reading later in the task. Adhering to this practice is mandatory for efficient and stable operation.
+   At the start of every session, follow these rules exactly. Do not deviate without explicit user permission.
+
+   **REQUIRED reading (read in this order, in full):**
+   1. `README.md`
+   2. `AGENTS.md` (this file)
+   3. `Documentation/System_State.md`
+   4. `Documentation/Data_Logic.md`
+   5. `Documentation/Dashboard_Specification.md`
+   6. `Documentation/Token_Management_Strategy.md`
+   7. `Documentation/System_Architecture.md`
+   8. `Documentation/Feature_Deals_Dashboard.md`
+   9. `Documentation/Feature_Guided_Learning_Strategies_Brain.md`
+   10. `Documentation/INFERRED_PRICE_LOGIC.md`
+   11. The 3 most recent files in `Dev_Logs/` (sorted by date in filename)
+
+   **ON-DEMAND reading (read ONLY if the current task explicitly requires it):**
+   - `Documentation/Archive/` — older docs and historical references
+   - Older `Dev_Logs/` entries beyond the 3 most recent
+   - `Dev_Logs/Archive/` — only if investigating a regression from that period
+   - `tests/` — only when writing or debugging tests
+
+   **NEVER read (these waste context, cause instability, or contain stale data):**
+   - `*.log` files of any kind, in any directory
+   - `xai_cache.json`, `xai_token_state.json` (runtime state)
+   - `strategies.json`, `agent_brain.json`, `intelligence.json`, `tooltip_cache.json` (large runtime caches)
+   - `My_Notes/` (personal notes, not project documentation)
+   - `Diagnostics/` (output reports, not source)
+   - Any `Archive/` directory contents
+   - `venv/`, `__pycache__/`, `db_backups/`
+
+   **Filesystem inspection rules:**
+   - Use `ls -F` or targeted `ls` on specific directories. Never `ls -R`.
+   - For any file > 500 KB, use `head`, `tail`, or `grep` instead of reading the full file.
+   - Always check size with `ls -lh` before reading any file you're unsure about.
+
+   **Escape hatch:** If you believe a "never read" or "on-demand" file is necessary to complete the current task, state which file and why before reading it. Do not silently access these files.
 
 3. ### Environment and Verification Protocol (EVP)
 
