@@ -1716,21 +1716,21 @@ def api_deals():
                 scored_deals.append(deal)
 
             scored_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)
-            top_20 = scored_deals[:20]
+            top_10 = scored_deals[:10]
 
-            app.logger.info(f"Agent's Choice Pass 1 (Scoring): Top {len(top_20)} candidates selected for AI evaluation.")
+            app.logger.info(f"Agent's Choice Pass 1 (Scoring): Top {len(top_10)} candidates selected for AI evaluation.")
 
             # Pass 2: The xAI Mastermind
-            if top_20:
+            if top_10:
                 try:
                     strategies_data = []
                     if os.path.exists(STRATEGIES_FILE):
                         with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
                             strategies_data = json.load(f)
 
-                    # Structure the top 20 candidates for the AI prompt
+                    # Structure the top 10 candidates for the AI prompt
                     candidates_for_ai = []
-                    for d in top_20:
+                    for d in top_10:
                         candidates_for_ai.append({
                             "ASIN": d.get("ASIN"),
                             "Title": d.get("Title", "")[:100], # limit title length
@@ -1743,7 +1743,7 @@ def api_deals():
                         })
 
                     prompt = f"""
-                    You are the xAI Mastermind evaluating the top 20 candidate deals.
+                    You are the xAI Mastermind evaluating the top 10 candidate deals.
 
                     **Evaluation Strategy:**
                     You MUST evaluate candidates holistically against ALL strategies present in the provided JSON rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
@@ -1765,7 +1765,7 @@ def api_deals():
                             {"role": "system", "content": "You are a precise JSON-only output bot."},
                             {"role": "user", "content": prompt}
                         ],
-                        "model": "grok-4-fast-reasoning",
+                        "model": "grok-4-1-fast-non-reasoning",
                         "stream": False,
                         "temperature": 0.2
                     }
@@ -1787,12 +1787,12 @@ def api_deals():
                         except json.JSONDecodeError:
                             app.logger.error(f"Failed to parse xAI output as JSON: {content}")
 
-                    # Filter top 20 down to selected ASINs
-                    deals_list = [d for d in top_20 if str(d.get("ASIN")) in selected_asins]
+                    # Filter top 10 down to selected ASINs
+                    deals_list = [d for d in top_10 if str(d.get("ASIN")) in selected_asins]
                     app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
                 except Exception as e:
                     app.logger.error(f"Error in xAI Mastermind pass: {e}", exc_info=True)
-                    deals_list = top_20 # Fallback to top 20 if AI fails
+                    deals_list = top_10 # Fallback to top 10 if AI fails
             else:
                 deals_list = []
 
