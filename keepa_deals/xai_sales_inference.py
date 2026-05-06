@@ -188,7 +188,7 @@ def query_xai_sales_inference(history_text, product):
 
     payload = {
         "messages": [{"role": "user", "content": prompt}],
-        "model": "grok-beta",
+        "model": "grok-4-fast-reasoning",
         "temperature": 0.2,
         "max_tokens": 500
     }
