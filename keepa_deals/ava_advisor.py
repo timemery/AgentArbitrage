@@ -187,67 +187,70 @@ def query_xai_api(payload, api_key=None):
     max_retries = 5
     base_delay = 3  # seconds
 
+    import requests
+
     # Increase timeout for reasoning models
-    with httpx.Client(timeout=150.0) as client:
-        for attempt in range(max_retries):
-            try:
-                logger.info(f"Sending request to xAI API: {XAI_API_URL} (Attempt {attempt + 1}/{max_retries})")
-                response = client.post(XAI_API_URL, headers=headers, json=payload)
+    for attempt in range(max_retries):
+        try:
+            logger.info(f"Sending request to xAI API: {XAI_API_URL} (Attempt {attempt + 1}/{max_retries})")
 
-                logger.info(f"xAI Response Status Code: {response.status_code}")
+            # Using requests instead of httpx because httpx sometimes hangs indefinitely in WSGI context
+            response = requests.post(XAI_API_URL, headers=headers, json=payload, timeout=150.0)
 
-                # Log the full response content for debugging
-                response_text = response.text
-                if len(response_text) > 2000:
-                     logger.info(f"xAI Response Body (truncated): {response_text[:2000]}...")
-                else:
-                     logger.info(f"xAI Response Body: {response_text}")
+            logger.info(f"xAI Response Status Code: {response.status_code}")
 
-                # Handle 503 specifically for retry
-                if response.status_code == 503:
-                    if attempt < max_retries - 1:
-                        import time
-                        sleep_time = base_delay * (2 ** attempt)
-                        logger.warning(f"Got 503 from xAI. Retrying in {sleep_time}s...")
-                        time.sleep(sleep_time)
-                        continue
-                    else:
-                        return {"error": "Service Unavailable (503) after retries."}
+            # Log the full response content for debugging
+            response_text = response.text
+            if len(response_text) > 2000:
+                 logger.info(f"xAI Response Body (truncated): {response_text[:2000]}...")
+            else:
+                 logger.info(f"xAI Response Body: {response_text}")
 
-                response.raise_for_status()
-                return response.json()
-
-            except (httpx.ReadTimeout, httpx.ConnectTimeout) as e:
-                logger.warning(f"Timeout connecting to xAI: {e}. (Attempt {attempt + 1}/{max_retries})")
+            # Handle 503 specifically for retry
+            if response.status_code == 503:
                 if attempt < max_retries - 1:
                     import time
-                    time.sleep(base_delay)
+                    sleep_time = base_delay * (2 ** attempt)
+                    logger.warning(f"Got 503 from xAI. Retrying in {sleep_time}s...")
+                    time.sleep(sleep_time)
                     continue
-                return {"error": "The read operation timed out"}
+                else:
+                    return {"error": "Service Unavailable (503) after retries."}
 
-            except httpx.HTTPStatusError as e:
-                # 4xx errors should not be retried usually, unless it's 429
-                if e.response.status_code == 429:
-                     if attempt < max_retries - 1:
-                        import time
-                        time.sleep(5) # Fixed wait for rate limit
-                        continue
+            response.raise_for_status()
+            return response.json()
 
-                logger.error(f"xAI API request failed with status {e.response.status_code}: {e.response.text}")
-                return {"error": f"API request failed with status {e.response.status_code}", "content": e.response.text}
+        except requests.exceptions.Timeout as e:
+            logger.warning(f"Timeout connecting to xAI: {e}. (Attempt {attempt + 1}/{max_retries})")
+            if attempt < max_retries - 1:
+                import time
+                time.sleep(base_delay)
+                continue
+            return {"error": "The read operation timed out"}
 
-            except (httpx.RequestError, json.JSONDecodeError) as e:
-                # Network errors that are not timeouts might be worth one retry
-                if attempt < max_retries - 1:
-                     import time
-                     time.sleep(base_delay)
-                     continue
+        except requests.exceptions.HTTPError as e:
+            # 4xx errors should not be retried usually, unless it's 429
+            if response.status_code == 429:
+                 if attempt < max_retries - 1:
+                    import time
+                    time.sleep(5) # Fixed wait for rate limit
+                    continue
 
-                logger.error(f"xAI API request failed: {e}")
-                logger.error(traceback.format_exc())
-                return {"error": str(e)}
+            logger.error(f"xAI API request failed with status {response.status_code}: {response.text}")
+            return {"error": f"API request failed with status {response.status_code}", "content": response.text}
 
-        return {"error": "Max retries exceeded."}
+        except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
+            # Network errors that are not timeouts might be worth one retry
+            if attempt < max_retries - 1:
+                 import time
+                 time.sleep(base_delay)
+                 continue
+
+            logger.error(f"xAI API request failed: {e}")
+            logger.error(traceback.format_exc())
+            return {"error": str(e)}
+
+    return {"error": "Max retries exceeded."}
 
 def format_currency(value):
     if value is None:

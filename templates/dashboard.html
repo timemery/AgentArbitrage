@@ -1181,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPage = 1;
         saveFilterState(); // Save on Apply
         fetchDeals(currentPage, currentSort.by, currentSort.order);
-        toggleFilterPanel(false); // Auto-close filter panel on apply
+        // toggleFilterPanel(false); // Removed so loading state is visible
     });
 
     btnReset.addEventListener('click', (e) => {
