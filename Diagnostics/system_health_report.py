@@ -179,7 +179,7 @@ class HealthChecker:
             if xai_key:
                 payload = {
                     "messages": [{"role": "user", "content": "Hello"}],
-                    "model": "grok-4-fast-reasoning",
+                    "model": "grok-beta",
                     "max_tokens": 5
                 }
                 headers = {"Authorization": f"Bearer {xai_key}", "Content-Type": "application/json"}

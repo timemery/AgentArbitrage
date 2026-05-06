@@ -320,7 +320,7 @@ def generate_tooltip_advice(term, xai_api_key=None):
                     "content": prompt
                 }
             ],
-            "model": "grok-4-fast-reasoning",
+            "model": "grok-beta",
             "stream": False,
             "temperature": 0.2,
             "max_tokens": 100
@@ -435,7 +435,7 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
                     "content": prompt
                 }
             ],
-            "model": "grok-4-fast-reasoning",
+            "model": "grok-beta",
             "stream": False,
             "temperature": 0.4,
             "max_tokens": 1000

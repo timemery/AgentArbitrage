@@ -114,7 +114,7 @@ def extract_strategies(full_text):
                 "content": prompt
             }
         ],
-        "model": "grok-4-fast-reasoning",
+        "model": "grok-beta",
         "stream": False,
         "temperature": 0.2
     }
@@ -167,7 +167,7 @@ def extract_conceptual_ideas(full_text):
                 "content": prompt
             }
         ],
-        "model": "grok-4-fast-reasoning",
+        "model": "grok-beta",
         "stream": False,
         "temperature": 0.3
     }
@@ -1765,7 +1765,7 @@ def api_deals():
                             {"role": "system", "content": "You are a precise JSON-only output bot."},
                             {"role": "user", "content": prompt}
                         ],
-                        "model": "grok-4-fast-reasoning",
+                        "model": "grok-beta",
                         "stream": False,
                         "temperature": 0.2
                     }
@@ -1795,7 +1795,8 @@ def api_deals():
                     else:
                         ai_failed = True
 
-                    # Filter top 10 down to selected ASINs, or fallback if AI failed
+                    # Filter top 10 down to selected ASINs
+                    # Ensure fallback if selected_asins is empty but ai didn't "fail" with error
                     if ai_failed:
                         deals_list = top_10
                         app.logger.info(f"Agent's Choice Pass 2 Complete: Fallback to {len(deals_list)} deals due to AI failure.")
@@ -2358,7 +2359,7 @@ def mentor_chat():
                     "content": prompt
                 }
             ],
-            "model": "grok-4-fast-reasoning", # Use reasoning model
+            "model": "grok-beta", # Use reasoning model
             "stream": False,
             "temperature": 0.5,
             "max_tokens": 300

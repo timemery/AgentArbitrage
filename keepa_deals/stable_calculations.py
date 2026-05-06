@@ -74,7 +74,7 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
     """
     payload = {
         "messages": [{"role": "user", "content": prompt}],
-        "model": "grok-4-fast-reasoning", "temperature": 0.1, "max_tokens": 10
+        "model": "grok-beta", "temperature": 0.1, "max_tokens": 10
     }
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
