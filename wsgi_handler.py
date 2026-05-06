@@ -1770,6 +1770,8 @@ def api_deals():
                         "temperature": 0.2
                     }
 
+                    app.logger.info("Agent's Choice Pass 2: Querying xAI API...")
+
                     response_data = query_xai_api(payload)
 
                     selected_asins = []
