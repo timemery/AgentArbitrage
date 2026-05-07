@@ -1723,7 +1723,10 @@ def api_deals():
             # Pass 2: The xAI Mastermind
             if top_10:
                 try:
-                    strategies_text = load_strategies()
+                    strategies_data = []
+                    if os.path.exists(STRATEGIES_FILE):
+                        with open(STRATEGIES_FILE, 'r', encoding='utf-8') as f:
+                            strategies_data = json.load(f)
 
                     # Structure the top 10 candidates for the AI prompt
                     candidates_for_ai = []
@@ -1743,10 +1746,10 @@ def api_deals():
                     You are the xAI Mastermind evaluating the top 10 candidate deals.
 
                     **Evaluation Strategy:**
-                    You MUST evaluate candidates holistically against ALL strategies present in the provided text rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
+                    You MUST evaluate candidates holistically against ALL strategies present in the provided JSON rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
 
                     Strategies:
-                    {strategies_text}
+                    {json.dumps(strategies_data, indent=2)}
 
                     **Candidates:**
                     {json.dumps(candidates_for_ai, indent=2)}
