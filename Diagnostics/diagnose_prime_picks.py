@@ -1,5 +1,8 @@
 import sqlite3
 import re
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from keepa_deals.db_utils import DB_PATH
 import os
 import sys
