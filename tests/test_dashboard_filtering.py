@@ -39,6 +39,17 @@ class TestApiFiltering(unittest.TestCase):
             )
         """)
 
+        cursor.execute("""
+            CREATE TABLE prime_picks (
+                asin TEXT PRIMARY KEY,
+                rank INTEGER,
+                score REAL,
+                generated_at TIMESTAMP,
+                run_id TEXT,
+                FOREIGN KEY(asin) REFERENCES deals(ASIN)
+            )
+        """)
+
         # Insert test data
         deals = [
             # Good Deal

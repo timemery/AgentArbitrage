@@ -107,6 +107,9 @@ def create_deals_table_if_not_exists():
     create_sales_ledger_table_if_not_exists()
     create_reconciliation_log_table_if_not_exists()
 
+    # Ensure Prime Picks table exists
+    create_prime_picks_table_if_not_exists()
+
     logger.info(f"Database check: Ensuring table '{TABLE_NAME}' at '{DB_PATH}' is correctly configured.")
     try:
         with sqlite3.connect(DB_PATH) as conn:
@@ -363,6 +366,33 @@ def create_user_credentials_table_if_not_exists():
                         updated_at TIMESTAMP
                     )
                 """)
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise
+
+def create_prime_picks_table_if_not_exists():
+    """Ensures the 'prime_picks' table exists to store cached Pass 2 results."""
+    table_name = 'prime_picks'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f"""
+                    CREATE TABLE {table_name} (
+                        asin TEXT PRIMARY KEY,
+                        rank INTEGER,
+                        score REAL,
+                        generated_at TIMESTAMP,
+                        run_id TEXT,
+                        FOREIGN KEY(asin) REFERENCES deals(ASIN)
+                    )
+                """)
+                cursor.execute(f"CREATE INDEX idx_prime_picks_rank ON {table_name}(rank)")
                 conn.commit()
                 logger.info(f"Successfully created table '{table_name}'.")
     except sqlite3.Error as e:

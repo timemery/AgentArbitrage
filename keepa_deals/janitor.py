@@ -40,6 +40,8 @@ def _clean_stale_deals_logic(grace_period_hours):
         logger.error(f"Janitor failed: {e}", exc_info=True)
         return 0
 
+from .prime_picks_task import generate_prime_picks
+
 @celery.task(name='keepa_deals.janitor.clean_stale_deals')
 def clean_stale_deals(grace_period_hours=72):
     """
@@ -47,4 +49,10 @@ def clean_stale_deals(grace_period_hours=72):
     This helps keep the database size manageable and removes "dead" deals that are no longer
     appearing in Keepa results.
     """
-    return _clean_stale_deals_logic(grace_period_hours)
+    result = _clean_stale_deals_logic(grace_period_hours)
+
+    # Chain the Prime Picks task after Janitor completes
+    logger.info("Janitor complete. Triggering Prime Picks generation.")
+    generate_prime_picks.delay()
+
+    return result
