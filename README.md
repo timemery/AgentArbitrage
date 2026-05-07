@@ -3,9 +3,21 @@
 An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger VPS (Ubuntu 22.04).
 
 - **Public URL**: https://agentarbitrage.co
+
 - **Dashboard**: https://agentarbitrage.co/dashboard
+
 - **Guided Learning**: https://agentarbitrage.co/guided_learning
+
 - **Login**: `tester` / `OnceUponaBurgerTree-12monkeys`
+
+
+---
+
+## For AI Agents
+
+  - All operational rules and locked configuration values are in AGENTS.md. Read it before any action.
+
+---
 
 ## Key Features
 
@@ -18,13 +30,6 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
 - **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI. (Admin Only)
 - **Intelligence & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
 - **Data Sourcing / Deals Config**: Configurable Keepa scanning engine. (Admin Only)
-
----
-
-## CRITICAL WARNINGS FOR AGENTS
-
-1.  **DO NOT READ CELERY LOGS:** Never generate or read `celery.log` or similar large log files. Doing so will crash your environment and terminate the task. Verification must be done through other means (e.g., `check_db.py`).
-2.  **ENVIRONMENT SEPARATION:** Your sandboxed environment is completely isolated from the user's server (`/var/www/agentarbitrage`). Do not reference your internal file paths. All commands are executed on the user's server.
 
 ---
 

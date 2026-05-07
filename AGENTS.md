@@ -1,225 +1,269 @@
 # Agent Instructions
 
-## Database Management (CRITICAL)
-
-**Production Data:** The `deals.db` file is the production database and should NOT be modified or deleted during development. Your top priority is to protect this file.
-
-**Development Database:** To work on the application, use a separate database file for development. This can be configured by setting the `DATABASE_URL` environment variable to the path of your development database file (e.g., `export DATABASE_URL=dev_deals.db`). All development and testing must be done against this separate database.
-
-**Backup and Restore:** Before making significant changes, it is wise to create a backup. Use the following scripts to manage the production database:
-- `./backup_db.sh`: Creates a timestamped backup of the database.
-- `./restore_db.sh`: Restores the database from the most recent backup.
+> **READ THIS FILE COMPLETELY BEFORE TAKING ANY ACTION.**
+> The rules in Sections 1–3 are absolute. Violating them is task failure regardless of how good the resulting code looks.
 
 ---
 
-### Standard Operating Procedures (SOP) for System Stability
+## 1. LOCKED CONFIGURATION VALUES (DO NOT CHANGE WITHOUT EXPLICIT APPROVAL)
 
-To ensure the stability and performance of the development environment, the following procedures must be followed:
+The following values are AUTHORITATIVE. Do NOT change them based on assumptions, training data, "best practice," or what you think a newer/better version is. If a change is genuinely needed, STOP and ASK before modifying.
 
-1. **Handling Large Files (especially logs):**
+- **xAI model:** `grok-4-1-fast-reasoning` — NEVER `grok-beta`, `grok-4`, `grok-3`, or any other variant
+- **Keepa Epoch:** `datetime(2011, 1, 1)` — NEVER `2000-01-01`. The 11-year offset has caused a critical regression before.
+- **SP-API URL:** `https://sellingpartnerapi-na.amazon.com` (Production) — NEVER swap to Sandbox
+- **Keepa Query Standard:** `dateRange: 4` MUST be paired with `sortType: 4` (Last Update)
+- **Token Manager:** Shared Redis Token Bucket (`keepa_deals/token_manager.py`) — do not bypass
+- **MAX_DEFICIT:** `-180` — do not raise without explicit approval
+- **Production database:** `deals.db` — NEVER modify or delete during development. Use `DATABASE_URL=dev_deals.db` for development.
 
-   *   **NEVER** read an entire file if it is known or suspected to be large (e.g., > 500 KB). Large JSON or log files will immediately flood the context window and cause instability.
-   *   **ALWAYS** use targeted commands to inspect large files.
-       *   To view the end of a file: `tail -n 100 <filepath>`
-       *   To view the beginning of a file: `head -n 100 <filepath>`
-       *   To search for specific patterns, errors, or keywords: `grep "my search pattern" <filepath>`
-   *   If you need to understand the general structure of a large log or data file, use a combination of `head`, `tail`, and `grep` to build a picture without loading the entire file into memory.
-   *   **NEVER** assume a log file is safe to read. Always check its size with `ls -lh` first.
-   *   **LOGGING SOURCE OF TRUTH:**
-       *   **`celery_worker.log`**: This is the ACTIVE log for background tasks. Use this for troubleshooting.
-       *   **`celery_monitor.log`**: Contains resiliency logs.
-       *   **`celery.log`**: This is a **LEGACY/ABANDONED** file. **DO NOT READ IT.** It contains old, irrelevant data and is massive.
-
-2. **Initial Codebase Exploration — STRICT FILE READING RULES:**
-
-   At the start of every session, follow these rules exactly. Do not deviate without explicit user permission.
-
-   **REQUIRED reading (read in this order, in full):**
-   1. `README.md`
-   2. `AGENTS.md` (this file)
-   3. `Documentation/System_State.md`
-   4. `Documentation/Data_Logic.md`
-   5. `Documentation/Dashboard_Specification.md`
-   6. `Documentation/Token_Management_Strategy.md`
-   7. `Documentation/System_Architecture.md`
-   8. `Documentation/Feature_Deals_Dashboard.md`
-   9. `Documentation/Feature_Guided_Learning_Strategies_Brain.md`
-   10. `Documentation/INFERRED_PRICE_LOGIC.md`
-   11. The 3 most recent files in `Dev_Logs/` (sorted by date in filename)
-
-   **ON-DEMAND reading (read ONLY if the current task explicitly requires it):**
-   - `Documentation/Archive/` — older docs and historical references
-   - Older `Dev_Logs/` entries beyond the 3 most recent
-   - `Dev_Logs/Archive/` — only if investigating a regression from that period
-   - `tests/` — only when writing or debugging tests
-
-   **NEVER read (these waste context, cause instability, or contain stale data):**
-   - `*.log` files of any kind, in any directory
-   - `xai_cache.json`, `xai_token_state.json` (runtime state)
-   - `strategies.json`, `agent_brain.json`, `intelligence.json`, `tooltip_cache.json` (large runtime caches)
-   - `My_Notes/` (personal notes, not project documentation)
-   - `Diagnostics/` (output reports, not source)
-   - Any `Archive/` directory contents
-   - `venv/`, `__pycache__/`, `db_backups/`
-
-   **Filesystem inspection rules:**
-   - Use `ls -F` or targeted `ls` on specific directories. Never `ls -R`.
-   - For any file > 500 KB, use `head`, `tail`, or `grep` instead of reading the full file.
-   - Always check size with `ls -lh` before reading any file you're unsure about.
-
-   **Escape hatch:** If you believe a "never read" or "on-demand" file is necessary to complete the current task, state which file and why before reading it. Do not silently access these files.
-
-3. ### Environment and Verification Protocol (EVP)
-
-   To ensure stability and efficiency, the following protocol is mandatory for all tasks. Failure to adhere to these steps can lead to mission failure due to environmental instability.
-
-   1. **Environment Sanity Check (ESC):** Before beginning any code analysis or modification, you MUST verify the sandbox environment's integrity. Perform a simple file creation and version control check: `touch test_agent_sanity.txt && git add test_agent_sanity.txt && git diff --staged`. This command MUST show a diff indicating a new file. If it returns empty, the environment is faulty. You MUST halt immediately and report the environment as unstable. Afterwards, clean up with `git reset HEAD test_agent_sanity.txt && rm test_agent_sanity.txt`. Do not attempt to work around a broken environment.
-   2. **Principle of Least Impact Verification (LIV):** Your verification plan MUST use the most lightweight and targeted method possible. Do not run resource-intensive, end-to-end data pipelines (like `backfill_deals`) to verify small, isolated changes.
-      - **Example for a backend/API change:** Manually insert a single test row into the database using `sqlite3` and query the specific API endpoint with `curl`.
-      - **Example for a frontend change:** Use the provided frontend verification tools without populating the entire database. This principle is critical to minimizing resource usage and avoiding sandbox failures.
+If you find yourself "fixing" any of these, you are wrong. Stop.
 
 ---
 
-## The Stability Pact: A Standard Operating Procedure for Preventing Regression
+## 2. FORBIDDEN ACTIONS WITHOUT EXPLICIT USER APPROVAL
 
-To prevent regressions and ensure that "hard-won" code remains stable, I will adhere to the following principles for every task. This pact is my primary directive.
-
-**1. Principle of Minimum Scope:**
-
-*   I will only change the absolute minimum code necessary to complete the current task.
-*   I will not perform unrelated refactoring or "cleanup" of files I am not explicitly tasked to work on.
-*   Every change I make must be directly justifiable by the user's request.
-
-**2. "Code Archaeology" Before Action:**
-
-*   Before modifying any existing code, I must first understand its history and purpose.
-*   I will use `git log -p <filepath>` to review the recent history of the file to understand why it is in its current state.
-*   I will consult the `Dev_Logs/Archive/` directory ONLY if I need to trace the origin of a specific feature.
-*   My goal is to understand the *intent* behind the existing code before I propose a change.
-
-**3. Strict Separation of Code and Configuration:**
-
-*   I will not change configuration values (e.g., batch sizes, timeouts, thresholds) unless the task is specifically about tuning those parameters.
-*   Such values should be stored in dedicated internal configuration files (e.g., `app_config.py`).
-*   If I find hardcoded configuration values during a task, I will report them to you and ask for permission before moving them to a dedicated file.
-
-**4. Test-Driven Development as a Rule:**
-
-*   For all future bug fixes, my first step will be to write a new, failing test that precisely reproduces the bug.
-*   For all new features, I will write tests that define the feature's correct behavior.
-*   I will run the *entire* test suite before submitting any change. A failing test is a hard blocker. This is our primary automated guard against regression.
-
-**5. Explicit Confirmation for Scope Creep:**
-
-*   If, during a task, I identify a necessary change that falls outside the original scope (e.g., a required refactor in an unrelated file), I will **stop**.
-*   I will present my finding and the proposed change to you and will not proceed until I receive your explicit permission.
+- Do NOT change model strings, API versions, endpoint URLs, or environment variable names
+- Do NOT modify or delete `deals.db` (production database)
+- Do NOT modify files in `AgentArbitrage_BeforeGateCheckFeature2/` or any `Archive/` directory
+- Do NOT run `find . -delete`, `rm -rf`, or any bulk destructive command
+- Do NOT reintroduce fallback pricing logic (Keepa Stats Fallback / Silver Standard) that uses listing averages — see Section 7 "Fallback Data Warning"
+- Do NOT remove the Redis "Brain Wipe" cleanup logic from `kill_everything_force.sh`
+- Do NOT "improve," refactor, or clean up code outside the scope of the assigned task
+- Do NOT mark a task complete if it leaves placeholder logic (`return True`, `candidates.append(all_items)`, etc.) — see Section 6 "Definition of Done"
 
 ---
 
-## Technical and Historical Notes
+## 3. SCOPE DISCIPLINE
 
-This section contains valuable context and learnings from previous development tasks. Consult these notes before working on related parts of the codebase.
+Your task is ONLY what the user explicitly asked. This is the single most important behavioral rule.
 
-### Fallback Data Warning (CRITICAL - Jan & Mar 2026)
+- Do not refactor adjacent code
+- Do not "fix" things you notice in passing
+- Do not change configuration values unless the task is specifically about tuning them
+- If you see something concerning outside scope, mention it in your final summary — do NOT act on it
+- If a necessary change falls outside the original scope, STOP and ask permission before proceeding
+
+Every change must be directly justifiable by the user's request.
+
+---
+
+## 4. INITIAL CODEBASE EXPLORATION — STRICT FILE READING RULES
+
+At the start of every session, follow these rules exactly. Do not deviate without explicit user permission.
+
+### REQUIRED reading (read in this order, in full):
+
+1. `README.md`
+2. `AGENTS.md` (this file)
+3. `Documentation/System_State.md`
+4. `Documentation/Data_Logic.md`
+5. `Documentation/Dashboard_Specification.md`
+6. `Documentation/Token_Management_Strategy.md`
+7. `Documentation/System_Architecture.md`
+8. `Documentation/Feature_Deals_Dashboard.md`
+9. `Documentation/Feature_Guided_Learning_Strategies_Brain.md`
+10. `Documentation/INFERRED_PRICE_LOGIC.md`
+11. The 3 most recent files in `Dev_Logs/` (sorted by date in filename)
+
+### ON-DEMAND reading (read ONLY if the current task explicitly requires it):
+
+- `Documentation/Archive/` — older docs and historical references
+- Older `Dev_Logs/` entries beyond the 3 most recent
+- `Dev_Logs/Archive/` — only if investigating a regression from that period
+- `tests/` — only when writing or debugging tests
+
+### NEVER read (these waste context, cause instability, or contain stale data):
+
+- `*.log` files of any kind, in any directory — including `celery.log` (LEGACY/ABANDONED, massive)
+- `xai_cache.json`, `xai_token_state.json` (runtime state)
+- `strategies.json`, `agent_brain.json`, `intelligence.json`, `tooltip_cache.json` (large runtime caches)
+- `My_Notes/` (personal notes, not project documentation)
+- `Diagnostics/` (output reports, not source)
+- Any `Archive/` directory contents
+- `venv/`, `__pycache__/`, `db_backups/`
+
+### Logging Source of Truth (when logs ARE explicitly required):
+
+- **`celery_worker.log`**: ACTIVE log for background tasks. Use this for troubleshooting.
+- **`celery_monitor.log`**: Resiliency logs.
+- **`celery.log`**: LEGACY/ABANDONED — DO NOT READ.
+
+### Filesystem inspection rules:
+
+- Use `ls -F` or targeted `ls` on specific directories. Never `ls -R`.
+- For any file > 500 KB, use `head -n 100`, `tail -n 100`, or `grep` instead of reading the full file.
+- Always check size with `ls -lh` before reading any file you're unsure about.
+- NEVER assume a log file is safe to read. Check size first.
+
+### Escape hatch:
+
+If you believe a "never read" or "on-demand" file is necessary to complete the current task, state which file and why before reading it. Do not silently access these files.
+
+---
+
+## 5. ENVIRONMENT AND VERIFICATION PROTOCOL (EVP)
+
+Mandatory for all tasks. Failure to adhere can lead to mission failure due to environmental instability.
+
+### 5.1 Environment Sanity Check (ESC)
+
+Before beginning any code analysis or modification, verify the sandbox environment's integrity:
+
+```bash
+touch test_agent_sanity.txt && git add test_agent_sanity.txt && git diff --staged
+```
+
+This MUST show a diff indicating a new file. If empty, the environment is faulty — HALT and report. Do not work around a broken environment.
+
+Cleanup: `git reset HEAD test_agent_sanity.txt && rm test_agent_sanity.txt`
+
+### 5.2 Principle of Least Impact Verification (LIV)
+
+Use the most lightweight, targeted verification possible. Do NOT run resource-intensive end-to-end pipelines (like `backfill_deals`) to verify small isolated changes.
+
+- **Backend/API change:** Insert one test row via `sqlite3`, query the endpoint with `curl`.
+- **Frontend change:** Use frontend verification tools without populating the entire database.
+
+### 5.3 Database Backup and Restore
+
+Before significant changes:
+- `./backup_db.sh` — Creates a timestamped backup
+- `./restore_db.sh` — Restores from the most recent backup
+
+---
+
+## 6. THE STABILITY PACT (REGRESSION PREVENTION)
+
+This is your primary directive for keeping hard-won code stable.
+
+### 6.1 Principle of Minimum Scope
+
+Change the absolute minimum code necessary. No unrelated refactoring or "cleanup."
+
+### 6.2 Code Archaeology Before Action
+
+Before modifying existing code:
+- Run `git log -p <filepath>` to understand history
+- Consult `Dev_Logs/Archive/` ONLY when tracing the origin of a specific feature
+- Understand the *intent* before proposing changes
+
+### 6.3 Strict Separation of Code and Configuration
+
+Do not change configuration values (batch sizes, timeouts, thresholds) unless the task is specifically about tuning. If you find hardcoded config during a task, REPORT it and ask before moving it.
+
+### 6.4 Test-Driven Development
+
+- Bug fixes: write a failing test that reproduces the bug FIRST
+- New features: write tests defining correct behavior
+- Run the ENTIRE test suite before submitting. A failing test is a hard blocker.
+
+### 6.5 Explicit Confirmation for Scope Creep
+
+If a necessary change falls outside the original scope, STOP. Present the finding and proposed change. Do not proceed without explicit permission.
+
+### 6.6 Definition of Done — The Logic Check
+
+**WARNING: The "Infrastructure vs. Logic" Trap.** Tasks often split into:
+1. **Infrastructure** — scaffolding (loops, function calls, integrations)
+2. **Logic** — the actual decision-making (filtering, pricing, rejection)
+
+**A task is NOT DONE until both are complete.**
+
+- NEVER leave placeholders like `candidates.append(all_items)` or `return True` with intent to "refine later"
+- If infrastructure must merge before logic is ready, the feature MUST be DISABLED by default (feature flag or commented out)
+- "Zombie Features" (infrastructure without logic) consume resources but provide no value — worse than not having the feature at all
+
+**Verification step:** Before marking complete, ask: *"Does this code actually make decisions, or is it just moving data?"*
+
+---
+
+## 7. TECHNICAL AND HISTORICAL NOTES
+
+Consult these notes before working on related parts of the codebase.
+
+### 7.1 Fallback Data Warning (CRITICAL — Jan & Mar 2026)
+
 **Do NOT use unverified fallback data to fill missing fields or estimate prices.**
-Previous attempts to "solve" data gaps by using fallback values (e.g., using Keepa Stats listing averages like `avg90` or `avg365` when inferred sales were sparse) resulted in artificially elevated list prices and "fake profits."
--   **Principle:** If the primary data source (confirmed true inferred sales via drops vs. offers) is missing, it is **required** to reject the deal (e.g., return `None` or `-1`). Incorrect guesses based on listing prices lead to wildly inaccurate margins and damage subscriber trust.
--   **March 2026 Addendum:** The "Keepa Stats Fallback" (Silver Standard) logic was explicitly and entirely removed from `stable_calculations.py` for this reason. **Do not reintroduce fallback logic that relies on listing prices to artificially inflate deal volume.** If there are 0 inferred sales, the deal MUST be rejected.
 
-### Role-Based Access Control (RBAC)
--   **User Roles:** The system distinguishes between `admin` and `user` roles.
--   **Access Enforcement:**
-    -   **Admin Only:** `/deals`, `/guided_learning`, `/strategies`, `/intelligence`.
-    -   **User Accessible:** `/dashboard`, `/settings`.
-    -   **Mechanism:** `wsgi_handler.py` checks `session['role']` on restricted routes and redirects unauthorized users to the dashboard.
--   **Navigation:** Frontend templates conditionally render navigation links based on the user's role.
+Previous attempts to "solve" data gaps using fallback values (e.g., Keepa Stats listing averages like `avg90` or `avg365` when inferred sales were sparse) resulted in artificially elevated list prices and "fake profits."
 
-### Timestamp Handling Notes (from Task starting ~June 24-25, 2025)
+- **Principle:** If the primary data source (confirmed true inferred sales via drops vs. offers) is missing, REJECT the deal (return `None` or `-1`). Incorrect guesses based on listing prices lead to wildly inaccurate margins and damage subscriber trust.
+- **March 2026 Addendum:** The "Keepa Stats Fallback" (Silver Standard) logic was explicitly removed from `stable_calculations.py`. **Do not reintroduce fallback logic that uses listing prices to inflate deal volume.** If 0 inferred sales, the deal MUST be rejected.
 
-When working with timestamp fields like 'last update' and 'last price change', the goal is to reflect the most recent relevant event as accurately as possible, aligning with user expectations from observing Keepa.com.
+### 7.2 Role-Based Access Control (RBAC)
 
-**For 'last_update':**
-This field should represent the most recent time any significant data for the product/deal was updated by Keepa. It considers:
-1.  `product_data['products'][0]['lastUpdate']` (general product data update from /product endpoint).
-2.  `deal_object.get('lastUpdate')` (general deal data update from /deal endpoint).
-3.  `product_data.get('stats', {}).get('lastOffersUpdate')` (when offers were last refreshed from /product endpoint stats).
-The function should take the maximum valid (recent) timestamp from these three sources.
+- **User Roles:** `admin` and `user`
+- **Admin Only:** `/deals`, `/guided_learning`, `/strategies`, `/intelligence`
+- **User Accessible:** `/dashboard`, `/settings`
+- **Mechanism:** `wsgi_handler.py` checks `session['role']` on restricted routes; redirects unauthorized users to dashboard
+- **Navigation:** Frontend templates conditionally render nav links based on role
 
-**For 'last_price_change' (specifically for Used items, excluding 'Acceptable'):**
-This field aims to find the most recent price change for relevant used conditions.
-1.  **Primary Source (`product_data.csv`):** Check historical data for 'USED' (`csv[2]`), 'USED_LIKE_NEW' (`csv[6]`), 'USED_VERY_GOOD' (`csv[7]`), and 'USED_GOOD' (`csv[8]`). Select the most recent valid timestamp from these.
-2.  **Fallback Source (`deal_object.currentSince`):** If CSV data is insufficient, check `currentSince[2]` (Used), `currentSince[19]` (Used-LikeNew), `currentSince[20]` (Used-VeryGood), and `currentSince[21]` (Used-Good). Additionally, if `deal_object.current[14]` indicates the Buy Box is 'Used', also consider `currentSince[32]` (buyBoxUsedPrice timestamp). Select the most recent valid timestamp from this combined pool.
+### 7.3 Timestamp Handling (from task ~June 24-25, 2025)
 
-**General Timestamp Conversion:**
-All Keepa minute timestamps should be converted to datetime objects using `KEEPA_EPOCH = datetime(2011, 1, 1)`, then localized from naive UTC to aware UTC (`timezone('UTC').localize(dt)`), and finally converted to 'America/Toronto' (`astimezone(TORONTO_TZ)`), formatted as '%Y-%m-%d %H:%M:%S'. Timestamps <= 100000 are generally considered invalid/too old.
+Goal: reflect the most recent relevant event accurately, aligned with user expectations from Keepa.com.
+
+**For `last_update`:**
+Most recent time any significant data was updated by Keepa. Take MAX valid timestamp from:
+1. `product_data['products'][0]['lastUpdate']` (general product data, /product endpoint)
+2. `deal_object.get('lastUpdate')` (general deal data, /deal endpoint)
+3. `product_data.get('stats', {}).get('lastOffersUpdate')` (offers refresh, /product stats)
+
+**For `last_price_change` (Used items, excluding 'Acceptable'):**
+
+1. **Primary (`product_data.csv`):** Check 'USED' (`csv[2]`), 'USED_LIKE_NEW' (`csv[6]`), 'USED_VERY_GOOD' (`csv[7]`), 'USED_GOOD' (`csv[8]`). Select most recent valid timestamp.
+2. **Fallback (`deal_object.currentSince`):** Check `currentSince[2]` (Used), `[19]` (Like-New), `[20]` (Very-Good), `[21]` (Good). If `current[14]` indicates Buy Box is 'Used', also check `currentSince[32]` (buyBoxUsedPrice). Select most recent.
+
+**General Conversion:**
+Keepa minute timestamps → datetime via `KEEPA_EPOCH = datetime(2011, 1, 1)`, localize naive UTC → aware UTC (`timezone('UTC').localize(dt)`) → 'America/Toronto' (`astimezone(TORONTO_TZ)`), format `'%Y-%m-%d %H:%M:%S'`. Timestamps ≤ 100000 are invalid/too old.
 
 **The "Keepa Epoch Bug" (Jan 2026):**
-A critical regression occurred when the system interpreted Keepa timestamps using an epoch of `2000-01-01` instead of `2011-01-01`. This 11-year offset caused fresh 2026 data to be seen as 2015 data ("Ancient Data"), causing the ingestion pipeline to reject everything. **Always verify the epoch is 2011.**
+A critical regression occurred when the system used `2000-01-01` instead of `2011-01-01`. The 11-year offset caused fresh 2026 data to be seen as 2015 data ("Ancient Data"), causing the ingestion pipeline to reject everything. **Always verify the epoch is 2011.**
 
-### Circular Dependencies & Module Structure
--   **`keepa_deals/new_analytics.py`**: This module was specifically created to house downstream analytical logic (e.g., trend calculations, offer count averages) to prevent circular imports between `processing.py`, `stable_calculations.py`, and `stable_products.py`.
--   **Rule:** If you are adding a new metric that depends on core calculations (like inferred sales) but is used by the main processing loop, place it in `new_analytics.py` rather than modifying the core stable modules.
+### 7.4 Circular Dependencies & Module Structure
 
-### Data Standards & Epochs
-- **Keepa Epoch:** The system strictly uses `datetime(2011, 1, 1)` as the epoch for interpreting Keepa API timestamps. This differs from the 2000 epoch used in some other contexts or documentation. Failure to use 2011 results in an 11-year data offset.
+- **`keepa_deals/new_analytics.py`**: Houses downstream analytical logic (trend calculations, offer count averages) to prevent circular imports between `processing.py`, `stable_calculations.py`, `stable_products.py`.
+- **Rule:** New metrics depending on core calculations (like inferred sales) but used by the main processing loop go in `new_analytics.py` — do NOT modify core stable modules.
 
-### Token Management & Rate Limiting
-- **Blocking Wait Strategy:** To prevent API 429 (Too Many Requests) errors, the system employs a "Blocking Wait" strategy.
-- **Implementation:** API wrapper functions (like `fetch_deals_for_deals` in `keepa_deals/keepa_api.py`) accept a `token_manager` argument. If provided, the function calls `token_manager.request_permission_for_call()` which sleeps the thread until sufficient tokens are available, rather than failing immediately.
-- **Rule:** When adding new API calls to high-volume loops, always ensure they are integrated with the `TokenManager` to support this flow.
+### 7.5 Token Management & Rate Limiting
 
-### UI & SVG Standards
-- **Icons:** Navigation icons are SVGs with their `viewBox` reset to the content bounding box (removing internal padding) and are strictly sized to **20px** height in CSS (`static/global.css`).
-- **Header:** The main header container (`.main-header`) has a strictly fixed height of **134px**. Altering this risks breaking the "sticky" filter panel alignment.
-- **Sticky Headers:** The dashboard data table relies on a precise stack of `top` offsets (177px, 233px, 264px, 289px) that are hardcoded based on the heights of the Main Header and Filter Panel. The `.filter-panel` MUST have `margin-bottom: 0px` to prevent layout breaks.
-- **Table Width Constraints:** The dashboard table (`#deals-table`) has a strict `1200px` max-width limit. To accommodate 15+ columns without horizontal overflow, numerical data must be heavily formatted.
-  - Large financial values (Profit, All_in_Cost) must drop their decimals (e.g., `minimumFractionDigits: 0`).
-  - Text-heavy columns like `Detailed_Seasonality` must use a strict `max-width` (e.g., `105px`) with `text-overflow: ellipsis`.
-  - Cell padding must be strictly managed (e.g., `padding: 0 8px`) to maximize data real estate without clipping vertical headers. Do not pad the top/bottom of sortable headers.
+- **Blocking Wait Strategy:** Prevents 429 errors. API wrapper functions accept a `token_manager` argument. Calling `token_manager.request_permission_for_call()` sleeps the thread until tokens are available rather than failing.
+- **Rule:** New API calls in high-volume loops MUST integrate with the `TokenManager`.
 
-### Keepa Query Standards
-- **Date Range:** `dateRange: 4` (All Combined) is permissible and recommended to capture the maximum 3-year history for AI analysis.
-- **Sorting:** When using `dateRange: 4`, you MUST enforce `sortType: 4` (Last Update) to ensure the API returns fresh data and not stale deals from 2015.
+### 7.6 UI & SVG Standards
 
-### Critical Fixes & Stability (Feb 2026)
-- **Token Starvation & Zombie Locks:** The system uses a **Shared Redis Token Bucket** (`keepa_deals/token_manager.py`) to coordinate API usage. To prevent locks from persisting after a crash, the kill script (`kill_everything_force.sh`) now performs a "Brain Wipe" (FLUSHALL + SAVE) on Redis. **Do not remove this cleanup logic.**
-- **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not attempt to "guess" shipping costs for MFN sellers.
-- **Seller Name Preservation:** To save tokens, the system performs "Lightweight Updates" that lack seller names. It uses the `Seller ID` to preserve the existing human-readable name. If you modify `processing.py`, ensure this logic remains intact to avoid overwriting names with raw IDs.
-- **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing critical data (`List at`) are now **persisted** (not rejected) to prevent infinite re-fetch loops. They are filtered from the Dashboard.
-- **Keepa Stats Fallback (REMOVED MAR 2026):** We previously used listing averages when inferred sales were < 3. This was removed because it produced artificially elevated prices compared to actual sales. The system now strictly requires inferred true sales to list a price.
-- **Sparse Sales Rescue:** The system uses the **Median** of inferred sales (1-2 events) as a "Sparse Rescue" price, because these still represent true inferred sales. These skip XAI checks to prevent false negatives from missing context.
-- **Deficit Protection:** Enforced `MAX_DEFICIT = -180` to prevent API lockouts.
+- **Icons:** Navigation SVGs have `viewBox` reset to content bounding box (no internal padding), strictly **20px** height in CSS (`static/global.css`)
+- **Header:** `.main-header` strictly **134px**. Altering breaks sticky filter alignment.
+- **Sticky Headers:** Dashboard table relies on `top` offsets (177px, 233px, 264px, 289px) hardcoded to Main Header + Filter Panel heights. `.filter-panel` MUST have `margin-bottom: 0px`.
+- **Table Width:** `#deals-table` strict **1200px** max-width. To fit 15+ columns:
+  - Large financial values (Profit, All_in_Cost): drop decimals (`minimumFractionDigits: 0`)
+  - Text-heavy columns (`Detailed_Seasonality`): strict `max-width: 105px` with `text-overflow: ellipsis`
+  - Cell padding: `padding: 0 8px`. Don't pad top/bottom of sortable headers.
 
-## Definition of Done: The Logic Check
+### 7.7 Keepa Query Standards
 
-**WARNING: The "Infrastructure vs. Logic" Trap**
-Developers often split complex tasks into two stages:
-1.  **Infrastructure:** Building the scaffolding (e.g., loops, function calls, API integrations) to ensure the system handles the new data flow without crashing.
-2.  **Logic:** Implementing the actual decision-making algorithms (e.g., filtering, pricing, rejection).
+- **Date Range:** `dateRange: 4` (All Combined) is permissible — captures max 3-year history for AI analysis
+- **Sorting:** With `dateRange: 4`, MUST use `sortType: 4` (Last Update) to ensure fresh data, not stale 2015 deals
 
-**CRITICAL RULE:** A task is **NOT DONE** until both stages are complete.
-*   **NEVER** leave a placeholder like `candidates.append(all_items)` or `return True` in production code with the intent to "refine later".
-*   If infrastructure must be merged before logic is ready, the feature must be **DISABLED** by default (e.g., via a feature flag or commented out).
-*   **Zombie Features:** Infrastructure without logic creates "Zombie Features" that consume resources (tokens/CPU) but provide no value (e.g., fetching data only to pass everything through). This is worse than not having the feature at all.
+### 7.8 Critical Fixes & Stability (Feb 2026)
 
-**Verification Step:** Before marking a task as complete, explicitly ask: *"Does this code actually make decisions, or is it just moving data?"*
+- **Token Starvation & Zombie Locks:** Shared Redis Token Bucket (`keepa_deals/token_manager.py`) coordinates API usage. Kill script (`kill_everything_force.sh`) performs a "Brain Wipe" (FLUSHALL + SAVE) on Redis to prevent persistent locks after a crash. **Do not remove this cleanup logic.**
+- **Ghost Deals:** MFN offers with unknown shipping (`-1`) are strictly rejected. Do not "guess" shipping costs for MFN sellers.
+- **Seller Name Preservation:** "Lightweight Updates" lack seller names; system uses `Seller ID` to preserve existing human-readable names. If you modify `processing.py`, ensure this logic remains intact.
+- **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing `List at` are PERSISTED (not rejected) to prevent infinite re-fetch loops. Filtered from Dashboard.
+- **Sparse Sales Rescue:** Median of inferred sales (1-2 events) used as a "Sparse Rescue" price — represents true inferred sales. Skips XAI checks to prevent false negatives from missing context.
+- **Deficit Protection:** `MAX_DEFICIT = -180` enforced to prevent API lockouts.
+- **Stale Deal Rescue:** `rescue_stale_deals` in `keepa_deals/smart_ingestor.py` proactively refreshes deals older than 48 hours to prevent Janitor deletion (72h limit).
+- **Amazon Ceiling Check:** In `keepa_deals/processing.py` lightweight updates, if `List at` > 90% of current Amazon New Price, clamp to that ceiling. Prevents "fake profit" when market drops.
 
-*   **Smart Ingestor Batch Size:** Default **50** (High Rate), dynamically reduces to **20** (Low Rate < 20/min) and **1** (Critically Low < 10/min) to safely fit within the token burst window (40 tokens) without livelock.
-*   **Stall Watchdog:** Use `Diagnostics/watchdog_stall_detector.py` to identify if the worker is stuck (Tokens > 290 and no Heartbeat for 15 mins).
+### 7.9 Recent Fixes (March 2026)
 
----
-
-## Recent Fixes (Feb 2026)
-- **Stale Deal Rescue:** Implemented `rescue_stale_deals` in `keepa_deals/smart_ingestor.py` to prevent "diminishing deals". The system proactively refreshes deals older than 48 hours to ensure they are not deleted by the Janitor (72h limit).
-- **Amazon Ceiling Check:** Added a safety check in `keepa_deals/processing.py` during lightweight updates. If `List at` > 90% of the current Amazon New Price, it is clamped down to that ceiling. This prevents deals from showing "fake profit" when the market price drops.
-
-## Recent Fixes (March 2026)
-- **Self-Aware Mentor & Tooltips:** Added `keepa_deals/platform_knowledge.py` to dynamically load documentation into the AI's context. Created an instant, speech-bubble style tooltip system for the Deals Dashboard headers and filters.
-    - **Constraint Note:** The `?` icon was removed from column headers because it violated the strict 1200px table width limit. Triggers (`.ai-tooltip-trigger`) are now applied directly to the text/labels themselves. Tooltips utilize a server-side JSON cache (`tooltip_cache.json`) to prevent latency and token waste.
-- **Astronomical Profits Fix:** Added a hard ceiling in `keepa_deals/stable_calculations.py` to automatically reject any `List At` price over $1,500. Expanded the > 3.0 ratio check (Suspiciously High Markup) to apply to **all** price sources, forcing AI scrutiny on any price more than 3x the current used price. Updated AI Prompt to explicitly reject non-textbook used prices over $500.
-- **Database Clearing Script:** Created `./clear_deals.sh` to provide a non-interactive way to clear old or inaccurate deal data (`deals` and `user_restrictions` tables) from `deals.db` without wiping the entire database or asking for user input, ideal for pre-deployment cleanup.
-- **FBA Inventory Sync:** Fixed "No active inventory found" by switching to `GET_FBA_MYI_ALL_INVENTORY_DATA` (resolving FATAL errors from the unsuppressed report). Logic now includes **Inbound** inventory (Working, Shipped, Receiving) in the total count.
-- **Credential Management:** Refactored backend and diagnostics to strictly prioritize Database (`deals.db`) lookup for Seller ID and Refresh Tokens. `.env` is reserved for global app config (Client ID/Secret) only.
-- **Safety:** Hardcoded `https://sellingpartnerapi-na.amazon.com` (Production) as the default SP-API URL to prevent accidental Sandbox connections.
-- **Dynamic ROI & All-in Cost:** `All-in Cost` strictly excludes Amazon fees (which are now deducted separately to find `Profit`). `ROI` is dynamically calculated `(Profit / All_in_Cost) * 100` and is **not** stored in the database. Warn against updating non-existent DB columns (like `Total AMZ fees`) using raw SQL.
-- **Strict UI Limits:** The dashboard table is strictly limited to `1200px`. To fit new columns, use `minimumFractionDigits: 0` for large numbers and clamp text columns (e.g., `max-width: 105px`).
+- **Self-Aware Mentor & Tooltips:** `keepa_deals/platform_knowledge.py` dynamically loads documentation into AI context. Instant speech-bubble tooltips on Deals Dashboard headers/filters.
+  - **Constraint:** `?` icon removed from column headers (violated 1200px limit). Triggers (`.ai-tooltip-trigger`) applied to text/labels directly. Server-side JSON cache (`tooltip_cache.json`) prevents latency and token waste.
+- **Astronomical Profits Fix:** Hard ceiling in `keepa_deals/stable_calculations.py` rejects `List At` > $1,500. The > 3.0 ratio check (Suspiciously High Markup) now applies to ALL price sources. AI Prompt updated to reject non-textbook used prices > $500.
+- **Database Clearing Script:** `./clear_deals.sh` non-interactively clears `deals` and `user_restrictions` tables without wiping the entire DB or prompting — ideal for pre-deployment cleanup.
+- **FBA Inventory Sync:** Switched to `GET_FBA_MYI_ALL_INVENTORY_DATA` (resolved FATAL errors from unsuppressed report). Logic includes Inbound inventory (Working, Shipped, Receiving).
+- **Credential Management:** Backend and diagnostics strictly prioritize Database (`deals.db`) lookup for Seller ID and Refresh Tokens. `.env` reserved for global app config (Client ID/Secret) only.
+- **Dynamic ROI & All-in Cost:** `All-in Cost` strictly excludes Amazon fees (deducted separately for `Profit`). `ROI = (Profit / All_in_Cost) * 100`, dynamically calculated, NOT stored. Warn against updating non-existent DB columns (like `Total AMZ fees`) via raw SQL.
+- **Smart Ingestor Batch Size:** Default **50** (High Rate), reduces to **20** (Low < 20/min) and **1** (Critically Low < 10/min) to fit within 40-token burst window without livelock.
+- **Stall Watchdog:** `Diagnostics/watchdog_stall_detector.py` identifies stuck workers (Tokens > 290 + no Heartbeat for 15 mins).

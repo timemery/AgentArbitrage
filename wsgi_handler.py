@@ -1765,10 +1765,12 @@ def api_deals():
                             {"role": "system", "content": "You are a precise JSON-only output bot."},
                             {"role": "user", "content": prompt}
                         ],
-                        "model": "grok-4-fast-non-reasoning",
+                        "model": "grok-4-fast-reasoning",
                         "stream": False,
                         "temperature": 0.2
                     }
+
+                    app.logger.info("Agent's Choice Pass 2: Querying xAI API...")
 
                     response_data = query_xai_api(payload)
 
@@ -1795,12 +1797,16 @@ def api_deals():
                     else:
                         ai_failed = True
 
-                    # Filter top 10 down to selected ASINs, or fallback if AI failed
+                    # Filter top 10 down to selected ASINs
+                    # Ensure fallback if selected_asins is empty but ai didn't "fail" with error
                     if ai_failed:
                         deals_list = top_10
                         app.logger.info(f"Agent's Choice Pass 2 Complete: Fallback to {len(deals_list)} deals due to AI failure.")
                     else:
                         deals_list = [d for d in top_10 if str(d.get("ASIN")) in selected_asins]
+                        if not deals_list:
+                             app.logger.info("Agent's Choice Pass 2 Complete: AI returned no valid ASINs. Falling back to top 10.")
+                             deals_list = top_10
                         app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
                 except Exception as e:
                     app.logger.error(f"Error in xAI Mastermind pass: {e}", exc_info=True)
