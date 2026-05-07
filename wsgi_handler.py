@@ -1411,6 +1411,19 @@ def deals():
 
     return render_template('deals.html', keepa_query=keepa_query)
 
+@app.route('/api/prime_picks/refresh', methods=['POST'])
+def refresh_prime_picks():
+    if not session.get('logged_in'):
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    try:
+        from keepa_deals.prime_picks_task import generate_prime_picks
+        generate_prime_picks.delay()
+        return jsonify({'status': 'success', 'message': 'Prime Picks refresh started in the background.'})
+    except Exception as e:
+        app.logger.error(f"Failed to start Prime Picks task: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/api/deals')
 def api_deals():
     try:
@@ -1639,177 +1652,35 @@ def api_deals():
         # Log the query for debugging
         app.logger.debug(f"Executing Deals Query: {data_query} | Params: {query_params}")
 
+        prime_picks_generated_at = None
+
         if filters.get("agents_choice"):
-            # If agent's choice is enabled, we first grab all matching Smart Floor deals
-            # We don't apply limit/offset here because we need to sort by custom score first
-            # We will grab all of them (or a large enough subset if performance is an issue, but we'll grab all for now)
-            agents_choice_query = f"SELECT {select_clause} {from_clause}{where_sql}"
-            # We pass the query params minus the limit and offset
+            # Fetch cached Prime Picks from background task
+            # Apply all existing UI filters via JOIN
+            select_clause = select_clause.replace("deals.*", "deals.*, pp.rank, pp.score")
+            from_clause = f"FROM prime_picks pp INNER JOIN {TABLE_NAME} AS deals ON pp.asin = deals.\"ASIN\""
+
+            if is_sp_api_connected and user_id:
+                from_clause += f" LEFT JOIN {RESTRICTIONS_TABLE} AS ur ON deals.\"ASIN\" = ur.asin AND ur.user_id = ?"
+
+            # Replace 'deals.' in where_clauses if any was prepended
+            where_sql = " WHERE " + " AND ".join(final_where_clauses) if final_where_clauses else ""
+
+            agents_choice_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY pp.rank ASC"
+
+            # The query_params have limit/offset appended at the end. We need to remove them for this fetch
             agents_choice_params = query_params[:-2]
+
+            app.logger.debug(f"Executing Cached Prime Picks Query: {agents_choice_query} | Params: {agents_choice_params}")
             deal_rows = cursor.execute(agents_choice_query, agents_choice_params).fetchall()
             deals_list = [dict(row) for row in deal_rows]
 
-            app.logger.info(f"Agent's Choice Pass 1 (Smart Floor): Fetched {len(deals_list)} candidate deals from DB.")
-
-            # Now calculate the dynamic Score
-            def get_hours_since(date_str):
-                if not date_str:
-                    return 0
-                try:
-                    # Attempt ISO format parsing (e.g., from last_seen_utc)
-                    dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
-                    # last_seen_utc is typically UTC
-                    now = datetime.utcnow()
-                    # Make dt naive if it has tzinfo for comparison
-                    if dt.tzinfo:
-                        dt = dt.replace(tzinfo=None)
-                    delta = now - dt
-                    return max(0, delta.total_seconds() / 3600.0)
-                except ValueError:
-                    # Fallback to Deal_found parsing if needed
-                    # e.g., "05/12/23 14:30"
-                    try:
-                        dt = datetime.strptime(date_str, '%m/%d/%y %H:%M')
-                        now = datetime.utcnow()
-                        delta = now - dt
-                        return max(0, delta.total_seconds() / 3600.0)
-                    except ValueError:
-                        return 0
-
-            def parse_offers(offers_str):
-                if not offers_str or offers_str == '-': return 0
-                m = re.search(r'(\d+)', str(offers_str))
-                if m:
-                    return int(m.group(1))
-                return 0
-
-            scored_deals = []
-            for deal in deals_list:
-                profit_str = str(deal.get('Profit', '0')).replace('$', '').replace(',', '')
-                cost_str = str(deal.get('All_in_Cost', '0')).replace('$', '').replace(',', '')
-                try:
-                    profit = float(profit_str)
-                    cost = float(cost_str)
-                    roi = (profit / cost) * 100 if cost > 0 else 0
-                except ValueError:
-                    profit = 0
-                    roi = 0
-
-                hours_since = get_hours_since(deal.get('last_seen_utc') or deal.get('Deal_found'))
-
-                sales_rank = deal.get('Sales_Rank_Current')
-                if sales_rank is None or sales_rank == '':
-                    sales_rank = 1000000 # fallback
-                else:
-                    try:
-                        sales_rank = float(str(sales_rank).replace(',', ''))
-                    except ValueError:
-                        sales_rank = 1000000
-
-                offers = parse_offers(deal.get('Offers'))
-
-                base_half_life = 24 + (sales_rank / 2000000.0) * 144
-                final_half_life = base_half_life * (1 - min(0.5, offers * 0.02))
-
-                score = (profit * roi) * (0.5 ** (hours_since / max(0.001, final_half_life)))
-                deal['_score'] = score
-                scored_deals.append(deal)
-
-            scored_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)
-            top_10 = scored_deals[:10]
-
-            app.logger.info(f"Agent's Choice Pass 1 (Scoring): Top {len(top_10)} candidates selected for AI evaluation.")
-
-            # Pass 2: The xAI Mastermind
-            if top_10:
-                try:
-                    strategies_text = load_strategies()
-
-                    # Structure the top 10 candidates for the AI prompt
-                    candidates_for_ai = []
-                    for d in top_10:
-                        candidates_for_ai.append({
-                            "ASIN": d.get("ASIN"),
-                            "Title": d.get("Title", "")[:100], # limit title length
-                            "Sales_Rank_Current": d.get("Sales_Rank_Current"),
-                            "Offers": d.get("Offers"),
-                            "Sales_Rank_Drops_last_180_days": d.get("Sales_Rank_Drops_last_180_days"),
-                            "Profit": d.get("Profit"),
-                            "Detailed_Seasonality": d.get("Detailed_Seasonality"),
-                            "Percent_Down": d.get("Percent_Down")
-                        })
-
-                    prompt = f"""
-                    You are the xAI Mastermind evaluating the top 10 candidate deals.
-
-                    **Evaluation Strategy:**
-                    You MUST evaluate candidates holistically against ALL strategies present in the provided text rules. However, recognize that not every deal will be a "perfect" match for every strategy (e.g. not everything needs to be seasonal).
-
-                    Strategies:
-                    {strategies_text}
-
-                    **Candidates:**
-                    {json.dumps(candidates_for_ai, indent=2)}
-
-                    **Instructions:**
-                    Select the items (ASINs) that represent solid arbitrage opportunities based on the strategies. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
-                    You MUST return ONLY a JSON array of strings containing the selected ASINs. No markdown formatting, no explanations.
-                    Example: ["0123456789", "B01ABCD123"]
-                    """
-
-                    payload = {
-                        "messages": [
-                            {"role": "system", "content": "You are a precise JSON-only output bot."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        "model": "grok-4-fast-reasoning",
-                        "stream": False,
-                        "temperature": 0.2
-                    }
-
-                    app.logger.info("Agent's Choice Pass 2: Querying xAI API...")
-
-                    response_data = query_xai_api(payload)
-
-                    selected_asins = []
-                    ai_failed = False
-
-                    if not response_data or "error" in response_data:
-                        app.logger.error(f"xAI API returned an error: {response_data.get('error', 'Unknown Error')}")
-                        ai_failed = True
-                    elif 'choices' in response_data and response_data['choices']:
-                        content = response_data['choices'][0].get('message', {}).get('content', '').strip()
-                        app.logger.info(f"Agent's Choice Pass 2 (xAI): Raw AI Response:\n{content}")
-                        # Strip markdown if present
-                        content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content.strip(), flags=re.MULTILINE).strip()
-                        try:
-                            parsed = json.loads(content)
-                            if isinstance(parsed, list):
-                                selected_asins = [str(x) for x in parsed]
-                            elif isinstance(parsed, dict) and "asins" in parsed:
-                                selected_asins = [str(x) for x in parsed["asins"]]
-                        except json.JSONDecodeError:
-                            app.logger.error(f"Failed to parse xAI output as JSON: {content}")
-                            ai_failed = True
-                    else:
-                        ai_failed = True
-
-                    # Filter top 10 down to selected ASINs
-                    # Ensure fallback if selected_asins is empty but ai didn't "fail" with error
-                    if ai_failed:
-                        deals_list = top_10
-                        app.logger.info(f"Agent's Choice Pass 2 Complete: Fallback to {len(deals_list)} deals due to AI failure.")
-                    else:
-                        deals_list = [d for d in top_10 if str(d.get("ASIN")) in selected_asins]
-                        if not deals_list:
-                             app.logger.info("Agent's Choice Pass 2 Complete: AI returned no valid ASINs. Falling back to top 10.")
-                             deals_list = top_10
-                        app.logger.info(f"Agent's Choice Pass 2 Complete: {len(deals_list)} deals passed AI validation.")
-                except Exception as e:
-                    app.logger.error(f"Error in xAI Mastermind pass: {e}", exc_info=True)
-                    deals_list = top_10 # Fallback to top 10 if AI fails
-            else:
-                deals_list = []
+            # Get the generated_at timestamp for the UI
+            if deals_list:
+                # The timestamp is stored in the DB as string, we can grab it from any row or query directly
+                generated_at_row = cursor.execute("SELECT MAX(generated_at) FROM prime_picks").fetchone()
+                if generated_at_row and generated_at_row[0]:
+                    prime_picks_generated_at = generated_at_row[0]
 
             # Override pagination for Agent's Choice since we return a specific filtered set
             total_records = len(deals_list)
@@ -1819,6 +1690,13 @@ def api_deals():
         else:
             deal_rows = cursor.execute(data_query, query_params).fetchall()
             deals_list = [dict(row) for row in deal_rows]
+
+        # Get the prime picks generated_at even if we're not currently filtering by it
+        # so the UI can check if new ones arrived
+        if not prime_picks_generated_at:
+            generated_at_row = cursor.execute("SELECT MAX(generated_at) FROM prime_picks").fetchone()
+            if generated_at_row and generated_at_row[0]:
+                prime_picks_generated_at = generated_at_row[0]
 
         # --- Post-processing and Formatting ---
         for deal in deals_list:
@@ -1863,7 +1741,8 @@ def api_deals():
             "total_db_records": total_db_records,
             "total_pages": total_pages,
             "current_page": page,
-            "limit": limit
+            "limit": limit,
+            "prime_picks_generated_at": prime_picks_generated_at
         },
         "deals": deals_list
     }

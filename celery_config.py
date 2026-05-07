@@ -16,7 +16,8 @@ imports = (
     'keepa_deals.diag_task',
     'keepa_deals.janitor',
     'keepa_deals.maintenance_tasks',
-    'keepa_deals.inventory_import'
+    'keepa_deals.inventory_import',
+    'keepa_deals.prime_picks_task'
 )
 
 beat_schedule_filename = 'celerybeat-schedule'
