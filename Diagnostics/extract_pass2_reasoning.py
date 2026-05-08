@@ -1,51 +1,114 @@
-import re
 import sys
 import os
 
+def find_last_run_start(file_path, marker="Pass 2: Querying xAI API"):
+    """
+    Reads the file backward in chunks to find the last occurrence of the marker.
+    Returns the byte offset of the line containing the marker, or -1 if not found.
+    """
+    chunk_size = 8192
+    with open(file_path, 'rb') as f:
+        f.seek(0, 2)
+        file_size = f.tell()
+
+        offset = file_size
+        overlap = b""
+
+        while offset > 0:
+            read_size = min(chunk_size, offset)
+            offset -= read_size
+            f.seek(offset)
+            chunk = f.read(read_size) + overlap
+
+            # Find the marker in this chunk
+            idx = chunk.rfind(marker.encode('utf-8'))
+            if idx != -1:
+                # We found the marker. We need to find the start of its line.
+                # Find the last newline before the marker in this chunk
+                newline_idx = chunk.rfind(b'\n', 0, idx)
+                if newline_idx == -1:
+                    # The line starts exactly at or before this chunk's boundary.
+                    # Since we didn't find a newline, the line start is at least `offset`.
+                    # To be safe, just return the offset + idx as an approximation.
+                    return offset + idx
+                else:
+                    return offset + newline_idx + 1
+
+            overlap = chunk[:len(marker)] # Keep overlap in case marker crosses chunk boundary
+
+    return -1
+
 def main():
     log_file = sys.argv[1] if len(sys.argv) > 1 else "celery_worker.log"
-    # Find absolute path if it is relative
     log_file = os.path.abspath(log_file)
 
-    # Read the file
-    try:
-        with open(log_file, "r") as f:
-            content = f.read()
-    except FileNotFoundError:
+    if not os.path.exists(log_file):
         print(f"Error: Could not find {log_file}")
         sys.exit(1)
 
-    # Find the last occurrence of "Pass 2: Querying xAI API" to find the last run
-    run_marker = "Pass 2: Querying xAI API"
-    last_run_start_idx = content.rfind(run_marker)
+    start_offset = find_last_run_start(log_file)
 
-    if last_run_start_idx == -1:
+    if start_offset == -1:
         print("Error: Could not find any Pass 2 runs in the log file.")
         sys.exit(1)
 
-    # Extract the run info
-    run_text = content[last_run_start_idx:]
-
     prompt_size = None
     latency = None
-    raw_response = None
+    raw_response_lines = []
     reasoning_lines = []
 
-    prompt_match = re.search(r"prompt size: (\d+) chars", run_text)
-    if prompt_match:
-        prompt_size = prompt_match.group(1)
+    in_raw_response = False
+    max_raw_response_lines = 1000 # Safety bound to prevent OOM
 
-    latency_match = re.search(r"took (\d+\.\d+) seconds", run_text)
-    if latency_match:
-        latency = latency_match.group(1)
+    # Process file line by line to avoid memory exhaustion
+    with open(log_file, "r") as f:
+        f.seek(start_offset)
+        for line in f:
+            if "Pass 2: Querying xAI API (prompt size: " in line:
+                try:
+                    prompt_size = line.split("prompt size: ")[1].split(" chars")[0]
+                except IndexError:
+                    pass
+            elif "Pass 2: xAI API call took" in line:
+                try:
+                    latency = line.split("took ")[1].split(" seconds")[0]
+                except IndexError:
+                    pass
+            elif "Pass 2 Raw Response:" in line:
+                in_raw_response = True
+                try:
+                    raw_response_lines.append(line.split("Pass 2 Raw Response:")[1].lstrip())
+                except IndexError:
+                    pass
+            elif in_raw_response:
+                # If we encounter a new log timestamp, we are out of the raw response block
+                # Celery log lines typically start with a bracket: [2023-10-27 10:00:00,000: INFO/MainProcess]
+                stripped = line.strip()
+                is_new_log_entry = False
 
-    raw_response_match = re.search(r"Pass 2 Raw Response: ([\s\S]*?)(?=\n\[?\d{4}-\d{2}-\d{2}|\Z)", run_text)
-    if raw_response_match:
-        raw_response = raw_response_match.group(1).strip()
+                # Check for standard celery log format
+                if stripped.startswith('[') and len(stripped) > 5 and stripped[1:5].isdigit() and stripped[5] == '-':
+                    is_new_log_entry = True
+                # Fallback for standard python log format
+                elif len(stripped) > 10 and stripped[0:4].isdigit() and stripped[4] == '-' and stripped[7] == '-':
+                    is_new_log_entry = True
 
-    for line in run_text.split("\n"):
-        if "[Pass 2 Reasoning]" in line:
-            reasoning_lines.append(line.split("[Pass 2 Reasoning] ")[1].strip())
+                if is_new_log_entry:
+                     in_raw_response = False
+                elif "[Pass 2 Reasoning]" in line:
+                     in_raw_response = False
+                elif len(raw_response_lines) > max_raw_response_lines:
+                     in_raw_response = False
+                     raw_response_lines.append("... [TRUNCATED - EXCEEDED MAX LINES] ...")
+                else:
+                    raw_response_lines.append(line)
+
+            if "[Pass 2 Reasoning]" in line:
+                parts = line.split("[Pass 2 Reasoning] ")
+                if len(parts) > 1:
+                    reasoning_lines.append(parts[1].strip())
+
+    raw_response = "".join(raw_response_lines).strip()
 
     # Print output
     print("=" * 60)
