@@ -12,6 +12,12 @@ from .ava_advisor import query_xai_api, STRATEGIES_FILE
 
 logger = logging.getLogger(__name__)
 
+PASS_1_MIN_PROFIT = 15
+PASS_1_MIN_ROI = 20
+PASS_1_MAX_ROI = 300
+PASS_1_MIN_DEAL_TRUST = 50
+PASS_1_MAX_LIST_AT = 500
+
 def get_tiered_strategies(candidates, max_per_core_category=30):
     """
     Implements tiered strategy injection (Pass 2 payload reduction).
@@ -121,14 +127,14 @@ def generate_prime_picks():
 
             query = f"""
                 SELECT * FROM deals
-                WHERE {sanitized_profit} >= 10
+                WHERE {sanitized_profit} >= {PASS_1_MIN_PROFIT}
                 AND {sanitized_cost} > 0
-                AND {roi_expr} >= 15
-                AND {roi_expr} <= 300
-                AND CAST(REPLACE(\"Deal_Trust\", '%', '') AS REAL) >= 40
+                AND {roi_expr} >= {PASS_1_MIN_ROI}
+                AND {roi_expr} <= {PASS_1_MAX_ROI}
+                AND CAST(REPLACE(\"Deal_Trust\", '%', '') AS REAL) >= {PASS_1_MIN_DEAL_TRUST}
                 AND \"List_at\" IS NOT NULL
                 AND {sanitized_list_at} > 0
-                AND {sanitized_list_at} <= 1500
+                AND {sanitized_list_at} <= {PASS_1_MAX_LIST_AT}
                 AND \"1yr_Avg\" IS NOT NULL
                 AND \"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')
                 AND \"1yr_Avg\" != 0
@@ -224,8 +230,13 @@ def generate_prime_picks():
             "temperature": 0.2
         }
 
-        logger.info("Pass 2: Querying xAI API...")
+        import time
+        prompt_size = len(prompt)
+        logger.info(f"Pass 2: Querying xAI API (prompt size: {prompt_size} chars)...")
+        start_time = time.time()
         response_data = query_xai_api(payload)
+        latency = time.time() - start_time
+        logger.info(f"Pass 2: xAI API call took {latency:.2f} seconds.")
 
         selected_asins = []
         ai_failed = False
@@ -234,14 +245,37 @@ def generate_prime_picks():
             logger.error(f"xAI API returned an error: {response_data.get('error', 'Unknown Error')}")
             ai_failed = True
         elif 'choices' in response_data and response_data['choices']:
-            content = response_data['choices'][0].get('message', {}).get('content', '').strip()
-            content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content.strip(), flags=re.MULTILINE).strip()
+            message = response_data['choices'][0].get('message', {})
+            content = message.get('content', '').strip()
+
+            # Log the full raw text (which might contain reasoning if the model provides it)
+            logger.info(f"Pass 2 Raw Response: {content}")
+
+            content_clean = re.sub(r'^```(?:json)?\s*|\s*```$', '', content, flags=re.MULTILINE).strip()
             try:
-                parsed = json.loads(content)
+                parsed = json.loads(content_clean)
                 if isinstance(parsed, list):
                     selected_asins = [str(x) for x in parsed]
                 elif isinstance(parsed, dict) and "asins" in parsed:
                     selected_asins = [str(x) for x in parsed["asins"]]
+
+                # Log reasoning per ASIN
+                for c in candidates_for_ai:
+                    asin = str(c.get("ASIN"))
+                    is_selected = asin in selected_asins
+                    # Attempt to extract reasoning if the JSON was an object with a "reasoning" dict/string
+                    reason = ""
+                    if isinstance(parsed, dict) and "reasoning" in parsed:
+                        reasoning_val = parsed["reasoning"]
+                        if isinstance(reasoning_val, dict):
+                            reason = reasoning_val.get(asin, "")
+                        elif isinstance(reasoning_val, str):
+                            reason = reasoning_val
+                    if not reason:
+                        reason = "See raw response"
+
+                    logger.info(f"[Pass 2 Reasoning] ASIN={asin} Selected={is_selected} Reason=\"{reason}\"")
+
             except json.JSONDecodeError:
                 logger.error(f"Failed to parse xAI output as JSON: {content}")
                 ai_failed = True
