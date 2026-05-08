@@ -16,16 +16,16 @@ def get_hours_since(date_str):
         return 0
     try:
         dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if dt.tzinfo:
-            dt = dt.replace(tzinfo=None)
-        delta = now - dt
+            dt = dt.replace(tzinfo=timezone.utc)
+        delta = now - dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else now - dt
         return max(0, delta.total_seconds() / 3600.0)
     except ValueError:
         try:
             dt = datetime.strptime(date_str, '%m/%d/%y %H:%M')
-            now = datetime.utcnow()
-            delta = now - dt
+            now = datetime.now(timezone.utc)
+            delta = now - dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else now - dt
             return max(0, delta.total_seconds() / 3600.0)
         except ValueError:
             return 0
