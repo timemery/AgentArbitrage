@@ -22,6 +22,7 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
     *   *UI Note:* To preserve the strict 1200px table width limit, there are no `?` icons; the text labels themselves are the triggers (`cursor: help`).
 *   **Filtering:** Users can filter by Keyword, Max Sales Rank, Minimum Profit, Margin, Deal Trust, Seller Trust, and Price Drops.
     *   **New Checkboxes:** "Hide Gated" (excludes restricted items) and "Hide AMZ Offers" (excludes items sold by Amazon).
+    *   **Agent's Choice (Prime Picks):** A special toggle that overrides normal pagination and filtering to display the top AI-selected deals. The AI leverages an asynchronous two-pass pipeline (Pass 1: Smart Floor SQL filtering, Pass 2: xAI Mastermind evaluation using `grok-4-fast-reasoning` and tiered strategies) and caches the results in the `prime_picks` table for instant reading.
     *   *Logic:* Filters are applied server-side by the `/api/deals` endpoint SQL query.
     *   **"Any" Logic:** Setting a filter to 0 ("Any") excludes it from the query, ensuring that NULL/Negative values are not hidden by default.
 *   **Sorting:** Columns like "Profit", "Rank", "Update Time" are sortable.

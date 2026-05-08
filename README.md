@@ -26,6 +26,7 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
     - **My Mentor**: AI-powered analysis overlay with "Choose Your Mentor" personas (CFO, Flipper, Professor, Quant).
     - **Mentor Chat**: Persistent, persona-driven AI assistant available via the navigation bar. Synchronizes with My Mentor to provide consistent advice across the platform.
     - **Self-Aware Tooltips:** Hover over any column header or filter label to instantly view AI-generated context (cached via `tooltip_cache.json`) explaining the platform's logic based on its own documentation.
+    - **Agent's Choice (Prime Picks):** Advanced deal evaluation via an async "Two-Pass Pipeline" combining SQL baselines and an xAI Mastermind (`grok-4-fast-reasoning`). Uses "Tiered Strategy Injection" to evaluate top candidates against `strategies.json` and caches results persistently.
 - **Settings**: Configure business costs, fees, and API credentials. (User Access)
 - **Guided Learning**: Teach the agent by feeding it YouTube videos or articles. It extracts strategies and mental models using xAI. (Admin Only)
 - **Intelligence & Strategies**: Repositories of the AI's learned knowledge. (Admin Only)
