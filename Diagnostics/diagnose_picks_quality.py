@@ -10,6 +10,7 @@ import math
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from keepa_deals.db_utils import DB_PATH
+from keepa_deals.prime_picks_task import PASS_1_MIN_PROFIT, PASS_1_MIN_ROI, PASS_1_MAX_ROI, PASS_1_MIN_DEAL_TRUST, PASS_1_MAX_LIST_AT
 
 def get_hours_since(date_str):
     if not date_str:
@@ -175,7 +176,7 @@ def main():
     all_deals = score_deals(all_deals)
     
     # Run Current Pass 1
-    current_pass1 = run_filter(all_deals, min_profit=10, min_roi=15, max_roi=300, min_trust=40, max_list_at=1500)
+    current_pass1 = run_filter(all_deals, min_profit=PASS_1_MIN_PROFIT, min_roi=PASS_1_MIN_ROI, max_roi=PASS_1_MAX_ROI, min_trust=PASS_1_MIN_DEAL_TRUST, max_list_at=PASS_1_MAX_LIST_AT)
     current_pass1.sort(key=lambda x: x['_score'], reverse=True)
     top_20 = current_pass1[:20]
     top_20_asins = [d['ASIN'] for d in top_20]
@@ -212,7 +213,7 @@ def main():
                 print(f"ASIN: {asin} - Deal details not found in current deals table.")
 
     print("\n--- 2. Near-Miss Analysis ---")
-    near_misses = find_near_misses(all_deals, min_profit=10, min_roi=15, max_roi=300, min_trust=40, max_list_at=1500)
+    near_misses = find_near_misses(all_deals, min_profit=PASS_1_MIN_PROFIT, min_roi=PASS_1_MIN_ROI, max_roi=PASS_1_MAX_ROI, min_trust=PASS_1_MIN_DEAL_TRUST, max_list_at=PASS_1_MAX_LIST_AT)
     if not near_misses:
         print("No near misses found.")
     else:
@@ -253,7 +254,7 @@ def main():
 
     print("\n--- 4. Threshold Sensitivity Simulation ---")
     scenarios = [
-        ("Current",      10, 15, 300, 40, 1500),
+        ("Current",      PASS_1_MIN_PROFIT, PASS_1_MIN_ROI, PASS_1_MAX_ROI, PASS_1_MIN_DEAL_TRUST, PASS_1_MAX_LIST_AT),
         ("Tightened A",  15, 20, 300, 50, 500),
         ("Tightened B",  20, 25, 300, 60, 300),
         ("Loosened",      5, 10, 300, 30, 1500)
