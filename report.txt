@@ -1,0 +1,81 @@
+=== Prime Picks Tuning Diagnostic ===
+
+Total Deals in DB: 71
+Deals passing current Pass 1 filter: 16
+
+--- 1. Current Picks Deep-Dive ---
+No cached Prime Picks found in DB.
+
+--- 2. Near-Miss Analysis ---
+ASIN: 0201078090 | Score: 28.44 | Failed on: Trust (30.00 < 40)
+  (Profit: $30.21, ROI: 136.35%, Trust: 30.0%, List: $52.37)
+ASIN: 111879379X | Score: 18.03 | Failed on: Trust (5.00 < 40)
+  (Profit: $34.18, ROI: 76.66%, Trust: 5.0%, List: $78.76)
+ASIN: 2825413364 | Score: 10.14 | Failed on: Trust (33.00 < 40)
+  (Profit: $58.98, ROI: 205.96%, Trust: 33.0%, List: $87.61)
+ASIN: 0853230307 | Score: 8.52 | Failed on: Trust (28.00 < 40)
+  (Profit: $38.97, ROI: 114.66%, Trust: 28.0%, List: $72.95)
+ASIN: 1629147265 | Score: 8.34 | Failed on: Trust (39.00 < 40)
+  (Profit: $25.01, ROI: 115.34%, Trust: 39.0%, List: $46.69)
+ASIN: 1780020066 | Score: 8.17 | Failed on: Trust (21.00 < 40)
+  (Profit: $25.78, ROI: 116.43%, Trust: 21.0%, List: $47.92)
+ASIN: 1851496483 | Score: 7.10 | Failed on: Trust (39.00 < 40)
+  (Profit: $23.49, ROI: 77.59%, Trust: 39.0%, List: $53.77)
+ASIN: 0521267897 | Score: 5.01 | Failed on: Trust (9.00 < 40)
+  (Profit: $32.56, ROI: 123.12%, Trust: 9.0%, List: $59.01)
+ASIN: 1446294021 | Score: 2.14 | Failed on: Trust (30.00 < 40)
+  (Profit: $25.16, ROI: 121.67%, Trust: 30.0%, List: $45.83)
+ASIN: 2720000019 | Score: 0.77 | Failed on: Trust (30.00 < 40)
+  (Profit: $10.27, ROI: 22.20%, Trust: 30.0%, List: $56.51)
+
+--- 3. Pass 2 Selection Ratio ---
+celery_worker.log not found.
+Currently cached picks: 0
+Selection ratio: 0/20 (0.0%)
+
+--- 4. Threshold Sensitivity Simulation ---
+
+Scenario: Current
+  Criteria: Profit>=10, ROI 15-300%, Trust>=40, List<=1500
+  Total Qualifying: 16
+  Top 5:
+    1. ASIN: 8174363726 | Score: 10.38 | Profit: $56.43 | ROI: 163.21% | Trust: 51.0%
+    2. ASIN: 0790611066 | Score: 5.20 | Profit: $45.34 | ROI: 209.36% | Trust: 62.0%
+    3. ASIN: 0900855223 | Score: 3.93 | Profit: $32.17 | ROI: 89.59% | Trust: 63.0%
+    4. ASIN: 2901428312 | Score: 1.02 | Profit: $30.53 | ROI: 91.22% | Trust: 51.0%
+    5. ASIN: 1848726694 | Score: 0.87 | Profit: $69.91 | ROI: 126.88% | Trust: 69.0%
+
+Scenario: Tightened A
+  Criteria: Profit>=15, ROI 20-300%, Trust>=50, List<=500
+  Total Qualifying: 10
+  Top 5:
+    1. ASIN: 8174363726 | Score: 10.38 | Profit: $56.43 | ROI: 163.21% | Trust: 51.0%
+    2. ASIN: 0790611066 | Score: 5.20 | Profit: $45.34 | ROI: 209.36% | Trust: 62.0%
+    3. ASIN: 0900855223 | Score: 3.93 | Profit: $32.17 | ROI: 89.59% | Trust: 63.0%
+    4. ASIN: 2901428312 | Score: 1.02 | Profit: $30.53 | ROI: 91.22% | Trust: 51.0%
+    5. ASIN: 1848726694 | Score: 0.87 | Profit: $69.91 | ROI: 126.88% | Trust: 69.0%
+
+Scenario: Tightened B
+  Criteria: Profit>=20, ROI 25-300%, Trust>=60, List<=300
+  Total Qualifying: 6
+  Top 5:
+    1. ASIN: 0790611066 | Score: 5.20 | Profit: $45.34 | ROI: 209.36% | Trust: 62.0%
+    2. ASIN: 0900855223 | Score: 3.93 | Profit: $32.17 | ROI: 89.59% | Trust: 63.0%
+    3. ASIN: 1848726694 | Score: 0.87 | Profit: $69.91 | ROI: 126.88% | Trust: 69.0%
+    4. ASIN: 1368051782 | Score: 0.28 | Profit: $143.03 | ROI: 202.78% | Trust: 80.0%
+    5. ASIN: 1302913549 | Score: 0.00 | Profit: $25.65 | ROI: 84.51% | Trust: 74.0%
+
+Scenario: Loosened
+  Criteria: Profit>=5, ROI 10-300%, Trust>=30, List<=1500
+  Total Qualifying: 29
+  Top 5:
+    1. ASIN: 0201078090 | Score: 28.44 | Profit: $30.21 | ROI: 136.35% | Trust: 30.0%
+    2. ASIN: 8174363726 | Score: 10.38 | Profit: $56.43 | ROI: 163.21% | Trust: 51.0%
+    3. ASIN: 2825413364 | Score: 10.14 | Profit: $58.98 | ROI: 205.96% | Trust: 33.0%
+    4. ASIN: 1629147265 | Score: 8.34 | Profit: $25.01 | ROI: 115.34% | Trust: 39.0%
+    5. ASIN: 1851496483 | Score: 7.10 | Profit: $23.49 | ROI: 77.59% | Trust: 39.0%
+
+--- 5. Top-of-Pool Analysis ---
+Pass 1 pool had 20 or fewer candidates. No remainder to analyze.
+
+Done.
