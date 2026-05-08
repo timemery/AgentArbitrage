@@ -250,13 +250,13 @@ def generate_prime_picks():
 
         # Fallback to Pass 1 if Pass 2 fails
         if ai_failed:
-            logger.info(f"Pass 2 failed. Falling back to all {len(top_20)} top candidates.")
-            final_deals = top_20
+            logger.info(f"Pass 2 failed. Preserving previous valid run instead of overriding cache.")
+            return
         else:
             final_deals = [d for d in top_20 if str(d.get("ASIN")) in selected_asins]
             if not final_deals:
-                logger.info("Pass 2 returned empty list. Falling back to top 20.")
-                final_deals = top_20
+                logger.info("Pass 2 returned empty list. Preserving previous valid run.")
+                return
 
         logger.info(f"Pass 2 complete. Selected {len(final_deals)} Prime Picks.")
 
