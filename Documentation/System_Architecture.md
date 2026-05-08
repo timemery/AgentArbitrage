@@ -74,6 +74,14 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
     3.  Queries Amazon SP-API `getListingsRestrictions` endpoint.
     4.  Updates `user_restrictions` table.
 
+### D. `generate_prime_picks` (Agent's Choice Evaluator)
+*   **Purpose:** Evaluates deals to find the top "Prime Picks" for the dashboard's Agent's Choice filter, using a two-pass pipeline.
+*   **Trigger:** Automatically chained after the `clean_stale_deals` task, or manually via a `/api/prime_picks/refresh` POST request.
+*   **Mechanism:**
+    1.  **Pass 1 (Smart Floor):** SQL/math based filtering and time-decay scoring to select the top 20 candidates.
+    2.  **Pass 2 (xAI Mastermind):** Passes candidates to `grok-4-fast-reasoning` with heavily filtered strategies to identify the best deals.
+    3.  **Caching:** Saves the final results to the `prime_picks` table atomically, preserving the cache on failure.
+
 ---
 
 ## 4. AI Components (xAI Integration)
@@ -107,6 +115,13 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 *   **Route:** `/api/tooltip/<term>`
 *   **Purpose:** Provides instant context for UI elements (headers, filters) on the Deals Dashboard.
 *   **Mechanism:** Queries the AI using the `platform_knowledge` context to define UI terms. To ensure zero latency and save tokens, responses are stored permanently in `tooltip_cache.json`.
+
+### Agent's Choice Mastermind (Pass 2)
+*   **Task:** `generate_prime_picks` (Celery background task)
+*   **Purpose:** Evaluates a curated list of candidate deals against the system's learned knowledge base to find the absolute best options.
+*   **Mechanism:**
+    *   **Model:** Uses `grok-4-fast-reasoning`. This model must be strictly used to prevent hallucinations or empty array returns.
+    *   **Payload Optimization:** Employs "Tiered Strategy Injection" via `get_tiered_strategies()`. Rather than injecting all 14,000+ strategies, it limits core categories to 30 'High' confidence rules and dynamically injects relevant category rules based on the candidates' metadata, preventing 504 Gateway Timeouts and context window overflows.
 
 ---
 
