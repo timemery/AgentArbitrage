@@ -267,3 +267,11 @@ A critical regression occurred when the system used `2000-01-01` instead of `201
 - **Dynamic ROI & All-in Cost:** `All-in Cost` strictly excludes Amazon fees (deducted separately for `Profit`). `ROI = (Profit / All_in_Cost) * 100`, dynamically calculated, NOT stored. Warn against updating non-existent DB columns (like `Total AMZ fees`) via raw SQL.
 - **Smart Ingestor Batch Size:** Default **50** (High Rate), reduces to **20** (Low < 20/min) and **1** (Critically Low < 10/min) to fit within 40-token burst window without livelock.
 - **Stall Watchdog:** `Diagnostics/watchdog_stall_detector.py` identifies stuck workers (Tokens > 290 + no Heartbeat for 15 mins).
+
+### 7.10 Recent Fixes (May 2026)
+
+- **Agent's Choice (Prime Picks) Filter Fix:** Resolved a 504 Gateway Timeout issue caused by sending overly large payloads to the xAI API. The solution implements an async **Two-Pass Pipeline** in `keepa_deals/prime_picks_task.py`:
+  - **Pass 1 (Smart Floor):** SQL/math filtering to score and find top candidates.
+  - **Pass 2 (xAI Mastermind):** Evaluates top candidates using `grok-4-fast-reasoning`. Employs **Tiered Strategy Injection** to limit the injected rules to a strict cap of 'High' confidence strategies from core categories, dynamically matching relevant contexts to reduce payload size.
+  - **Caching:** Successful evaluation results are cached atomically in the new `prime_picks` database table, allowing instant UI reads without blocking the web thread.
+  - **Graceful Fallback:** If Pass 2 fails (e.g., due to xAI API errors), the system explicitly skips updating the cache, preserving the last known valid run instead of displaying an empty list or unfiltered candidates.
