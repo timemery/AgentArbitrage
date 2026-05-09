@@ -218,10 +218,10 @@ def generate_prime_picks():
         Evaluate the items (ASINs) and determine if they represent solid arbitrage opportunities based on the strategies. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
         You MUST return a JSON object containing two keys: "selected" and "rejected". The "selected" key should contain a list of objects with the ASIN and a brief 1-sentence reason. The "rejected" key should contain a list of objects with the ASIN and a brief 1-sentence reason.
         Example:
-        {
-          "selected": [{"asin": "0123456789", "reason": "High ROI and stable BSR trend."}],
-          "rejected": [{"asin": "B01ABCD123", "reason": "Sales rank is too erratic indicating high risk."}]
-        }
+        {{
+          "selected": [{{"asin": "0123456789", "reason": "High ROI and stable BSR trend."}}],
+          "rejected": [{{"asin": "B01ABCD123", "reason": "Sales rank is too erratic indicating high risk."}}]
+        }}
         You MUST return ONLY the JSON object. No markdown formatting, no other explanations.
         """
 
@@ -256,7 +256,18 @@ def generate_prime_picks():
             # Log the full raw text (which might contain reasoning if the model provides it)
             logger.info(f"Pass 2 Raw Response: {content}")
 
-            content_clean = re.sub(r'^```(?:json)?\s*|\s*```$', '', content, flags=re.MULTILINE).strip()
+            # Extract JSON block if it is wrapped in markdown
+            json_match = re.search(r'```(?:json)?\s*(.*?)\s*```', content, flags=re.DOTALL)
+            if json_match:
+                content_clean = json_match.group(1).strip()
+            else:
+                content_clean = content.strip()
+                # Find the first { and last } if it's not wrapped in backticks
+                start_idx = content_clean.find('{')
+                end_idx = content_clean.rfind('}')
+                if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+                    content_clean = content_clean[start_idx:end_idx+1]
+
             try:
                 parsed = json.loads(content_clean)
                 reasoning_map = {}
