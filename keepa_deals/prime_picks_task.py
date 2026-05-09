@@ -17,6 +17,8 @@ PASS_1_MIN_ROI = 20
 PASS_1_MAX_ROI = 300
 PASS_1_MIN_DEAL_TRUST = 50
 PASS_1_MAX_LIST_AT = 500
+PASS_1_OFFER_TREND_PENALTY_CAP = 0.5
+PASS_1_OFFER_TREND_BONUS_MULTIPLIER = 1.1
 
 def get_tiered_strategies(candidates, max_per_core_category=30):
     """
@@ -178,6 +180,24 @@ def generate_prime_picks():
             final_half_life = base_half_life * (1 - min(0.5, offers * 0.02))
 
             score = (profit * roi) * (0.5 ** (hours_since / max(0.001, final_half_life)))
+
+            # Offer Trend Modifier
+            # Prioritize New offers since they are the primary driver of competition in OA
+            avg_offers_30d_str = deal.get('New_Offer_Count_30_days_avg')
+            if not avg_offers_30d_str or avg_offers_30d_str == '-':
+                avg_offers_30d_str = deal.get('Used_Offer_Count_30_days_avg')
+            avg_offers_30d = parse_offers(avg_offers_30d_str)
+
+            if avg_offers_30d > 0:
+                offer_trend = (offers - avg_offers_30d) / avg_offers_30d
+                if offer_trend > 0:
+                    offer_trend_modifier = max(PASS_1_OFFER_TREND_PENALTY_CAP, 1.0 / (1.0 + offer_trend))
+                else:
+                    offer_trend_modifier = PASS_1_OFFER_TREND_BONUS_MULTIPLIER
+            else:
+                offer_trend_modifier = 1.0
+
+            score = score * offer_trend_modifier
             deal['_score'] = score
 
         # Top 20 candidates
