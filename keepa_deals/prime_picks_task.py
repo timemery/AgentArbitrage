@@ -17,7 +17,8 @@ PASS_1_MIN_ROI = 20
 PASS_1_MAX_ROI = 300
 PASS_1_MIN_DEAL_TRUST = 50
 PASS_1_MAX_LIST_AT = 500
-PASS_1_OFFER_TREND_PENALTY_CAP = 0.5
+PASS_1_OFFER_TREND_RISING_THRESHOLD = 0.25
+PASS_1_OFFER_TREND_VELOCITY_GATE = 100000
 PASS_1_OFFER_TREND_BONUS_MULTIPLIER = 1.1
 
 def get_tiered_strategies(candidates, max_per_core_category=30):
@@ -152,6 +153,9 @@ def generate_prime_picks():
             return
 
         # Score the candidates
+        filtered_deals = []
+        dropped_candidates = 0
+
         for deal in deals_list:
             profit_str = str(deal.get('Profit', '0')).replace('$', '').replace(',', '')
             cost_str = str(deal.get('All_in_Cost', '0')).replace('$', '').replace(',', '')
@@ -182,27 +186,41 @@ def generate_prime_picks():
             score = (profit * roi) * (0.5 ** (hours_since / max(0.001, final_half_life)))
 
             # Offer Trend Modifier
-            # Prioritize New offers since they are the primary driver of competition in OA
-            avg_offers_30d_str = deal.get('New_Offer_Count_30_days_avg')
+            # Prioritize Used-condition offers as we list as Used - Like New
+            avg_offers_30d_str = deal.get('Used_Offer_Count_30_days_avg')
             if not avg_offers_30d_str or avg_offers_30d_str == '-':
-                avg_offers_30d_str = deal.get('Used_Offer_Count_30_days_avg')
+                avg_offers_30d_str = deal.get('Used_Offer_Count_180_days_avg')
+            if not avg_offers_30d_str or avg_offers_30d_str == '-':
+                avg_offers_30d_str = deal.get('New_Offer_Count_30_days_avg')
+            if not avg_offers_30d_str or avg_offers_30d_str == '-':
+                avg_offers_30d_str = deal.get('New_Offer_Count_180_days_avg')
+
             avg_offers_30d = parse_offers(avg_offers_30d_str)
 
+            drop_candidate = False
             if avg_offers_30d > 0:
                 offer_trend = (offers - avg_offers_30d) / avg_offers_30d
-                if offer_trend > 0:
-                    offer_trend_modifier = max(PASS_1_OFFER_TREND_PENALTY_CAP, 1.0 / (1.0 + offer_trend))
-                else:
+                if offer_trend > PASS_1_OFFER_TREND_RISING_THRESHOLD and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
+                    logger.info(f"[Pass 1 Filter] Dropped ASIN={deal.get('ASIN')} (offer_trend=+{offer_trend:.2f}, sales_rank={sales_rank}) — rising offers + weak velocity")
+                    dropped_candidates += 1
+                    drop_candidate = True
+                elif offer_trend <= 0:
                     offer_trend_modifier = PASS_1_OFFER_TREND_BONUS_MULTIPLIER
+                else:
+                    offer_trend_modifier = 1.0
             else:
                 offer_trend_modifier = 1.0
 
-            score = score * offer_trend_modifier
-            deal['_score'] = score
+            if not drop_candidate:
+                score = score * offer_trend_modifier
+                deal['_score'] = score
+                filtered_deals.append(deal)
+
+        logger.info(f"[Pass 1 Filter] Offer-trend filter dropped {dropped_candidates} candidates from pool of {len(deals_list)}")
 
         # Top 20 candidates
-        deals_list.sort(key=lambda x: x.get('_score', 0), reverse=True)
-        top_20 = deals_list[:20]
+        filtered_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)
+        top_20 = filtered_deals[:20]
 
         logger.info(f"Pass 1: Top {len(top_20)} candidates selected for xAI evaluation.")
 
