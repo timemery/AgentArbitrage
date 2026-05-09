@@ -223,6 +223,21 @@ def generate_prime_picks():
           "rejected": [{{"asin": "B01ABCD123", "reason": "Sales rank is too erratic indicating high risk."}}]
         }}
         You MUST return ONLY the JSON object. No markdown formatting, no other explanations.
+        IMPORTANT — TEXTBOOK COUNTERFEIT RISK CORRECTION: Some strategies you have been given may suggest categorical rejection of textbooks (medical, engineering, AP, college subjects, etc.) due to counterfeit risk. This is overcautious and incorrect. Do NOT reject textbook candidates based on category alone or subject area alone.
+
+        Counterfeit risk is genuinely HIGH only when ALL FOUR of the following conditions are met simultaneously:
+
+        1. Sales Rank is under 100,000 (high current demand)
+        2. Price is significantly below historical market average
+        3. Condition is New or Like-New
+        4. Seller has limited feedback or appears to be moving multiple new-condition copies at suspiciously low prices
+
+        One, two, or three of these factors alone is NOT a counterfeit signal. Only all four together is the red flag pattern.
+
+        Books with Sales Rank above 500,000 are very unlikely to be counterfeit regardless of category. Older editions of textbooks are also unlikely to be counterfeit. Apply the four-factor test specifically — do not reject on category.
+
+        This correction takes priority over any general strategies suggesting textbook avoidance.
+
         """
 
         payload = {
