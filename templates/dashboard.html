@@ -1184,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPage = 1;
         saveFilterState(); // Save on Apply
         fetchDeals(currentPage, currentSort.by, currentSort.order);
-        // toggleFilterPanel(false); // Removed so loading state is visible
+        toggleFilterPanel(false); // Restored since loading is now instant from cache
     });
 
     btnReset.addEventListener('click', (e) => {
@@ -1306,29 +1306,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     refreshLink.addEventListener('click', async (e) => {
         e.preventDefault();
-
-        // If Agent's Choice is active, triggering "Refresh" manually starts the background job
-        if (agentsChoiceCheckbox.checked) {
-            refreshText.textContent = 'Starting Prime Picks...';
-            try {
-                const response = await fetch('/api/prime_picks/refresh', { method: 'POST' });
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    refreshText.textContent = 'Refresh Now';
-                    newDealsText.textContent = 'Prime Picks refresh started...';
-                    newDealsText.style.display = 'inline';
-                } else {
-                    refreshText.textContent = 'Refresh Failed';
-                    setTimeout(() => { refreshText.textContent = 'Refresh Now'; }, 3000);
-                }
-            } catch (err) {
-                console.error('Prime Picks refresh failed:', err);
-                refreshText.textContent = 'Refresh Failed';
-                setTimeout(() => { refreshText.textContent = 'Refresh Now'; }, 3000);
-            }
-            return; // We don't fetch deals immediately
-        }
 
         refreshText.textContent = 'Refreshing...';
 

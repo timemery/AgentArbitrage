@@ -27,5 +27,88 @@
         </div>
     </form>
 
+    <hr class="tidy-hr" style="margin: 30px 0;">
+
+    <h3 class="tidy-header" style="font-size: 1.2rem; margin-bottom: 10px;">Admin Actions</h3>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <button id="refresh-prime-picks-btn" class="tidy-button" style="background-color: #28a745;">Refresh Prime Picks</button>
+        <span id="prime-picks-status" class="tidy-text" style="color: #6c757d; font-size: 0.9rem;"></span>
+    </div>
+
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const refreshBtn = document.getElementById('refresh-prime-picks-btn');
+    const statusText = document.getElementById('prime-picks-status');
+    let currentPrimePicksGeneratedAt = null;
+    let pollInterval = null;
+
+    refreshBtn.addEventListener('click', async () => {
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = 'Starting...';
+        statusText.textContent = 'Starting Prime Picks generation...';
+
+        try {
+            // Fetch initial state to know when it changes
+            const initialMeta = await fetch('/api/deals?limit=1&agents_choice=1').then(res => res.json());
+            if (initialMeta.pagination && initialMeta.pagination.prime_picks_generated_at) {
+                currentPrimePicksGeneratedAt = initialMeta.pagination.prime_picks_generated_at;
+            }
+
+            const response = await fetch('/api/prime_picks/refresh', { method: 'POST' });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                refreshBtn.textContent = 'Running';
+                statusText.textContent = 'Prime Picks refresh started. Please wait...';
+
+                // Start polling for completion
+                pollInterval = setInterval(checkCompletion, 10000); // Check every 10 seconds
+            } else {
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = 'Refresh Prime Picks';
+                statusText.textContent = 'Failed to start refresh: ' + (result.message || 'Unknown error');
+                statusText.style.color = '#dc3545';
+            }
+        } catch (err) {
+            console.error('Refresh failed:', err);
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = 'Refresh Prime Picks';
+            statusText.textContent = 'Error starting refresh.';
+            statusText.style.color = '#dc3545';
+        }
+    });
+
+    async function checkCompletion() {
+        try {
+            // Need to pass agents_choice=1 to ensure the metadata query checks the prime picks table
+            const metaRes = await fetch('/api/deals?limit=1&agents_choice=1');
+            const metaData = await metaRes.json();
+
+            if (metaData.pagination && metaData.pagination.prime_picks_generated_at) {
+                const newGenAt = metaData.pagination.prime_picks_generated_at;
+
+                if (currentPrimePicksGeneratedAt && currentPrimePicksGeneratedAt !== newGenAt) {
+                    // It updated!
+                    clearInterval(pollInterval);
+                    statusText.textContent = 'New Prime Picks available! Redirecting to dashboard...';
+                    statusText.style.color = '#28a745';
+                    refreshBtn.textContent = 'Complete';
+
+                    setTimeout(() => {
+                        window.location.href = '/dashboard?agents_choice=1';
+                    }, 1500);
+                } else if (!currentPrimePicksGeneratedAt) {
+                    // First time ever
+                    currentPrimePicksGeneratedAt = newGenAt;
+                }
+            }
+        } catch (e) {
+            console.error("Poll failed", e);
+        }
+    }
+});
+</script>
+
 {% endblock %}
