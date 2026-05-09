@@ -31,3 +31,17 @@ The goal of this task was to refine the Agent's Choice (Prime Picks) pipeline by
 
 ## Outcome
 The task successfully decoupled the UX flows, implemented the new reasoning logs, and provided a safe, memory-efficient diagnostic extraction tool. However, an unspecified secondary component or test within the wider system may have been destabilized by the parsing updates, leaving the system in a "Something new is now broken" state. As per instructions, further debugging has been deferred to a future session.
+
+## Update 2026-05-10
+The infinite hang in the  task was caused by an f-string issue in the prompt generation in . Unescaped single curly braces ({ and }) in the JSON example string caused Python to attempt evaluating the string's content as Python code, leading to an error. This error propagated through the Celery retry loop, resulting in a hang.
+
+The braces were successfully escaped ({{ and }}), resolving the issue. The parser in  was also made more robust using a regex to parse JSON blocks containing ```json.
+
+Since the task was erroring/hanging silently, it's very likely this was the root cause for the auto-refresh failure as well. We'll leave it to future sessions to verify if the chain is indeed operating properly now.
+
+## Update 2026-05-10
+The infinite hang in the generate_prime_picks task was caused by an f-string issue in the prompt generation in keepa_deals/prime_picks_task.py. Unescaped single curly braces ({ and }) in the JSON example string caused Python to attempt evaluating the string's content as Python code, leading to an error. This error propagated through the Celery retry loop, resulting in a hang.
+
+The braces were successfully escaped ({{ and }}), resolving the issue. The parser in keepa_deals/prime_picks_task.py was also made more robust using a regex to parse JSON blocks containing ```json.
+
+Since the task was erroring/hanging silently, it's very likely this was the root cause for the auto-refresh failure as well. We'll leave it to future sessions to verify if the chain is indeed operating properly now.
