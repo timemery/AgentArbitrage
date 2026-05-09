@@ -2255,7 +2255,6 @@ def mentor_chat():
              reply = result['choices'][0]['message']['content'].strip()
              return jsonify({'reply': reply})
         except (KeyError, IndexError):
-             app.logger.exception(f"Error parsing AI response: {result}")
              return jsonify({'error': 'Invalid response from AI'}), 500
 
     except Exception as e:
