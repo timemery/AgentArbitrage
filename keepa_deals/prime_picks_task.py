@@ -215,9 +215,14 @@ def generate_prime_picks():
         {json.dumps(candidates_for_ai, indent=2)}
 
         **Instructions:**
-        Select the items (ASINs) that represent solid arbitrage opportunities based on the strategies. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
-        You MUST return ONLY a JSON array of strings containing the selected ASINs. No markdown formatting, no explanations.
-        Example: ["0123456789", "B01ABCD123"]
+        Evaluate the items (ASINs) and determine if they represent solid arbitrage opportunities based on the strategies. Filter out any deals that violate key risk management rules or are obviously poor choices, but allow good standard deals to pass.
+        You MUST return a JSON object containing two keys: "selected" and "rejected". The "selected" key should contain a list of objects with the ASIN and a brief 1-sentence reason. The "rejected" key should contain a list of objects with the ASIN and a brief 1-sentence reason.
+        Example:
+        {
+          "selected": [{"asin": "0123456789", "reason": "High ROI and stable BSR trend."}],
+          "rejected": [{"asin": "B01ABCD123", "reason": "Sales rank is too erratic indicating high risk."}]
+        }
+        You MUST return ONLY the JSON object. No markdown formatting, no other explanations.
         """
 
         payload = {
@@ -254,25 +259,34 @@ def generate_prime_picks():
             content_clean = re.sub(r'^```(?:json)?\s*|\s*```$', '', content, flags=re.MULTILINE).strip()
             try:
                 parsed = json.loads(content_clean)
-                if isinstance(parsed, list):
-                    selected_asins = [str(x) for x in parsed]
-                elif isinstance(parsed, dict) and "asins" in parsed:
-                    selected_asins = [str(x) for x in parsed["asins"]]
+                reasoning_map = {}
+                selected_asins = []
+
+                if isinstance(parsed, dict):
+                    selected_list = parsed.get("selected", [])
+                    rejected_list = parsed.get("rejected", [])
+
+                    if isinstance(selected_list, list) and len(selected_list) > 0 and isinstance(selected_list[0], str):
+                         # Fallback if xAI returned strings instead of dicts for selected
+                         selected_asins = [str(x) for x in selected_list]
+                         for asin in selected_asins:
+                             reasoning_map[asin] = "No reason provided (legacy array format)"
+                    else:
+                        for item in selected_list:
+                            if isinstance(item, dict) and "asin" in item:
+                                asin = str(item["asin"])
+                                selected_asins.append(asin)
+                                reasoning_map[asin] = str(item.get("reason", ""))
+
+                    for item in rejected_list:
+                        if isinstance(item, dict) and "asin" in item:
+                            reasoning_map[str(item["asin"])] = str(item.get("reason", ""))
 
                 # Log reasoning per ASIN
                 for c in candidates_for_ai:
                     asin = str(c.get("ASIN"))
                     is_selected = asin in selected_asins
-                    # Attempt to extract reasoning if the JSON was an object with a "reasoning" dict/string
-                    reason = ""
-                    if isinstance(parsed, dict) and "reasoning" in parsed:
-                        reasoning_val = parsed["reasoning"]
-                        if isinstance(reasoning_val, dict):
-                            reason = reasoning_val.get(asin, "")
-                        elif isinstance(reasoning_val, str):
-                            reason = reasoning_val
-                    if not reason:
-                        reason = "See raw response"
+                    reason = reasoning_map.get(asin, "See raw response")
 
                     logger.info(f"[Pass 2 Reasoning] ASIN={asin} Selected={is_selected} Reason=\"{reason}\"")
 
