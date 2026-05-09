@@ -9,6 +9,7 @@ import os
 from worker import celery_app as celery
 from .db_utils import DB_PATH
 from .ava_advisor import query_xai_api, STRATEGIES_FILE
+from .new_analytics import get_offer_count_trend_signal
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,6 @@ PASS_1_MIN_ROI = 20
 PASS_1_MAX_ROI = 300
 PASS_1_MIN_DEAL_TRUST = 50
 PASS_1_MAX_LIST_AT = 500
-PASS_1_OFFER_TREND_RISING_THRESHOLD = 0.25
 PASS_1_OFFER_TREND_VELOCITY_GATE = 100000
 PASS_1_OFFER_TREND_BONUS_MULTIPLIER = 1.1
 
@@ -155,6 +155,7 @@ def generate_prime_picks():
         # Score the candidates
         filtered_deals = []
         dropped_candidates = 0
+        no_trend_candidates = 0
 
         for deal in deals_list:
             profit_str = str(deal.get('Profit', '0')).replace('$', '').replace(',', '')
@@ -186,28 +187,20 @@ def generate_prime_picks():
             score = (profit * roi) * (0.5 ** (hours_since / max(0.001, final_half_life)))
 
             # Offer Trend Modifier
-            # Prioritize Used-condition offers as we list as Used - Like New
-            avg_offers_30d_str = deal.get('Used_Offer_Count_30_days_avg')
-            if not avg_offers_30d_str or avg_offers_30d_str == '-':
-                avg_offers_30d_str = deal.get('Used_Offer_Count_180_days_avg')
-            if not avg_offers_30d_str or avg_offers_30d_str == '-':
-                avg_offers_30d_str = deal.get('New_Offer_Count_30_days_avg')
-            if not avg_offers_30d_str or avg_offers_30d_str == '-':
-                avg_offers_30d_str = deal.get('New_Offer_Count_180_days_avg')
-
-            avg_offers_30d = parse_offers(avg_offers_30d_str)
-
             drop_candidate = False
-            if avg_offers_30d > 0:
-                offer_trend = (offers - avg_offers_30d) / avg_offers_30d
-                if offer_trend > PASS_1_OFFER_TREND_RISING_THRESHOLD and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
-                    logger.info(f"[Pass 1 Filter] Dropped ASIN={deal.get('ASIN')} (offer_trend=+{offer_trend:.2f}, sales_rank={sales_rank}) — rising offers + weak velocity")
-                    dropped_candidates += 1
-                    drop_candidate = True
-                elif offer_trend <= 0:
-                    offer_trend_modifier = PASS_1_OFFER_TREND_BONUS_MULTIPLIER
-                else:
-                    offer_trend_modifier = 1.0
+
+            trend = get_offer_count_trend_signal(deal)
+
+            if trend == 'rising' and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
+                logger.info(f"[Pass 1 Filter] Dropped ASIN={deal.get('ASIN')} (trend=rising, sales_rank={sales_rank}) — rising offers + weak velocity")
+                dropped_candidates += 1
+                drop_candidate = True
+            elif trend in ('falling', 'flat'):
+                offer_trend_modifier = PASS_1_OFFER_TREND_BONUS_MULTIPLIER
+            elif trend is None:
+                offer_trend_modifier = 1.0
+                no_trend_candidates += 1
+                logger.info(f"[Pass 1 Filter] No trend signal for ASIN={deal.get('ASIN')} — passing through with no modifier")
             else:
                 offer_trend_modifier = 1.0
 
@@ -216,7 +209,7 @@ def generate_prime_picks():
                 deal['_score'] = score
                 filtered_deals.append(deal)
 
-        logger.info(f"[Pass 1 Filter] Offer-trend filter dropped {dropped_candidates} candidates from pool of {len(deals_list)}")
+        logger.info(f"[Pass 1 Filter] Offer-trend filter dropped {dropped_candidates} of {len(deals_list)} candidates; {no_trend_candidates} had no trend signal")
 
         # Top 20 candidates
         filtered_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)

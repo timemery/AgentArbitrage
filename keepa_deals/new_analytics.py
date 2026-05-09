@@ -215,6 +215,20 @@ def analyze_sales_rank_trends(product):
     # A more sophisticated model could be used here.
     return {"Sales Rank Trend %": thirty_day_trend}
 
+def get_offer_count_trend_signal(deal, logger=None):
+    """
+    Sibling function that exposes the underlying trend direction.
+    Calls the canonical get_offer_count_trend function and extracts the direction
+    from its dynamically generated output.
+    """
+    res = get_offer_count_trend(deal, logger)
+    offers_str = res.get('Offers', '') if res else ''
+
+    if '↗' in offers_str: return 'rising'
+    if '↘' in offers_str: return 'falling'
+    if '⇨' in offers_str: return 'flat'
+    return None
+
 def get_offer_count_trend(product, logger=None):
     """
     Calculates the trend for Used Offer Count.
