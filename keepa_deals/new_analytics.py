@@ -217,17 +217,35 @@ def analyze_sales_rank_trends(product):
 
 def get_offer_count_trend_signal(deal, logger=None):
     """
-    Sibling function that exposes the underlying trend direction.
-    Calls the canonical get_offer_count_trend function and extracts the direction
-    from its dynamically generated output.
+    Computes the canonical trend signal from a SQLite deal row's flat columns.
+    First attempts to read the canonical trend directly from the Offers string,
+    then falls back to evaluating the flat columns.
     """
-    res = get_offer_count_trend(deal, logger)
-    offers_str = res.get('Offers', '') if res else ''
-
+    offers_str = str(deal.get('Offers', ''))
     if '↗' in offers_str: return 'rising'
     if '↘' in offers_str: return 'falling'
     if '⇨' in offers_str: return 'flat'
-    return None
+
+    current_str = str(deal.get('Used_Offer_Count_Current', ''))
+    avg30_str = str(deal.get('Used_Offer_Count_30_days_avg', ''))
+
+    if not current_str or current_str == '-' or not avg30_str or avg30_str == '-':
+        return None
+
+    try:
+        import re
+        c_match = re.search(r'(\d+)', current_str.replace(',', ''))
+        a_match = re.search(r'(\d+)', avg30_str.replace(',', ''))
+        if not c_match or not a_match:
+            return None
+        current = int(c_match.group(1))
+        avg30 = int(a_match.group(1))
+
+        if current > avg30: return 'rising'
+        if current < avg30: return 'falling'
+        return 'flat'
+    except Exception:
+        return None
 
 def get_offer_count_trend(product, logger=None):
     """

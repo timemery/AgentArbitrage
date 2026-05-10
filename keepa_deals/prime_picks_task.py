@@ -10,6 +10,7 @@ from worker import celery_app as celery
 from .db_utils import DB_PATH
 from .ava_advisor import query_xai_api, STRATEGIES_FILE
 from .new_analytics import get_offer_count_trend_signal
+from .new_analytics import get_offer_count_trend_signal
 
 logger = logging.getLogger(__name__)
 
@@ -155,6 +156,7 @@ def generate_prime_picks():
         # Score the candidates
         filtered_deals = []
         dropped_candidates = 0
+        no_trend_candidates = 0
         no_trend_candidates = 0
 
         for deal in deals_list:
