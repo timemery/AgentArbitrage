@@ -9,8 +9,7 @@ import os
 from worker import celery_app as celery
 from .db_utils import DB_PATH
 from .ava_advisor import query_xai_api, STRATEGIES_FILE
-from .new_analytics import get_offer_count_trend_signal
-from .new_analytics import get_offer_count_trend_signal
+from .new_analytics import get_offer_count_trend_from_flat
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +156,6 @@ def generate_prime_picks():
         filtered_deals = []
         dropped_candidates = 0
         no_trend_candidates = 0
-        no_trend_candidates = 0
 
         for deal in deals_list:
             profit_str = str(deal.get('Profit', '0')).replace('$', '').replace(',', '')
@@ -190,7 +188,7 @@ def generate_prime_picks():
 
             # Offer Trend Modifier
             drop_candidate = False
-            trend = get_offer_count_trend_signal(deal)
+            trend = get_offer_count_trend_from_flat(deal)
 
             if trend == 'rising' and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
                 logger.info(f"[Pass 1 Filter] Dropped ASIN={deal.get('ASIN')} (trend=rising, sales_rank={sales_rank}) — rising offers + weak velocity")

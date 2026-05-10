@@ -215,17 +215,12 @@ def analyze_sales_rank_trends(product):
     # A more sophisticated model could be used here.
     return {"Sales Rank Trend %": thirty_day_trend}
 
-def get_offer_count_trend_signal(deal, logger=None):
+def get_offer_count_trend_from_flat(deal, logger=None):
     """
     Computes the canonical trend signal from a SQLite deal row's flat columns.
-    First attempts to read the canonical trend directly from the Offers string,
-    then falls back to evaluating the flat columns.
+    Used by Pass 1 because the SQLite row does not contain the Keepa stats array.
     """
-    offers_str = str(deal.get('Offers', ''))
-    if '↗' in offers_str: return 'rising'
-    if '↘' in offers_str: return 'falling'
-    if '⇨' in offers_str: return 'flat'
-
+    import re
     current_str = str(deal.get('Used_Offer_Count_Current', ''))
     avg30_str = str(deal.get('Used_Offer_Count_30_days_avg', ''))
 
@@ -233,7 +228,6 @@ def get_offer_count_trend_signal(deal, logger=None):
         return None
 
     try:
-        import re
         c_match = re.search(r'(\d+)', current_str.replace(',', ''))
         a_match = re.search(r'(\d+)', avg30_str.replace(',', ''))
         if not c_match or not a_match:
@@ -244,7 +238,9 @@ def get_offer_count_trend_signal(deal, logger=None):
         if current > avg30: return 'rising'
         if current < avg30: return 'falling'
         return 'flat'
-    except Exception:
+    except Exception as e:
+        if logger:
+            logger.error(f"Error in get_offer_count_trend_from_flat: {e}")
         return None
 
 def get_offer_count_trend(product, logger=None):
