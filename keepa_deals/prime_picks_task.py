@@ -188,7 +188,6 @@ def generate_prime_picks():
 
             # Offer Trend Modifier
             drop_candidate = False
-
             trend = get_offer_count_trend_signal(deal)
 
             if trend == 'rising' and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
