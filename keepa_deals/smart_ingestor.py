@@ -435,7 +435,7 @@ def run():
         existing_asins_set = set()
         existing_rows_map = {}
         try:
-            conn_check = get_db_connection(DB_PATH)
+            conn_check = get_db_connection(DB_PATH, timeout=60)
             conn_check.row_factory = sqlite3.Row
             c_check = conn_check.cursor()
             placeholders = ','.join('?' * len(asin_list))
@@ -566,7 +566,7 @@ def run():
             if rows_to_upsert:
                 logger.info(f"Upserting {len(rows_to_upsert)} deals to DB. ASINs: {[r.get('ASIN') for r in rows_to_upsert[:10]]}...")
                 try:
-                    with get_db_connection(DB_PATH) as conn:
+                    with get_db_connection(DB_PATH, timeout=60) as conn:
                         cursor = conn.cursor()
                         sanitized_headers = [sanitize_col_name(h) for h in headers]
                         sanitized_headers.extend(['last_seen_utc', 'source'])

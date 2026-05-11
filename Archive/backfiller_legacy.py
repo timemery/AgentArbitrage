@@ -266,7 +266,7 @@ def backfill_deals(reset=False):
                     existing_rows_map = {} # Map ASIN to existing row dict
 
                     try:
-                        conn_check = get_db_connection(DB_PATH)
+                        conn_check = get_db_connection(DB_PATH, timeout=60)
                         conn_check.row_factory = sqlite3.Row # Enable dict-like access
                         c_check = conn_check.cursor()
                         placeholders = ','.join('?' * len(all_asins))
@@ -409,7 +409,7 @@ def backfill_deals(reset=False):
                         logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")
                         conn = None
                         try:
-                            conn = get_db_connection(DB_PATH)
+                            conn = get_db_connection(DB_PATH, timeout=60)
                             cursor = conn.cursor()
 
                             # --- New Logging Logic: Refreshed vs New ---

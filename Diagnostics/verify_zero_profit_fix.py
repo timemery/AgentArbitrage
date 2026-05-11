@@ -75,3 +75,10 @@ def verify_fix():
 
 if __name__ == "__main__":
     verify_fix()
+
+
+if 'conn' in locals() and conn:
+    try:
+        conn.close()
+    except Exception:
+        pass

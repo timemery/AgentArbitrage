@@ -14,18 +14,17 @@ TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 WATERMARK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'watermark.json')
 
-def get_db_connection(db_path=None):
+def get_db_connection(db_path=None, timeout=5.0):
     """
     Returns a sqlite3 connection with busy_timeout and WAL journal mode set.
     Use this instead of sqlite3.connect(DB_PATH) directly to ensure consistent
     concurrency settings across all DB access (WSGI + Celery + diagnostics).
     """
     path = db_path if db_path is not None else DB_PATH
-    conn = sqlite3.connect(path)
+    conn = sqlite3.connect(path, timeout=timeout)
     conn.execute("PRAGMA busy_timeout=5000")
     conn.execute("PRAGMA journal_mode=WAL")
     return conn
-
 
 
 def sanitize_col_name(name):
@@ -65,7 +64,7 @@ def create_system_state_table_if_not_exists():
     """
     logger.info(f"Database check: Ensuring table 'system_state' at '{DB_PATH}' exists.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS system_state (
@@ -82,7 +81,7 @@ def create_system_state_table_if_not_exists():
 def get_system_state(key: str, default=None):
     """Retrieves a value from the system_state table."""
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT value FROM system_state WHERE key = ?", (key,))
             row = cursor.fetchone()
@@ -96,7 +95,7 @@ def get_system_state(key: str, default=None):
 def set_system_state(key: str, value: str):
     """Sets a value in the system_state table."""
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             updated_at = datetime.now(timezone.utc).isoformat()
             cursor.execute("""
@@ -126,7 +125,7 @@ def create_deals_table_if_not_exists():
 
     logger.info(f"Database check: Ensuring table '{TABLE_NAME}' at '{DB_PATH}' is correctly configured.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
 
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{TABLE_NAME}'")
@@ -222,7 +221,7 @@ def recreate_deals_table():
     """
     logger.info(f"Recreating '{TABLE_NAME}' table at '{DB_PATH}'. This will delete all existing data in the table.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
 
             # Drop the old table to ensure a completely fresh start
@@ -309,7 +308,7 @@ def create_user_restrictions_table_if_not_exists():
     table_name = 'user_restrictions'
     logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' is correctly configured.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
 
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
@@ -346,7 +345,7 @@ def recreate_user_restrictions_table():
     table_name = 'user_restrictions'
     logger.info(f"Recreating '{table_name}' table at '{DB_PATH}'. This will delete all existing restriction data.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
             conn.commit()
@@ -368,7 +367,7 @@ def create_user_credentials_table_if_not_exists():
     table_name = 'user_credentials'
     logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
             if not cursor.fetchone():
@@ -391,7 +390,7 @@ def create_prime_picks_table_if_not_exists():
     table_name = 'prime_picks'
     logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
             if not cursor.fetchone():
@@ -416,7 +415,7 @@ def create_prime_picks_table_if_not_exists():
 def save_user_credentials(user_id: str, refresh_token: str):
     """Saves or updates user SP-API credentials."""
     # Let exceptions propagate to the caller for proper UI feedback
-    with get_db_connection(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         updated_at = datetime.now(timezone.utc).isoformat()
         cursor.execute("""
@@ -429,7 +428,7 @@ def save_user_credentials(user_id: str, refresh_token: str):
 def get_all_user_credentials():
     """Retrieves all user credentials for background processing."""
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT user_id, refresh_token FROM user_credentials")
@@ -441,7 +440,7 @@ def get_all_user_credentials():
 def get_deal_count():
     """Returns the total number of rows in the deals table."""
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT COUNT(*) FROM {TABLE_NAME}")
             row = cursor.fetchone()
@@ -457,7 +456,7 @@ def save_deals_to_db(deals_data):
     if not deals_data:
         return
 
-    conn = get_db_connection(DB_PATH)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     # Get the columns from the deals table to ensure we only insert what's expected
@@ -492,7 +491,7 @@ def save_deals_to_db(deals_data):
     logging.info(f"Successfully saved/updated {len(deals_data)} deals to the database.")
 
 def clear_deals_table():
-    conn = get_db_connection(DB_PATH)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM deals")
     conn.commit()
@@ -504,7 +503,7 @@ def create_inventory_ledger_table_if_not_exists():
     table_name = 'inventory_ledger'
     logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
             if not cursor.fetchone():
@@ -539,7 +538,7 @@ def create_sales_ledger_table_if_not_exists():
     table_name = 'sales_ledger'
     logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
 
@@ -588,7 +587,7 @@ def create_reconciliation_log_table_if_not_exists():
     table_name = 'reconciliation_log'
     logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
     try:
-        with get_db_connection(DB_PATH) as conn:
+        with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
             if not cursor.fetchone():

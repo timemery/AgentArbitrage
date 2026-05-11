@@ -377,3 +377,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+if 'conn' in locals() and conn:
+    try:
+        conn.close()
+    except Exception:
+        pass

@@ -385,7 +385,7 @@ def process_bulk_cost_upload(csv_content):
 
         for attempt in range(max_retries):
             try:
-                with get_db_connection(DB_PATH) as conn: # Increased timeout
+                with get_db_connection(DB_PATH, timeout=10) as conn: # Increased timeout
                     cursor = conn.cursor()
 
                     for update in updates:

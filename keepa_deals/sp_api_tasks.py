@@ -369,7 +369,7 @@ def fetch_amazon_orders_task(days_back: int = 365):
 
                 # Short DB Transaction per Order to minimize locking time
                 try:
-                    with get_db_connection(DB_PATH) as conn:
+                    with get_db_connection(DB_PATH, timeout=10) as conn:
                         cursor = conn.cursor()
                         for item in items:
                             asin = item.get('ASIN')
