@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from keepa_deals.db_utils import DB_PATH, get_all_user_credentials
 from keepa_deals.amazon_sp_api import refresh_sp_api_token, fetch_orders, fetch_order_items
+from keepa_deals.db_utils import get_db_connection
 
 # Configure logging to stdout
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -85,7 +86,7 @@ def debug_sales_sync():
     # 4. Check Database Write (Sales Ledger)
     print("\n[4/4] Checking Local Database (Sales Ledger)...")
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM sales_ledger")
             count = cursor.fetchone()[0]

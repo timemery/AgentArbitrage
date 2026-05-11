@@ -16,6 +16,7 @@ from .business_calculations import (
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .processing import clean_numeric_values
 from .db_utils import sanitize_col_name
+from keepa_deals.db_utils import get_db_connection
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ def recalculate_deals():
     task_start_time = time.time()
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
@@ -157,7 +158,7 @@ def recalculate_deals():
                     "total_deals": total_deals, "processed_deals": i + 1
                 })
 
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
 
         update_count = 0

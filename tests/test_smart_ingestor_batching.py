@@ -11,7 +11,7 @@ from keepa_deals.token_manager import TokenRechargeError
 
 class TestSmartIngestorBatching(unittest.TestCase):
     @patch('keepa_deals.smart_ingestor.redis.Redis')
-    @patch('keepa_deals.smart_ingestor.sqlite3')
+    @patch('keepa_deals.smart_ingestor.get_db_connection')
     @patch('keepa_deals.smart_ingestor.TokenManager')
     @patch('keepa_deals.smart_ingestor.fetch_deals_for_deals')
     @patch('keepa_deals.smart_ingestor.fetch_current_stats_batch')

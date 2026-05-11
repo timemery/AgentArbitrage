@@ -5,6 +5,7 @@ import redis
 import json
 import subprocess
 from datetime import datetime, timedelta, timezone
+from keepa_deals.db_utils import get_db_connection
 
 # Add parent directory to path to allow imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -52,7 +53,7 @@ def analyze_db_state():
         return
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
 
         # Check for system_state table

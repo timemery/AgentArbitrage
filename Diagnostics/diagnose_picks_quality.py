@@ -11,6 +11,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from keepa_deals.db_utils import DB_PATH
 from keepa_deals.prime_picks_task import PASS_1_MIN_PROFIT, PASS_1_MIN_ROI, PASS_1_MAX_ROI, PASS_1_MIN_DEAL_TRUST, PASS_1_MAX_LIST_AT
+from keepa_deals.db_utils import get_db_connection
 
 def get_hours_since(date_str):
     if not date_str:
@@ -39,7 +40,7 @@ def parse_offers(offers_str):
     return 0
 
 def fetch_all_deals():
-    with sqlite3.connect(DB_PATH) as conn:
+    with get_db_connection(DB_PATH) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         deal_rows = cursor.execute("SELECT * FROM deals").fetchall()
@@ -47,7 +48,7 @@ def fetch_all_deals():
 
 def fetch_current_prime_picks():
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             rows = cursor.execute("SELECT * FROM prime_picks ORDER BY rank ASC").fetchall()

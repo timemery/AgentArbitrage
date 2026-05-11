@@ -9,6 +9,7 @@ import redis
 import time
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from keepa_deals.db_utils import get_db_connection
 
 # Add project root to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -131,7 +132,7 @@ class HealthChecker:
             return
 
         try:
-            conn = sqlite3.connect(DB_PATH)
+            conn = get_db_connection(DB_PATH)
             cursor = conn.cursor()
 
             # Integrity Check
@@ -198,7 +199,7 @@ class HealthChecker:
 
         # DB State
         try:
-            conn = sqlite3.connect(DB_PATH)
+            conn = get_db_connection(DB_PATH)
             cursor = conn.cursor()
 
             try:

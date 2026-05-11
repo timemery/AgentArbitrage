@@ -2,6 +2,7 @@
 import sqlite3
 import os
 import sys
+from keepa_deals.db_utils import get_db_connection
 
 # Try to find the database path
 DB_PATH = os.getenv('DATABASE_URL', os.path.join(os.getcwd(), 'deals.db'))
@@ -20,7 +21,7 @@ if not os.path.exists(DB_PATH):
 
 def run_diagnostic():
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 

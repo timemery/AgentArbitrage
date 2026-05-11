@@ -11,6 +11,7 @@ sys.path.append(root_dir)
 
 from flask import Flask
 from wsgi_handler import app, api_deals
+from keepa_deals.db_utils import get_db_connection
 
 # Define DB path
 # We are in Diagnostics/, so ../deals.db or ../data/deals.db
@@ -23,7 +24,7 @@ print(f"Using Database: {DB_PATH}")
 
 def count_db_rows():
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT COUNT(*) FROM deals")
         count = cursor.fetchone()[0]

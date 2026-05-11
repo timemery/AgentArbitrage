@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sqlite3
 import os
+from keepa_deals.db_utils import get_db_connection
 
 # --- Mappings Definition ---
 # From wsgi_handler.py
@@ -54,7 +55,7 @@ if not os.path.exists(db_path):
     print("Please set the DATABASE_URL environment variable or ensure 'deals.db' exists in the current directory.")
     exit(1)
 
-conn = sqlite3.connect(db_path)
+conn = get_db_connection(db_path)
 cursor = conn.cursor()
 
 # Check if 'deals' table exists

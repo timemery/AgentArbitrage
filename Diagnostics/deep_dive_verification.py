@@ -13,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from keepa_deals.keepa_api import fetch_product_batch
 from keepa_deals.processing import _process_single_deal
 from keepa_deals.db_utils import DB_PATH
+from keepa_deals.db_utils import get_db_connection
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -25,7 +26,7 @@ def check_db_health():
         return
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         c = conn.cursor()
 
         # Count

@@ -12,12 +12,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'D
 
 # Now import the script
 import diagnose_dwindling_deals
+from keepa_deals.db_utils import get_db_connection
 
 class TestDiagnoseScript(unittest.TestCase):
     def setUp(self):
         self.test_db_path = "test_diagnose_deals.db"
         # Setup DB
-        conn = sqlite3.connect(self.test_db_path)
+        conn = get_db_connection(self.test_db_path)
         cursor = conn.cursor()
         cursor.execute("CREATE TABLE deals (ASIN TEXT PRIMARY KEY, last_seen_utc TEXT)")
         cursor.execute("CREATE TABLE system_state (key TEXT PRIMARY KEY, value TEXT, updated_at TIMESTAMP)")

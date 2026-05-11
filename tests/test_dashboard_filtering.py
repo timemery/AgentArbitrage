@@ -8,6 +8,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from wsgi_handler import app
+from keepa_deals.db_utils import get_db_connection
 
 # Create a temporary DB
 TEST_DB = 'test_deals.db'
@@ -18,7 +19,7 @@ class TestApiFiltering(unittest.TestCase):
         if os.path.exists(TEST_DB):
             os.remove(TEST_DB)
 
-        conn = sqlite3.connect(TEST_DB)
+        conn = get_db_connection(TEST_DB)
         cursor = conn.cursor()
 
         # Schema matching production (underscores for sanitized columns)

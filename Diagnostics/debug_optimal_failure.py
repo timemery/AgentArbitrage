@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import sys
+from keepa_deals.db_utils import get_db_connection
 
 # Path to the database
 DB_PATH = 'deals.db'
@@ -12,7 +13,7 @@ def diagnose_optimal_filters():
         print(f"ERROR: Database not found at {DB_PATH}")
         return
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_db_connection(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
