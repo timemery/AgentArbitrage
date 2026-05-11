@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import sys
+from keepa_deals.db_utils import get_db_connection
 
 # Try to find the DB
 POSSIBLE_PATHS = [
@@ -25,7 +26,7 @@ def inspect():
     print(f"Inspecting database at: {db_path}")
 
     try:
-        conn = sqlite3.connect(db_path)
+        conn = get_db_connection(db_path)
         cursor = conn.cursor()
 
         # Get columns

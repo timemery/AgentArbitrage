@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Load environment variables
 from dotenv import load_dotenv
+from keepa_deals.db_utils import get_db_connection
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # Paths
@@ -88,7 +89,7 @@ def check_db_freshness():
         return False
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT MAX(last_seen_utc) FROM deals")
         result = cursor.fetchone()
@@ -134,3 +135,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+if 'conn' in locals() and conn:
+    try:
+        conn.close()
+    except Exception:
+        pass

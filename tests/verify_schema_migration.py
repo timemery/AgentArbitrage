@@ -9,6 +9,7 @@ from unittest.mock import patch
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from keepa_deals.db_utils import sanitize_col_name, create_deals_table_if_not_exists, DB_PATH
+from keepa_deals.db_utils import get_db_connection
 
 TEST_DB = "test_schema_migration_verify.db"
 HEADERS_PATH = os.path.join(os.getcwd(), 'keepa_deals', 'headers.json')
@@ -18,7 +19,7 @@ def main():
         os.remove(TEST_DB)
 
     print(f"Creating test DB: {TEST_DB}")
-    conn = sqlite3.connect(TEST_DB)
+    conn = get_db_connection(TEST_DB)
     c = conn.cursor()
 
     # 1. Create table with OLD schema (minimal)
@@ -43,7 +44,7 @@ def main():
         create_deals_table_if_not_exists()
 
     # 3. Verify Schema
-    conn = sqlite3.connect(TEST_DB)
+    conn = get_db_connection(TEST_DB)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
 

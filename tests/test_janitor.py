@@ -5,6 +5,7 @@ import tempfile
 import shutil
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
+from keepa_deals.db_utils import get_db_connection
 
 # Import the logic function (assuming path is set up correctly)
 try:
@@ -18,7 +19,7 @@ class TestJanitor(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp()
         self.db_path = os.path.join(self.test_dir, "test_deals.db")
-        conn = sqlite3.connect(self.db_path)
+        conn = get_db_connection(self.db_path)
         cursor = conn.cursor()
         cursor.execute("CREATE TABLE deals (id INTEGER PRIMARY KEY, ASIN TEXT, last_seen_utc TIMESTAMP)")
         conn.commit()
@@ -28,7 +29,7 @@ class TestJanitor(unittest.TestCase):
         shutil.rmtree(self.test_dir)
 
     def test_janitor_cleans_old_deals(self):
-        conn = sqlite3.connect(self.db_path)
+        conn = get_db_connection(self.db_path)
         cursor = conn.cursor()
 
         # Insert deals
@@ -50,7 +51,7 @@ class TestJanitor(unittest.TestCase):
 
         self.assertEqual(deleted, 1)
 
-        conn = sqlite3.connect(self.db_path)
+        conn = get_db_connection(self.db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT ASIN FROM deals")
         rows = cursor.fetchall()

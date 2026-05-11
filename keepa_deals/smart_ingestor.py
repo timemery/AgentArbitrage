@@ -22,6 +22,7 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .processing import _process_single_deal, clean_numeric_values, _process_lightweight_update
+from keepa_deals.db_utils import get_db_connection
 
 # Configure logging
 logger = getLogger(__name__)
@@ -165,7 +166,7 @@ def requeue_stuck_restrictions():
     Finds deals stuck in Pending (is_restricted IS NULL) for > 1 hour and re-queues them.
     """
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             query = """
                 SELECT r.asin
@@ -199,7 +200,7 @@ def rescue_stale_deals(token_manager, limit=20):
 
         # 2. Find oldest deals seen > 48 hours ago
         stale_rows = []
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             query = """
@@ -261,7 +262,7 @@ def rescue_stale_deals(token_manager, limit=20):
                 rows_to_upsert.append(processed_row)
 
         if rows_to_upsert:
-            with sqlite3.connect(DB_PATH) as conn:
+            with get_db_connection(DB_PATH) as conn:
                 cursor = conn.cursor()
                 sanitized_headers = [sanitize_col_name(h) for h in headers_list]
                 sanitized_headers.extend(['last_seen_utc', 'source'])
@@ -434,7 +435,7 @@ def run():
         existing_asins_set = set()
         existing_rows_map = {}
         try:
-            conn_check = sqlite3.connect(DB_PATH, timeout=60)
+            conn_check = get_db_connection(DB_PATH, timeout=60)
             conn_check.row_factory = sqlite3.Row
             c_check = conn_check.cursor()
             placeholders = ','.join('?' * len(asin_list))
@@ -565,7 +566,7 @@ def run():
             if rows_to_upsert:
                 logger.info(f"Upserting {len(rows_to_upsert)} deals to DB. ASINs: {[r.get('ASIN') for r in rows_to_upsert[:10]]}...")
                 try:
-                    with sqlite3.connect(DB_PATH, timeout=60) as conn:
+                    with get_db_connection(DB_PATH, timeout=60) as conn:
                         cursor = conn.cursor()
                         sanitized_headers = [sanitize_col_name(h) for h in headers]
                         sanitized_headers.extend(['last_seen_utc', 'source'])

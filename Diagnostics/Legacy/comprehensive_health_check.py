@@ -8,6 +8,7 @@ import subprocess
 import requests
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
+from keepa_deals.db_utils import get_db_connection
 
 # Try to import redis, but handle if missing (so script doesn't crash immediately)
 try:
@@ -230,7 +231,7 @@ def check_db_health():
     print(f"Checking DB: {DB_PATH}")
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
 
         # Count deals

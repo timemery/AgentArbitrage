@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from keepa_deals.db_utils import get_db_connection
 
 DB_PATH = 'deals.db'
 TABLE_NAME = 'deals'
@@ -11,7 +12,7 @@ else:
     conn = None
     try:
         print(f"Connecting to database at '{DB_PATH}'...")
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 

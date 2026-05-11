@@ -11,6 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from keepa_deals.inventory_import import _download_and_process_report, REPORT_TYPE_MERCHANT, REPORT_TYPE_FBA
 from keepa_deals.db_utils import DB_PATH, create_inventory_ledger_table_if_not_exists
+from keepa_deals.db_utils import get_db_connection
 
 class TestInventoryImport(unittest.TestCase):
     def setUp(self):
@@ -51,7 +52,7 @@ class TestInventoryImport(unittest.TestCase):
             _download_and_process_report('http://mock.url/merchant', None, 'user123', REPORT_TYPE_MERCHANT)
 
         # Check DB State 1
-        with sqlite3.connect(self.db_path) as conn:
+        with get_db_connection(self.db_path) as conn:
             cursor = conn.cursor()
 
             # Check FBA SKU (should be 0)
@@ -78,7 +79,7 @@ class TestInventoryImport(unittest.TestCase):
             _download_and_process_report('http://mock.url/fba', None, 'user123', REPORT_TYPE_FBA)
 
         # Check DB State 2
-        with sqlite3.connect(self.db_path) as conn:
+        with get_db_connection(self.db_path) as conn:
             cursor = conn.cursor()
 
             # Check FBA SKU (should be updated to 10)

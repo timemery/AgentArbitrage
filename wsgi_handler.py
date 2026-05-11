@@ -356,7 +356,7 @@ def get_inventory():
 
     # Still returning potential buys as a fallback for now, but clients should use new endpoints
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
@@ -370,7 +370,7 @@ def get_potential_inventory():
     if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 401
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
@@ -390,7 +390,7 @@ def get_active_inventory():
     offset = (page - 1) * limit
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
@@ -430,7 +430,7 @@ def get_sales_history():
     offset = (page - 1) * limit
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
@@ -478,7 +478,7 @@ def add_potential_buy():
         if not asin:
             return jsonify({'error': 'ASIN required'}), 400
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO inventory_ledger (asin, title, buy_cost, status, source)
@@ -507,7 +507,7 @@ def confirm_purchase():
         if not ledger_id or not buy_cost or not qty or not sku:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 UPDATE inventory_ledger
@@ -530,7 +530,7 @@ def dismiss_potential():
         data = request.json
         ledger_id = data.get('id')
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE inventory_ledger SET status = 'DISMISSED' WHERE id = ?", (ledger_id,))
             conn.commit()
@@ -571,7 +571,7 @@ def update_inventory_item():
         if not ledger_id:
             return jsonify({'error': 'Missing ID'}), 400
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             # Construct dynamic update query based on provided fields
             updates = []
@@ -1436,7 +1436,7 @@ def api_deals():
         user_id = session.get('sp_api_user_id')
 
         # --- Connect and get column names ---
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
@@ -1800,6 +1800,7 @@ def debug_deal(asin):
 
 import secrets
 from urllib.parse import urlencode
+from keepa_deals.db_utils import get_db_connection
 
 @app.route('/connect_amazon')
 def connect_amazon():
@@ -1996,7 +1997,7 @@ def deal_count():
          return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             # Ensure the table exists before querying
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='deals'")
@@ -2153,7 +2154,7 @@ def get_ava_advice(asin):
         return jsonify({'error': 'Not authenticated'}), 401
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 

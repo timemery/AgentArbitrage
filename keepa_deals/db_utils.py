@@ -14,6 +14,19 @@ TABLE_NAME = 'deals'
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 WATERMARK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'watermark.json')
 
+def get_db_connection(db_path=None, timeout=5.0):
+    """
+    Returns a sqlite3 connection with busy_timeout and WAL journal mode set.
+    Use this instead of sqlite3.connect(DB_PATH) directly to ensure consistent
+    concurrency settings across all DB access (WSGI + Celery + diagnostics).
+    """
+    path = db_path if db_path is not None else DB_PATH
+    conn = sqlite3.connect(path, timeout=timeout)
+    conn.execute("PRAGMA busy_timeout=5000")
+    conn.execute("PRAGMA journal_mode=WAL")
+    return conn
+
+
 def sanitize_col_name(name):
     """Sanitizes a string to be a valid SQLite column name."""
     name = name.replace('%', 'Percent').replace('&', 'and').replace('.', '_')

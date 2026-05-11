@@ -22,6 +22,7 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .processing import _process_single_deal, clean_numeric_values, _process_lightweight_update
+from keepa_deals.db_utils import get_db_connection
 
 # Configure logging
 logger = getLogger(__name__)
@@ -236,7 +237,7 @@ def update_recent_deals():
         existing_asins_set = set()
         existing_rows_map = {}
         try:
-            conn_check = sqlite3.connect(DB_PATH, timeout=60)
+            conn_check = get_db_connection(DB_PATH, timeout=60)
             conn_check.row_factory = sqlite3.Row
             c_check = conn_check.cursor()
             placeholders = ','.join('?' * len(asin_list))
@@ -332,7 +333,7 @@ def update_recent_deals():
                 continue
 
             try:
-                with sqlite3.connect(DB_PATH, timeout=60) as conn:
+                with get_db_connection(DB_PATH, timeout=60) as conn:
                     cursor = conn.cursor()
                     sanitized_headers = [sanitize_col_name(h) for h in headers]
                     sanitized_headers.extend(['last_seen_utc', 'source'])

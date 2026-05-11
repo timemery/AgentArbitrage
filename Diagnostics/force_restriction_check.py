@@ -3,6 +3,7 @@ import sqlite3
 import os
 import sys
 from datetime import datetime
+from keepa_deals.db_utils import get_db_connection
 
 # Try to find the database path
 DB_PATH = os.getenv('DATABASE_URL', os.path.join(os.getcwd(), 'deals.db'))
@@ -34,7 +35,7 @@ except ImportError:
 
 def force_check_pending():
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 

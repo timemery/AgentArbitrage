@@ -10,6 +10,7 @@ from datetime import datetime
 from worker import celery_app
 from keepa_deals.db_utils import DB_PATH, get_all_user_credentials
 from keepa_deals.amazon_sp_api import refresh_sp_api_token
+from keepa_deals.db_utils import get_db_connection
 
 logger = logging.getLogger(__name__)
 
@@ -285,7 +286,7 @@ def _download_and_process_report(url, compression, user_id, report_type):
 
     logger.info(f"Processing {len(items_to_insert)} items from report {report_type}.")
 
-    with sqlite3.connect(DB_PATH) as conn:
+    with get_db_connection(DB_PATH) as conn:
         cursor = conn.cursor()
 
         for item in items_to_insert:
@@ -384,7 +385,7 @@ def process_bulk_cost_upload(csv_content):
 
         for attempt in range(max_retries):
             try:
-                with sqlite3.connect(DB_PATH, timeout=10) as conn: # Increased timeout
+                with get_db_connection(DB_PATH, timeout=10) as conn: # Increased timeout
                     cursor = conn.cursor()
 
                     for update in updates:
@@ -433,7 +434,7 @@ def export_missing_costs_csv():
         # Headers
         writer.writerow(['SKU', 'Title', 'ASIN', 'Buy Cost', 'Purchase Date'])
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             # Select items where buy_cost is NULL or 0
             cursor.execute("""

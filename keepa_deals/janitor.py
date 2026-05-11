@@ -14,7 +14,7 @@ def _clean_stale_deals_logic(grace_period_hours):
     logger.info(f"Janitor: Starting cleanup. Deleting deals older than {cutoff_time}...")
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
 
             # Count before deleting for logging
@@ -41,6 +41,7 @@ def _clean_stale_deals_logic(grace_period_hours):
         return 0
 
 from .prime_picks_task import generate_prime_picks
+from keepa_deals.db_utils import get_db_connection
 
 @celery.task(name='keepa_deals.janitor.clean_stale_deals')
 def clean_stale_deals(grace_period_hours=72):

@@ -18,6 +18,7 @@ from .keepa_api import (
 )
 from .token_manager import TokenManager
 from .field_mappings import FUNCTION_LIST
+from keepa_deals.db_utils import get_db_connection
 from .processing import _process_single_deal
 from .stable_calculations import infer_sale_events, analyze_sales_performance
 from .seller_info import get_all_seller_info
@@ -289,7 +290,7 @@ def save_to_database(rows, headers, logger):
     
     logger.info(f"Connecting to database at {DB_PATH}...")
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
 
         def sanitize_col_name(name):
