@@ -36,7 +36,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                 logger.error("Failed to obtain access token via refresh. Will mark items as restricted/check-failed.")
                 auth_failed = True
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             # Fetch ASIN and Condition. Order by id DESC (newest first).
             cursor.execute("SELECT ASIN, Condition FROM deals ORDER BY id DESC")
@@ -68,7 +68,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                     results = check_restrictions(batch_items, access_token, seller_id)
 
                 # Save results to the database immediately
-                with sqlite3.connect(DB_PATH) as conn:
+                with get_db_connection(DB_PATH) as conn:
                     cursor = conn.cursor()
                     for asin, result in results.items():
                         # Determine stored value for is_restricted:
@@ -100,7 +100,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                 logger.error(f"Error processing restriction check batch for user {user_id}: {e}", exc_info=True)
                 # Fallback: Mark batch as error to prevent infinite spinner
                 try:
-                    with sqlite3.connect(DB_PATH) as conn:
+                    with get_db_connection(DB_PATH) as conn:
                         cursor = conn.cursor()
                         for item in batch_items:
                             asin = item['asin']
@@ -135,7 +135,7 @@ def check_all_restrictions_for_user(self, user_id: str, seller_id: str, access_t
                 # We can't easily know which specific ones were processed if `total_processed` is just a count,
                 # but since we process sequentially, we can approximate or just mark ALL pending ones.
                 # Safer strategy: Query DB for NULLs and mark them.
-                with sqlite3.connect(DB_PATH) as conn:
+                with get_db_connection(DB_PATH) as conn:
                     cursor = conn.cursor()
                     cursor.execute("""
                         SELECT asin FROM user_restrictions
@@ -196,7 +196,7 @@ def check_restriction_for_asins(asins: list[str]):
             # Fetch conditions for these ASINs from the database (Done early to handle both success/failure cases)
             items = []
             try:
-                with sqlite3.connect(DB_PATH) as conn:
+                with get_db_connection(DB_PATH) as conn:
                     cursor = conn.cursor()
                     placeholders = ', '.join(['?'] * len(asins))
                     cursor.execute(f"SELECT ASIN, Condition FROM deals WHERE ASIN IN ({placeholders})", asins)
@@ -214,7 +214,7 @@ def check_restriction_for_asins(asins: list[str]):
             if not access_token:
                 logger.warning(f"Could not refresh token for user {user_id}. Marking {len(items)} items as error.")
                 try:
-                    with sqlite3.connect(DB_PATH) as conn:
+                    with get_db_connection(DB_PATH) as conn:
                         cursor = conn.cursor()
                         for item in items:
                             cursor.execute("""
@@ -240,7 +240,7 @@ def check_restriction_for_asins(asins: list[str]):
                 try:
                     results = check_restrictions(batch_items, access_token, user_id)
 
-                    with sqlite3.connect(DB_PATH) as conn:
+                    with get_db_connection(DB_PATH) as conn:
                         cursor = conn.cursor()
                         for asin, result in results.items():
                             is_restricted_val = 0
@@ -264,7 +264,7 @@ def check_restriction_for_asins(asins: list[str]):
                 except Exception as e:
                     logger.error(f"Error processing restriction check batch for user {user_id}: {e}", exc_info=True)
                     try:
-                        with sqlite3.connect(DB_PATH) as conn:
+                        with get_db_connection(DB_PATH) as conn:
                             cursor = conn.cursor()
                             for item in batch_items:
                                 asin = item['asin']
@@ -288,7 +288,7 @@ def check_restriction_for_asins(asins: list[str]):
         except Exception as e:
             logger.error(f"An unexpected error occurred in check_restriction_for_asins for user {user_id}: {e}", exc_info=True)
             try:
-                with sqlite3.connect(DB_PATH) as conn:
+                with get_db_connection(DB_PATH) as conn:
                     cursor = conn.cursor()
                     for asin in asins:
                         cursor.execute("""
@@ -309,6 +309,7 @@ def check_restriction_for_asins(asins: list[str]):
     return f"Completed restriction check for {len(asins)} ASINs for {len(user_credentials)} users."
 
 from keepa_deals.amazon_sp_api import fetch_orders, fetch_order_items
+from keepa_deals.db_utils import get_db_connection
 
 @celery.task(name='keepa_deals.sp_api_tasks.fetch_amazon_orders_task')
 def fetch_amazon_orders_task(days_back: int = 365):
@@ -368,7 +369,7 @@ def fetch_amazon_orders_task(days_back: int = 365):
 
                 # Short DB Transaction per Order to minimize locking time
                 try:
-                    with sqlite3.connect(DB_PATH, timeout=10) as conn:
+                    with get_db_connection(DB_PATH) as conn:
                         cursor = conn.cursor()
                         for item in items:
                             asin = item.get('ASIN')

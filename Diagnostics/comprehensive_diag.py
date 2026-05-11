@@ -4,6 +4,7 @@ import sqlite3
 import subprocess
 import json
 from datetime import datetime, timedelta, timezone
+from keepa_deals.db_utils import get_db_connection
 
 # Ensure we can import modules from the root directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -84,7 +85,7 @@ def run_diagnostic():
     zombie_count = 0
 
     try:
-        conn = sqlite3.connect(db_path)
+        conn = get_db_connection(db_path)
         cursor = conn.cursor()
 
         # Raw Count

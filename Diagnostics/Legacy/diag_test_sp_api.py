@@ -13,6 +13,7 @@ import sqlite3
 from keepa_deals.db_utils import DB_PATH, get_all_user_credentials
 from keepa_deals.sp_api_tasks import _refresh_sp_api_token
 from keepa_deals.amazon_sp_api import check_restrictions
+from keepa_deals.db_utils import get_db_connection
 
 # Configure logging to stdout
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -53,7 +54,7 @@ def main():
     # 4. Fetch 5 ASINs
     print("Fetching 5 ASINs from database...")
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT ASIN FROM deals GROUP BY ASIN ORDER BY MAX(id) DESC LIMIT 5")
             asins = [row[0] for row in cursor.fetchall()]

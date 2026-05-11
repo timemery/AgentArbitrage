@@ -4,6 +4,7 @@ import sqlite3
 import sys
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from keepa_deals.db_utils import get_db_connection
 
 # Load .env explicitly
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
@@ -37,7 +38,7 @@ def inject_credentials():
     print(f"Injecting credentials for Seller ID: {SELLER_ID}")
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
 
             # Ensure table exists

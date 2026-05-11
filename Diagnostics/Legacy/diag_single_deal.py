@@ -11,6 +11,7 @@ from keepa_deals.processing import _process_single_deal
 from keepa_deals.db_utils import save_deals_to_db, create_deals_table_if_not_exists
 from keepa_deals.seller_info import get_seller_info_for_single_deal
 from keepa_deals.token_manager import TokenManager
+from keepa_deals.db_utils import get_db_connection
 
 # --- Configuration ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -72,7 +73,7 @@ def run_single_deal_diag(asin: str):
     # 6. Verify Database
     logging.info("Verifying database content...")
     import sqlite3
-    conn = sqlite3.connect('deals.db')
+    conn = get_db_connection('deals.db')
     cursor = conn.cursor()
     # Check for a specific column known to be problematic, e.g., 'Used_365_days_avg'
     # Note: Column name must match the sanitized version.

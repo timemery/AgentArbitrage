@@ -1,6 +1,7 @@
 
 import sqlite3
 import os
+from keepa_deals.db_utils import get_db_connection
 
 # Database Path
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'deals.db')
@@ -11,7 +12,7 @@ def dump_ledger():
         return
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
 
             # Check count

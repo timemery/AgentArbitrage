@@ -19,6 +19,7 @@ from .token_manager import TokenManager
 from .processing import _process_single_deal, clean_numeric_values, _process_lightweight_update
 from .seller_info import get_seller_info_for_single_deal
 from .stable_calculations import clear_analysis_cache
+from keepa_deals.db_utils import get_db_connection
 
 # Configure logging
 logger = getLogger(__name__)
@@ -265,7 +266,7 @@ def backfill_deals(reset=False):
                     existing_rows_map = {} # Map ASIN to existing row dict
 
                     try:
-                        conn_check = sqlite3.connect(DB_PATH, timeout=60)
+                        conn_check = get_db_connection(DB_PATH)
                         conn_check.row_factory = sqlite3.Row # Enable dict-like access
                         c_check = conn_check.cursor()
                         placeholders = ','.join('?' * len(all_asins))
@@ -408,7 +409,7 @@ def backfill_deals(reset=False):
                         logger.info(f"Upserting {len(rows_to_upsert)} processed deals from chunk into the database.")
                         conn = None
                         try:
-                            conn = sqlite3.connect(DB_PATH, timeout=60)
+                            conn = get_db_connection(DB_PATH)
                             cursor = conn.cursor()
 
                             # --- New Logging Logic: Refreshed vs New ---

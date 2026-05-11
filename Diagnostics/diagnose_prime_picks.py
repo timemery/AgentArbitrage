@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from keepa_deals.db_utils import DB_PATH
 import os
 import sys
+from keepa_deals.db_utils import get_db_connection
 
 def extract_code_constants():
     # Extract constants from keepa_deals/prime_picks_task.py
@@ -69,7 +70,7 @@ def main():
         sys.exit(1)
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
     except Exception as e:

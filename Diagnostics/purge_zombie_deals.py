@@ -7,6 +7,7 @@ import sys
 sys.path.append(os.getcwd())
 
 from keepa_deals.db_utils import DB_PATH
+from keepa_deals.db_utils import get_db_connection
 
 def purge_zombies():
     if not os.path.exists(DB_PATH):
@@ -15,7 +16,7 @@ def purge_zombies():
 
     print(f"--- Connecting to database: {DB_PATH} ---")
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db_connection(DB_PATH)
         cursor = conn.cursor()
 
         # 1. Identify Zombies

@@ -19,6 +19,7 @@ sys.path.append(os.getcwd())
 from keepa_deals.keepa_api import fetch_product_batch, fetch_seller_data
 from keepa_deals.seller_info import get_all_seller_info
 from keepa_deals.token_manager import TokenManager
+from keepa_deals.db_utils import get_db_connection
 
 def diagnose_seller_issues():
     """
@@ -38,7 +39,7 @@ def diagnose_seller_issues():
     token_manager = TokenManager(api_key)
     token_manager.sync_tokens()
 
-    conn = sqlite3.connect(db_path)
+    conn = get_db_connection(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 

@@ -12,6 +12,7 @@ sys.path.insert(0, project_root)
 # It's critical to import our own modules after setting the path
 from keepa_deals.keepa_api import fetch_deals_for_deals
 from keepa_deals.db_utils import create_deals_table_if_not_exists
+from keepa_deals.db_utils import get_db_connection
 
 def run_diagnostic():
     print("--- STARTING DIAGNOSTIC SCRIPT ---")
@@ -64,7 +65,7 @@ def run_diagnostic():
         print("  - Table check/creation complete.")
 
         print("  - Connecting to database...")
-        with sqlite3.connect(db_path) as conn:
+        with get_db_connection(db_path) as conn:
             cursor = conn.cursor()
             print("  - Connection successful.")
             

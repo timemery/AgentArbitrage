@@ -10,6 +10,7 @@ from worker import celery_app as celery
 from .db_utils import DB_PATH
 from .ava_advisor import query_xai_api, STRATEGIES_FILE
 from .new_analytics import get_offer_count_trend_from_flat
+from keepa_deals.db_utils import get_db_connection
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +118,7 @@ def generate_prime_picks():
 
     try:
         # Pass 1: Smart Floor
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
@@ -378,7 +379,7 @@ def generate_prime_picks():
                 run_id
             ))
 
-        with sqlite3.connect(DB_PATH) as conn:
+        with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
 
             # Atomic replace:

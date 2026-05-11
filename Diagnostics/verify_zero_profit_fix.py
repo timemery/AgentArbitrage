@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import sys
+from keepa_deals.db_utils import get_db_connection
 
 # Version 1.1
 DB_PATH = 'deals.db'
@@ -12,7 +13,7 @@ def verify_fix():
         print(f"Error: {DB_PATH} not found.")
         return
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_db_connection(DB_PATH)
     cursor = conn.cursor()
 
     # 1. Clean up previous test
