@@ -1,7 +1,7 @@
 # Centralize SQLite Connection Setup and Fix Resource Leaks
 
 **Date:** 2026-05-11
-**Status:** Successful
+**Status:** Failed
 
 ## Task Overview
 A latent SQLite lock-contention bug surfaced in production resulting in WSGI requests hanging indefinitely, triggering Gateway Timeouts. The application previously opened SQLite connections via `sqlite3.connect(DB_PATH)` throughout the codebase, failing to set `busy_timeout` or `journal_mode=WAL` consistently on the connections. A temporary monkey-patch was placed in `wsgi.py` as an emergency hot-fix.
@@ -30,6 +30,6 @@ The goal of this task was to introduce a centralized database connection helper 
    - Successfully ran the entire test suite via `./run_tests.sh`.
 
 ## Conclusion
-The task was successful. The codebase now uniformly enforces safe concurrency boundaries for SQLite by routing all connections through the centralized helper. Additionally, hidden resource leaks were closed out across the WSGI daemon and the diagnostic footprint, resolving the Gateway Timeout hangs without re-introducing the monkey-patch.
+The task failed. Despite centralizing the connection helper and adding `conn.close()` calls across the codebase, the site still gets a 500 Gateway Timeout error in production after these changes. The root cause of the WSGI hanging behavior remains unresolved.
 
 **Note for future deployments:** The sandbox environment deployment process might differ from Tim's production deployment (`./deploy_update.sh`). This change strictly relies on restarting the WSGI daemon/Celery workers for the new `db_utils.py` helper logic to take effect.
