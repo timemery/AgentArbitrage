@@ -275,3 +275,14 @@ A critical regression occurred when the system used `2000-01-01` instead of `201
   - **Pass 2 (xAI Mastermind):** Evaluates top candidates using `grok-4-fast-reasoning`. Employs **Tiered Strategy Injection** to limit the injected rules to a strict cap of 'High' confidence strategies from core categories, dynamically matching relevant contexts to reduce payload size.
   - **Caching:** Successful evaluation results are cached atomically in the new `prime_picks` database table, allowing instant UI reads without blocking the web thread.
   - **Graceful Fallback:** If Pass 2 fails (e.g., due to xAI API errors), the system explicitly skips updating the cache, preserving the last known valid run instead of displaying an empty list or unfiltered candidates.
+
+### 7.11 Recent Fixes (May 2026 - Part 2)
+
+- **Prime Picks Refinements:**
+  - **Pass 1 Offer Trend:** Updated the deduplication comparison to use the `365-day average` instead of the 30-day average, resolving issues where missing short-term data neutralized the filter.
+  - **Pass 1 Year-Round Velocity Cap:** Introduced a hard cap (Rank > 2,000,000) for explicitly non-seasonal "Year-round" items to structurally drop weak deals while exempting seasonal inventory.
+  - **Pass 2 Prompt Correction:** Added a `SEASONAL HIGH-RANK CORRECTION` block to the xAI prompt, instructing the model not to reject valid seasonal deals based solely on high off-season ranks.
+- **Database Connections & Deadlocks:**
+  - **Centralized Helper:** Replaced direct `sqlite3.connect` calls across the codebase with the `get_db_connection` helper from `keepa_deals.db_utils` to enforce `busy_timeout=5000` and `journal_mode=WAL` uniformly.
+  - **Context Manager Requirement:** All assignments (`conn = get_db_connection(...)`) MUST be used within a `with` context block (or explicitly closed in a `finally` block). Unclosed connections leak and prevent SQLite from executing `PRAGMA` statements on new connections, leading to severe lock contention.
+  - **`mod_wsgi` C-Extension Deadlocks:** The centralized database helper, utilizing the `sqlite3` C-extension, triggered WSGI hangs in production when running within isolated sub-interpreters. The live Apache virtual host config (`agentarbitrage.conf`) **must** include the `WSGIApplicationGroup %{GLOBAL}` directive to force execution in the main interpreter.
