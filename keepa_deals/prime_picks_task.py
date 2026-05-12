@@ -21,6 +21,7 @@ PASS_1_MIN_DEAL_TRUST = 50
 PASS_1_MAX_LIST_AT = 500
 PASS_1_OFFER_TREND_VELOCITY_GATE = 100000
 PASS_1_OFFER_TREND_BONUS_MULTIPLIER = 1.1
+PASS_1_YEAR_ROUND_VELOCITY_CAP = 2000000
 
 def get_tiered_strategies(candidates, max_per_core_category=30):
     """
@@ -157,6 +158,7 @@ def generate_prime_picks():
         filtered_deals = []
         dropped_candidates = 0
         no_trend_candidates = 0
+        dropped_year_round_high_rank = 0
 
         for deal in deals_list:
             profit_str = str(deal.get('Profit', '0')).replace('$', '').replace(',', '')
@@ -187,11 +189,18 @@ def generate_prime_picks():
 
             score = (profit * roi) * (0.5 ** (hours_since / max(0.001, final_half_life)))
 
-            # Offer Trend Modifier
+            # Year-Round Velocity Cap Filter
             drop_candidate = False
+            seasonality = str(deal.get('Detailed_Seasonality', '')).lower().strip()
+            if seasonality == 'year-round' and sales_rank > PASS_1_YEAR_ROUND_VELOCITY_CAP:
+                logger.info(f"[Pass 1 Filter] Dropped ASIN={deal.get('ASIN')} (seasonality={seasonality}, sales_rank={sales_rank}) — year-round + high rank")
+                dropped_year_round_high_rank += 1
+                drop_candidate = True
+
+            # Offer Trend Modifier
             trend = get_offer_count_trend_from_flat(deal)
 
-            if trend == 'rising' and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
+            if not drop_candidate and trend == 'rising' and sales_rank > PASS_1_OFFER_TREND_VELOCITY_GATE:
                 logger.info(f"[Pass 1 Filter] Dropped ASIN={deal.get('ASIN')} (trend=rising, sales_rank={sales_rank}) — rising offers + weak velocity")
                 dropped_candidates += 1
                 drop_candidate = True
@@ -209,7 +218,7 @@ def generate_prime_picks():
                 deal['_score'] = score
                 filtered_deals.append(deal)
 
-        logger.info(f"[Pass 1 Filter] Offer-trend filter dropped {dropped_candidates} of {len(deals_list)} candidates; {no_trend_candidates} had no trend signal")
+        logger.info(f"[Pass 1 Filter] Offer-trend filter dropped {dropped_candidates} of {len(deals_list)} candidates; {no_trend_candidates} had no trend signal; Year-round high rank dropped {dropped_year_round_high_rank}")
 
         # Top 20 candidates
         filtered_deals.sort(key=lambda x: x.get('_score', 0), reverse=True)
@@ -268,6 +277,14 @@ def generate_prime_picks():
         Books with Sales Rank above 500,000 are very unlikely to be counterfeit regardless of category. Older editions of textbooks are also unlikely to be counterfeit. Apply the four-factor test specifically — do not reject on category.
 
         This correction takes priority over any general strategies suggesting textbook avoidance.
+
+        IMPORTANT — SEASONAL HIGH-RANK CORRECTION: Some candidates will have a high current sales rank (over 1,000,000) but be flagged in `Detailed_Seasonality` as a seasonal title (e.g., "Medical School", "Christmas", "Summer Reading", "Spring Gardening", or any season-specific category). Do NOT reject seasonal candidates solely based on current high sales rank.
+
+        A book that ranks 1.5M in the off-season may rank 200K-400K during its season, with strong ROI for buyers willing to hold inventory. The ROI on seasonal flips often exceeds high-velocity flips because the off-season buy price is depressed. The seller plans inventory by holding books at their own prep warehouse and shipping to Amazon 2-3 months before the selling season to minimize FBA aged-inventory surcharges (which begin at 181 days and escalate steeply at 271+ days).
+
+        Apply the high-rank rejection rule strictly only when the candidate is classified as "Year-round" or has no clear seasonal classification. For seasonal candidates, prioritize offer-trend stability and discount depth over current rank.
+
+        This correction takes priority over general velocity-based rejection rules.
 
         """
 
