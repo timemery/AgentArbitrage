@@ -219,24 +219,25 @@ def get_offer_count_trend_from_flat(deal, logger=None):
     """
     Computes the canonical trend signal from a SQLite deal row's flat columns.
     Used by Pass 1 because the SQLite row does not contain the Keepa stats array.
+    Compares against the 365-day average.
     """
     import re
     current_str = str(deal.get('Used_Offer_Count_Current', ''))
-    avg30_str = str(deal.get('Used_Offer_Count_30_days_avg', ''))
+    avg365_str = str(deal.get('Used_Offer_Count_365_days_avg', ''))
 
-    if not current_str or current_str == '-' or not avg30_str or avg30_str == '-':
+    if not current_str or current_str == '-' or not avg365_str or avg365_str == '-':
         return None
 
     try:
         c_match = re.search(r'(\d+)', current_str.replace(',', ''))
-        a_match = re.search(r'(\d+)', avg30_str.replace(',', ''))
+        a_match = re.search(r'(\d+)', avg365_str.replace(',', ''))
         if not c_match or not a_match:
             return None
         current = int(c_match.group(1))
-        avg30 = int(a_match.group(1))
+        avg365 = int(a_match.group(1))
 
-        if current > avg30: return 'rising'
-        if current < avg30: return 'falling'
+        if current > avg365: return 'rising'
+        if current < avg365: return 'falling'
         return 'flat'
     except Exception as e:
         if logger:
