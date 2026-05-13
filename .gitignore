@@ -18,7 +18,7 @@ celery_log.tmp
 celerybeat-schedule
 
 # Databases & backups
-deals.db
+deals.db*
 dump.rdb
 temp-*.rdb
 db_backups/
