@@ -29,7 +29,7 @@ from keepa_deals.db_utils import (
     create_system_state_table_if_not_exists
 )
 from keepa_deals.janitor import _clean_stale_deals_logic
-from keepa_deals.ava_advisor import generate_ava_advice, generate_tooltip_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api
+from keepa_deals.ava_advisor import generate_ava_advice, generate_tooltip_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api, STRATEGIC_CORRECTIONS
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
 from keepa_deals.inventory_import import fetch_existing_inventory_task, process_bulk_cost_upload, export_missing_costs_csv
 from keepa_deals.sp_api_tasks import fetch_amazon_orders_task
@@ -2223,6 +2223,8 @@ def mentor_chat():
         {strategy_section}
 
         {intelligence_section}
+
+        {STRATEGIC_CORRECTIONS}
 
         **User Message:**
         {message}
