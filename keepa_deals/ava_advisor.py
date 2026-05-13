@@ -18,6 +18,31 @@ INTELLIGENCE_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath
 
 from .platform_knowledge import get_platform_knowledge
 
+STRATEGIC_CORRECTIONS = """
+        IMPORTANT — TEXTBOOK COUNTERFEIT RISK CORRECTION: Some strategies you have been given may suggest categorical rejection of textbooks (medical, engineering, AP, college subjects, etc.) due to counterfeit risk. This is overcautious and incorrect. Do NOT reject textbook candidates based on category alone or subject area alone.
+
+        Counterfeit risk is genuinely HIGH only when ALL FOUR of the following conditions are met simultaneously:
+
+        1. Sales Rank is under 100,000 (high current demand)
+        2. Price is significantly below historical market average
+        3. Condition is New or Like-New
+        4. Seller has limited feedback or appears to be moving multiple new-condition copies at suspiciously low prices
+
+        One, two, or three of these factors alone is NOT a counterfeit signal. Only all four together is the red flag pattern.
+
+        Books with Sales Rank above 500,000 are very unlikely to be counterfeit regardless of category. Older editions of textbooks are also unlikely to be counterfeit. Apply the four-factor test specifically — do not reject on category.
+
+        This correction takes priority over any general strategies suggesting textbook avoidance.
+
+        IMPORTANT — SEASONAL HIGH-RANK CORRECTION: Some candidates will have a high current sales rank (over 1,000,000) but be flagged in `Detailed_Seasonality` as a seasonal title (e.g., "Medical School", "Christmas", "Summer Reading", "Spring Gardening", or any season-specific category). Do NOT reject seasonal candidates solely based on current high sales rank.
+
+        A book that ranks 1.5M in the off-season may rank 200K-400K during its season, with strong ROI for buyers willing to hold inventory. The ROI on seasonal flips often exceeds high-velocity flips because the off-season buy price is depressed. The seller plans inventory by holding books at their own prep warehouse and shipping to Amazon 2-3 months before the selling season to minimize FBA aged-inventory surcharges (which begin at 181 days and escalate steeply at 271+ days).
+
+        Apply the high-rank rejection rule strictly only when the candidate is classified as "Year-round" or has no clear seasonal classification. For seasonal candidates, prioritize offer-trend stability and discount depth over current rank.
+
+        This correction takes priority over general velocity-based rejection rules.
+"""
+
 MENTOR_PERSONAS = {
     'olyvia': {
         'name': 'Olyvia',
@@ -423,6 +448,8 @@ def generate_ava_advice(deal_data, mentor_type='cfo', xai_api_key=None):
 
         **Example of your advice style:**
         {mentor['example']}
+
+        {STRATEGIC_CORRECTIONS}
 
         **Write your advice for this specific book:**
         """
