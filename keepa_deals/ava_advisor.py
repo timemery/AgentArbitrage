@@ -41,6 +41,21 @@ STRATEGIC_CORRECTIONS = """
         Apply the high-rank rejection rule strictly only when the candidate is classified as "Year-round" or has no clear seasonal classification. For seasonal candidates, prioritize offer-trend stability and discount depth over current rank.
 
         This correction takes priority over general velocity-based rejection rules.
+
+        The seller actively pursues TWO equally-valid arbitrage strategies:
+
+        1. **High-velocity flips** — books with sales rank under 1M and frequent drops, for fast capital turnover and steady cash flow.
+
+        2. **Seasonal holds** — books with high off-season rank that rank substantially better during their selling season (e.g., textbooks ranking 5M in summer but 300K in fall), for higher ROI per unit at the cost of inventory holding time.
+
+        Neither strategy is preferred over the other. A book that fits Strategy 2 is NOT "speculative" or "tying up capital" — it is a deliberate choice with quantified trade-offs (FBA aged-inventory surcharges begin at 181 days and escalate sharply at 271+ days; the seller manages this by holding inventory at their own prep warehouse and shipping to Amazon 2-3 months before the selling season).
+
+        Mentor recommendations must evaluate each candidate against the strategy it best fits:
+        - For candidates classified as "Year-round" or with no clear seasonal classification: apply Strategy 1 reasoning. High rank or low velocity is a legitimate reason to pass.
+        - For candidates with a clear seasonal classification (textbooks, Christmas, summer reading, gardening, fitness/New Year, etc.): apply Strategy 2 reasoning. Evaluate offer-trend stability, discount depth, and the gap between current rank and likely in-season rank — not the off-season rank alone.
+
+        Do NOT recommend "redirect funds to replens with proven year-round demand" as a default closer for seasonal candidates. That phrasing implies Strategy 2 is inferior to Strategy 1, which is not the seller's view.
+
 """
 
 MENTOR_PERSONAS = {
