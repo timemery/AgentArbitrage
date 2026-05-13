@@ -282,6 +282,9 @@ A critical regression occurred when the system used `2000-01-01` instead of `201
   - **Pass 1 Offer Trend:** Updated the deduplication comparison to use the `365-day average` instead of the 30-day average, resolving issues where missing short-term data neutralized the filter.
   - **Pass 1 Year-Round Velocity Cap:** Introduced a hard cap (Rank > 2,000,000) for explicitly non-seasonal "Year-round" items to structurally drop weak deals while exempting seasonal inventory.
   - **Pass 2 Prompt Correction:** Added a `SEASONAL HIGH-RANK CORRECTION` block to the xAI prompt, instructing the model not to reject valid seasonal deals based solely on high off-season ranks.
+- **AI Mentorship & Strategy Alignment:**
+  - **Shared Strategic Corrections:** Extracted `TEXTBOOK COUNTERFEIT RISK CORRECTION` and `SEASONAL HIGH-RANK CORRECTION` into a shared module-level constant (`STRATEGIC_CORRECTIONS`) in `keepa_deals/ava_advisor.py`. This ensures consistency across Mentor Advice (Ava), Mentor Chat, and Pass 2 evaluations.
+  - **Dual Strategy Framing:** Updated the `STRATEGIC_CORRECTIONS` block to evaluate candidates against a dual-strategy framework (high-velocity flips vs. seasonal holds). This removes the AI's bias toward treating all inventory strictly as high-velocity replens.
 - **Database Connections & Deadlocks:**
   - **Centralized Helper:** Replaced direct `sqlite3.connect` calls across the codebase with the `get_db_connection` helper from `keepa_deals.db_utils` to enforce `busy_timeout=5000` and `journal_mode=WAL` uniformly.
   - **Context Manager Requirement:** All assignments (`conn = get_db_connection(...)`) MUST be used within a `with` context block (or explicitly closed in a `finally` block). Unclosed connections leak and prevent SQLite from executing `PRAGMA` statements on new connections, leading to severe lock contention.

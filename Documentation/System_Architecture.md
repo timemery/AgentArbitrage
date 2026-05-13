@@ -101,14 +101,14 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 ### Advice from Ava
 *   **Route:** `/api/ava-advice/<ASIN>`
 *   **Purpose:** Provides real-time, deal-specific analysis in the dashboard overlay.
-*   **Mechanism:** Queries `grok-4-fast-reasoning` with the deal's metrics and the "Strategies" context to generate a 50-80 word actionable summary.
+*   **Mechanism:** Queries `grok-4-fast-reasoning` with the deal's metrics, the "Strategies" context, and the shared `STRATEGIC_CORRECTIONS` block from `keepa_deals/ava_advisor.py` to generate a 50-80 word actionable summary. The dual-strategy framing in the corrections ensures unbiased evaluation of both high-velocity flips and seasonal holds.
 
 ### Mentor Chat
 *   **Route:** `/api/mentor-chat`
 *   **Purpose:** Persistent, persona-driven chat interface for general business strategy and mentorship.
 *   **Mechanism:**
     *   **Personas:** Supports 4 distinct personas (Olyvia/CFO, Joel/Flipper, Evelyn/Professor, Errol/Quant) defined in `ava_advisor.py`.
-    *   **Context:** Injects the full "Strategies" and "Intelligence" knowledge base into the system prompt.
+    *   **Context:** Injects the full "Strategies" and "Intelligence" knowledge base, alongside the shared `STRATEGIC_CORRECTIONS` block (for dual-strategy framing and overriding overcautious textbook/high-rank rules) into the system prompt.
     *   **Model:** Uses `grok-4-fast-reasoning` (Temperature 0.5) for detailed, contextual responses.
 
 ### AI-Triggered Hover Tooltips
