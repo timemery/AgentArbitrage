@@ -47,13 +47,14 @@ When expanding a deal's details:
     *   **Professor:** Educational, explains concepts.
     *   **Quant:** Statistical, data-heavy.
 *   It asynchronously fetches an AI analysis (`/api/ava-advice/<ASIN>`) powered by `grok-4-fast-reasoning`.
-*   Provides 50-80 words of actionable advice based on the deal's specific metrics.
+*   Provides 50-80 words of actionable advice based on the deal's specific metrics, evaluating it against a dual-strategy framework (high-velocity flips vs. seasonal holds) to prevent bias.
 *   **Formatting:** The system explicitly prompts the AI to return **HTML** (e.g., `<b>`, `<br>`) instead of Markdown. The frontend renders this safely using `innerHTML`.
 
 ### Mentor Chat Integration
 A persistent, client-side chat interface accessible via the "Mentor" navigation item.
 *   **Visual:** Fixed overlay (505x540px) at the bottom-right of the screen.
 *   **Shared State:** The active persona (e.g., "Olyvia") is synchronized between this Chat Window and the Deal Details "My Mentor" overlay using `localStorage`. Changing one updates the other instantly.
+*   **Evaluation Logic:** Shares the same dual-strategy framework (`STRATEGIC_CORRECTIONS`) as the My Mentor overlay to provide consistent business advice regarding seasonal versus high-velocity inventory.
 *   **Behavior:** Features a "Click to Submit" model (Enter key disabled) to prevent accidental sends.
 *   **Rendering:** Mentor responses are rendered as trusted HTML (supporting bold/line breaks), while user input is strictly treated as text to prevent XSS.
 

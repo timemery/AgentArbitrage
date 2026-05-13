@@ -110,4 +110,4 @@ KEEPA_API_KEY="your_keepa_api_key"
 - **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
-*Last Updated: May 12, 2026 (v3.6 Prime Picks Refinements & WSGI Stability)*
+*Last Updated: May 14, 2026 (v3.7 AI Mentorship Alignment & Documentation Updates)*
