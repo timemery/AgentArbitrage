@@ -100,6 +100,7 @@ KEEPA_API_KEY="your_keepa_api_key"
 - **500 Internal Server Error:** Often a WSGI configuration issue. Ensure `wsgi.py` correctly imports the `app` instance from `wsgi_handler.py`. Check Apache logs for details: `/var/log/apache2/agentarbitrage_error.log`.
 - **API Failures:** Verify that all required keys in your `.env` file are correct. Check `app.log` for specific API error messages.
 - **Changes Not Applying:** If new code doesn't seem to be running, force a full application reload with `touch wsgi.py` followed by `sudo systemctl restart apache2`.
+- **504 Gateway Timeouts / WSGI Hangs:** Can be caused by `mod_wsgi` C-extension deadlocks (e.g., from `sqlite3` or `numpy`). Ensure the live Apache virtual host config (`/etc/apache2/sites-enabled/agentarbitrage.conf`) includes `WSGIApplicationGroup %{GLOBAL}`. **Note:** The repository copy of `agentarbitrage.conf` may be out of sync with production.
 
 ---
 
@@ -109,4 +110,4 @@ KEEPA_API_KEY="your_keepa_api_key"
 - **Documentation & Logs:** Key project documents, architectural discussions, and historical dev logs are stored in the `/Documentation` and `/Dev_Logs` folders.
 - **Reference Code:** Older versions of the codebase are available for reference in `/keepa_deals_reference` and `/AgentArbitrage-before_persistent_db`.
 
-*Last Updated: March 27, 2026 (v3.5 Self-Aware Mentor & Hover Tooltips)*
+*Last Updated: May 12, 2026 (v3.6 Prime Picks Refinements & WSGI Stability)*

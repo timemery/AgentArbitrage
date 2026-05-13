@@ -127,6 +127,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Current**: Compares Current Count vs 30-day Avg.
     -   **180 Days**: Compares 90-day Avg vs 180-day Avg.
     -   **365 Days**: Compares 180-day Avg vs 365-day Avg.
+    -   **Deduplication Comparison (Pass 1)**: `get_offer_count_trend_from_flat` safely parses the raw string columns and compares Current Count vs 365-day Avg (since 30-day avg is intentionally nullified for storage optimization).
     -   **Output**: Count + Arrow (e.g., "12 ↘"). Green ↘ (Falling) is good; Red ↗ (Rising) is bad.
 
 ### Price Analytics
