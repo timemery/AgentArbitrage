@@ -13,39 +13,33 @@
 
     <!-- Potential Buys Tab -->
     <div id="potential-buys" class="tab-content active">
-        <div class="tidy-card">
-            <h2>Inbox: Potential Buys</h2>
-            <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
-            <div id="potential-table-container">Loading...</div>
-        </div>
+        <h2>Inbox: Potential Buys</h2>
+        <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
+        <div id="potential-table-container">Loading...</div>
     </div>
 
     <!-- Active Inventory Tab -->
     <div id="active-inventory" class="tab-content">
-        <div class="tidy-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Active Inventory</h2>
-                <div style="display: flex; gap: 10px;">
-                    <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
-                    <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
-                    <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
-                    <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
-                </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Active Inventory</h2>
+            <div style="display: flex; gap: 10px;">
+                <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
+                <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
+                <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
+                <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
             </div>
-            <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
-            <div id="active-table-container">Loading...</div>
-            <div id="active-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
         </div>
+        <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
+        <div id="active-table-container">Loading...</div>
+        <div id="active-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
     </div>
 
     <!-- Sales & Profit Tab -->
     <div id="sales-profit" class="tab-content">
-        <div class="tidy-card">
-            <h2>Sales & Profit Ledger</h2>
-            <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
-            <div id="sales-table-container">Loading...</div>
-            <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
-        </div>
+        <h2>Sales & Profit Ledger</h2>
+        <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
+        <div id="sales-table-container">Loading...</div>
+        <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
     </div>
 </div>
 

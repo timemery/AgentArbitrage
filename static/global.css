@@ -978,7 +978,8 @@ button:disabled {
     font-family: 'Open Sans', sans-serif;
 }
 
-#deals-table table {
+#deals-table table,
+.deal-table {
     border-spacing: 0; /* No structural spacing */
     border-collapse: separate; /* Use separate model for manual control */
     width: 100% !important; /* Force full width */
@@ -995,7 +996,8 @@ button:disabled {
     pointer-events: none;
 }
 
-#deals-table th, #deals-table td {
+#deals-table th, #deals-table td,
+.deal-table th, .deal-table td {
     /* User specified 9px 8px but meant horizontal/vertical.
        0 top/bottom prevents header clipping on 25px max-height cells.
        8px horizontal maintains readability while dropping decimals saves the overall table width. */
@@ -1006,13 +1008,14 @@ button:disabled {
 }
 
 /* Special padding for first cell in row */
-#deals-table th:first-child,
-#deals-table td:first-child {
+#deals-table th:first-child, #deals-table td:first-child,
+.deal-table th:first-child, .deal-table td:first-child {
     padding-left: 8px !important; /* User Req: 8px padding */
 }
 
 /* Column Header Styles */
-#deals-table th {
+#deals-table th,
+.deal-table th {
     background-color: transparent !important; /* Managed by pseudos */
     color: #a3aec0;
     font-family: 'Open Sans', sans-serif;
@@ -1033,7 +1036,8 @@ button:disabled {
 }
 
 /* Pseudo-elements for Blocker and Visual Layers (Column Header) */
-#deals-table .column-header-row th::before {
+#deals-table .column-header-row th::before,
+.deal-table .column-header-row th::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -1041,7 +1045,8 @@ button:disabled {
     z-index: -2;
 }
 
-#deals-table .column-header-row th::after {
+#deals-table .column-header-row th::after,
+.deal-table .column-header-row th::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -1050,26 +1055,31 @@ button:disabled {
 }
 
 /* Rounded corners for Column Header Row (Applied to Visual Layer) */
-#deals-table tr.column-header-row th:first-child::after {
+#deals-table tr.column-header-row th:first-child::after,
+.deal-table tr.column-header-row th:first-child::after {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
-#deals-table tr.column-header-row th:last-child::after {
+#deals-table tr.column-header-row th:last-child::after,
+.deal-table tr.column-header-row th:last-child::after {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
 
 /* Remove radius from the TH itself */
-#deals-table tr.column-header-row th:first-child {
+#deals-table tr.column-header-row th:first-child,
+.deal-table tr.column-header-row th:first-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-#deals-table tr.column-header-row th:last-child {
+#deals-table tr.column-header-row th:last-child,
+.deal-table tr.column-header-row th:last-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-#deals-table tr.column-header-row {
+#deals-table tr.column-header-row,
+.deal-table tr.column-header-row {
     height: 31px !important;
     min-height: 31px !important;
     max-height: 31px !important;
@@ -1133,7 +1143,8 @@ button:disabled {
 }
 
 /* Data Cell Styles */
-#deals-table td {
+#deals-table td,
+.deal-table td {
     font-family: 'Open Sans', sans-serif;
     font-weight: 600; /* SemiBold */
     font-size: 12px;
@@ -1179,11 +1190,13 @@ button:disabled {
 }
 
 /* Rounded corners for Data Rows */
-#deals-table .deal-row td:first-child {
+#deals-table .deal-row td:first-child,
+.deal-table .deal-row td:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
-#deals-table .deal-row td:last-child {
+#deals-table .deal-row td:last-child,
+.deal-table .deal-row td:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     padding-right: 2px !important; /* Ensure padding for button */
@@ -1191,7 +1204,8 @@ button:disabled {
 
 
 /* Hover Effects */
-#deals-table .deal-row:hover td {
+#deals-table .deal-row:hover td,
+.deal-table .deal-row:hover td, .deal-table tr:hover td {
     background-color: #304163; /* Hover Data Row Color */
     color: #ffffff; /* Hover Font Color */
 }
@@ -2729,7 +2743,8 @@ body.home-background::before {
 
 /* 1. Fluid Narrowing & Breakpoints */
 @media (max-width: 1200px) {
-    #deals-table th, #deals-table td {
+    #deals-table th, #deals-table td,
+.deal-table th, .deal-table td {
         /* User Req: Maintain 8px padding? "min 8px padding left and right INSIDE of all cells... no padding outside" */
         /* If I reduce to 2px here, I violate the requirement. I will keep it 8px. */
         /* padding: 0 2px; REMOVED reduction */
@@ -2822,7 +2837,8 @@ body.home-background::before {
     }
 
     /* Force width adjustments for mobile */
-    #deals-table th, #deals-table td {
+    #deals-table th, #deals-table td,
+.deal-table th, .deal-table td {
         white-space: normal !important; /* Allow wrapping if needed? Or keep nowrap */
     }
 
