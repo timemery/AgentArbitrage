@@ -3,8 +3,6 @@
 {% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
 <div class="dashboard-content-wrapper">
-    <h1>Profit & Inventory Tracking</h1>
-
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
@@ -13,15 +11,13 @@
 
     <!-- Potential Buys Tab -->
     <div id="potential-buys" class="tab-content active">
-        <h2>Inbox: Potential Buys</h2>
         <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
         <div id="potential-table-container">Loading...</div>
     </div>
 
     <!-- Active Inventory Tab -->
     <div id="active-inventory" class="tab-content">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Active Inventory</h2>
+        <div style="display: flex; justify-content: flex-end; align-items: center;">
             <div style="display: flex; gap: 10px;">
                 <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
                 <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
@@ -36,7 +32,6 @@
 
     <!-- Sales & Profit Tab -->
     <div id="sales-profit" class="tab-content">
-        <h2>Sales & Profit Ledger</h2>
         <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
         <div id="sales-table-container">Loading...</div>
         <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
@@ -113,6 +108,17 @@
 
 <script>
     let activePage = 1;
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     let salesPage = 1;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -220,14 +226,15 @@
                 dateStr = new Date(item.sale_date).toLocaleDateString();
             }
 
-            html += `<tr>
+            html += `<tr class="deal-row">
                 <td>${dateStr}</td>
                 <td>${item.amazon_order_id || '-'}</td>
                 <td>${item.sku || '-'}</td>
                 <td>$${(item.sale_price || 0).toFixed(2)}</td>
                 <td style="color: #888;">$0.00</td>
                 <td>${item.order_status || '-'}</td>
-            </tr>`;
+            </tr>
+            <tr class="spacer-row"><td colspan="6">&nbsp;</td></tr>`;
         });
 
         html += '</tbody></table></div>';
@@ -244,8 +251,8 @@
         let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
-            html += `<tr>
-                <td>${item.title || '-'}</td>
+            html += `<tr class="deal-row">
+                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" style="width: 240px; max-width: 240px;"><span>${item.title || '-'}</span></td>
                 <td><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
                 <td>$${item.buy_cost || '-'}</td>
                 <td>${new Date(item.created_at).toLocaleDateString()}</td>
@@ -253,7 +260,8 @@
                     <button class="tidy-button btn-success-style" onclick='openConfirmModal(${JSON.stringify(item)})'>Confirm</button>
                     <button class="tidy-button btn-danger-style" onclick="dismissItem(${item.id})">Dismiss</button>
                 </td>
-            </tr>`;
+            </tr>
+            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
         });
 
         html += '</tbody></table></div>';
@@ -272,15 +280,16 @@
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
 
-            html += `<tr>
+            html += `<tr class="deal-row">
                 <td>${item.sku || '-'}</td>
-                <td>${item.title || '-'}</td>
+                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" style="width: 240px; max-width: 240px;"><span>${item.title || '-'}</span></td>
                 <td>${item.quantity_remaining}</td>
                 <td>${costDisplay}</td>
                 <td>
                     <button class="tidy-button" onclick='openEditModal(${JSON.stringify(item)})'>Edit</button>
                 </td>
-            </tr>`;
+            </tr>
+            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
         });
 
         html += '</tbody></table></div>';
