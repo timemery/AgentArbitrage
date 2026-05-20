@@ -33,6 +33,7 @@ To address data sparsity without sacrificing safety, we briefly introduced a **V
 The user subsequently observed that this fallback logic—while safely preventing astronomical profits via `min()`—still essentially relied on *listing prices* rather than *true inferred sale prices*. This tactic, originally designed to increase the volume of deals found, compromised the core promise of only providing "true deals."
 
 **Current Principle:** Fallbacks to listing averages are **strictly prohibited**. We now ONLY rely on inferred sale prices (derived from offer drops correlating with rank drops) to calculate profits. Sparse inferred sales (1-2 events) are still permitted as they represent true historical sales, but Keepa stats averages are not.
+**Hard Ceiling Safety:** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
 
 ------
 
