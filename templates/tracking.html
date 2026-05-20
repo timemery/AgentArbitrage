@@ -2,53 +2,8 @@
 {% extends "layout.html" %}
 {% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
-<style>
-    /* Dashboard-like Table Style Override */
-    .strategies-table {
-        border-collapse: separate;
-        border-spacing: 0;
-        width: 100%;
-        margin-top: 10px;
-    }
-    .strategies-header th {
-        background-color: #1f293c; /* Dashboard Header Color */
-        color: #a3aec0; /* Dashboard Text Color */
-        border: none;
-        border-bottom: 2px solid #13161a;
-        font-family: 'Open Sans', sans-serif;
-        font-weight: 600;
-        font-size: 13px;
-        padding: 12px 15px;
-        text-align: left;
-    }
-    .strategies-cell {
-        background-color: rgba(0, 0, 0, 0.2); /* Transparent/Dark */
-        border: none;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        color: #ffffff;
-        padding: 12px 15px;
-        font-size: 13px;
-        vertical-align: middle;
-    }
-    .strategies-table tr:hover .strategies-cell {
-        background-color: #304163; /* Dashboard Hover Color */
-    }
-    /* Rounded Corners */
-    .strategies-header th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
-    .strategies-header th:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
-
-    .strategies-table tbody tr td:first-child { border-left: none; }
-    .strategies-table tbody tr td:last-child { border-right: none; }
-
-    /* First/Last row rounded corners for body */
-    .strategies-table tbody tr:first-child td:first-child { border-top-left-radius: 8px; }
-    .strategies-table tbody tr:first-child td:last-child { border-top-right-radius: 8px; }
-    .strategies-table tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
-    .strategies-table tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
-</style>
-<div class="tidy-container settings-width">
-    <h1>Profit & Inventory Tracking</h1>
-
+<div class="dashboard-content-wrapper tracking-page">
+    <div class="tracking-sticky-mask"></div>
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
@@ -57,39 +12,30 @@
 
     <!-- Potential Buys Tab -->
     <div id="potential-buys" class="tab-content active">
-        <div class="tidy-card">
-            <h2>Inbox: Potential Buys</h2>
-            <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
-            <div id="potential-table-container">Loading...</div>
-        </div>
+        <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
+        <div id="potential-table-container">Loading...</div>
     </div>
 
     <!-- Active Inventory Tab -->
     <div id="active-inventory" class="tab-content">
-        <div class="tidy-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Active Inventory</h2>
-                <div style="display: flex; gap: 10px;">
-                    <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
-                    <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
-                    <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
-                    <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
-                </div>
+        <div style="display: flex; justify-content: flex-end; align-items: center;">
+            <div style="display: flex; gap: 10px;">
+                <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
+                <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
+                <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
+                <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
             </div>
-            <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
-            <div id="active-table-container">Loading...</div>
-            <div id="active-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
         </div>
+        <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
+        <div id="active-table-container">Loading...</div>
+        <div id="active-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
     </div>
 
     <!-- Sales & Profit Tab -->
     <div id="sales-profit" class="tab-content">
-        <div class="tidy-card">
-            <h2>Sales & Profit Ledger</h2>
-            <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
-            <div id="sales-table-container">Loading...</div>
-            <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
-        </div>
+        <p class="tidy-text">Realized profit from sold items (FIFO matching).</p>
+        <div id="sales-table-container">Loading...</div>
+        <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
     </div>
 </div>
 
@@ -163,6 +109,17 @@
 
 <script>
     let activePage = 1;
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     let salesPage = 1;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -262,7 +219,7 @@
             return;
         }
 
-        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th><div class="tooltip-header">Fees (Est) ℹ️<span class="tooltip-text">Sync coming soon</span></div></th><th>Status</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th><div class="tooltip-header">Fees (Est) ℹ️<span class="tooltip-text">Sync coming soon</span></div></th><th>Status</th></tr></thead><tbody>';
 
         items.forEach(item => {
             let dateStr = '-';
@@ -270,17 +227,18 @@
                 dateStr = new Date(item.sale_date).toLocaleDateString();
             }
 
-            html += `<tr>
-                <td class="strategies-cell">${dateStr}</td>
-                <td class="strategies-cell">${item.amazon_order_id || '-'}</td>
-                <td class="strategies-cell">${item.sku || '-'}</td>
-                <td class="strategies-cell">$${(item.sale_price || 0).toFixed(2)}</td>
-                <td class="strategies-cell" style="color: #888;">$0.00</td>
-                <td class="strategies-cell">${item.order_status || '-'}</td>
-            </tr>`;
+            html += `<tr class="deal-row">
+                <td>${dateStr}</td>
+                <td>${item.amazon_order_id || '-'}</td>
+                <td>${item.sku || '-'}</td>
+                <td>$${(item.sale_price || 0).toFixed(2)}</td>
+                <td style="color: #888;">$0.00</td>
+                <td>${item.order_status || '-'}</td>
+            </tr>
+            <tr class="spacer-row"><td colspan="6">&nbsp;</td></tr>`;
         });
 
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         container.innerHTML = html;
     }
 
@@ -291,22 +249,23 @@
             return;
         }
 
-        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
-            html += `<tr>
-                <td class="strategies-cell">${item.title || '-'}</td>
-                <td class="strategies-cell"><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
-                <td class="strategies-cell">$${item.buy_cost || '-'}</td>
-                <td class="strategies-cell">${new Date(item.created_at).toLocaleDateString()}</td>
-                <td class="strategies-cell">
+            html += `<tr class="deal-row">
+                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
+                <td><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
+                <td>$${item.buy_cost || '-'}</td>
+                <td>${new Date(item.created_at).toLocaleDateString()}</td>
+                <td>
                     <button class="tidy-button btn-success-style" onclick='openConfirmModal(${JSON.stringify(item)})'>Confirm</button>
                     <button class="tidy-button btn-danger-style" onclick="dismissItem(${item.id})">Dismiss</button>
                 </td>
-            </tr>`;
+            </tr>
+            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
         });
 
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         container.innerHTML = html;
     }
 
@@ -317,23 +276,24 @@
             return;
         }
 
-        let html = '<table class="strategies-table" style="width:100%"><thead><tr class="strategies-header"><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
 
-            html += `<tr>
-                <td class="strategies-cell">${item.sku || '-'}</td>
-                <td class="strategies-cell">${item.title || '-'}</td>
-                <td class="strategies-cell">${item.quantity_remaining}</td>
-                <td class="strategies-cell">${costDisplay}</td>
-                <td class="strategies-cell">
+            html += `<tr class="deal-row">
+                <td>${item.sku || '-'}</td>
+                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
+                <td>${item.quantity_remaining}</td>
+                <td>${costDisplay}</td>
+                <td>
                     <button class="tidy-button" onclick='openEditModal(${JSON.stringify(item)})'>Edit</button>
                 </td>
-            </tr>`;
+            </tr>
+            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
         });
 
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         container.innerHTML = html;
     }
 
@@ -497,6 +457,16 @@
                 console.error(err);
                 alert('Update failed');
             }
+        }
+    });
+    window.addEventListener('scroll', () => {
+        const mask = document.querySelector('.tracking-sticky-mask');
+        if (!mask) return;
+        // Show mask only after scrolling past the tabs area
+        if (window.scrollY > 100) {
+            mask.style.display = 'block';
+        } else {
+            mask.style.display = 'none';
         }
     });
 </script>
