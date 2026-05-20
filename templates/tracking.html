@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
-<div class="dashboard-content-wrapper">
+<div class="dashboard-content-wrapper tracking-page">
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
@@ -252,7 +252,7 @@
 
         items.forEach(item => {
             html += `<tr class="deal-row">
-                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" style="width: 240px; max-width: 240px;"><span>${item.title || '-'}</span></td>
+                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
                 <td>$${item.buy_cost || '-'}</td>
                 <td>${new Date(item.created_at).toLocaleDateString()}</td>
@@ -282,7 +282,7 @@
 
             html += `<tr class="deal-row">
                 <td>${item.sku || '-'}</td>
-                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" style="width: 240px; max-width: 240px;"><span>${item.title || '-'}</span></td>
+                <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td>${item.quantity_remaining}</td>
                 <td>${costDisplay}</td>
                 <td>

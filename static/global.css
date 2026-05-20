@@ -1341,9 +1341,13 @@ button:disabled {
 
 /* Hover effect for truncated cells */
 #deals-table td.title-cell:hover,
+.deal-table td.title-cell:hover,
 #deals-table td.seller-cell:hover,
+.deal-table td.seller-cell:hover,
 #deals-table td.genre-cell:hover,
-#deals-table td.season-detail-cell:hover {
+.deal-table td.genre-cell:hover,
+#deals-table td.season-detail-cell:hover,
+.deal-table td.season-detail-cell:hover {
     overflow: visible !important; /* Allow the inner span to overflow the cell bounds */
 }
 
@@ -3070,4 +3074,22 @@ body.home-background::before {
 
 .tab-content.active {
     display: block;
+}
+
+/* Tracking page specific overrides */
+.tracking-page .deal-table .column-header-row th {
+    top: 134px; /* Adjust to sit just below the main header */
+}
+
+/* Add pseudo element to tracking page sticky headers */
+.tracking-page .deal-table .column-header-row th::before {
+    content: '';
+    position: absolute;
+    top: -134px; /* Cover the area above the header */
+    left: 0;
+    right: 0;
+    height: 134px; /* Match the top offset */
+    background-color: #13161a; /* Match the background color */
+    z-index: -1; /* Place it behind the header text */
+    pointer-events: none; /* Don't interfere with clicks */
 }
