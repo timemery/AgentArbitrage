@@ -937,28 +937,7 @@ button:disabled {
     text-decoration: none;
     cursor: pointer;
 }
-.tab-nav {
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 20px;
-}
-.tab-link {
-    background: none;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    color: #ffffff; /* Explicitly set color for better visibility */
-}
-.tab-link.active {
-    border-bottom: 2px solid #1976d2;
-    color: #1976d2; /* Match active border color */
-}
-.tab-content {
-    display: none;
-}
-.tab-content.active {
-    display: block;
-}
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -3081,15 +3060,14 @@ body.home-background::before {
     top: 134px; /* Adjust to sit just below the main header */
 }
 
-/* Add pseudo element to tracking page sticky headers */
-.tracking-page .deal-table .column-header-row th::before {
-    content: '';
-    position: absolute;
-    top: -134px; /* Cover the area above the header */
+.tracking-sticky-mask {
+    position: fixed;
+    top: 134px; /* Bottom of main nav */
     left: 0;
     right: 0;
-    height: 134px; /* Match the top offset */
-    background-color: #13161a; /* Match the background color */
-    z-index: -1; /* Place it behind the header text */
-    pointer-events: none; /* Don't interfere with clicks */
+    height: 50px; /* Adjust to cover gap between nav and sticky header */
+    background-color: #13161a;
+    z-index: 100; /* Below the sticky header (180) but above scrolling content */
+    pointer-events: none;
+    display: none; /* Hidden until scrolled */
 }

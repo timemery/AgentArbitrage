@@ -3,6 +3,7 @@
 {% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
 <div class="dashboard-content-wrapper tracking-page">
+    <div class="tracking-sticky-mask"></div>
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
@@ -456,6 +457,16 @@
                 console.error(err);
                 alert('Update failed');
             }
+        }
+    });
+    window.addEventListener('scroll', () => {
+        const mask = document.querySelector('.tracking-sticky-mask');
+        if (!mask) return;
+        // Show mask only after scrolling past the tabs area
+        if (window.scrollY > 100) {
+            mask.style.display = 'block';
+        } else {
+            mask.style.display = 'none';
         }
     });
 </script>
