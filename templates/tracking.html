@@ -219,7 +219,7 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th><div class="tooltip-header">Fees (Est) ℹ️<span class="tooltip-text">Sync coming soon</span></div></th><th>Status</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th>Status</th></tr></thead><tbody>';
 
         items.forEach(item => {
             let dateStr = '-';
@@ -232,10 +232,9 @@
                 <td>${item.amazon_order_id || '-'}</td>
                 <td>${item.sku || '-'}</td>
                 <td>$${(item.sale_price || 0).toFixed(2)}</td>
-                <td style="color: #888;">$0.00</td>
                 <td>${item.order_status || '-'}</td>
             </tr>
-            <tr class="spacer-row"><td colspan="6">&nbsp;</td></tr>`;
+            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
         });
 
         html += '</tbody></table></div>';
