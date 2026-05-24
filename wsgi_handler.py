@@ -28,6 +28,11 @@ from keepa_deals.db_utils import (
     set_system_state,
     create_system_state_table_if_not_exists
 )
+from keepa_deals.business_calculations import (
+    calculate_all_in_cost,
+    calculate_profit_and_margin,
+    load_settings as business_load_settings,
+)
 from keepa_deals.janitor import _clean_stale_deals_logic
 from keepa_deals.ava_advisor import generate_ava_advice, generate_tooltip_advice, get_mentor_config, load_strategies, load_intelligence, query_xai_api, STRATEGIC_CORRECTIONS
 from keepa_deals.maintenance_tasks import homogenize_intelligence_task
@@ -370,11 +375,61 @@ def get_potential_inventory():
     if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 401
     try:
+        settings = business_load_settings()
         with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'POTENTIAL' ORDER BY created_at DESC")
-            data = [dict(row) for row in cursor.fetchall()]
+            query = """
+                SELECT i.*, 
+                       d.List_at, d.FBA_PickandPack_Fee, d.Referral_Fee_Percent, d.Shipping_Included
+                FROM inventory_ledger i
+                LEFT JOIN deals d ON i.asin = d.ASIN
+                WHERE i.status = 'POTENTIAL' 
+                ORDER BY i.created_at DESC
+            """
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            
+            data = []
+            for row in rows:
+                item = dict(row)
+                
+                profit_val = '-'
+                margin_val = '-'
+                roi_val = '-'
+                
+                buy_cost = item.get('buy_cost')
+                list_at = item.get('List_at')
+                fba_fee = item.get('FBA_PickandPack_Fee')
+                ref_fee_pct = item.get('Referral_Fee_Percent')
+                shipping_included = str(item.get('Shipping_Included', 'False')).lower() == 'true'
+                
+                if buy_cost is not None and list_at is not None and fba_fee is not None and ref_fee_pct is not None:
+                    try:
+                        all_in_cost = calculate_all_in_cost(buy_cost, settings, shipping_included)
+                        if isinstance(all_in_cost, (int, float)):
+                            referral_fee_amount = list_at * (ref_fee_pct / 100.0)
+                            total_amz_fees = referral_fee_amount + fba_fee
+                            
+                            pm = calculate_profit_and_margin(list_at, all_in_cost, total_amz_fees)
+                            profit_val = pm['profit']
+                            margin_val = pm['margin']
+                            
+                            if isinstance(profit_val, (int, float)) and all_in_cost > 0:
+                                roi_val = (profit_val / all_in_cost) * 100
+                    except Exception as calc_err:
+                        app.logger.error(f"Error calculating potential buy metrics for ASIN {item.get('asin')}: {calc_err}")
+                
+                item['profit'] = profit_val
+                item['margin'] = margin_val
+                item['roi'] = roi_val
+                
+                # Remove extra deals columns from final output just in case
+                for key in ['List_at', 'FBA_PickandPack_Fee', 'Referral_Fee_Percent', 'Shipping_Included']:
+                    item.pop(key, None)
+                    
+                data.append(item)
+                
             return jsonify({'data': data})
     except Exception as e:
         app.logger.error(f"Error fetching potential inventory: {e}", exc_info=True)
