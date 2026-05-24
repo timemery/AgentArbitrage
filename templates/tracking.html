@@ -248,20 +248,27 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
+            const profitDisplay = typeof item.profit === 'number' ? `$${item.profit.toFixed(2)}` : '—';
+            const roiDisplay = typeof item.roi === 'number' ? `${item.roi.toFixed(1)}%` : '—';
+            const marginDisplay = typeof item.margin === 'number' ? `${item.margin.toFixed(1)}%` : '—';
+
             html += `<tr class="deal-row">
                 <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
                 <td>$${item.buy_cost || '-'}</td>
                 <td>${new Date(item.created_at).toLocaleDateString()}</td>
+                <td>${profitDisplay}</td>
+                <td>${roiDisplay}</td>
+                <td>${marginDisplay}</td>
                 <td>
                     <button class="tidy-button btn-success-style" onclick='openConfirmModal(${JSON.stringify(item)})'>Confirm</button>
                     <button class="tidy-button btn-danger-style" onclick="dismissItem(${item.id})">Dismiss</button>
                 </td>
             </tr>
-            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
+            <tr class="spacer-row"><td colspan="8">&nbsp;</td></tr>`;
         });
 
         html += '</tbody></table></div>';
