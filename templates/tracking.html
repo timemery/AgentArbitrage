@@ -275,12 +275,13 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>ASIN</th><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
 
             html += `<tr class="deal-row">
+                <td>${item.asin || '—'}</td>
                 <td>${item.sku || '-'}</td>
                 <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td>${item.quantity_remaining}</td>
@@ -289,7 +290,7 @@
                     <button class="tidy-button" onclick='openEditModal(${JSON.stringify(item)})'>Edit</button>
                 </td>
             </tr>
-            <tr class="spacer-row"><td colspan="5">&nbsp;</td></tr>`;
+            <tr class="spacer-row"><td colspan="6">&nbsp;</td></tr>`;
         });
 
         html += '</tbody></table></div>';
