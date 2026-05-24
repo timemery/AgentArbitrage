@@ -443,7 +443,7 @@ def get_sales_history():
             cursor.execute("""
                 SELECT
                     amazon_order_id, order_item_id, asin, sku, sale_date,
-                    sale_price, amazon_fees, quantity_sold, order_status,
+                    sale_price, quantity_sold, order_status,
                     reconciliation_status
                 FROM sales_ledger
                 ORDER BY sale_date DESC
