@@ -3149,3 +3149,39 @@ body.home-background::before {
     font-style: italic;
     color: #f5a623;
 }
+
+/* Tracking Layout Consistency with Dashboard */
+.tracking-page .deal-table th {
+    /* Existing tracking override kept, but ensuring it stacks correctly */
+    position: sticky;
+    top: 50px;
+    z-index: 10;
+}
+
+.tracking-page .sort-arrows-row td {
+    position: sticky;
+    top: 96px; /* Matches height below the headers */
+    z-index: 9;
+    background-color: var(--card-bg-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tracking-link {
+    color: var(--light-blue);
+    text-decoration: none;
+}
+.tracking-link:hover {
+    text-decoration: underline;
+}
+
+#tracking-shadow-line {
+    position: fixed;
+    top: 110px; /* Aligns just below tabs/arrows row */
+    left: 0;
+    right: 0;
+    height: 10px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    z-index: 8;
+    pointer-events: none;
+    display: none;
+}

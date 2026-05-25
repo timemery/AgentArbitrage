@@ -108,6 +108,74 @@
 </div>
 
 <script>
+    // Sort state and data
+    let currentData = { potential: [], active: [], sales: [] };
+    let sortState = {
+        potential: { column: null, order: 'asc' },
+        active: { column: null, order: 'asc' },
+        sales: { column: null, order: 'asc' }
+    };
+
+    function sortData(tab, data) {
+        if (!sortState[tab].column || !data || data.length === 0) return data;
+        const col = sortState[tab].column;
+        const order = sortState[tab].order;
+
+        return [...data].sort((a, b) => {
+            let valA = a[col] !== undefined ? a[col] : '';
+            let valB = b[col] !== undefined ? b[col] : '';
+
+            // Handle em-dashes as null/bottom
+            if (valA === '—' || valA === null) valA = '';
+            if (valB === '—' || valB === null) valB = '';
+            if (valA === '' && valB !== '') return 1;
+            if (valB === '' && valA !== '') return -1;
+            if (valA === '' && valB === '') return 0;
+
+            // Handle numbers formatted as currencies/percentages
+            let numA = String(valA).replace(/[\$,%]/g, '');
+            let numB = String(valB).replace(/[\$,%]/g, '');
+
+            if (!isNaN(parseFloat(numA)) && !isNaN(parseFloat(numB))) {
+                return order === 'asc' ? parseFloat(numA) - parseFloat(numB) : parseFloat(numB) - parseFloat(numA);
+            }
+
+            // Handle dates
+            let dateA = Date.parse(valA);
+            let dateB = Date.parse(valB);
+            if (!isNaN(dateA) && !isNaN(dateB)) {
+                return order === 'asc' ? dateA - dateB : dateB - dateA;
+            }
+
+            // String sort
+            return order === 'asc' ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
+        });
+    }
+
+    function handleSort(tab, column, order = null) {
+        if (order) {
+            sortState[tab].column = column;
+            sortState[tab].order = order;
+        } else {
+            // Toggle logic if no explicit order given
+            if (sortState[tab].column === column) {
+                if (sortState[tab].order === 'asc') {
+                    sortState[tab].order = 'desc';
+                } else if (sortState[tab].order === 'desc') {
+                    sortState[tab].column = null;
+                    sortState[tab].order = 'asc';
+                }
+            } else {
+                sortState[tab].column = column;
+                sortState[tab].order = 'asc';
+            }
+        }
+
+        if (tab === 'potential') renderPotential(sortData('potential', currentData.potential));
+        if (tab === 'active') renderActive(sortData('active', currentData.active));
+        if (tab === 'sales') renderSales(sortData('sales', currentData.sales));
+    }
+
     let activePage = 1;
 
     function escapeHTML(str) {
@@ -151,7 +219,10 @@
         try {
             const response = await fetch('/api/tracking/potential');
             const data = await response.json();
-            renderPotential(data.data || data.potential || []); // Handle both formats just in case
+
+            currentData.potential = data.data || data.potential || [];
+            renderPotential(sortData('potential', currentData.potential));
+ // Handle both formats just in case
         } catch (error) {
             console.error('Error fetching potential:', error);
         }
@@ -403,7 +474,7 @@
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
 
             html += `<tr class="deal-row">
-                <td>${item.asin || '—'}</td>
+                <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
                 <td>${item.sku || '-'}</td>
                 <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td>${item.quantity_remaining}</td>
