@@ -3071,3 +3071,81 @@ body.home-background::before {
     pointer-events: none;
     display: none; /* Hidden until scrolled */
 }
+
+/* Editable Buy Cost on Potential Buys (Tracking Page) */
+.buy-cost-cell {
+    white-space: nowrap;
+}
+
+.buy-cost-display {
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 3px;
+    transition: background-color 0.15s;
+    border-bottom: 1px dashed #6b7689;
+    display: inline-block;
+}
+
+.buy-cost-display:hover {
+    background-color: rgba(100, 150, 255, 0.15);
+    border-bottom-color: #8ab4f8;
+}
+
+.buy-cost-display.estimated {
+    font-style: italic;
+    color: #f5a623;
+    border-bottom-color: #f5a623;
+    background-color: rgba(245, 166, 35, 0.08);
+}
+
+.buy-cost-display.estimated .buy-cost-pencil {
+    color: #f5a623;
+}
+
+.buy-cost-display.confirmed {
+    font-style: normal;
+    color: inherit;
+}
+
+.buy-cost-pencil {
+    margin-left: 8px;
+    font-size: 1em;
+    opacity: 1;
+    color: #8ab4f8;
+}
+
+.buy-cost-display:hover .buy-cost-pencil {
+    color: #b8d4fa;
+}
+
+.buy-cost-edit-input {
+    width: 80px;
+    padding: 3px 6px;
+    background-color: #2a3140;
+    border: 1px solid #4a5568;
+    color: #fff;
+    border-radius: 3px;
+}
+
+.buy-cost-save-btn {
+    margin-left: 4px;
+    padding: 2px 8px;
+    font-size: 0.85em;
+    cursor: pointer;
+}
+
+.buy-cost-cancel-btn {
+    margin-left: 2px;
+    padding: 2px 8px;
+    font-size: 0.85em;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid #4a5568;
+    color: #a3aec0;
+    border-radius: 3px;
+}
+
+.metric-cell.estimated {
+    font-style: italic;
+    color: #f5a623;
+}

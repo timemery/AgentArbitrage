@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 {% block title %}Profit & Inventory Tracking - Agent Arbitrage{% endblock %}
 {% block content %}
@@ -38,6 +37,7 @@
         <div id="sales-pagination" class="pagination-controls" style="margin-top: 20px; text-align: center;"></div>
     </div>
 </div>
+
 
 <!-- Confirm Purchase Modal -->
 <div id="confirm-modal" class="deal-overlay">
@@ -248,21 +248,33 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th>Est. Cost</th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th><div class="tooltip-header">Buy Cost ℹ️<span class="tooltip-text">Click to edit. Italic = estimated from Dashboard. Solid = you confirmed the actual Amazon price.</span></div></th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr></thead><tbody>';
 
         items.forEach(item => {
+            const isConfirmed = item.buy_cost_confirmed === 1 || item.buy_cost_confirmed === true;
+            const stateClass = isConfirmed ? 'confirmed' : 'estimated';
+            const buyCostNum = typeof item.buy_cost === 'number' ? item.buy_cost : parseFloat(item.buy_cost) || 0;
+            const buyCostDisplay = buyCostNum > 0 ? `$${buyCostNum.toFixed(2)}` : '$0.00';
+
             const profitDisplay = typeof item.profit === 'number' ? `$${item.profit.toFixed(2)}` : '—';
             const roiDisplay = typeof item.roi === 'number' ? `${item.roi.toFixed(1)}%` : '—';
             const marginDisplay = typeof item.margin === 'number' ? `${item.margin.toFixed(1)}%` : '—';
 
-            html += `<tr class="deal-row">
+            // Apply estimated styling to metric cells too, when buy cost is unconfirmed
+            const metricStateClass = isConfirmed ? '' : 'estimated';
+
+            html += `<tr class="deal-row" id="potential-row-${item.id}">
                 <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td><a href="https://amazon.com/dp/${item.asin}" target="_blank" style="color: #a3aec0;">${item.asin}</a></td>
-                <td>$${item.buy_cost || '-'}</td>
+                <td class="buy-cost-cell" id="buy-cost-cell-${item.id}">
+                    <span class="buy-cost-display ${stateClass}" onclick="editBuyCost(${item.id}, ${buyCostNum})" title="Click to edit">
+                        ${buyCostDisplay}<span class="buy-cost-pencil">✎</span>
+                    </span>
+                </td>
                 <td>${new Date(item.created_at).toLocaleDateString()}</td>
-                <td>${profitDisplay}</td>
-                <td>${roiDisplay}</td>
-                <td>${marginDisplay}</td>
+                <td class="metric-cell ${metricStateClass}" id="profit-cell-${item.id}">${profitDisplay}</td>
+                <td class="metric-cell ${metricStateClass}" id="roi-cell-${item.id}">${roiDisplay}</td>
+                <td class="metric-cell ${metricStateClass}" id="margin-cell-${item.id}">${marginDisplay}</td>
                 <td>
                     <button class="tidy-button btn-success-style" onclick='openConfirmModal(${JSON.stringify(item)})'>Confirm</button>
                     <button class="tidy-button btn-danger-style" onclick="dismissItem(${item.id})">Dismiss</button>
@@ -273,6 +285,109 @@
 
         html += '</tbody></table></div>';
         container.innerHTML = html;
+    }
+
+    function editBuyCost(itemId, currentCost) {
+        const cell = document.getElementById(`buy-cost-cell-${itemId}`);
+        if (!cell) return;
+        cell.innerHTML = `
+            <input type="number" step="0.01" min="0.01" class="buy-cost-edit-input" id="buy-cost-input-${itemId}" value="${currentCost.toFixed(2)}">
+            <button class="tidy-button btn-success-style buy-cost-save-btn" onclick="saveBuyCost(${itemId})">Save</button>
+            <button class="buy-cost-cancel-btn" onclick="cancelEditBuyCost(${itemId}, ${currentCost})">Cancel</button>
+        `;
+        const input = document.getElementById(`buy-cost-input-${itemId}`);
+        input.focus();
+        input.select();
+        // Allow Enter to save, Escape to cancel
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveBuyCost(itemId);
+            } else if (e.key === 'Escape') {
+                cancelEditBuyCost(itemId, currentCost);
+            }
+        });
+    }
+
+    function cancelEditBuyCost(itemId, originalCost) {
+        // Just re-render the whole potential list to restore original state cleanly
+        fetchPotential();
+    }
+
+    async function saveBuyCost(itemId) {
+        const input = document.getElementById(`buy-cost-input-${itemId}`);
+        if (!input) return;
+        const newCost = parseFloat(input.value);
+        if (isNaN(newCost) || newCost <= 0) {
+            alert('Buy Cost must be a positive number.');
+            input.focus();
+            return;
+        }
+
+        // Disable input while saving
+        input.disabled = true;
+
+        try {
+            const response = await fetch(`/api/tracking/potential/${itemId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ buy_cost: newCost })
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                alert('Error saving: ' + (result.error || 'Unknown error'));
+                input.disabled = false;
+                return;
+            }
+
+            // Update the row in place with returned data (includes recalculated metrics)
+            const updated = result.data;
+            updatePotentialRowInPlace(itemId, updated);
+        } catch (err) {
+            console.error('Error saving buy cost:', err);
+            alert('Failed to save. Check console for details.');
+            input.disabled = false;
+        }
+    }
+
+    function updatePotentialRowInPlace(itemId, item) {
+        // Update Buy Cost cell
+        const cell = document.getElementById(`buy-cost-cell-${itemId}`);
+        const buyCostNum = typeof item.buy_cost === 'number' ? item.buy_cost : parseFloat(item.buy_cost) || 0;
+        const buyCostDisplay = buyCostNum > 0 ? `$${buyCostNum.toFixed(2)}` : '$0.00';
+        const isConfirmed = item.buy_cost_confirmed === 1 || item.buy_cost_confirmed === true;
+        const stateClass = isConfirmed ? 'confirmed' : 'estimated';
+
+        if (cell) {
+            cell.innerHTML = `
+                <span class="buy-cost-display ${stateClass}" onclick="editBuyCost(${item.id}, ${buyCostNum})" title="Click to edit">
+                    ${buyCostDisplay}<span class="buy-cost-pencil">✎</span>
+                </span>
+            `;
+        }
+
+        // Update metric cells
+        const profitDisplay = typeof item.profit === 'number' ? `$${item.profit.toFixed(2)}` : '—';
+        const roiDisplay = typeof item.roi === 'number' ? `${item.roi.toFixed(1)}%` : '—';
+        const marginDisplay = typeof item.margin === 'number' ? `${item.margin.toFixed(1)}%` : '—';
+
+        const profitCell = document.getElementById(`profit-cell-${itemId}`);
+        const roiCell = document.getElementById(`roi-cell-${itemId}`);
+        const marginCell = document.getElementById(`margin-cell-${itemId}`);
+
+        if (profitCell) {
+            profitCell.textContent = profitDisplay;
+            profitCell.classList.toggle('estimated', !isConfirmed);
+        }
+        if (roiCell) {
+            roiCell.textContent = roiDisplay;
+            roiCell.classList.toggle('estimated', !isConfirmed);
+        }
+        if (marginCell) {
+            marginCell.textContent = marginDisplay;
+            marginCell.classList.toggle('estimated', !isConfirmed);
+        }
     }
 
     function renderActive(items) {

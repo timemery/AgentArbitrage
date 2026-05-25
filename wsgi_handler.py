@@ -191,6 +191,30 @@ def extract_conceptual_ideas(full_text):
     app.logger.error(error_message)
     return "Could not extract conceptual ideas. Please check the logs for details."
 
+
+def _parse_currency_to_float(value):
+    """
+    Parses a value that may be a number or a currency-like string
+    ('$278.94', '278.94', '15.0%', 278.94) into a float.
+    Returns None if value is None, empty, or non-numeric.
+    Used by /api/tracking/potential endpoints because the `deals` table
+    stores some numeric values (List_at, etc.) as formatted strings.
+    """
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        cleaned = value.strip().replace('$', '').replace(',', '').replace('%', '')
+        if not cleaned:
+            return None
+        try:
+            return float(cleaned)
+        except ValueError:
+            return None
+    return None
+
+
 # Credentials from README.md
 USERS = {
     'tester': {
@@ -398,25 +422,30 @@ def get_potential_inventory():
                 margin_val = '-'
                 roi_val = '-'
                 
-                buy_cost = item.get('buy_cost')
-                list_at = item.get('List_at')
-                fba_fee = item.get('FBA_PickandPack_Fee')
-                ref_fee_pct = item.get('Referral_Fee_Percent')
-                shipping_included = str(item.get('Shipping_Included', 'False')).lower() == 'true'
+                # Parse all numeric inputs (deals table stores some as currency strings like "$278.94")
+                buy_cost = _parse_currency_to_float(item.get('buy_cost'))
+                list_at = _parse_currency_to_float(item.get('List_at'))
+                fba_fee = _parse_currency_to_float(item.get('FBA_PickandPack_Fee'))
+                ref_fee_pct = _parse_currency_to_float(item.get('Referral_Fee_Percent'))
+                shipping_included = str(item.get('Shipping_Included', 'False')).lower() in ('true', 'yes', '1')
                 
                 if buy_cost is not None and list_at is not None and fba_fee is not None and ref_fee_pct is not None:
                     try:
                         all_in_cost = calculate_all_in_cost(buy_cost, settings, shipping_included)
-                        if isinstance(all_in_cost, (int, float)):
+                        if isinstance(all_in_cost, (int, float)) and all_in_cost > 0:
                             referral_fee_amount = list_at * (ref_fee_pct / 100.0)
                             total_amz_fees = referral_fee_amount + fba_fee
                             
                             pm = calculate_profit_and_margin(list_at, all_in_cost, total_amz_fees)
-                            profit_val = pm['profit']
-                            margin_val = pm['margin']
+                            profit_parsed = _parse_currency_to_float(pm.get('profit'))
+                            margin_parsed = _parse_currency_to_float(pm.get('margin'))
                             
-                            if isinstance(profit_val, (int, float)) and all_in_cost > 0:
-                                roi_val = (profit_val / all_in_cost) * 100
+                            if profit_parsed is not None:
+                                profit_val = profit_parsed
+                            if margin_parsed is not None:
+                                margin_val = margin_parsed
+                            if profit_parsed is not None and all_in_cost > 0:
+                                roi_val = (profit_parsed / all_in_cost) * 100
                     except Exception as calc_err:
                         app.logger.error(f"Error calculating potential buy metrics for ASIN {item.get('asin')}: {calc_err}")
                 
@@ -433,6 +462,107 @@ def get_potential_inventory():
             return jsonify({'data': data})
     except Exception as e:
         app.logger.error(f"Error fetching potential inventory: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/potential/<int:item_id>', methods=['PATCH'])
+def update_potential_buy_cost(item_id):
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        data = request.json
+        new_cost = data.get('buy_cost')
+
+        if new_cost is None:
+            return jsonify({'error': 'buy_cost is required'}), 400
+
+        try:
+            new_cost = float(new_cost)
+            if new_cost <= 0:
+                return jsonify({'error': 'buy_cost must be positive'}), 400
+        except ValueError:
+            return jsonify({'error': 'buy_cost must be a number'}), 400
+
+        with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Check if item exists and is POTENTIAL
+            cursor.execute("SELECT id FROM inventory_ledger WHERE id = ? AND status = 'POTENTIAL'", (item_id,))
+            if not cursor.fetchone():
+                return jsonify({'error': 'Item not found or not in potential state'}), 404
+
+            # Update cost and confirmation flag
+            cursor.execute("""
+                UPDATE inventory_ledger
+                SET buy_cost = ?, buy_cost_confirmed = 1
+                WHERE id = ?
+            """, (new_cost, item_id))
+            conn.commit()
+
+            # Now fetch the updated item to return full recalculated values
+            settings = business_load_settings()
+
+            query = """
+                SELECT i.*,
+                       d.List_at, d.FBA_PickandPack_Fee, d.Referral_Fee_Percent, d.Shipping_Included
+                FROM inventory_ledger i
+                LEFT JOIN deals d ON i.asin = d.ASIN
+                WHERE i.id = ?
+            """
+            cursor.execute(query, (item_id,))
+            row = cursor.fetchone()
+
+            if not row:
+                 return jsonify({'error': 'Error fetching updated item'}), 500
+
+            item = dict(row)
+
+            profit_val = '-'
+            margin_val = '-'
+            roi_val = '-'
+
+            # Parse all numeric inputs (deals table stores some as currency strings like "$278.94")
+            buy_cost = _parse_currency_to_float(item.get('buy_cost'))
+            list_at = _parse_currency_to_float(item.get('List_at'))
+            fba_fee = _parse_currency_to_float(item.get('FBA_PickandPack_Fee'))
+            ref_fee_pct = _parse_currency_to_float(item.get('Referral_Fee_Percent'))
+            shipping_included = str(item.get('Shipping_Included', 'False')).lower() in ('true', 'yes', '1')
+
+            if buy_cost is not None and list_at is not None and fba_fee is not None and ref_fee_pct is not None:
+                # TODO(P3 Refactor): Extract this calculation block into a shared function within
+                # keepa_deals/business_calculations.py to avoid duplicating logic from
+                # `_process_single_deal` in `keepa_deals/processing.py`.
+                try:
+                    all_in_cost = calculate_all_in_cost(buy_cost, settings, shipping_included)
+                    if isinstance(all_in_cost, (int, float)) and all_in_cost > 0:
+                        referral_fee_amount = list_at * (ref_fee_pct / 100.0)
+                        total_amz_fees = referral_fee_amount + fba_fee
+
+                        pm = calculate_profit_and_margin(list_at, all_in_cost, total_amz_fees)
+                        profit_parsed = _parse_currency_to_float(pm.get('profit'))
+                        margin_parsed = _parse_currency_to_float(pm.get('margin'))
+
+                        if profit_parsed is not None:
+                            profit_val = profit_parsed
+                        if margin_parsed is not None:
+                            margin_val = margin_parsed
+                        if profit_parsed is not None and all_in_cost > 0:
+                            roi_val = (profit_parsed / all_in_cost) * 100
+                except Exception as calc_err:
+                    app.logger.error(f"Error calculating potential buy metrics for ASIN {item.get('asin')}: {calc_err}")
+
+            item['profit'] = profit_val
+            item['margin'] = margin_val
+            item['roi'] = roi_val
+
+            # Remove extra deals columns from final output just in case
+            for key in ['List_at', 'FBA_PickandPack_Fee', 'Referral_Fee_Percent', 'Shipping_Included']:
+                item.pop(key, None)
+
+            return jsonify({'success': True, 'data': item})
+
+    except Exception as e:
+        app.logger.error(f"Error updating potential buy cost: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/tracking/active', methods=['GET'])
