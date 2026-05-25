@@ -204,9 +204,18 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Formula**: `(Profit / List at) * 100`.
 
 -   **`ROI` (Return on Investment)**:
-    -   **Source**: Dynamically calculated on frontend (`dashboard.html`) and backend query (`wsgi_handler.py`).
+    -   **Source**: Dynamically calculated on frontend (`dashboard.html`, `tracking.html`) and backend endpoints (`wsgi_handler.py`).
     -   **Formula**: `(Profit / All-in Cost) * 100`.
     -   **Explanation**: Represents the cash-on-cash leverage. It is not stored in the database schema.
+
+-   **`Tracking & Potential Buys Inline Calculations`**:
+    -   **Source**: `/api/tracking/potential/<int:item_id>` (`wsgi_handler.py`).
+    -   **Logic**: Users can edit the `buy_cost` inline for Potential Buys. This triggers an immediate recalculation of `All-in Cost`, `Profit`, `Margin`, and `ROI` using the updated cost, and sets the `buy_cost_confirmed` boolean to true in the `inventory_ledger`. This provides exact financial metrics before purchase rather than relying on Keepa's scrape-time estimates.
+
+-   **`Realized Profit (Sales History)`**:
+    -   **Source**: `/api/tracking/sales` (`wsgi_handler.py`).
+    -   **Logic**: Realized profit is estimated by merging the true `sale_price` from the `sales_ledger` with the original `buy_cost` from the `inventory_ledger` (via FIFO matching in `reconciliation_log`).
+    -   **Note**: The "Fees" column was removed because the SP-API Orders endpoint does not provide precise per-item fees (which requires a Finances API integration).
 
 -   **`Min. Listing Price`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
