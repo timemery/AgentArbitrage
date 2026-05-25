@@ -1,8 +1,10 @@
 
 ### Tracking API Architecture
 The inventory and sales data in `tracking.html` is retrieved via paginated endpoints (`/api/tracking/active`, `/api/tracking/sales`) rather than a monolithic load, to ensure scalability.
-- **Active Inventory:** Includes Fulfillable, Inbound Working, Inbound Shipped, and Inbound Receiving quantities.
+- **Active Inventory:** Includes Fulfillable, Inbound Working, Inbound Shipped, and Inbound Receiving quantities. It queries the `inventory_ledger` which natively stores the `asin` column, enabling direct product identification on the frontend without complex JOINs.
 - **Sales History:** Fetches orders and order items from SP-API, storing them in `sales_ledger`.
+  - *Note on Fees:* The "Fees (Est)" column was removed from the Sales & Profit tab because the SP-API Orders v0 endpoint does not return fee data (this requires a separate Finances API integration). Instead, Realized Profit is dynamically estimated on the backend using the same profit calculation logic as the Deals dashboard (merging the realized `sale_price` from `sales_ledger` with the original `buy_cost` from `inventory_ledger` via FIFO matching).
+- **Potential Buys & Editable Costs:** The system supports inline editing of the `buy_cost` for "Potential Buys". When a user edits a buy cost, the `buy_cost_confirmed` boolean flag is set to TRUE in the `inventory_ledger`. This enables precise frontend inline recalculations of exact out-of-pocket costs and realized ROI, replacing initial system estimates prior to actual purchase. Unconfirmed estimates are visually distinguished to ensure users verify them.
 - **UI:** The Tracking page shares the same visual style (`strategies-table`, dark theme) as the Dashboard.
 
 ### Dashboard Notification Logic
