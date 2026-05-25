@@ -78,9 +78,9 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 *   **Purpose:** Evaluates deals to find the top "Prime Picks" for the dashboard's Agent's Choice filter, using a two-pass pipeline.
 *   **Trigger:** Automatically chained after the `clean_stale_deals` task, or manually via a `/api/prime_picks/refresh` POST request.
 *   **Mechanism:**
-    1.  **Pass 1 (Smart Floor):** SQL/math based filtering and time-decay scoring to select the top 20 candidates. Incorporates a 'Year-Round Velocity Cap' rejecting non-seasonal items with a rank > 2,000,000.
+    1.  **Pass 1 (Smart Floor):** SQL/math based filtering and time-decay scoring to select the top 20 candidates. It uses the `Used_Offer_Count_365_days_avg` for safe offer-trend deduplication, and incorporates a 'Year-Round Velocity Cap' (`PASS_1_YEAR_ROUND_VELOCITY_CAP = 2000000`) that explicitly rejects non-seasonal items with a rank > 2,000,000 to drop structurally weak candidates.
     2.  **Pass 2 (xAI Mastermind):** Passes candidates to `grok-4-fast-reasoning` with heavily filtered strategies to identify the best deals. Includes a 'SEASONAL HIGH-RANK CORRECTION' to explicitly prevent the AI from rejecting seasonal candidates solely based on their current high (off-season) sales rank.
-    3.  **Caching:** Saves the final results to the `prime_picks` table atomically, preserving the cache on failure.
+    3.  **Caching:** Saves the final results to the `prime_picks` table atomically. If Pass 2 fails (e.g. xAI API error), the system gracefully skips updating the cache to preserve the previous valid results.
 
 ---
 
@@ -131,7 +131,7 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 To prevent SQLite lock-contention and 504 Gateway Timeouts, the system enforces the following architecture:
 *   **Centralized Helper:** All connections must be made via `keepa_deals.db_utils.get_db_connection()`, which standardizes `busy_timeout=5000` and `journal_mode=WAL`.
 *   **Context Managers:** Database assignments MUST be wrapped in a `with` context block (or closed via `finally`) to prevent unclosed connections from leaking and deadlocking `PRAGMA` execution.
-*   **Apache mod_wsgi:** Because the application heavily uses C-extensions like `sqlite3` and `numpy`, it cannot run safely inside isolated mod_wsgi sub-interpreters. The live production Apache configuration (`/etc/apache2/sites-enabled/agentarbitrage.conf`) **must** include the `WSGIApplicationGroup %{GLOBAL}` directive to force the application into the main interpreter. Note: The repository copy of this config file may be out of sync with production.
+*   **Apache mod_wsgi (WSGI Hangs):** Because the application heavily uses C-extensions like `sqlite3` and `numpy`, it cannot run safely inside isolated mod_wsgi sub-interpreters. C-extension deadlocks within these sub-interpreters will cause WSGI requests to hang entirely without throwing Python tracebacks in the Apache logs. To resolve this, the live production Apache configuration (`/etc/apache2/sites-enabled/agentarbitrage.conf`) **must** include the `WSGIApplicationGroup %{GLOBAL}` directive to force the application into the main Python interpreter. Note: The repository copy of this config file may be out of sync with production.
 
 ### State Persistence (`system_state` Table)
 We do not rely on local files (JSON) for state tracking, as they can be lost during container deployments.
