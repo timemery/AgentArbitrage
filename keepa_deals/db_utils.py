@@ -516,6 +516,7 @@ def create_inventory_ledger_table_if_not_exists():
                         sku TEXT,
                         purchase_date TIMESTAMP,
                         buy_cost REAL,
+                        buy_cost_confirmed BOOLEAN DEFAULT FALSE,
                         quantity_purchased INTEGER DEFAULT 1,
                         quantity_remaining INTEGER DEFAULT 0,
                         status TEXT DEFAULT 'POTENTIAL',
@@ -529,6 +530,14 @@ def create_inventory_ledger_table_if_not_exists():
                 cursor.execute(f"CREATE INDEX idx_inv_status ON {table_name}(status)")
                 conn.commit()
                 logger.info(f"Successfully created table '{table_name}'.")
+            else:
+                # Add buy_cost_confirmed column if it doesn't exist (Migration)
+                cursor.execute(f"PRAGMA table_info({table_name})")
+                columns = [col[1] for col in cursor.fetchall()]
+                if 'buy_cost_confirmed' not in columns:
+                    logger.info(f"Adding 'buy_cost_confirmed' column to '{table_name}' table.")
+                    cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN buy_cost_confirmed BOOLEAN DEFAULT FALSE")
+                    conn.commit()
     except sqlite3.Error as e:
         logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
         raise
