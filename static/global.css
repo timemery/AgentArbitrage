@@ -3151,19 +3151,34 @@ body.home-background::before {
 }
 
 /* Tracking Layout Consistency with Dashboard */
-.tracking-page .deal-table th {
-    /* Existing tracking override kept, but ensuring it stacks correctly */
-    position: sticky;
-    top: 50px;
-    z-index: 10;
+.tracking-page .deal-table th,
+.tracking-page .deal-table .column-header-row th {
+    position: sticky !important;
+    top: 134px !important;
+    z-index: 10 !important;
 }
 
 .tracking-page .sort-arrows-row td {
-    position: sticky;
-    top: 96px; /* Matches height below the headers */
-    z-index: 9;
-    background-color: var(--card-bg-color);
-    border-bottom: 1px solid var(--border-color);
+    position: sticky !important;
+    top: 165px !important; /* 134px + 31px header height */
+    z-index: 9 !important;
+    background-color: #13161a !important; /* Site background */
+    border: none !important;
+}
+
+.tracking-page .sort-arrows-row td::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a;
+    z-index: -2;
+}
+.tracking-page .sort-arrows-row td::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a;
+    z-index: -1;
 }
 
 .tracking-link {
@@ -3176,12 +3191,14 @@ body.home-background::before {
 
 #tracking-shadow-line {
     position: fixed;
-    top: 110px; /* Aligns just below tabs/arrows row */
-    left: 0;
-    right: 0;
-    height: 10px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-    z-index: 8;
+    top: 190px; /* 165px (arrows top) + 25px (arrows height) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1200px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 8 !important;
     pointer-events: none;
     display: none;
 }

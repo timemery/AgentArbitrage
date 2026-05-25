@@ -3,6 +3,7 @@
 {% block content %}
 <div class="dashboard-content-wrapper tracking-page">
     <div class="tracking-sticky-mask"></div>
+    <div id="tracking-shadow-line"></div>
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
@@ -290,7 +291,7 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th>Status</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th>Status</th></tr>' + generateSortArrows('sales', [{id:'sale_date'}, {id:'amazon_order_id'}, {id:'sku'}, {id:'sale_price'}, {id:'order_status'}]) + '</thead><tbody>';
 
         items.forEach(item => {
             let dateStr = '-';
@@ -312,6 +313,38 @@
         container.innerHTML = html;
     }
 
+
+    function generateSortArrows(tab, columns) {
+        let html = '<tr class="sort-arrows-row">';
+        const state = sortState[tab];
+
+        columns.forEach(col => {
+            if (!col.id) {
+                html += '<td></td>';
+                return;
+            }
+
+            const upArrowSrc = (state.column === col.id && state.order === 'asc') ? '/static/ascending-on.png' : '/static/ascending-off.png';
+            const downArrowSrc = (state.column === col.id && state.order === 'desc') ? '/static/descending-on.png' : '/static/descending-off.png';
+
+            html += `
+                <td>
+                    <div class="sort-arrows-container">
+                        <img src="${upArrowSrc}" class="sort-arrow"
+                             onclick="event.stopPropagation(); handleSort('${tab}', '${col.id}', 'asc')"
+                             onmouseover="this.src='/static/ascending-on.png'"
+                             onmouseout="this.src='${upArrowSrc}'">
+                        <img src="${downArrowSrc}" class="sort-arrow"
+                             onclick="event.stopPropagation(); handleSort('${tab}', '${col.id}', 'desc')"
+                             onmouseover="this.src='/static/descending-on.png'"
+                             onmouseout="this.src='${downArrowSrc}'">
+                    </div>
+                </td>`;
+        });
+        html += '</tr>';
+        return html;
+    }
+
     function renderPotential(items) {
         const container = document.getElementById('potential-table-container');
         if (!items || items.length === 0) {
@@ -319,7 +352,7 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th><div class="tooltip-header">Buy Cost ℹ️<span class="tooltip-text">Click to edit. Italic = estimated from Dashboard. Solid = you confirmed the actual Amazon price.</span></div></th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th><div class="tooltip-header">Buy Cost ℹ️<span class="tooltip-text">Click to edit. Italic = estimated from Dashboard. Solid = you confirmed the actual Amazon price.</span></div></th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr>' + generateSortArrows('potential', [{id:'title'}, {id:'asin'}, {id:'buy_cost'}, {id:'created_at'}, {id:'profit'}, {id:'roi'}, {id:'margin'}, {}]) + '</thead><tbody>';
 
         items.forEach(item => {
             const isConfirmed = item.buy_cost_confirmed === 1 || item.buy_cost_confirmed === true;
@@ -468,7 +501,7 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>ASIN</th><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>ASIN</th><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr>' + generateSortArrows('active', [{id:'asin'}, {id:'sku'}, {id:'title'}, {id:'quantity_remaining'}, {id:'buy_cost'}, {}]) + '</thead><tbody>';
 
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
@@ -652,15 +685,20 @@
             }
         }
     });
+
     window.addEventListener('scroll', () => {
         const mask = document.querySelector('.tracking-sticky-mask');
-        if (!mask) return;
-        // Show mask only after scrolling past the tabs area
-        if (window.scrollY > 100) {
-            mask.style.display = 'block';
+        const shadow = document.getElementById('tracking-shadow-line');
+
+        // Show mask and shadow only after scrolling past the tabs area
+        if (window.scrollY > 10) {
+            if (mask) mask.style.display = 'block';
+            if (shadow) shadow.style.display = 'block';
         } else {
-            mask.style.display = 'none';
+            if (mask) mask.style.display = 'none';
+            if (shadow) shadow.style.display = 'none';
         }
     });
+
 </script>
 {% endblock %}
