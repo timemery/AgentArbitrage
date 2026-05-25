@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { height: 2000px; padding: 0; margin: 0; }
+  .nav { height: 134px; background: red; position: fixed; width: 100%; top: 0; }
+  .content { padding-top: 134px; }
+  .sticky-header {
+      position: sticky;
+      top: 134px;
+      height: 31px;
+      background: blue;
+      z-index: 180;
+  }
+  .sticky-arrows {
+      position: sticky;
+      top: 165px;
+      height: 25px;
+      background: green;
+      z-index: 179;
+  }
+  .shadow-line {
+      position: fixed;
+      top: 190px;
+      height: 30px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent);
+      width: 100%;
+      z-index: 178;
+      display: none;
+      pointer-events: none;
+  }
+  .mask {
+      position: fixed;
+      top: 134px;
+      height: 50px;
+      background: #13161a;
+      width: 100%;
+      z-index: 170;
+      display: none;
+      pointer-events: none;
+  }
+  .data {
+      height: 47px;
+      background: lightgray;
+      margin: 2px 0;
+  }
+</style>
+</head>
+<body>
+  <div class="nav">Nav</div>
+  <div class="shadow-line" id="shadow"></div>
+  <div class="mask" id="mask"></div>
+  <div class="content">
+    <div style="height: 100px; background: yellow;">Tabs Area</div>
+    <div class="sticky-header">Header</div>
+    <div class="sticky-arrows">Arrows</div>
+    <div class="data">Data 1</div>
+    <div class="data">Data 2</div>
+    <div class="data">Data 3</div>
+    <div class="data">Data 4</div>
+  </div>
+  <script>
+    window.addEventListener('scroll', () => {
+        const shadow = document.getElementById('shadow');
+        const mask = document.getElementById('mask');
+        // The header becomes sticky when its top reaches 134px.
+        // It starts at 134 (nav) + 100 (tabs) = 234px from top of page.
+        // So it hits 134px when we scroll down 100px.
+        if (window.scrollY > 90) { // Add a little threshold
+            shadow.style.display = 'block';
+            mask.style.display = 'block';
+        } else {
+            shadow.style.display = 'none';
+            mask.style.display = 'none';
+        }
+    });
+  </script>
+</body>
+</html>

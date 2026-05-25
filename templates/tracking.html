@@ -692,8 +692,19 @@
         const mask = document.querySelector('.tracking-sticky-mask');
         const shadow = document.getElementById('tracking-shadow-line');
 
-        // Show mask and shadow only after scrolling past the tabs area
-        if (window.scrollY > 10) {
+        // Find the active tab content area to calculate distance
+        const activeTab = document.querySelector('.tab-content.active');
+        if (!activeTab) return;
+
+        const tableContainer = activeTab.querySelector('.deal-table');
+        if (!tableContainer) return;
+
+        // The header will stick when it hits 134px from the top of the viewport.
+        // We only want the shadow to appear when it actually starts sticking.
+        const headerRect = tableContainer.getBoundingClientRect();
+
+        // When the top of the table header is near or above 134px, it's sticking
+        if (headerRect.top <= 135) {
             if (mask) mask.style.display = 'block';
             if (shadow) shadow.style.display = 'block';
         } else {

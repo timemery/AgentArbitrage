@@ -3068,7 +3068,7 @@ body.home-background::before {
     right: 0;
     height: 50px; /* Adjust to cover gap between nav and sticky header */
     background-color: #13161a;
-    z-index: 170; /* Below the sticky header (180) but above scrolling content */
+    z-index: 178; /* Behind sticky header and arrows but above content */
     pointer-events: none;
     display: none; /* Hidden until scrolled */
 }
@@ -3199,7 +3199,7 @@ body.home-background::before {
     max-width: 1200px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    z-index: 180 !important;
+    z-index: 178 !important; /* Behind header and arrows, above content */
     pointer-events: none;
     display: none;
 }
