@@ -3162,7 +3162,7 @@ body.home-background::before {
 .tracking-page .sort-arrows-row td {
     position: sticky !important;
     top: 165px !important; /* 134px + 31px header height */
-    z-index: 9 !important;
+    z-index: 179 !important;
     background-color: #13161a !important; /* Site background */
     border: none !important;
 }
@@ -3199,7 +3199,7 @@ body.home-background::before {
     max-width: 1200px;
     height: 30px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
-    z-index: 8 !important;
+    z-index: 180 !important;
     pointer-events: none;
     display: none;
 }
