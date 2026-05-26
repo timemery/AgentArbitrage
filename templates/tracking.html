@@ -303,8 +303,8 @@
 
             html += `<tr class="deal-row">
                 <td>${dateStr}</td>
-                <td>${item.amazon_order_id || '-'}</td>
-                <td>${item.sku || '-'}</td>
+                <td>${item.amazon_order_id ? `<a href="https://sellercentral.amazon.com/orders-v3/order/${item.amazon_order_id}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.amazon_order_id}</a>` : '—'}</td>
+                <td>${item.sku ? `<a href="https://sellercentral.amazon.com/inventory?searchType=sku&searchValue=${item.sku}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.sku}</a>` : '—'}</td>
                 <td>$${(item.sale_price || 0).toFixed(2)}</td>
                 <td>${item.order_status || '-'}</td>
             </tr>
@@ -510,7 +510,7 @@
 
             html += `<tr class="deal-row">
                 <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
-                <td>${item.sku || '-'}</td>
+                <td>${item.sku ? `<a href="https://sellercentral.amazon.com/inventory?searchType=sku&searchValue=${item.sku}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.sku}</a>` : '—'}</td>
                 <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td>${item.quantity_remaining}</td>
                 <td>${costDisplay}</td>
