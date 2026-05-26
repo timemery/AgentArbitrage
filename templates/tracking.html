@@ -3,6 +3,7 @@
 {% block content %}
 <div class="dashboard-content-wrapper tracking-page">
     <div class="tracking-sticky-mask"></div>
+    <div id="tracking-shadow-line"></div>
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
@@ -108,6 +109,74 @@
 </div>
 
 <script>
+    // Sort state and data
+    let currentData = { potential: [], active: [], sales: [] };
+    let sortState = {
+        potential: { column: null, order: 'asc' },
+        active: { column: null, order: 'asc' },
+        sales: { column: null, order: 'asc' }
+    };
+
+    function sortData(tab, data) {
+        if (!sortState[tab].column || !data || data.length === 0) return data;
+        const col = sortState[tab].column;
+        const order = sortState[tab].order;
+
+        return [...data].sort((a, b) => {
+            let valA = a[col] !== undefined ? a[col] : '';
+            let valB = b[col] !== undefined ? b[col] : '';
+
+            // Handle em-dashes as null/bottom
+            if (valA === '—' || valA === null) valA = '';
+            if (valB === '—' || valB === null) valB = '';
+            if (valA === '' && valB !== '') return 1;
+            if (valB === '' && valA !== '') return -1;
+            if (valA === '' && valB === '') return 0;
+
+            // Handle numbers formatted as currencies/percentages
+            let numA = String(valA).replace(/[\$,%]/g, '');
+            let numB = String(valB).replace(/[\$,%]/g, '');
+
+            if (!isNaN(parseFloat(numA)) && !isNaN(parseFloat(numB))) {
+                return order === 'asc' ? parseFloat(numA) - parseFloat(numB) : parseFloat(numB) - parseFloat(numA);
+            }
+
+            // Handle dates
+            let dateA = Date.parse(valA);
+            let dateB = Date.parse(valB);
+            if (!isNaN(dateA) && !isNaN(dateB)) {
+                return order === 'asc' ? dateA - dateB : dateB - dateA;
+            }
+
+            // String sort
+            return order === 'asc' ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
+        });
+    }
+
+    function handleSort(tab, column, order = null) {
+        if (order) {
+            sortState[tab].column = column;
+            sortState[tab].order = order;
+        } else {
+            // Toggle logic if no explicit order given
+            if (sortState[tab].column === column) {
+                if (sortState[tab].order === 'asc') {
+                    sortState[tab].order = 'desc';
+                } else if (sortState[tab].order === 'desc') {
+                    sortState[tab].column = null;
+                    sortState[tab].order = 'asc';
+                }
+            } else {
+                sortState[tab].column = column;
+                sortState[tab].order = 'asc';
+            }
+        }
+
+        if (tab === 'potential') renderPotential(sortData('potential', currentData.potential));
+        if (tab === 'active') renderActive(sortData('active', currentData.active));
+        if (tab === 'sales') renderSales(sortData('sales', currentData.sales));
+    }
+
     let activePage = 1;
 
     function escapeHTML(str) {
@@ -151,7 +220,10 @@
         try {
             const response = await fetch('/api/tracking/potential');
             const data = await response.json();
-            renderPotential(data.data || data.potential || []); // Handle both formats just in case
+
+            currentData.potential = data.data || data.potential || [];
+            renderPotential(sortData('potential', currentData.potential));
+ // Handle both formats just in case
         } catch (error) {
             console.error('Error fetching potential:', error);
         }
@@ -167,7 +239,8 @@
                 return;
             }
 
-            renderActive(result.data);
+            currentData.active = result.data || [];
+            renderActive(sortData('active', currentData.active));
             renderPaginationControls('active-pagination', result.pagination, fetchActiveInventory);
         } catch (error) {
             console.error('Error fetching active inventory:', error);
@@ -184,7 +257,8 @@
                 return;
             }
 
-            renderSales(result.data);
+            currentData.sales = result.data || [];
+            renderSales(sortData('sales', currentData.sales));
             renderPaginationControls('sales-pagination', result.pagination, fetchSalesHistory);
         } catch (error) {
             console.error('Error fetching sales history:', error);
@@ -219,7 +293,7 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th>Status</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Date</th><th>Order ID</th><th>SKU</th><th><div class="tooltip-header">Sale Price (Gross) ℹ️<span class="tooltip-text">Excludes Amazon Fees (Customer Paid Price)</span></div></th><th>Status</th></tr>' + generateSortArrows('sales', [{id:'sale_date'}, {id:'amazon_order_id'}, {id:'sku'}, {id:'sale_price'}, {id:'order_status'}]) + '</thead><tbody>';
 
         items.forEach(item => {
             let dateStr = '-';
@@ -241,6 +315,38 @@
         container.innerHTML = html;
     }
 
+
+    function generateSortArrows(tab, columns) {
+        let html = '<tr class="sort-arrows-row">';
+        const state = sortState[tab];
+
+        columns.forEach(col => {
+            if (!col.id) {
+                html += '<td></td>';
+                return;
+            }
+
+            const upArrowSrc = (state.column === col.id && state.order === 'asc') ? '/static/ascending-on.png' : '/static/ascending-off.png';
+            const downArrowSrc = (state.column === col.id && state.order === 'desc') ? '/static/descending-on.png' : '/static/descending-off.png';
+
+            html += `
+                <td>
+                    <div class="sort-arrows-container">
+                        <img src="${upArrowSrc}" class="sort-arrow"
+                             onclick="event.stopPropagation(); handleSort('${tab}', '${col.id}', 'asc')"
+                             onmouseover="this.src='/static/ascending-on.png'"
+                             onmouseout="this.src='${upArrowSrc}'">
+                        <img src="${downArrowSrc}" class="sort-arrow"
+                             onclick="event.stopPropagation(); handleSort('${tab}', '${col.id}', 'desc')"
+                             onmouseover="this.src='/static/descending-on.png'"
+                             onmouseout="this.src='${downArrowSrc}'">
+                    </div>
+                </td>`;
+        });
+        html += '</tr>';
+        return html;
+    }
+
     function renderPotential(items) {
         const container = document.getElementById('potential-table-container');
         if (!items || items.length === 0) {
@@ -248,7 +354,7 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th><div class="tooltip-header">Buy Cost ℹ️<span class="tooltip-text">Click to edit. Italic = estimated from Dashboard. Solid = you confirmed the actual Amazon price.</span></div></th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>Title</th><th>ASIN</th><th><div class="tooltip-header">Buy Cost ℹ️<span class="tooltip-text">Click to edit. Italic = estimated from Dashboard. Solid = you confirmed the actual Amazon price.</span></div></th><th>Date</th><th>Profit</th><th>ROI</th><th>Margin</th><th>Actions</th></tr>' + generateSortArrows('potential', [{id:'title'}, {id:'asin'}, {id:'buy_cost'}, {id:'created_at'}, {id:'profit'}, {id:'roi'}, {id:'margin'}, {}]) + '</thead><tbody>';
 
         items.forEach(item => {
             const isConfirmed = item.buy_cost_confirmed === 1 || item.buy_cost_confirmed === true;
@@ -397,13 +503,13 @@
             return;
         }
 
-        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>ASIN</th><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr></thead><tbody>';
+        let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row"><th>ASIN</th><th>SKU</th><th>Title</th><th><div class="tooltip-header">Qty ℹ️<span class="tooltip-text">Includes Active (Fulfillable) & Inbound (Working/Shipped) Inventory</span></div></th><th>Cost</th><th>Actions</th></tr>' + generateSortArrows('active', [{id:'asin'}, {id:'sku'}, {id:'title'}, {id:'quantity_remaining'}, {id:'buy_cost'}, {}]) + '</thead><tbody>';
 
         items.forEach(item => {
             const costDisplay = item.buy_cost ? `$${item.buy_cost.toFixed(2)}` : '<span style="color:red; font-weight:bold;">Missing</span>';
 
             html += `<tr class="deal-row">
-                <td>${item.asin || '—'}</td>
+                <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
                 <td>${item.sku || '-'}</td>
                 <td class="title-cell" data-full-title="${escapeHTML(item.title || '-')}" ><span>${item.title || '-'}</span></td>
                 <td>${item.quantity_remaining}</td>
@@ -581,15 +687,31 @@
             }
         }
     });
+
     window.addEventListener('scroll', () => {
         const mask = document.querySelector('.tracking-sticky-mask');
-        if (!mask) return;
-        // Show mask only after scrolling past the tabs area
-        if (window.scrollY > 100) {
-            mask.style.display = 'block';
+        const shadow = document.getElementById('tracking-shadow-line');
+
+        // Find the active tab content area to calculate distance
+        const activeTab = document.querySelector('.tab-content.active');
+        if (!activeTab) return;
+
+        const tableContainer = activeTab.querySelector('.deal-table');
+        if (!tableContainer) return;
+
+        // The header will stick when it hits 134px from the top of the viewport.
+        // We only want the shadow to appear when it actually starts sticking.
+        const headerRect = tableContainer.getBoundingClientRect();
+
+        // When the top of the table header is near or above 134px, it's sticking
+        if (headerRect.top <= 135) {
+            if (mask) mask.style.display = 'block';
+            if (shadow) shadow.style.display = 'block';
         } else {
-            mask.style.display = 'none';
+            if (mask) mask.style.display = 'none';
+            if (shadow) shadow.style.display = 'none';
         }
     });
+
 </script>
 {% endblock %}

@@ -17,7 +17,7 @@ body {
   align-items: center;
   font-family: 'DM Sans', sans-serif;
   color: #ffffff;
-  overflow-x: hidden; /* Prevent horizontal scrollbar from gradient animation */
+  /*  Prevent horizontal scrollbar from gradient animation - breaks sticky */
   position: relative; /* Needed for z-indexing context */
   letter-spacing: -0.02em;
   background-color: #003852; /* Default background for pages without gradient */
@@ -1347,6 +1347,7 @@ button:disabled {
 .dashboard-content-wrapper {
     display: flex;
     flex-direction: column;
+    overflow: visible;
     align-items: center; /* Center the content horizontally */
     width: 100%;
     max-width: 1200px; /* User Req: Max 1200px */
@@ -3067,7 +3068,7 @@ body.home-background::before {
     right: 0;
     height: 50px; /* Adjust to cover gap between nav and sticky header */
     background-color: #13161a;
-    z-index: 100; /* Below the sticky header (180) but above scrolling content */
+    z-index: 178; /* Behind sticky header and arrows but above content */
     pointer-events: none;
     display: none; /* Hidden until scrolled */
 }
@@ -3148,4 +3149,57 @@ body.home-background::before {
 .metric-cell.estimated {
     font-style: italic;
     color: #f5a623;
+}
+
+/* Tracking Layout Consistency with Dashboard */
+.tracking-page .deal-table th,
+.tracking-page .deal-table .column-header-row th {
+    position: sticky !important;
+    top: 134px !important;
+    z-index: 180 !important;
+}
+
+.tracking-page .sort-arrows-row td {
+    position: sticky !important;
+    top: 165px !important; /* 134px + 31px header height */
+    z-index: 179 !important;
+    background-color: #13161a !important; /* Site background */
+    border: none !important;
+}
+
+.tracking-page .sort-arrows-row td::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a;
+    z-index: -2;
+}
+.tracking-page .sort-arrows-row td::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #13161a;
+    z-index: -1;
+}
+
+.tracking-link {
+    color: var(--light-blue);
+    text-decoration: none;
+}
+.tracking-link:hover {
+    text-decoration: underline;
+}
+
+#tracking-shadow-line {
+    position: fixed;
+    top: 190px; /* 165px (arrows top) + 25px (arrows height) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1200px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 178 !important; /* Behind header and arrows, above content */
+    pointer-events: none;
+    display: none;
 }
