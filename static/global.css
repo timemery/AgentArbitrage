@@ -3203,3 +3203,37 @@ body.home-background::before {
     pointer-events: none;
     display: none;
 }
+
+/* CSV Demotion Container */
+.csv-demotion-container {
+    margin-top: 30px;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.csv-toggle-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 0.9em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.csv-toggle-link:hover {
+    color: #6fb0ff;
+}
+
+.csv-toggle-icon {
+    font-size: 0.8em;
+    transition: transform 0.2s ease;
+}
+
+.csv-actions-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}

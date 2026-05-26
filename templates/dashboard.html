@@ -656,7 +656,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             currentDeals = data.deals; // Store the deals
             renderTable(data.deals);
-            renderPagination(data.pagination);
+            renderSharedPagination(data.pagination, 'pagination-container', (p) => {
+                currentPage = p;
+                fetchDeals(p, currentSort.by, currentSort.order);
+            });
 
             // Update Deal Counter
             if (dealCounter && data.pagination) {
