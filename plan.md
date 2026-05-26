@@ -1,22 +1,20 @@
-1. **Part 1: Unify Pagination**
-   - Extract the pagination logic from `templates/dashboard.html` into a shared utility function `renderSharedPagination` in `static/js/pagination.js`.
-   - Update `templates/dashboard.html` to include `static/js/pagination.js` and use `renderSharedPagination`. Note that `dashboard.html` pagination has an API with `pagination.total_pages` and `pagination.current_page` and invokes `fetchDeals(page, currentSort.by, currentSort.order)`.
-   - Update `templates/tracking.html` to include `static/js/pagination.js` and use `renderSharedPagination`. In `tracking.html`, the API returns `pagination.pages` and `pagination.page`, so the shared component will handle both formats. Replace `renderPaginationControls`.
-   - Ensure the scroll behavior works correctly for both pages.
+1. **Fix CSS Layout for CSV Actions Container**
+   - Update `static/global.css` using `replace_with_git_merge_diff` to add `white-space: nowrap;` and `width: max-content;` to the `.csv-actions-container` class to prevent the text from wrapping inside the buttons.
+   - Verify changes with `tail -n 25 static/global.css`.
 
-2. **Part 2: Active Inventory Button Re-labeling Proposals**
-   - I will pause and present proposals to the user for the three buttons on the Active Inventory tab:
-     - "Sync from Amazon" -> Proposal: "Sync FBA Inventory" or "Refresh Amazon Data"
-     - "Download Missing Costs CSV" -> Proposal: "Export Missing Costs" or "Download Missing"
-     - "Upload Costs (CSV)" -> Proposal: "Import Costs" or "Upload CSV"
-   - I will ask for Tim's approval on the new labels and whether to move them.
+2. **Remove Dead Code**
+   - Update `templates/dashboard.html` using `replace_with_git_merge_diff` to remove the dead `renderPagination` function that was left behind.
+   - Verify changes using `cat templates/dashboard.html | grep -C 10 renderPagination`.
 
-3. **Part 3: CSV Button Demotion**
-   - Wait for user response. After approval:
-   - Hide the current top-level "Download" and "Upload" buttons.
-   - Add a "Bulk edit via CSV" small text link below the table.
-   - Create a disclosure widget (or inline reveal) that displays the new "Export" and "Import" buttons when clicked.
-   - Any new styling will go into `static/global.css`.
+3. **Re-verify**
+   - Start the server `gunicorn --bind 0.0.0.0:8000 wsgi_handler:app &`.
+   - Wait 5 seconds.
+   - Run the Playwright verification script `python /home/jules/verification/verify_tracking.py` to ensure the UI issue is resolved.
+   - Kill the server.
 
 4. **Complete Pre Commit Steps**
-   - Execute `./run_tests.sh` to make sure proper testing, verifications, reviews and reflections are done.
+   - Request code review again.
+   - Complete pre-commit steps to ensure proper testing, verification, review, and reflection are done.
+
+5. **Submit**
+   - Submit the branch `ui-tracking-pagination-demote-csv` with a descriptive message.

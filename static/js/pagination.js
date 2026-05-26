@@ -20,7 +20,8 @@ function renderSharedPagination(pagination, containerId, fetchCallback) {
             // Try to find the closest table to scroll to, otherwise scroll to top
             const table = container.closest('.tab-content')?.querySelector('table') || document.getElementById('deals-table');
             if(table) {
-                table.scrollIntoView({ behavior: 'smooth' });
+                const y = table.getBoundingClientRect().top + window.scrollY - 140; // offset for sticky header
+                window.scrollTo({ top: y, behavior: 'smooth' });
             }
         };
         return btn;
