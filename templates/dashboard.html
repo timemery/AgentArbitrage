@@ -656,7 +656,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             currentDeals = data.deals; // Store the deals
             renderTable(data.deals);
-            renderPagination(data.pagination);
+            renderSharedPagination(data.pagination, 'pagination-container', (p) => {
+                currentPage = p;
+                fetchDeals(p, currentSort.by, currentSort.order);
+            });
 
             // Update Deal Counter
             if (dealCounter && data.pagination) {
@@ -1723,67 +1726,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // --- Missing Functions Implementation ---
-
-    function renderPagination(pagination) {
-        const container = document.getElementById('pagination-container');
-        if (!container) return;
-
-        container.innerHTML = '';
-
-        if (pagination.total_pages <= 1) return;
-
-        const createButton = (text, page, isActive = false, isDisabled = false) => {
-            const btn = document.createElement('button');
-            btn.textContent = text;
-            btn.className = `page-btn ${isActive ? 'active' : ''}`;
-            if (isDisabled) btn.disabled = true;
-            else btn.onclick = () => {
-                currentPage = page;
-                fetchDeals(currentPage, currentSort.by, currentSort.order);
-                // Scroll to top of table
-                document.getElementById('deals-table').scrollIntoView({ behavior: 'smooth' });
-            };
-            return btn;
-        };
-
-        // Prev Button
-        container.appendChild(createButton('Prev', pagination.current_page - 1, false, pagination.current_page === 1));
-
-        // Logic for page numbers (window of 5)
-        let startPage = Math.max(1, pagination.current_page - 2);
-        let endPage = Math.min(pagination.total_pages, startPage + 4);
-
-        if (endPage - startPage < 4) {
-            startPage = Math.max(1, endPage - 4);
-        }
-
-        if (startPage > 1) {
-            container.appendChild(createButton('1', 1, pagination.current_page === 1));
-            if (startPage > 2) {
-                const ellipsis = document.createElement('span');
-                ellipsis.className = 'page-ellipsis';
-                ellipsis.textContent = '...';
-                container.appendChild(ellipsis);
-            }
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            container.appendChild(createButton(i, i, pagination.current_page === i));
-        }
-
-        if (endPage < pagination.total_pages) {
-            if (endPage < pagination.total_pages - 1) {
-                const ellipsis = document.createElement('span');
-                ellipsis.className = 'page-ellipsis';
-                ellipsis.textContent = '...';
-                container.appendChild(ellipsis);
-            }
-            container.appendChild(createButton(pagination.total_pages, pagination.total_pages, pagination.current_page === pagination.total_pages));
-        }
-
-        // Next Button
-        container.appendChild(createButton('Next', pagination.current_page + 1, false, pagination.current_page === pagination.total_pages));
-    }
 
     function updateResponsiveLayout() {
         // The CSS handles most responsive logic via media queries.

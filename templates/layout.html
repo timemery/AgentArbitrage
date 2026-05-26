@@ -96,6 +96,7 @@
     </header>
 
     <script src="{{ url_for('static', filename='js/mentor_chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flashes">
