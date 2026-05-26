@@ -18,12 +18,19 @@
 
     <!-- Active Inventory Tab -->
     <div id="active-inventory" class="tab-content">
-        <div style="display: flex; justify-content: flex-end; align-items: center;">
-            <div style="display: flex; gap: 10px;">
-                <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync from Amazon</button>
-                <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs CSV</button>
-                <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Costs (CSV)</button>
-                <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <button id="btn-sync" class="tidy-button" onclick="triggerImport()">Sync FBA Inventory</button>
+            </div>
+            <div class="csv-demotion-container">
+                <a href="javascript:void(0)" class="csv-toggle-link" onclick="toggleCsvActions(this)">
+                    Bulk edit via CSV <span class="csv-toggle-icon">▼</span>
+                </a>
+                <div id="csv-actions-container" class="csv-actions-container" style="display: none;">
+                    <button class="tidy-button btn-info-style" onclick="window.location.href='/api/inventory/export-missing-costs'">Download Missing Costs</button>
+                    <button id="btn-upload" class="tidy-button" onclick="document.getElementById('cost-upload').click()">Upload Updated Costs</button>
+                    <input type="file" id="cost-upload" style="display: none;" onchange="uploadCosts(this)">
+                </div>
             </div>
         </div>
         <p class="tidy-text">Confirmed inventory currently at Amazon or in transit.</p>
@@ -246,7 +253,7 @@
 
             currentData.active = result.data || [];
             renderActive(sortData('active', currentData.active));
-            renderPaginationControls('active-pagination', result.pagination, fetchActiveInventory);
+            renderSharedPagination(result.pagination, 'active-pagination', fetchActiveInventory);
         } catch (error) {
             console.error('Error fetching active inventory:', error);
         }
@@ -264,31 +271,10 @@
 
             currentData.sales = result.data || [];
             renderSales(sortData('sales', currentData.sales));
-            renderPaginationControls('sales-pagination', result.pagination, fetchSalesHistory);
+            renderSharedPagination(result.pagination, 'sales-pagination', fetchSalesHistory);
         } catch (error) {
             console.error('Error fetching sales history:', error);
         }
-    }
-
-    function renderPaginationControls(containerId, pagination, fetchFunction) {
-        const container = document.getElementById(containerId);
-        if (!pagination || pagination.pages <= 1) {
-            container.innerHTML = '';
-            return;
-        }
-
-        let html = '';
-        if (pagination.page > 1) {
-            html += `<button class="page-btn" onclick="${fetchFunction.name}(${pagination.page - 1})">Previous</button> `;
-        }
-
-        html += `<span class="page-ellipsis">Page ${pagination.page} of ${pagination.pages}</span>`;
-
-        if (pagination.page < pagination.pages) {
-            html += `<button class="page-btn" onclick="${fetchFunction.name}(${pagination.page + 1})">Next</button>`;
-        }
-
-        container.innerHTML = html;
     }
 
     function renderSales(items) {
@@ -717,6 +703,19 @@
             if (shadow) shadow.style.display = 'none';
         }
     });
+
+    function toggleCsvActions(element) {
+        const container = document.getElementById('csv-actions-container');
+        const icon = element.querySelector('.csv-toggle-icon');
+
+        if (container.style.display === 'none') {
+            container.style.display = 'flex';
+            icon.textContent = '▲';
+        } else {
+            container.style.display = 'none';
+            icon.textContent = '▼';
+        }
+    }
 
 </script>
 {% endblock %}
