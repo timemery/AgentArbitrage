@@ -289,3 +289,6 @@ A critical regression occurred when the system used `2000-01-01` instead of `201
   - **Centralized Helper:** Replaced direct `sqlite3.connect` calls across the codebase with the `get_db_connection` helper from `keepa_deals.db_utils` to enforce `busy_timeout=5000` and `journal_mode=WAL` uniformly.
   - **Context Manager Requirement:** All assignments (`conn = get_db_connection(...)`) MUST be used within a `with` context block (or explicitly closed in a `finally` block). Unclosed connections leak and prevent SQLite from executing `PRAGMA` statements on new connections, leading to severe lock contention.
   - **`mod_wsgi` C-Extension Deadlocks:** The centralized database helper, utilizing the `sqlite3` C-extension, triggered WSGI hangs in production when running within isolated sub-interpreters. The live Apache virtual host config (`agentarbitrage.conf`) **must** include the `WSGIApplicationGroup %{GLOBAL}` directive to force execution in the main interpreter.
+- **Tracking UI & Unified Pagination:**
+  - Pagination logic is centralized in `static/js/pagination.js`. Tracking pages implement client-side sorting and hyperlink generation for ASINs/SKUs/Order IDs.
+  - CSV features on the Active Inventory tab are demoted under a bulk edit link to minimize clutter.
