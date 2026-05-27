@@ -50,6 +50,9 @@ When expanding a deal's details:
 *   Provides 50-80 words of actionable advice based on the deal's specific metrics, evaluating it against a dual-strategy framework (high-velocity flips vs. seasonal holds) to prevent bias.
 *   **Formatting:** The system explicitly prompts the AI to return **HTML** (e.g., `<b>`, `<br>`) instead of Markdown. The frontend renders this safely using `innerHTML`.
 
+### Shared UI Components
+*   **Pagination:** Pagination logic across the application (Dashboard, Tracking) is centralized in `static/js/pagination.js`. It gracefully handles different API pagination formats (e.g., `total_pages` vs `pages`) and dynamic scroll offsets for sticky headers.
+
 ### Mentor Chat Integration
 A persistent, client-side chat interface accessible via the "Mentor" navigation item.
 *   **Visual:** Fixed overlay (505x540px) at the bottom-right of the screen.
