@@ -64,7 +64,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 6.  **Business Math**:
     *   **Logic:** `keepa_deals/business_calculations.py`.
-    *   **Inputs:** `Price Now`, `List at`, Amazon Fees (FBA + Referral), User Settings (Prep, Tax).
+    *   **Inputs:** `buy_cost_paid` (or Estimated Price Now + Tax + Shipping), `List at`, Amazon Fees (FBA + Referral), User Settings (Prep Fee).
     *   **Output:** `All-in Cost`, `Profit`, `Margin`, `Min. Listing Price`.
 
 7.  **Restriction Check (Gating)**:
@@ -191,13 +191,13 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`All-in Cost`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
-    -   **Formula**: `Price Now + Tax + Prep Fee + Shipping`.
-    -   **Explanation**: This represents the initial, out-of-pocket acquisition cost required to purchase the book and send it to Amazon. It intentionally **excludes** Amazon selling fees (FBA and Referral fees). Amazon fees are deducted from the gross revenue at the time of sale, rather than being an upfront cash expense. Including them here would artificially inflate the baseline cost, thereby miscalculating (crushing) the Return on Investment (ROI).
+    -   **Formula**: `buy_cost_paid + Prep Fee`. (Note: For Dashboard estimates, `buy_cost_paid` is estimated as Price Now + Tax + Shipping).
+    -   **Explanation**: This represents the initial, out-of-pocket acquisition cost required to purchase the book and send it to Amazon. Prep fee is the only cost added on top of `buy_cost_paid`. It intentionally **excludes** Amazon selling fees (FBA and Referral fees). Amazon fees are deducted from the gross revenue at the time of sale, rather than being an upfront cash expense. Including them here would artificially inflate the baseline cost, thereby miscalculating (crushing) the Return on Investment (ROI).
 
 -   **`Profit`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
     -   **Formula**: `List at - All-in Cost - Total AMZ fees`.
-    -   **Explanation**: This calculates the true net profit. While Amazon fees are excluded from the initial `All-in Cost` investment, they are correctly subtracted from the gross revenue (`List at`) alongside the out-of-pocket costs to accurately predict your final take-home profit. (`Total AMZ fees` = FBA Fee + Referral Fee. Note: Referral Fee is calculated based on the final **List at** price, not the buy cost).
+    -   **Explanation**: This calculates the projected net profit (an estimate until actual sale). While Amazon fees are excluded from the initial `All-in Cost` investment, they are correctly subtracted from the gross revenue (`List at`) alongside the out-of-pocket costs to accurately predict your final take-home profit. (`Total AMZ fees` = FBA Fee + Referral Fee. Note: Referral Fee is calculated based on the final **List at** price, not the buy cost).
 
 -   **`Margin`**:
     -   **Source**: `keepa_deals/business_calculations.py`.
@@ -210,7 +210,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`Tracking & Potential Buys Inline Calculations`**:
     -   **Source**: `/api/tracking/potential/<int:item_id>` (`wsgi_handler.py`).
-    -   **Logic**: Users can edit the `buy_cost` inline for Potential Buys. This triggers an immediate recalculation of `All-in Cost`, `Profit`, `Margin`, and `ROI` using the updated cost, and sets the `buy_cost_confirmed` boolean to true in the `inventory_ledger`. This provides exact financial metrics before purchase rather than relying on Keepa's scrape-time estimates.
+    -   **Logic**: Users can edit the `buy_cost_paid` inline for Potential Buys. This triggers an immediate recalculation of `All-in Cost`, `Profit`, `Margin`, and `ROI` using the updated cost, and sets the `buy_cost_confirmed` boolean to true in the `inventory_ledger`. This provides exact financial metrics before purchase rather than relying on Keepa's scrape-time estimates.
 
 -   **`Realized Profit (Sales History)`**:
     -   **Source**: `/api/tracking/sales` (`wsgi_handler.py`).

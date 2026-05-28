@@ -38,13 +38,13 @@ Bridges the gap between "I saw a deal" and "I bought it and shipped it to Amazon
 
 ### Data Captured
 *   **ASIN, Title, Condition** — pulled from the deal at the moment of action.
-*   **Buy Cost** — the user's actual paid price. **Editable inline.**
+*   **Buy Cost** (`buy_cost_paid`) — the user's actual paid price (book price + actual shipping + actual tax, excluding Prep Fee and Amazon fees). **Editable inline.**
 *   **Estimated Profit, Margin, ROI** — recalculated live as the user edits the buy cost.
 *   **List at Price** — the recommended price carried over from the deal evaluation.
 *   **Date Added, Status** — when the lead entered the system, current pipeline state.
 
 ### Editable Buy Cost Logic (Critical)
-When the system initially ingests a Potential Buy, the buy cost is an **estimate** carried from the deal data. When the user actually purchases the item, they edit the buy cost inline:
+When the system initially ingests a Potential Buy, the buy cost (`buy_cost_paid`) is an **estimate** carried from the deal data. When the user actually purchases the item, they edit the buy cost inline:
 *   The system sets `buy_cost_confirmed = TRUE` in `inventory_ledger`.
 *   All downstream profit, margin, and ROI calculations recalculate against the confirmed cost.
 *   Unconfirmed estimates are visually distinguished (lighter shade / italic) to prompt the user to verify them.
@@ -65,7 +65,7 @@ Show every unit the user currently has in the Amazon FBA system, regardless of f
     *   **Inbound Working** (received in user's facility, not yet shipped to Amazon)
     *   **Inbound Shipped** (in transit to an Amazon fulfillment center)
     *   **Inbound Receiving** (arrived at Amazon, not yet checked in)
-*   **Buy Cost** — original cost from the matched `inventory_ledger` row (editable inline, with confirmation flag as in Potential Buys).
+*   **Buy Cost** (`buy_cost_paid`) — original cost from the matched `inventory_ledger` row (editable inline, with confirmation flag as in Potential Buys).
 *   **List Price, Estimated Profit, Margin, ROI** — calculated against the confirmed buy cost.
 
 ### Data Sources
@@ -89,11 +89,11 @@ Show what the user actually sold and what they actually made on each unit, with 
 *   **Order ID, Order Date** — from SP-API Orders v0.
 *   **ASIN, SKU, Title, Condition** — from the matched order item.
 *   **Sale Price** — realized sale price from `sales_ledger`.
-*   **Buy Cost (Matched)** — the original `buy_cost` from the corresponding `inventory_ledger` row, matched via FIFO.
-*   **Realized Profit, Margin, ROI** — dynamically calculated by the same profit-calculation logic that powers the Deals Dashboard (purchase cost + tax + prep + shipping vs. sale price net of FBA/referral fees).
+*   **Buy Cost (Matched)** — the original `buy_cost_paid` from the corresponding `inventory_ledger` row, matched via FIFO.
+*   **Realized Profit, Margin, ROI** — dynamically calculated by the same profit-calculation logic that powers the Deals Dashboard (all-in cost vs. sale price net of actual FBA/referral fees).
 
 ### Why Fees Aren't a Column
-The SP-API Orders v0 endpoint does not return fee data — that requires a separate Finances API integration. Rather than show $0.00 fees (which is misleading), the Sales & Profit tab shows **realized profit** computed using the same fee logic as the Deals Dashboard's projected profit. Fees are immaterial as a displayed value as long as the user can see whether each unit was actually profitable.
+The SP-API Orders v0 endpoint does not return fee data — that requires a separate Finances API integration. Rather than show $0.00 fees (which is misleading), the Sales & Profit tab shows **realized profit** computed using the actual sale price and estimated fees (until API limits are resolved, the true model dictates subtracting actual fees). Fees are immaterial as a displayed value as long as the user can see whether each unit was actually profitable.
 
 ### FIFO Matching
 When a sale lands in `sales_ledger`, the system finds the oldest matching `inventory_ledger` row (same ASIN, status `Active`) with units remaining and decrements one unit. The buy cost from that specific row is locked into the sale record. This produces accurate realized profit even when the same ASIN was purchased multiple times at different prices.
