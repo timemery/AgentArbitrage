@@ -427,11 +427,42 @@ def get_potential_inventory():
                 list_at = _parse_currency_to_float(item.get('List_at'))
                 fba_fee = _parse_currency_to_float(item.get('FBA_PickandPack_Fee'))
                 ref_fee_pct = _parse_currency_to_float(item.get('Referral_Fee_Percent'))
-                shipping_included = str(item.get('Shipping_Included', 'False')).lower() in ('true', 'yes', '1')
+                
+                if list_at is None:
+                    list_at = _parse_currency_to_float(item.get('snapshot_list_at'))
+                if fba_fee is None:
+                    fba_fee = _parse_currency_to_float(item.get('snapshot_fba_fee'))
+                if ref_fee_pct is None:
+                    ref_fee_pct = _parse_currency_to_float(item.get('snapshot_referral_pct'))
+
+                shipping_included_val = item.get('Shipping_Included')
+                if shipping_included_val is None:
+                    shipping_included_val = item.get('snapshot_shipping_included')
+                
+                # snapshot_shipping_included is stored as 1.0 or 0.0 (REAL), deal row might be string
+                shipping_included = False
+                if shipping_included_val is not None:
+                    if isinstance(shipping_included_val, (int, float)):
+                        shipping_included = bool(shipping_included_val)
+                    else:
+                        shipping_included = str(shipping_included_val).lower() in ('true', 'yes', '1')
+
+                # For display-time fallback, if deals row is gone, use snapshot settings for tax/shipping/prep
+                # if deals row exists, we use current settings
+                current_settings = settings
+                if item.get('List_at') is None:
+                     # Create a temporary settings dict using snapshot values
+                     current_settings = settings.copy()
+                     if item.get('snapshot_estimated_tax') is not None:
+                         current_settings['estimated_tax_per_book'] = item.get('snapshot_estimated_tax')
+                     if item.get('snapshot_estimated_shipping') is not None:
+                         current_settings['estimated_shipping_per_book'] = item.get('snapshot_estimated_shipping')
+                     if item.get('snapshot_prep_fee') is not None:
+                         current_settings['prep_fee_per_book'] = item.get('snapshot_prep_fee')
                 
                 if buy_cost is not None and list_at is not None and fba_fee is not None and ref_fee_pct is not None:
                     try:
-                        all_in_cost = calculate_all_in_cost(buy_cost, settings, shipping_included)
+                        all_in_cost = calculate_all_in_cost(buy_cost, current_settings, shipping_included)
                         if isinstance(all_in_cost, (int, float)) and all_in_cost > 0:
                             referral_fee_amount = list_at * (ref_fee_pct / 100.0)
                             total_amz_fees = referral_fee_amount + fba_fee
@@ -526,14 +557,36 @@ def update_potential_buy_cost(item_id):
             list_at = _parse_currency_to_float(item.get('List_at'))
             fba_fee = _parse_currency_to_float(item.get('FBA_PickandPack_Fee'))
             ref_fee_pct = _parse_currency_to_float(item.get('Referral_Fee_Percent'))
-            shipping_included = str(item.get('Shipping_Included', 'False')).lower() in ('true', 'yes', '1')
+            
+            if list_at is None:
+                list_at = _parse_currency_to_float(item.get('snapshot_list_at'))
+            if fba_fee is None:
+                fba_fee = _parse_currency_to_float(item.get('snapshot_fba_fee'))
+            if ref_fee_pct is None:
+                ref_fee_pct = _parse_currency_to_float(item.get('snapshot_referral_pct'))
+
+            shipping_included_val = item.get('Shipping_Included')
+            if shipping_included_val is None:
+                shipping_included_val = item.get('snapshot_shipping_included')
+            
+            shipping_included = False
+            if shipping_included_val is not None:
+                if isinstance(shipping_included_val, (int, float)):
+                    shipping_included = bool(shipping_included_val)
+                else:
+                    shipping_included = str(shipping_included_val).lower() in ('true', 'yes', '1')
+
+            # We DO NOT use fallback settings here. This is an active cost update,
+            # so we always recalculate using the fresh settings loaded at the top.
+            # The spec explicitly states "that recalc reads fresh Settings values".
+            current_settings = settings
 
             if buy_cost is not None and list_at is not None and fba_fee is not None and ref_fee_pct is not None:
                 # TODO(P3 Refactor): Extract this calculation block into a shared function within
                 # keepa_deals/business_calculations.py to avoid duplicating logic from
                 # `_process_single_deal` in `keepa_deals/processing.py`.
                 try:
-                    all_in_cost = calculate_all_in_cost(buy_cost, settings, shipping_included)
+                    all_in_cost = calculate_all_in_cost(buy_cost, current_settings, shipping_included)
                     if isinstance(all_in_cost, (int, float)) and all_in_cost > 0:
                         referral_fee_amount = list_at * (ref_fee_pct / 100.0)
                         total_amz_fees = referral_fee_amount + fba_fee
@@ -663,12 +716,52 @@ def add_potential_buy():
         if not asin:
             return jsonify({'error': 'ASIN required'}), 400
 
+        settings = business_load_settings()
+
         with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
+
+            # 1. Fetch values dynamically from the deals database
             cursor.execute("""
-                INSERT INTO inventory_ledger (asin, title, buy_cost, status, source)
-                VALUES (?, ?, ?, 'POTENTIAL', 'Dashboard')
-            """, (asin, title, price))
+                SELECT List_at, FBA_PickandPack_Fee, Referral_Fee_Percent, Shipping_Included
+                FROM deals
+                WHERE ASIN = ?
+            """, (asin,))
+            deal_row = cursor.fetchone()
+
+            snapshot_list_at = None
+            snapshot_fba_fee = None
+            snapshot_referral_pct = None
+            snapshot_shipping_included = None
+
+            if deal_row:
+                try:
+                    snapshot_list_at = _parse_currency_to_float(deal_row['List_at'])
+                    snapshot_fba_fee = _parse_currency_to_float(deal_row['FBA_PickandPack_Fee'])
+                    snapshot_referral_pct = _parse_currency_to_float(deal_row['Referral_Fee_Percent'])
+                    si_raw = str(deal_row['Shipping_Included']).lower() if deal_row['Shipping_Included'] is not None else 'false'
+                    snapshot_shipping_included = 1.0 if si_raw in ('true', 'yes', '1') else 0.0
+                except Exception as parse_e:
+                    app.logger.warning(f"Error parsing deal snapshot values for ASIN {asin}: {parse_e}")
+
+            # 2. Capture settings exactly as they exist at flag time
+            snapshot_estimated_tax = settings.get('estimated_tax_per_book')
+            snapshot_estimated_shipping = settings.get('estimated_shipping_per_book')
+            snapshot_prep_fee = settings.get('prep_fee_per_book')
+
+            cursor.execute("""
+                INSERT INTO inventory_ledger (
+                    asin, title, buy_cost, status, source,
+                    snapshot_list_at, snapshot_fba_fee, snapshot_referral_pct, snapshot_shipping_included,
+                    snapshot_estimated_tax, snapshot_estimated_shipping, snapshot_prep_fee
+                )
+                VALUES (?, ?, ?, 'POTENTIAL', 'Dashboard', ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asin, title, price,
+                snapshot_list_at, snapshot_fba_fee, snapshot_referral_pct, snapshot_shipping_included,
+                snapshot_estimated_tax, snapshot_estimated_shipping, snapshot_prep_fee
+            ))
             conn.commit()
 
         return jsonify({'status': 'success', 'message': 'Added to potential buys'})
