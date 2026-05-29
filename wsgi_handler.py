@@ -781,18 +781,60 @@ def confirm_purchase():
         qty = data.get('quantity')
         sku = data.get('sku')
         purchase_date = data.get('purchase_date')
+        buyer_order_id = data.get('buyer_order_id')  # newly added per spec
 
         if not ledger_id or not buy_cost or not qty or not sku:
             return jsonify({'error': 'Missing required fields'}), 400
 
+        settings = business_load_settings()
+        prep_fee_at_purchase = float(settings.get('prep_fee_per_book', 0.0))
+
         with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE inventory_ledger
-                SET status = 'PURCHASED', buy_cost = ?, quantity_purchased = ?, quantity_remaining = ?, sku = ?, purchase_date = ?
-                WHERE id = ?
-            """, (buy_cost, qty, qty, sku, purchase_date, ledger_id))
-            conn.commit()
+
+            # 1. Fetch the row from inventory_ledger to get snapshots and other fields
+            cursor.execute("SELECT * FROM inventory_ledger WHERE id = ?", (ledger_id,))
+            row = cursor.fetchone()
+            if not row:
+                return jsonify({'error': 'Potential buy not found'}), 404
+
+            asin = row['asin']
+            # default condition to '1' as inventory_ledger didn't have condition but confirmed_buys needs it
+            condition = '1'
+
+            conn.execute("BEGIN TRANSACTION")
+
+            try:
+                # 2. Insert into confirmed_buys
+                cursor.execute('''
+                    INSERT INTO confirmed_buys (
+                        asin, condition, buy_cost, purchase_date, quantity_purchased,
+                        prep_fee_at_purchase, buyer_order_id, source_deal_id,
+                        snapshot_list_at, snapshot_fba_fee, snapshot_referral_pct, snapshot_shipping_included,
+                        snapshot_estimated_tax, snapshot_estimated_shipping, snapshot_prep_fee
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    asin, condition, buy_cost, purchase_date, qty,
+                    prep_fee_at_purchase, buyer_order_id, None,
+                    row['snapshot_list_at'], row['snapshot_fba_fee'], row['snapshot_referral_pct'], row['snapshot_shipping_included'],
+                    row['snapshot_estimated_tax'], row['snapshot_estimated_shipping'], row['snapshot_prep_fee']
+                ))
+
+                confirmed_buy_id = cursor.lastrowid
+
+                # 3. Insert into confirmed_buy_units
+                cursor.execute('''
+                    INSERT INTO confirmed_buy_units (confirmed_buy_id, sku) VALUES (?, ?)
+                ''', (confirmed_buy_id, sku))
+
+                # 4. Delete from inventory_ledger
+                cursor.execute("DELETE FROM inventory_ledger WHERE id = ?", (ledger_id,))
+
+                conn.execute("COMMIT")
+            except Exception as inner_e:
+                conn.execute("ROLLBACK")
+                raise inner_e
 
         return jsonify({'status': 'success'})
     except Exception as e:
