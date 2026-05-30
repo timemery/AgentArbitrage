@@ -64,7 +64,7 @@
             </div>
             <div class="form-group-mb">
                 <label class="label-block">SKU (Required)</label>
-                <input type="text" id="confirm-sku" class="styled-text-field input-full-width" required>
+                <input type="text" id="confirm-sku" class="styled-text-field input-full-width" placeholder="Optional">
             </div>
             <div class="form-group-mb">
                 <label class="label-block">Buy Cost ($)</label>
@@ -537,6 +537,12 @@
         document.getElementById('confirm-asin').value = item.asin;
         document.getElementById('confirm-cost').value = item.buy_cost || '';
         document.getElementById('confirm-sku').value = '';
+        document.getElementById('confirm-qty').value = '1';
+        document.getElementById('confirm-condition').value = '4';
+        const dateInput = document.getElementById('confirm-date');
+        if(dateInput) dateInput.valueAsDate = new Date();
+        const buyerOrder = document.getElementById('confirm-buyer-order');
+        if(buyerOrder) buyerOrder.value = '';
         document.getElementById('confirm-modal').style.display = 'block';
     }
 

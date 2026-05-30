@@ -523,7 +523,7 @@ def create_confirmed_buys_table_if_not_exists():
                         snapshot_list_at REAL,
                         snapshot_fba_fee REAL,
                         snapshot_referral_pct REAL,
-                        snapshot_shipping_included BOOLEAN,
+                        snapshot_shipping_included INTEGER,
                         snapshot_estimated_tax REAL,
                         snapshot_estimated_shipping REAL,
                         snapshot_prep_fee REAL,

@@ -51,7 +51,7 @@ def migrate():
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 row['asin'],
-                '1',
+                '4',
                 row['buy_cost'] if row['buy_cost'] is not None else 0.0,
                 row['purchase_date'] if row['purchase_date'] else datetime.utcnow().isoformat(),
                 row['quantity_purchased'] if row['quantity_purchased'] else 1,

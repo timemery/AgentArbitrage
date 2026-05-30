@@ -784,7 +784,7 @@ def confirm_purchase():
         buyer_order_id = data.get('buyer_order_id')
         condition = data.get('condition')
 
-        if not ledger_id or not buy_cost or not qty or not sku or not condition:
+        if not ledger_id or not buy_cost or not qty or not condition:
             return jsonify({'error': 'Missing required fields'}), 400
 
         settings = business_load_settings()
@@ -827,9 +827,10 @@ def confirm_purchase():
                 confirmed_buy_id = cursor.lastrowid
 
                 # 3. Insert into confirmed_buy_units
-                cursor.execute('''
-                    INSERT INTO confirmed_buy_units (confirmed_buy_id, sku) VALUES (?, ?)
-                ''', (confirmed_buy_id, sku))
+                if sku:
+                    cursor.execute('''
+                        INSERT INTO confirmed_buy_units (confirmed_buy_id, sku) VALUES (?, ?)
+                    ''', (confirmed_buy_id, sku))
 
                 # 4. Delete from inventory_ledger
                 cursor.execute("DELETE FROM inventory_ledger WHERE id = ?", (ledger_id,))
