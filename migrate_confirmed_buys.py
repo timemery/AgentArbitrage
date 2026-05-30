@@ -14,7 +14,6 @@ def migrate():
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        # Step 1: Identify rows to migrate
         # Step 0: Clean up DISMISSED tombstones
         cursor.execute("DELETE FROM inventory_ledger WHERE status = 'DISMISSED' AND source = 'Dashboard'")
         deleted_tombstones = cursor.rowcount
@@ -28,6 +27,7 @@ def migrate():
         logger.info(f"Found {count_to_migrate} manually-purchased rows to migrate.")
 
         if count_to_migrate == 0:
+            conn.commit()  # Commit the tombstone cleanup at least
             logger.info("No rows to migrate. Exiting successfully.")
             return
 
@@ -37,8 +37,6 @@ def migrate():
 
         inserted_count = 0
         deleted_count = 0
-
-        conn.execute("BEGIN TRANSACTION")
 
         for row in rows_to_migrate:
             cursor.execute("""
@@ -71,16 +69,19 @@ def migrate():
             deleted_count += cursor.rowcount
 
         if inserted_count != count_to_migrate or deleted_count != count_to_migrate:
-            conn.execute("ROLLBACK")
+            conn.rollback()
             logger.error(f"Mismatch in migration: To migrate {count_to_migrate}, Inserted {inserted_count}, Deleted {deleted_count}. Rolled back.")
             sys.exit(1)
 
-        conn.execute("COMMIT")
+        conn.commit()
         logger.info(f"Successfully migrated {count_to_migrate} rows. Committed transaction.")
 
     except Exception as e:
         if 'conn' in locals():
-            conn.execute("ROLLBACK")
+            try:
+                conn.rollback()
+            except Exception:
+                pass
         logger.error(f"Migration failed: {e}. Rolled back.")
         sys.exit(1)
     finally:
