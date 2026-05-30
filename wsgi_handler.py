@@ -497,6 +497,143 @@ def get_potential_inventory():
         app.logger.error(f"Error fetching potential inventory: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/api/tracking/confirmed', methods=['GET'])
+def get_confirmed_buys():
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        settings = business_load_settings()
+        default_markup = settings.get('default_markup', 10)
+
+        with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            query = '''
+                SELECT c.*, d.Title as Title
+                FROM confirmed_buys c
+                LEFT JOIN deals d ON c.asin = d.ASIN
+                ORDER BY c.id DESC
+            '''
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            data = []
+            for r in rows:
+                row_dict = dict(r)
+
+                buy_cost = float(row_dict.get('buy_cost', 0.0) or 0.0)
+                prep_fee = float(row_dict.get('prep_fee_at_purchase', 0.0) or 0.0)
+
+                minimum_list_price = (buy_cost + prep_fee) * (1.0 + (default_markup / 100.0))
+
+                row_dict['minimum_list_price'] = minimum_list_price
+                data.append(row_dict)
+
+            return jsonify({'data': data})
+
+    except Exception as e:
+        app.logger.error(f"Error fetching confirmed buys: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+
+@app.route('/api/tracking/confirmed/<int:item_id>/condition', methods=['PATCH'])
+def update_confirmed_condition(item_id):
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data = request.json
+    condition = data.get('condition')
+
+    if not condition or str(condition) not in ['1', '2', '3', '4', '5', '6']:
+        return jsonify({'error': 'Invalid condition value. Must be between 1 and 6.'}), 400
+
+    try:
+        settings = business_load_settings()
+        default_markup = settings.get('default_markup', 10)
+
+        with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("UPDATE confirmed_buys SET condition = ? WHERE id = ?", (str(condition), item_id))
+            if cursor.rowcount == 0:
+                return jsonify({'error': 'Item not found'}), 404
+
+            cursor.execute('''
+                SELECT c.*, d.Title as Title
+                FROM confirmed_buys c
+                LEFT JOIN deals d ON c.asin = d.ASIN
+                WHERE c.id = ?
+            ''', (item_id,))
+
+            r = cursor.fetchone()
+            row_dict = dict(r)
+
+            buy_cost = float(row_dict.get('buy_cost', 0.0) or 0.0)
+            prep_fee = float(row_dict.get('prep_fee_at_purchase', 0.0) or 0.0)
+            minimum_list_price = (buy_cost + prep_fee) * (1.0 + (default_markup / 100.0))
+            row_dict['minimum_list_price'] = minimum_list_price
+
+            conn.commit()
+
+            return jsonify({'status': 'success', 'data': row_dict})
+
+    except Exception as e:
+        app.logger.error(f"Error updating confirmed buy condition: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/tracking/confirmed/<int:item_id>/list-price', methods=['PATCH'])
+def update_confirmed_list_price(item_id):
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data = request.json
+    actual_list_price = data.get('actual_list_price')
+
+    if actual_list_price is not None:
+        try:
+            actual_list_price = float(actual_list_price)
+        except ValueError:
+            return jsonify({'error': 'Invalid actual_list_price value. Must be a float or null.'}), 400
+
+    try:
+        settings = business_load_settings()
+        default_markup = settings.get('default_markup', 10)
+
+        with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("UPDATE confirmed_buys SET actual_list_price = ? WHERE id = ?", (actual_list_price, item_id))
+            if cursor.rowcount == 0:
+                return jsonify({'error': 'Item not found'}), 404
+
+            cursor.execute('''
+                SELECT c.*, d.Title as Title
+                FROM confirmed_buys c
+                LEFT JOIN deals d ON c.asin = d.ASIN
+                WHERE c.id = ?
+            ''', (item_id,))
+
+            r = cursor.fetchone()
+            row_dict = dict(r)
+
+            buy_cost = float(row_dict.get('buy_cost', 0.0) or 0.0)
+            prep_fee = float(row_dict.get('prep_fee_at_purchase', 0.0) or 0.0)
+            minimum_list_price = (buy_cost + prep_fee) * (1.0 + (default_markup / 100.0))
+            row_dict['minimum_list_price'] = minimum_list_price
+
+            conn.commit()
+
+            return jsonify({'status': 'success', 'data': row_dict})
+
+    except Exception as e:
+        app.logger.error(f"Error updating confirmed buy list price: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/tracking/potential/<int:item_id>', methods=['PATCH'])
 def update_potential_buy_cost(item_id):
     if not session.get('logged_in'):

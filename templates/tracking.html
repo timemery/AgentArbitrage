@@ -6,11 +6,24 @@
     <div id="tracking-shadow-line"></div>
     <div class="tab-nav">
         <button class="tab-link active" onclick="openTab(event, 'potential-buys')">Potential Buys</button>
+        <button class="tab-link" onclick="openTab(event, 'confirmed-buys')">Confirmed Buys</button>
         <button class="tab-link" onclick="openTab(event, 'active-inventory')">Active Inventory</button>
         <button class="tab-link" onclick="openTab(event, 'sales-profit')">Sales & Profit</button>
     </div>
 
     <!-- Potential Buys Tab -->
+
+    <div id="confirmed-buys" class="tab-content" style="display:none;">
+        <div class="search-container">
+            <input type="text" id="search-confirmed" class="search-input" placeholder="Search ASIN, SKU, Title, Order #...">
+            <button class="tidy-button" onclick="fetchConfirmed()">Search</button>
+        </div>
+
+        <div id="confirmed-container">
+            <p>Loading confirmed buys...</p>
+        </div>
+    </div>
+
     <div id="potential-buys" class="tab-content active">
         <p class="tidy-text">Items you've flagged from the dashboard. Confirm purchase details to move them to Active Inventory.</p>
         <div id="potential-table-container">Loading...</div>
@@ -220,12 +233,148 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         fetchPotential();
+        fetchConfirmed();
         fetchActiveInventory(activePage);
         fetchSalesHistory(salesPage);
 
         // Set default date to today
         document.getElementById('confirm-date').valueAsDate = new Date();
     });
+
+
+    function getConditionLabel(value) {
+        const labels = {
+            '1': 'New',
+            '2': 'Like New',
+            '3': 'Very Good',
+            '4': 'Good',
+            '5': 'Acceptable',
+            '6': 'Collectible'
+        };
+        return labels[value] || 'Unknown';
+    }
+
+    function generateConditionDropdown(id, currentValue) {
+        const options = [
+            {val: '1', label: 'New'},
+            {val: '2', label: 'Like New'},
+            {val: '3', label: 'Very Good'},
+            {val: '4', label: 'Good'},
+            {val: '5', label: 'Acceptable'},
+            {val: '6', label: 'Collectible'}
+        ];
+
+        let html = `<select class="tidy-select" onchange="updateConfirmedCondition(${id}, this.value)">`;
+        options.forEach(opt => {
+            const selected = opt.val === String(currentValue) ? 'selected' : '';
+            html += `<option value="${opt.val}" ${selected}>${opt.label}</option>`;
+        });
+        html += `</select>`;
+        return html;
+    }
+
+    async function updateConfirmedCondition(id, newValue) {
+        try {
+            const response = await fetch(`/api/tracking/confirmed/${id}/condition`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({condition: newValue})
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                fetchConfirmed();
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Update failed');
+        }
+    }
+
+    async function updateConfirmedListPrice(id, inputElement) {
+        const newValue = inputElement.value;
+        const val = newValue.trim() === '' ? null : parseFloat(newValue);
+        try {
+            const response = await fetch(`/api/tracking/confirmed/${id}/list-price`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({actual_list_price: val})
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                fetchConfirmed();
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Update failed');
+        }
+    }
+
+    async function fetchConfirmed() {
+        const container = document.getElementById('confirmed-container');
+        try {
+            const response = await fetch('/api/tracking/confirmed');
+            const result = await response.json();
+
+            if (result.error) {
+                container.innerHTML = `<p style="color:red;">Error: ${result.error}</p>`;
+                return;
+            }
+
+            let data = result.data;
+            const searchQ = document.getElementById('search-confirmed').value.toLowerCase();
+
+            if (searchQ) {
+                data = data.filter(item => {
+                    return (item.asin && item.asin.toLowerCase().includes(searchQ)) ||
+                           (item.Title && item.Title.toLowerCase().includes(searchQ)) ||
+                           (item.buyer_order_id && item.buyer_order_id.toLowerCase().includes(searchQ));
+                });
+            }
+
+            if (data.length === 0) {
+                container.innerHTML = '<p>No confirmed buys found.</p>';
+                return;
+            }
+
+            let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row">';
+            html += '<th>Title</th><th>ASIN</th><th>Condition</th><th>Buy Cost</th><th>Prep Fee</th><th>Minimum List Price</th><th>Actual List Price</th><th>Purchase Date</th><th>Qty</th><th>Buyer Order #</th>';
+            html += '</tr></thead><tbody>';
+
+            data.forEach(item => {
+                const buyCost = item.buy_cost !== null && item.buy_cost !== undefined ? `$${parseFloat(item.buy_cost).toFixed(2)}` : '—';
+                const prepFee = item.prep_fee_at_purchase !== null && item.prep_fee_at_purchase !== undefined ? `$${parseFloat(item.prep_fee_at_purchase).toFixed(2)}` : '—';
+                const minPrice = item.minimum_list_price !== null && item.minimum_list_price !== undefined ? `$${parseFloat(item.minimum_list_price).toFixed(2)}` : '—';
+                const actualPriceValue = item.actual_list_price !== null && item.actual_list_price !== undefined ? parseFloat(item.actual_list_price).toFixed(2) : '';
+                const purchaseDate = item.purchase_date || '—';
+
+                html += `<tr class="deal-row">
+                    <td class="title-cell" data-full-title="${escapeHTML(item.Title || '-')}"><span>${item.Title || '-'}</span></td>
+                    <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
+                    <td>${generateConditionDropdown(item.id, item.condition)}</td>
+                    <td>${buyCost}</td>
+                    <td>${prepFee}</td>
+                    <td>${minPrice}</td>
+                    <td>
+                        $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${actualPriceValue}" onblur="updateConfirmedListPrice(${item.id}, this)">
+                    </td>
+                    <td>${purchaseDate}</td>
+                    <td>${item.quantity_purchased}</td>
+                    <td>${item.buyer_order_id || '—'}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        } catch(err) {
+            console.error(err);
+            container.innerHTML = '<p style="color:red;">Failed to load confirmed buys.</p>';
+        }
+    }
+
 
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
@@ -424,6 +573,7 @@
     function cancelEditBuyCost(itemId, originalCost) {
         // Just re-render the whole potential list to restore original state cleanly
         fetchPotential();
+        fetchConfirmed();
     }
 
     async function saveBuyCost(itemId) {
@@ -591,6 +741,7 @@
                 body: JSON.stringify({id: id})
             });
             fetchPotential();
+        fetchConfirmed();
         } catch (err) {
             console.error(err);
         }
