@@ -498,6 +498,78 @@ def clear_deals_table():
     conn.close()
     logging.info("Deals table cleared.")
 
+
+def create_confirmed_buys_table_if_not_exists():
+    table_name = 'confirmed_buys'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f'''
+                    CREATE TABLE {table_name} (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        asin TEXT NOT NULL,
+                        condition TEXT NOT NULL,
+                        buy_cost REAL NOT NULL,
+                        purchase_date TEXT NOT NULL,
+                        quantity_purchased INTEGER NOT NULL DEFAULT 1 CHECK (quantity_purchased > 0),
+                        actual_list_price REAL,
+                        prep_fee_at_purchase REAL NOT NULL,
+                        buyer_order_id TEXT,
+                        source_deal_id INTEGER,
+                        snapshot_list_at REAL,
+                        snapshot_fba_fee REAL,
+                        snapshot_referral_pct REAL,
+                        snapshot_shipping_included INTEGER,
+                        snapshot_estimated_tax REAL,
+                        snapshot_estimated_shipping REAL,
+                        snapshot_prep_fee REAL,
+                        confirmed_at TEXT NOT NULL DEFAULT (datetime('now')),
+                        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+                    )
+                ''')
+                cursor.execute(f"CREATE INDEX idx_confirmed_buys_asin ON {table_name}(asin)")
+                cursor.execute(f"CREATE INDEX idx_confirmed_buys_purchase_date ON {table_name}(purchase_date)")
+                cursor.execute(f"CREATE INDEX idx_confirmed_buys_asin_condition ON {table_name}(asin, condition)")
+                cursor.execute(f"CREATE INDEX idx_confirmed_buys_source_deal_id ON {table_name}(source_deal_id)")
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise
+
+def create_confirmed_buy_units_table_if_not_exists():
+    table_name = 'confirmed_buy_units'
+    logger.info(f"Database check: Ensuring table '{table_name}' at '{DB_PATH}' exists.")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+            if not cursor.fetchone():
+                logger.info(f"Table '{table_name}' not found. Creating it now.")
+                cursor.execute(f'''
+                    CREATE TABLE {table_name} (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        confirmed_buy_id INTEGER NOT NULL REFERENCES confirmed_buys(id) ON DELETE CASCADE,
+                        sku TEXT NOT NULL,
+                        linked_inventory_ledger_id INTEGER REFERENCES inventory_ledger(id) ON DELETE SET NULL,
+                        linked_sales_ledger_id INTEGER REFERENCES sales_ledger(id) ON DELETE SET NULL,
+                        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+                    )
+                ''')
+                cursor.execute(f"CREATE INDEX idx_confirmed_buy_units_confirmed_buy_id ON {table_name}(confirmed_buy_id)")
+                cursor.execute(f"CREATE UNIQUE INDEX idx_confirmed_buy_units_sku ON {table_name}(sku)")
+                cursor.execute(f"CREATE INDEX idx_confirmed_buy_units_inventory_link ON {table_name}(linked_inventory_ledger_id)")
+                cursor.execute(f"CREATE INDEX idx_confirmed_buy_units_sales_link ON {table_name}(linked_sales_ledger_id)")
+                conn.commit()
+                logger.info(f"Successfully created table '{table_name}'.")
+    except sqlite3.Error as e:
+        logger.error(f"Error creating '{table_name}' table: {e}", exc_info=True)
+        raise
+
 def create_inventory_ledger_table_if_not_exists():
     """Ensures the 'inventory_ledger' table exists."""
     table_name = 'inventory_ledger'
