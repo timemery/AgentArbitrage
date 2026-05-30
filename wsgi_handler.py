@@ -2594,6 +2594,8 @@ create_user_restrictions_table_if_not_exists()
 create_user_credentials_table_if_not_exists()
 # Verify/Update Deals schema (Critical for missing columns like Drops)
 create_deals_table_if_not_exists()
+create_confirmed_buys_table_if_not_exists()
+create_confirmed_buy_units_table_if_not_exists()
 
 if __name__ == '__main__':
     app.run(debug=True)

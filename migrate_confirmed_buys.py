@@ -1,7 +1,11 @@
 import sqlite3
 import sys
 import logging
-from keepa_deals.db_utils import get_db_connection
+from keepa_deals.db_utils import (
+    get_db_connection,
+    create_confirmed_buys_table_if_not_exists,
+    create_confirmed_buy_units_table_if_not_exists,
+)
 from keepa_deals.business_calculations import load_settings
 from datetime import datetime
 
@@ -9,6 +13,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def migrate():
+    create_confirmed_buys_table_if_not_exists()
+    create_confirmed_buy_units_table_if_not_exists()
+
     try:
         conn = get_db_connection()
         conn.row_factory = sqlite3.Row
