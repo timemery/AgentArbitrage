@@ -741,7 +741,7 @@ def add_potential_buy():
                     snapshot_fba_fee = _parse_currency_to_float(deal_row['FBA_PickandPack_Fee'])
                     snapshot_referral_pct = _parse_currency_to_float(deal_row['Referral_Fee_Percent'])
                     si_raw = str(deal_row['Shipping_Included']).lower() if deal_row['Shipping_Included'] is not None else 'false'
-                    snapshot_shipping_included = 1.0 if si_raw in ('true', 'yes', '1') else 0.0
+                    snapshot_shipping_included = 1 if si_raw in ("true", "yes", "1") else 0
                 except Exception as parse_e:
                     app.logger.warning(f"Error parsing deal snapshot values for ASIN {asin}: {parse_e}")
 
@@ -781,9 +781,10 @@ def confirm_purchase():
         qty = data.get('quantity')
         sku = data.get('sku')
         purchase_date = data.get('purchase_date')
-        buyer_order_id = data.get('buyer_order_id')  # newly added per spec
+        buyer_order_id = data.get('buyer_order_id')
+        condition = data.get('condition')
 
-        if not ledger_id or not buy_cost or not qty or not sku:
+        if not ledger_id or not buy_cost or not qty or not sku or not condition:
             return jsonify({'error': 'Missing required fields'}), 400
 
         settings = business_load_settings()
@@ -800,13 +801,15 @@ def confirm_purchase():
                 return jsonify({'error': 'Potential buy not found'}), 404
 
             asin = row['asin']
-            # default condition to '1' as inventory_ledger didn't have condition but confirmed_buys needs it
-            condition = '1'
 
             conn.execute("BEGIN TRANSACTION")
 
             try:
                 # 2. Insert into confirmed_buys
+                # Convert snapshot_shipping_included to int (0 or 1) rather than float
+                si_val = row['snapshot_shipping_included']
+                si_int = int(si_val) if si_val is not None else None
+
                 cursor.execute('''
                     INSERT INTO confirmed_buys (
                         asin, condition, buy_cost, purchase_date, quantity_purchased,
@@ -817,7 +820,7 @@ def confirm_purchase():
                 ''', (
                     asin, condition, buy_cost, purchase_date, qty,
                     prep_fee_at_purchase, buyer_order_id, None,
-                    row['snapshot_list_at'], row['snapshot_fba_fee'], row['snapshot_referral_pct'], row['snapshot_shipping_included'],
+                    row['snapshot_list_at'], row['snapshot_fba_fee'], row['snapshot_referral_pct'], si_int,
                     row['snapshot_estimated_tax'], row['snapshot_estimated_shipping'], row['snapshot_prep_fee']
                 ))
 
@@ -852,7 +855,7 @@ def dismiss_potential():
 
         with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
-            cursor.execute("UPDATE inventory_ledger SET status = 'DISMISSED' WHERE id = ?", (ledger_id,))
+            cursor.execute("DELETE FROM inventory_ledger WHERE id = ?", (ledger_id,))
             conn.commit()
 
         return jsonify({'status': 'success'})

@@ -15,6 +15,12 @@ def migrate():
         cursor = conn.cursor()
 
         # Step 1: Identify rows to migrate
+        # Step 0: Clean up DISMISSED tombstones
+        cursor.execute("DELETE FROM inventory_ledger WHERE status = 'DISMISSED' AND source = 'Dashboard'")
+        deleted_tombstones = cursor.rowcount
+        logger.info(f"Cleaned up {deleted_tombstones} DISMISSED tombstones from inventory_ledger.")
+
+        # Step 1: Identify rows to migrate
         cursor.execute("SELECT * FROM inventory_ledger WHERE status = 'PURCHASED' AND source = 'Dashboard'")
         rows_to_migrate = cursor.fetchall()
 
