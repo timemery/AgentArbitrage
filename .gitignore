@@ -28,6 +28,7 @@ db_backups/data_quality_filters.patch
 Dev_Logs/Archive/
 Archive/
 Documentation/Archive/
+Documentation/Business_Documents/Research/
 
 # Cache & state files
 xai_cache.json
