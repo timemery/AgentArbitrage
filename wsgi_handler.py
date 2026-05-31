@@ -510,9 +510,14 @@ def get_confirmed_buys():
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             query = '''
-                SELECT c.*, COALESCE(d.Title, c.title) as Title, d.List_at as deals_list_at
+                SELECT c.*, COALESCE(d.Title, c.title) as Title, d.List_at as deals_list_at, cbu.sku
                 FROM confirmed_buys c
                 LEFT JOIN deals d ON c.asin = d.ASIN
+                LEFT JOIN (
+                    SELECT confirmed_buy_id, MIN(sku) as sku
+                    FROM confirmed_buy_units
+                    GROUP BY confirmed_buy_id
+                ) cbu ON c.id = cbu.confirmed_buy_id
                 ORDER BY c.id DESC
             '''
             cursor.execute(query)
