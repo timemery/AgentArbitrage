@@ -749,6 +749,59 @@ def update_confirmed_buy_cost(item_id):
         return jsonify({'error': str(e)}), 500
 
 
+
+@app.route('/api/tracking/confirmed/<int:item_id>/sku', methods=['PATCH'])
+def update_confirmed_sku(item_id):
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data = request.json
+    sku = data.get('sku')
+
+    if sku is not None:
+        sku = str(sku).strip()
+        if not sku:
+            sku = None
+
+    try:
+        with get_db_connection(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Check if a child row exists
+            cursor.execute("SELECT id FROM confirmed_buy_units WHERE confirmed_buy_id = ?", (item_id,))
+            child_row = cursor.fetchone()
+
+            try:
+                if child_row:
+                    cursor.execute("UPDATE confirmed_buy_units SET sku = ? WHERE confirmed_buy_id = ?", (sku, item_id))
+                elif sku is not None:
+                    cursor.execute("INSERT INTO confirmed_buy_units (confirmed_buy_id, sku) VALUES (?, ?)", (item_id, sku))
+            except sqlite3.IntegrityError:
+                return jsonify({'error': 'SKU is already in use by another unit.'}), 409
+
+            cursor.execute('''
+                SELECT c.*, d.Title as Title, cbu.sku
+                FROM confirmed_buys c
+                LEFT JOIN deals d ON c.asin = d.ASIN
+                LEFT JOIN confirmed_buy_units cbu ON c.id = cbu.confirmed_buy_id
+                WHERE c.id = ?
+            ''', (item_id,))
+
+            r = cursor.fetchone()
+            if not r:
+                return jsonify({'error': 'Item not found'}), 404
+
+            row_dict = dict(r)
+            conn.commit()
+
+            return jsonify({'status': 'success', 'data': row_dict})
+
+    except Exception as e:
+        app.logger.error(f"Error updating confirmed buy sku: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/tracking/confirmed/<int:item_id>/quantity', methods=['PATCH'])
 def update_confirmed_quantity(item_id):
     if not session.get('logged_in'):

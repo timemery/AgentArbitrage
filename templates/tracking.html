@@ -314,6 +314,33 @@
         }
     }
 
+
+    async function updateConfirmedSku(id, inputElement) {
+        const newValue = inputElement.value;
+        const val = newValue.trim() === '' ? null : newValue.trim();
+        try {
+            const response = await fetch(`/api/tracking/confirmed/${id}/sku`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({sku: val})
+            });
+            const res = await response.json();
+            if (response.status === 409) {
+                alert('Error: ' + res.error);
+                fetchConfirmed(); // Refetch to revert to the old value
+            } else if (res.status === 'success') {
+                fetchConfirmed();
+            } else {
+                alert('Error: ' + res.error);
+                fetchConfirmed();
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Update failed');
+            fetchConfirmed();
+        }
+    }
+
     async function updateConfirmedBuyCost(id, inputElement) {
         const newValue = inputElement.value;
         if (newValue.trim() === '') {
@@ -442,7 +469,9 @@ async function updateConfirmedListPrice(id, inputElement) {
                 html += `<tr class="deal-row">
                     <td class="title-cell confirmed-title" data-full-title="${escapeHTML(displayTitle)}"><span>${displayTitle}</span></td>
                     <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
-                    <td>${item.sku ? item.sku : '—'}</td>
+                    <td>
+                        <input type="text" class="tidy-input" style="width: 120px;" value="${item.sku || ''}" onblur="updateConfirmedSku(${item.id}, this)" placeholder="—">
+                    </td>
                     <td>${generateConditionDropdown(item.id, item.condition)}</td>
                     <td>
                         $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${buyCostValue}" onblur="updateConfirmedBuyCost(${item.id}, this)">
