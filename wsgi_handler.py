@@ -537,9 +537,9 @@ def get_confirmed_buys():
                 # Derive recommended_list_price: prioritize deals.List_at, fallback to snapshot_list_at
                 recommended_list_price = None
                 if row_dict.get('deals_list_at') is not None:
-                    recommended_list_price = row_dict['deals_list_at']
+                    recommended_list_price = _parse_currency_to_float(row_dict['deals_list_at'])
                 elif row_dict.get('snapshot_list_at') is not None:
-                    recommended_list_price = row_dict['snapshot_list_at']
+                    recommended_list_price = _parse_currency_to_float(row_dict['snapshot_list_at'])
                 
                 row_dict['recommended_list_price'] = recommended_list_price
                 

@@ -106,7 +106,7 @@
                 <label class="label-block">Amazon.com Purchase Order #</label>
                 <input type="text" id="confirm-buyer-order" class="styled-text-field input-full-width" placeholder="Optional">
             </div>
-            <button type="submit" class="tidy-button btn-success-style">Confirm & Move to Inventory</button>
+            <button type="submit" class="tidy-button btn-success-style">Confirm Purchase</button>
         </form>
     </div>
 </div>
@@ -442,7 +442,7 @@ async function updateConfirmedListPrice(id, inputElement) {
                 html += `<tr class="deal-row">
                     <td class="title-cell confirmed-title" data-full-title="${escapeHTML(displayTitle)}"><span>${displayTitle}</span></td>
                     <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
-                    <td>${item.sku ? `<a href="${skuSearchUrl(item.sku)}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.sku}</a>` : '—'}</td>
+                    <td>${item.sku ? item.sku : '—'}</td>
                     <td>${generateConditionDropdown(item.id, item.condition)}</td>
                     <td>
                         $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${buyCostValue}" onblur="updateConfirmedBuyCost(${item.id}, this)">
@@ -817,6 +817,7 @@ async function updateConfirmedListPrice(id, inputElement) {
                 closeModal();
                 fetchPotential(); // Refresh tables
                 fetchActiveInventory(activePage);
+                fetchConfirmed();
             } else {
                 alert('Error: ' + res.error);
             }
