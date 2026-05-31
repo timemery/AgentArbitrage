@@ -106,7 +106,7 @@
                 <label class="label-block">Amazon.com Purchase Order #</label>
                 <input type="text" id="confirm-buyer-order" class="styled-text-field input-full-width" placeholder="Optional">
             </div>
-            <button type="submit" class="tidy-button btn-success-style">Confirm & Move to Inventory</button>
+            <button type="submit" class="tidy-button btn-success-style">Confirm Purchase</button>
         </form>
     </div>
 </div>
@@ -411,6 +411,7 @@ async function updateConfirmedListPrice(id, inputElement) {
                 data = data.filter(item => {
                     return (item.asin && item.asin.toLowerCase().includes(searchQ)) ||
                            (item.Title && item.Title.toLowerCase().includes(searchQ)) ||
+                           (item.sku && item.sku.toLowerCase().includes(searchQ)) ||
                            (item.buyer_order_id && item.buyer_order_id.toLowerCase().includes(searchQ));
                 });
             }
@@ -421,7 +422,7 @@ async function updateConfirmedListPrice(id, inputElement) {
             }
             
             let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row">';
-            html += '<th>Title</th><th>ASIN</th><th>Condition</th><th>Buy Cost</th><th>Minimum List Price</th><th>Actual List Price</th><th>Purchase Date</th><th>Qty</th><th>Buyer Order #</th>';
+            html += '<th>Title</th><th>ASIN</th><th>SKU</th><th>Condition</th><th>Buy Cost</th><th>Minimum List Price</th><th>Actual List Price</th><th>Purchase Date</th><th>Qty</th><th>Buyer Order #</th>';
             html += '</tr></thead><tbody>';
             
             data.forEach(item => {
@@ -441,6 +442,7 @@ async function updateConfirmedListPrice(id, inputElement) {
                 html += `<tr class="deal-row">
                     <td class="title-cell confirmed-title" data-full-title="${escapeHTML(displayTitle)}"><span>${displayTitle}</span></td>
                     <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
+                    <td>${item.sku ? item.sku : '—'}</td>
                     <td>${generateConditionDropdown(item.id, item.condition)}</td>
                     <td>
                         $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${buyCostValue}" onblur="updateConfirmedBuyCost(${item.id}, this)">
@@ -815,6 +817,7 @@ async function updateConfirmedListPrice(id, inputElement) {
                 closeModal();
                 fetchPotential(); // Refresh tables
                 fetchActiveInventory(activePage);
+                fetchConfirmed();
             } else {
                 alert('Error: ' + res.error);
             }
