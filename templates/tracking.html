@@ -292,7 +292,87 @@
         }
     }
     
-    async function updateConfirmedListPrice(id, inputElement) {
+
+    async function updateConfirmedBuyerOrderId(id, inputElement) {
+        const newValue = inputElement.value;
+        const val = newValue.trim() === '' ? null : newValue.trim();
+        try {
+            const response = await fetch(`/api/tracking/confirmed/${id}/buyer-order-id`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({buyer_order_id: val})
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                fetchConfirmed();
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Update failed');
+        }
+    }
+
+    async function updateConfirmedBuyCost(id, inputElement) {
+        const newValue = inputElement.value;
+        if (newValue.trim() === '') {
+            alert('Buy cost cannot be empty');
+            return;
+        }
+        const val = parseFloat(newValue);
+        if (isNaN(val) || val <= 0) {
+            alert('Buy cost must be a positive number');
+            return;
+        }
+        try {
+            const response = await fetch(`/api/tracking/confirmed/${id}/buy-cost`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({buy_cost: val})
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                fetchConfirmed();
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Update failed');
+        }
+    }
+
+    async function updateConfirmedQuantity(id, inputElement) {
+        const newValue = inputElement.value;
+        if (newValue.trim() === '') {
+            alert('Quantity cannot be empty');
+            return;
+        }
+        const val = parseInt(newValue, 10);
+        if (isNaN(val) || val <= 0) {
+            alert('Quantity must be a positive integer');
+            return;
+        }
+        try {
+            const response = await fetch(`/api/tracking/confirmed/${id}/quantity`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({quantity_purchased: val})
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                fetchConfirmed();
+            } else {
+                alert('Error: ' + res.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Update failed');
+        }
+    }
+
+async function updateConfirmedListPrice(id, inputElement) {
         const newValue = inputElement.value;
         const val = newValue.trim() === '' ? null : parseFloat(newValue);
         try {
@@ -345,7 +425,7 @@
             html += '</tr></thead><tbody>';
             
             data.forEach(item => {
-                const buyCost = item.buy_cost !== null && item.buy_cost !== undefined ? `$${parseFloat(item.buy_cost).toFixed(2)}` : '—';
+                const buyCostValue = item.buy_cost !== null && item.buy_cost !== undefined ? parseFloat(item.buy_cost).toFixed(2) : '';
                 const minPrice = item.minimum_list_price !== null && item.minimum_list_price !== undefined ? `$${parseFloat(item.minimum_list_price).toFixed(2)}` : '—';
                 
                 let actualPriceValue = '';
@@ -362,14 +442,20 @@
                     <td class="title-cell confirmed-title" data-full-title="${escapeHTML(displayTitle)}"><span>${displayTitle}</span></td>
                     <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
                     <td>${generateConditionDropdown(item.id, item.condition)}</td>
-                    <td>${buyCost}</td>
+                    <td>
+                        $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${buyCostValue}" onblur="updateConfirmedBuyCost(${item.id}, this)">
+                    </td>
                     <td>${minPrice}</td>
                     <td>
                         $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${actualPriceValue}" onblur="updateConfirmedListPrice(${item.id}, this)">
                     </td>
                     <td>${purchaseDate}</td>
-                    <td>${item.quantity_purchased}</td>
-                    <td>${item.buyer_order_id || '—'}</td>
+                    <td>
+                        <input type="number" step="1" class="tidy-input" style="width: 60px;" value="${item.quantity_purchased}" onblur="updateConfirmedQuantity(${item.id}, this)">
+                    </td>
+                    <td>
+                        <input type="text" class="tidy-input" style="width: 120px;" value="${item.buyer_order_id || ''}" onblur="updateConfirmedBuyerOrderId(${item.id}, this)" placeholder="—">
+                    </td>
                 </tr>`;
             });
             
