@@ -14,8 +14,9 @@ venv/
 *.log
 celery.log
 app.log
-celery_log.tmp
+celery.log.tmp
 celerybeat-schedule
+spike_log.txt
 
 # Databases & backups
 deals.db*
@@ -24,6 +25,9 @@ temp-*.rdb
 db_backups/
 db_backups/*.bak
 db_backups/data_quality_filters.patch
+Dev_Logs/Archive/
+Archive/
+Documentation/Archive/
 
 # Cache & state files
 xai_cache.json
@@ -37,7 +41,7 @@ recalc_status.json
 scan_status.json
 
 # Diagnostics & notes
-Diagnostics/health_report.json
+Diagnostics/
 My_Notes/
 
 # Temporary / migration scripts
