@@ -341,23 +341,28 @@
             }
             
             let html = '<div class="table-container"><table class="deal-table" style="width:100%"><thead><tr class="column-header-row">';
-            html += '<th>Title</th><th>ASIN</th><th>Condition</th><th>Buy Cost</th><th>Prep Fee</th><th>Minimum List Price</th><th>Actual List Price</th><th>Purchase Date</th><th>Qty</th><th>Buyer Order #</th>';
+            html += '<th>Title</th><th>ASIN</th><th>Condition</th><th>Buy Cost</th><th>Minimum List Price</th><th>Actual List Price</th><th>Purchase Date</th><th>Qty</th><th>Buyer Order #</th>';
             html += '</tr></thead><tbody>';
             
             data.forEach(item => {
                 const buyCost = item.buy_cost !== null && item.buy_cost !== undefined ? `$${parseFloat(item.buy_cost).toFixed(2)}` : '—';
-                const prepFee = item.prep_fee_at_purchase !== null && item.prep_fee_at_purchase !== undefined ? `$${parseFloat(item.prep_fee_at_purchase).toFixed(2)}` : '—';
                 const minPrice = item.minimum_list_price !== null && item.minimum_list_price !== undefined ? `$${parseFloat(item.minimum_list_price).toFixed(2)}` : '—';
-                const actualPriceValue = item.actual_list_price !== null && item.actual_list_price !== undefined ? parseFloat(item.actual_list_price).toFixed(2) : '';
+                
+                let actualPriceValue = '';
+                if (item.actual_list_price !== null && item.actual_list_price !== undefined) {
+                    actualPriceValue = parseFloat(item.actual_list_price).toFixed(2);
+                } else if (item.recommended_list_price !== null && item.recommended_list_price !== undefined) {
+                    actualPriceValue = parseFloat(item.recommended_list_price).toFixed(2);
+                }
+                
                 const purchaseDate = item.purchase_date ? new Date(item.purchase_date).toLocaleDateString() : '—';
                 const displayTitle = item.Title ? item.Title : (item.asin || '—');
                 
                 html += `<tr class="deal-row">
-                    <td class="title-cell" data-full-title="${escapeHTML(displayTitle)}"><span>${displayTitle}</span></td>
+                    <td class="title-cell confirmed-title" data-full-title="${escapeHTML(displayTitle)}"><span>${displayTitle}</span></td>
                     <td>${item.asin ? `<a href="https://www.amazon.com/dp/${item.asin}" target="_blank" rel="noopener noreferrer" class="tracking-link">${item.asin}</a>` : '—'}</td>
                     <td>${generateConditionDropdown(item.id, item.condition)}</td>
                     <td>${buyCost}</td>
-                    <td>${prepFee}</td>
                     <td>${minPrice}</td>
                     <td>
                         $ <input type="number" step="0.01" class="tidy-input" style="width: 80px;" value="${actualPriceValue}" onblur="updateConfirmedListPrice(${item.id}, this)">

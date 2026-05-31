@@ -512,6 +512,7 @@ def create_confirmed_buys_table_if_not_exists():
                     CREATE TABLE {table_name} (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         asin TEXT NOT NULL,
+                        title TEXT,
                         condition TEXT NOT NULL,
                         buy_cost REAL NOT NULL,
                         purchase_date TEXT NOT NULL,

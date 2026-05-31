@@ -510,7 +510,7 @@ def get_confirmed_buys():
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             query = '''
-                SELECT c.*, d.Title as Title
+                SELECT c.*, COALESCE(d.Title, c.title) as Title, d.List_at as deals_list_at
                 FROM confirmed_buys c
                 LEFT JOIN deals d ON c.asin = d.ASIN
                 ORDER BY c.id DESC
@@ -528,6 +528,20 @@ def get_confirmed_buys():
                 minimum_list_price = (buy_cost + prep_fee) * (1.0 + (default_markup / 100.0))
                 
                 row_dict['minimum_list_price'] = minimum_list_price
+                
+                # Derive recommended_list_price: prioritize deals.List_at, fallback to snapshot_list_at
+                recommended_list_price = None
+                if row_dict.get('deals_list_at') is not None:
+                    recommended_list_price = row_dict['deals_list_at']
+                elif row_dict.get('snapshot_list_at') is not None:
+                    recommended_list_price = row_dict['snapshot_list_at']
+                
+                row_dict['recommended_list_price'] = recommended_list_price
+                
+                # remove the join column to avoid clutter
+                if 'deals_list_at' in row_dict:
+                    del row_dict['deals_list_at']
+                    
                 data.append(row_dict)
                 
             return jsonify({'data': data})
@@ -951,13 +965,13 @@ def confirm_purchase():
 
                 cursor.execute('''
                     INSERT INTO confirmed_buys (
-                        asin, condition, buy_cost, purchase_date, quantity_purchased,
+                        asin, title, condition, buy_cost, purchase_date, quantity_purchased,
                         prep_fee_at_purchase, buyer_order_id, source_deal_id,
                         snapshot_list_at, snapshot_fba_fee, snapshot_referral_pct, snapshot_shipping_included,
                         snapshot_estimated_tax, snapshot_estimated_shipping, snapshot_prep_fee
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
-                    asin, condition, buy_cost, purchase_date, qty,
+                    asin, row['title'], condition, buy_cost, purchase_date, qty,
                     prep_fee_at_purchase, buyer_order_id, None,
                     row['snapshot_list_at'], row['snapshot_fba_fee'], row['snapshot_referral_pct'], si_int,
                     row['snapshot_estimated_tax'], row['snapshot_estimated_shipping'], row['snapshot_prep_fee']
