@@ -40,9 +40,16 @@ $VENV_PYTHON Diagnostics/force_pause.py
 echo "[3/5] Starting services..."
 sudo ./start_celery.sh
 
-# Step 4: Reload Web Server
-# Touches the WSGI entry point to force Apache/Flask reload.
-echo "[4/5] Reloading Web Server..."
+# Step 4: Reload Web Server and Apply Apache Configuration
+echo "[4/5] Reloading Web Server & Applying Apache Configuration..."
+if [ -d "/etc/apache2/sites-available" ]; then
+    echo "Copying agentarbitrage.conf to /etc/apache2/sites-available/..."
+    sudo cp agentarbitrage.conf /etc/apache2/sites-available/agentarbitrage.conf
+    echo "Enabling Apache site configuration..."
+    sudo a2ensite agentarbitrage.conf
+fi
+echo "Restarting Apache web server..."
+sudo systemctl restart apache2 || sudo service apache2 restart || echo "Warning: Could not restart Apache service."
 touch wsgi.py
 
 # Step 5: Trigger Backfill (Removed)
