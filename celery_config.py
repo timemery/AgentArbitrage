@@ -30,7 +30,7 @@ accept_content = ['json']
 beat_schedule = {
     'smart-ingestor-run': {
         'task': 'keepa_deals.smart_ingestor.run',
-        'schedule': crontab(minute='*'),
+        'schedule': crontab(minute='*/5'),
     },
     'janitor-clean-stale-deals': {
         'task': 'keepa_deals.janitor.clean_stale_deals',

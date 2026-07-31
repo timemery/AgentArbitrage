@@ -2941,13 +2941,23 @@ def mentor_chat():
         app.logger.error(f"Error in mentor chat endpoint: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
-# Ensure tables exist on module load (for WSGI environment)
-create_user_restrictions_table_if_not_exists()
-create_user_credentials_table_if_not_exists()
-# Verify/Update Deals schema (Critical for missing columns like Drops)
-create_deals_table_if_not_exists()
-create_confirmed_buys_table_if_not_exists()
-create_confirmed_buy_units_table_if_not_exists()
+_db_initialized = False
+
+@app.before_request
+def initialize_database_tables():
+    global _db_initialized
+    if not _db_initialized:
+        app.logger.info("First request received. Initializing database tables...")
+        try:
+            create_user_restrictions_table_if_not_exists()
+            create_user_credentials_table_if_not_exists()
+            create_deals_table_if_not_exists()
+            create_confirmed_buys_table_if_not_exists()
+            create_confirmed_buy_units_table_if_not_exists()
+            _db_initialized = True
+            app.logger.info("Database tables initialized successfully.")
+        except Exception as e:
+            app.logger.error(f"Error during database initialization: {e}", exc_info=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

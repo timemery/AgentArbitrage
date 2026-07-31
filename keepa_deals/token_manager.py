@@ -22,6 +22,7 @@ class TokenManager:
     REDIS_KEY_RATE = "keepa_refill_rate"
     REDIS_KEY_RECHARGE_MODE = "keepa_recharge_mode_active"
     REDIS_KEY_TIMESTAMP = "keepa_token_timestamp"
+    REDIS_KEY_LAST_SYNC_TIMESTAMP = "keepa_last_sync_timestamp"
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -90,9 +91,11 @@ class TokenManager:
             # 40 tokens takes ~8 mins to refill at 5/min.
             # This allows for 2 full item analyses (22 tokens each) using batch size 1.
             self.BURST_THRESHOLD = 40
-            # logger.info(f"Low Refill Rate ({self.REFILL_RATE_PER_MINUTE}/min) detected. Adjusted Burst Threshold to {self.BURST_THRESHOLD} to improve responsiveness.")
+        elif self.REFILL_RATE_PER_MINUTE < 20:
+            self.BURST_THRESHOLD = 100
         else:
-            self.BURST_THRESHOLD = 280
+            # Scale target more granularly for high plans to prevent excessive recharge delays
+            self.BURST_THRESHOLD = min(150, self.max_tokens)
 
     def _get_shared_tokens(self):
         if not self.redis_client:
@@ -496,8 +499,21 @@ class TokenManager:
         """
         # Throttling Logic
         now = time.time()
-        if not force and (now - self.last_sync_request_timestamp) < 60:
-             # logger.debug("Skipping sync_tokens (throttled).")
+        last_sync = 0.0
+
+        if self.redis_client:
+            try:
+                val = self.redis_client.get(self.REDIS_KEY_LAST_SYNC_TIMESTAMP)
+                if val is not None:
+                    last_sync = float(val)
+            except Exception as e:
+                logger.error(f"Redis get last sync error: {e}")
+        else:
+            last_sync = self.last_sync_request_timestamp
+
+        throttle_limit = 60 if not force else 300
+        if last_sync > 0 and (now - last_sync) < throttle_limit:
+             logger.info(f"Skipping sync_tokens (throttled, force={force}, elapsed={now - last_sync:.1f}s).")
              return
 
         from .keepa_api import get_token_status
@@ -505,6 +521,11 @@ class TokenManager:
 
         # Update timestamp regardless of success to prevent spamming on failure
         self.last_sync_request_timestamp = time.time()
+        if self.redis_client:
+            try:
+                self.redis_client.set(self.REDIS_KEY_LAST_SYNC_TIMESTAMP, str(self.last_sync_request_timestamp))
+            except Exception as e:
+                logger.error(f"Redis set last sync error: {e}")
 
         if status_data and 'tokensLeft' in status_data:
             refill_rate = status_data.get('refillRate')
