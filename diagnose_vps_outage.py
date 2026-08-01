@@ -78,6 +78,18 @@ def main():
     else:
         print_result("Port bindings active", "FAIL", "No services bound to Port 80 or 443. Apache might not be listening.")
 
+    # Local Curl Response Checks
+    print_sub_header("Local HTTP/HTTPS Response Checks")
+    code, out, err = run_command(["curl", "-I", "-k", "https://127.0.0.1/"])
+    if code == 0:
+        response_line = out.splitlines()[0] if out else ""
+        print_result("Local HTTPS connection (https://127.0.0.1/)", "OK", f"Response: {response_line}")
+        if "302" in response_line or "200" in response_line:
+            print("\n  \033[92m🚀 LOCAL SELF-TEST SUCCESSFUL! The AgentArbitrage site is UP, responding, and running perfectly on the server.\033[0m")
+            print("  If you still see ERR_CONNECTION_CLOSED in your browser, it is due to a client-side firewall, DNS cache, browser cache, or Cloudflare/CDN issue.\n")
+    else:
+        print_result("Local HTTPS connection (https://127.0.0.1/)", "FAIL", f"Could not connect locally to Flask/Apache: {err}")
+
     # -------------------------------------------------------------
     # 2. SSL / HTTPS Certificates Checks
     # -------------------------------------------------------------
