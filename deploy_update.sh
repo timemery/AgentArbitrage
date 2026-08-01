@@ -45,6 +45,13 @@ echo "[4/5] Reloading Web Server & Applying Apache Configuration..."
 if [ -d "/etc/apache2/sites-available" ]; then
     echo "Copying agentarbitrage.conf to /etc/apache2/sites-available/..."
     sudo cp agentarbitrage.conf /etc/apache2/sites-available/agentarbitrage.conf
+
+    # If sites-enabled/agentarbitrage.conf is a real file (not a symlink), remove it to allow proper linking
+    if [ -f "/etc/apache2/sites-enabled/agentarbitrage.conf" ] && [ ! -L "/etc/apache2/sites-enabled/agentarbitrage.conf" ]; then
+        echo "Removing duplicate real file in /etc/apache2/sites-enabled/ to allow proper symbolic linking..."
+        sudo rm -f /etc/apache2/sites-enabled/agentarbitrage.conf
+    fi
+
     echo "Enabling Apache site configuration..."
     sudo a2ensite agentarbitrage.conf
 fi
