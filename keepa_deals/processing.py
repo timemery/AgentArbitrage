@@ -26,10 +26,18 @@ except Exception as e:
     HEADERS = []
 
 def _parse_price(value_str):
-    if isinstance(value_str, (int, float)): return float(value_str)
-    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']: return 0.0
-    try: return float(value_str.strip().replace('$', '').replace(',', ''))
-    except ValueError: return 0.0
+    if value_str is None:
+        return 0.0
+    if isinstance(value_str, (int, float)):
+        return float(value_str)
+    if not isinstance(value_str, str) or value_str.strip() in ['-', 'N/A', '']:
+        return 0.0
+    cleaned = value_str.strip().replace('$', '').replace(',', '')
+    try:
+        return float(cleaned)
+    except (ValueError, TypeError) as e:
+        logger.warning(f"[_parse_price] Failed to parse numeric value from '{value_str}': {e}. Defaulting to 0.0")
+        return 0.0
 
 def _parse_percent(value_str):
     if isinstance(value_str, (int, float)): return float(value_str)
@@ -130,9 +138,9 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             return None
         row_data.update(sales_perf)
 
-        # Ensure Expected Trough Price is formatted if not already
+        # Ensure Expected Trough Price is numeric float
         if 'expected_trough_price_cents' in sales_perf and sales_perf['expected_trough_price_cents'] > 0:
-             row_data['Expected Trough Price'] = f"${sales_perf['expected_trough_price_cents']/100:.2f}"
+             row_data['Expected Trough Price'] = round(sales_perf['expected_trough_price_cents'] / 100.0, 2)
         else:
              row_data['Expected Trough Price'] = None
 
@@ -174,6 +182,7 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
 
         row_data.update({
             'All-in Cost': all_in_cost,
+            'Total_AMZ_fees': round(total_amz_fees, 2),
             'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
             'Min. Listing Price': min_listing
         })
@@ -491,6 +500,7 @@ def _process_lightweight_update(existing_row, product_data):
 
         row_data.update({
             'All-in Cost': all_in_cost,
+            'Total_AMZ_fees': round(total_amz_fees, 2),
             'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
             'Min. Listing Price': min_listing
         })

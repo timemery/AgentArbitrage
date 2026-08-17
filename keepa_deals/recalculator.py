@@ -51,12 +51,14 @@ def recalculate_deals():
             "ASIN": "ASIN",
             "List at": "List_at",
             "Price Now": "Now",
-            "FBA Pick&Pack Fee": "FBA_PickPack_Fee",
+            "FBA Pick&Pack Fee": "FBA_PickandPack_Fee",
             "Referral Fee %": "Referral_Fee_Percent",
             "Shipping Included": "Shipping_Included",
             "Title": "Title",
             "Categories - Sub": "Categories_Sub",
-            "Manufacturer": "Manufacturer"
+            "Manufacturer": "Manufacturer",
+            "Peak Season": "Peak_Season",
+            "Trough Season": "Trough_Season"
         }
 
         cursor.execute("PRAGMA table_info(deals)")
@@ -97,30 +99,34 @@ def recalculate_deals():
 
                 if list_at_price > 0 and now_price > 0:
                     # Handle missing or invalid fee data using safe defaults
-                    fba_fee_raw = deal_data.get('FBA_PickPack_Fee')
+                    fba_fee_raw = deal_data.get('FBA_PickandPack_Fee')
                     try:
                         if fba_fee_raw in (None, 'None', '', 0, '0', '0.0'):
-                            # Default to $5.50 if missing (DB stores dollars, processing converts cents->dollars)
+                            logger.warning(f"ASIN {deal_data['ASIN']}: FBA_PickandPack_Fee is missing ({fba_fee_raw}). Defaulting to $5.50.")
                             fba_fee = 5.50
                         else:
                             fba_fee = float(str(fba_fee_raw).replace(',', ''))
 
                         if fba_fee < 0:
+                            logger.warning(f"ASIN {deal_data['ASIN']}: FBA_PickandPack_Fee is negative ({fba_fee_raw}). Defaulting to $5.50.")
                             fba_fee = 5.50
                     except (ValueError, TypeError):
+                        logger.warning(f"ASIN {deal_data['ASIN']}: Failed to parse FBA_PickandPack_Fee ({fba_fee_raw}). Defaulting to $5.50.")
                         fba_fee = 5.50
 
                     ref_fee_raw = deal_data.get('Referral_Fee_Percent')
                     try:
                         if ref_fee_raw in (None, 'None', '', 0, '0', '0.0'):
-                            # Default to 15.0% if missing
+                            logger.warning(f"ASIN {deal_data['ASIN']}: Referral_Fee_Percent is missing ({ref_fee_raw}). Defaulting to 15.0%.")
                             ref_fee = 15.0
                         else:
                             ref_fee = float(str(ref_fee_raw).replace('%', ''))
 
                         if ref_fee < 0:
+                            logger.warning(f"ASIN {deal_data['ASIN']}: Referral_Fee_Percent is negative ({ref_fee_raw}). Defaulting to 15.0%.")
                             ref_fee = 15.0
                     except (ValueError, TypeError):
+                        logger.warning(f"ASIN {deal_data['ASIN']}: Failed to parse Referral_Fee_Percent ({ref_fee_raw}). Defaulting to 15.0%.")
                         ref_fee = 15.0
 
                     shipping_included = str(deal_data.get('Shipping_Included', 'no')).lower() == 'yes'
@@ -135,15 +141,33 @@ def recalculate_deals():
                     profit_margin = calculate_profit_and_margin(list_at_price, all_cost, total_amz_fees)
 
                     row_updates.update({
-                        'All_in_Cost': all_cost,
-                        'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
-                        'Min_Listing_Price': calculate_min_listing_price(all_cost, fba_fee, ref_fee, business_settings)
+                        'All_in_Cost': round(all_cost, 2),
+                        'Total_AMZ_fees': round(total_amz_fees, 2),
+                        'Profit': round(profit_margin['profit'], 2),
+                        'Margin': round(profit_margin['margin'], 2),
+                        'Min_Listing_Price': round(calculate_min_listing_price(all_cost, fba_fee, ref_fee, business_settings), 2) if isinstance(calculate_min_listing_price(all_cost, fba_fee, ref_fee, business_settings), (int, float)) else calculate_min_listing_price(all_cost, fba_fee, ref_fee, business_settings)
+                    })
+                else:
+                    # Rows failing List_at > 0 and now_price > 0: explicitly set Profit and Margin to NULL
+                    row_updates.update({
+                        'Profit': None,
+                        'Margin': None,
+                        'Total_AMZ_fees': None
                     })
             except (ValueError, TypeError, KeyError) as e:
                  logger.error(f"Recalc (Biz Calcs): Error for ASIN {deal_data['ASIN']}. Error: {e}", exc_info=True)
 
             try:
-                detailed_season = classify_seasonality(deal_data.get('Title', ''), deal_data.get('Categories_Sub', ''), deal_data.get('Manufacturer', ''), xai_api_key=XAI_API_KEY)
+                peak_s = deal_data.get('Peak_Season', '-')
+                trough_s = deal_data.get('Trough_Season', '-')
+                detailed_season = classify_seasonality(
+                    deal_data.get('Title', ''),
+                    deal_data.get('Categories_Sub', ''),
+                    deal_data.get('Manufacturer', ''),
+                    peak_s,
+                    trough_s,
+                    xai_api_key=XAI_API_KEY
+                )
                 sells_period = get_sells_period(detailed_season)
                 row_updates['Detailed_Seasonality'] = detailed_season # Keep "Year-round" instead of "None"
                 row_updates['Sells'] = sells_period

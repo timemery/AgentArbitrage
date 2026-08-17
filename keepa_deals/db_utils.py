@@ -147,7 +147,7 @@ def create_deals_table_if_not_exists():
                 headers = json.load(f)
 
             explicit_real_types = [
-                "Price", "Cost", "Fee", "Profit", "Margin", "List at"
+                "Price", "Cost", "Fee", "Fees", "Profit", "Margin", "List at", "Total AMZ fees", "Total_AMZ_fees"
             ]
 
             for header in headers:
@@ -155,7 +155,7 @@ def create_deals_table_if_not_exists():
                 if sanitized_header not in existing_columns:
                     # Determine type (Logic mirrored from recreate_deals_table)
                     col_type = 'TEXT' # Default
-                    if any(keyword in header for keyword in explicit_real_types):
+                    if any(keyword.lower() in header.lower() for keyword in explicit_real_types):
                         col_type = 'REAL'
                     elif "Rank" in header or "Count" in header or "Drops" in header:
                         col_type = 'INTEGER'
@@ -234,7 +234,7 @@ def recreate_deals_table():
             # --- Define explicit REAL types for financial columns ---
             # This is critical for correct sorting and display in the UI.
             explicit_real_types = [
-                "Price", "Cost", "Fee", "Profit", "Margin", "List at"
+                "Price", "Cost", "Fee", "Fees", "Profit", "Margin", "List at", "Total AMZ fees", "Total_AMZ_fees"
             ]
 
             cols_sql = []
@@ -243,7 +243,7 @@ def recreate_deals_table():
 
                 # Determine data type with more robust rules
                 col_type = 'TEXT' # Default
-                if any(keyword in header for keyword in explicit_real_types):
+                if any(keyword.lower() in header.lower() for keyword in explicit_real_types):
                     col_type = 'REAL'
                 elif "Rank" in header or "Count" in header or "Drops" in header:
                     col_type = 'INTEGER'
