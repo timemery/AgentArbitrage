@@ -84,18 +84,19 @@ class TokenManager:
     def _adjust_burst_threshold(self):
         """
         Dynamically adjusts the Burst Threshold based on refill rate.
-        For low rates (<10/min), waiting for 280 tokens creates a perception of 'stalling' (50+ min wait).
-        We lower it to improve responsiveness while still allowing efficient batch processing.
+        For higher rates, a modest burst threshold (40-50 tokens) prevents excessive
+        recharge delays while providing ample buffer for batch processing.
         """
         if self.REFILL_RATE_PER_MINUTE < 10:
             # 40 tokens takes ~8 mins to refill at 5/min.
             # This allows for 2 full item analyses (22 tokens each) using batch size 1.
             self.BURST_THRESHOLD = 40
         elif self.REFILL_RATE_PER_MINUTE < 20:
-            self.BURST_THRESHOLD = 100
+            self.BURST_THRESHOLD = 40
         else:
-            # Scale target more granularly for high plans to prevent excessive recharge delays
-            self.BURST_THRESHOLD = min(150, self.max_tokens)
+            # Cap burst threshold to 50 tokens max to allow frequent batch processing
+            # and prevent worker livelock when balance is positive (e.g. 100+ tokens).
+            self.BURST_THRESHOLD = 50
 
     def _get_shared_tokens(self):
         if not self.redis_client:
@@ -257,10 +258,9 @@ class TokenManager:
                         self.redis_client.delete("keepa_recharge_start_time")
                         # Proceed with request
                     else:
-                        # Check if we have reached the burst threshold
-                        # Note: We use the local token estimate (sync happening in wait loop)
-                        if self.tokens >= self.BURST_THRESHOLD:
-                            logger.info(f"Burst threshold reached ({self.tokens:.2f} >= {self.BURST_THRESHOLD}). Exiting Recharge Mode.")
+                        # Check if we have reached the burst threshold or have an ample buffer for low-cost calls
+                        if self.tokens >= self.BURST_THRESHOLD or (cost_int <= 10 and self.tokens >= 20):
+                            logger.info(f"Burst/Buffer threshold reached ({self.tokens:.2f}). Exiting Recharge Mode.")
                             self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
                             self.redis_client.delete("keepa_recharge_start_time")
                         else:
@@ -283,8 +283,8 @@ class TokenManager:
                                 self.sync_tokens(force=True)
 
                                 # Check again after sync
-                                if self.tokens >= self.BURST_THRESHOLD:
-                                    logger.info(f"Burst threshold reached after Force Sync ({self.tokens:.2f} >= {self.BURST_THRESHOLD}). Exiting Recharge Mode.")
+                                if self.tokens >= self.BURST_THRESHOLD or (cost_int <= 10 and self.tokens >= 20):
+                                    logger.info(f"Burst threshold reached after Force Sync ({self.tokens:.2f}). Exiting Recharge Mode.")
                                     self.redis_client.delete(self.REDIS_KEY_RECHARGE_MODE)
                                     self.redis_client.delete("keepa_recharge_start_time")
                                     continue
