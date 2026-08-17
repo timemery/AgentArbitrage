@@ -56,7 +56,9 @@ def recalculate_deals():
             "Shipping Included": "Shipping_Included",
             "Title": "Title",
             "Categories - Sub": "Categories_Sub",
-            "Manufacturer": "Manufacturer"
+            "Manufacturer": "Manufacturer",
+            "Peak Season": "Peak_Season",
+            "Trough Season": "Trough_Season"
         }
 
         cursor.execute("PRAGMA table_info(deals)")
@@ -156,7 +158,16 @@ def recalculate_deals():
                  logger.error(f"Recalc (Biz Calcs): Error for ASIN {deal_data['ASIN']}. Error: {e}", exc_info=True)
 
             try:
-                detailed_season = classify_seasonality(deal_data.get('Title', ''), deal_data.get('Categories_Sub', ''), deal_data.get('Manufacturer', ''), xai_api_key=XAI_API_KEY)
+                peak_s = deal_data.get('Peak_Season', '-')
+                trough_s = deal_data.get('Trough_Season', '-')
+                detailed_season = classify_seasonality(
+                    deal_data.get('Title', ''),
+                    deal_data.get('Categories_Sub', ''),
+                    deal_data.get('Manufacturer', ''),
+                    peak_s,
+                    trough_s,
+                    xai_api_key=XAI_API_KEY
+                )
                 sells_period = get_sells_period(detailed_season)
                 row_updates['Detailed_Seasonality'] = detailed_season # Keep "Year-round" instead of "None"
                 row_updates['Sells'] = sells_period
