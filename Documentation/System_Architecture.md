@@ -41,13 +41,13 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 
 ### A. Smart Ingestor v3.0 (The Unified Engine)
 *   **Purpose:** The single, unified entry point for all deal ingestion. Replaces the legacy `backfiller` and `update_recent_deals` tasks.
-*   **Trigger:** Scheduled every minute via Celery Beat (`keepa_deals.smart_ingestor.run`).
+*   **Trigger:** Scheduled every 5 minutes via Celery Beat (`keepa_deals.smart_ingestor.run`, configured as `crontab(minute='*/5')`).
 *   **Mechanism:**
     1.  **Watermark Check:** Loads the `watermark_iso` timestamp from `system_state`. If missing or corrupt, defaults to 24 hours ago.
     2.  **Delta Fetch:** Queries Keepa for all products updated since the watermark.
     3.  **Decoupled Batching Strategy:**
         *   **Stage 0.5: Stale Deal Rescue:** Before the main sync, the system proactively queries for deals older than **48 hours**.
-            *   **Action:** Fetches fresh lightweight stats for up to **20** such deals per minute.
+            *   **Action:** Fetches fresh lightweight stats for up to **20** such deals per run.
             *   **Purpose:** Prevents valid, stable deals (which may not appear in Keepa's delta feed) from expiring and being deleted by the Janitor after 72 hours.
         *   **Stage 1: Peek (Discovery):** Fetches lightweight stats for **50 ASINs** at once.
             *   **Dynamic Scaling:** Automatically reduces to **20** if refill rate < 20/min, and to **15** if refill rate < 10/min (optimized to fit within the 40-token burst).
@@ -140,8 +140,8 @@ We do not rely on local files (JSON) for state tracking, as they can be lost dur
 
 ### Process Management (`start_celery.sh`)
 The background processes are orchestrated to be resilient:
-*   **Worker:** Executes the tasks.
-*   **Beat:** The scheduler that triggers `smart-ingestor-run` and `clean_stale_deals`.
+*   **Worker:** Executes the tasks (`--concurrency=2` on 1 vCPU VPS to conserve RAM).
+*   **Beat:** The scheduler that triggers `smart-ingestor-run` (every 5 min) and `clean_stale_deals` (every 4h).
 *   **Zombie Locks:** The `kill_everything_force.sh` script invokes `Diagnostics/kill_redis_safely.py` to perform a "Brain Wipe" (FLUSHALL + SAVE) on Redis during restarts.
 *   **Logs:** `celery_worker.log` and `celery_beat.log` are the primary sources for debugging background failures.
 
@@ -149,6 +149,8 @@ The background processes are orchestrated to be resilient:
 *   **Strategy:** The system allows the Keepa token balance to dip into the negative (Deficit Spending) to maximize throughput.
 *   **Architecture:** **Distributed Token Bucket (Redis-backed)**.
 *   **Deficit Protection:** Enforces a hard limit of `MAX_DEFICIT = -180`. If a request would push the balance below this, it is blocked to prevent API lockouts.
+*   **Burst Threshold Scaling:** Capped at **50 tokens** for high plans (>= 20/min) and **40 tokens** for lower plans (< 20/min).
+*   **Low-Cost Call Buffer:** Allows low-cost calls (cost <= 10) to exit Recharge Mode as soon as token balance reaches **20** tokens.
 *   **Lock Release:** If the required wait time exceeds 60 seconds (deep recharge), the `TokenManager` raises a `TokenRechargeError`. The Smart Ingestor catches this and immediately releases the Redis lock, freeing the worker for other tasks.
 
 ### Amazon SP-API Integration

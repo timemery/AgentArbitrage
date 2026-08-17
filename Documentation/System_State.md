@@ -19,3 +19,9 @@ Do not reintroduce fallback logic based on listing prices, as it compromises the
 
 ### Dynamic ROI Calculation
 ROI is not a database column. It is calculated dynamically (`(Profit / All_in_Cost) * 100`) on the frontend for display and in backend SQL queries for sorting. `All-in Cost` strictly equals `buy_cost_paid` + prep fee, and excludes Amazon fees to ensure this calculation remains accurate.
+
+### Smart Ingestion & Token Rate Adaptation (August 2026 Update)
+To resolve task livelocks under upgraded Keepa API plans (e.g. 25 tokens/min):
+1. **5-Minute Ingestion Interval:** `smart-ingestor-run` in `celery_config.py` runs every **5 minutes** (`crontab(minute='*/5')`). This prevents 1-minute `TokenRechargeError` loops and giant log file bloat.
+2. **Granular Burst Threshold:** `TokenManager.BURST_THRESHOLD` is capped at **50 tokens** for high refill rates (>= 20/min) and **40 tokens** for lower rates (< 20/min).
+3. **Low-Cost Buffer Exit:** For low-cost API calls (cost <= 10), Recharge Mode exits as soon as tokens reach **20**, allowing background status and deal checks to proceed without waiting for full bucket refills.

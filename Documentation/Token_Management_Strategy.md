@@ -15,46 +15,40 @@ Keepa's API allows the token balance to go negative (deficit spending) as long a
 ### Dynamic Rate Adaptation
 The `TokenManager` dynamically updates its `REFILL_RATE_PER_MINUTE` from the `refillRate` field in Keepa API responses.
 *   **Default:** Starts with a conservative guess (e.g., 5/min).
-*   **Adaptation:** Upon the first API sync, it learns the true rate (e.g., 20/min for upgraded plans).
+*   **Adaptation:** Upon the first API sync, it learns the true rate (e.g., 25/min for upgraded plans).
 *   **Benefit:** Users who upgrade their Keepa plan immediately see faster processing without code changes.
 
 ### The Algorithm (Distributed & Float-Safe)
 Since Keepa tokens are floating-point numbers (e.g., 54.5), and multiple workers compete for them, the system uses an **Optimistic Locking** strategy with Redis `incrbyfloat`.
 
 **Key Thresholds:**
-*   **`MIN_TOKEN_THRESHOLD`:** Reduced to **1**. This aggressive setting ensures that as long as we have a positive balance (even 1.0), we can initiate a request.
+*   **`MIN_TOKEN_THRESHOLD`:** Set to **1**. This aggressive setting ensures that as long as we have a positive balance (even 1.0), we can initiate a request.
 *   **`MAX_DEFICIT` (Safety Limit):** Set to **-180**. If a projected request (Current Tokens - Cost) would push the balance below this limit, it is strictly blocked. This prevents hitting Keepa's hard lockout limit of -200, which would ban the API key for 24 hours.
 *   **`BURST_THRESHOLD` (Recharge Target):**
-    *   **High Refill Rates (>= 10/min):** Target **280** tokens.
-    *   **Low Refill Rates (< 10/min):** Target **40** tokens. Waiting for 280 tokens at 5/min takes ~50 minutes, creating a perception of "system stall". Lowering the target to 40 allows for frequent, smaller bursts of activity ("Empty the Bucket" strategy).
+    *   **High Refill Rates (>= 20/min):** Target **50** tokens. (Capped at 50 to prevent livelocks where tasks exit continuously while waiting for 150+ tokens).
+    *   **Lower Refill Rates (< 20/min):** Target **40** tokens. Waiting for high token balances at lower refill rates causes massive task delays ("Empty the Bucket" strategy).
+*   **Low-Cost Buffer Release:** For lightweight calls (cost <= 10 tokens), Recharge Mode is exited as soon as token balance reaches **20** tokens, ensuring high-frequency background checks do not stall indefinitely.
+*   **Throttled Force-Sync:** Force-sync HTTP requests to Keepa's `/token` endpoint are throttled to a minimum interval of **5 minutes (300 seconds)** using Redis key `keepa_last_sync_timestamp` to prevent API rate-limit spamming.
 
 **Logic Flow:**
 1.  **Atomic Reservation:** The worker unconditionally decrements the shared Redis counter (`incrbyfloat -cost`).
 2.  **Threshold Check:** It reads the new balance.
 3.  **Aggressive Phase:** If the starting balance was positive (>= 1) AND the result is above `MAX_DEFICIT`, the operation proceeds.
-4.  **Recharge Mode (Low Rate Protection):** If the Keepa refill rate is < 10/min AND the balance drops below `MIN_TOKEN_THRESHOLD`, the system enters **Recharge Mode**.
-    *   **Action:** All requests are blocked.
-    *   **Exit Condition:** Wait until tokens reach the dynamic `BURST_THRESHOLD` (40 or 280). This prevents "flapping" (oscillating between 0 and 5 tokens).
+4.  **Recharge Mode (Low Rate Protection):** If the balance drops below `MIN_TOKEN_THRESHOLD`, the system enters **Recharge Mode**.
+    *   **Action:** Requests are blocked.
+    *   **Exit Condition:** Wait until tokens reach the dynamic `BURST_THRESHOLD` (40 or 50) or 20 for low-cost calls. This prevents "flapping" (oscillating between 0 and 5 tokens).
 5.  **Recovery Phase (Revert):** If the reservation fails the check and Recharge Mode is not triggered, the worker **Reverts** the transaction and waits.
 6.  **TokenRechargeError (Lock Release):** If the calculated wait time exceeds **60 seconds**, the TokenManager raises a `TokenRechargeError` instead of sleeping. The calling task (Smart Ingestor) catches this exception and **immediately releases the Redis lock**. This allows the Celery worker to process other tasks (like Janitor or Gating Checks) while waiting for tokens to recharge, preventing worker starvation.
 
+### Ingestion Scheduling (`celery_config.py`)
+*   **Schedule:** `smart-ingestor-run` is scheduled to execute every **5 minutes** (`crontab(minute='*/5')`).
+*   **Rationale:** Executing the ingestor every minute under deficit spending caused continuous `TokenRechargeError` exceptions and inflated log files (e.g. 1.5+ GB `celery_worker.log`). The 5-minute interval allows token balances to naturally refill above `BURST_THRESHOLD` between runs.
+
 ### Resilience & Crash Recovery (Zombie Locks)
 To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), the system employs a "Brain Wipe" strategy during shutdown:
-*   **Script:** `Diagnostics/kill_redis_safely.py` (invoked by `kill_everything_force.sh`).
+*   **Script:** `kill_everything_force.sh` (invokes Redis cleanup).
 *   **Action:** Connects to Redis, executes `FLUSHALL` (clears memory), then `SAVE` (forces disk sync).
 *   **Result:** This ensures that when the system restarts, the token state and locks are completely reset, preventing "Task already running" errors.
-
-### Task-Specific Buffers
-*   **Smart Ingestor:**
-    *   **Decoupled Batching:**
-        *   **Peek (Discovery):** Uses a **Dynamic Batch Size** based on the refill rate. The system reserves **2 tokens per ASIN** (reduced from 5) for this lightweight check.
-            *   **High Rate (>= 20/min):** Batch Size **50**. Optimized for speed.
-            *   **Low Rate (< 20/min):** Batch Size **20**. Prevents deficit lockout.
-            *   **Critically Low (< 10/min):** Batch Size **1**. Optimized to fit within the "Burst Threshold" (40 tokens) while ensuring completion (Cost: ~22 tokens).
-        *   **Commit (Analysis):** Always uses batch size **5**. Full product data is expensive (20 tokens/ASIN). Small batches prevent "Deficit Shock" (instantly hitting -200) and allow granular control.
-*   **API Wrapper (`keepa_api.py`):**
-    *   **Rate Limit Protection:** Functions like `fetch_deals_for_deals` accept an optional `token_manager` argument.
-    *   **Behavior:** If provided, the wrapper calls `request_permission_for_call` *before* the API request. This enforces a blocking wait if tokens are low, preventing `429 Too Many Requests` errors during high-frequency ingestion loops.
 
 ---
 
@@ -74,7 +68,7 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
     -   Before any automated API call (e.g., price check), the manager checks if `calls_today < daily_limit` (default: 1000).
     -   If the limit is reached, the request is denied, and the system falls back to a default "Safe" assumption (e.g., assuming a price is reasonable to avoid rejecting valid deals).
 2.  **Caching (`XaiCache`):**
-    -   Results are cached in a local dictionary/JSON file.
+    -   Results are cached in a local dictionary/JSON file (`xai_cache.json`).
     -   **Cache Key:** Composite key of `Title | Category | Season | Price`.
     -   **Hit:** If the key exists, the cached boolean result is returned immediately (0 cost).
     -   **Miss:** If not in cache and quota allows, the API is called, and the result is saved.
