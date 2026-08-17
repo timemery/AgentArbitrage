@@ -653,7 +653,7 @@ def get_list_at_price(product):
     analysis = _get_analysis(product)
     price_cents = analysis.get('peak_price_mode_cents', -1)
     if price_cents and price_cents > 0:
-        return {'List at': f"${price_cents / 100:.2f}"}
+        return {'List at': round(price_cents / 100.0, 2)}
     logger = logging.getLogger(__name__)
     asin = product.get('asin', 'N/A')
     logger.info(f"ASIN {asin}: No valid 'List at' price could be determined. This deal will be excluded.")
@@ -672,7 +672,7 @@ def get_expected_trough_price(product):
     analysis = _get_analysis(product)
     price_cents = analysis.get('expected_trough_price_cents', -1)
     if price_cents and price_cents > 0:
-        return {'Expected Trough Price': f"${price_cents / 100:.2f}"}
+        return {'Expected Trough Price': round(price_cents / 100.0, 2)}
     return {'Expected Trough Price': None}
 
 def deal_trust(product):
