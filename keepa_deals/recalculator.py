@@ -186,9 +186,13 @@ def recalculate_deals():
         cursor = conn.cursor()
 
         update_count = 0
+        NULL_ALLOWED_COLS = {'Profit', 'Margin', 'Total_AMZ_fees'}
         for row in all_rows_to_update:
             try:
-                update_dict = {k: v for k, v in row.items() if v is not None and k != 'ASIN'}
+                update_dict = {
+                    k: v for k, v in row.items()
+                    if (v is not None or k in NULL_ALLOWED_COLS) and k != 'ASIN'
+                }
                 if not update_dict: continue
 
                 sanitized_update_dict = {sanitize_col_name(k): v for k, v in update_dict.items()}

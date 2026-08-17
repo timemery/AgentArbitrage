@@ -308,7 +308,7 @@ def clean_numeric_values(row_data):
         elif "%" in value:
             try: row_data[key] = float(cleaned_value.replace('%', ''))
             except (ValueError, TypeError): row_data[key] = None
-        elif any(k in key for k in ["Price", "Cost", "Fee", "Profit", "Margin", "Avg"]):
+        elif any(k in key for k in ["Price", "Cost", "Fee", "Fees", "Profit", "Margin", "Avg", "List"]):
             try: row_data[key] = float(cleaned_value)
             except (ValueError, TypeError): row_data[key] = None
     return row_data
