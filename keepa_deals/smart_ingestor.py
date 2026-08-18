@@ -434,6 +434,7 @@ def run():
         asin_list = [d['asin'] for d in all_new_deals]
         existing_asins_set = set()
         existing_rows_map = {}
+        conn_check = None
         try:
             conn_check = get_db_connection(DB_PATH, timeout=60)
             conn_check.row_factory = sqlite3.Row
@@ -444,8 +445,13 @@ def run():
             for r in rows:
                 # Zombie Data Defense (Self-Healing)
                 # Check for invalid critical data
-                list_at = r['List at']
-                yr_avg = r['1yr. Avg.']
+                # NOTE: this row comes from `SELECT *`, so its keys are the sanitized
+                # DB column names ('List_at', '1yr_Avg') - NOT the headers.json display
+                # names ('List at', '1yr. Avg.'). sqlite3.Row lookup is exact-match and
+                # raises IndexError on a miss, which previously aborted this loop on its
+                # first row and left existing_rows_map empty for every batch.
+                list_at = r['List_at']
+                yr_avg = r['1yr_Avg']
                 profit = r['Profit']
 
                 is_zombie = False
@@ -459,9 +465,17 @@ def run():
                 else:
                     existing_asins_set.add(r['ASIN'])
                     existing_rows_map[r['ASIN']] = dict(r)
-            conn_check.close()
         except Exception as e:
             logger.warning(f"Failed to check existing ASINs: {e}")
+        finally:
+            # Always release the connection. Previously close() sat at the end of the
+            # try block, so any exception raised inside the loop skipped it and leaked
+            # the connection (see AGENTS.md 7.11 on unclosed connections / lock contention).
+            if conn_check is not None:
+                try:
+                    conn_check.close()
+                except Exception:
+                    logger.warning("Failed to close existing-ASIN check connection.", exc_info=True)
 
         # Processing Loop
         # Iterate chunks

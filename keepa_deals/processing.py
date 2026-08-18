@@ -17,6 +17,17 @@ import os
 logger = getLogger(__name__)
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
+# Lightweight-update Amazon ceiling clamp.
+# This clamp has been unreachable in production: _process_lightweight_update read
+# 'List at' from a dict keyed by DB column names, so list_at_price was always 0.0
+# and `list_at_price > ceiling_price` never held (0 clamp events in celery_worker.log).
+# Repairing that key lookup would silently activate the clamp for the first time, so it
+# is explicitly gated OFF here pending a written spec for 'List at' seasonal semantics
+# (a peak price must survive trough season; unprofitable-today can be a valid seasonal
+# buy). Per AGENTS.md 6.6, infrastructure whose logic is not yet defined ships disabled.
+# Flipping this to True is a behavioural change and must not be done casually.
+ENABLE_LIGHTWEIGHT_CEILING_CLAMP = False
+
 # Load headers at module level to avoid I/O in loop
 try:
     with open(HEADERS_PATH, 'r') as f:
@@ -430,7 +441,12 @@ def _process_lightweight_update(existing_row, product_data):
 
     # 5. Recalculate Profit/Margin using Preserved 'List at'
     try:
-        list_at_val = row_data.get('List at')
+        # NOTE: row_data originates from dict(existing_row), so its keys are the
+        # sanitized DB column names ('List_at'), not the headers.json display name
+        # ('List at'). Reading the display name returned None on every call, zeroing
+        # list_at_price - which suppressed the referral fee and drove Profit to
+        # -(all_in_cost + fees) for every lightweight-updated row.
+        list_at_val = row_data.get('List_at')
         list_at_price = _parse_price(list_at_val) if list_at_val else 0.0
         now_price = row_data.get('Price Now', 0.0)
 
@@ -460,10 +476,12 @@ def _process_lightweight_update(existing_row, product_data):
             lowest_amz = min(amz_prices)
             ceiling_price = lowest_amz * 0.90
 
-            if list_at_price > ceiling_price:
+            if ENABLE_LIGHTWEIGHT_CEILING_CLAMP and list_at_price > ceiling_price:
                 old_list = list_at_price
                 list_at_price = round(ceiling_price, 2)
-                row_data['List at'] = list_at_price # Update the row data with clamped price
+                # Write back under the DB column name so the clamped value lands in the
+                # same key the read above uses (previously 'List at', a different key).
+                row_data['List_at'] = list_at_price # Update the row data with clamped price
                 logger.info(f"ASIN {asin}: Lightweight Update - Clamped 'List at' from {old_list} to {list_at_price} (Ceiling: {lowest_amz})")
 
         # FBA Fees - try to extract from stats if available, else fallback default
