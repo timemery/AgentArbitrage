@@ -475,6 +475,12 @@ def run():
         elif token_manager.REFILL_RATE_PER_MINUTE < 20:
             current_batch_size = 20
             logger.info(f"Low Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to prevent Deficit Lockout.")
+        elif token_manager.REFILL_RATE_PER_MINUTE < 30:
+            # Mid-tier plan (e.g. 25/min). A 50-ASIN peek at days=365,offers=20 costs ~386 tokens,
+            # far exceeding the burst budget and causing deep deficit. Cap at 15 (~115 tokens) so one
+            # peek fits within a refillable budget and recharges in ~5 min.
+            current_batch_size = 15
+            logger.info(f"Mid Refill Rate ({token_manager.REFILL_RATE_PER_MINUTE}/min). Reducing SCAN_BATCH_SIZE to {current_batch_size} to prevent Deficit Lockout.")
 
         # We process large batches (50) for cheap "Peek" checks, but small batches (5) for expensive "Commits".
 

@@ -512,7 +512,7 @@ class TokenManager:
             last_sync = self.last_sync_request_timestamp
 
         throttle_limit = 60 if not force else 300
-        if last_sync > 0 and (now - last_sync) < throttle_limit:
+        if (not force) and last_sync > 0 and (now - last_sync) < throttle_limit:
              logger.info(f"Skipping sync_tokens (throttled, force={force}, elapsed={now - last_sync:.1f}s).")
              return
 
