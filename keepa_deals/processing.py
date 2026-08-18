@@ -529,7 +529,12 @@ def _process_lightweight_update(existing_row, product_data):
         #     return None
 
         # Recalculate Percent Down
-        yr_avg = row_data.get('1yr. Avg.')
+        # NOTE: same key-namespace rule as 'List_at' above - row_data comes from
+        # dict(existing_row), so the key is the sanitized DB column name '1yr_Avg',
+        # not the headers.json display name '1yr. Avg.'. Reading the display name
+        # returned None on every call, so Percent Down was never recalculated during
+        # lightweight updates and kept whatever value the last heavy pass wrote.
+        yr_avg = row_data.get('1yr_Avg')
         if yr_avg and yr_avg != '-' and now_price > 0:
              yr_avg_val = _parse_price(yr_avg)
              if yr_avg_val > 0:
