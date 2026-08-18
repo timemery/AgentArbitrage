@@ -34,7 +34,7 @@ class TokenManager:
         self.MIN_TOKEN_THRESHOLD = 1
         # Dynamic Burst Threshold: For low-tier plans, waiting for 280 takes too long (~1hr).
         # We start with 280 but will adjust based on refill rate.
-        self.BURST_THRESHOLD = 280
+        self.BURST_THRESHOLD = 50
         self.MAX_DEFICIT = -180  # Safety limit to prevent Keepa API lockout
 
         # Soft Buffer & Stall Detection
