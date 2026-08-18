@@ -45,41 +45,46 @@ class TestSellerNameLogic(unittest.TestCase):
         product_data = {'asin': 'TESTASIN'}
 
         # Case 1: ID Matches -> Name Preserved
+        # NOTE: keys here are the sanitized DB column names, because production always
+        # passes dict(sqlite3.Row) from 'SELECT * FROM deals' (smart_ingestor.py:249
+        # and :467). The previous fixture used headers.json display names ('Seller ID',
+        # 'List at'), which no caller ever supplies - so this test passed while the
+        # production path silently failed every lookup.
         existing_row_1 = {
             'ASIN': 'TESTASIN',
             'Seller': 'Old Seller Name',
-            'Seller ID': 'NEW_SELLER_ID', # Matches the mocked new ID
-            'List at': '$20.00',
-            '1yr. Avg.': '$15.00'
+            'Seller_ID': 'NEW_SELLER_ID', # Matches the mocked new ID
+            'List_at': '$20.00',
+            '1yr_Avg': '$15.00'
         }
 
         result_1 = _process_lightweight_update(existing_row_1, product_data)
         self.assertEqual(result_1['Seller'], 'Old Seller Name', "Seller Name should be preserved when ID matches")
-        self.assertEqual(result_1['Seller ID'], 'NEW_SELLER_ID')
+        self.assertEqual(result_1['Seller_ID'], 'NEW_SELLER_ID')
 
         # Case 2: ID Differs -> Name Overwritten
         existing_row_2 = {
             'ASIN': 'TESTASIN',
             'Seller': 'Old Seller Name',
-            'Seller ID': 'OLD_SELLER_ID', # Differs
-            'List at': '$20.00'
+            'Seller_ID': 'OLD_SELLER_ID', # Differs
+            'List_at': '$20.00'
         }
 
         result_2 = _process_lightweight_update(existing_row_2, product_data)
         self.assertEqual(result_2['Seller'], 'NEW_SELLER_ID', "Seller Name should be overwritten when ID differs")
-        self.assertEqual(result_2['Seller ID'], 'NEW_SELLER_ID')
+        self.assertEqual(result_2['Seller_ID'], 'NEW_SELLER_ID')
 
         # Case 3: Old ID Missing -> Name Overwritten
         existing_row_3 = {
             'ASIN': 'TESTASIN',
             'Seller': 'Old Seller Name',
-            # No Seller ID
-            'List at': '$20.00'
+            # No Seller_ID
+            'List_at': '$20.00'
         }
 
         result_3 = _process_lightweight_update(existing_row_3, product_data)
         self.assertEqual(result_3['Seller'], 'NEW_SELLER_ID', "Seller Name should be overwritten when old ID is missing")
-        self.assertEqual(result_3['Seller ID'], 'NEW_SELLER_ID')
+        self.assertEqual(result_3['Seller_ID'], 'NEW_SELLER_ID')
 
 if __name__ == '__main__':
     unittest.main()

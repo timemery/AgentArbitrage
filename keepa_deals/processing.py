@@ -354,10 +354,19 @@ def _process_lightweight_update(existing_row, product_data):
         used_product_info = get_used_product_info(product_data)
         if used_product_info and used_product_info[0] is not None:
             price_now, seller_id, is_fba, condition_code = used_product_info
-            row_data['Price Now'] = price_now / 100.0
+            # Write under the DB column name so this overwrites the preserved value
+            # instead of adding a second, differently-keyed entry. When no Used offer
+            # is found this key is left untouched, so the preserved Price_Now survives.
+            row_data['Price_Now'] = price_now / 100.0
 
             # Seller Logic: Preserve Name if ID matches
-            current_seller_id = row_data.get('Seller ID')
+            # NOTE: row_data is keyed by sanitized DB column names ('Seller_ID'), not
+            # the headers.json display name ('Seller ID'). Reading the display name
+            # returned None on every call, so this comparison never matched and the
+            # else-branch always fired - overwriting the human-readable seller name
+            # with the raw seller ID on every lightweight update. That is the exact
+            # Seller Name Preservation behaviour AGENTS.md 7.8 requires be kept intact.
+            current_seller_id = row_data.get('Seller_ID')
             if current_seller_id == seller_id:
                  # ID is unchanged, so we assume the existing 'Seller' (Name) is still valid.
                  # Do not overwrite it.
@@ -368,7 +377,7 @@ def _process_lightweight_update(existing_row, product_data):
                  row_data['Seller'] = seller_id
 
             # Always update the ID reference
-            row_data['Seller ID'] = seller_id
+            row_data['Seller_ID'] = seller_id
 
             row_data['FBA'] = is_fba
             row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
@@ -448,7 +457,11 @@ def _process_lightweight_update(existing_row, product_data):
         # -(all_in_cost + fees) for every lightweight-updated row.
         list_at_val = row_data.get('List_at')
         list_at_price = _parse_price(list_at_val) if list_at_val else 0.0
-        now_price = row_data.get('Price Now', 0.0)
+        # Reads the DB column name, so when no live Used offer was found above this
+        # falls back to the preserved Price_Now from the existing row rather than
+        # collapsing to 0.0 (which produced an all_in_cost and Profit computed from
+        # a zero buy price). _parse_price tolerates float, '$'-string, '-' and None.
+        now_price = _parse_price(row_data.get('Price_Now'))
 
         # --- CEILING CHECK: Ensure List Price is Realistic (Feb 2026) ---
         # Even though we are preserving the old 'List at', the market ceiling (Amazon New Price)
@@ -540,9 +553,9 @@ def _process_lightweight_update(existing_row, product_data):
              if yr_avg_val > 0:
                  if now_price < yr_avg_val:
                      pct_down = ((yr_avg_val - now_price) / yr_avg_val) * 100
-                     row_data['Percent Down'] = f"{pct_down:.0f}%"
+                     row_data['Percent_Down'] = f"{pct_down:.0f}%"
                  else:
-                     row_data['Percent Down'] = "0%"
+                     row_data['Percent_Down'] = "0%"
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed business calculations (lightweight): {e}")
