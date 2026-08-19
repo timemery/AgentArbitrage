@@ -17,6 +17,17 @@ import os
 logger = getLogger(__name__)
 HEADERS_PATH = os.path.join(os.path.dirname(__file__), 'headers.json')
 
+# Lightweight-update Amazon ceiling clamp.
+# This clamp has been unreachable in production: _process_lightweight_update read
+# 'List at' from a dict keyed by DB column names, so list_at_price was always 0.0
+# and `list_at_price > ceiling_price` never held (0 clamp events in celery_worker.log).
+# Repairing that key lookup would silently activate the clamp for the first time, so it
+# is explicitly gated OFF here pending a written spec for 'List at' seasonal semantics
+# (a peak price must survive trough season; unprofitable-today can be a valid seasonal
+# buy). Per AGENTS.md 6.6, infrastructure whose logic is not yet defined ships disabled.
+# Flipping this to True is a behavioural change and must not be done casually.
+ENABLE_LIGHTWEIGHT_CEILING_CLAMP = False
+
 # Load headers at module level to avoid I/O in loop
 try:
     with open(HEADERS_PATH, 'r') as f:
@@ -343,10 +354,19 @@ def _process_lightweight_update(existing_row, product_data):
         used_product_info = get_used_product_info(product_data)
         if used_product_info and used_product_info[0] is not None:
             price_now, seller_id, is_fba, condition_code = used_product_info
-            row_data['Price Now'] = price_now / 100.0
+            # Write under the DB column name so this overwrites the preserved value
+            # instead of adding a second, differently-keyed entry. When no Used offer
+            # is found this key is left untouched, so the preserved Price_Now survives.
+            row_data['Price_Now'] = price_now / 100.0
 
             # Seller Logic: Preserve Name if ID matches
-            current_seller_id = row_data.get('Seller ID')
+            # NOTE: row_data is keyed by sanitized DB column names ('Seller_ID'), not
+            # the headers.json display name ('Seller ID'). Reading the display name
+            # returned None on every call, so this comparison never matched and the
+            # else-branch always fired - overwriting the human-readable seller name
+            # with the raw seller ID on every lightweight update. That is the exact
+            # Seller Name Preservation behaviour AGENTS.md 7.8 requires be kept intact.
+            current_seller_id = row_data.get('Seller_ID')
             if current_seller_id == seller_id:
                  # ID is unchanged, so we assume the existing 'Seller' (Name) is still valid.
                  # Do not overwrite it.
@@ -357,7 +377,7 @@ def _process_lightweight_update(existing_row, product_data):
                  row_data['Seller'] = seller_id
 
             # Always update the ID reference
-            row_data['Seller ID'] = seller_id
+            row_data['Seller_ID'] = seller_id
 
             row_data['FBA'] = is_fba
             row_data['Condition'] = CONDITION_CODE_MAP.get(condition_code, 'N/A')
@@ -430,9 +450,18 @@ def _process_lightweight_update(existing_row, product_data):
 
     # 5. Recalculate Profit/Margin using Preserved 'List at'
     try:
-        list_at_val = row_data.get('List at')
+        # NOTE: row_data originates from dict(existing_row), so its keys are the
+        # sanitized DB column names ('List_at'), not the headers.json display name
+        # ('List at'). Reading the display name returned None on every call, zeroing
+        # list_at_price - which suppressed the referral fee and drove Profit to
+        # -(all_in_cost + fees) for every lightweight-updated row.
+        list_at_val = row_data.get('List_at')
         list_at_price = _parse_price(list_at_val) if list_at_val else 0.0
-        now_price = row_data.get('Price Now', 0.0)
+        # Reads the DB column name, so when no live Used offer was found above this
+        # falls back to the preserved Price_Now from the existing row rather than
+        # collapsing to 0.0 (which produced an all_in_cost and Profit computed from
+        # a zero buy price). _parse_price tolerates float, '$'-string, '-' and None.
+        now_price = _parse_price(row_data.get('Price_Now'))
 
         # --- CEILING CHECK: Ensure List Price is Realistic (Feb 2026) ---
         # Even though we are preserving the old 'List at', the market ceiling (Amazon New Price)
@@ -460,10 +489,12 @@ def _process_lightweight_update(existing_row, product_data):
             lowest_amz = min(amz_prices)
             ceiling_price = lowest_amz * 0.90
 
-            if list_at_price > ceiling_price:
+            if ENABLE_LIGHTWEIGHT_CEILING_CLAMP and list_at_price > ceiling_price:
                 old_list = list_at_price
                 list_at_price = round(ceiling_price, 2)
-                row_data['List at'] = list_at_price # Update the row data with clamped price
+                # Write back under the DB column name so the clamped value lands in the
+                # same key the read above uses (previously 'List at', a different key).
+                row_data['List_at'] = list_at_price # Update the row data with clamped price
                 logger.info(f"ASIN {asin}: Lightweight Update - Clamped 'List at' from {old_list} to {list_at_price} (Ceiling: {lowest_amz})")
 
         # FBA Fees - try to extract from stats if available, else fallback default
@@ -511,15 +542,20 @@ def _process_lightweight_update(existing_row, product_data):
         #     return None
 
         # Recalculate Percent Down
-        yr_avg = row_data.get('1yr. Avg.')
+        # NOTE: same key-namespace rule as 'List_at' above - row_data comes from
+        # dict(existing_row), so the key is the sanitized DB column name '1yr_Avg',
+        # not the headers.json display name '1yr. Avg.'. Reading the display name
+        # returned None on every call, so Percent Down was never recalculated during
+        # lightweight updates and kept whatever value the last heavy pass wrote.
+        yr_avg = row_data.get('1yr_Avg')
         if yr_avg and yr_avg != '-' and now_price > 0:
              yr_avg_val = _parse_price(yr_avg)
              if yr_avg_val > 0:
                  if now_price < yr_avg_val:
                      pct_down = ((yr_avg_val - now_price) / yr_avg_val) * 100
-                     row_data['Percent Down'] = f"{pct_down:.0f}%"
+                     row_data['Percent_Down'] = f"{pct_down:.0f}%"
                  else:
-                     row_data['Percent Down'] = "0%"
+                     row_data['Percent_Down'] = "0%"
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed business calculations (lightweight): {e}")
