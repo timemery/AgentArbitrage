@@ -20,6 +20,34 @@ from keepa_deals.db_utils import get_db_connection
 
 logger = logging.getLogger(__name__)
 
+
+def _parse_stored_price(raw):
+    """Parse a stored price column into a float.
+
+    Returns 0.0 for any "no value" marker rather than raising, so the caller
+    falls through to the existing no-List_at path (Profit/Margin/Total_AMZ_fees
+    set to NULL) instead of aborting the row.
+
+    A SQL NULL read out of the row and coerced with str() becomes the literal
+    string 'None', which float() rejects with
+    "ValueError: could not convert string to float: 'None'". Placeholders
+    '', '-' and 'N/A' fail the same way. Valid numeric and '$'-prefixed string
+    values are parsed exactly as before.
+    """
+    if isinstance(raw, (int, float)):
+        return float(raw)
+    if raw is None:
+        return 0.0
+    cleaned = str(raw).strip().replace('$', '').replace(',', '')
+    if cleaned in ('', '-') or cleaned.lower() in ('none', 'n/a'):
+        return 0.0
+    try:
+        return float(cleaned)
+    except (ValueError, TypeError):
+        logger.warning(f"Recalc: could not parse stored price {raw!r}. Treating as no value (0.0).")
+        return 0.0
+
+
 def set_recalc_status(status_data):
     """Helper to write to the recalculation status file."""
     RECALC_STATUS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'recalc_status.json')
@@ -94,8 +122,8 @@ def recalculate_deals():
             row_updates = {'ASIN': deal_data['ASIN']}
 
             try:
-                list_at_price = float(str(deal_data.get('List_at', '0')).replace('$', '').replace(',', ''))
-                now_price = float(str(deal_data.get('Now', '0')).replace('$', '').replace(',', ''))
+                list_at_price = _parse_stored_price(deal_data.get('List_at'))
+                now_price = _parse_stored_price(deal_data.get('Now'))
 
                 if list_at_price > 0 and now_price > 0:
                     # Handle missing or invalid fee data using safe defaults

@@ -24,6 +24,13 @@ class TestSmartIngestorBatching(unittest.TestCase):
     @patch('keepa_deals.smart_ingestor.get_seller_info_for_single_deal')
     @patch('keepa_deals.smart_ingestor._process_single_deal')
     @patch('keepa_deals.smart_ingestor.celery') # Mock celery
+    # smart_ingestor.run() returns early at "KEEPA_API_KEY not set. Aborting." before
+    # reaching any fetch, so without this the mocked fetches are never called and the
+    # batching assertions below fail for environmental reasons rather than logic ones.
+    # Production gets the key from .env via load_dotenv(); pin it here so the test is
+    # hermetic and does not depend on the ambient environment. patch.dict restores the
+    # original os.environ afterwards.
+    @patch.dict(os.environ, {'KEEPA_API_KEY': 'test_key_not_a_real_credential'})
     def test_batching_logic(self, mock_celery, mock_process_single, mock_get_seller, mock_requeue, mock_create_table, mock_save_wm, mock_load_wm,
                             mock_check_peek, mock_fetch_product, mock_fetch_stats, mock_fetch_deals,
                             mock_token_manager_cls, mock_sqlite, mock_redis):
