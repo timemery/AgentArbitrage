@@ -9,7 +9,7 @@
 
 The following values are AUTHORITATIVE. Do NOT change them based on assumptions, training data, "best practice," or what you think a newer/better version is. If a change is genuinely needed, STOP and ASK before modifying.
 
-- **xAI model:** `grok-4-1-fast-reasoning` — NEVER `grok-beta`, `grok-4`, `grok-3`, or any other variant
+- **xAI model:** `grok-4-fast-reasoning` — NEVER `grok-beta`, `grok-4`, `grok-3`, or any other variant. (Note: xAI's billing console reports this model as `grok-4.3`. That is a billing label, not a model string — do not "correct" the code to match it.)
 - **Keepa Epoch:** `datetime(2011, 1, 1)` — NEVER `2000-01-01`. The 11-year offset has caused a critical regression before.
 - **SP-API URL:** `https://sellingpartnerapi-na.amazon.com` (Production) — NEVER swap to Sandbox
 - **Keepa Query Standard:** `dateRange: 4` MUST be paired with `sortType: 4` (Last Update)
