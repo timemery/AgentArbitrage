@@ -62,6 +62,7 @@ Displays the repository of actionable rules the agent has "learned". These are s
 *   Reads the `strategies.json` file from the root directory.
 *   Renders the list of strings/objects.
 *   **Integration:** These strategies are injected into the context of the **"Advice from Ava"** feature (`ava_advisor.py`) to customize the AI's analysis of specific deals.
+*   **Not all of them.** Injection is capped: 'High' confidence only, 30 per category, from a fixed category allowlist (see `System_Architecture.md` → "Advisor Context Caps"). This page shows the full repository; the AI sees a bounded slice of it. Adding strategies here does not grow the AI's prompt once a category is at its cap.
 
 ---
 
@@ -78,6 +79,7 @@ Displays the "Mental Models" and high-level concepts the agent uses to understan
 *   Reads the `intelligence.json` file from the root directory.
 *   Renders the list of ideas.
 *   This serves as the "System Prompt" or context for the agent's decision-making processes (e.g., when judging if a price is "reasonable" via AI).
+*   **Capped:** Mentor Chat injects at most `MAX_INTELLIGENCE_ITEMS` (150) items, not the whole file. This page shows the full repository.
 
 ---
 

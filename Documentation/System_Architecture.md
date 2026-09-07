@@ -102,14 +102,29 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 *   **Route:** `/api/ava-advice/<ASIN>`
 *   **Purpose:** Provides real-time, deal-specific analysis in the dashboard overlay.
 *   **Mechanism:** Queries `grok-4-fast-reasoning` with the deal's metrics, the "Strategies" context, and the shared `STRATEGIC_CORRECTIONS` block from `keepa_deals/ava_advisor.py` to generate a 50-80 word actionable summary. The dual-strategy framing in the corrections ensures unbiased evaluation of both high-velocity flips and seasonal holds.
+*   **Strategy Cap:** `load_strategies()` injects a bounded slice, not the whole file — 'High' confidence only, at most `MAX_STRATEGIES_PER_CATEGORY` (30) per category, drawn from the fixed `STRATEGY_CORE_CATEGORIES` allowlist (General, Risk, Buying, Pricing), plus Seasonality when the deal is a textbook. This mirrors the Pass 2 "Tiered Strategy Injection" bound. See "Advisor Context Caps" below.
 
 ### Mentor Chat
 *   **Route:** `/api/mentor-chat`
 *   **Purpose:** Persistent, persona-driven chat interface for general business strategy and mentorship.
 *   **Mechanism:**
     *   **Personas:** Supports 4 distinct personas (Olyvia/CFO, Joel/Flipper, Evelyn/Professor, Errol/Quant) defined in `ava_advisor.py`.
-    *   **Context:** Injects the full "Strategies" and "Intelligence" knowledge base, alongside the shared `STRATEGIC_CORRECTIONS` block (for dual-strategy framing and overriding overcautious textbook/high-rank rules) into the system prompt.
+    *   **Context:** Injects a **capped** slice of the "Strategies" and "Intelligence" knowledge bases, alongside the shared `STRATEGIC_CORRECTIONS` block (for dual-strategy framing and overriding overcautious textbook/high-rank rules) into the system prompt. See "Advisor Context Caps" below.
     *   **Model:** Uses `grok-4-fast-reasoning` (Temperature 0.5) for detailed, contextual responses.
+
+### Advisor Context Caps (September 2026)
+
+`strategies.json` (8.4 MB) and `intelligence.json` (1.1 MB) grow without bound via Guided Learning. Until September 2026 the Advisor helpers in `keepa_deals/ava_advisor.py` injected them **whole**: `load_strategies()` called with no `deal_context` (Mentor Chat) emitted every strategy in every category, and `load_intelligence()` emitted every idea. A single Mentor Chat message therefore carried roughly 9.5 MB / ~2.4M tokens of prompt. The "Tiered Strategy Injection" cap added in May 2026 was applied only to Prime Picks Pass 2 (`prime_picks_task.get_tiered_strategies()`) and never propagated to the Advisor.
+
+Both helpers are now bounded by module-level constants in `keepa_deals/ava_advisor.py`:
+
+*   **`STRATEGY_CORE_CATEGORIES`** = `("General", "Risk", "Buying", "Pricing")` — fixed allowlist, so a new category appearing in the file cannot grow the prompt.
+*   **`MAX_STRATEGIES_PER_CATEGORY`** = `30` — 'High' confidence only. Ceiling: 120 strategies, or 150 when the textbook context adds Seasonality.
+*   **`MAX_INTELLIGENCE_ITEMS`** = `150` — `intelligence.json` has no category dimension to tier on, so a flat leading slice bounds it. 150 gives parity with the strategies ceiling.
+
+Both now emit output whose size is independent of file size. Measured against a production-sized synthetic corpus: Mentor Chat ~2.4M tokens → **~16,000**; Ava advice unbounded → **~22,900** (the remainder is dominated by the ~12,055-token `platform_knowledge` doc set, which is a separate, uncapped input).
+
+**Note:** legacy plain-string entries in `strategies.json` (pre-schema, no `category`/`confidence`) are skipped, matching `get_tiered_strategies()`. Only dict-shaped strategies are injected.
 
 ### AI-Triggered Hover Tooltips
 *   **Route:** `/api/tooltip/<term>`

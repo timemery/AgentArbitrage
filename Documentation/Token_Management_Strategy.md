@@ -67,7 +67,12 @@ To prevent "Zombie Locks" (stale locks persisting after a crash or deployment), 
     -   A JSON state file (`xai_token_state.json`) tracks `calls_today` and `last_reset_date`.
     -   Before any automated API call (e.g., price check), the manager checks if `calls_today < daily_limit` (default: 1000).
     -   If the limit is reached, the request is denied, and the system falls back to a default "Safe" assumption (e.g., assuming a price is reasonable to avoid rejecting valid deals).
-2.  **Caching (`XaiCache`):**
+2.  **Advisor Context Caps (`ava_advisor.py`):**
+    -   `load_strategies()` and `load_intelligence()` inject a **bounded slice** of the knowledge base, never the whole file.
+    -   `STRATEGY_CORE_CATEGORIES` (General, Risk, Buying, Pricing) + `MAX_STRATEGIES_PER_CATEGORY` = **30**, 'High' confidence only; `MAX_INTELLIGENCE_ITEMS` = **150**.
+    -   **Why:** `strategies.json` (8.4 MB) and `intelligence.json` (1.1 MB) grow without bound via Guided Learning. Injected whole, one Mentor Chat message carried ~2.4M prompt tokens. Prompt tokens are ~84% of xAI spend, so an uncapped context is the single largest cost lever in the system.
+    -   See `System_Architecture.md` → "Advisor Context Caps" for the full rationale and measured before/after.
+3.  **Caching (`XaiCache`):**
     -   Results are cached in a local dictionary/JSON file (`xai_cache.json`).
     -   **Cache Key:** Composite key of `Title | Category | Season | Price`.
     -   **Hit:** If the key exists, the cached boolean result is returned immediately (0 cost).

@@ -118,10 +118,23 @@ def get_mentor_config(mentor_name):
         key = LEGACY_MENTOR_MAP[key]
     return MENTOR_PERSONAS.get(key, MENTOR_PERSONAS['olyvia']) # Default to Olyvia (CFO)
 
+# Prompt-size caps for the Advisor knowledge base.
+# strategies.json and intelligence.json grow without bound via Guided Learning.
+# Injecting them whole put ~2.4M tokens on every Mentor Chat call. These caps
+# mirror the "Tiered Strategy Injection" bound already enforced for Prime Picks
+# Pass 2 by prime_picks_task.get_tiered_strategies().
+STRATEGY_CORE_CATEGORIES = ("General", "Risk", "Buying", "Pricing")
+MAX_STRATEGIES_PER_CATEGORY = 30
+MAX_INTELLIGENCE_ITEMS = 150
+
 def load_strategies(deal_context=None):
     """
     Loads strategies from strategies.json and formats them for the prompt.
     Uses caching to avoid re-reading file on every request.
+
+    Selection is bounded: 'High' confidence only, capped at
+    MAX_STRATEGIES_PER_CATEGORY per category, drawn from a fixed category
+    allowlist, so prompt size cannot grow with the file.
 
     Args:
         deal_context (dict, optional): Context about the deal (e.g., category, seasonality) to filter strategies.
@@ -144,25 +157,31 @@ def load_strategies(deal_context=None):
 
             strategies = STRATEGIES_CACHE
             if strategies:
-                formatted = []
-
-                # Determine relevant categories based on deal_context
-                relevant_categories = set(["General", "Buying", "Risk"]) # Always include these
+                # Determine relevant categories. The core set is fixed so the
+                # prompt cannot grow as new categories appear in the file.
+                relevant_categories = list(STRATEGY_CORE_CATEGORIES)
 
                 if deal_context:
-                    seasonality = deal_context.get('Detailed_Seasonality', '').lower()
-                    title = deal_context.get('Title', '').lower()
+                    seasonality = str(deal_context.get('Detailed_Seasonality', '') or '').lower()
+                    title = str(deal_context.get('Title', '') or '').lower()
 
                     if 'textbook' in seasonality or 'textbook' in title:
-                        relevant_categories.add("Seasonality")
+                        relevant_categories.append("Seasonality")
+
+                categorized = {cat: [] for cat in relevant_categories}
 
                 for s in strategies:
-                    if isinstance(s, dict):
-                        cat = s.get('category', 'General')
-                        if not deal_context or (cat in relevant_categories) or (cat == "General"):
-                            formatted.append(f"- [Category: {cat}] IF {s.get('trigger', 'N/A')} THEN {s.get('advice', 'N/A')}")
-                    else:
-                        formatted.append(f"- {s}")
+                    if not isinstance(s, dict):
+                        continue
+                    cat = s.get('category', 'General')
+                    if cat in categorized and s.get('confidence') == 'High':
+                        if len(categorized[cat]) < MAX_STRATEGIES_PER_CATEGORY:
+                            categorized[cat].append(s)
+
+                formatted = []
+                for cat in relevant_categories:
+                    for s in categorized[cat]:
+                        formatted.append(f"- [Category: {cat}] IF {s.get('trigger', 'N/A')} THEN {s.get('advice', 'N/A')}")
 
                 return "\n".join(formatted)
     except Exception as e:
@@ -173,6 +192,7 @@ def load_intelligence():
     """
     Loads intelligence/concepts from intelligence.json and formats them.
     Uses caching to avoid re-reading file on every request.
+    Capped at MAX_INTELLIGENCE_ITEMS items to bound prompt size.
     """
     global INTELLIGENCE_CACHE, INTELLIGENCE_MTIME
     try:
@@ -191,9 +211,12 @@ def load_intelligence():
 
             intelligence = INTELLIGENCE_CACHE
             if intelligence:
-                 # Intelligence is usually a list of strings, but now objects
+                 # Intelligence is usually a list of strings, but now objects.
+                 # Capped at MAX_INTELLIGENCE_ITEMS: intelligence.json has no
+                 # category dimension to tier on, so a flat leading slice bounds
+                 # the prompt the way the per-category cap bounds strategies.
                  formatted_intelligence = []
-                 for i in intelligence:
+                 for i in intelligence[:MAX_INTELLIGENCE_ITEMS]:
                      if isinstance(i, dict) and 'content' in i:
                          formatted_intelligence.append(f"- {i['content']}")
                      else:
