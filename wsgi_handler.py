@@ -2309,6 +2309,15 @@ def api_deals():
         # Get data for the current page
         query_params.extend([limit, offset])
 
+        # Agent's Choice carries its own AI ranking, stored as prime_picks.rank and
+        # exposed to the frontend as the pseudo-column 'Agent_Rank'. 'id' is treated
+        # the same way because it is the sort default and is NOT a clickable dashboard
+        # column, so under Agent's Choice it can only mean "no column was chosen".
+        # This is a sibling flag, not a branch in the sort_clause chain below: it never
+        # assigns sort_clause, so data_query (the unfiltered path) is unaffected and
+        # can never reference the pp alias.
+        agent_rank_sort = bool(filters.get("agents_choice")) and sort_by in ('Agent_Rank', 'id')
+
         if sort_by == 'Gated':
             if is_sp_api_connected and user_id:
                 sort_clause = 'ur.is_restricted'
@@ -2342,7 +2351,13 @@ def api_deals():
             # Replace 'deals.' in where_clauses if any was prepended
             where_sql = " WHERE " + " AND ".join(final_where_clauses) if final_where_clauses else ""
 
-            agents_choice_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY pp.rank ASC"
+            # Honour the user's column sort. This branch previously hardcoded
+            # 'ORDER BY pp.rank ASC', silently discarding the sort/order params that
+            # the dashboard sends on every request. pp.rank remains the default
+            # (agent_rank_sort) and the tie-break for every other sort.
+            order_by_sql = "pp.rank ASC" if agent_rank_sort else f"{sort_clause} {order}, pp.rank ASC"
+
+            agents_choice_query = f"SELECT {select_clause} {from_clause}{where_sql} ORDER BY {order_by_sql}"
 
             # The query_params have limit/offset appended at the end. We need to remove them for this fetch
             agents_choice_params = query_params[:-2]
