@@ -1300,8 +1300,24 @@ document.addEventListener('DOMContentLoaded', function() {
     hideGatedInput.addEventListener('change', checkOptimalDeviation);
     hideAmzInput.addEventListener('change', checkOptimalDeviation);
 
+    // Agent's Choice has its own AI ranking (prime_picks.rank), exposed as the
+    // pseudo-column 'Agent_Rank'. Default to it whenever the toggle is on so the
+    // ranking is what you see first; clicking any column arrow then overrides it.
+    // Un-ticking only restores the default sort if Agent_Rank was active, so a
+    // column sort the user chose survives the toggle.
+    function syncSortToAgentsChoice() {
+        if (agentsChoiceCheckbox.checked) {
+            currentSort = { by: 'Agent_Rank', order: 'asc' };
+        } else if (currentSort.by === 'Agent_Rank') {
+            currentSort = { by: 'last_price_change', order: 'desc' };
+        }
+    }
+
+    agentsChoiceCheckbox.addEventListener('change', syncSortToAgentsChoice);
+
     // Load state on init
     loadFilterState();
+    syncSortToAgentsChoice(); // localStorage may restore Agent's Choice as ticked
 
     // --- Refresh Logic ---
     let currentTotalRecords = 0;
