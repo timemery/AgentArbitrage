@@ -982,3 +982,454 @@ It is given `'-'` (A-12). **The doc describes the intent and the code fails to d
 `processing.py:483` uses four, adding `'Amazon - 90 days avg.'`. The second is inside the
 lightweight clamp, which is gated off (`ENABLE_LIGHTWEIGHT_CEILING_CLAMP = False`), so it is
 inert today — but it will not agree with the documented comparator when it is switched on.
+
+---
+---
+
+# PRIORITY 2 — EVERY OTHER CALCULATION THE BUY DECISION DEPENDS ON
+
+Each metric below is given as inputs → formula → units → rounding → null/zero/missing behaviour,
+then the defects, questions and drift that fall out of it.
+
+## 2.1 All-in Cost
+
+* **Source:** `keepa_deals/business_calculations.py:38-73`, called from `processing.py:182` (heavy)
+  and `:520` (light).
+* **Inputs:** `now_price` (dollars, from `Price Now` = best Used offer price + shipping, cents ÷ 100);
+  `settings.json` → `prep_fee_per_book`, `estimated_tax_per_book` (a **percent**, not dollars,
+  despite the name), `tax_exempt`, `estimated_shipping_per_book`; `shipping_included_flag`.
+* **Formula** (`:65`):
+  `all_in_cost = now_price + (now_price × tax_percent/100) + prep_fee + (shipping if not included)`
+* **Units:** dollars throughout. `now_price` is converted from cents at `processing.py:81`
+  (`price_now / 100.0`).
+* **Rounding:** **none.** Full float stored. Displayed as `$${Math.round(numValue)}` —
+  no decimals (`dashboard.html:799`).
+* **Null / zero / missing:** `_is_valid_numeric(now_price)` (`:31-36`) rejects non-numerics **and
+  negatives**, returning the string `'-'`. `clean_numeric_values` (`processing.py:314-325`) then
+  fails `float('-')` and stores `NULL`. Missing settings file → hardcoded defaults at `:24-28`
+  (prep $2.50, ship $2.00, tax 15%, markup 10%). `now_price = 0` is *valid* (0 ≥ 0), producing
+  an all-in cost of prep + shipping alone.
+
+## 2.2 Amazon fees
+
+* **Source:** `processing.py:160-189` (heavy) and `:503-527` (light) — **not** the
+  `get_fba_pick_pack_fee` / `get_referral_fee_percent` functions that populate the display columns.
+* **Inputs:** `product_data['fbaFees']['pickAndPackFee']` (cents), `product_data['referralFeePercentage']`.
+* **Formula:**
+  ```
+  fba_fee    = pickAndPackFee / 100.0
+  referral   = List_at × (referralFeePercentage / 100.0)     # only if List_at > 0
+  AMZ fees   = referral + fba_fee
+  ```
+* **Units:** Keepa gives cents; both call sites divide by 100. Referral is a percent of the
+  **sale** price, not the buy price — correct, and matches `Data_Logic.md`.
+* **Rounding:** `Total_AMZ_fees` is `round(..., 2)` (`:195`, `:534`); `Profit` is computed from the
+  **unrounded** value and is itself not rounded.
+* **Null / zero / missing:** `pickAndPackFee` missing, `None` or negative → **hardcoded 550¢**
+  (`:167`, `:504`). `referralFeePercentage` missing, `None` or negative → **hardcoded 15.0%**
+  (`:173`, `:509`). Neither default is documented anywhere. If `List_at ≤ 0` the referral is
+  skipped entirely (`:187`), so `Total_AMZ_fees` collapses to the FBA fee alone — the exact
+  signature the Aug 18b dev log used to identify the key-namespace bug.
+
+## 2.3 Profit
+
+* **Source:** `business_calculations.py:76-89`.
+* **Inputs:** `peak_price` (= `List_at`, dollars), `all_in_cost`, `amz_fees`.
+* **Formula** (`:86`): `profit = List_at − All_in_Cost − Total_AMZ_fees`. Matches `Data_Logic.md`.
+* **Units:** dollars. **Rounding:** none; displayed rounded to whole dollars (`dashboard.html:799`).
+* **Null / zero / missing:** `_is_valid_numeric(peak_price, all_in_cost, amz_fees)` rejects any
+  non-numeric or **negative** input → `{'profit': '-', 'margin': '-'}` → `NULL` after
+  `clean_numeric_values`. A **missing `List_at` passes** as `0.0` (`processing.py:158`,
+  `:459`), producing `profit = −(all_in_cost + fba_fee)` — a manufactured loss rather than a null.
+  That is deliberate per `AGENTS.md` §7.8 ("Zero Profit & Missing Data Persistence"), and the
+  dashboard filters `Profit > 0`.
+
+## 2.4 Margin
+
+* **Formula** (`business_calculations.py:87`): `margin = (profit / List_at) × 100 if List_at != 0 else 0`.
+* **Units:** percent. **Rounding:** none stored; `Math.round` at display (`dashboard.html:797`).
+* **Null / zero / missing:** the `!= 0` guard prevents division by zero, but returns `0` — so a
+  deal with no `List_at` shows Margin 0% next to a large negative Profit. Note the guard is on
+  `List_at`, not on `profit`, so a negative profit yields a negative margin, rendered as e.g. `-311%`.
+
+## 2.5 ROI
+
+* **Not stored.** Computed in three places, with three different levels of input sanitisation:
+
+| Site | Expression | Sanitises `$`/`,`? |
+| --- | --- | --- |
+| Frontend display, `dashboard.html:746` | `(deal.Profit / deal.All_in_Cost) * 100`, guarded by `All_in_Cost > 0` | no (JS) |
+| SQL **filter**, `wsgi_handler.py:2190-2196` | `CAST(REPLACE(REPLACE("Profit",'$',''),',','') AS REAL)` ÷ same for cost | **yes** |
+| SQL **sort**, `wsgi_handler.py:2329` | `CAST(deals."Profit" AS REAL) / NULLIF(CAST(deals."All_in_Cost" AS REAL), 0)` | **no** |
+
+* **Formula:** `(Profit / All_in_Cost) × 100`. Matches `Data_Logic.md` and `System_State.md`.
+* **Units:** percent. **Rounding:** `Math.round` at display.
+* **Null / zero / missing:** the filter guards `cost > 0`; the sort uses `NULLIF(...,0)` so a
+  zero cost sorts as NULL. The frontend guard `deal.All_in_Cost > 0` is a JS comparison — for a
+  `$`-prefixed string it is `false`, so `deal.ROI` stays `null` and renders `-`.
+  See A-19 for what the un-sanitised sort does.
+
+## 2.6 Min. Listing Price
+
+* **Source:** `business_calculations.py:91-118`.
+* **Formula** (`:108`, `:114`):
+  `min_price = (all_in_cost + fba_fee) / (1 − markup% /100 − referral% /100)`. Matches the doc.
+* **Units:** dollars. **Rounding:** none.
+* **Null / zero / missing:** markup ≥ 100 is capped to 99 (`:104-106`); a non-positive denominator
+  returns `'-'` (`:110-112`). Note this is a **markup on revenue**, not on cost: at markup 10% and
+  referral 15%, the divisor is 0.75, so the floor price is 1.33× (cost + FBA), not 1.10×.
+  The doc reproduces the formula but does not say which convention it encodes.
+
+## 2.7 Rank-to-velocity
+
+There is **no rank→units-per-month conversion anywhere in the codebase.** `monthlySold` is
+referenced only in a comment (`stable_calculations.py:549`) and never read. Rank is used as a
+velocity proxy at exactly five places, all threshold tests:
+
+| Where | Rule | Effect |
+| --- | --- | --- |
+| `smart_ingestor.py:135` | `salesRankDrops365 != -1 and < 1` → reject | skips the 20-token heavy fetch |
+| `xai_sales_inference.py:232` | `current_rank > 2,000,000` → skip rescue | saves tokens on dead stock |
+| `prime_picks_task.py:191` | `Detailed_Seasonality == 'year-round'` and rank > 2,000,000 → drop | removes candidate |
+| `prime_picks_task.py:199` | offer trend rising **and** rank > 100,000 → drop | removes candidate |
+| `prime_picks_task.py:187-188` | `half_life = (24 + rank/2,000,000 × 144) × (1 − min(0.5, offers × 0.02))` | time-decay weight, hours |
+
+* **Units:** the half-life is in **hours**, ranging 24 h at rank 0 to 168 h at rank 2,000,000 —
+  and **continuing to grow above that**, so a rank-10,000,000 book gets a 744-hour half-life.
+  The worst-velocity items decay slowest. See B-12.
+* **Null / zero / missing:** `Sales_Rank_Current` missing or unparseable → substituted with
+  `1,000,000` (`prime_picks_task.py:178`, `:183`), i.e. treated as mid-range rather than rejected.
+* **Score:** `score = (profit × roi) × 0.5^(hours_since / half_life)`, then `× 1.1` if the offer
+  trend is falling or flat (`:206`, `:216`). Since `roi = profit/cost × 100`, the leading term is
+  `profit² × 100 / cost` — profit dominates quadratically.
+
+## 2.8 Drop counting
+
+* **Source:** `stable_products.py:483` (30d), `:504` (180d), `:525` (365d).
+* **Formula:** none — a straight read of Keepa's `stats.salesRankDrops30/180/365`.
+* **Units:** integer count. **Rounding:** none; `str(value)` then coerced to `int` by
+  `clean_numeric_values` (`processing.py:317`, because the header contains "Drops"… **it does not**
+  — see A-20).
+* **Null / zero / missing:** `stats.get(key, -1)`; `value < 0` → `'-'`. An explicit `null` raises
+  `TypeError` (P0 A-6). **180-day is never wired at all** (P0 A-1).
+* **Independent count:** `infer_sale_events` computes its own offer-drop count
+  (`stable_calculations.py:216-232`, `total_offer_drops_count`) from `csv[11]` + `csv[12]` diffs.
+  This is a *different* quantity from Keepa's `salesRankDrops*` — offer-count drops, not rank
+  drops — and it is the denominator of Deal Trust. The two are never reconciled.
+
+## 2.9 Seasonality classification
+
+* **Source:** `seasonality_classifier.py:103-181`, called from `processing.py:262`.
+* **Inputs:** title, `categoryTree` joined with `', '`, manufacturer, `peak_season_str`,
+  `trough_season_str`.
+* **Formula:** an ordered chain of substring heuristics (`:129-171`); if none match, an xAI call
+  (`:178`). The heuristic result short-circuits — the AI is only consulted on a miss.
+* **Units:** a label string. Mapped to a selling window by `get_sells_period` (`:183`).
+* **Null / zero / missing:** `None` inputs coerced to `''` (`:120-122`); the two season strings
+  are **always** `'-'` (P0/P1 A-12).
+* **Precedence hazards inside the chain:**
+  * `:132` — `if "ap" in title_lower` is an unanchored substring test. Any title containing the
+    letters `ap` — "Grapes", "Capital", "Therapy", "Landscape", "Chapter" — matches, and if the
+    publisher is any of the six textbook publishers it is classified **"High School AP Textbooks"**.
+  * `:135` — `if "college" in title_lower or "university" in title_lower or is_textbook_publisher`
+    → returns **"Textbook (Summer)"** by default (`:141`, comment: *"Defaulting to most common"*).
+    Every book from Cengage/McGraw-Hill/Pearson/Wiley/Macmillan/Sage becomes a summer textbook
+    regardless of subject, and the AI never sees it.
+  * `:158` and `:161` — `and` binds tighter than `or`, so
+    `if "christmas" in t or "holiday" in t and "gift" in t` parses as
+    `christmas or (holiday and gift)`, and the New Year rule likewise reduces to
+    `"new year" or "fitness" or "diet" or ("self-help" and "resolution")`. Any title containing
+    "diet" or "fitness" is classified **"New Year/Fitness"** — including a year-round nutrition
+    textbook. Whether the operator precedence is intended is not obvious from the code.
+  * `:168` — `"travel" in cat_lower` fires before any Christmas/Halloween check would for a
+    travel-category gift book.
+
+## 2.10 Peak-price reasonableness
+
+Covered in full in Priority 1 (A-10, A-17, C-8). Summary of the contract:
+
+* **Inputs:** title, category, `peak_season_str`, price in **dollars**, binding, page count,
+  image URL, rank info, 3-year trend string, 3-year average.
+* **Formula:** none — an LLM yes/no, read as `is_reasonable = "yes" in content` (`:91`).
+* **Rounding:** price formatted `:.2f` into the prompt **and into the cache key** (`:37`).
+* **Null / zero / missing:** no API key → `True` (`:33`); quota exhausted → `True` (`:49`); any
+  exception → `True` (`:104`); empty/`no` completion → `False` → `List_at` set to `-1` (`:600`).
+* **Cache:** key is `title|category|season|price|binding|rank_info|trend_info|avg_3yr`
+  (`:37`). `rank_info` embeds the **current** sales rank and `trend_info`/`avg_3yr` move with the
+  sale set, so the key changes on essentially every re-process of the same ASIN. Already recorded
+  as an open item in the Sept 8 dev log; restated here because it is a correctness point as well
+  as a cost one — a cache that never hits means the yes/no answer can flip between runs for the
+  same book at the same price.
+
+## 2.11 Estimate Trust (`Deal Trust`)
+
+* **Source:** `stable_calculations.py:678-685`; overridden at `processing.py:250`.
+* **Inputs:** `len(sale_events)` and `total_offer_drops` — both from `infer_sale_events`.
+* **Formula:** `(len(sale_events) / total_offer_drops) × 100`, formatted `f"{confidence:.0f}%"`.
+* **Units:** percent. **Rounding:** `.0f` — rounds half to even at the format step, then
+  `clean_numeric_values` strips the `%` and stores a float; the dashboard applies `Math.round`
+  again (`dashboard.html:792`).
+* **Null / zero / missing:** `total_offer_drops == 0` → `'-'` (the divide-by-zero guard works).
+  No upper clamp → can exceed 100% (A-14). Overwritten with the literal string `"Low (Est.)"`
+  when the `1yr. Avg.` listing-average fallback fired (`processing.py:250`), which every SQL
+  filter casts to `0.0`.
+* **Meaning drift:** the numerator counts sales confirmed by a **rank** drop; the denominator
+  counts **offer-count** drops. The doc's description ("High % means offer drops reliably
+  correlate with sales rank drops") is accurate, but the number is not a probability and is not
+  bounded to 100.
+
+## 2.12 Price Trend (the "Ago" arrow)
+
+* **Source:** `new_analytics.py:145-197`.
+* **Inputs:** `csv[1]` (New price history) **and** `csv[2]` (Used price history), concatenated;
+  `stats.avg365[0]` for the sample size.
+* **Formula:** take the last `sample_size` consecutive-unique prices, compare last vs first,
+  emit `⇧` / `⇩` / `⇨`.
+* **Units:** cents throughout (only the sign of the difference is used).
+* **Null / zero / missing:** empty history, fewer than 2 unique prices, or `first_price == 0`
+  → `⇨`. So "flat" is also the value for "no data".
+* Two defects, A-21 and A-22 below.
+
+---
+
+## (A) CONFIRMED DEFECTS — Priority 2
+
+### A-18. The Agent's Choice AI is sent the always-NULL 180-day drop count as its velocity input
+**File:** `keepa_deals/prime_picks_task.py:239` —
+`"Sales_Rank_Drops_last_180_days": d.get("Sales_Rank_Drops_last_180_days")`.
+**Input that breaks it:** every candidate, because that column is never written (P0 A-1).
+**Impact: highest in this Priority.** The Pass 2 payload carries eight fields per candidate
+(`:233-241`). Two of them are velocity signals: `Sales_Rank_Current` and this one. The xAI
+Mastermind is therefore ranking the deals that get promoted to the front of the dashboard while
+being told `null` for half of its demand evidence. The Sept 8 dev log records that Ava's advice
+measurably improved once the deal's own metrics stopped being crowded out — this is the same
+failure in the other direction: a metric that is present in the schema, present in the prompt,
+and empty.
+
+### A-19. Sorting by ROI does not sanitise currency strings, while filtering by ROI does
+**File:** `wsgi_handler.py:2329` (sort) vs `:2190-2196` (filter).
+```sql
+-- sort
+(CAST(deals."Profit" AS REAL) / NULLIF(CAST(deals."All_in_Cost" AS REAL), 0))
+-- filter
+CAST(REPLACE(REPLACE("Profit",'$',''),',','') AS REAL) ...
+```
+**Input that breaks it:** any row where `Profit` or `All_in_Cost` is stored as a `$`-prefixed
+string. SQLite's `CAST('$44.00' AS REAL)` is `0.0`, so such a row sorts as ROI 0 (or as NULL if
+the cost casts to 0) while the filter, which strips the `$`, correctly counts it as passing.
+A row can therefore satisfy "Min. ROI ≥ 50%" and then appear at the very bottom of an
+ROI-descending sort. The Aug 18b dev log documented 1,103 text-typed rows for `List_at`; the
+same storage path produces them for `Profit` and `All_in_Cost`.
+**Impact:** the user's primary ranking tool silently mis-orders an unknown fraction of rows,
+in the direction of hiding the best ones.
+
+### A-20. `clean_numeric_values` casts every key containing "Count" or "Rank" to `int`, and misses "Drops"
+**File:** `keepa_deals/processing.py:314-325`.
+```python
+if "Rank" in key or "Count" in key:
+    try: row_data[key] = int(cleaned_value)
+    except (ValueError, TypeError): row_data[key] = None
+```
+**Input that breaks it, two ways:**
+1. `'Sales Rank - Drops last 365 days'` contains `"Rank"`, so it *is* caught — but
+   `'Drops'` (the 30-day dashboard column, written as a bare key at `processing.py:277`) contains
+   neither "Rank" nor "Count", so `'-'` is left as the literal string `'-'` in an INTEGER column
+   rather than becoming `NULL`. `"Sales_Rank_Drops_last_30_days" >= ?` (`wsgi_handler.py:2200`)
+   then compares an integer against the text `'-'`, and in SQLite **text always sorts above
+   numerics**, so a deal with unknown drops passes *every* "Min. Drops" filter.
+2. `'Used Offer Count - 365 days avg.'` is cast with `int()`, truncating a fractional average
+   (Keepa returns e.g. 12.7) to 12. `get_offer_count_trend_from_flat` (`new_analytics.py:232-237`)
+   then re-parses it with a `\d+` regex, so the comparison it feeds Pass 1 is between two
+   truncated integers — 12.7 vs 12.4 both become 12 and report `flat`.
+**Impact:** (1) is a filter bypass on a velocity control; (2) blunts the Pass 1 offer-trend
+modifier at the margin.
+
+### A-21. `get_trend` selects its sample size from an Amazon **price**, not a sales rank
+**File:** `keepa_deals/new_analytics.py:156-164`.
+```python
+avg_365_rank_raw = stats.get('avg365', [])
+avg_rank = avg_365_rank_raw[0]        # index 0 is the AMAZON PRICE; rank is index 3
+sample_size = 3
+if avg_rank > 0:
+    if avg_rank < 100000:   sample_size = 10
+    elif avg_rank < 500000: sample_size = 5
+```
+**Input that breaks it:** every product. `avg365[0]` is the 365-day average Amazon price **in
+cents**; index 3 is the sales rank. A price under 100,000¢ ($1,000) — which is essentially every
+book — takes the `sample_size = 10` branch. Books with no Amazon price at all fall to
+`sample_size = 3`.
+**Impact:** the "dynamic sample of 3–10 recent price points" that `Data_Logic.md` describes is
+not dynamic. It is 10 for anything Amazon stocks and 3 for anything it does not — the opposite
+grouping from the one intended, since presence of an Amazon offer says nothing about velocity.
+The arrow this produces is shown in the row's "Ago" column and the overlay's "Price Trending".
+
+### A-22. `get_trend` merges New and Used price history into one series
+**File:** `keepa_deals/new_analytics.py:168-169` — `combined_history.extend(csv_data[1])` then
+`extend(csv_data[2])`, sorted together at `:174`.
+**Input that breaks it:** any book with both a New and a Used price history, i.e. most.
+New prices are systematically higher than Used. Sorting the merged series by timestamp
+interleaves two different price levels, so the last-vs-first comparison at `:184-186` can return
+`⇧` purely because the most recent point happened to come from the New series.
+**Impact:** the trend arrow is the only directional signal on the row, and `Dashboard_Specification.md`
+colours it red for up / green for down as a buy signal. It is measuring a mixture.
+
+### A-23. `analyze_sales_rank_trends` writes to a key that is not a column, and ignores half its inputs
+**File:** `keepa_deals/new_analytics.py:199-216`, called at `processing.py:242`.
+`avg90` is read at `:206` and never used; the comment at `:214` says *"Simple average of the two
+trends"* but `:216` returns the 30-day figure alone. More importantly the return key,
+`"Sales Rank Trend %"`, does not appear in `headers.json`, so `row_data.update(...)` adds an entry
+the upsert never binds. The whole function is computed and discarded on every heavy ingest.
+**Impact:** low on its own — nothing consumes it — but it means there is **no rank-trend metric in
+the system at all**, despite one being computed. Worth knowing before anyone builds on it.
+
+### A-24. The seasonality heuristic matches `"ap"` as an unanchored substring
+**File:** `keepa_deals/seasonality_classifier.py:132` —
+`if "ap" in title_lower and ("high school" in cat_lower or is_textbook_publisher):`
+**Input that breaks it:** any title containing the bigram `ap` — "Grapes of Wrath", "Capital",
+"Therapy", "Chapter", "Landscape", "Rapid", "Graphic" — from Cengage, McGraw-Hill, Pearson,
+Wiley, Macmillan or Sage. Classified **"High School AP Textbooks"**, which
+`get_sells_period` maps to "Jul - Sep".
+**Impact:** `Detailed_Seasonality` drives the Season column, the `Sells` window, the Advisor
+prompt, and the Prime Picks Year-Round Velocity Cap (a book labelled anything other than
+"year-round" is **exempt** from the rank > 2,000,000 rejection at `prime_picks_task.py:191`).
+A false seasonal label therefore lets a dead-rank book through the one structural velocity gate
+Pass 1 has.
+
+### A-25. Every book from a textbook publisher is forced to "Textbook (Summer)" without reaching the AI
+**File:** `keepa_deals/seasonality_classifier.py:135-141`.
+```python
+if "college" in title_lower or "university" in title_lower or is_textbook_publisher:
+    ...
+    return "Textbook (Summer)"   # comment: "Defaulting to most common"
+```
+**Input that breaks it:** any title whose manufacturer contains cengage / mcgraw-hill / pearson /
+wiley / macmillan / sage — including Wiley's and Macmillan's large trade imprints, which publish
+cookbooks, fiction and business titles.
+**Impact:** same propagation path as A-24, plus it suppresses the xAI classification entirely for
+a large share of the catalogue (the AI is only called when no heuristic matches, `:174-179`).
+
+### A-26. `and`/`or` precedence collapses two seasonal rules
+**File:** `keepa_deals/seasonality_classifier.py:158` and `:161`.
+```python
+if "christmas" in title_lower or "holiday" in title_lower and "gift" in title_lower:
+if "new year" in title_lower or "fitness" in title_lower or "diet" in title_lower or "self-help" in title_lower and "resolution" in title_lower:
+```
+Python binds `and` tighter, so these are `christmas or (holiday and gift)` and
+`new year or fitness or diet or (self-help and resolution)`.
+**Input that breaks it:** any title containing "diet" or "fitness" → **"New Year/Fitness"**
+("Jan - Feb" selling window). A year-round nutrition or clinical dietetics textbook is labelled a
+January seasonal item — and, per A-24's note, thereby exempted from the year-round velocity cap.
+**Impact:** wrong `Sells` window shown to the user, wrong seasonal framing in the Advisor prompt,
+and a Pass 1 gate bypass. Whether the "holiday and gift" pairing was intended is readable; the
+"self-help and resolution" one clearly was, which makes the surrounding `or`s look accidental.
+
+### A-27. The `Drops` filter and the `Drops` display disagree about rounding, in three different ways
+**Files:** `wsgi_handler.py:2262` (`CAST("Percent_Down" AS INTEGER) >= ?`),
+`:2212` (`CAST(REPLACE("Deal_Trust",'%','') AS REAL) >= ?`), `:2219`
+(`seller_trust_db_value = (input − 0.5) / 10.0`) versus `dashboard.html:792-797`
+(`Math.round(...)` for all three).
+**Input that breaks it:** any value that rounds up across a filter threshold.
+`Percent_Down = 9.6` displays as **10%** and is excluded by "Min. Below Avg ≥ 10" because
+`CAST('9.6' AS INTEGER)` truncates to 9. `Deal_Trust = 69.6` displays as **70%** and is excluded
+by "Min. Deal Trust ≥ 70". `Seller_Quality_Score` is the **only** one of the three that
+compensates — `:2219` deliberately shifts the threshold by half a display unit to match
+`Math.round`, with a comment saying so.
+**Impact:** a user who sets a slider to the value they can see on screen loses rows that display
+as satisfying it. Low individually; it is listed because the fix pattern already exists in the
+same function and was applied to one field out of three.
+
+### A-28. The displayed FBA fee column and the fee used in the profit maths are different numbers
+**File:** `stable_products.py:1639-1641` returns `'-'` when `pickAndPackFee` is missing;
+`processing.py:167` and `:504` substitute **550¢** for the same condition.
+**Input that breaks it:** any product Keepa has no dimension data for.
+**Impact:** `FBA Pick&Pack Fee` stores `'-'` while `Profit` was computed with $5.50 deducted.
+Nothing on the dashboard surfaces the column today, so this is currently invisible — but the
+$5.50 and the 15% referral default are load-bearing assumptions in every Profit figure on the
+site and are recorded nowhere outside these two lines.
+
+---
+
+## (B) QUESTIONS FOR TIM — Priority 2
+
+### B-11. Is the Prime Picks time decay meant to be inert?
+**As built:** `score` is multiplied by `0.5 ** (hours_since / half_life)`, where
+`hours_since = get_hours_since(last_seen_utc or Deal_found)` (`prime_picks_task.py:174`).
+`last_seen_utc` is re-stamped to *now* on **every** upsert (`smart_ingestor.py:572`), and the
+Janitor deletes anything that reaches 72 hours without one. So for any deal still on the
+dashboard, `hours_since` is at most 72 and typically near zero, against a half-life of 24–168+
+hours. The decay factor is therefore ≈ 1 for nearly every candidate.
+**Argument it is deliberate:** `last_seen_utc` is the freshest timestamp available and the
+fallback to `Deal_found` suggests "age of the deal" was the intent.
+**Argument it is a bug:** if the intent was "prefer deals we found recently", the field wanted is
+`Deal_found`, and `last_seen_utc` defeats it. The Sept 8b dev log describes decay as something
+that "move[s] rows independently" of profit — from the code, it does not.
+
+### B-12. Should the half-life keep growing above rank 2,000,000?
+`base_half_life = 24 + (sales_rank / 2000000.0) * 144` (`:187`) is unbounded. Rank 10,000,000
+gives 744 hours. The slowest-moving inventory gets the slowest decay, so it lingers in the
+ranking longest. The `PASS_1_YEAR_ROUND_VELOCITY_CAP` removes such items **only if**
+`Detailed_Seasonality == 'year-round'` — and A-24/A-25/A-26 mean a large share of the catalogue
+carries a seasonal label instead. Is the unbounded growth intended, or should it clamp at 168?
+
+### B-13. Are the $5.50 FBA and 15% referral defaults the right ones, and should they be config?
+They are hardcoded at four call sites (`processing.py:167`, `:173`, `:504`, `:509`), do not appear
+in `settings.json`, and are not in any doc. 15% is correct for the Books referral category; the
+$5.50 is a flat stand-in for a weight-dependent fee. `AGENTS.md` §6.3 asks that hardcoded config
+found during a task be reported rather than moved — reporting it.
+
+### B-14. Is the seasonality heuristic chain meant to short-circuit the AI?
+`classify_seasonality` calls xAI only when **no** heuristic matches (`:174-179`). Given A-24 and
+A-25, the heuristics match very often. Is the heuristic layer intended as a cost saver that the
+AI backs up, or as the primary classifier with the AI as a long tail? The answer decides whether
+A-24/A-25 are bugs or tuning.
+
+### B-15. Should `Percent_Down` and `1yr_Avg` be numeric columns?
+Both are `TEXT` (`db_utils.py:239-249`: the `explicit_real_types` list does not contain "Avg",
+and the header `% Down` matches no keyword). Consequences: column sorting is lexicographic
+(already your open card), and `CAST("Percent_Down" AS INTEGER)` truncates rather than rounds
+(A-27). Flagging that the two symptoms share one cause.
+
+### B-16. Is Deal Trust supposed to be a percentage?
+It is `confirmed_sales ÷ offer_count_drops`, which is not bounded to 1 and mixes two different
+event types (rank-confirmed sales over offer-count drops). It is rendered with a `%` sign, filtered
+as a percentage, and used as a 0–100 slider. See A-14 for the two XAI-rescue cases where it goes
+above 100% or disappears entirely.
+
+---
+
+## (C) DOC/CODE DRIFT — Priority 2
+
+### C-13. `Data_Logic.md` describes the Trend sample as dynamic on rank
+> **Logic:** Analyzes a sample (size 3-10) of recent **unique** price points.
+
+`Dashboard_Specification.md` shows the arrow as a buy signal. The code selects the sample by an
+Amazon **price** (A-21) and pools New with Used history (A-22). **The doc describes the intent;
+the code does not implement it.**
+
+### C-14. `Data_Logic.md` says the Offers trend compares "Current Count vs 30-day Avg" and "90-day vs 180-day"
+Code agrees: `get_offer_count_trend` uses `avg30[12]` (`new_analytics.py:274-287`),
+`get_offer_count_trend_180` uses `avg90[12]` vs `avg180[12]` (`:307-331`), and
+`get_offer_count_trend_365` uses `avg180[12]` vs `avg365[12]` (`:350-373`). ✅ **No drift** —
+recorded because it is the one multi-window metric in the system that matches its documentation.
+
+### C-15. `Data_Logic.md` does not record the hardcoded fee defaults
+The `All-in Cost` / `Profit` entries list "Amazon Fees (FBA + Referral)" as an input without
+noting that both fall back to fixed constants when Keepa omits them (A-28, B-13). Every Profit
+figure on a product with no dimension data is built on $5.50 that the doc does not mention.
+
+### C-16. `Dashboard_Specification.md`'s Optimal Filters preset does not match Prime Picks' Smart Floor
+The doc lists the Magic Button preset as Profit ≥ $45, ROI ≥ 20%, Rank ≤ 1M, Drops ≥ 2,
+Trust ≥ 70%, Seller ≥ 5/10, Below Avg ≥ 10%. The Agent's Choice Smart Floor is a **different**
+set of numbers in two places: `wsgi_handler.py:2228-2231` (Profit ≥ 10, ROI ≥ 15, Deal Trust ≥ 40,
+List_at ≤ 1500) and `prime_picks_task.py:17-21` (Profit ≥ 15, ROI 20–300, Deal Trust ≥ 50,
+List_at ≤ 500). Three different floors, none of them documented together, and the SQL one at
+`wsgi_handler.py:2228` is applied **on top of** the cached Pass 1 result — so a deal that Pass 1
+selected under `List_at ≤ 500` is re-tested against `List_at ≤ 1500` at read time. Not wrong,
+but the numbers should be in one place in the doc.
+
+### C-17. `Data_Logic.md`'s `Deal Trust` definition understates the range
+> **Logic**: `(Count of Inferred Sales / Count of Offer Drops) * 100`.
+
+Correct as an expression. The doc presents it as a confidence percentage without noting that
+it is unbounded above 100 on the XAI rescue path, or that the numerator and denominator count
+different kinds of event. See A-14, B-16.
