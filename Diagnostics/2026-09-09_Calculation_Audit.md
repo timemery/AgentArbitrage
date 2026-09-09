@@ -476,13 +476,15 @@ fields survive indefinitely under a heading that promises freshness.
 **The doc is misleading rather than wrong** — every individual sentence is accurate; the
 section title and framing over-claim. Which side should move is an owner decision.
 
-### C-3. `Data_Logic.md` describes a `Deal Trust` fallback state that can no longer occur
+### C-3. `Data_Logic.md` describes a `Deal Trust` fallback state — CORRECTED IN PRIORITY 1
 > **Fallback Status**: If the deal uses the `avg365` fallback price … this field is set to
 > **"Low (Est.)"**.
 
-The `avg365` / "Silver Standard" fallback was removed in March 2026 (recorded in
-`AGENTS.md` §7.1 and in `INFERRED_PRICE_LOGIC.md`). **The code is correct; the doc retains a
-dead state.** Note also that `/api/deals` filters `Deal_Trust` with
+**Correction (see Priority 1): this state IS still reachable.** The `avg365` fallback was
+removed from `stable_calculations.py` in March 2026, but a second one survives in
+`new_analytics.py:83-107` (the `1yr. Avg.` path), and `processing.py:250` reads its
+`price_source` flag and writes `"Low (Est.)"`. The doc is not describing a dead state.
+The rest of this item stands: `/api/deals` filters `Deal_Trust` with
 `CAST(REPLACE("Deal_Trust", '%', '') AS REAL) >= ?` (`wsgi_handler.py:2212`), which casts the
 literal string `"Low (Est.)"` to `0.0` — so any surviving row in that state is silently
 excluded by every non-zero Deal Trust filter.
@@ -501,3 +503,482 @@ drift.
 The code polls at **60 seconds** (`templates/dashboard.html:1343` `setInterval(...)`, closing
 `}, 60000);` at `:1399`). `Dashboard_Specification.md` is correct;
 `Feature_Deals_Dashboard.md` is wrong. Cosmetic, listed for completeness.
+
+---
+---
+
+# PRIORITY 1 — INFERRED SALE PRICE
+
+`INFERRED_PRICE_LOGIC.md` traced against `keepa_deals/stable_calculations.py` and
+`keepa_deals/new_analytics.py`.
+
+## Correction to Priority 0, C-3
+
+P0 C-3 stated that the `Deal Trust = "Low (Est.)"` state can no longer occur. **That is wrong,
+and the reason matters for this Priority.** The state is still reachable: `new_analytics.py:107`
+sets `price_source = 'Keepa Stats Fallback'` from a *live* listing-average fallback inside
+`get_1yr_avg_sale_price`, and `processing.py:250` reads that flag and writes
+`row_data['Deal Trust'] = "Low (Est.)"`. What was removed in March 2026 was the fallback in
+`stable_calculations.py` (the `List at` path). A second one survives in `new_analytics.py`
+(the `1yr. Avg.` path) — see A-8 below. The rest of C-3 stands: `wsgi_handler.py:2212` casts
+`"Low (Est.)"` to `0.0`, so any non-zero Deal Trust filter silently excludes those rows.
+
+## Stage-by-stage trace
+
+### Stage 1 — Inferring sale events (`infer_sale_events`, `stable_calculations.py:174`)
+
+| Doc claim (`INFERRED_PRICE_LOGIC.md` §2) | Code | Match |
+| --- | --- | --- |
+| Correlate within a **240-hour** window | `:254` `search_window = timedelta(hours=240)` | ✅ |
+| "over the last **two years**" | `:206` `timedelta(days=1095)` — **three years** | ❌ doc stale |
+| Trigger = drop in New **or** Used offer count | `:213-232`, `csv[11]` and `csv[12]`, `.diff() < 0` | ✅ |
+| Confirmation = drop in sales rank, `csv[3]` | `:250-252`, `df_rank['rank_diff'] < 0` | ✅ |
+| Price via `pandas.merge_asof`, nearest listing price | `:305` `direction='nearest'` | ✅ |
+| Sparse lookahead **30 days** (`Data_Logic.md` §3) | `:271` `timedelta(days=30)` | ✅ |
+
+### Stage 1.5 — XAI Rescue (`xai_sales_inference.py`)
+
+| Doc claim (§2.5) | Code | Match |
+| --- | --- | --- |
+| Fires on 0 confirmed sales **or** no offer drops | two call sites, `:236` and `:315` | ✅ |
+| Skipped when rank > 2,000,000 | in `infer_sales_with_xai` | ✅ |
+| Rescued sales "injected back into the pipeline as valid Inferred Sales" | `:243` and `:322` `return` **before** the IQR block at `:328-341` | ❌ — see A-9 |
+
+### Stage 2 — Sanitisation (`stable_calculations.py:328-341`)
+
+Symmetrical IQR exactly as documented: Q1/Q3 via `np.percentile`, bounds `Q1 − 1.5·IQR` and
+`Q3 + 1.5·IQR`, inclusive filter. ✅ But note two undocumented consequences, both material:
+
+* It runs **once, across the whole 3-year set, before any seasonal grouping**. A genuine
+  off-season trough sale is a low outlier relative to peak-season sales, so it can be deleted
+  before `Expected Trough Price` is computed from the trough month. The trough estimate is
+  therefore derived from a set whose lowest prices have already been trimmed. Worked example 1
+  below shows this happening.
+* It is skipped entirely for XAI-rescued sales (A-9).
+
+### Stage 3 — Price calculation (`analyze_sales_performance`, `stable_calculations.py:403`)
+
+| Doc claim (§4A) | Code | Match |
+| --- | --- | --- |
+| Peak Month = highest **median** price | `:470` `monthly_stats['median'].idxmax()` | ✅ |
+| Primary: **Mode** of peak month | `:493-495` `st.mode`, used when `count > 1` | ✅ |
+| Fallback 1: **Median** if no distinct mode | `:497` | ✅ |
+| Sparse Rescue when sales < **3** | `:415` `MIN_SALES_FOR_ANALYSIS = 3`, `:450` median | ✅ |
+| Ceiling = 90% of `Min(AMZ current, 180d, 365d)` | `:504-519` | ✅ |
+| Trough = **median** of trough month | `:482` | ✅ (but only on the ≥3-sale branch — A-11) |
+| Hard ceiling: price > $1,500 rejected without AI | `:566` — applied to the **post-cap** price | ⚠️ order, see C-8 |
+| 3× current-Used markup **forces** the AI check | `:581` | ✅ |
+| Sparse / Fallback source **skips** the AI check | `:591` | ✅ |
+| *(no doc claim)* | `:588` **`elif is_capped_by_ceiling: is_reasonable = True`** | ❌ undocumented third bypass — A-10 |
+
+### 1-Year Average (`get_1yr_avg_sale_price`, `new_analytics.py:34`)
+
+| Doc claim (§4B) | Code | Match |
+| --- | --- | --- |
+| Filter sane sales to last 365 days | `:63-64` | ✅ |
+| **Mean** of those prices | `:67` `.mean()` | ✅ (the function's own docstring at `:36` says "median" — wrong) |
+| Threshold: at least **1** sale | `:66` `if len(df_last_year) >= 1` | ✅ |
+| Fallback: `stats.avg365` (**Used**) | `:83-104` builds five candidates and `:107` takes **`max`** | ❌ — A-8 |
+
+---
+
+## Worked example 1 — normal path, ≥3 sales
+
+Six confirmed sale events (cents), all inside the 3-year window:
+
+| Date | Price (cents) |
+| --- | --- |
+| 2025-08-14 | 4200 |
+| 2025-08-27 | 5500 |
+| 2025-09-02 | 5500 |
+| 2026-01-11 | 2800 |
+| 2026-08-19 | 5500 |
+| 2026-08-30 | 6900 |
+
+**Step 1 — IQR sanitisation** (`:328-341`). Sorted: 2800, 4200, 5500, 5500, 5500, 6900.
+
+```
+Q1 (25th pct, linear) = 4200 + 0.25 × (5500 − 4200) = 4525
+Q3 (75th pct, linear) = 5500
+IQR                   = 5500 − 4525          = 975
+lower = 4525 − 1.5 × 975 = 3062.5
+upper = 5500 + 1.5 × 975 = 6962.5
+```
+
+2800 < 3062.5 → **rejected**. 6900 ≤ 6962.5 → kept. `sane_sales` = 5 events.
+**The January sale — the only winter data point, and the one a trough estimate depends on — is
+gone before seasonality is ever considered.**
+
+**Step 2 — seasonal grouping** (`:466-473`). Month 8: 4200, 5500, 5500, 6900 → median 5500.
+Month 9: 5500 → median 5500.
+
+```
+monthly_stats['median'].idxmax() → tie at 5500 → pandas returns the FIRST index → month 8
+monthly_stats['median'].idxmin() → tie at 5500 → pandas returns the FIRST index → month 8
+peak_season_str = 'Aug'   trough_season_str = 'Aug'
+```
+
+Peak and trough collapse to the same month on a median tie. The code comments the single-month
+case (`:471`, *"If only 1 month, peak and trough are the same"*) but does not guard the tie.
+`Expected Trough Price` = median of month 8 = 5500 = **$55.00 — identical to the peak.**
+
+**Step 3 — `List at`** (`:490-497`). `peak_season_prices = [4200, 5500, 5500, 6900]`.
+`st.mode` → value 5500, count 2. `count > 1` → mode wins.
+`peak_price_mode_cents = 5500` → `get_list_at_price` (`:648`) → **`List at = $55.00`**.
+
+**Step 4 — Amazon ceiling** (`:504-527`). Say `stats.current[0] = 8900`, `avg180[0] = 9500`,
+`avg365[0] = 9900`. `min = 8900`; `ceiling = 8900 × 0.90 = 8010`. `5500 ≤ 8010` → not capped.
+
+**Step 5 — gates** (`:566-596`). `5500 ≤ 150000` → not absurd. `stats.current[2] = 2600`
+($26.00 current Used) → `ratio = 5500 / 2600 = 2.12` ≤ 3.0 → not suspicious.
+`price_source = 'Inferred Sales'`, not capped → falls to the `else` → **AI check runs.**
+Matches the doc exactly.
+
+**Step 6 — downstream.** From 2026-09-09, `one_year_ago = 2025-09-09`. Sane sales inside it:
+5500 and 6900 (the 2026-01-11 event was the outlier that was removed).
+
+```
+1yr Avg      = (5500 + 6900) / 2 / 100                   = $62.00
+Percent Down = ((62.00 − 26.00) / 62.00) × 100           = 58.06%
+all_in_cost  = 26.00 + (26.00 × 0.15) + 2.50 + 2.00      = $34.40
+fba_fee      = 550 / 100                                  = $5.50
+referral     = 55.00 × 0.15                               = $8.25
+AMZ fees     = 8.25 + 5.50                                = $13.75
+Profit       = 55.00 − 34.40 − 13.75                      = $6.85
+Margin       = 6.85 / 55.00 × 100                         = 12.45%
+ROI          = 6.85 / 34.40 × 100                         = 19.91%
+Min list at  = (34.40 + 5.50) / (1 − 0.10 − 0.15)         = $53.20
+```
+
+Note the shape of the result: **Min. List at ($53.20) is within $1.80 of Max. List at ($55.00).**
+The whole deal rests on a $1.80 band, and the overlay does not show them adjacently in a way
+that makes that visible — and per P0 A-3 it does not even show $55.00, it shows
+`List_Price_Highest`.
+
+## Worked example 2 — sparse rescue, 2 sales, forced AI check
+
+Two confirmed events: 3000 and 9000 cents.
+
+**IQR with n = 2** (`:330-334`):
+
+```
+Q1 = 3000 + 0.25 × 6000 = 4500
+Q3 = 3000 + 0.75 × 6000 = 7500
+IQR = 3000;  lower = 0;  upper = 12000
+```
+
+With two points the bounds always straddle both, so **IQR can never reject anything at n ≤ 3.**
+Both survive.
+
+`len(sane_sales) = 2 < MIN_SALES_FOR_ANALYSIS` → sparse branch (`:447-452`):
+
+```
+peak_price_mode_cents = median([3000, 9000]) = 6000  →  List at = $60.00
+price_source          = 'Inferred Sales (Sparse)'
+peak_season_str       = '-'      (never assigned on this branch)
+trough_season_str     = '-'      (never assigned)
+expected_trough_price = -1       (never computed)
+```
+
+Ceiling: assume no Amazon offer → `valid_amz_prices` empty → no cap.
+Hard ceiling: `6000 ≤ 150000` → not absurd.
+3× check: `stats.current[2] = 1800` ($18.00) → `ratio = 6000 / 1800 = 3.33 > 3.0` →
+`is_suspiciously_high = True` → the sparse skip at `:591` is bypassed → **AI check runs.**
+
+That is what the doc says should happen. **But the prompt it runs is degraded**: `season` is
+passed as `peak_season_str`, which on this branch is the literal string `-`. The model is asked
+*"is a peak selling price of $60.00 reasonable during -?"* (`:60` of the prompt template) with
+`Identified Peak Season: "-"`. The seasonal context the doc calls "critical to prevent the AI
+from falsely rejecting valid peak season prices" is absent in exactly the case flagged as most
+in need of scrutiny. See A-12.
+
+Downstream:
+
+```
+all_in_cost = 18.00 + (18.00 × 0.15) + 2.50 + 2.00 = $25.20
+referral    = 60.00 × 0.15                          = $9.00
+AMZ fees    = 9.00 + 5.50                           = $14.50
+Profit      = 60.00 − 25.20 − 14.50                 = $20.30
+Margin      = 20.30 / 60.00 × 100                   = 33.83%
+ROI         = 20.30 / 25.20 × 100                   = 80.56%
+```
+
+**A median of exactly two sales, $30 and $90, produces an 80.6% ROI headline** and an
+`Expected Trough Price` of nothing. The dashboard's Estimate Trust column carries the only hint,
+and only if `total_offer_drops` was non-zero.
+
+## Worked example 3 — the `1yr. Avg.` listing-average fallback
+
+Four confirmed sales, all in 2024, none inside the last 365 days. `df_last_year` is empty
+(`:64-66`), so `mean_price_cents` stays `-1` and the fallback at `:74-110` fires.
+
+`stats.avg365` (cents):
+
+| Index | Condition | Value |
+| --- | --- | --- |
+| 2 | Used | 3100 |
+| 19 | Used - Like New | 8800 |
+| 20 | Used - Very Good | 6400 |
+| 21 | Used - Good | 4200 |
+| 22 | Used - Acceptable | 2900 |
+
+```
+candidates = [3100, 8800, 6400, 4200, 2900]
+:107  mean_price_cents = max(candidates) = 8800     # comment reads "Use the Max (Optimistic)"
+1yr Avg = $88.00
+```
+
+The doc (§4B step 4) says the fallback is **`stats.avg365` (Used)** — index 2 — which is
+**$31.00**. The code returns **$88.00**, 2.84× higher, by selecting the most expensive condition
+tier available.
+
+Effect on the discount signal, with `Price Now = $26.00`:
+
+```
+As coded (max):     ((88.00 − 26.00) / 88.00) × 100 = 70.45%
+As documented (Used): ((31.00 − 26.00) / 31.00) × 100 = 16.13%
+```
+
+Same book, same moment. One reads as an extraordinary find, the other as ordinary. The Advisor
+is handed the coded version verbatim — *"1-Year Average Price: $88.00, Percent Down from Avg:
+70%"* (`ava_advisor.py:461-462`) — with no indication that no sale at $88.00 was ever observed.
+
+These are **listing averages, not sale prices.** `AGENTS.md` §7.1 and `INFERRED_PRICE_LOGIC.md`
+both state that fallbacks to listing averages are strictly prohibited, and the removed "Silver
+Standard" used `min(avg90, avg365)` on the **Used** index only. This surviving fallback is
+strictly more aggressive than the one that was deliberately deleted.
+
+Partial mitigation: `price_source = 'Keepa Stats Fallback'` propagates to
+`processing.py:250`, which overwrites `Deal Trust` with `"Low (Est.)"`, and
+`wsgi_handler.py:2212` casts that string to `0.0` — so any non-zero Min. Deal Trust filter
+(including Optimal Filters at 70%) excludes these rows. They are visible only with Deal Trust
+set to "Any", where they show the inflated 70% discount and a blank-looking trust column.
+
+---
+
+## (A) CONFIRMED DEFECTS — Priority 1
+
+### A-8. `1yr. Avg.` falls back to the **maximum** of five Keepa listing averages
+**File:** `keepa_deals/new_analytics.py:83-107` — candidates built from `avg365` indices
+2, 19, 20, 21, 22, then `mean_price_cents = max(candidates)` at `:107`.
+**Input that breaks it:** any deal with zero inferred sales inside the last 365 days but
+non-empty `stats.avg365`. Worked example 3: documented $31.00 becomes $88.00, and
+`Percent Down` goes from 16% to 70%.
+**Impact: highest in this Priority.** It is a listing average, not a sale price, which is the
+exact failure mode `AGENTS.md` §7.1 and `INFERRED_PRICE_LOGIC.md` were written to prevent, and
+`max()` is the most optimistic possible selection. It feeds `Percent Down`, the "Min. Below
+Avg. (%)" filter, and the Advisor's headline discount. It does **not** feed `List at`, so
+Profit and Margin are unaffected — that is the only thing keeping it out of the wrong-buy
+category outright.
+
+### A-9. XAI-rescued sale events bypass the IQR outlier rejection entirely
+**File:** `keepa_deals/stable_calculations.py:243` and `:322` — both XAI branches `return`
+before the sanitisation block at `:328-341`.
+**Input that breaks it:** any deal where the algorithmic path finds zero confirmed sales or no
+offer drops, so the rescue fires. Every price the model returns is accepted verbatim.
+**Impact:** these are precisely the least-verified sale events in the system — inferred by an
+LLM reading a history table rather than by the offer-drop/rank-drop correlation — and they are
+the only ones exempted from the safety net the doc describes as protecting against "penny books
+or repricer errors". A single hallucinated high price becomes the median in the sparse branch
+(`:450`), and the sparse branch also skips the AI reasonableness check unless the 3× rule
+happens to fire.
+
+### A-10. A price capped by the Amazon ceiling skips the AI reasonableness check, undocumented
+**File:** `keepa_deals/stable_calculations.py:588` — `elif is_capped_by_ceiling: is_reasonable = True`.
+**Input that breaks it:** any computed `List at` above 90% of the lowest Amazon New price. The
+branch sits **above** the sparse check at `:591`, so it also pre-empts the 3× forced check —
+`is_suspiciously_high` is computed at `:576-583` and then never consulted on this path.
+**Impact:** a wildly wrong computed price (bad history, one hallucinated XAI sale) that lands
+above the Amazon ceiling is silently clamped to 90% of Amazon New and passed through with no
+scrutiny at all. The clamp makes it *bounded*, not *right* — 90% of Amazon New on a book with no
+real used demand is still a listing price no one will pay. Not mentioned anywhere in
+`INFERRED_PRICE_LOGIC.md` §4A step 4, which lists only two skip conditions.
+
+### A-11. `Expected Trough Price` and both season strings are never computed on the sparse branch
+**File:** `keepa_deals/stable_calculations.py:447-452` — the sparse branch assigns only
+`peak_price_mode_cents` and `price_source`. `peak_season_str` / `trough_season_str` keep their
+`'-'` initialisers from `:419-420`; `expected_trough_price_cents` keeps `-1` from `:421`.
+**Input that breaks it:** any deal with 1 or 2 inferred sales — the Sparse Sales Rescue case the
+March 2026 policy specifically preserved.
+**Impact:** the overlay's "Est. Buy Date" and "Est. Buy Price" (Group 4 of the Deal Details grid)
+are blank for every sparse deal, and `Peak Season` is `-`. Compounds A-12.
+
+### A-12. The seasonality classifier is always fed `'-'` for peak and trough month
+**File:** `keepa_deals/processing.py:259-260`:
+```python
+peak_season_str  = row_data.get('Peak Sales Month',  '-')
+trough_season_str = row_data.get('Trough Sales Month', '-')
+```
+The keys written upstream are **`Peak Season`** and **`Trough Season`** — `get_peak_season`
+(`stable_calculations.py:643`) returns `{'Peak Season': ...}` and `headers.json` index 234 is
+`Peak Season`. `'Peak Sales Month'` is not a key anywhere in the codebase, so both `.get()`
+calls always hit the default.
+**Input that breaks it:** every deal, on every heavy ingest.
+**Impact:** `classify_seasonality` (`seasonality_classifier.py:103`) is called with
+`peak_season_str = '-'` and `trough_season_str = '-'` for every book ever processed.
+`Data_Logic.md` states the AI classifies "based on title, category, and **historical peak sales
+months**" — the historical months are computed, stored, and then not delivered. The
+`Detailed_Seasonality` value on every row is a title-and-category guess with the actual
+observed seasonality withheld. `Detailed_Seasonality` drives the Season column, `Sells`
+(Est. Sell Date), the Advisor prompt, and the Prime Picks "Year-Round Velocity Cap"
+(`prime_picks_task.py`, rank > 2,000,000 rejection for non-seasonal items), so a
+misclassification propagates into the Agent's Choice selection itself.
+*Note the same class as PR #323: a display-name/DB-column key mismatch. This one is a
+display-name/display-name mismatch and was not in that sweep.*
+
+### A-13. `infer_sale_events` is re-run three or more times per product, with a non-deterministic branch
+**File:** called at `stable_calculations.py:354` (`recent_inferred_sale_price`), `:637`
+(`_get_analysis`), `:680` (`deal_trust`), and `new_analytics.py:54`
+(`get_1yr_avg_sale_price`). Only `analyze_sales_performance` is memoised (`_analysis_cache`,
+`:626-641`); `infer_sale_events` itself is not.
+**Input that breaks it:** any deal that takes the XAI rescue path. Each call re-runs
+`infer_sales_with_xai`, which is an LLM call — so `deal_trust` can compute its numerator from a
+*different* set of rescued sales than the one `List at` was derived from.
+**Impact:** the Estimate Trust percentage shown next to a price can describe a different sale
+set than the price. It also multiplies the XAI sales-inference cost (measured at ~1,821 tokens
+per call in the Sept 8 dev log) by 4 per rescued deal.
+
+### A-14. `Deal Trust` can exceed 100%, and is `'-'` for the strongest rescue case
+**File:** `keepa_deals/stable_calculations.py:678-685`.
+`confidence = (len(sale_events) / total_offer_drops) * 100`, with no upper clamp.
+**Input that breaks it:** the second XAI rescue branch (`:322`) returns rescued sales together
+with the *real* `total_offer_drops_count`. If the model reports more sales than there were
+offer drops — which is the entire premise of "hidden sales", stock depth > 1 — the ratio
+exceeds 1.0 and Deal Trust renders as e.g. `240%`. The first rescue branch (`:243`) returns
+`0` for the drop count, so `deal_trust` returns `'-'` (the divide-by-zero guard at `:681`
+works), which then casts to `0.0` in `wsgi_handler.py:2212` and is excluded by every non-zero
+Deal Trust filter.
+**Impact:** the two XAI rescue paths produce opposite Deal Trust pathologies — one
+above 100%, one hidden from the dashboard entirely.
+
+### A-15. `NaN` from `merge_asof` survives the price guard and can void every sale event
+**File:** `keepa_deals/stable_calculations.py:305-311`.
+```python
+price_at_sale_time = pd.merge_asof(...)['price_cents'].iloc[0]
+if price_at_sale_time <= 0:   # NaN <= 0 is False → NaN is appended
+    continue
+```
+**Input that breaks it:** any offer drop whose nearest price lookup yields `NaN` — an empty or
+all-`NaT` price frame for that condition. The `NaN` enters `confirmed_sales`, then
+`np.percentile` at `:330-331` returns `NaN`, so `lower_bound` and `upper_bound` are `NaN`, and
+`lower <= x <= upper` is `False` for **every** element. `sane_sales` comes back empty and the
+deal is rejected as having no inferred sales.
+**Impact:** one bad price lookup silently discards a fully valid sale history. It is
+indistinguishable in the logs from a genuine zero-sale deal.
+
+### A-16. `merge_asof(direction='nearest')` has no tolerance
+**File:** `keepa_deals/stable_calculations.py:305`.
+**Input that breaks it:** a used-price history with a long gap — common on slow-moving books.
+With no `tolerance=` argument, the nearest match can be months away from the offer drop, and
+that price is recorded as the sale price. `INFERRED_PRICE_LOGIC.md` §2b describes this as
+finding "the nearest listing price from the history at the **exact time** of the sale", which
+implies a bound the code does not impose.
+**Impact:** individual sale prices can be attributed from an unrelated market period. The IQR
+step will catch an extreme case; a moderately wrong one passes.
+
+### A-17. An empty xAI completion silently rejects the price
+**File:** `keepa_deals/stable_calculations.py:91` — `is_reasonable = "yes" in content`.
+**Input that breaks it:** any response whose visible content is empty or does not contain the
+substring `yes`. The payload sets `"max_tokens": 10` (`:79`) against
+`grok-4-fast-reasoning`, a reasoning model; if the budget is consumed before a visible token is
+emitted, `content` is `''`, `is_reasonable` is `False`, and `peak_price_mode_cents` is set to
+`-1` at `:600` — the deal loses its `List at` and is persisted as incomplete.
+**Impact:** a transport-level condition is indistinguishable from a considered AI rejection.
+Note the asymmetry: every *error* path fails open (`:33`, `:49`, `:104` all `return True`) but
+this one fails closed. Frequency needs live logs — see B-9.
+
+---
+
+## (B) QUESTIONS FOR TIM — Priority 1
+
+### B-6. Should the `1yr. Avg.` Keepa Stats fallback exist at all?
+**Evidence it is deliberate:** `INFERRED_PRICE_LOGIC.md` §4B step 4 explicitly documents a
+fallback to `stats.avg365`, and `processing.py:250` has purpose-built handling that downgrades
+Deal Trust to `"Low (Est.)"` when it fires. Somebody built the whole warning path around it.
+**Evidence it is a leftover:** `AGENTS.md` §2 forbids reintroducing "fallback pricing logic
+that uses listing averages"; §7.1 says "If the primary data source is missing, REJECT the deal";
+and the same document's own Critical Warning calls listing-average fallbacks "strictly
+prohibited". The March 2026 removal appears to have covered only `stable_calculations.py`.
+**Separable sub-question:** even if the fallback stays, is `max()` intended? The removed Silver
+Standard used `min()` of two values on the Used index alone, specifically to be conservative.
+`max()` of five condition tiers is the opposite choice, and the code comment
+(`new_analytics.py:106`, *"Use the Max (Optimistic)"*) reads as intentional.
+
+### B-7. Should the Amazon-ceiling cap be treated as a substitute for the AI check?
+**Evidence it is deliberate:** the log line at `:589` says *"Price is capped by Amazon Ceiling
+(Safe). Skipping AI Reasonableness Check"* — someone reasoned about this and called it safe,
+and it does save an xAI call on a large fraction of deals.
+**Evidence it is a hole:** it is not in the spec, it sits above the sparse and 3× logic so it
+pre-empts the forced-check rule the doc calls out in bold, and "bounded by a competitor's price"
+is not the same claim as "a used copy will sell for this".
+
+### B-8. On a peak/trough median tie, should peak and trough be the same month?
+**As built:** `idxmax()` and `idxmin()` both return the first matching index (worked example 1),
+so `Expected Trough Price` equals the peak price and "Est. Buy Price" equals "Max. List at".
+**Argument it is acceptable:** with sales concentrated in one month there genuinely is no
+seasonal spread to report.
+**Argument it is a problem:** the overlay presents "Est. Buy Price" as an actionable target.
+Showing the peak price as the buy target inverts the advice. A guard (report `-` when
+`peak_month == trough_month`) is a decision, not an obvious fix.
+
+### B-9. How often does the reasonableness check return an empty completion?
+Cannot be determined from code. `grep -c "XAI REJECTED" app.log` gives the rejection count, but
+the log line at `:95` prints `content`, so an empty-string rejection is visible as
+`AI responded ''`. Worth one grep before deciding whether A-17 is theoretical.
+
+### B-10. Is the 3-year inference window intended, and should the doc move or the code?
+`stable_calculations.py:206` uses 1095 days with the inline comment *"Extended to 3 years"*, and
+`AGENTS.md` §7.7 justifies `dateRange: 4` as capturing "max 3-year history for AI analysis".
+The code looks intentional and the doc looks stale — but `INFERRED_PRICE_LOGIC.md` §2a says
+"two years" and `calculate_long_term_trend` hard-codes the string `"over 3 years"` (`:392`)
+regardless of the actual span, so the label is wrong whenever history is shorter.
+
+---
+
+## (C) DOC/CODE DRIFT — Priority 1
+
+### C-6. `INFERRED_PRICE_LOGIC.md` §4B documents a single-index fallback; the code takes a max of five
+> **Fallback:** If 0 inferred sales are found, the system attempts to use **`stats.avg365`** (Used).
+
+Code: `new_analytics.py:83-107`, five candidate indices, `max()`. **The doc appears correct
+about intent** — a single Used-condition average is the conservative reading, and it is the only
+one consistent with the same document's prohibition on optimistic fallbacks. This is A-8
+stated as drift.
+
+### C-7. `INFERRED_PRICE_LOGIC.md` §2.5 says rescued sales are "injected back into the pipeline"; they skip sanitisation
+The doc's Stage 3 sanitisation is described as applying to the collected raw events. The XAI
+returns at `:243` and `:322` are placed before it. **The doc appears correct**; the return
+points are in the wrong place. This is A-9 stated as drift.
+
+### C-8. The $1,500 hard ceiling is applied after the Amazon cap, not to the calculated price
+> any calculated list price exceeding **$1,500** is automatically and immediately rejected
+> without even querying the AI.
+
+Code order (`:504-566`): Amazon ceiling clamp first, `> 150000` test second — so the test sees
+the clamped value. A $4,000 computed price on a book with a $2,000 Amazon New price is clamped
+to $1,800 and then rejected; the same $4,000 price on a book with a $1,000 Amazon price is
+clamped to $900 and **passes**, with no AI check either (A-10). Which order is intended is a
+judgement call, but the doc's word "calculated" reads as pre-clamp. Flagged, not resolved.
+
+### C-9. `INFERRED_PRICE_LOGIC.md` §2a says "the last two years"; the code uses three
+`:206`, `timedelta(days=1095)`. The code looks intentional (see B-10); the doc sentence is stale.
+
+### C-10. `Data_Logic.md` says the seasonality AI is given "historical peak sales months"
+It is given `'-'` (A-12). **The doc describes the intent and the code fails to deliver it.**
+
+### C-11. Stale comments describing the removed Silver Standard as live
+* `stable_calculations.py:413-414` — *"Fallback uses avg365 (Silver Standard) and SKIPS the XAI
+  check"* — sits directly above `MIN_SALES_FOR_ANALYSIS = 3` and describes behaviour deleted in
+  March 2026.
+* `stable_calculations.py:591` — the skip condition still tests
+  `price_source == 'Keepa Stats Fallback'`, a value `analyze_sales_performance` can no longer
+  produce. Dead branch, harmless, but it makes the removal look incomplete to the next reader.
+* `new_analytics.py:36` — the docstring says "Displays the **median** inferred sale price"; the
+  code computes `.mean()` (`:67`), which is what the doc and the "Key Evolution" note both
+  specify. Docstring is the wrong one.
+
+### C-12. Two different Amazon-ceiling comparators exist
+`stable_calculations.py:506-512` uses three prices (current, 180d, 365d), matching the doc.
+`processing.py:483` uses four, adding `'Amazon - 90 days avg.'`. The second is inside the
+lightweight clamp, which is gated off (`ENABLE_LIGHTWEIGHT_CEILING_CLAMP = False`), so it is
+inert today — but it will not agree with the documented comparator when it is switched on.
