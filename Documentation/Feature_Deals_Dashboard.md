@@ -38,6 +38,13 @@ The Dashboard is the central hub for viewing and analyzing arbitrage opportuniti
     *   **Passive Notification:** The dashboard polls `/api/deal-count` (filtered) every 30 seconds. It compares this count against the local filtered record count. If the server count differs, a notification ("New Deals Available") appears.
 *   **Recalculation:** A "Recalculate" feature allows updating business metrics (Profit, ROI) based on changed settings (Tax, Prep Fee) without re-fetching data from Keepa.
 
+    > **WARNING — do NOT run the recalculator to "repair" rows with a NULL `List_at`.**
+    > `recalculate_deals` (`keepa_deals/recalculator.py`, also invoked by `run_deals_migration.py`) is **API-free**. It reads only `List_at`, `Price_Now`, the two fee columns, `Shipping_Included` and the seasonality text, and it gates on `list_at_price > 0 AND now_price > 0`. Any row failing that gate takes the else-branch and has `Profit`, `Margin` and `Total_AMZ_fees` **explicitly written as NULL**.
+    >
+    > Running it against rows that are already missing `List_at` therefore **deepens the damage** rather than fixing it: it destroys whatever Profit and Margin those rows still held. It cannot restore `List_at` under any circumstances — that value comes from `get_list_at_price` → `infer_sale_events`, which consumes the Keepa `csv` history arrays, and that history is never persisted to `deals.db`.
+    >
+    > Rebuilding a nulled `List_at` requires a fresh heavy Keepa fetch (`fetch_product_batch(days=365, history=1, offers=20)`, ~20 tokens/ASIN). The recalculator is only safe on rows whose `List_at` and `Price_Now` are both present and non-zero.
+
 ### Gated Column States
 The "Gated" column indicates the user's restriction status on Amazon:
 *   **Spinner:** Check is pending/queued.

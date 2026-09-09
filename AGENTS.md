@@ -256,6 +256,17 @@ A critical regression occurred when the system used `2000-01-01` instead of `201
 - **Stale Deal Rescue:** `rescue_stale_deals` in `keepa_deals/smart_ingestor.py` proactively refreshes deals older than 48 hours to prevent Janitor deletion (72h limit).
 - **Amazon Ceiling Check:** In `keepa_deals/processing.py` lightweight updates, if `List at` > 90% of current Amazon New Price, clamp to that ceiling. Prevents "fake profit" when market drops.
 
+### 7.12 DB Column Naming Contract (September 2026) — CRITICAL
+
+The deals table is named with **sanitized** column names (`List_at`, `1yr_Avg`, `Sales_Rank_Current`, `All_in_Cost`). The field functions return values under **display** names from `headers.json` (`List at`, `Sales Rank - Current`, `All-in Cost`). Mixing the two in one row dictionary destroyed data in production.
+
+- **`_process_lightweight_update` rows are keyed by SANITIZED names.** They come from `dict(sqlite3.Row)` off `SELECT * FROM deals`. Every field-function result merged into such a row MUST go through `_merge_db_keyed`. Never `row_data.update(some_field_function(...))` directly, and never write a literal display name into that row.
+- **`_process_single_deal` rows are keyed by DISPLAY names.** That is correct for the heavy path — do not "align" it with the light path. Because `smart_ingestor.run()` upserts heavy and light rows in the **same batch**, heavy rows are re-keyed with `to_db_keys` right after `clean_numeric_values` and before they join `rows_to_upsert`. Removing that call silently NULLs 221 columns on every newly discovered deal.
+- **Both Smart Ingestor upserts go through `upsert_deal_rows`** (`keepa_deals/db_utils.py`). Do not hand-roll the deals upsert SQL at a call site; the helper derives its columns from `headers.json` via `sanitize_col_name`, the same transform that CREATEs the table.
+- **What went wrong:** the main Light Update upsert read display names off a sanitized-keyed row, resolving 215 of 246 columns to `None` and writing them as `NULL` every cycle — `List_at`, `Price_Now`, `1yr_Avg`, `Deal_Trust` included. Rows vanish silently from the dashboard (`/api/deals` filters `List_at IS NOT NULL`); the grid does not empty, so the failure is invisible. The Stale Rescue had the mirror defect and wrote stale rank/offers/cost back alongside a Profit computed from the fresh cost.
+- **Unrecoverable without tokens:** `recalculator.py` cannot rebuild `List_at`. It derives from `infer_sale_events`, which needs Keepa `csv` history that `deals.db` never stores. Worse, the recalculator writes `Profit`/`Margin`/`Total_AMZ_fees` as NULL for any row where `List_at` is NULL — running it on damaged rows deepens the loss. Recovery is a heavy re-fetch at ~20 tokens/ASIN.
+- **Guarded by:** `tests/test_lightweight_upsert_preservation.py`. It builds the schema from `headers.json` and calls the production upsert, so it cannot be satisfied by a fixture that encodes the wrong convention. If you change key handling in `processing.py` or either upsert site, this test must stay green.
+
 ### 7.9 Recent Fixes (March 2026)
 
 - **Self-Aware Mentor & Tooltips:** `keepa_deals/platform_knowledge.py` dynamically loads documentation into AI context. Instant speech-bubble tooltips on Deals Dashboard headers/filters.
