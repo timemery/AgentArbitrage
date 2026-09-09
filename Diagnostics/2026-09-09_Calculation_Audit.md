@@ -1433,3 +1433,307 @@ but the numbers should be in one place in the doc.
 Correct as an expression. The doc presents it as a confidence percentage without noting that
 it is unbounded above 100 on the XAI rescue path, or that the numerator and denominator count
 different kinds of event. See A-14, B-16.
+
+---
+---
+
+# PRIORITY 3 — GENERAL DEFECTS
+
+Unhandled nulls, silent excepts, division by zero, off-by-one, timezone handling, unit
+mismatches, race conditions. Findings already stated in Priorities 0–2 are cross-referenced
+rather than repeated.
+
+## (A) CONFIRMED DEFECTS — Priority 3
+
+### A-29. A large watermark gap makes the existing-ASIN check fail, routing every known deal into the 20-token heavy path
+**File:** `keepa_deals/smart_ingestor.py:442-443`
+```python
+placeholders = ','.join('?' * len(asin_list))
+c_check.execute(f"SELECT * FROM {TABLE_NAME} WHERE ASIN IN ({placeholders})", asin_list)
+```
+`asin_list` is every deal returned since the watermark (`:434`), collected by an **unbounded**
+paging loop (`:395-421`) that stops only when it meets a deal older than the watermark. There is
+no cap and no chunking.
+
+**Input that breaks it:** any run where the watermark is far behind — after a worker outage, after
+a `TokenRechargeError` streak, or after the kind of manual watermark reset recorded in the
+Aug 18b dev log. Once `len(asin_list)` exceeds SQLite's `SQLITE_MAX_VARIABLE_NUMBER`
+(999 on builds before 3.32, 32,766 after), the statement raises.
+
+**What happens next is the damaging part.** The exception is swallowed at `:468`:
+```python
+except Exception as e:
+    logger.warning(f"Failed to check existing ASINs: {e}")
+```
+`existing_asins_set` stays empty, so at `:513-514` **every** ASIN is classified as new. That
+sends the whole batch through Peek + Commit — `fetch_product_batch` at 20 tokens per ASIN
+(`:542`) instead of `fetch_current_stats_batch` at ~5 — and routes each one through
+`_process_single_deal`, overwriting live rows via the heavy path.
+
+**Impact: highest in this Priority.** With `MAX_DEFICIT = -180`, a few hundred mis-routed ASINs
+is an immediate token lockout, and the run that follows an outage is exactly the run most likely
+to trigger it. The same `warning` line is the one the Aug 18b log counted 238 times for a
+different cause, so this failure mode is already known to be reachable and already known to be
+quiet.
+
+**To check live:** `grep -c "Failed to check existing ASINs" celery_worker.log` and look at the
+exception text on each — a `too many SQL variables` is this bug; an `IndexError` is the one
+PR #323 fixed.
+
+### A-30. Three separate `XaiCache` instances rewrite a 5.3 MB JSON file non-atomically from concurrent workers
+**Files:** `keepa_deals/xai_cache.py:29-35`; instantiated at module level in
+`stable_calculations.py:22`, `seasonality_classifier.py:13`, `xai_sales_inference.py:14`.
+```python
+def _save_cache(self):
+    with open(self.cache_path, 'w') as f:      # truncates first, then writes
+        json.dump(self.cache, f, indent=4)
+```
+**Input that breaks it:** two `set()` calls overlapping. The Celery worker runs
+`--concurrency=2` (`start_celery.sh:28`), and each of the three module-level instances holds its
+own full in-memory copy, so a single process has three writers of the same file.
+Three consequences, all live:
+1. **Corruption window.** `open(..., 'w')` truncates immediately. A reader or a second writer
+   during the dump sees a partial file; `_load_cache` catches `JSONDecodeError` at `:26-28` and
+   returns `{}` — the entire 5.3 MB cache is silently discarded and every subsequent call is a
+   paid API call.
+2. **Lost writes.** Whichever instance saves last writes its own snapshot over the others'
+   entries. Entries written by the seasonality classifier are erased by the next reasonableness
+   `set()` in the same process.
+3. **No cross-process visibility.** `self.cache` is loaded once at import. A `set()` in the web
+   process is never seen by the Celery worker, so the same key is paid for twice.
+
+### A-31. The XAI daily cap resets only at process start, counts per process, and reads a relative path
+**File:** `keepa_deals/xai_token_manager.py:12-56`.
+Three distinct defects in one class:
+1. `_check_and_reset_daily_count()` is called **only from `__init__`** (`:16`). A Celery worker
+   that stays up across midnight never re-evaluates `date.today()`, so `calls_today` keeps
+   accumulating from the previous day until the process restarts. `date.today()` is also the
+   **local** date, not UTC, while everything else in the ingestion pipeline stamps UTC.
+2. Six module-level instances exist across three modules (`:13`/`:14` patterns above), each with
+   its own `calls_today`, each writing `xai_token_state.json` with the same truncate-then-dump
+   (`:41-46`). The nominal 1,000/day cap is therefore enforced N times independently. The Sept 8
+   dev log observed ~1,155 requests/day against it; this is the mechanism.
+3. `__init__` defaults are **relative paths** — `settings_path='settings.json'`,
+   `state_path='xai_token_state.json'` — resolved against the process working directory, and all
+   six call sites use the defaults. `business_calculations.py:10` solves exactly this problem
+   with `os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'settings.json')` and a
+   comment saying why. When the CWD is not the repo root, `_load_daily_limit` catches
+   `FileNotFoundError` at `:26-28` and silently uses 1,000 — so a configured
+   `max_xai_calls_per_day` may never be read at all.
+
+**Impact:** the only cost ceiling on xAI is advisory. Given the September 8 leak cost $76.77 in
+one month, the ceiling being unenforced matters.
+
+### A-32. `datetime.now()` (local) is compared against UTC-derived Keepa timestamps in four places
+| File:line | Expression | Compared against |
+| --- | --- | --- |
+| `stable_calculations.py:206` | `datetime.now() - timedelta(days=1095)` | `df['timestamp']`, built with `pd.to_datetime(..., origin=KEEPA_EPOCH)` — naive **UTC** |
+| `new_analytics.py:63` | `datetime.now() - timedelta(days=365)` | same |
+| `xai_sales_inference.py:70` | `datetime.now() - timedelta(days=days)` | same |
+| `seller_info.py:137` | `int((datetime.now() - KEEPA_EPOCH).total_seconds() / 60)` | Keepa minute timestamps, **UTC** |
+
+`datetime.now()` returns naive **local** time. On the Toronto VPS that is UTC−4 or UTC−5, so
+every one of these cutoffs sits 4–5 hours later than intended relative to the data.
+**Input that breaks it:** a sale event within 4–5 hours of a window boundary. On a 365-day or
+3-year window the effect is negligible in volume, but it is a genuine unit mismatch and it is
+the same class of error as the Keepa Epoch regression `AGENTS.md` §7.3 warns about. The rest of
+the codebase is careful here — `smart_ingestor.py`, `janitor.py`, `db_utils.py` and
+`prime_picks_task.py` all use `datetime.now(timezone.utc)` or `utcnow()` correctly — which makes
+these four the outliers rather than the convention.
+
+**Related, and larger in effect:** `prime_picks_task.py:97-100`, the fallback branch of
+`get_hours_since`, parses `'%m/%d/%y %H:%M'` and subtracts it from `datetime.utcnow()`. The only
+value in that format is `Deal_found`, which `stable_deals.py:83-99` writes in
+**America/Toronto** local time. That comparison is off by the full offset in the wrong direction,
+inflating `hours_since` by 4–5 hours for any deal without a `last_seen_utc`.
+
+### A-33. `formatTimeAgo` parses a Toronto-formatted timestamp as browser-local time
+**File:** `templates/dashboard.html:461-485`.
+`last_price_change` is stored as `'%Y-%m-%d %H:%M:%S'` in America/Toronto with **no offset**
+(`stable_deals.py:293-298`). `formatTimeAgo` takes the `else` branch at `:479-480`
+(`new Date(dateString)`), which modern engines parse as **browser-local** time.
+**Input that breaks it:** any viewer not in America/Toronto. A user in Vancouver sees every
+"Ago" value shifted by three hours; a user in London by five. Not a defect for you specifically,
+which is why it is ranked here rather than higher, but the string carries no zone and the parser
+assumes one.
+Note also the `'MM/DD/YY HH:MM'` branch at `:466-477` hardcodes `2000 + parseInt(dateParts[2])`,
+so it is correct only for 2000–2099 and only for the `Deal_found` format, which no visible
+column currently uses.
+
+### A-34. A seller rating above 100 silently produces a Trust score of 0 / 10
+**File:** `keepa_deals/processing.py:105` → `stable_calculations.py:687-706`.
+```python
+positive_ratings = int((rating_percent / 100.0) * rating_count)   # processing.py:105
+p_hat = positive_ratings / total_ratings                          # :694
+numerator = p_hat + ... - z * math.sqrt((p_hat * (1 - p_hat) / n) + ...)   # :700
+```
+**Input that breaks it:** any `rating_percent > 100`. Then `p_hat > 1`, so `p_hat * (1 - p_hat)`
+is negative and, for any `n` above about 4, the whole radicand is negative. `math.sqrt` raises
+`ValueError`, which is caught by the blanket `except Exception` at `:703-706` and returns
+**`0.0`** — rendered as "0 / 10", a legitimate-looking "terrible seller" verdict.
+**Impact:** a data-shape problem is presented to the user as a seller-quality judgement, and
+"Min. Seller Trust" is one of the Optimal Filters. The `total_ratings == 0` guard at `:691` is
+present and correct; this is the case it does not cover. See C-19 for why the scale matters.
+
+### A-35. `get_trend` will raise `IndexError` on an odd-length price history
+**File:** `keepa_deals/new_analytics.py:174`
+```python
+price_points = sorted([(combined_history[i], combined_history[i+1])
+                       for i in range(0, len(combined_history), 2)
+                       if combined_history[i+1] > 0])
+```
+`combined_history` is `csv[1]` concatenated with `csv[2]` (`:168-169`). If **either** array has
+odd length, the final `i+1` is out of range. There is no `try` in this function, so the exception
+propagates to the `except Exception` at `processing.py:252`, which logs and abandons the whole
+analytics block — taking `Percent Down`, `Recent Inferred Sale Price` and
+`Sales Rank Trend %` down with it, not just the trend arrow.
+**Impact:** low probability (Keepa arrays are even by contract) but the blast radius is four
+fields, and the log line names the block rather than the cause.
+
+### A-36. `stats.get('avg90', [None]*4)[3]` raises when Keepa returns a short array
+**File:** `keepa_deals/stable_calculations.py:544-546`; same pattern at
+`new_analytics.py:204-206`.
+The `[None]*4` default protects against a **missing** key, not a **present but short** one.
+`stats['avg90'] = []` or a truncated array indexes out of range.
+`analyze_sales_performance` has no local `try`, so the `IndexError` reaches the FUNCTION_LIST
+handler at `processing.py:130-131`, which logs a warning and leaves `List at` unset — the deal
+is persisted with no listing price and no explanation beyond
+`Error extracting List at: list index out of range`.
+Contrast `:507-511` in the same function, which does length-check `avg180` and `avg365` before
+indexing. The guard exists three lines away from the place it is missing.
+
+### A-37. The Redis lock can expire mid-run, and the release path checks existence rather than ownership
+**File:** `keepa_deals/smart_ingestor.py:44`, `:292-293`, `:640-642`.
+```python
+LOCK_TIMEOUT = 60 * 30                       # 30 minutes
+lock = redis_client.lock(LOCK_KEY, timeout=LOCK_TIMEOUT)
+...
+finally:
+    if lock.locked():                        # "does the key exist", not "do I own it"
+        lock.release()
+```
+**Input that breaks it:** a run exceeding 30 minutes. Celery Beat fires the ingestor every
+5 minutes, so once the lock expires the next tick acquires it and two ingestors run
+concurrently — both paging Keepa, both spending tokens against `MAX_DEFICIT`, both upserting the
+same ASINs. Runs of this length are not hypothetical: the Aug 18b recompute took 3,542 s, and the
+task sleeps inside `token_manager.request_permission_for_call` whenever tokens are short.
+When the first run then reaches its `finally`, `lock.locked()` is `True` (held by the second
+run), so it calls `release()` on a lock it no longer owns. Under `redis-py` that raises
+`LockNotOwnedError` out of the `finally` block, ending the task in an error rather than the
+clean "lock released" log; there is no `except` around it. Either way `locked()` is not the
+ownership test this needs.
+
+### A-38. Silent `except: pass` on the credential lookup during the Amazon OAuth callback
+**File:** `wsgi_handler.py:2620-2621`
+```python
+except Exception:
+    pass
+```
+wrapping `get_all_user_credentials()` in `/amazon_callback`. Any failure — a locked database, a
+schema mismatch — is indistinguishable from "no credentials on file", and the user is shown
+"Missing credentials. Please try reconnecting" (`:2625`) with nothing in the log to say the
+lookup itself failed. Same shape at `ava_advisor.py:335` (tooltip cache read) and
+`inventory_import.py:455`, both lower-consequence.
+
+---
+
+## (B) QUESTIONS FOR TIM — Priority 3
+
+### B-17. Should `all_new_deals` be capped or chunked?
+**As built:** the paging loop at `smart_ingestor.py:395-421` runs until it meets the watermark,
+with no page limit. Normal operation keeps it small because the watermark advances every
+5 minutes. **Argument it is deliberate:** the watermark ratchet is designed so that a backlog
+drains rather than being dropped, and truncating the list would strand deals. **Argument it needs
+a bound:** A-29 turns a large backlog into a token lockout, and the failure is silent. Whether
+the fix is a chunked `IN` clause, a page cap, or a hard `len()` guard is a design decision, not
+an obvious one-liner.
+
+### B-18. Is the 30-minute lock timeout meant to be longer than the worst-case run?
+`LOCK_TIMEOUT = 30 min` against a 5-minute schedule. The token-recharge design deliberately
+makes the task sleep. Is 30 minutes an upper bound you have measured, or a guess? If runs can
+exceed it, A-37 is live rather than theoretical.
+
+### B-19. Should the xAI cache and token state move to Redis?
+Both are JSON files rewritten in full by up to six in-process instances across two or more
+processes (A-30, A-31). Redis is already a hard dependency and already holds the Keepa token
+bucket, which solved the identical problem for Keepa in February 2026. Flagging the parallel;
+not proposing the change.
+
+### B-20. Which of the two `Deal_found` timezone conventions is correct?
+`stable_deals.py:83-99` writes it in America/Toronto. `prime_picks_task.py:97-100` reads it as
+UTC. One of the two is wrong and I cannot tell which was intended — the writer follows the
+`AGENTS.md` §7.3 convention for display timestamps, the reader follows the convention for
+everything else in that file.
+
+---
+
+## (C) DOC/CODE DRIFT — Priority 3
+
+### C-18. `AGENTS.md` §7.3 sets a timestamp convention that four calculation sites do not follow
+§7.3 specifies: Keepa minutes → `KEEPA_EPOCH` → localize naive UTC → convert to America/Toronto.
+The four sites in A-32 skip the localize step and compare against naive **local** time instead.
+**The doc is correct; the code diverges** — and §7.3 exists precisely because an epoch/offset
+error caused the January 2026 regression.
+
+### C-19. `Data_Logic.md` states the seller rating scale is 0-500; the code assumes 0-100
+> **Logic**: **Wilson Score Confidence Interval**. Uses `rating` (0-500) and `ratingCount`.
+
+`processing.py:105` computes `positive_ratings = int((rating_percent / 100.0) * rating_count)`,
+which is only correct for a 0-100 percentage. If the doc were right, every seller would produce
+`p_hat = 4.5` or similar, hit the negative radicand in A-34, and score 0 / 10 — and sellers
+demonstrably show non-zero scores. **The code is correct and the doc is wrong.** Worth fixing in
+the doc precisely because a future agent reading "0-500" would "correct" `processing.py:105` into
+the failure mode A-34 describes.
+
+### C-20. `Token_Management_Strategy.md` describes the XAI daily cap as enforced
+> Before any automated API call the manager checks if `calls_today < daily_limit` (default: 1000).
+> If the limit is reached, the request is denied.
+
+Accurate line by line, but the cap is per-process and per-instance, never re-evaluated after
+midnight, and its configured value may never be loaded at all (A-31). **The doc describes a
+single global counter that does not exist.** This restates the Sept 8 dev log's open item with
+the mechanism attached.
+
+### C-21. `System_Architecture.md` describes `clean_stale_deals` as the sole freshness bound
+Already covered as P0 C-2. Restated here only to note the interaction with A-37: if two
+ingestors run concurrently, both stamp `last_seen_utc`, so the Janitor's 72-hour bound is
+further from being a freshness guarantee than the doc implies.
+
+---
+---
+
+# SUMMARY — RANKING ACROSS ALL PRIORITIES
+
+Highest user impact first. Every item is stated in full in its own Priority section.
+
+## Wrong buy recommendation
+1. **A-3** — the overlay's "Max. List at" shows Keepa's MSRP, not the `List at` that Profit is computed from.
+2. **A-4** — the Advisor is given no acquisition cost, so any cost it quotes is derived or invented; it also re-reads the row at a different moment than the grid.
+3. **A-8** — `1yr. Avg.` falls back to the **maximum** of five Keepa listing averages, inflating the discount signal ~2.8× in the worked example.
+4. **A-18** — the Agent's Choice AI is handed `null` for the 180-day drop count, half its velocity evidence.
+5. **A-12 / A-24 / A-25 / A-26** — `Detailed_Seasonality` is produced without the observed seasonal months and by heuristics that misfire on `"ap"`, on any textbook-publisher imprint, and on `and`/`or` precedence; a false seasonal label also exempts a dead-rank book from the only Pass 1 velocity gate.
+6. **A-10 / A-9** — a price clamped by the Amazon ceiling skips the AI check entirely, and XAI-rescued sales skip outlier rejection.
+
+## Wrong or missing data on screen
+7. **A-1** — 180-day rank drops are never written; the overlay always shows "—".
+8. **A-19** — sorting by ROI does not strip `$`, so `$`-string rows sort to the bottom of the user's primary ranking.
+9. **A-20** — `'-'` in the Drops column is stored as text in an INTEGER column, and SQLite sorts text above numerics, so unknown-drop deals pass every Min. Drops filter.
+10. **A-21 / A-22** — the trend arrow's sample size is chosen from an Amazon price rather than a rank, and it pools New with Used history.
+11. **A-5** — zero renders as "no data" throughout row and overlay.
+12. **A-14 / A-34** — Deal Trust can exceed 100%; a seller rating above 100 silently renders as 0 / 10.
+
+## Pipeline and cost
+13. **A-29** — a large watermark backlog silently routes every known deal into the 20-token heavy path.
+14. **A-7** — the two upsert sites disagree about key namespace (blast radius unconfirmed — B-1 first).
+15. **A-30 / A-31** — the xAI cache and daily cap are non-atomic per-process JSON files; the cap is advisory.
+16. **A-37** — the ingestor lock can expire mid-run against a 5-minute schedule.
+17. **A-13** — `infer_sale_events` runs 4× per product, re-firing the LLM rescue each time.
+
+## Structural / latent
+18. **A-15 / A-16 / A-35 / A-36** — a `NaN` price voids a whole sale history; `merge_asof` has no tolerance; two unguarded index errors abandon multi-field blocks.
+19. **A-2 / A-23 / A-28** — a column that is never written, a metric computed and discarded, a fee displayed differently from the fee used.
+20. **A-6 / A-17 / A-27 / A-32 / A-33 / A-38** — null handling, a fail-closed AI path in an otherwise fail-open function, filter/display rounding mismatches, four local-vs-UTC comparisons, and silent excepts.
+
+**The single question that gates the most other work is B-1** — whether the main Light Update
+path is actually nulling `List_at` in production. One `GROUP BY source` query answers it, and
+the answer decides whether A-7 is the most urgent item on this list or a latent one.
