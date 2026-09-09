@@ -11,6 +11,7 @@ from .seller_info import get_used_product_info, CONDITION_CODE_MAP
 from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score, get_expected_trough_price
 from .stable_products import sales_rank_drops_last_30_days, sales_rank_drops_last_180_days, amazon_current
 from .field_mappings import FUNCTION_LIST
+from .db_utils import sanitize_col_name
 import json
 import os
 
@@ -324,6 +325,30 @@ def clean_numeric_values(row_data):
             except (ValueError, TypeError): row_data[key] = None
     return row_data
 
+def _merge_db_keyed(row_data, result):
+    """Merge a field-function result into a row keyed by sanitized DB column names.
+
+    The field functions in stable_products / new_analytics / stable_deals all return
+    their value under the headers.json DISPLAY name ('Sales Rank - Current',
+    'Offers 180', 'last price change'). `_process_lightweight_update` builds its row
+    from dict(sqlite3.Row) off `SELECT * FROM deals`, which is keyed by the SANITIZED
+    column name ('Sales_Rank_Current', 'Offers_180', 'last_price_change').
+
+    Merging a display-keyed result straight into that row produced a dictionary in two
+    namespaces at once, which neither upsert site in smart_ingestor.py could read whole:
+    the main Light Update read display names and bound 215 columns as NULL, while the
+    Stale Rescue read sanitized names and silently discarded every fresh value written
+    under a display name. Routing every merge through sanitize_col_name keeps the row in
+    exactly one namespace - the DB's - so both sites read the same complete row.
+
+    No-op on an empty or falsy result, matching the `if result:` guards it replaces.
+    """
+    if not result:
+        return
+    for key, value in result.items():
+        row_data[sanitize_col_name(key)] = value
+
+
 def _process_lightweight_update(existing_row, product_data):
     """
     Updates an existing deal using lightweight stats data (no history).
@@ -393,8 +418,9 @@ def _process_lightweight_update(existing_row, product_data):
     try:
          from .stable_products import sales_rank_current, amazon_current
          sr_data = sales_rank_current(product_data)
-         if sr_data:
-             row_data.update(sr_data)
+         # Merged under the sanitized column name ('Sales_Rank_Current'); writing the
+         # display name here left the fresh rank invisible to the Stale Rescue upsert.
+         _merge_db_keyed(row_data, sr_data)
 
          amz_data = amazon_current(product_data)
          amz_val = amz_data.get('Amazon - Current') if amz_data else '-'
@@ -414,26 +440,25 @@ def _process_lightweight_update(existing_row, product_data):
 
         drops_data = sales_rank_drops_last_30_days(product_data)
         if drops_data:
-             # Ensure the key matches the DB column or internal key
+             # 'Drops' is the DB column that carries the 30-day drop count; it is not a
+             # sanitization of the function's own key, so it stays an explicit mapping.
              if 'Sales Rank - Drops last 30 days' in drops_data:
                  row_data['Drops'] = drops_data['Sales Rank - Drops last 30 days']
              else:
-                 row_data.update(drops_data)
+                 _merge_db_keyed(row_data, drops_data)
 
-        # Update Offers trend
+        # Update Offers trend ('Offers' sanitizes to itself; routed through the helper
+        # anyway so every merge in this function obeys the same one-namespace rule.)
         offers_data = get_offer_count_trend(product_data)
-        if offers_data:
-            row_data.update(offers_data)
+        _merge_db_keyed(row_data, offers_data)
 
-        # Offers 180
+        # Offers 180 -> 'Offers_180'
         offers_data_180 = get_offer_count_trend_180(product_data)
-        if offers_data_180:
-             row_data.update(offers_data_180)
+        _merge_db_keyed(row_data, offers_data_180)
 
-        # Offers 365
+        # Offers 365 -> 'Offers_365'
         offers_data_365 = get_offer_count_trend_365(product_data)
-        if offers_data_365:
-             row_data.update(offers_data_365)
+        _merge_db_keyed(row_data, offers_data_365)
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to update offers/drops (lightweight): {e}")
@@ -443,8 +468,8 @@ def _process_lightweight_update(existing_row, product_data):
         from .stable_deals import last_price_change
         # Pass product_data as deal_object as well, since it has been merged
         lpc_data = last_price_change(product_data, logger, product_data)
-        if lpc_data:
-            row_data.update(lpc_data)
+        # -> 'last_price_change'
+        _merge_db_keyed(row_data, lpc_data)
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed to update last price change (lightweight): {e}")
 
@@ -529,11 +554,15 @@ def _process_lightweight_update(existing_row, product_data):
         profit_margin = calculate_profit_and_margin(list_at_price, all_in_cost, total_amz_fees)
         min_listing = calculate_min_listing_price(all_in_cost, fba_fee, referral_percent, business_settings)
 
+        # Written under sanitized DB column names. 'All-in Cost' / 'Min. Listing Price'
+        # were the two display-name keys in this block; the freshly computed all-in cost
+        # was therefore dropped by the Stale Rescue upsert while the Profit and Margin
+        # derived FROM it were kept, leaving the stored row internally inconsistent.
         row_data.update({
-            'All-in Cost': all_in_cost,
+            'All_in_Cost': all_in_cost,
             'Total_AMZ_fees': round(total_amz_fees, 2),
             'Profit': profit_margin['profit'], 'Margin': profit_margin['margin'],
-            'Min. Listing Price': min_listing
+            'Min_Listing_Price': min_listing
         })
 
         # Exclusion: Profit must be positive - REMOVED

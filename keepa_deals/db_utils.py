@@ -35,6 +35,78 @@ def sanitize_col_name(name):
     name = name.strip('_')
     return name
 
+# Ingestion bookkeeping columns. These are already present in headers.json (indices
+# 244-245), so they are appended only as a safety net for a headers file that lacks
+# them. Both former upsert sites appended them unconditionally, which put duplicate
+# names in the INSERT column list and duplicate assignments in the DO UPDATE SET
+# clause. SQLite tolerates that (last one wins, and both copies carried the same
+# value), so this is not a behaviour change - it just stops the upsert's column list
+# from disagreeing with the table's.
+UPSERT_EXTRA_COLUMNS = ['last_seen_utc', 'source']
+
+
+def to_db_keys(row):
+    """Re-key a processed row onto sanitized DB column names.
+
+    The HEAVY path (`_process_single_deal`) legitimately builds its row keyed by
+    headers.json DISPLAY names, because it assembles a fresh row from FUNCTION_LIST
+    rather than from an existing DB row. The LIGHT path is keyed by sanitized DB
+    column names. Both are upserted by the same statement in smart_ingestor.run(),
+    so heavy rows are re-keyed here before they reach `upsert_deal_rows`.
+
+    sanitize_col_name is idempotent and collision-free across headers.json, so this
+    is safe to apply to a row that is already sanitized or partly sanitized (the
+    heavy path mixes in a few sanitized keys such as 'Seller_Quality_Score').
+
+    Apply this AFTER clean_numeric_values, which keys its coercion rules off the
+    column name; running it first would change which columns get coerced.
+    """
+    return {sanitize_col_name(key): value for key, value in row.items()}
+
+
+def build_deals_upsert(headers):
+    """Return (sanitized_columns, upsert_sql) for the deals table.
+
+    Single source of truth for the ON CONFLICT upsert used by every ingestion path.
+    Both call sites in smart_ingestor.py and the regression test import this, so no
+    caller can drift onto its own key convention or its own copy of the SQL.
+
+    The column list is derived from headers.json through sanitize_col_name - the same
+    transform recreate_deals_table() uses to CREATE the table - so the write contract
+    and the schema contract cannot disagree.
+    """
+    sanitized = []
+    for name in [sanitize_col_name(h) for h in headers] + list(UPSERT_EXTRA_COLUMNS):
+        if name not in sanitized:
+            sanitized.append(name)
+    cols_str = ', '.join(f'"{h}"' for h in sanitized)
+    vals_str = ', '.join(['?'] * len(sanitized))
+    # ASIN is the conflict target, so it is excluded from the SET list.
+    update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized if h != 'ASIN')
+    sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
+    return sanitized, sql
+
+
+def upsert_deal_rows(cursor, rows, headers):
+    """Upsert processed deal rows keyed by SANITIZED DB column names.
+
+    `rows` must be dicts keyed the way the deals table is actually named
+    ('List_at', 'Sales_Rank_Current'), NOT headers.json display names
+    ('List at', 'Sales Rank - Current'). Reading display names off a row built from
+    dict(sqlite3.Row) resolved 215 of 246 columns to None and the upsert bound every
+    one of them as NULL, wiping List_at, Price_Now and 1yr_Avg on each light update.
+
+    Does not commit; the caller owns the transaction.
+    Returns the number of rows passed to executemany.
+    """
+    if not rows:
+        return 0
+    sanitized, sql = build_deals_upsert(headers)
+    data = [tuple(row.get(col) for col in sanitized) for row in rows]
+    cursor.executemany(sql, data)
+    return len(data)
+
+
 def get_table_columns(cursor, table_name):
     """Fetches the column names for a given table."""
     cursor.execute(f"PRAGMA table_info({table_name})")

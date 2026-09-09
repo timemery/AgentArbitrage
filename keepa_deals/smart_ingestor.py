@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import redis
 
 from worker import celery_app as celery
-from .db_utils import create_deals_table_if_not_exists, sanitize_col_name, load_watermark, save_watermark, DB_PATH
+from .db_utils import create_deals_table_if_not_exists, load_watermark, save_watermark, to_db_keys, upsert_deal_rows, DB_PATH
 from .keepa_api import fetch_deals_for_deals, fetch_product_batch, validate_asin, fetch_current_stats_batch
 from .token_manager import TokenManager, TokenRechargeError
 from .field_mappings import FUNCTION_LIST
@@ -264,21 +264,9 @@ def rescue_stale_deals(token_manager, limit=20):
         if rows_to_upsert:
             with get_db_connection(DB_PATH) as conn:
                 cursor = conn.cursor()
-                sanitized_headers = [sanitize_col_name(h) for h in headers_list]
-                sanitized_headers.extend(['last_seen_utc', 'source'])
-
-                data_for_upsert = []
-                for row_dict in rows_to_upsert:
-                    row_tuple = tuple(row_dict.get(h) for h in sanitized_headers)
-                    data_for_upsert.append(row_tuple)
-
-                cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
-                vals_str = ', '.join(['?'] * len(sanitized_headers))
-                # Explicitly exclude ASIN from update set to keep syntax valid
-                update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
-                upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
-
-                cursor.executemany(upsert_sql, data_for_upsert)
+                # Shared with the main Light Update path below and with the regression
+                # test, so all three read rows through one key convention.
+                upsert_deal_rows(cursor, rows_to_upsert, headers_list)
                 conn.commit()
                 logger.info(f"Stale Deal Rescue: Successfully refreshed {len(rows_to_upsert)} deals.")
 
@@ -576,6 +564,13 @@ def run():
                      processed_row = _process_single_deal(product_data, seller_data_cache, xai_api_key)
                      if processed_row:
                          processed_row = clean_numeric_values(processed_row)
+                         # The heavy path builds its row keyed by headers.json DISPLAY
+                         # names, which is correct for it. This upsert is shared with the
+                         # light path, which is keyed by sanitized DB column names, so
+                         # heavy rows are re-keyed here rather than at the upsert. Applied
+                         # after clean_numeric_values, whose coercion rules key off the
+                         # column name.
+                         processed_row = to_db_keys(processed_row)
                          processed_row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
                          processed_row['source'] = 'smart_ingestor'
 
@@ -588,20 +583,12 @@ def run():
                 try:
                     with get_db_connection(DB_PATH, timeout=60) as conn:
                         cursor = conn.cursor()
-                        sanitized_headers = [sanitize_col_name(h) for h in headers]
-                        sanitized_headers.extend(['last_seen_utc', 'source'])
-
-                        data_for_upsert = []
-                        for row_dict in rows_to_upsert:
-                            row_tuple = tuple(row_dict.get(h) for h in headers) + (row_dict.get('last_seen_utc'), row_dict.get('source'))
-                            data_for_upsert.append(row_tuple)
-
-                        cols_str = ', '.join(f'"{h}"' for h in sanitized_headers)
-                        vals_str = ', '.join(['?'] * len(sanitized_headers))
-                        update_str = ', '.join(f'"{h}"=excluded."{h}"' for h in sanitized_headers if h != 'ASIN')
-                        upsert_sql = f"INSERT INTO {TABLE_NAME} ({cols_str}) VALUES ({vals_str}) ON CONFLICT(ASIN) DO UPDATE SET {update_str}"
-
-                        cursor.executemany(upsert_sql, data_for_upsert)
+                        # Previously read values by headers.json DISPLAY name off rows
+                        # keyed by sanitized DB column names, binding 215 of 246 columns
+                        # as NULL on every light update (List_at, Price_Now, 1yr_Avg,
+                        # Deal_Trust included). Now shares one key convention and one
+                        # SQL builder with the Stale Rescue path and the regression test.
+                        upsert_deal_rows(cursor, rows_to_upsert, headers)
                         conn.commit()
                         total_upserted += len(rows_to_upsert)
 
