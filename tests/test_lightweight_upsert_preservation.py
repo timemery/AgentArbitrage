@@ -37,7 +37,11 @@ from keepa_deals.db_utils import (
     to_db_keys,
     upsert_deal_rows,
 )
-from keepa_deals.processing import _process_lightweight_update, clean_numeric_values
+from keepa_deals.processing import (
+    _merge_db_keyed,
+    _process_lightweight_update,
+    clean_numeric_values,
+)
 
 HEADERS_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), '..', 'keepa_deals', 'headers.json'
@@ -120,7 +124,13 @@ def _seed_row(conn, sanitized_columns):
     return values
 
 
-class LightweightUpsertPreservationTest(unittest.TestCase):
+class _DealsFixture(unittest.TestCase):
+    """Shared fixture: a real deals table built from headers.json, one seeded row.
+
+    Carries no test_* methods of its own, so subclassing it does not re-run another
+    class's assertions.
+    """
+
     def setUp(self):
         self.headers = _load_headers()
         fd, self.db_path = tempfile.mkstemp(suffix='.db')
@@ -192,6 +202,8 @@ class LightweightUpsertPreservationTest(unittest.TestCase):
         names = [d[0] for d in cur.description]
         return dict(zip(names, cur.fetchone()))
 
+
+class LightweightUpsertPreservationTest(_DealsFixture):
     # --- the contract itself -------------------------------------------------
 
     def test_light_update_upsert_nulls_no_previously_populated_column(self):
@@ -336,6 +348,161 @@ class LightweightUpsertPreservationTest(unittest.TestCase):
             [], offenders,
             f"light update emitted display-name keys the upsert cannot read: {offenders}"
         )
+
+
+# --- Stale Rescue fixtures ---------------------------------------------------
+#
+# The Stale Rescue is the ONLY ingestion path that hands _process_lightweight_update a
+# bare Keepa product. The main Light Update merges the deal object into the product
+# first (smart_ingestor.py, `product_data.update(deal)`), which supplies `currentSince`;
+# the rescue cannot, because its ASINs are precisely the ones the deal feed has stopped
+# returning, which is why they went stale. Combined with history=0 suppressing `csv`,
+# last_price_change has NO source at all on this path and returns '-' on every call.
+#
+# The pre-existing tests all patched the field functions with fresh values, so they only
+# ever exercised the happy path. That is the gap A-7's follow-up shipped through: the
+# rescue never receives those values in production, it receives the '-' sentinel.
+
+STALE_FRESH_RANK = 5555
+STALE_FRESH_OFFERS_CURRENT = 4      # totalOfferCount 9 minus 5 new
+STALE_FRESH_OFFERS_180 = 8
+STALE_FRESH_OFFERS_365 = 10
+
+
+def _stale_rescue_product(usable_stats):
+    """A product exactly as `fetch_current_stats_batch(days=180, offers=20)` returns it.
+
+    Deliberately missing:
+      * 'csv'          - history=0 suppresses every history array;
+      * 'currentSince' - only a Keepa DEAL object carries it, and the rescue has none;
+      * 'offers'       - no live used offer, which is common on a deal gone stale.
+
+    With usable_stats=False every stat reads -1, Keepa's "no data" marker, so all five
+    field functions return their '-' sentinel. With usable_stats=True the rank and the
+    three offer counts are computable but last_price_change still is not, which is the
+    exact shape behind the 1,948 dashed rows in production.
+    """
+    stats = {
+        'current': [-1] * 35,
+        'avg30': [-1] * 35,
+        'avg90': [-1] * 35,
+        'avg180': [-1] * 35,
+        'avg365': [-1] * 35,
+    }
+    if usable_stats:
+        stats['current'][3] = STALE_FRESH_RANK
+        stats['totalOfferCount'] = 9
+        stats['offerCountFBA'] = 3
+        stats['offerCountFBM'] = 2
+        stats['avg30'][12] = 6
+        stats['avg90'][12] = 7
+        stats['avg180'][12] = STALE_FRESH_OFFERS_180
+        stats['avg365'][12] = STALE_FRESH_OFFERS_365
+    return {'asin': TEST_ASIN, 'stats': stats}
+
+
+# The five columns a lightweight fetch can fail to compute and then overwrite. All five
+# are written through _merge_db_keyed; All_in_Cost and Min_Listing_Price are NOT in this
+# set because they are always computed floats with no sentinel path.
+SENTINEL_EXPOSED_COLUMNS = (
+    'Sales_Rank_Current',
+    'Offers',
+    'Offers_180',
+    'Offers_365',
+    'last_price_change',
+)
+
+
+class StaleRescueSentinelTest(_DealsFixture):
+    """The rescue path driven with REAL field functions, not patched ones."""
+
+    def _run_stale_rescue(self, existing_row, usable_stats):
+        """No patches. Everything below _process_lightweight_update runs for real."""
+        result = _process_lightweight_update(
+            existing_row, _stale_rescue_product(usable_stats)
+        )
+        self.assertIsNotNone(result, "_process_lightweight_update returned None")
+        return clean_numeric_values(result)
+
+    def test_stale_rescue_sentinel_never_overwrites_a_stored_value(self):
+        """A rescue that can compute nothing must change none of the five."""
+        existing = self._existing_row_as_production_reads_it()
+        processed = self._run_stale_rescue(existing, usable_stats=False)
+        stored = self._upsert(processed, 'stale_rescue')
+
+        damaged = {
+            col: stored.get(col)
+            for col in SENTINEL_EXPOSED_COLUMNS
+            if str(stored.get(col)) != str(self.seeded[col])
+        }
+        self.assertEqual(
+            {}, damaged,
+            "a lightweight fetch that computed nothing overwrote stored values with "
+            f"its no-data sentinel: {damaged}"
+        )
+        # Named individually so a failure says WHICH contract broke, not just "a dict
+        # differs". last_price_change lands as the literal '-'; Sales_Rank_Current is
+        # cast to int by clean_numeric_values, fails, and lands as NULL.
+        self.assertNotIn(
+            str(stored['last_price_change']), ('-', ''),
+            "the Ago column was blanked - this is the 1,948-row production symptom"
+        )
+        self.assertIsNotNone(
+            stored['Sales_Rank_Current'],
+            "Sales_Rank_Current was nulled; a NULL rank also drops the row out of the "
+            "Max Sales Rank filter"
+        )
+
+    def test_stale_rescue_still_writes_the_values_it_can_compute(self):
+        """The guard must not freeze the row: computable values must still land.
+
+        This is the production case behind the 1,948 dashed rows - stats are fine, so
+        rank and offers refresh normally, but there is still no timestamp source.
+        """
+        existing = self._existing_row_as_production_reads_it()
+        processed = self._run_stale_rescue(existing, usable_stats=True)
+        stored = self._upsert(processed, 'stale_rescue')
+
+        self.assertEqual(
+            str(stored['Sales_Rank_Current']), str(STALE_FRESH_RANK),
+            "the guard blocked a rank the rescue could compute"
+        )
+        self.assertIn(str(STALE_FRESH_OFFERS_CURRENT), str(stored['Offers']))
+        self.assertIn(str(STALE_FRESH_OFFERS_180), str(stored['Offers_180']))
+        self.assertIn(str(STALE_FRESH_OFFERS_365), str(stored['Offers_365']))
+
+        self.assertEqual(
+            stored['last_price_change'], self.seeded['last_price_change'],
+            "the stored timestamp was replaced even though the rescue had no source "
+            "for a new one"
+        )
+
+    def test_zero_is_data_and_must_overwrite(self):
+        """The guard tests for the sentinel, never for falsiness.
+
+        An offer count of zero is a real reading. get_offer_count_trend returns the
+        string '0' for it, not '-'. A `if not value` guard would discard it and freeze
+        the stored count at its last non-zero value, which is a subtler version of the
+        bug being fixed.
+        """
+        row = {'Offers': 'stale', 'Offers_180': 'stale', 'Sales_Rank_Current': 'stale'}
+        _merge_db_keyed(row, {'Offers': '0'})
+        _merge_db_keyed(row, {'Offers 180': 0})
+        _merge_db_keyed(row, {'Sales Rank - Current': 0.0})
+
+        self.assertEqual(row['Offers'], '0')
+        self.assertEqual(row['Offers_180'], 0)
+        self.assertEqual(row['Sales_Rank_Current'], 0.0)
+
+    def test_every_sentinel_spelling_is_recognised(self):
+        """'-' is the common one; '' and 'N/A' appear in the same field functions."""
+        for sentinel in ('-', ' - ', '', '   ', 'N/A', None):
+            row = {'Offers': 'stored'}
+            _merge_db_keyed(row, {'Offers': sentinel})
+            self.assertEqual(
+                row['Offers'], 'stored',
+                f"sentinel {sentinel!r} was written over the stored value"
+            )
 
 
 if __name__ == '__main__':

@@ -325,6 +325,25 @@ def clean_numeric_values(row_data):
             except (ValueError, TypeError): row_data[key] = None
     return row_data
 
+# The string every field function returns when the data it needs is absent. They all
+# report "could not compute" in-band rather than by omitting the key, so a caller that
+# writes the result unconditionally cannot tell a value from a non-value.
+NO_DATA_SENTINELS = frozenset({'', '-', 'N/A'})
+
+
+def _is_no_data(value):
+    """True when a field-function result means 'I could not compute this'.
+
+    Deliberately NOT a falsiness test. 0, 0.0 and '0' are real answers - an offer
+    count of zero is data, and get_offer_count_trend returns the string '0' for it,
+    not the '-' sentinel. `if not value` would discard those and silently freeze the
+    stored count at its last non-zero value.
+    """
+    if value is None:
+        return True
+    return isinstance(value, str) and value.strip() in NO_DATA_SENTINELS
+
+
 def _merge_db_keyed(row_data, result):
     """Merge a field-function result into a row keyed by sanitized DB column names.
 
@@ -342,10 +361,26 @@ def _merge_db_keyed(row_data, result):
     exactly one namespace - the DB's - so both sites read the same complete row.
 
     No-op on an empty or falsy result, matching the `if result:` guards it replaces.
+
+    A no-data sentinel is SKIPPED rather than written. `row_data` is an existing DB row,
+    so every key already holds whatever the last successful pass computed, and a
+    lightweight fetch that cannot recompute a value has nothing better to offer than
+    that. The Stale Rescue makes this unconditional for one field: it fetches with
+    history=0 and has no Keepa deal object, so `last_price_change` finds neither a csv
+    history nor a currentSince array and returns '-' on EVERY call. Writing that through
+    replaced a good heavy-path timestamp with a dash on 1,948 rows. Sales_Rank_Current
+    is the same defect with a quieter landing - clean_numeric_values casts '-' to int,
+    fails, and stores NULL.
+
+    Trade-off, and it is deliberate: the stored value is kept, so the dashboard shows
+    the last good reading rather than a blank. A stale rank is preferable to a NULL one,
+    which also drops the row out of the Max Sales Rank filter entirely.
     """
     if not result:
         return
     for key, value in result.items():
+        if _is_no_data(value):
+            continue
         row_data[sanitize_col_name(key)] = value
 
 
