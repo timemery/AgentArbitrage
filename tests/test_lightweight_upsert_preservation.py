@@ -364,6 +364,7 @@ class LightweightUpsertPreservationTest(_DealsFixture):
 # rescue never receives those values in production, it receives the '-' sentinel.
 
 STALE_FRESH_RANK = 5555
+STALE_FRESH_DROPS = 3
 STALE_FRESH_OFFERS_CURRENT = 4      # totalOfferCount 9 minus 5 new
 STALE_FRESH_OFFERS_180 = 8
 STALE_FRESH_OFFERS_365 = 10
@@ -377,10 +378,10 @@ def _stale_rescue_product(usable_stats):
       * 'currentSince' - only a Keepa DEAL object carries it, and the rescue has none;
       * 'offers'       - no live used offer, which is common on a deal gone stale.
 
-    With usable_stats=False every stat reads -1, Keepa's "no data" marker, so all five
-    field functions return their '-' sentinel. With usable_stats=True the rank and the
-    three offer counts are computable but last_price_change still is not, which is the
-    exact shape behind the 1,948 dashed rows in production.
+    With usable_stats=False every stat reads -1, Keepa's "no data" marker, so all six
+    field functions return their '-' sentinel. With usable_stats=True the rank, the drop
+    count and the three offer counts are computable but last_price_change still is not,
+    which is the exact shape behind the 1,948 dashed rows in production.
     """
     stats = {
         'current': [-1] * 35,
@@ -391,6 +392,7 @@ def _stale_rescue_product(usable_stats):
     }
     if usable_stats:
         stats['current'][3] = STALE_FRESH_RANK
+        stats['salesRankDrops30'] = STALE_FRESH_DROPS
         stats['totalOfferCount'] = 9
         stats['offerCountFBA'] = 3
         stats['offerCountFBM'] = 2
@@ -401,11 +403,17 @@ def _stale_rescue_product(usable_stats):
     return {'asin': TEST_ASIN, 'stats': stats}
 
 
-# The five columns a lightweight fetch can fail to compute and then overwrite. All five
-# are written through _merge_db_keyed; All_in_Cost and Min_Listing_Price are NOT in this
-# set because they are always computed floats with no sentinel path.
+# The six columns a lightweight fetch can fail to compute and then overwrite.
+# All_in_Cost and Min_Listing_Price are NOT in this set: they are always computed floats
+# with no sentinel path, and they are written directly rather than merged.
+#
+# Five of the six go through _merge_db_keyed. 'Drops' is the exception - it is written
+# through an explicit mapping, because the DB column name is not a sanitization of the
+# field function's own key ('Sales Rank - Drops last 30 days'), so that branch has to
+# apply the guard itself. It is in this set precisely so the two paths cannot drift.
 SENTINEL_EXPOSED_COLUMNS = (
     'Sales_Rank_Current',
+    'Drops',
     'Offers',
     'Offers_180',
     'Offers_365',
@@ -425,7 +433,7 @@ class StaleRescueSentinelTest(_DealsFixture):
         return clean_numeric_values(result)
 
     def test_stale_rescue_sentinel_never_overwrites_a_stored_value(self):
-        """A rescue that can compute nothing must change none of the five."""
+        """A rescue that can compute nothing must change none of the six."""
         existing = self._existing_row_as_production_reads_it()
         processed = self._run_stale_rescue(existing, usable_stats=False)
         stored = self._upsert(processed, 'stale_rescue')
@@ -466,6 +474,10 @@ class StaleRescueSentinelTest(_DealsFixture):
         self.assertEqual(
             str(stored['Sales_Rank_Current']), str(STALE_FRESH_RANK),
             "the guard blocked a rank the rescue could compute"
+        )
+        self.assertEqual(
+            str(stored['Drops']), str(STALE_FRESH_DROPS),
+            "the guard blocked a 30-day drop count the rescue could compute"
         )
         self.assertIn(str(STALE_FRESH_OFFERS_CURRENT), str(stored['Offers']))
         self.assertIn(str(STALE_FRESH_OFFERS_180), str(stored['Offers_180']))

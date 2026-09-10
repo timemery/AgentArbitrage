@@ -477,8 +477,14 @@ def _process_lightweight_update(existing_row, product_data):
         if drops_data:
              # 'Drops' is the DB column that carries the 30-day drop count; it is not a
              # sanitization of the function's own key, so it stays an explicit mapping.
+             # The explicit branch bypasses _merge_db_keyed, so it applies the same
+             # no-data guard itself: sales_rank_drops_last_30_days returns '-' whenever
+             # stats.salesRankDrops30 is negative, which on the Stale Rescue path would
+             # otherwise overwrite a good stored count with the sentinel.
              if 'Sales Rank - Drops last 30 days' in drops_data:
-                 row_data['Drops'] = drops_data['Sales Rank - Drops last 30 days']
+                 drops_value = drops_data['Sales Rank - Drops last 30 days']
+                 if not _is_no_data(drops_value):
+                     row_data['Drops'] = drops_value
              else:
                  _merge_db_keyed(row_data, drops_data)
 
