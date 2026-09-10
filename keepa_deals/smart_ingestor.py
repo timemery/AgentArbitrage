@@ -168,14 +168,23 @@ def requeue_stuck_restrictions():
     try:
         with get_db_connection(DB_PATH) as conn:
             cursor = conn.cursor()
+            # Cutoff built in Python, not with SQLite's datetime('now', ...). Both
+            # produce UTC, but they format it differently: every last_seen_utc writer
+            # uses datetime.now(timezone.utc).isoformat() ('...T12:00:00+00:00') while
+            # datetime('now') returns a space separator ('... 12:00:00'). SQLite compares
+            # these as TEXT, and 'T' (0x54) sorts after ' ' (0x20), so a row whose UTC
+            # DATE matched the cutoff's date never satisfied the '<' regardless of its
+            # time. This sweeper's intended 1-hour delay therefore became "not until the
+            # next UTC day". janitor.py has always built its cutoff this way.
+            cutoff = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
             query = """
                 SELECT r.asin
                 FROM user_restrictions r
                 JOIN deals d ON r.asin = d.asin
                 WHERE r.is_restricted IS NULL
-                AND d.last_seen_utc < datetime('now', '-1 hour')
+                AND d.last_seen_utc < ?
             """
-            cursor.execute(query)
+            cursor.execute(query, (cutoff,))
             asins = [row[0] for row in cursor.fetchall()]
 
             if asins:
@@ -203,13 +212,24 @@ def rescue_stale_deals(token_manager, limit=20):
         with get_db_connection(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
+            # Cutoff built in Python so it matches the format every last_seen_utc writer
+            # uses, and the format janitor.py compares against. See the note in
+            # requeue_stuck_restrictions above for the TEXT-comparison mechanics.
+            #
+            # Effect of the old datetime('now', '-48 hours') form: a row became eligible
+            # not at 48h but at the first 00:00 UTC after that, i.e. at age 72h minus its
+            # last-seen UTC time of day. The Janitor deletes at 72h to the second, so the
+            # intended 24-hour rescue window shrank to between 4 and 24 hours depending on
+            # the row's time of day, and rows last seen just after midnight UTC reached
+            # the deletion threshold at almost the same moment they became rescuable.
+            cutoff = (datetime.now(timezone.utc) - timedelta(hours=48)).isoformat()
             query = """
                 SELECT * FROM deals
-                WHERE last_seen_utc < datetime('now', '-48 hours')
+                WHERE last_seen_utc < ?
                 ORDER BY last_seen_utc ASC
                 LIMIT ?
             """
-            cursor.execute(query, (limit,))
+            cursor.execute(query, (cutoff, limit))
             stale_rows = cursor.fetchall()
 
         if not stale_rows:
