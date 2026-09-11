@@ -10,8 +10,12 @@ The inventory and sales data in `tracking.html` is retrieved via paginated endpo
 ### Dashboard Notification Logic
 The 'New Deals Found' notification relies on comparing the polled filtered count against a local baseline. The baseline (`currentTotalRecords`) must be set to `data.pagination.total_records` (filtered) rather than `total_db_records` (raw), and must explicitly check for `undefined` to handle valid `0` counts.
 
-### Inferred True Sales Logic (March 2026 Update)
-To ensure absolute accuracy, fallback logic estimating list prices via Keepa Stats (listing averages) was entirely removed from `keepa_deals/stable_calculations.py`. 
+### Inferred True Sales Logic (March 2026, completed September 2026)
+To ensure absolute accuracy, fallback logic estimating list prices via Keepa Stats (listing averages) was removed from `keepa_deals/stable_calculations.py` in March 2026.
+
+**That removal was incomplete.** A second fallback survived in `keepa_deals/new_analytics.py` on the `1yr. Avg.` path, taking the **maximum** of five `avg365` condition tiers, and went on firing for six months. It was removed on **2026-09-11** (audit item B-6). Zero inferred sales inside the last 365 days now returns `None`, on every price path. A new `Inferred_Sale_Count` column records how many sane sale events each price actually rests on.
+
+
 The system now enforces two strict rules to prevent artificial inflation:
 1. It requires at least 1 actual inferred sale (correlating an offer drop with a rank drop) to compute a price. Sparse sales (1-2 events) are permitted via their median.
 2. An absolute hard ceiling automatically rejects any calculated list price exceeding $1,500, preventing runaway algorithmic math.

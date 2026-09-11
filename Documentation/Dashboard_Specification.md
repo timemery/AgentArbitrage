@@ -23,7 +23,7 @@ The dashboard uses a responsive grid layout. Columns are defined in `templates/d
 | **Drops** | `Drops` | Integer count (30 days). | Auto | Yes |
 | **Offers** | `Offers` | Count + Trend Arrow. <br> **Trend:** ↘ (Green/Good), ↗ (Red/Bad), → (Orange/Flat). <br> **Icons:** ⚠️ (AMZ selling) right-aligned if applicable. | Auto | Yes |
 | **Season** | `Detailed_Seasonality` | Text (Truncated max-width 105px). | 105px | Yes |
-| **1yr Avg** | `1yr_Avg` | Currency ($XX.XX). | Auto | Yes |
+| **1yr Avg** | `1yr_Avg` | Currency ($XX.XX). Mean of **inferred sales** in the last 365 days; never a listing average. A row with no such sale has a NULL here and is excluded from the grid entirely. | Auto | Yes |
 | **Now** | `Price_Now` | Currency ($XX.XX). | Auto | Yes |
 | **% ⇩** | `Percent_Down` | Percentage + "%". | Auto | Yes |
 | **Ago** | `last_price_change` | Trend Arrow + Time Ago (e.g., "⇩ 2h ago"). <br> **Trend:** ⇧ (Red/Up), ⇩ (Green/Down), ⇨ (Orange/Flat). | Auto | Yes |
@@ -53,14 +53,14 @@ All sliders utilize a standardized "Any" state logic:
 3.  **Min. ROI (%)**: Filter by `ROI` (Profit / All-in-Cost * 100). *Replaces Min. Margin.*
 4.  **Min. Drops (30d)**: Filter by `Sales_Rank_Drops_last_30_days`.
 5.  **Max. Sales Rank**: Filter by `Sales_Rank_Current`.
-6.  **Min. Deal Trust**: Filter by `Deal_Trust`.
+6.  **Min. Deal Trust**: Filter by `Deal_Trust`. **Any non-zero threshold also excludes the `'-'` state** — the XAI no-offer-drops rescue, where there is no denominator to score — because the filter casts the column with `CAST(REPLACE("Deal_Trust", '%', '') AS REAL)` and `'-'` casts to `0.0`. This is the only non-numeric state left; the `"Low (Est.)"` state was retired on 2026-09-11 with the listing-average fallback that produced it.
 7.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
 
 ### Checkbox Filters
 -   **Optimal Filters (Magic Button):**
     -   Automatically applies a "Smart" preset designed to find high-quality deals.
     -   **Settings (Feb 2026 Tuned):** Profit >= $45, ROI >= 20%, Rank <= 1M, Drops >= 2, Trust >= 70%*, Seller >= 5/10, Below Avg >= 10%, Hide Gated, Hide AMZ.
-    -   *Note: Trust threshold logic ensures filtering is applied safely even if 'Deal Trust' score is pending.*
+    -   *Note: Trust threshold logic ensures filtering is applied safely even if 'Deal Trust' score is pending. A pending or non-numeric score (`'-'`) casts to `0.0` and is therefore excluded by the 70% preset — set Min. Deal Trust to "Any" to see those rows.*
 -   **Hide Gated**: Excludes deals where `is_restricted = 1`.
 -   **Hide AMZ Offers**: Excludes deals where `AMZ` is '⚠️'.
 -   **Exclude Conditions**: Specific checkboxes to filter out "New", "U-Like New", etc.
@@ -131,7 +131,7 @@ The grid is divided into four logical groups:
 #### Group 3: Deal & Price Benchmarks
 -   **Now**: `Price Now` (Best Price).
 -   **Shipping Included**: Yes/No.
--   **1yr Avg**: Inferred average sale price.
+-   **1yr Avg**: Mean of inferred sale prices from the last 365 days. Inferred sales only — no listing average, no Amazon price, no fallback of any kind.
 -   **% ⇩ Avg**: Discount percentage relative to 1yr Avg.
 -   **Price Trending**: Directional arrow.
 -   **Updated**: Time since last price change.
@@ -142,7 +142,7 @@ The grid is divided into four logical groups:
     -   **Buy Box Used - 1yr Avg**: Long-term Buy Box price.
 
 #### Group 4: Listing & Profit Estimates
--   **Estimate Trust**: `Deal Trust` %.
+-   **Estimate Trust**: `Deal Trust` %. Renders as `-` when the stored value is not numeric.
 -   **Profit**: Calculated Profit ($).
 -   **Margin**: Calculated Margin (%).
 -   **Max. List at**: The calculated "List at" (Peak) price.

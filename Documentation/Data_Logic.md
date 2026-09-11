@@ -60,13 +60,14 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Mechanism:** A sale is "inferred" when a drop in the **Offer Count** (someone bought a copy) is followed by a drop in **Sales Rank** (Amazon registered the sale) within a **240-hour** (10-day) window.
     *   **XAI Rescue (Hidden Sales):** If the standard mechanism finds 0 confirmed sales or no offer drops, it triggers an **xAI Rescue**. The system sends ~365 days of history to the LLM to identify "Hidden Sales" (Rank drops without Offer drops), rescuing valid deals that would otherwise be rejected.
     *   **Sparse Data Lookahead:** If no rank drop is found immediately, the system looks ahead **30 days**. If the next available rank is lower (better) than the rank before the offer drop, a sale is inferred. This allows capturing sales for slow-moving items with sparse rank history.
-    *   **Sparse Sales Rescue:** If fallback stats are missing, the system uses the **Median** of inferred sales (1-2 events) as a "Sparse Rescue" price.
+    *   **Sparse Sales Rescue:** If fewer than **3** inferred sales are found but at least 1, the system uses the **Median** of those 1-2 events as a "Sparse Rescue" price. They are TRUE inferred sales, just few. *(This previously read "if fallback stats are missing", which described a condition the code never had - the branch turns on the sale count alone, `MIN_SALES_FOR_ANALYSIS = 3`.)*
     *   **Output:** A list of `sale_events` used for all downstream analytics.
 
 4.  **Analytics & Seasonality**:
     *   **Logic:** `keepa_deals/new_analytics.py` and `seasonality_classifier.py`.
-    *   **1yr. Avg.:** The mean price of all inferred sales in the last 365 days.
-    *   **Exclusion:** If inferred sales < 1 (insufficient data), `1yr. Avg.` is None, and the deal is dropped (unless persisted as incomplete data).
+    *   **1yr. Avg.:** The mean price of all inferred sales in the last 365 days. **Inferred sales only — there is no fallback** (the `avg365` listing-average fallback was removed 2026-09-11, audit B-6).
+    *   **Exclusion:** If no inferred sale falls inside the last 365 days, `1yr. Avg.` is None and the deal is persisted as incomplete data (filtered from the UI). Note this includes deals that DO have inferred sales, just older ones — those keep a valid `List at` from the 3-year window alongside a NULL `1yr. Avg.`
+    *   **Inferred Sale Count:** The number of sane sale events the pricing branch used, persisted on the heavy path only. `0` means "computed, none found"; `NULL` means "never computed" and must never be read as zero or used to hide a deal.
     *   **Seasonality:** AI (`grok-4-fast-reasoning`) classifies the book (e.g., "Fall Semester") based on title, category, and historical peak sales months.
 
 5.  **Price Benchmarks ("List at" & "Trough")**:
@@ -80,8 +81,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
         1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices.
         2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context.
-            *   **Exception:** If the price is derived from **Keepa Stats Fallback** (Silver Standard) or **Inferred Sales (Sparse)**, this check is conditionally **SKIPPED**.
-            *   **Suspiciously High Fallback:** If the fallback price is **> 300% (3x)** of the current Used price, the check is **FORCED** to prevent accepting manipulated prices.
+            *   **Exception:** If the price source is **Inferred Sales (Sparse)** (1-2 true sales, thin context), this check is conditionally **SKIPPED**. *(The "Keepa Stats Fallback" half of this exception was removed on 2026-09-11 with the fallback itself — no code path produces that source any more.)*
+            *   **Suspiciously High:** If the price is **> 300% (3x)** of the current Used price, the check is **FORCED**, overriding the sparse skip, to prevent accepting manipulated prices.
     *   **Exclusion:** If validation fails, the price is invalidated (potentially leading to persistence as incomplete data).
 
 6.  **Business Math**:
@@ -158,7 +159,14 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`1yr. Avg.`**:
     -   **Source**: `keepa_deals/new_analytics.py`.
     -   **Logic**: Mean of inferred sale prices over last 365 days.
-    -   **Threshold**: Requires **at least 1** inferred sale. If 0, returns None.
+    -   **Threshold**: Requires **at least 1** inferred sale inside that window. If none, returns `None`.
+    -   **No fallback**: never a listing average, an Amazon price, a Keepa list price or a default. Removed 2026-09-11 (audit B-6).
+
+-   **`Inferred Sale Count`**:
+    -   **Source**: `keepa_deals/stable_calculations.py` (`analyze_sales_performance`), persisted by `_process_single_deal`.
+    -   **Logic**: Count of the sane sale events the pricing branch used — post-IQR on the algorithmic path, raw on the XAI-rescue path.
+    -   **Written on the heavy path only.** The light path preserves the stored value; recomputing needs Keepa `csv` history a light fetch does not carry.
+    -   **`0` vs `NULL`**: `0` means computed-and-none-found; `NULL` means never computed (a legacy row, or one only ever touched by the light path). **`NULL` must never be read as zero, and neither value is used to hide a deal.**
 
 -   **`Percent Down` (% ⇩)**:
     -   **Source**: `keepa_deals/new_analytics.py`.
@@ -177,8 +185,9 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`Deal Trust` (Deal Trust)**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: `(Count of Inferred Sales / Count of Offer Drops) * 100`.
-    -   **Fallback Status**: If the deal uses the `avg365` fallback price (because inferred sales were insufficient), this field is set to **"Low (Est.)"** to warn the user that the price is an estimate.
-    -   **Meaning**: High % means offer drops reliably correlate with sales rank drops. "Low (Est.)" means the price is a historical average, not derived from confirmed recent sales.
+    -   **Meaning**: High % means offer drops reliably correlate with sales rank drops.
+    -   **Non-numeric state**: `'-'`, returned when `total_offer_drops == 0`. That is the XAI "no offer drops" rescue, where every sale came from the model and there is no denominator to score. **`/api/deals` casts it with `CAST(REPLACE("Deal_Trust", '%', '') AS REAL)`, which yields `0.0`, so any non-zero Min. Deal Trust filter silently excludes those rows.**
+    -   **Removed**: the `"Low (Est.)"` state. It marked a row whose `1yr. Avg.` came from the `avg365` listing-average fallback; that fallback was removed on 2026-09-11 (audit B-6) and the marked rows were deleted by `cleanup_low_est_rows.py`. The CAST above is deliberately **unchanged** — it is still needed for the `'-'` state.
 
 ### AI-Driven Seasonality and Pricing
 
@@ -188,9 +197,9 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 
 -   **`List at`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
-    -   **Logic**: **Mode** of peak season prices (or `Used - 90d avg` fallback if high velocity).
-    -   **Constraint**: Capped at 90% of Amazon New price.
-    -   **AI Check**: Validated by `grok-4-fast-reasoning` (skipped for Fallbacks).
+    -   **Logic**: **Mode** of peak season prices, falling back to the peak-season **Median** when no distinct mode exists. With 1-2 sales, the Sparse Rescue median. **Inferred sales only.** *(This previously read "or `Used - 90d avg` fallback if high velocity" — that fallback was deleted in March 2026 and has not existed since.)*
+    -   **Constraint**: Capped at 90% of `Min(Amazon Current, Amazon 180d avg, Amazon 365d avg)`.
+    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, and skipped when the Amazon ceiling clamped the price.
 
 -   **`Expected Trough Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.

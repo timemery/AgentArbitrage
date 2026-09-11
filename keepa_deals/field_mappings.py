@@ -711,7 +711,13 @@ FUNCTION_LIST = [
     None,                           # Margin
     None,                           # Total AMZ fees
     None,                           # last_seen_utc
-    None                            # source
+    None,                           # source
+    # Inferred Sale Count is written explicitly by _process_single_deal from
+    # analyze_sales_performance's return value, not by a field function, so the
+    # slot is None. It must still exist: processing.py pairs FUNCTION_LIST with
+    # headers.json BY INDEX (`row_data[headers[i]] = val`), so the two lists have
+    # to stay the same length and the same order.
+    None                            # Inferred Sale Count
 ]
 # Chunk 2 ends
 

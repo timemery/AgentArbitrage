@@ -190,6 +190,8 @@ Previous attempts to "solve" data gaps using fallback values (e.g., Keepa Stats 
 
 - **Principle:** If the primary data source (confirmed true inferred sales via drops vs. offers) is missing, REJECT the deal (return `None` or `-1`). Incorrect guesses based on listing prices lead to wildly inaccurate margins and damage subscriber trust.
 - **March 2026 Addendum:** The "Keepa Stats Fallback" (Silver Standard) logic was explicitly removed from `stable_calculations.py`. **Do not reintroduce fallback logic that uses listing prices to inflate deal volume.** If 0 inferred sales, the deal MUST be rejected.
+- **September 2026 Addendum:** That removal covered only `stable_calculations.py`. A second fallback survived in `new_analytics.py` on the `1yr. Avg.` path — `max(stats.avg365[2, 19, 20, 21, 22])`, the most expensive of five listing-average condition tiers — and was removed on 2026-09-11 (audit B-6). **`1yr. Avg.` and `List at` may now come ONLY from true inferred sales.** No listing average, no Amazon price, no Keepa list price, no default, no max or min across condition tiers, on any path. If you are about to add one, you are wrong. Stop.
+  - Note the consequence: `List at` uses a 3-year window and `1yr. Avg.` a 1-year one, so a valid `List_at` alongside a NULL `1yr_Avg` is now a legitimate state. `1yr_Avg IS NULL` is **not** a data-damage fingerprint.
 
 ### 7.2 Role-Based Access Control (RBAC)
 
