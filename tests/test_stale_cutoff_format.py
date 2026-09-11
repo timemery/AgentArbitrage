@@ -20,9 +20,13 @@ That mattered because `janitor.py` builds its cutoff with `.isoformat()` and so 
 at 72h to the second. The rescue's intended 24-hour window shrank to between 4 and 24
 hours depending on time of day.
 
-These tests drive the production functions with a patched DB_PATH, and pin the ONE case
-that separates the two formats: a row old enough to qualify whose UTC date is the same
-as the cutoff's. Against the pre-fix code both fail.
+FIXTURES ARE DERIVED FROM THE CUTOFF, NOT FROM A FIXED AGE. The first version of this
+file seeded rows at `now - 50h` and relied on that landing on the same UTC date as the
+`now - 48h` cutoff. That holds for most of the day but is FALSE between 00:00 and
+02:00 UTC, when the two straddle midnight, so the tests failed nightly for fixture
+reasons rather than for the defect. `_seed_at_start_of_cutoff_day` instead places the
+row at 00:00 UTC on the cutoff's own date, which is on that date by construction and
+at or before the cutoff instant at every hour of the clock.
 """
 import os
 import shutil
@@ -68,49 +72,54 @@ class StaleCutoffFormatTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_dir)
 
-    def _seed_deal(self, asin, age_hours):
-        """Insert one deal last seen `age_hours` ago, written the way production writes."""
-        seen = (datetime.now(timezone.utc) - timedelta(hours=age_hours)).isoformat()
+    def _insert(self, asin, seen_dt):
+        """Insert one deal, written the way every production writer writes it."""
         conn = get_db_connection(self.db_path)
         conn.execute(
-            "INSERT INTO deals (ASIN, last_seen_utc) VALUES (?, ?)", (asin, seen)
+            "INSERT INTO deals (ASIN, last_seen_utc) VALUES (?, ?)",
+            (asin, seen_dt.isoformat()),
         )
         conn.commit()
         conn.close()
-        return seen
 
-    @staticmethod
-    def _same_utc_date_as_cutoff(seen_iso, offset_hours):
-        """True when this row is the case that separates the two cutoff formats."""
+    def _seed_at_start_of_cutoff_day(self, asin, offset_hours):
+        """Seed the one row that separates the two cutoff formats.
+
+        Placed at 00:00 UTC on the cutoff's own date, so it is:
+          * on the cutoff's UTC date, which is what makes the 'T' vs ' ' comparison
+            decide the outcome; and
+          * at or before the cutoff instant, so a correctly formatted cutoff selects it.
+        Both hold at every hour of the clock, unlike a fixed age offset.
+        """
         cutoff = datetime.now(timezone.utc) - timedelta(hours=offset_hours)
-        return seen_iso[:10] == cutoff.strftime('%Y-%m-%d')
+        seen = cutoff.replace(hour=0, minute=0, second=0, microsecond=0)
+        self.assertLess(seen, cutoff, "fixture premise: row must predate the cutoff")
+        self.assertEqual(
+            seen.strftime('%Y-%m-%d'), cutoff.strftime('%Y-%m-%d'),
+            "fixture premise: row must share the cutoff's UTC date"
+        )
+        self._insert(asin, seen)
+
+    def _seed_just_inside_window(self, asin, offset_hours):
+        """Seed a row one hour NEWER than the cutoff, which must never be selected."""
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=offset_hours)
+        self._insert(asin, cutoff + timedelta(hours=1))
 
     # --- the 48h Stale Rescue ------------------------------------------------
 
-    def test_row_50h_old_on_the_cutoff_date_is_selected(self):
-        """The exact row the old cutoff skipped: past 48h, same UTC date as the cutoff.
-
-        A 50-hour-old row is always 2 hours after the 48-hour cutoff instant, so it
-        always shares the cutoff's UTC date. Under the space-separated cutoff its 'T'
-        sorted after the cutoff's space and it was never selected.
-        """
-        seen = self._seed_deal('B00STALE50', age_hours=50)
-        self.assertTrue(
-            self._same_utc_date_as_cutoff(seen, 48),
-            "fixture is not exercising the bug: row date differs from the cutoff date"
-        )
-
-        selected = self._run_rescue_and_capture_selected_asins()
+    def test_row_past_48h_on_the_cutoff_date_is_selected(self):
+        """The exact row the old cutoff skipped: past 48h, same UTC date as the cutoff."""
+        self._seed_at_start_of_cutoff_day('B00STALE48', offset_hours=48)
         self.assertIn(
-            'B00STALE50', selected,
-            "a 50h-old deal was not selected for rescue. Its UTC date matches the "
-            "cutoff's, so a space-separated cutoff skips it and it keeps ageing "
-            "toward the Janitor's 72h deletion."
+            'B00STALE48', self._run_rescue_and_capture_selected_asins(),
+            "a deal past 48h was not selected for rescue. Its UTC date matches the "
+            "cutoff's, so a space-separated cutoff skips it and it keeps ageing toward "
+            "the Janitor's 72h deletion."
         )
 
     def test_row_inside_the_window_is_still_not_selected(self):
-        """The fix must not widen the window: 47h is not yet stale."""
-        self._seed_deal('B00FRESH47', age_hours=47)
+        """The fix must not widen the window: an hour short of 48h is not yet stale."""
+        self._seed_just_inside_window('B00FRESH47', offset_hours=48)
         self.assertNotIn('B00FRESH47', self._run_rescue_and_capture_selected_asins())
 
     def _run_rescue_and_capture_selected_asins(self):
@@ -134,17 +143,13 @@ class StaleCutoffFormatTest(unittest.TestCase):
 
     # --- the 1h Ghost Restriction Sweeper ------------------------------------
 
-    def test_pending_restriction_2h_old_on_the_cutoff_date_is_requeued(self):
+    def test_pending_restriction_past_1h_on_the_cutoff_date_is_requeued(self):
         """Same defect at the sweeper, where it cost up to a full extra UTC day."""
-        seen = self._seed_deal('B00STUCK02', age_hours=2)
-        self.assertTrue(
-            self._same_utc_date_as_cutoff(seen, 1),
-            "fixture is not exercising the bug: row date differs from the cutoff date"
-        )
+        self._seed_at_start_of_cutoff_day('B00STUCK01', offset_hours=1)
         conn = get_db_connection(self.db_path)
         conn.execute(
             "INSERT INTO user_restrictions (user_id, asin, is_restricted) "
-            "VALUES ('u1', 'B00STUCK02', NULL)"
+            "VALUES ('u1', 'B00STUCK01', NULL)"
         )
         conn.commit()
         conn.close()
@@ -156,8 +161,8 @@ class StaleCutoffFormatTest(unittest.TestCase):
             smart_ingestor.requeue_stuck_restrictions()
 
         self.assertEqual(
-            [['B00STUCK02']], sent,
-            "a restriction check pending for 2h was not re-queued. Its UTC date matches "
+            [['B00STUCK01']], sent,
+            "a restriction check pending past 1h was not re-queued. Its UTC date matches "
             "the cutoff's, so a space-separated cutoff holds it until the next UTC day "
             "and the dashboard keeps showing a spinner."
         )
