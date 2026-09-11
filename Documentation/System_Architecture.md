@@ -89,6 +89,18 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
     2.  **Pass 2 (xAI Mastermind):** Passes candidates to `grok-4-fast-reasoning` with heavily filtered strategies to identify the best deals. Includes a 'SEASONAL HIGH-RANK CORRECTION' to explicitly prevent the AI from rejecting seasonal candidates solely based on their current high (off-season) sales rank.
     3.  **Caching:** Saves the final results to the `prime_picks` table atomically. If Pass 2 fails (e.g. xAI API error), the system gracefully skips updating the cache to preserve the previous valid results.
 
+### E. `recover_damaged_deals.py` (One-Time Damaged-Row Recovery)
+
+*   **Purpose:** Deletes rows left permanently incomplete by the A-7 light-update defect (PR #330), so the Smart Ingestor can re-acquire those ASINs through the heavy path.
+*   **Trigger:** Manual only. Not a Celery task, not scheduled. Run from the application root as `www-data` with all background services stopped.
+*   **Why deleting is the repair.** While a row exists the ingestor always routes its ASIN to the light path: `existing_asins_set` is rebuilt from a live `SELECT` every run and the Zombie Data Defense heavy re-fetch is commented out, so `is_zombie` is always `False`. Stale Rescue is light-only, and the recalculator is API-free. **No code path can restore these rows in place.** Deleting is not the cheaper option, it is the only mechanism that returns the ASIN to the heavy path where `1yr_Avg` and `List_at` are computed from scratch.
+*   **Predicate:** `"1yr_Avg" IS NULL AND "List_at" IS NULL AND source != 'smart_ingestor'`. `1yr_Avg IS NULL` is the reliable damage fingerprint — the heavy path wrote it on 295 of 295 rows at the A-7 baseline, while `List_at IS NULL` alone also matches the heavy path's deliberate "Missing List at" persistence. A NULL `source` is left alone, since `NULL != 'x'` is NULL in SQL.
+*   **Safety:** Dry run by default; `--apply` deletes; there is no `--force`. Preflight aborts if Celery or the `monitor_and_restart` watchdog is running, if the `smart_ingestor_lock` Redis key is held, or if the process is not running as `www-data`. It takes its own backup through SQLite's backup API rather than `backup_db.sh` (a plain `cp` that can miss committed pages still sitting in `deals.db-wal`) and verifies the copy by row count. An invariant check aborts if any row has a `List_at` but no `1yr_Avg`, which would mean the fingerprint is no longer safe. The delete runs as one transaction with no `VACUUM`.
+*   **Scope:** The `deals` table only. `user_restrictions`, `prime_picks`, `confirmed_buys` and the `system_state` watermark are untouched — there is **no watermark rewind**, so re-acquisition is passive and depends on Keepa surfacing the ASIN in the deal feed again.
+*   **Output:** A verified backup and the target ASIN list, both written to `db_backups/` (gitignored), so the return rate can be measured later. The run ends by printing `ls -l deals.db*` so file ownership is visible before services are restarted.
+*   **Dashboard impact:** None. `/api/deals` and `/api/deal-count` both append `"1yr_Avg" IS NOT NULL` on every branch and it is not user-filterable, so these rows are already invisible.
+*   **Guarded by:** `tests/test_recover_damaged_deals.py`.
+
 ---
 
 ## 4. AI Components (xAI Integration)
