@@ -261,5 +261,69 @@ class ReadOnlyGuarantees(unittest.TestCase):
                 "{!r} in its source.".format(forbidden))
 
 
+class StoredPriceConclusion(unittest.TestCase):
+    """The section that drew a wrong conclusion on a live ASIN, 2026-09-11.
+
+    It reported that a value absent from the price history "points at an
+    xAI-invented event". On ASIN 1429097078 that was wrong: the stored $699.11 is
+    mean($699.99, $698.23), an average of two prices that ARE in the history. An
+    average of real prices is usually not itself a real price, so absence proves
+    nothing on its own.
+    """
+
+    def setUp(self):
+        logging.disable(logging.CRITICAL)
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
+
+    @staticmethod
+    def _history_without(target_cents, values, history_days=400):
+        now, timestamps = _history(history_days)
+        used = [values[i % len(values)] for i in range(len(timestamps))]
+        assert target_cents not in used
+        csv_data = [None] * 13
+        csv_data[2] = _flat(timestamps, used)
+        return now, csv_data
+
+    def _run(self, csv_data, stored_usd, sane):
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            D.check_stored_price(csv_data, stored_usd, sane)
+        return buf.getvalue()
+
+    def test_a_mean_absent_from_history_is_not_blamed_on_xai(self):
+        """The 1429097078 case, reproduced."""
+        now, csv_data = self._history_without(69911, [69999, 69823])
+        sane = [
+            {'event_timestamp': now - timedelta(days=173),
+             'inferred_sale_price_cents': 69999},
+            {'event_timestamp': now - timedelta(days=116),
+             'inferred_sale_price_cents': 69823},
+        ]
+        out = self._run(csv_data, 699.11, sane)
+        self.assertIn('NOT PRESENT', out)
+        self.assertIn('MATCHES STORED', out)
+        self.assertIn('COMPUTED average', out)
+        self.assertNotIn('xAI is worth considering', out,
+                         "A derivable value must never be attributed to xAI.")
+
+    def test_xai_is_named_only_when_the_value_is_also_underivable(self):
+        now, csv_data = self._history_without(12345, [2000, 2500])
+        sane = [{'event_timestamp': now - timedelta(days=100),
+                 'inferred_sale_price_cents': 2000}]
+        out = self._run(csv_data, 123.45, sane)
+        self.assertIn('not derivable', out)
+        self.assertIn('xAI is worth considering', out)
+
+    def test_a_price_present_in_history_short_circuits(self):
+        now, timestamps = _history()
+        csv_data = [None] * 13
+        csv_data[2] = _flat(timestamps, [49995] * len(timestamps))
+        out = self._run(csv_data, 499.95, [])
+        self.assertIn('real historical listing price', out)
+        self.assertNotIn('COMPUTED average', out)
+
+
 if __name__ == '__main__':
     unittest.main()

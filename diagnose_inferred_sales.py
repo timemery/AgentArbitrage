@@ -34,8 +34,11 @@ they have different fixes:
 
   (ii) An xAI-rescued "hidden sale". When the algorithmic pass confirms nothing,
        `infer_sale_events` returns the model's events verbatim, BEFORE the IQR
-       outlier filter. If the price history never held the stored value, the number
-       was invented. This diagnostic prints whether the history ever held it.
+       outlier filter. This diagnostic reports whether the history ever held the
+       stored value - but absence is NOT by itself evidence of invention, because
+       `1yr. Avg.` is a mean and the sparse `List at` a median, and an average of
+       real prices is usually not itself a price anyone listed at. The derived
+       values are computed and compared before xAI is named.
 
 WHAT IT WILL NOT DO
 -------------------
@@ -461,8 +464,47 @@ def sanitise(confirmed):
     return sane
 
 
-def check_stored_price(csv_data, stored_price_usd):
-    """Did the price history EVER hold the stored value? Separates (i) from (ii)."""
+def _derived_candidates(sane_sales):
+    """The values the pricing code COMPUTES rather than copies out of the history.
+
+    Neither of these has to appear in the price history, because both are averages
+    of prices that do. Checking them is what stops the section below from blaming
+    an absent value on xAI.
+    """
+    if not sane_sales:
+        return []
+    prices = [float(c['inferred_sale_price_cents']) for c in sane_sales]
+    year_ago = datetime.now() - timedelta(days=365)
+    in_year = [float(c['inferred_sale_price_cents']) for c in sane_sales
+               if c['event_timestamp'] >= year_ago]
+
+    out = []
+    if in_year:
+        out.append(("1yr Avg: mean of the {} sale(s) inside 365 days"
+                    .format(len(in_year)), sum(in_year) / len(in_year)))
+    if len(prices) < MIN_SALES_FOR_ANALYSIS:
+        out.append(("List at: sparse-branch median of {} sale(s)".format(len(prices)),
+                    float(np.median(prices))))
+    return out
+
+
+def check_stored_price(csv_data, stored_price_usd, sane_sales=None):
+    """Did the price history EVER hold the stored value, or was it computed?
+
+    CAVEAT, learned the hard way on ASIN 1429097078 (2026-09-11). An earlier version
+    of this section concluded that a value absent from the history "points at an
+    xAI-invented event". That conclusion was WRONG, and it fired on a real ASIN.
+
+    `1yr. Avg.` is the **mean** of the in-year sale prices and the sparse `List at`
+    is their **median**. An average of two real prices is generally not itself a
+    price anyone ever listed at: $699.11 is mean($699.99, $698.23), and neither it
+    nor anything near it appears in the history. Absence from the history is
+    therefore evidence of nothing on its own.
+
+    So the derived values are now computed and compared BEFORE any conclusion is
+    drawn, and xAI is named only when the value is neither in the history nor
+    derivable from the sales found here.
+    """
     _rule("DOES THE HISTORY EVER HOLD THE STORED PRICE?")
     if stored_price_usd is None:
         print("  No --stored-price given, skipping.")
@@ -488,9 +530,34 @@ def check_stored_price(csv_data, stored_price_usd):
     if found_any:
         print("  The value IS a real historical listing price. The question is")
         print("  whether it was attached to a real sale - read the gap column above.")
+        return
+
+    # Absent from the history. Do NOT jump to xAI: the stored value may be one the
+    # pricing code computed from prices that ARE in the history.
+    print("  The value is NOT anywhere in the price history.")
+    print()
+    print("  That alone means nothing, because two stored values are AVERAGES and")
+    print("  an average of real prices is usually not itself a real price:")
+    candidates = _derived_candidates(sane_sales)
+    if not candidates:
+        print("    (no sale events found here, so nothing can be derived)")
+    matched = None
+    for label, cents in candidates:
+        hit = abs(cents - target) < 0.5
+        print("    {:<52} {}{}".format(label, _money(cents),
+                                       '   <-- MATCHES STORED' if hit else ''))
+        if hit and matched is None:
+            matched = label
+    print()
+    if matched is not None:
+        print("  The stored value is a COMPUTED average, not a recorded price, so")
+        print("  its absence from the history is expected and is not evidence of")
+        print("  anything. Judge the inputs instead: read the step-up and gap")
+        print("  columns above for the individual sales it averages.")
     else:
-        print("  The value is NOT anywhere in the price history. No merge_asof match")
-        print("  could have produced it, which points at an xAI-invented event.")
+        print("  Not in the history AND not derivable from the sales found here.")
+        print("  Now xAI is worth considering - but check first whether the sale set")
+        print("  has changed since the row was written, which would move the average.")
 
 
 def amazon_stats(product):
@@ -621,7 +688,7 @@ def main(argv=None):
         print("  Deal Trust would be {} / {} = {:.0f}%"
               .format(len(sane), total_drops, trust))
 
-    check_stored_price(csv_data, args.stored_price)
+    check_stored_price(csv_data, args.stored_price, sane)
     used_now = amazon_stats(product)
     recompute(sane, used_now, args.stored_price)
 
