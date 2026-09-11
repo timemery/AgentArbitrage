@@ -20,6 +20,9 @@ spike_log.txt
 
 # Databases & backups
 deals.db*
+# 'deals.db*' does not match 'test_deals.db*'. Test fixtures that write to a
+# repo-root test DB leave -wal/-shm files behind; two of them shipped in PR #332.
+test_deals.db*
 dump.rdb
 temp-*.rdb
 db_backups/
