@@ -150,6 +150,20 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
             return None
         row_data.update(sales_perf)
 
+        # Inferred Sale Count. Written under the headers.json DISPLAY name because
+        # _process_single_deal rows are display-keyed (AGENTS.md 7.12); to_db_keys
+        # re-keys the whole row to 'Inferred_Sale_Count' in smart_ingestor before
+        # the upsert. row_data.update(sales_perf) above cannot carry it: that dict's
+        # keys are lowercase internals ('inferred_sale_count'), which are not
+        # headers and are dropped by the upsert.
+        #
+        # HEAVY PATH ONLY, by owner decision. The light path preserves whatever is
+        # stored (it builds its row from dict(existing_row) and never recomputes
+        # the sale set), so an existing row keeps its count and a legacy row keeps
+        # NULL. NULL means "never computed" - it must never be read as zero and
+        # must never be used to hide a deal.
+        row_data['Inferred Sale Count'] = sales_perf.get('inferred_sale_count')
+
         # Ensure Expected Trough Price is numeric float
         if 'expected_trough_price_cents' in sales_perf and sales_perf['expected_trough_price_cents'] > 0:
              row_data['Expected Trough Price'] = round(sales_perf['expected_trough_price_cents'] / 100.0, 2)
@@ -241,14 +255,18 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         row_data.update(recent_inferred_sale_price(product_data))
         row_data.update(analyze_sales_rank_trends(product_data))
 
-        # Trust Adjustment for Fallback Pricing
-        # If we used the "Keepa Stats Fallback" (Avg365) instead of real Inferred Sales,
-        # we must lower the confidence score to warn the user.
-        price_source = row_data.get('price_source')
-        if price_source == 'Keepa Stats Fallback':
-            # Cap Deal Trust at 50% or mark as Low
-            # (If deal_trust calc exists, we override it)
-            row_data['Deal Trust'] = "Low (Est.)"
+        # The "Trust Adjustment for Fallback Pricing" that stood here overwrote
+        # Deal Trust with the literal string "Low (Est.)" when price_source was
+        # 'Keepa Stats Fallback'. get_1yr_avg_sale_price no longer produces that
+        # source (owner decision 2026-09-11, audit B-6), so the branch could
+        # never fire again and its presence would imply a state the system can
+        # no longer reach.
+        #
+        # Deal Trust still has a non-numeric state and it is NOT this one:
+        # deal_trust() returns '-' when total_offer_drops == 0, which is the
+        # XAI "no offer drops" rescue. Every Deal_Trust CAST downstream
+        # (wsgi_handler.py, prime_picks_task.py) exists for that case and is
+        # deliberately left unchanged.
 
     except Exception as e:
         logger.error(f"ASIN {asin}: Failed analytics calculations: {e}", exc_info=True)

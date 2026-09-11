@@ -32,7 +32,24 @@ To address data sparsity without sacrificing safety, we briefly introduced a **V
 **REMOVAL REASONING:**
 The user subsequently observed that this fallback logic—while safely preventing astronomical profits via `min()`—still essentially relied on *listing prices* rather than *true inferred sale prices*. This tactic, originally designed to increase the volume of deals found, compromised the core promise of only providing "true deals."
 
-**Current Principle:** Fallbacks to listing averages are **strictly prohibited**. We now ONLY rely on inferred sale prices (derived from offer drops correlating with rank drops) to calculate profits. Sparse inferred sales (1-2 events) are still permitted as they represent true historical sales, but Keepa stats averages are not. 
+**The Surviving Fallback and Its Removal (Sep 2026)**
+The March 2026 removal covered `stable_calculations.py` (the `List at` path) only. A
+second fallback survived in `new_analytics.py` (the `1yr. Avg.` path) and went on
+firing for another six months. It was **strictly more aggressive** than the one that
+had been deliberately deleted: where the Silver Standard took `min(avg90, avg365)` on
+the **Used** index alone, this one built candidates from five `avg365` condition tiers
+(Used, Like New, Very Good, Good, Acceptable) and took the **`max`**. On the audit's
+worked example a true $31.00 became $88.00, turning a 16% discount into a reported
+70% one, and that number was handed verbatim to the Advisor and to Prime Picks Pass 1.
+
+It was removed on **2026-09-11** by owner decision (audit item B-6). Zero inferred
+sales inside the last 365 days now returns `None`.
+
+**Current Principle:** Fallbacks to listing averages are **strictly prohibited**, on
+**every** price path. We ONLY rely on inferred sale prices (derived from offer drops
+correlating with rank drops) to calculate profits. Sparse inferred sales (1-2 events)
+are still permitted as they represent true historical sales, but Keepa stats averages
+are not.
 **Hard Ceiling Safety:** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
 
 ------
@@ -112,7 +129,42 @@ Used for the "Percent Down" and "Trend" calculations.
 1.  Filters the sane sales list to include only those from the **last 365 days**.
 2.  Calculates the **Mean** of these prices.
 3.  **Threshold:** Requires at least **1** inferred sale.
-4.  **Fallback:** If 0 inferred sales are found, the system attempts to use **`stats.avg365`** (Used). If that also fails, it returns `None` and the deal is persisted as **incomplete data** (filtered from the UI).
+4.  **No fallback.** If no inferred sale falls inside the last 365 days, the function
+    returns `None`, and the deal is persisted as **incomplete data** (filtered from
+    the UI on every branch of `/api/deals` and `/api/deal-count`). This covers two
+    distinct cases that reach the same answer: zero inferred sales at all, and
+    inferred sales that are all older than 365 days.
+
+    *Removed 2026-09-11 (audit B-6): this step used to fall through to
+    `max(stats.avg365[2, 19, 20, 21, 22])`. See the Critical Warning above. Do not
+    reintroduce it.*
+
+> **A consequence worth knowing.** `List at` is computed over a **3-year** window and
+> `1yr. Avg.` over a **1-year** window, so a book whose only inferred sales are older
+> than 365 days now yields a valid `List at` with a `NULL` `1yr. Avg.` That
+> combination was impossible while the fallback existed and is now expected. It is
+> why `1yr_Avg IS NULL` is no longer a usable damage fingerprint, and why
+> `recover_damaged_deals.py` was retired to `Archive/scripts/` — its mandatory
+> invariant asserted that exact combination never occurs.
+
+### C. Inferred Sale Count (`Inferred_Sale_Count`)
+The number of sane inferred sale events the pricing branch actually used: post-IQR on
+the algorithmic path, raw on the XAI-rescue path (which returns before sanitisation).
+
+*   **Written by:** `analyze_sales_performance`, on **every** return branch including
+    the zero-sale rejection, and persisted by `_process_single_deal`.
+*   **Heavy path only.** The lightweight update preserves the stored value rather than
+    recomputing it, because recomputing needs Keepa `csv` history that a light fetch
+    does not carry.
+*   **`0` and `NULL` are different answers.** `0` means "computed, and there were
+    none". `NULL` means "never computed" — a row that predates this column, or one
+    only ever touched by the light path. **`NULL` must never be read as zero and must
+    never be used to hide a deal.**
+*   **Why it exists:** nothing else in the schema records it. `Deal Trust` stores the
+    *ratio* `sane_sales / offer_drops`, from which neither term is recoverable, and
+    `Recent Inferred Sale Price` stores one price. Before this column, separating a
+    one-sale deal from a many-sale one required re-fetching Keepa history at roughly
+    20 tokens per ASIN.
 
 ------
 

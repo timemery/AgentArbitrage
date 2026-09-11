@@ -32,9 +32,30 @@ def format_time_ago(minutes_ago):
     return f"{int(years_ago)} years ago"
 
 def get_1yr_avg_sale_price(product, logger=None):
-    """
-    Displays the median inferred sale price over the last 365 days.
-    Returns None if there are not enough sale events.
+    """Mean of the inferred sale prices from the last 365 days, or None.
+
+    INFERRED SALES ONLY. There is no fallback. Owner decision, 2026-09-11
+    (audit B-6): `1yr. Avg.` and `List at` may come only from true inferred
+    sales - offer-drop correlated with rank-drop - never from a listing
+    average, an Amazon price, a Keepa list price or any default.
+
+    What was removed: this function used to fall through to
+    `max(stats.avg365[2, 19, 20, 21, 22])`, the most expensive of five Keepa
+    listing-average condition tiers, whenever no inferred sale landed inside
+    the last 365 days. That is a listing average, not a sale price, and it is
+    the exact failure mode AGENTS.md 7.1 and INFERRED_PRICE_LOGIC.md were
+    written to prevent. It was also strictly more aggressive than the "Silver
+    Standard" deliberately deleted from stable_calculations.py in March 2026,
+    which used min() on the Used index alone. It inflated `% Down` (a worked
+    example in the 2026-09-09 audit went from a true 16% to a reported 70%)
+    and fed that number verbatim to the Advisor and to Prime Picks Pass 1.
+
+    Returning None persists the deal with a NULL `1yr_Avg`, which /api/deals
+    and /api/deal-count both exclude on every branch. The row stays in the
+    table for lightweight updates rather than being rejected and re-fetched
+    forever (AGENTS.md 7.8).
+
+    Do not reintroduce a fallback here.
     """
     COLUMN_NAME = "1yr. Avg."
     if not logger:
@@ -44,13 +65,11 @@ def get_1yr_avg_sale_price(product, logger=None):
     # DEBUG LOG
     logger.info(f"DEBUG ENTRY: get_1yr_avg_sale_price called for {asin}")
 
-    # Basic data check
-    if 'csv' not in product or not isinstance(product['csv'], list) or len(product['csv']) < 13:
-        # NOTE: Even if CSV is missing/bad, we might still have Stats for fallback.
-        # But existing logic enforced this. Let's relax it slightly if we want pure fallback.
-        # However, `infer_sale_events` needs CSV.
-        pass
-
+    # No standalone csv guard: infer_sale_events does its own length check and
+    # returns an empty list when the history is missing or too short. The note
+    # that used to sit here ("we might still have Stats for fallback") described
+    # the removed fallback and no longer applies - with no fallback, missing csv
+    # and zero inferred sales reach the same answer, None.
     sale_events, _ = infer_sale_events(product)
 
     mean_price_cents = -1
@@ -71,46 +90,15 @@ def get_1yr_avg_sale_price(product, logger=None):
         except Exception as e:
             logger.error(f"ASIN {asin}: Error calculating {COLUMN_NAME} from sales: {e}", exc_info=True)
 
-    # Fallback if inferred sales failed (or no sales in last year)
+    # No inferred sale inside the last 365 days is a final answer, not a prompt
+    # to estimate. See the docstring: the Keepa Stats fallback that used to live
+    # here was removed by owner decision on 2026-09-11 (audit B-6).
     if mean_price_cents == -1:
-        logger.info(f"ASIN {asin}: Insufficient inferred sales for {COLUMN_NAME}. Attempting fallback to Keepa Stats.")
-        stats = product.get('stats', {})
-        if not stats:
-            logger.warning(f"ASIN {asin}: 'stats' object missing from product data.")
-            return None
-
-        candidates = []
-
-        # Used (Index 2)
-        avg365 = stats.get('avg365', [])
-        if avg365 and len(avg365) > 2 and avg365[2] is not None and avg365[2] > 0:
-            candidates.append(avg365[2])
-
-        # Used - Like New (Index 19)
-        if avg365 and len(avg365) > 19 and avg365[19] is not None and avg365[19] > 0:
-            candidates.append(avg365[19])
-
-        # Used - Very Good (Index 20)
-        if avg365 and len(avg365) > 20 and avg365[20] is not None and avg365[20] > 0:
-            candidates.append(avg365[20])
-
-        # Used - Good (Index 21)
-        if avg365 and len(avg365) > 21 and avg365[21] is not None and avg365[21] > 0:
-            candidates.append(avg365[21])
-
-        # Used - Acceptable (Index 22)
-        if avg365 and len(avg365) > 22 and avg365[22] is not None and avg365[22] > 0:
-            candidates.append(avg365[22])
-
-        if candidates:
-            # Use the Max (Optimistic)
-            mean_price_cents = max(candidates)
-            logger.info(f"ASIN {asin}: Fallback succeeded for {COLUMN_NAME} using Keepa Stats: ${mean_price_cents/100:.2f}")
-            # Ensure we return the source flag for trust rating
-            return {COLUMN_NAME: mean_price_cents / 100.0, 'price_source': 'Keepa Stats Fallback'}
-        else:
-            logger.warning(f"ASIN {asin}: Fallback failed for {COLUMN_NAME}. No valid price history in Stats (avg365 len: {len(avg365) if avg365 else 0}).")
-            return None
+        logger.info(
+            f"ASIN {asin}: No inferred sales in the last 365 days. "
+            f"{COLUMN_NAME} is None (no fallback by design)."
+        )
+        return None
 
     # Final check to ensure we don't return negative
     if mean_price_cents <= 0:

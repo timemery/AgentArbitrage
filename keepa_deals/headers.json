@@ -244,5 +244,6 @@
   "Margin",
   "Total AMZ fees",
   "last_seen_utc",
-  "source"
+  "source",
+  "Inferred Sale Count"
 ]

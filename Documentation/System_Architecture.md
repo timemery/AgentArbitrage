@@ -89,17 +89,71 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
     2.  **Pass 2 (xAI Mastermind):** Passes candidates to `grok-4-fast-reasoning` with heavily filtered strategies to identify the best deals. Includes a 'SEASONAL HIGH-RANK CORRECTION' to explicitly prevent the AI from rejecting seasonal candidates solely based on their current high (off-season) sales rank.
     3.  **Caching:** Saves the final results to the `prime_picks` table atomically. If Pass 2 fails (e.g. xAI API error), the system gracefully skips updating the cache to preserve the previous valid results.
 
-### E. `recover_damaged_deals.py` (One-Time Damaged-Row Recovery)
+### E. One-Time Maintenance Scripts (Manual, Never Scheduled)
 
-*   **Purpose:** Deletes rows left permanently incomplete by the A-7 light-update defect (PR #330), so the Smart Ingestor can re-acquire those ASINs through the heavy path.
-*   **Trigger:** Manual only. Not a Celery task, not scheduled. Run from the application root as `www-data` with all background services stopped.
-*   **Why deleting is the repair.** While a row exists the ingestor always routes its ASIN to the light path: `existing_asins_set` is rebuilt from a live `SELECT` every run and the Zombie Data Defense heavy re-fetch is commented out, so `is_zombie` is always `False`. Stale Rescue is light-only, and the recalculator is API-free. **No code path can restore these rows in place.** Deleting is not the cheaper option, it is the only mechanism that returns the ASIN to the heavy path where `1yr_Avg` and `List_at` are computed from scratch.
-*   **Predicate:** `"1yr_Avg" IS NULL AND "List_at" IS NULL AND source != 'smart_ingestor'`. `1yr_Avg IS NULL` is the reliable damage fingerprint — the heavy path wrote it on 295 of 295 rows at the A-7 baseline, while `List_at IS NULL` alone also matches the heavy path's deliberate "Missing List at" persistence. A NULL `source` is left alone, since `NULL != 'x'` is NULL in SQL.
-*   **Safety:** Dry run by default; `--apply` deletes; there is no `--force`. Preflight aborts if Celery or the `monitor_and_restart` watchdog is running, if the `smart_ingestor_lock` Redis key is held, or if the process is not running as `www-data`. It takes its own backup through SQLite's backup API rather than `backup_db.sh` (a plain `cp` that can miss committed pages still sitting in `deals.db-wal`) and verifies the copy by row count. An invariant check aborts if any row has a `List_at` but no `1yr_Avg`, which would mean the fingerprint is no longer safe. The delete runs as one transaction with no `VACUUM`.
-*   **Scope:** The `deals` table only. `user_restrictions`, `prime_picks`, `confirmed_buys` and the `system_state` watermark are untouched — there is **no watermark rewind**, so re-acquisition is passive and depends on Keepa surfacing the ASIN in the deal feed again.
-*   **Output:** A verified backup and the target ASIN list, both written to `db_backups/` (gitignored), so the return rate can be measured later. The run ends by printing `ls -l deals.db*` so file ownership is visible before services are restarted.
-*   **Dashboard impact:** None. `/api/deals` and `/api/deal-count` both append `"1yr_Avg" IS NOT NULL` on every branch and it is not user-filterable, so these rows are already invisible.
-*   **Guarded by:** `tests/test_recover_damaged_deals.py`.
+Both follow the same safety pattern and neither is a Celery task: run from the
+application root as `www-data`, with all background services stopped. Dry run by
+default, `--apply` to delete, **no `--force`** — every safety check is mandatory.
+
+Shared guards: preflight aborts if Celery or the `monitor_and_restart` watchdog is
+running, if the `smart_ingestor_lock` Redis key is held, or if the process is not
+`www-data`. Each takes its own backup through SQLite's backup API rather than
+`backup_db.sh` (a plain `cp` that can miss committed pages still sitting in
+`deals.db-wal`) and verifies the copy by row count. The delete runs as one
+transaction with no `VACUUM` — the Janitor already VACUUMs on large deletions and
+doing it here would rewrite the whole file outside the transaction. Both write a
+verified backup and the target ASIN list to `db_backups/` (gitignored) so the
+re-acquisition rate can be measured later. Scope is the `deals` table only;
+`user_restrictions`, `prime_picks`, `confirmed_buys` and the `system_state`
+watermark are untouched, so there is **no watermark rewind** and re-acquisition is
+passive, depending on Keepa surfacing the ASIN in the deal feed again.
+
+**Why deleting is the repair, in both cases.** While a row exists the ingestor always
+routes its ASIN to the light path: `existing_asins_set` is rebuilt from a live
+`SELECT` every run and the Zombie Data Defense heavy re-fetch is commented out, so
+`is_zombie` is always `False`. Stale Rescue is light-only, and the recalculator is
+API-free. **No code path can restore these rows in place** — `1yr_Avg` and `List_at`
+derive from `infer_sale_events`, which needs the Keepa `csv` history that `deals.db`
+never stores. Deleting is not the cheaper option, it is the only mechanism that
+returns the ASIN to the heavy path.
+
+#### `cleanup_low_est_rows.py` — current
+
+*   **Purpose:** Deletes the rows whose `1yr_Avg` came from the Keepa
+    listing-average fallback removed on 2026-09-11 (audit B-6).
+*   **Predicate:** `"Deal_Trust" = 'Low (Est.)'`. That marker is the **only**
+    persisted fingerprint: the `price_source` flag that drove it is computed but
+    never stored, because it is not in `headers.json` and `upsert_deal_rows` drops
+    it. The match is exact, so it cannot catch the other non-numeric Deal Trust
+    state, `'-'` (the XAI no-offer-drops rescue), which must survive.
+*   **Invariant:** zero rows with `"Deal_Trust" = 'Low (Est.)' AND "1yr_Avg" IS
+    NULL`. The marker was only ever written on the branch where the fallback had
+    just returned a value, so that combination would mean the marker is no longer
+    tracking the value it is supposed to mark. Chosen to stay true after the
+    fallback removal, and once no code path writes the marker it holds vacuously.
+*   **Known blind spot:** rows that used the fallback but escaped the marker. The
+    `"Low (Est.)"` write was the last statement of a `try` block that also ran
+    `get_trend`, `get_percent_discount`, `recent_inferred_sale_price` and
+    `analyze_sales_rank_trends`; an exception in any of those was swallowed, leaving
+    the fallback value with a normal numeric Deal Trust. Those rows are
+    indistinguishable in SQL. Bounded: a leaked row that is also dashboard-visible
+    needs every one of its inferred sales to be older than 365 days.
+*   **Guarded by:** `tests/test_cleanup_low_est_rows.py`.
+
+#### `Archive/scripts/recover_damaged_deals.py` — spent, archived 2026-09-11
+
+*   **What it did:** the one-time recovery for the A-7 light-update defect (PR #330).
+    Run once on 2026-09-11, deleting 1,543 rows. See
+    `Dev_Logs/2026-09-11_Q2_Recover_A7_Damaged_Rows.md`.
+*   **Why it is archived and must not be run again.** Its mandatory invariant
+    asserted that **zero** rows have `"1yr_Avg" IS NULL AND "List_at" IS NOT NULL`,
+    and its predicate rationale rested on `1yr_Avg IS NULL` being a reliable damage
+    fingerprint (the heavy path wrote that column on 295 of 295 rows at the A-7
+    baseline). **Removing the fallback retires both.** `List at` is computed over a
+    3-year window and `1yr. Avg.` over a 1-year one, so a book whose inferred sales
+    are all older than 365 days now legitimately has a valid `List_at` with a NULL
+    `1yr_Avg`. The script would abort on a healthy database, and its abort message
+    would tell the reader to investigate a state that is now correct.
 
 ---
 

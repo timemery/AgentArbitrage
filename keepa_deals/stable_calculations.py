@@ -410,9 +410,19 @@ def analyze_sales_performance(product, sale_events):
     asin = product.get('asin', 'N/A')
     xai_api_key = os.getenv("XAI_TOKEN") # Corrected from XAI_API_KEY
 
-    # Increased from 1 to 3 to force "fragile" deals (1-2 sales) into the safer Fallback path.
-    # Fallback uses avg365 (Silver Standard) and SKIPS the XAI check, preventing false negatives.
+    # Increased from 1 to 3 to route "fragile" deals (1-2 sales) to the Sparse
+    # Sales Rescue below, which uses the median of those TRUE inferred sales and
+    # skips the XAI check to prevent false negatives on thin context.
+    # (The original comment here described the avg365 "Silver Standard" fallback,
+    # which was deleted from this module in March 2026 and no longer exists.)
     MIN_SALES_FOR_ANALYSIS = 3
+
+    # The sane inferred-sale count for this product, as this function sees it:
+    # post-IQR on the algorithmic path, raw on the XAI-rescue path (which returns
+    # before sanitisation). Returned on EVERY branch so the caller can persist it,
+    # including the zero-sale rejection - 0 is a real reading and must be
+    # distinguishable from a NULL, which means "never computed".
+    inferred_sale_count = len(sale_events) if sale_events else 0
 
     # Initialize variables with defaults
     peak_price_mode_cents = -1
@@ -453,7 +463,8 @@ def analyze_sales_performance(product, sale_events):
         else:
             logger.warning(f"ASIN {asin}: No inferred sales found. Deal rejected to maintain strict inferred-only policy.")
             # If no sales exist, we return early as -1 price, triggering exclusion.
-            return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-', 'price_source': 'None'}
+            return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
+                    'price_source': 'None', 'inferred_sale_count': inferred_sale_count}
 
     else:
         # --- Normal Logic (Sufficient Sale Events) ---
@@ -465,7 +476,8 @@ def analyze_sales_performance(product, sale_events):
         monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
 
         if len(monthly_stats) < 1:
-             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-'}
+             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
+                     'inferred_sale_count': inferred_sale_count}
 
         peak_month = monthly_stats['median'].idxmax()
         # If only 1 month, peak and trough are the same
@@ -486,7 +498,9 @@ def analyze_sales_performance(product, sale_events):
 
         if not peak_season_prices:
             logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
-            return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str, 'trough_season': trough_season_str}
+            return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str,
+                    'trough_season': trough_season_str,
+                    'inferred_sale_count': inferred_sale_count}
         else:
             # Normal calculation
             # Calculate the mode. Scipy's mode is robust.
@@ -588,7 +602,13 @@ def analyze_sales_performance(product, sale_events):
     elif is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
         is_reasonable = True
-    elif (price_source == 'Keepa Stats Fallback' or price_source == 'Inferred Sales (Sparse)') and not is_suspiciously_high:
+    elif price_source == 'Inferred Sales (Sparse)' and not is_suspiciously_high:
+        # The 'Keepa Stats Fallback' half of this condition was removed on
+        # 2026-09-11 (audit B-6): get_1yr_avg_sale_price no longer produces that
+        # source, and analyze_sales_performance never set it. Only the sparse
+        # half remains, and it is unchanged - 1-2 inferred sales are TRUE sales
+        # with thin context, which is why the check is skipped for them
+        # (AGENTS.md 7.8, Sparse Sales Rescue).
         logger.info(f"ASIN {asin}: Price Source is '{price_source}'. Skipping AI Reasonableness Check to prevent false negatives due to insufficient context.")
         is_reasonable = True
     else:
@@ -612,6 +632,7 @@ def analyze_sales_performance(product, sale_events):
         'trough_season': trough_season_str,
         'expected_trough_price_cents': expected_trough_price_cents,
         'price_source': price_source,
+        'inferred_sale_count': inferred_sale_count,
     }
 
 # --- Memoization cache for analysis results ---
