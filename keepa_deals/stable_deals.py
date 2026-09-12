@@ -110,17 +110,23 @@ def deal_found(deal_object, logger_param=None): # Renamed logger to logger_param
         return {'Deal found': '-'}
 # Deal Found ends
 # Last update starts
-# `logger_param` must keep its default. The generic extraction loop in processing.py
-# calls every FUNCTION_LIST entry as `func(product_data)` with one positional argument,
-# so a required second parameter raises TypeError on every call. That is exactly what
-# happened here from the day this entry was added: the column was never written, and the
-# @retry(stop_max_attempt_number=3, wait_fixed=5000) that used to sit on this function
-# turned the permanent error into two 5-second sleeps per newly discovered deal.
+# NOT WIRED INTO FUNCTION_LIST. The `last update` column is deliberately left NULL by
+# owner decision, 2026-09-12 - see the "last update" slot in field_mappings.py for the
+# three reasons, and AGENTS.md 7.3. This function is kept because it holds the only
+# implementation of the three-source MAX that 7.3 describes, and a future caller that can
+# supply all three sources would want it.
 #
-# The retry is gone with it. This function does no I/O - it reads in-memory dicts and
-# does datetime arithmetic - so it has no transient failure mode for a retry to help
-# with, and its genuine "no usable timestamp" case returns the '-' sentinel rather than
-# raising. `last_price_change` below is the shape of the working case.
+# It is left in a state that cannot repeat the defect if anyone re-wires it. `logger_param`
+# now has a default: the generic loop in processing.py calls every FUNCTION_LIST entry as
+# `func(product_data)`, one positional argument, so a required second parameter raised
+# TypeError on every heavy-path deal from the day this entry was added - the column was
+# never written, and the @retry(stop_max_attempt_number=3, wait_fixed=5000) that used to
+# sit here turned that permanent error into two 5-second sleeps per newly discovered deal.
+#
+# The retry is gone for the same reason it is gone from `last_price_change` below: this
+# function does no I/O - it reads in-memory dicts and does datetime arithmetic - so it has
+# no transient failure mode for a retry to help with, and its genuine "no usable
+# timestamp" case returns the '-' sentinel rather than raising.
 def last_update(deal_object, logger_param=None, product_data=None): # Renamed logger to logger_param
     current_logger = logger_param if logger_param else logger # Use passed logger or module logger
 
@@ -195,7 +201,13 @@ def last_update(deal_object, logger_param=None, product_data=None): # Renamed lo
         return {'last update': '-'}
 # Last update ends
 # Last price change starts
-@retry(stop_max_attempt_number=3, wait_fixed=5000)
+# No retry decorator, removed 2026-09-12. It carried
+# @retry(stop_max_attempt_number=3, wait_fixed=5000) and never once engaged: this
+# function does no I/O, so it has no transient failure mode, and every "I could not
+# compute this" path returns the '-' sentinel rather than raising - including the Stale
+# Rescue path, where it returns '-' on every single call because that path has neither a
+# `csv` history nor a `currentSince` array. The decorator could only ever have added
+# 10 seconds of sleep to a permanent failure, as it did on `last_update` above.
 def last_price_change(deal_object, logger_param=None, product_data=None): # Renamed logger, added product_data
     current_logger = logger_param if logger_param else logger # Use passed logger or module logger
 

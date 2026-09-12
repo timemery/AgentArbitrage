@@ -29,7 +29,7 @@ from unittest.mock import patch
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from keepa_deals.field_mappings import FUNCTION_LIST  # noqa: E402
-from keepa_deals.stable_deals import last_update  # noqa: E402
+from keepa_deals.stable_deals import last_price_change, last_update  # noqa: E402
 
 HEADERS_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -158,23 +158,51 @@ class FunctionListCallContractTest(unittest.TestCase):
                 mock_sleep.call_count, mock_sleep.call_args_list))
 
 
-class LastUpdateCallContractTest(unittest.TestCase):
-    """The specific entry the contract was broken on."""
+class LastUpdateIsDeliberatelyUnwiredTest(unittest.TestCase):
+    """`last update` is intentionally left NULL. Owner decision, 2026-09-12.
 
-    def test_last_update_runs_and_returns_a_timestamp(self):
-        result = last_update(_product_fixture())
-        self.assertIsInstance(result, dict)
-        self.assertIn('last update', result)
-        # 7,000,000 Keepa minutes after 2011-01-01 UTC, rendered in America/Toronto.
-        self.assertEqual('2024-04-22 22:40:00', result['last update'])
+    Making `stable_deals.last_update` run was rejected rather than shipped. Through the
+    generic loop it can reach only 1 of the 3 sources AGENTS.md 7.3 documents; the loop
+    is heavy-path only, so the column would be populated on heavy rows and NULL on light
+    and Stale Rescue rows; and it formats Toronto-local, space-separated time where every
+    other timestamp writer in the system uses UTC isoformat - the exact mismatch behind
+    the Stale Rescue cutoff defect fixed in PR #332.
 
-    def test_last_update_reports_missing_data_with_the_sentinel(self):
-        product_data = _product_fixture()
-        del product_data['lastUpdate']
-        self.assertEqual({'last update': '-'}, last_update(product_data))
+    This pins the decision so a later "the slot is empty, let's fill it" does not quietly
+    reverse it.
+    """
+
+    LAST_UPDATE_INDEX = 10
+
+    def test_the_slot_is_none_and_still_aligned(self):
+        self.assertEqual(
+            'last update', HEADERS[self.LAST_UPDATE_INDEX],
+            "FUNCTION_LIST and headers.json have drifted out of alignment.")
+        self.assertIsNone(
+            FUNCTION_LIST[self.LAST_UPDATE_INDEX],
+            "FUNCTION_LIST[10] must stay None so the `last update` column stays NULL. "
+            "See the slot comment in field_mappings.py for the three reasons, and "
+            "AGENTS.md 7.3.")
+
+    def test_no_function_list_entry_writes_the_last_update_column(self):
+        """Belt and braces: no other slot may start writing it either."""
+        writers = [index for index, func in enumerate(FUNCTION_LIST)
+                   if func is not None and index == self.LAST_UPDATE_INDEX]
+        self.assertEqual([], writers)
+
+
+class RetryDecoratorTest(unittest.TestCase):
+    """Neither timestamp function may carry a retry decorator.
+
+    Both read in-memory dicts and do datetime arithmetic. Neither performs I/O, so
+    neither has a transient failure a retry could fix, and both report "I could not
+    compute this" by returning the '-' sentinel rather than raising. The only thing
+    @retry(stop_max_attempt_number=3, wait_fixed=5000) ever did here was turn
+    `last_update`'s permanent TypeError into 10 seconds of sleep per newly discovered
+    deal.
+    """
 
     def test_a_failure_in_last_update_does_not_sleep(self):
-        """No retry decorator. Its failure modes are permanent, so retrying only waits."""
         with patch.object(time, 'sleep') as mock_sleep:
             with self.assertRaises(AttributeError):
                 last_update(None)
@@ -182,6 +210,25 @@ class LastUpdateCallContractTest(unittest.TestCase):
             0, mock_sleep.call_count,
             "last_update retried a permanent failure. Each retry is a wait_fixed sleep "
             "on the heavy path, which is what cost 10 seconds per newly discovered deal.")
+
+    def test_a_failure_in_last_price_change_does_not_sleep(self):
+        with patch.object(time, 'sleep') as mock_sleep:
+            with self.assertRaises(AttributeError):
+                last_price_change(None)
+        self.assertEqual(
+            0, mock_sleep.call_count,
+            "last_price_change retried a permanent failure.")
+
+    def test_last_price_change_still_reports_no_data_in_band(self):
+        """The no-behaviour-change claim for removing its decorator.
+
+        Every non-exceptional path returns the '-' sentinel, so the decorator never
+        engaged in production. This is the Stale Rescue shape: no `csv` history and no
+        `currentSince` values.
+        """
+        product_data = _product_fixture()
+        self.assertEqual(
+            {'last price change': '-'}, last_price_change(product_data))
 
 
 if __name__ == '__main__':

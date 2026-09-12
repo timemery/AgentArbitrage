@@ -255,7 +255,8 @@ from .stable_deals import (
     # AMZ link,
     # Keepa Link,
     # Title,
-    last_update,                    # last update
+    # last_update,                  # last update -- not wired into FUNCTION_LIST; see
+    #                               # the "last update" slot below for why.
     last_price_change,              # last price change
     # Sales Rank - Reference,
     # Reviews - Rating,
@@ -476,7 +477,20 @@ FUNCTION_LIST = [
     amz_link,                       # AMZ link
     keepa_link,                     # Keepa Link
     get_title,                      # Title
-    last_update,                    # last update
+    # last update -- DELIBERATELY UNPOPULATED. Owner decision, 2026-09-12. This slot
+    # held stable_deals.last_update, which raised TypeError on every call and stored
+    # nothing (see AGENTS.md 7.3). Making it run was rejected rather than shipped,
+    # because the value it would produce is the wrong value:
+    #   * only 1 of the 3 sources AGENTS.md 7.3 documents is reachable through this
+    #     loop, which passes one positional argument;
+    #   * this loop is heavy-path only, so the column would be populated on heavy rows
+    #     and NULL on light and Stale Rescue rows; and
+    #   * it formats Toronto-local, space-separated time, where every other timestamp
+    #     writer in the system uses UTC isoformat. That exact mismatch is what caused
+    #     the Stale Rescue cutoff defect fixed in PR #332.
+    # A half-populated local-time column that nothing reads is worse than a NULL one.
+    # Do not re-add the function here without resolving all three.
+    None,                           # last update
     last_price_change,              # last price change
     None,                           # Changed
     None,                           # 1yr. Avg.

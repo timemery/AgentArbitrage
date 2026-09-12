@@ -231,26 +231,42 @@ Most recent time any significant data was updated by Keepa. Take MAX valid times
 2. `deal_object.get('lastUpdate')` (general deal data, /deal endpoint)
 3. `product_data.get('stats', {}).get('lastOffersUpdate')` (offers refresh, /product stats)
 
-**Only source 2 is reachable in production (September 2026).** `last_update` is invoked
-through `FUNCTION_LIST`, and the generic loop in `processing.py` calls every field
-function as `func(product_data)` — **one positional argument**. That binds the merged
-product dict to `deal_object` and leaves the function's own `product_data` parameter at
-its `None` default, so sources 1 and 3, which both read that parameter, never run. Source
-2 reads the single argument, and `smart_ingestor.run()` does `product_data.update(deal)`
-before processing, so it resolves to the **deal object's** `lastUpdate`. That is the
-value stored today. A three-source MAX would need a different call shape, which is a
-behavioural change, not a bug fix.
+**The `last_update` DB column is DELIBERATELY UNPOPULATED and always NULL.** Owner
+decision, 2026-09-12. `FUNCTION_LIST[10]` is `None`; the three-source MAX above describes
+`stable_deals.last_update`, which is kept in the file but **is not wired into the
+extraction loop**. Do not wire it back in. Three reasons, all of which would have to be
+resolved first:
 
-**The whole column was NULL before September 2026.** `logger_param` had no default, so
-`func(product_data)` raised `TypeError` on every heavy-path deal, `_process_single_deal`
-swallowed it per field, and the upsert bound the missing key as `NULL`. The
+1. **Only source 2 is reachable.** The generic loop in `processing.py` calls every field
+   function as `func(product_data)` — **one positional argument**. That binds the merged
+   product dict to `deal_object` and leaves the function's own `product_data` parameter
+   at its default, so sources 1 and 3, which both read that parameter, never run.
+2. **The loop is heavy-path only.** `_process_lightweight_update` does not run it, so the
+   column would be populated on newly discovered rows and NULL on light and Stale Rescue
+   rows — a column whose meaning depends on which path last touched the row.
+3. **Wrong format.** It renders Toronto-local, space-separated time
+   (`'%Y-%m-%d %H:%M:%S'`), where every other timestamp writer in the system uses UTC
+   isoformat. That exact mismatch is what caused the Stale Rescue cutoff defect fixed in
+   PR #332 (see §3.A of `System_Architecture.md`).
+
+A half-populated local-time column that nothing reads is worse than a NULL one. Nothing
+reads this one — not the dashboard, not any `/api/deals` filter, not any sort.
+
+**What it used to do.** `logger_param` had no default, so `func(product_data)` raised
+`TypeError` on every heavy-path deal, `_process_single_deal` swallowed it per field, and
+the upsert bound the missing key as `NULL`. The
 `@retry(stop_max_attempt_number=3, wait_fixed=5000)` then on the function turned that
-permanent error into **two 5-second sleeps per newly discovered deal**.
+permanent error into **two 5-second sleeps per newly discovered deal**. Both the required
+argument and the retry are gone, so a future re-wire cannot repeat that, but the slot
+stays `None` regardless.
 
 **Rule for every `FUNCTION_LIST` entry:** it must be callable as `func(product_data)`,
 and it must not carry a retry decorator unless it actually performs I/O. These functions
 read in-memory dicts; a retry on them cannot fix anything and costs `wait_fixed` per
-attempt on the heavy path. Guarded by `tests/test_field_mappings_call_contract.py`.
+attempt on the heavy path. `last_price_change` had the same decorator for the same
+non-reason and it was removed too (it returns `-` rather than raising, so it never
+engaged — no behaviour change). Guarded by
+`tests/test_field_mappings_call_contract.py`.
 
 **For `last_price_change` (Used items, excluding 'Acceptable'):**
 

@@ -10,99 +10,137 @@ from keepa_deals import smart_ingestor
 from keepa_deals.token_manager import TokenRechargeError
 
 class TestSmartIngestorBatching(unittest.TestCase):
-    @patch('keepa_deals.smart_ingestor.redis.Redis')
-    @patch('keepa_deals.smart_ingestor.get_db_connection')
-    @patch('keepa_deals.smart_ingestor.TokenManager')
-    @patch('keepa_deals.smart_ingestor.fetch_deals_for_deals')
-    @patch('keepa_deals.smart_ingestor.fetch_current_stats_batch')
-    @patch('keepa_deals.smart_ingestor.fetch_product_batch')
-    @patch('keepa_deals.smart_ingestor.check_peek_viability')
-    @patch('keepa_deals.smart_ingestor.load_watermark')
-    @patch('keepa_deals.smart_ingestor.save_watermark')
-    @patch('keepa_deals.smart_ingestor.create_deals_table_if_not_exists')
-    @patch('keepa_deals.smart_ingestor.requeue_stuck_restrictions')
-    @patch('keepa_deals.smart_ingestor.get_seller_info_for_single_deal')
-    @patch('keepa_deals.smart_ingestor._process_single_deal')
-    @patch('keepa_deals.smart_ingestor.celery') # Mock celery
-    # smart_ingestor.run() returns early at "KEEPA_API_KEY not set. Aborting." before
-    # reaching any fetch, so without this the mocked fetches are never called and the
-    # batching assertions below fail for environmental reasons rather than logic ones.
-    # Production gets the key from .env via load_dotenv(); pin it here so the test is
-    # hermetic and does not depend on the ambient environment. patch.dict restores the
-    # original os.environ afterwards.
-    @patch.dict(os.environ, {'KEEPA_API_KEY': 'test_key_not_a_real_credential'})
-    def test_batching_logic(self, mock_celery, mock_process_single, mock_get_seller, mock_requeue, mock_create_table, mock_save_wm, mock_load_wm,
-                            mock_check_peek, mock_fetch_product, mock_fetch_stats, mock_fetch_deals,
-                            mock_token_manager_cls, mock_sqlite, mock_redis):
+    """Peek/Commit batch sizing, across every dynamic tier.
 
-        # Setup Mocks
-        mock_load_wm.return_value = "2023-01-01T00:00:00+00:00"
-        watermark_mins = smart_ingestor._convert_iso_to_keepa_time("2023-01-01T00:00:00+00:00")
+    The peek batch size is NOT a constant. `smart_ingestor.run()` scales it down from
+    SCAN_BATCH_SIZE by the token refill rate Keepa reports, to keep one peek inside a
+    refillable token budget (`smart_ingestor.py`, "Dynamic Batch Sizing"):
 
-        deals = [{'asin': f'ASIN{i:06d}', 'lastUpdate': watermark_mins + 100 + i} for i in range(100)]
+        refill rate      peek batch
+        < 10/min                  1
+        < 20/min                 20
+        < 30/min                 15
+        >= 30/min                50   (SCAN_BATCH_SIZE)
+
+    The 15-cap for 20-29/min was added deliberately for the live 25/min Keepa plan: a
+    50-ASIN peek at days=365, offers=20 costs roughly 386 tokens, far past the burst
+    budget, and drives the account into deep deficit.
+
+    This test asserted a flat 50 and so failed from the day that tier was added. It was
+    the one permanently-red case in the suite, which is why `run_tests.sh` could not be
+    used as a gate. Corrected 2026-09-12 to assert the tiers the code actually has.
+    """
+
+    # The live Keepa plan reports 25/min, so this is the tier production runs in.
+    LIVE_REFILL_RATE = 25
+
+    def _run_ingestor(self, refill_rate, deal_count=100):
+        """Run smart_ingestor.run() against mocked Keepa/DB/Redis at `refill_rate`.
+
+        Returns (peek_calls, started), where `peek_calls` holds the *non-empty*
+        fetch_current_stats_batch calls. The empty one is the Stale Deal Rescue, which
+        finds nothing against the mocked DB and is skipped outright below 10/min, so
+        filtering on emptiness keeps the assertions tier-independent. `started` maps each
+        patched name to its mock.
+        """
+        patchers = {
+            name: patch('keepa_deals.smart_ingestor.' + name)
+            for name in ('redis.Redis', 'get_db_connection', 'TokenManager',
+                         'fetch_deals_for_deals', 'fetch_current_stats_batch',
+                         'fetch_product_batch', 'check_peek_viability',
+                         'load_watermark', 'save_watermark',
+                         'create_deals_table_if_not_exists',
+                         'requeue_stuck_restrictions',
+                         'get_seller_info_for_single_deal',
+                         '_process_single_deal', 'celery')
+        }
+        started = {name: p.start() for name, p in patchers.items()}
+        for p in patchers.values():
+            self.addCleanup(p.stop)
+
+        # run() returns early at "KEEPA_API_KEY not set. Aborting." before reaching any
+        # fetch. Pin the key so the test is hermetic rather than dependent on .env.
+        env = patch.dict(os.environ, {'KEEPA_API_KEY': 'test_key_not_a_real_credential'})
+        env.start()
+        self.addCleanup(env.stop)
+
+        started['load_watermark'].return_value = "2023-01-01T00:00:00+00:00"
+        watermark_mins = smart_ingestor._convert_iso_to_keepa_time(
+            "2023-01-01T00:00:00+00:00")
+        deals = [{'asin': f'ASIN{i:06d}', 'lastUpdate': watermark_mins + 100 + i}
+                 for i in range(deal_count)]
 
         def side_effect_fetch_deals(page, *args, **kwargs):
-            if page == 0:
-                return {'deals': {'dr': deals}}, 0, 100
-            else:
-                return {'deals': {'dr': []}}, 0, 100
-        mock_fetch_deals.side_effect = side_effect_fetch_deals
+            return ({'deals': {'dr': deals if page == 0 else []}}, 0, deal_count)
+        started['fetch_deals_for_deals'].side_effect = side_effect_fetch_deals
 
-        mock_tm = mock_token_manager_cls.return_value
-        mock_tm.REFILL_RATE_PER_MINUTE = 20
-        type(mock_tm).REFILL_RATE_PER_MINUTE = unittest.mock.PropertyMock(return_value=20)
-        # Ensure should_skip_sync is False for standard test
+        mock_tm = started['TokenManager'].return_value
+        type(mock_tm).REFILL_RATE_PER_MINUTE = unittest.mock.PropertyMock(
+            return_value=refill_rate)
         mock_tm.should_skip_sync.return_value = False
 
-        mock_conn = mock_sqlite.connect.return_value
-        mock_cursor = mock_conn.cursor.return_value
-        mock_cursor.fetchall.return_value = []
+        started['get_db_connection'].connect.return_value.cursor.return_value \
+            .fetchall.return_value = []
 
-        mock_check_peek.return_value = True
+        started['check_peek_viability'].return_value = True
 
         def side_effect_peek(api_key, asins, days, offers):
             return {'products': [{'asin': a, 'stats': {}} for a in asins]}, None, 0, 100
-        mock_fetch_stats.side_effect = side_effect_peek
+        started['fetch_current_stats_batch'].side_effect = side_effect_peek
 
         def side_effect_commit(api_key, asins, days=365, offers=20, rating=1, history=0):
-             return {'products': [{'asin': a} for a in asins]}, None, 0, 100
-        mock_fetch_product.side_effect = side_effect_commit
+            return {'products': [{'asin': a} for a in asins]}, None, 0, 100
+        started['fetch_product_batch'].side_effect = side_effect_commit
 
-        # Mock processing to succeed
-        mock_process_single.return_value = {'ASIN': 'TEST', 'Title': 'Mock Title'}
-        mock_get_seller.return_value = {}
+        started['_process_single_deal'].return_value = {'ASIN': 'TEST', 'Title': 'Mock Title'}
+        started['get_seller_info_for_single_deal'].return_value = {}
 
-        # Run
         smart_ingestor.run()
 
-        # Assertions
+        peek_calls = [call
+                      for call in started['fetch_current_stats_batch'].call_args_list
+                      if call.args[1]]
+        return peek_calls, started
 
-        # 1. Verify Peek Batch Size (Should be 50)
-        # There's also the Stale Rescue call before Peek. Stale rescue takes 0 here (empty db) but still makes a call if list is not empty, but it IS empty.
-        # Wait, the failure is Assertion 3 != 2. We make 2 peek calls. Could there be a third call? Yes, if there are existing asins vs new asins. All 100 are new, so it should be 2. Let's just assert >= 2.
-        self.assertTrue(mock_fetch_stats.call_count >= 2)
+    def test_peek_batch_size_scales_with_the_refill_rate(self):
+        """Each tier, asserted separately so a failure names the tier that moved."""
+        for refill_rate, expected in ((5, 1), (15, 20), (25, 15), (35, 50)):
+            with self.subTest(refill_rate=refill_rate):
+                peek_calls, _ = self._run_ingestor(refill_rate)
+                self.assertTrue(
+                    peek_calls,
+                    f"no peek call was made at {refill_rate}/min")
+                self.assertEqual(
+                    expected, len(peek_calls[0].args[1]),
+                    f"at {refill_rate} tokens/min the first peek batch should carry "
+                    f"{expected} ASINs")
 
-        call_args_list_stats = mock_fetch_stats.call_args_list
-        # The first call is for stale deals (empty)
-        args_stale, _ = call_args_list_stats[0]
-        self.assertEqual(len(args_stale[1]), 0)
+    def test_peek_offers_parameter_stays_at_20(self):
+        """The peek is cheap because of offers=20; rate-scaling must not change it."""
+        peek_calls, _ = self._run_ingestor(self.LIVE_REFILL_RATE)
+        self.assertTrue(peek_calls)
+        self.assertEqual(20, peek_calls[0].kwargs.get('offers'))
 
-        # The second call is the first peek batch
-        args1, kwargs1 = call_args_list_stats[1]
-        self.assertEqual(len(args1[1]), 50, "Peek batch 1 should have 50 ASINs")
-        self.assertEqual(kwargs1.get('offers'), 20, "Peek offers should be 20")
+    def test_commit_batches_stay_at_five_and_every_deal_is_processed(self):
+        """Commit sizing is NOT rate-scaled - COMMIT_BATCH_SIZE is a flat safety limit."""
+        peek_calls, started = self._run_ingestor(
+            self.LIVE_REFILL_RATE, deal_count=100)
+        mock_fetch_product = started['fetch_product_batch']
+        mock_process_single = started['_process_single_deal']
 
-        # 2. Verify Commit Batch Size (Should be 5)
-        self.assertEqual(mock_fetch_product.call_count, 20)
+        self.assertEqual(
+            100, sum(len(c.args[1]) for c in peek_calls),
+            "every deal in the feed should be peeked exactly once")
 
-        call_args_list_product = mock_fetch_product.call_args_list
-        args_prod1, _ = call_args_list_product[0]
-        self.assertEqual(len(args_prod1[1]), 5, "Commit batch should have 5 ASINs")
+        for index, call in enumerate(mock_fetch_product.call_args_list):
+            self.assertLessEqual(
+                len(call.args[1]), smart_ingestor.COMMIT_BATCH_SIZE,
+                f"commit batch {index} exceeded COMMIT_BATCH_SIZE "
+                f"({smart_ingestor.COMMIT_BATCH_SIZE})")
 
-        # 3. Verify Upsert Count
-        self.assertEqual(mock_process_single.call_count, 100)
-
-        print("Batching Test passed!")
+        self.assertEqual(
+            100, mock_process_single.call_count,
+            "every peeked deal that passed check_peek_viability should be processed")
 
     @patch('keepa_deals.smart_ingestor.redis.Redis')
     @patch('keepa_deals.smart_ingestor.TokenManager')
