@@ -69,7 +69,90 @@ A sale is inferred by correlating two distinct events within a **240-hour** (10-
     -   Window: If a rank drop occurs within 240 hours *after* an offer count drop, it is flagged as a confirmed sale.
 
 ### b. Price Association
-When a sale is confirmed, the system associates a price with it using `pandas.merge_asof`. It finds the nearest listing price from the history (`new_price_history` or `used_price_history`) at the exact time of the sale.
+
+When a sale is confirmed, the system attaches a price to it from the matching price
+series — `csv[1]` for a New offer drop, `csv[2]` for a Used one.
+
+**It takes the last price point STRICTLY BEFORE the offer drop, at any distance**,
+via `pandas.merge_asof(direction='backward', allow_exact_matches=False)`. There is
+deliberately **no time threshold** — see §2b.1.
+
+**Why "before" and not "nearest".** `csv[1]` and `csv[2]` hold the **lowest** New /
+Used offer price, not the price of any particular copy. When the cheapest copy
+sells, the series does not record what it sold for — it steps **up** to whatever the
+next cheapest listing asks, at essentially the same timestamp as the offer-count
+drop that marks the sale. The price in force immediately *before* the drop is
+therefore the best available estimate of what the copy sold at, and the point *at or
+after* it is the asking price of a copy that did **not** sell.
+
+Until September 2026 this was `merge_asof(direction='nearest')`, which has no
+tie-break, so it could land on the at-or-after point and store that asking price.
+Because Keepa stamps the offer-count drop and the price step-up at the same minute, a
+zero-distance match was the common case rather than the edge — which is why
+`allow_exact_matches=False` matters as much as the direction does. **4 of the 7 sales
+measured on real history had a price point sharing the exact minute of the drop**, so
+the exact-match exclusion is doing most of the work. Confirmed live on **5 of 7 sales
+across 3 ASINs** on 2026-09-11: **$124.85 recorded as $1,000.00**, **$49.95 as
+$499.95**, **$328.19 as $625.59**. The round numbers are the tell — those are prices a
+seller typed into a listing, not prices anything transacted at. See
+`Dev_Logs/2026-09-11b_Remove_1yr_Avg_Listing_Average_Fallback.md` §4b for the
+evidence.
+
+### b.1 There is deliberately NO time threshold
+
+A 240-hour tolerance was proposed and then **rejected on evidence** (owner decision,
+2026-09-12). Do not add one.
+
+Measured on **real Keepa history** for the three diagnostic ASINs, the gap between an
+offer drop and the price point immediately **preceding** it, across all 7 confirmed
+sales:
+
+| | hours |
+| :--- | :--- |
+| gaps | 3.0, 5.1, 10.2, 252.1, 389.6, 516.4, 2281.4 |
+| median | 252.1 |
+| max | 2281.4 (95.1 days) |
+| drops with no prior point | 0 of 7 |
+
+The distribution is **bimodal with nothing at all between 10h and 252h**. A 240-hour
+threshold would have cut it at the median and discarded **4 of the 7 real sales**.
+
+**Why gap length is the wrong instrument.** `csv[1]` and `csv[2]` are **change-logs**:
+a point exists only when the value changes. A long gap therefore means the lowest
+offer simply **had not changed**, which makes the distant point **correct**, not
+stale. Gap length measures price stability, not data staleness, so thresholding on it
+discards exactly the slow-moving inventory the system is built to find.
+
+*   **This corrects an earlier reading of the same data.** The 09-11 diagnostic
+    reported a 60.3-day gap on ASIN `1468308963` and it was taken as evidence for a
+    tolerance. That figure was the distance to the **nearest** point under the old
+    association, not the age of the preceding one, and the two measure different
+    things. The fixture-based estimate that produced the 240 was worse still: every
+    gap in `tests/` is the fixture generator's grid step (1h, 6h, 24h), so it
+    measured the generator and not Keepa.
+*   **Open item, not built here.** If a stale-price guard is ever wanted, it needs
+    **continuity of the price series across the gap** — evidence that the series was
+    live and the value genuinely held, rather than absent — not gap length.
+*   **The only way a confirmed drop loses its price** is when it precedes *every*
+    point in the series, which yields `NaN`. That was **0 of 7** on the live sample,
+    so the practical effect on `Deal Trust` and on xAI-rescue traffic is negligible.
+*   **The offer drop still counts.** A drop whose price cannot be associated stays
+    in the `Deal Trust` denominator, so the score reflects the loss.
+*   **NaN safety.** `merge_asof` returns `NaN` when the backward match finds nothing,
+    and `NaN <= 0` is `False`, so the pre-existing `price <= 0` guard cannot catch it
+    on its own. There is an explicit `pd.isna` check ahead of it; without one a `NaN`
+    would poison the IQR bounds, the mean and the mode for the whole ASIN.
+*   **Pinned by** `tests/test_price_association.py::NoTimeThreshold`, which asserts
+    the constant is gone and no `tolerance=` is passed, and by
+    `DistantPrecedingPointsStillAssociate`, which drives all 7 measured gaps.
+
+> **This changes newly computed prices only.** A fix to the inference repairs no
+> existing row: the light path never recomputes `List_at` or `1yr_Avg`, and
+> `recalculator.py` is API-free and cannot rebuild either. Rows written under the
+> old association keep their inflated values until a heavy re-fetch replaces them.
+> Recovery is a separate decision. `diagnose_inferred_sales.py` reports, for each
+> sale, both what today's code records and what the pre-fix nearest-match would have
+> recorded, so a stored number can still be accounted for.
 
 ------
 
@@ -174,6 +257,12 @@ the algorithmic path, raw on the XAI-rescue path (which returns before sanitisat
 2.  **Mode for Peak:** We use **Mode** for the "List at" price because arbitrage sellers often target a specific "standard" market price that occurs frequently, rather than an average of fluctuations.
 3.  **Strict Validation with Persistence:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it **persists the deal as incomplete** (for potential future recovery) but filters it from the user dashboard to maintain a clean experience.
 4.  **240-Hour Window:** Expanding the correlation window from 168h to 240h significantly improved capture rates for "Near Miss" sales events where rank reporting lagged behind offer drops.
+5.  **The Lowest-Offer Series Is Not A Sale Price (Sept 2026):** `csv[1]` / `csv[2]`
+    record the cheapest *listing*, so the moment a copy sells they describe the copy
+    that did **not** sell. Any "nearest price point" rule therefore has a bias
+    toward the higher number, and the bias is largest exactly where it hurts most —
+    on a cheap copy under an expensive one. Read a change-log series as "the value
+    in force **before** the event", never as "the value at the event".
 
 ------
 

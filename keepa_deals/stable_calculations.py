@@ -25,6 +25,28 @@ xai_token_manager = XaiTokenManager()
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
 
+# THERE IS DELIBERATELY NO TIME THRESHOLD ON THE PRICE ASSOCIATION.
+#
+# A tolerance was proposed and then rejected on evidence, 2026-09-12 (owner decision).
+# Measured on real Keepa history for the three ASINs of the 2026-09-11 diagnostic, the
+# gap between an offer drop and the price point immediately PRECEDING it, across all 7
+# confirmed sales, was:
+#
+#     3.0, 5.1, 10.2, 252.1, 389.6, 516.4, 2281.4 hours    (median 252.1h, max 95.1d)
+#
+# Bimodal, with nothing at all between 10h and 252h, and 0 of the 7 drops had no prior
+# price point. A 240-hour threshold would have cut the distribution at its median and
+# discarded the majority of real sales.
+#
+# The reason is that `csv[1]` / `csv[2]` are CHANGE-LOGS of the lowest New / Used offer
+# price. A long gap means the lowest offer simply had not changed, which makes the
+# distant point CORRECT rather than stale. Gap length does not measure staleness, so a
+# time threshold is the wrong instrument. Do not add one.
+#
+# OPEN ITEM, not built here: if a stale-price guard is ever wanted, it needs continuity
+# of the price series across the gap (evidence that the series was live and the value
+# genuinely held, rather than absent), not gap length.
+
 def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A", trend_info="N/A", avg_3yr_usd="N/A"):
     """
     Queries the XAI API to act as a reasonableness check for a calculated price,
@@ -299,7 +321,46 @@ def infer_sale_events(product):
                     logger.warning(f"ASIN {asin}: No suitable price data for offer type {drop['offer_type']}.")
                     continue
 
-                price_at_sale_time = pd.merge_asof(pd.DataFrame([drop]), price_df_to_use, on='timestamp', direction='nearest')['price_cents'].iloc[0]
+                # --- Price association ---
+                # Take the last price point STRICTLY BEFORE the offer drop: the price
+                # in force at the moment the copy sold. csv[1] / csv[2] hold the
+                # LOWEST New / Used offer price, not any one copy's price, so the
+                # point AT or AFTER a drop is the next cheapest listing's asking
+                # price - a copy that did not sell. `direction='nearest'` had no
+                # tolerance and no tie-break and recorded exactly that on 5 of 7
+                # live sales (2026-09-11: $124.85 stored as $1,000.00, $49.95 as
+                # $499.95, $328.19 as $625.59).
+                #
+                # `allow_exact_matches=False` matters as much as the direction, and
+                # the box measurement showed it doing the real work: 4 of the 7 live
+                # sales had a price point sharing the EXACT minute of the offer drop.
+                # Keepa stamps the offer-count drop and the price step-up together,
+                # so a zero-distance match is the common case, not the edge.
+                #
+                # There is NO `tolerance` here, on purpose. See the note at the top of
+                # this module: the series is a change-log, so a months-old point means
+                # the price had not changed and is the correct answer. A 240-hour
+                # threshold would have discarded 4 of those same 7 real sales.
+                price_at_sale_time = pd.merge_asof(
+                    pd.DataFrame([drop]),
+                    price_df_to_use,
+                    on='timestamp',
+                    direction='backward',
+                    allow_exact_matches=False,
+                )['price_cents'].iloc[0]
+
+                # NaN is what a backward match returns when the drop precedes every
+                # price point in the series, and `NaN <= 0` is False, so the guard
+                # below cannot catch it on its own. A NaN reaching confirmed_sales
+                # would poison the IQR bounds, the mean and the mode for the whole
+                # ASIN. This is the only case in which a confirmed drop loses its
+                # price; it was 0 of 7 on the live sample.
+                if pd.isna(price_at_sale_time):
+                    logger.debug(
+                        f"ASIN {asin}: Ignoring inferred sale at {start_time} because "
+                        f"no {drop['offer_type']} price point exists before it."
+                    )
+                    continue
 
                 if price_at_sale_time <= 0:
                     logger.debug(f"ASIN {asin}: Ignoring inferred sale at {start_time} because its associated price was invalid ({price_at_sale_time}).")

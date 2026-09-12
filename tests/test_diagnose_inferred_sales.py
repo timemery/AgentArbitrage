@@ -9,10 +9,12 @@ claims that would be worse than useless if they stopped being true:
     that enforceable instead of aspirational. A drifted mirror does not fail loudly,
     it prints a confident wrong answer.
 
-2.  Its PRICE STEP-UP TEST detects the leftover-asking-price mechanism.
+2.  Its PRICE STEP-UP TEST accounts for the leftover-asking-price mechanism.
     `StepUpDetection` builds a history where a copy demonstrably sells at $28.99 and
-    asserts that production records $499.95 for it, then that the diagnostic flags
-    exactly that.
+    the used floor steps up to $499.95 at the same timestamp. Production now records
+    $28.99; the diagnostic still reports what the pre-fix nearest-match would have
+    stored, because rows written before the fix carry that value and explaining a
+    stored number is the script's whole job.
 
 Nothing here touches the network, xAI, deals.db or any cache.
 """
@@ -186,21 +188,26 @@ class StepUpDetection(unittest.TestCase):
     def tearDown(self):
         logging.disable(logging.NOTSET)
 
-    def test_production_records_the_asking_price_not_the_sale_price(self):
-        """The defect itself, stated as an executable fact.
+    def test_production_records_the_sale_price_not_the_asking_price(self):
+        """The defect, now fixed, stated as an executable fact.
 
-        A copy sold at $28.99. Production stores $499.95 for it - the price of a copy
-        that did NOT sell. This test documents current behaviour; it is NOT a request
-        to change it, and no pricing code was touched in this PR.
+        A copy sold at $28.99 and the used floor stepped up to $499.95 at the same
+        timestamp. Production used to store $499.95 - the price of a copy that did
+        NOT sell. It now stores $28.99, the price in force strictly before the drop.
+
+        The fixture is unchanged; only the expectation flipped. The full set of
+        association cases lives in `tests/test_price_association.py`.
         """
         product = _step_up_product()
         events, _ = infer_sale_events(product)
         self.assertEqual(len(events), 1)
         self.assertEqual(int(events[0]['inferred_sale_price_cents']),
-                         NEXT_LISTING_CENTS,
-                         "Fixture no longer reproduces the step-up mechanism.")
+                         SOLD_AT_CENTS,
+                         "The price in force before the drop is what the copy sold "
+                         "at.")
         self.assertNotEqual(int(events[0]['inferred_sale_price_cents']),
-                            SOLD_AT_CENTS)
+                            NEXT_LISTING_CENTS,
+                            "Fixture no longer reproduces the step-up shape.")
 
     def test_diagnostic_flags_the_step_up(self):
         result = _run_diagnostic(_step_up_product())
@@ -217,8 +224,13 @@ class StepUpDetection(unittest.TestCase):
                          "'before' must be the price the copy actually sold at.")
         self.assertEqual(int(sale['price_after_cents']), NEXT_LISTING_CENTS,
                          "'after' must be the next listing's asking price.")
-        self.assertTrue(sale['chose_at_or_after'],
-                        "merge_asof landed on the at/after side in this fixture.")
+        self.assertEqual(int(sale['inferred_sale_price_cents']), SOLD_AT_CENTS,
+                         "The association records the 'before' price.")
+        self.assertTrue(sale['legacy_chose_at_or_after'],
+                        "The pre-fix nearest-match landed on the at/after side in "
+                        "this fixture, which is why it is still reported.")
+        self.assertEqual(int(sale['legacy_nearest_cents']), NEXT_LISTING_CENTS,
+                         "'old would' must be what a pre-fix row carries.")
         self.assertEqual(sale['series'], 'csv[2] Used')
 
     def test_ordinary_history_is_not_flagged(self):

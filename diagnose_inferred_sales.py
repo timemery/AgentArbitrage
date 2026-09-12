@@ -10,27 +10,37 @@ on a book currently listing used at $28.99. Two mechanisms could produce that, a
 they have different fixes:
 
   (i)  A real offer drop with a WRONG PRICE ATTACHED, because the matched price
-       point is far away in time. `infer_sale_events` associates a price using
-       `pandas.merge_asof(direction='nearest')` with NO tolerance, so the price can
-       come from a history point arbitrarily distant, and from the New series
-       rather than the Used one when a New offer drop was the trigger. The time gap
-       and the source series columns distinguish this case.
+       point was on the wrong SIDE of the drop. `infer_sale_events` now takes the
+       last price point STRICTLY BEFORE the drop, at any distance.
 
-  (ia) THE LEFTOVER ASKING PRICE. The same defect with a near-zero time gap, and
-       the more likely one. `csv[1]` and `csv[2]` hold the LOWEST New / Used offer
-       price, not the price of any particular copy. When the cheapest copy sells,
-       the series does not record what it sold for - it steps UP to whatever the
-       next cheapest listing asks, at essentially the same timestamp as the
-       offer-count drop that marks the sale. `direction='nearest'` has no tolerance
-       and no tie-break, so it can land on the point AT or AFTER the drop and store
-       the asking price of a copy that did NOT sell. The true sale price is then
-       the point immediately BEFORE the drop.
+       Distance turned out NOT to be the problem. Measured on real Keepa history
+       for the three ASINs below, 2026-09-12, the gap to the PRECEDING point across
+       all 7 confirmed sales was 3.0, 5.1, 10.2, 252.1, 389.6, 516.4 and 2281.4
+       hours - bimodal, nothing between 10h and 252h, and 0 drops with no prior
+       point at all. The series is a change-log, so a long gap means the lowest
+       offer had not changed and the distant point is CORRECT. A proposed 240-hour
+       tolerance would have discarded 4 of those 7 and was rejected on that
+       evidence. The PRECEDING-GAP column below is what that measurement reads off.
+
+  (ia) THE LEFTOVER ASKING PRICE - FIXED, and still the explanation for most
+       inflated stored values. `csv[1]` and `csv[2]` hold the LOWEST New / Used
+       offer price, not the price of any particular copy. When the cheapest copy
+       sells, the series does not record what it sold for - it steps UP to whatever
+       the next cheapest listing asks, at essentially the same timestamp as the
+       offer-count drop that marks the sale. The old
+       `merge_asof(direction='nearest')` had no tolerance and no tie-break, so it
+       could land on the point AT or AFTER the drop and store the asking price of a
+       copy that did NOT sell.
 
        This is what the round numbers on the box look like: of 46 deals with
        `1yr_Avg = List_at` and $50+ profit, three carry exactly $499.95 and others
        exactly $1,000.00, $250.00, $200.00 and $150.00. Those are prices a seller
        typed into a listing, not prices anything transacted at. The PRICE STEP-UP
-       TEST section tests this sale by sale.
+       TEST section reports, sale by sale, what today's code records and what the
+       pre-fix nearest-match would have recorded, so a stored value written under
+       the old logic can still be accounted for. A fix to the inference repairs no
+       existing row - the light path never recomputes `List_at` or `1yr_Avg` and
+       the recalculator is API-free.
 
   (ii) An xAI-rescued "hidden sale". When the algorithmic pass confirms nothing,
        `infer_sale_events` returns the model's events verbatim, BEFORE the IQR
@@ -55,9 +65,12 @@ WHAT IT WILL NOT DO
 KEEP IN SYNC: the correlation loop below mirrors `infer_sale_events`
 (`keepa_deals/stable_calculations.py`) - the 3-year window, the 240-hour
 confirmation window, the 30-day sparse lookahead, the 72-hour near-miss window, the
-New-vs-Used price series choice, the `price <= 0` guard and the symmetrical IQR.
+New-vs-Used price series choice, the backward / no-exact-match / no-tolerance price
+association, the NaN and `price <= 0` guards and the symmetrical IQR.
 If that function changes, change this too or its output becomes a lie. The shared
 pieces (KEEPA_EPOCH, the timestamp conversion) are imported rather than copied.
+`tests/test_diagnose_inferred_sales.py`'s `MirrorsProduction` is what makes KEEP IN
+SYNC enforceable.
 
 USAGE
 -----
@@ -92,6 +105,8 @@ from keepa_deals.keepa_api import fetch_product_batch
 from keepa_deals.stable_calculations import KEEPA_EPOCH, _convert_ktm_to_datetime
 
 # Mirrors of the production constants. Named here so the printout can state them.
+# There is deliberately NO price-association tolerance to mirror - see the note at
+# the top of stable_calculations.py and the PRECEDING-GAP column below.
 HISTORY_WINDOW_DAYS = 1095      # stable_calculations.py: timedelta(days=1095)
 CONFIRM_WINDOW_HOURS = 240      # stable_calculations.py: timedelta(hours=240)
 SPARSE_LOOKAHEAD_DAYS = 30      # stable_calculations.py: timedelta(days=30)
@@ -193,7 +208,7 @@ def find_offer_drops(csv_data, window_start):
     if not frames:
         print()
         print("  ZERO offer drops. In production this is the branch at "
-              "stable_calculations.py:236-243 that calls xAI and returns its events "
+              "stable_calculations.py:262-274 that calls xAI and returns its events "
               "with total_offer_drops = 0, which also makes Deal Trust '-'.")
         return pd.DataFrame(), 0
     merged = pd.concat(frames).sort_values('timestamp').reset_index(drop=True)
@@ -268,34 +283,38 @@ def confirm_sales(offer_drops, csv_data, window_start):
                              'confirmed, but no price series available'))
             continue
 
-        matched = pd.merge_asof(pd.DataFrame([drop]), price_df,
-                                on='timestamp', direction='nearest')
+        # The production association: the last point STRICTLY BEFORE the drop, at
+        # any distance. No tolerance - a long gap means the lowest offer had not
+        # changed, so the distant point is the correct answer.
+        matched = pd.merge_asof(
+            pd.DataFrame([drop]), price_df, on='timestamp',
+            direction='backward', allow_exact_matches=False)
         price_cents = matched['price_cents'].iloc[0]
 
-        # merge_asof reports only the value, so re-find the point it chose in order
-        # to report WHICH point and HOW FAR AWAY it was. direction='nearest' with no
-        # tolerance means this can be any distance at all.
-        deltas = (price_df['timestamp'] - start_time).abs()
-        chosen = price_df.loc[deltas.idxmin()]
-        gap_days = abs((chosen['timestamp'] - start_time).total_seconds()) / 86400.0
-
-        # --- The step-up test. ---
-        # csv[1] and csv[2] are the LOWEST New / Used offer price, not a per-copy
-        # price. So when the cheapest copy sells, the series does not record what
-        # that copy sold for - it steps UP to whatever the next cheapest listing
-        # asks, at essentially the same timestamp as the offer-count drop that
-        # marks the sale. direction='nearest' has no tie-break and no tolerance, so
-        # it can land on the point AT or AFTER the drop: the leftover asking price
-        # of a copy that did NOT sell.
-        #
-        # Signature: merge_asof chose the at/after side, the recorded price equals
-        # the after price, and after >> before. The true sale price in that case is
-        # the BEFORE price.
+        # The two neighbouring points, reported either way. 'before' is what the
+        # association takes; 'after' is the next listing up the stack, which the
+        # pre-fix nearest-match could take instead. Every inflated stored value
+        # found on the box in the 2026-09-11 diagnostic was an 'after'.
         before_slice = price_df[price_df['timestamp'] < start_time]
         after_slice = price_df[price_df['timestamp'] >= start_time]
         price_before = before_slice.iloc[-1] if not before_slice.empty else None
         price_after = after_slice.iloc[0] if not after_slice.empty else None
-        chose_at_or_after = bool(chosen['timestamp'] >= start_time)
+
+        # What the PRE-FIX code would have stored. Kept so a stored value written
+        # under the old logic can still be accounted for - a fix to the inference
+        # repairs no existing row.
+        legacy_deltas = (price_df['timestamp'] - start_time).abs()
+        legacy_chosen = price_df.loc[legacy_deltas.idxmin()]
+        legacy_nearest_cents = legacy_chosen['price_cents']
+        legacy_chose_at_or_after = bool(legacy_chosen['timestamp'] >= start_time)
+
+        if pd.isna(price_cents):
+            # The only way the association fails now: the drop precedes every point
+            # in the series. It was 0 of 7 on the live sample of 2026-09-12.
+            rejected.append((start_time, drop['offer_type'],
+                             'confirmed, but no price point exists before it at all, '
+                             'so no price is attached'))
+            continue
 
         if price_cents <= 0:
             rejected.append((start_time, drop['offer_type'],
@@ -303,41 +322,46 @@ def confirm_sales(offer_drops, csv_data, window_start):
                              .format(price_cents)))
             continue
 
+        gap_days = ((start_time - price_before['timestamp']).total_seconds()
+                    / 86400.0)
+
         confirmed.append({
             'event_timestamp': start_time,
             'inferred_sale_price_cents': price_cents,
             'offer_type': drop['offer_type'],
             'series': series_name,
             'how': how,
-            'price_point_timestamp': chosen['timestamp'],
+            'price_point_timestamp': price_before['timestamp'],
             'gap_days': gap_days,
-            'price_before_cents': None if price_before is None
-                                  else price_before['price_cents'],
-            'price_before_timestamp': None if price_before is None
-                                      else price_before['timestamp'],
+            'price_before_cents': price_before['price_cents'],
+            'price_before_timestamp': price_before['timestamp'],
             'price_after_cents': None if price_after is None
                                  else price_after['price_cents'],
             'price_after_timestamp': None if price_after is None
                                      else price_after['timestamp'],
-            'chose_at_or_after': chose_at_or_after,
+            'legacy_nearest_cents': legacy_nearest_cents,
+            'legacy_chose_at_or_after': legacy_chose_at_or_after,
         })
 
     print("  CONFIRMED SALES: {}".format(len(confirmed)))
     if confirmed:
         print()
-        print("  {:<17} {:>10} {:<11} {:>9}  {}".format(
-            "sale timestamp", "price", "from", "gap (d)", "confirmed by"))
-        print("  " + "-" * 74)
+        print("  {:<17} {:>10} {:<11} {:>12}  {}".format(
+            "sale timestamp", "price", "from", "PRECEDING-GAP", "confirmed by"))
+        print("  " + "-" * 76)
         for c in confirmed:
-            flag = '  <-- SUSPECT' if c['gap_days'] >= 7 else ''
-            print("  {:%Y-%m-%d %H:%M} {:>10} {:<11} {:>9.1f}  {}{}".format(
+            print("  {:%Y-%m-%d %H:%M} {:>10} {:<11} {:>11}  {}".format(
                 c['event_timestamp'], _money(c['inferred_sale_price_cents']),
-                c['series'], c['gap_days'], c['how'], flag))
+                c['series'], "{:.1f}h".format(c['gap_days'] * 24.0), c['how']))
         print()
-        print("  'gap (d)' is the distance between the offer drop and the price point")
-        print("  merge_asof(direction='nearest') attached to it. There is no")
-        print("  tolerance in production, so a large gap here means the price is not")
-        print("  contemporaneous with the sale - that is mechanism (i).")
+        print("  'PRECEDING-GAP' is how old the attached price point was at the")
+        print("  moment of the offer drop. Production takes the last point STRICTLY")
+        print("  BEFORE the drop at ANY distance: the series is a change-log, so a")
+        print("  large gap means the lowest offer had not changed and the point is")
+        print("  correct rather than stale. There is no time threshold - one was")
+        print("  proposed and rejected on this exact measurement (see the module")
+        print("  docstring). A drop loses its price only when NO point precedes it,")
+        print("  and that appears under NOT CONFIRMED.")
     if rejected:
         print()
         print("  NOT CONFIRMED: {}".format(len(rejected)))
@@ -360,42 +384,46 @@ STEP_UP_RATIO = 1.5
 
 
 def _print_step_up_analysis(confirmed):
-    """Test the leftover-asking-price hypothesis, sale by sale.
+    """Account for the leftover asking price, sale by sale.
 
     csv[1] and csv[2] hold the LOWEST New / Used offer price, not the price of any
     particular copy. When the cheapest copy sells, the series does not record what
     it sold for - it steps UP to whatever the next cheapest listing asks, at
     essentially the moment of the offer-count drop that marks the sale.
 
-    `merge_asof(direction='nearest')` has no tolerance and no tie-break rule, so on
-    a drop whose neighbouring price points straddle it by similar distances it can
-    land on the AFTER side and record the leftover asking price of a copy that did
-    not sell. That inflates List at and 1yr Avg together, which is consistent with
-    the round numbers seen on the box ($1,000.00, $499.95, $250.00, $200.00,
-    $150.00) - those are asking prices someone typed, not prices anything sold at.
+    The pre-fix `merge_asof(direction='nearest')` had no tolerance and no tie-break,
+    so on a drop whose neighbouring price points straddle it by similar distances it
+    could land on the AFTER side and record the leftover asking price of a copy that
+    did not sell. That inflated List at and 1yr Avg together, which is what the round
+    numbers seen on the box are ($1,000.00, $499.95, $250.00, $200.00, $150.00) -
+    asking prices someone typed, not prices anything sold at.
 
-    In that case the true sale price is the BEFORE price.
+    Today's association takes the BEFORE price, so 'recorded' is always 'before'.
+    This section therefore serves a different purpose now: it shows WHAT THE OLD
+    LOGIC WOULD HAVE STORED for each sale, which is how a stored value on a row
+    written before the fix gets explained. A fix to the inference repairs no
+    existing row.
     """
     print()
     print("-" * 78)
-    print("  PRICE STEP-UP TEST (which side of the drop did merge_asof land on?)")
+    print("  PRICE STEP-UP TEST (what the pre-fix nearest-match would have stored)")
     print("-" * 78)
-    print("  {:<17} {:>10} {:>10} {:>8}  {:<9} {:<8} {}".format(
-        "sale timestamp", "before", "after", "jump", "picked", "recorded", ""))
-    print("  " + "-" * 74)
+    print("  {:<17} {:>10} {:>10} {:>8}  {:<8} {:<10} {}".format(
+        "sale timestamp", "before", "after", "jump", "recorded", "old would", ""))
+    print("  " + "-" * 76)
 
     suspects = 0
     for c in confirmed:
         before = c.get('price_before_cents')
         after = c.get('price_after_cents')
         recorded = c['inferred_sale_price_cents']
+        legacy = c.get('legacy_nearest_cents')
 
         if before and after and before > 0:
             jump = "{:.1f}x".format(after / before)
         else:
             jump = "-"
 
-        picked = 'at/after' if c.get('chose_at_or_after') else 'before'
         if after is not None and recorded == after:
             which = 'after'
         elif before is not None and recorded == before:
@@ -403,37 +431,40 @@ def _print_step_up_analysis(confirmed):
         else:
             which = 'other'
 
+        # The signature of the old defect: the nearest-match would have taken the
+        # at/after point and it is well above the price in force before the drop.
         is_suspect = (
-            c.get('chose_at_or_after')
-            and which == 'after'
+            c.get('legacy_chose_at_or_after')
+            and after is not None and legacy is not None and legacy == after
             and before and after and before > 0
             and (after / before) >= STEP_UP_RATIO
         )
         if is_suspect:
             suspects += 1
 
-        print("  {:%Y-%m-%d %H:%M} {:>10} {:>10} {:>8}  {:<9} {:<8} {}".format(
+        print("  {:%Y-%m-%d %H:%M} {:>10} {:>10} {:>8}  {:<8} {:<10} {}".format(
             c['event_timestamp'], _money(before), _money(after), jump,
-            picked, which, '<-- STEP-UP SUSPECT' if is_suspect else ''))
+            which, _money(legacy),
+            '<-- STEP-UP SUSPECT' if is_suspect else ''))
 
     print()
-    print("  'before' is the last price point strictly before the offer drop;")
-    print("  'after' is the first at or after it, both from the same series")
-    print("  merge_asof read. 'picked' is the side merge_asof landed on and")
-    print("  'recorded' is which of the two it stored.")
+    print("  'before' is the last price point strictly before the offer drop and is")
+    print("  what today's code records; 'after' is the first at or after it, from")
+    print("  the same series. 'old would' is what merge_asof(direction='nearest')")
+    print("  would have stored, i.e. what a row written before the fix carries.")
     print()
     if suspects:
-        print("  {} of {} sale(s) match the step-up signature: merge_asof took the"
+        print("  {} of {} sale(s) match the step-up signature: the old nearest-match"
               .format(suspects, len(confirmed)))
-        print("  at/after point, stored it, and it is >= {}x the price immediately"
+        print("  would have taken the at/after point, and it is >= {}x the price"
               .format(STEP_UP_RATIO))
-        print("  before the drop. For those, the price the copy actually sold at is")
-        print("  the 'before' column, and the stored value is the next listing's")
-        print("  asking price.")
+        print("  immediately before the drop. Today's code records the 'before'")
+        print("  column for those. If the STORED value matches 'old would', the row")
+        print("  predates the fix and needs a heavy re-fetch to be corrected.")
     else:
         print("  No sale matches the step-up signature. If the stored price is still")
-        print("  wrong, the cause is elsewhere - check the gap column above for a")
-        print("  price point that is simply far away in time.")
+        print("  wrong, the cause is elsewhere - check the PRECEDING-GAP column")
+        print("  above, and the NOT CONFIRMED list.")
 
 
 def sanitise(confirmed):
@@ -441,7 +472,7 @@ def sanitise(confirmed):
     _rule("STAGE 2 - IQR OUTLIER REJECTION")
     if not confirmed:
         print("  No confirmed sales. In production this is the branch at")
-        print("  stable_calculations.py:315-322, which calls xAI and returns the")
+        print("  stable_calculations.py:376-388, which calls xAI and returns the")
         print("  model's events WITHOUT running this filter at all. If the stored")
         print("  price is not in the history (see below), that is mechanism (ii).")
         return []
@@ -587,7 +618,7 @@ def amazon_stats(product):
         print("  Amazon ceiling = 90% of {} = {}"
               .format(_money(min(valid)), _money(ceiling)))
         print("  Any computed List at above that is clamped to it, and clamping also")
-        print("  SKIPS the AI reasonableness check (stable_calculations.py:588).")
+        print("  SKIPS the AI reasonableness check (stable_calculations.py:665).")
     else:
         print()
         print("  No valid Amazon price, so no ceiling is applied and the computed")
