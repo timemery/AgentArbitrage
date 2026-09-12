@@ -73,8 +73,9 @@ A sale is inferred by correlating two distinct events within a **240-hour** (10-
 When a sale is confirmed, the system attaches a price to it from the matching price
 series — `csv[1]` for a New offer drop, `csv[2]` for a Used one.
 
-**It takes the last price point STRICTLY BEFORE the offer drop**, via
-`pandas.merge_asof(direction='backward', allow_exact_matches=False, tolerance=...)`.
+**It takes the last price point STRICTLY BEFORE the offer drop, at any distance**,
+via `pandas.merge_asof(direction='backward', allow_exact_matches=False)`. There is
+deliberately **no time threshold** — see §2b.1.
 
 **Why "before" and not "nearest".** `csv[1]` and `csv[2]` hold the **lowest** New /
 Used offer price, not the price of any particular copy. When the cheapest copy
@@ -84,49 +85,66 @@ drop that marks the sale. The price in force immediately *before* the drop is
 therefore the best available estimate of what the copy sold at, and the point *at or
 after* it is the asking price of a copy that did **not** sell.
 
-Until September 2026 this was `merge_asof(direction='nearest')` with no tolerance and
-no tie-break, so it could land on the at-or-after point and store that asking price.
+Until September 2026 this was `merge_asof(direction='nearest')`, which has no
+tie-break, so it could land on the at-or-after point and store that asking price.
 Because Keepa stamps the offer-count drop and the price step-up at the same minute, a
 zero-distance match was the common case rather than the edge — which is why
-`allow_exact_matches=False` matters as much as the direction does. Confirmed live on
-**5 of 7 sales across 3 ASINs** on 2026-09-11: **$124.85 recorded as $1,000.00**,
-**$49.95 as $499.95**, **$328.19 as $625.59**. The round numbers are the tell — those
-are prices a seller typed into a listing, not prices anything transacted at. See
+`allow_exact_matches=False` matters as much as the direction does. **4 of the 7 sales
+measured on real history had a price point sharing the exact minute of the drop**, so
+the exact-match exclusion is doing most of the work. Confirmed live on **5 of 7 sales
+across 3 ASINs** on 2026-09-11: **$124.85 recorded as $1,000.00**, **$49.95 as
+$499.95**, **$328.19 as $625.59**. The round numbers are the tell — those are prices a
+seller typed into a listing, not prices anything transacted at. See
 `Dev_Logs/2026-09-11b_Remove_1yr_Avg_Listing_Average_Fallback.md` §4b for the
 evidence.
 
-### b.1 The time tolerance
+### b.1 There is deliberately NO time threshold
 
-`PRICE_ASSOCIATION_TOLERANCE_HOURS` in `keepa_deals/stable_calculations.py` is
-**240 hours (10 days)**. If the last price point before an offer drop is older than
-that, **no price is attached and the sale is discarded** — it is never priced from a
-distant point.
+A 240-hour tolerance was proposed and then **rejected on evidence** (owner decision,
+2026-09-12). Do not add one.
 
-*   **Why a tolerance exists.** The price series is a change-log, so in principle a
-    value persists until the next point and any age is "current". In practice a
-    months-old point can predate a stretch with no offers at all. The live
-    diagnostic found exactly that on ASIN `1468308963`, where the nearest price
-    point was **60.3 days** from the drop.
-*   **Why 240.** Measured across every Keepa `csv` fixture in `tests/`, the gap
-    between an offer drop and the price point preceding it is **1h (×17), 6h (×15)
-    and 24h (×2)** — so 24 hours is a hard floor (the 24h pair is
-    `tests/test_synchronous_updates.py`) and the fixtures put **no ceiling on it at
-    all**, their values being the generators' grid step rather than a property of
-    Keepa data. 240 hours is ten times that floor, matches the magnitude of the
-    240-hour rank-confirmation window the system already treats as "the same event",
-    and is six times smaller than the one measured bad gap. It is a **named
-    module-level constant**, deliberately not read from the confirmation window:
-    these are two different judgements and must be tunable apart.
-*   **Which way it errs.** Lowering it discards more true sales on books whose price
-    simply has not changed in a while. That shows up as fewer inferred sales, a
-    lower `Deal Trust` and more NULL prices — **never as a wrong price**, which is
-    the direction the Critical Warning above requires.
+Measured on **real Keepa history** for the three diagnostic ASINs, the gap between an
+offer drop and the price point immediately **preceding** it, across all 7 confirmed
+sales:
+
+| | hours |
+| :--- | :--- |
+| gaps | 3.0, 5.1, 10.2, 252.1, 389.6, 516.4, 2281.4 |
+| median | 252.1 |
+| max | 2281.4 (95.1 days) |
+| drops with no prior point | 0 of 7 |
+
+The distribution is **bimodal with nothing at all between 10h and 252h**. A 240-hour
+threshold would have cut it at the median and discarded **4 of the 7 real sales**.
+
+**Why gap length is the wrong instrument.** `csv[1]` and `csv[2]` are **change-logs**:
+a point exists only when the value changes. A long gap therefore means the lowest
+offer simply **had not changed**, which makes the distant point **correct**, not
+stale. Gap length measures price stability, not data staleness, so thresholding on it
+discards exactly the slow-moving inventory the system is built to find.
+
+*   **This corrects an earlier reading of the same data.** The 09-11 diagnostic
+    reported a 60.3-day gap on ASIN `1468308963` and it was taken as evidence for a
+    tolerance. That figure was the distance to the **nearest** point under the old
+    association, not the age of the preceding one, and the two measure different
+    things. The fixture-based estimate that produced the 240 was worse still: every
+    gap in `tests/` is the fixture generator's grid step (1h, 6h, 24h), so it
+    measured the generator and not Keepa.
+*   **Open item, not built here.** If a stale-price guard is ever wanted, it needs
+    **continuity of the price series across the gap** — evidence that the series was
+    live and the value genuinely held, rather than absent — not gap length.
+*   **The only way a confirmed drop loses its price** is when it precedes *every*
+    point in the series, which yields `NaN`. That was **0 of 7** on the live sample,
+    so the practical effect on `Deal Trust` and on xAI-rescue traffic is negligible.
 *   **The offer drop still counts.** A drop whose price cannot be associated stays
     in the `Deal Trust` denominator, so the score reflects the loss.
-*   **NaN safety.** `merge_asof` returns `NaN` when the tolerance matches nothing,
-    and `NaN <= 0` is `False`, so the pre-existing `price <= 0` guard cannot catch
-    it on its own. There is an explicit `pd.isna` check ahead of it; without one a
-    `NaN` would poison the IQR bounds, the mean and the mode for the whole ASIN.
+*   **NaN safety.** `merge_asof` returns `NaN` when the backward match finds nothing,
+    and `NaN <= 0` is `False`, so the pre-existing `price <= 0` guard cannot catch it
+    on its own. There is an explicit `pd.isna` check ahead of it; without one a `NaN`
+    would poison the IQR bounds, the mean and the mode for the whole ASIN.
+*   **Pinned by** `tests/test_price_association.py::NoTimeThreshold`, which asserts
+    the constant is gone and no `tolerance=` is passed, and by
+    `DistantPrecedingPointsStillAssociate`, which drives all 7 measured gaps.
 
 > **This changes newly computed prices only.** A fix to the inference repairs no
 > existing row: the light path never recomputes `List_at` or `1yr_Avg`, and

@@ -8,21 +8,33 @@ it sold for - it steps **up** to whatever the next cheapest listing asks, at
 essentially the same timestamp as the offer-count drop that marks the sale.
 
 `infer_sale_events` used to associate a price with
-`merge_asof(direction='nearest')`, which has no tolerance and no tie-break, so it
-could land on the point **at or after** the drop and store the asking price of a
-copy that did **not** sell. Confirmed live on 5 of 7 sales across 3 ASINs on
-2026-09-11: $124.85 recorded as $1,000.00, $49.95 as $499.95, $328.19 as $625.59.
-See `Dev_Logs/2026-09-11b_Remove_1yr_Avg_Listing_Average_Fallback.md` 4b.
+`merge_asof(direction='nearest')`, which has no tie-break, so it could land on the
+point **at or after** the drop and store the asking price of a copy that did **not**
+sell. Confirmed live on 5 of 7 sales across 3 ASINs on 2026-09-11: $124.85 recorded
+as $1,000.00, $49.95 as $499.95, $328.19 as $625.59. See
+`Dev_Logs/2026-09-11b_Remove_1yr_Avg_Listing_Average_Fallback.md` 4b.
 
-The association is now `direction='backward'`, `allow_exact_matches=False` and a
-tolerance of `PRICE_ASSOCIATION_TOLERANCE_HOURS`, so it reads the last point
-STRICTLY BEFORE the drop and yields NO price at all when that point is too old to
-be trusted as the price in force.
+The association is now `direction='backward'` with `allow_exact_matches=False`, so
+it reads the last point STRICTLY BEFORE the drop, at **any** distance.
+
+THERE IS NO TIME THRESHOLD, AND THAT IS THE MEASURED ANSWER
+-----------------------------------------------------------
+A 240-hour tolerance was proposed from the suite's own fixtures and then rejected on
+real data, 2026-09-12 (owner decision). On live Keepa history for the same three
+ASINs, the gap between an offer drop and the price point immediately preceding it,
+across all 7 confirmed sales, was **3.0, 5.1, 10.2, 252.1, 389.6, 516.4 and 2281.4
+hours** - bimodal, nothing between 10h and 252h, median 252.1h, max 95.1 days. A
+240-hour threshold would have cut that at the median and discarded the majority.
+
+The reason is that the price series is a **change-log**: a long gap means the lowest
+offer had not changed, which makes the distant point **correct** rather than stale.
+Gap length does not measure staleness. `NoTimeThreshold` pins the absence so
+re-adding one has to be deliberate.
 
 The fixtures here are deliberately SPARSE - two or three points per series, placed
-at exact offsets from the drop - rather than the dense uniform grids the rest of
-the suite uses. A dense grid cannot express "the only prior price point is 30 days
-old", which is the shape that produced the worst live result.
+at exact offsets from the drop - rather than the dense uniform grids the rest of the
+suite uses. A dense grid cannot express "the only prior price point is 95 days old",
+which is the shape that carried the widest real gap.
 
 NOTE ON THE ZERO-SALE BRANCHES: `infer_sale_events` calls xAI when it confirms no
 sales, so every test that expects zero sales patches `infer_sales_with_xai`. The
@@ -40,7 +52,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from keepa_deals.stable_calculations import (  # noqa: E402
     KEEPA_EPOCH,
-    PRICE_ASSOCIATION_TOLERANCE_HOURS,
     infer_sale_events,
 )
 
@@ -52,10 +63,15 @@ NEXT_LISTING_CENTS = 49995
 
 MINUTES_PER_HOUR = 60
 
-# The drop is 120 days back: inside the 3-year inference window and inside the
-# 365-day window `1yr. Avg.` uses. Anchored on a whole Keepa minute so every offset
-# below is exact rather than truncated.
-SALE_KTM = int(((datetime.now() - timedelta(days=120)) - KEEPA_EPOCH)
+# The seven preceding-gaps measured on real Keepa history, 2026-09-12, across the
+# 7 confirmed sales of ASINs 1890919489, 1468308963 and 1429097078. Every one of
+# these must still associate a price.
+MEASURED_PRECEDING_GAPS_HOURS = (3.0, 5.1, 10.2, 252.1, 389.6, 516.4, 2281.4)
+
+# The drop is 150 days back, far enough that the widest measured gap (2281.4h, 95.1
+# days) still lands inside the 3-year inference window. Anchored on a whole Keepa
+# minute so every offset below is exact rather than truncated.
+SALE_KTM = int(((datetime.now() - timedelta(days=150)) - KEEPA_EPOCH)
                .total_seconds() // 60)
 SALE_TS = KEEPA_EPOCH + timedelta(minutes=SALE_KTM)
 
@@ -148,11 +164,11 @@ class PriceInForceBeforeTheDrop(_Silent):
                          "at; the at/after point is the next listing's asking price.")
 
     def test_a_price_point_exactly_at_the_drop_is_never_used(self):
-        """`allow_exact_matches=False` is load-bearing, not decoration.
+        """`allow_exact_matches=False` is load-bearing, and the box proved it.
 
-        Keepa stamps the offer-count drop and the price step-up at the same minute,
-        so a zero-distance match is the single most common way to pick up the
-        leftover asking price.
+        4 of the 7 live sales had a price point sharing the EXACT minute of the
+        offer drop (nearest gap 0.0h), so a zero-distance match is the single most
+        common way to pick up the leftover asking price.
         """
         product = _product(used_price_points=[(_at(-48), SOLD_AT_CENTS),
                                               (_at(0), NEXT_LISTING_CENTS)])
@@ -186,44 +202,69 @@ class PriceInForceBeforeTheDrop(_Silent):
                          "strictly before the drop.")
 
 
-class ToleranceRejectsADistantPrice(_Silent):
-    """A drop with no nearby prior price point yields no price, not a distant one."""
+class DistantPrecedingPointsStillAssociate(_Silent):
+    """A long gap means the price had not changed, so the point is correct.
 
-    def test_a_prior_price_beyond_the_tolerance_yields_no_sale(self):
-        """The 1468308963 shape: the nearest price point was 60.3 days away.
+    This class is the executable form of the box measurement that killed the
+    240-hour tolerance. Every gap here is a real one.
+    """
 
-        Production used to record it. A price point that old is not a statement
-        about what was being asked at the moment of the drop.
+    def test_the_widest_measured_gap_still_associates(self):
+        """2281.4 hours, 95.1 days: the widest real gap in the live sample.
+
+        A 240-hour tolerance discarded this sale. It must not be discarded: the
+        series is a change-log and this is simply a price that held for 95 days.
         """
-        far = -(PRICE_ASSOCIATION_TOLERANCE_HOURS * 3)
-        product = _product(used_price_points=[(_at(far), SOLD_AT_CENTS),
+        product = _product(used_price_points=[(_at(-2281.4), SOLD_AT_CENTS),
                                               (_at(0), NEXT_LISTING_CENTS)])
-        events, drops, _ = self._infer_expecting_no_sales(product)
-        self.assertEqual(events, [],
-                         "A price point {} hours before the drop must not be "
-                         "associated with it.".format(-far))
-        self.assertEqual(drops, 1,
-                         "The offer drop still happened. It must stay in the Deal "
-                         "Trust denominator even though no price could be attached.")
-
-    def test_a_prior_price_exactly_at_the_tolerance_is_still_used(self):
-        """The bound is inclusive, and this test is what says so."""
-        product = _product(
-            used_price_points=[(_at(-PRICE_ASSOCIATION_TOLERANCE_HOURS),
-                                SOLD_AT_CENTS),
-                               (_at(0), NEXT_LISTING_CENTS)])
-        events, _ = infer_sale_events(product)
-        self.assertEqual(len(events), 1)
-        self.assertEqual(int(events[0]['inferred_sale_price_cents']), SOLD_AT_CENTS)
-
-    def test_one_hour_past_the_tolerance_is_rejected(self):
-        product = _product(
-            used_price_points=[(_at(-(PRICE_ASSOCIATION_TOLERANCE_HOURS + 1)),
-                                SOLD_AT_CENTS),
-                               (_at(0), NEXT_LISTING_CENTS)])
-        events, drops, _ = self._infer_expecting_no_sales(product)
-        self.assertEqual(events, [])
+        events, drops = infer_sale_events(product)
         self.assertEqual(drops, 1)
+        self.assertEqual(len(events), 1,
+                         "A 95-day-old preceding price point must still be "
+                         "associated. Gap length does not measure staleness.")
+        self.assertEqual(int(events[0]['inferred_sale_price_cents']),
+                         SOLD_AT_CENTS)
+
+    def test_every_gap_measured_on_the_box_associates_a_price(self):
+        """All 7 of the real preceding-gaps, including the 4 a tolerance would cut."""
+        for gap in MEASURED_PRECEDING_GAPS_HOURS:
+            with self.subTest(gap_hours=gap):
+                product = _product(
+                    used_price_points=[(_at(-gap), SOLD_AT_CENTS),
+                                       (_at(0), NEXT_LISTING_CENTS)])
+                events, drops = infer_sale_events(product)
+                self.assertEqual(drops, 1)
+                self.assertEqual(
+                    len(events), 1,
+                    "Gap of {}h lost its price. All 7 gaps measured on real "
+                    "Keepa history must associate.".format(gap))
+                self.assertEqual(
+                    int(events[0]['inferred_sale_price_cents']), SOLD_AT_CENTS,
+                    "Gap of {}h associated the wrong side of the drop.".format(gap))
+
+    def test_the_gaps_a_two_forty_hour_tolerance_would_have_rejected(self):
+        """Names the four explicitly, so the cost of re-adding one is visible."""
+        would_have_been_cut = [g for g in MEASURED_PRECEDING_GAPS_HOURS if g > 240]
+        self.assertEqual(
+            len(would_have_been_cut), 4,
+            "The live sample had 4 of 7 gaps above 240h. If this changes, the "
+            "tolerance decision of 2026-09-12 was based on different data.")
+        for gap in would_have_been_cut:
+            with self.subTest(gap_hours=gap):
+                product = _product(
+                    used_price_points=[(_at(-gap), SOLD_AT_CENTS),
+                                       (_at(0), NEXT_LISTING_CENTS)])
+                events, _ = infer_sale_events(product)
+                self.assertEqual(len(events), 1)
+
+
+class NoPriorPointYieldsNoPrice(_Silent):
+    """The one case in which a confirmed drop still loses its price.
+
+    With no time threshold, this is the ONLY way the association fails: the drop
+    precedes every point in the series. It was 0 of 7 on the live sample, which is
+    why the Deal Trust and xAI-rescue consequences of this change are negligible.
+    """
 
     def test_a_drop_with_no_prior_price_point_at_all_yields_no_sale(self):
         """The first drop in a history can precede every price point."""
@@ -231,18 +272,18 @@ class ToleranceRejectsADistantPrice(_Silent):
                                               (_at(96), NEXT_LISTING_CENTS)])
         events, drops, _ = self._infer_expecting_no_sales(product)
         self.assertEqual(events, [])
-        self.assertEqual(drops, 1)
+        self.assertEqual(drops, 1,
+                         "The offer drop still happened. It must stay in the Deal "
+                         "Trust denominator even though no price could be attached.")
 
-    def test_a_rejected_price_never_leaks_through_as_nan(self):
-        """`merge_asof` returns NaN when the tolerance matches nothing.
+    def test_that_failure_never_leaks_through_as_nan(self):
+        """`merge_asof` returns NaN when the backward match finds nothing.
 
         `NaN <= 0` is False, so the pre-existing `price <= 0` guard does NOT catch
         it. A NaN reaching `confirmed_sales` would poison the IQR bounds, the mean
         and the mode for the whole ASIN.
         """
-        far = -(PRICE_ASSOCIATION_TOLERANCE_HOURS * 3)
-        product = _product(used_price_points=[(_at(far), SOLD_AT_CENTS),
-                                              (_at(0), NEXT_LISTING_CENTS)])
+        product = _product(used_price_points=[(_at(2), NEXT_LISTING_CENTS)])
         events, _, _ = self._infer_expecting_no_sales(product)
         for event in events:
             price = event['inferred_sale_price_cents']
@@ -258,53 +299,47 @@ class ToleranceRejectsADistantPrice(_Silent):
         self.assertEqual(drops, 1)
 
 
-class ToleranceIsWideEnoughForTheSuitesOwnShapes(_Silent):
-    """The measured lower bound on the tolerance.
-
-    Measured across every Keepa `csv` fixture in the suite, the gap between an
-    offer drop and the price point preceding it is 1h (x17), 6h (x15) and 24h (x2).
-    The 24-hour pair is `tests/test_synchronous_updates.py`, where the price series
-    carries a point at the drop and one a day earlier. A tolerance under 24 hours
-    would silently drop those sales, so this test pins the floor explicitly rather
-    than leaving it to be discovered by a failure two files away.
-    """
-
-    def test_a_twenty_four_hour_old_price_is_still_associated(self):
-        self.assertGreaterEqual(
-            PRICE_ASSOCIATION_TOLERANCE_HOURS, 24,
-            "24 hours is the widest gap any existing suite fixture relies on.")
-        product = _product(used_price_points=[(_at(-24), SOLD_AT_CENTS),
-                                              (_at(0), SOLD_AT_CENTS)])
-        events, _ = infer_sale_events(product)
-        self.assertEqual(len(events), 1)
-        self.assertEqual(int(events[0]['inferred_sale_price_cents']), SOLD_AT_CENTS)
-
-
-class TheConstant(unittest.TestCase):
-    """The value is an owner decision, so make changing it deliberate and visible.
+class NoTimeThreshold(unittest.TestCase):
+    """Pin the ABSENCE of a tolerance, so re-adding one has to be deliberate.
 
     Same pattern as `tests/test_field_mappings_call_contract.py`'s pinning of
-    `FUNCTION_LIST[10] = None`: a bare number in a module is easy to nudge, and
-    this one decides how many true sales the system is willing to discard.
+    `FUNCTION_LIST[10] = None`: "the association has no bound, let's add one" is an
+    intuition that has already been tried and refuted by measurement. The next
+    agent should have to read why before reversing it.
     """
 
-    def test_is_a_module_level_int_in_hours(self):
-        self.assertIsInstance(PRICE_ASSOCIATION_TOLERANCE_HOURS, int)
-        self.assertGreater(PRICE_ASSOCIATION_TOLERANCE_HOURS, 0)
-
-    def test_is_pinned_to_the_approved_value(self):
-        self.assertEqual(
-            PRICE_ASSOCIATION_TOLERANCE_HOURS, 240,
-            "Changing the price-association tolerance changes how many true "
-            "inferred sales are discarded. It is an owner decision - update this "
-            "test in the same change, with the reasoning.")
-
-    def test_is_not_an_inline_literal(self):
-        source = open(os.path.join(
+    @staticmethod
+    def _source():
+        return open(os.path.join(
             os.path.dirname(os.path.abspath(__file__)), '..',
             'keepa_deals', 'stable_calculations.py')).read()
-        self.assertIn('PRICE_ASSOCIATION_TOLERANCE_HOURS = ', source)
-        self.assertIn('hours=PRICE_ASSOCIATION_TOLERANCE_HOURS', source)
+
+    def test_the_tolerance_constant_is_gone(self):
+        import keepa_deals.stable_calculations as sc
+        self.assertFalse(
+            hasattr(sc, 'PRICE_ASSOCIATION_TOLERANCE_HOURS'),
+            "The tolerance was rejected on real data 2026-09-12: 4 of 7 live "
+            "preceding-gaps exceeded 240h, so the threshold would have discarded "
+            "the majority of true sales. A long gap means the lowest offer had not "
+            "changed, which makes the distant point correct rather than stale.")
+
+    def test_the_association_passes_no_tolerance(self):
+        source = self._source()
+        self.assertIn("direction='backward'", source)
+        self.assertIn('allow_exact_matches=False', source)
+        self.assertNotIn(
+            'tolerance=', source,
+            "Gap length does not measure staleness. If a stale-price guard is "
+            "wanted it needs continuity of the price series across the gap, not "
+            "gap length - and that is an open item, not this change.")
+
+    def test_the_reasoning_is_recorded_next_to_the_code(self):
+        """A bare absence is indistinguishable from an oversight."""
+        source = self._source()
+        self.assertIn('NO TIME THRESHOLD', source)
+        self.assertIn('2281.4', source,
+                      "The widest measured gap belongs in the module, so the next "
+                      "reader sees the evidence and not just the conclusion.")
 
 
 if __name__ == '__main__':

@@ -10,12 +10,17 @@ on a book currently listing used at $28.99. Two mechanisms could produce that, a
 they have different fixes:
 
   (i)  A real offer drop with a WRONG PRICE ATTACHED, because the matched price
-       point is far away in time. `infer_sale_events` now takes the last price
-       point STRICTLY BEFORE the drop and refuses one older than
-       PRICE_ASSOCIATION_TOLERANCE_HOURS, so this case is reported as a rejected
-       drop rather than as a priced sale. It is still worth reading: rows WRITTEN
-       BEFORE that fix carry the old value, and explaining a stored number is this
-       script's whole job.
+       point was on the wrong SIDE of the drop. `infer_sale_events` now takes the
+       last price point STRICTLY BEFORE the drop, at any distance.
+
+       Distance turned out NOT to be the problem. Measured on real Keepa history
+       for the three ASINs below, 2026-09-12, the gap to the PRECEDING point across
+       all 7 confirmed sales was 3.0, 5.1, 10.2, 252.1, 389.6, 516.4 and 2281.4
+       hours - bimodal, nothing between 10h and 252h, and 0 drops with no prior
+       point at all. The series is a change-log, so a long gap means the lowest
+       offer had not changed and the distant point is CORRECT. A proposed 240-hour
+       tolerance would have discarded 4 of those 7 and was rejected on that
+       evidence. The PRECEDING-GAP column below is what that measurement reads off.
 
   (ia) THE LEFTOVER ASKING PRICE - FIXED, and still the explanation for most
        inflated stored values. `csv[1]` and `csv[2]` hold the LOWEST New / Used
@@ -60,12 +65,12 @@ WHAT IT WILL NOT DO
 KEEP IN SYNC: the correlation loop below mirrors `infer_sale_events`
 (`keepa_deals/stable_calculations.py`) - the 3-year window, the 240-hour
 confirmation window, the 30-day sparse lookahead, the 72-hour near-miss window, the
-New-vs-Used price series choice, the backward / no-exact-match / tolerance price
+New-vs-Used price series choice, the backward / no-exact-match / no-tolerance price
 association, the NaN and `price <= 0` guards and the symmetrical IQR.
 If that function changes, change this too or its output becomes a lie. The shared
-pieces (KEEPA_EPOCH, the timestamp conversion, PRICE_ASSOCIATION_TOLERANCE_HOURS)
-are imported rather than copied. `tests/test_diagnose_inferred_sales.py`'s
-`MirrorsProduction` is what makes KEEP IN SYNC enforceable.
+pieces (KEEPA_EPOCH, the timestamp conversion) are imported rather than copied.
+`tests/test_diagnose_inferred_sales.py`'s `MirrorsProduction` is what makes KEEP IN
+SYNC enforceable.
 
 USAGE
 -----
@@ -97,16 +102,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from keepa_deals.keepa_api import fetch_product_batch
 # Imported, not copied, so the epoch and the conversion cannot drift from production.
 # AGENTS.md 1: the Keepa epoch is 2011-01-01. Never 2000-01-01.
-from keepa_deals.stable_calculations import (
-    KEEPA_EPOCH,
-    PRICE_ASSOCIATION_TOLERANCE_HOURS,
-    _convert_ktm_to_datetime,
-)
+from keepa_deals.stable_calculations import KEEPA_EPOCH, _convert_ktm_to_datetime
 
 # Mirrors of the production constants. Named here so the printout can state them.
-# PRICE_ASSOCIATION_TOLERANCE_HOURS is IMPORTED rather than mirrored: it is the one
-# value whose drift would change which sales this script reports, not just how it
-# labels them.
+# There is deliberately NO price-association tolerance to mirror - see the note at
+# the top of stable_calculations.py and the PRECEDING-GAP column below.
 HISTORY_WINDOW_DAYS = 1095      # stable_calculations.py: timedelta(days=1095)
 CONFIRM_WINDOW_HOURS = 240      # stable_calculations.py: timedelta(hours=240)
 SPARSE_LOOKAHEAD_DAYS = 30      # stable_calculations.py: timedelta(days=30)
@@ -283,12 +283,12 @@ def confirm_sales(offer_drops, csv_data, window_start):
                              'confirmed, but no price series available'))
             continue
 
-        # The production association: the last point STRICTLY BEFORE the drop, and
-        # nothing older than the tolerance.
+        # The production association: the last point STRICTLY BEFORE the drop, at
+        # any distance. No tolerance - a long gap means the lowest offer had not
+        # changed, so the distant point is the correct answer.
         matched = pd.merge_asof(
             pd.DataFrame([drop]), price_df, on='timestamp',
-            direction='backward', allow_exact_matches=False,
-            tolerance=pd.Timedelta(hours=PRICE_ASSOCIATION_TOLERANCE_HOURS))
+            direction='backward', allow_exact_matches=False)
         price_cents = matched['price_cents'].iloc[0]
 
         # The two neighbouring points, reported either way. 'before' is what the
@@ -309,15 +309,11 @@ def confirm_sales(offer_drops, csv_data, window_start):
         legacy_chose_at_or_after = bool(legacy_chosen['timestamp'] >= start_time)
 
         if pd.isna(price_cents):
-            if price_before is None:
-                why = ('confirmed, but no price point exists before it at all, '
-                       'so no price is attached')
-            else:
-                age = (start_time - price_before['timestamp']).total_seconds() / 86400.0
-                why = ('confirmed, but the last price point before it is {:.1f} days '
-                       'old - outside the {}h tolerance, so no price is attached'
-                       .format(age, PRICE_ASSOCIATION_TOLERANCE_HOURS))
-            rejected.append((start_time, drop['offer_type'], why))
+            # The only way the association fails now: the drop precedes every point
+            # in the series. It was 0 of 7 on the live sample of 2026-09-12.
+            rejected.append((start_time, drop['offer_type'],
+                             'confirmed, but no price point exists before it at all, '
+                             'so no price is attached'))
             continue
 
         if price_cents <= 0:
@@ -350,21 +346,22 @@ def confirm_sales(offer_drops, csv_data, window_start):
     print("  CONFIRMED SALES: {}".format(len(confirmed)))
     if confirmed:
         print()
-        print("  {:<17} {:>10} {:<11} {:>9}  {}".format(
-            "sale timestamp", "price", "from", "age (d)", "confirmed by"))
-        print("  " + "-" * 74)
+        print("  {:<17} {:>10} {:<11} {:>12}  {}".format(
+            "sale timestamp", "price", "from", "PRECEDING-GAP", "confirmed by"))
+        print("  " + "-" * 76)
         for c in confirmed:
-            print("  {:%Y-%m-%d %H:%M} {:>10} {:<11} {:>9.1f}  {}".format(
+            print("  {:%Y-%m-%d %H:%M} {:>10} {:<11} {:>11}  {}".format(
                 c['event_timestamp'], _money(c['inferred_sale_price_cents']),
-                c['series'], c['gap_days'], c['how']))
+                c['series'], "{:.1f}h".format(c['gap_days'] * 24.0), c['how']))
         print()
-        print("  'age (d)' is how old the attached price point was at the moment of")
-        print("  the offer drop. Production takes the last point STRICTLY BEFORE the")
-        print("  drop and refuses anything older than {}h ({:.1f} days), so every row"
-              .format(PRICE_ASSOCIATION_TOLERANCE_HOURS,
-                      PRICE_ASSOCIATION_TOLERANCE_HOURS / 24.0))
-        print("  above is inside that bound. Drops whose only prior point was older")
-        print("  appear under NOT CONFIRMED with the age that disqualified them.")
+        print("  'PRECEDING-GAP' is how old the attached price point was at the")
+        print("  moment of the offer drop. Production takes the last point STRICTLY")
+        print("  BEFORE the drop at ANY distance: the series is a change-log, so a")
+        print("  large gap means the lowest offer had not changed and the point is")
+        print("  correct rather than stale. There is no time threshold - one was")
+        print("  proposed and rejected on this exact measurement (see the module")
+        print("  docstring). A drop loses its price only when NO point precedes it,")
+        print("  and that appears under NOT CONFIRMED.")
     if rejected:
         print()
         print("  NOT CONFIRMED: {}".format(len(rejected)))
@@ -466,8 +463,8 @@ def _print_step_up_analysis(confirmed):
         print("  predates the fix and needs a heavy re-fetch to be corrected.")
     else:
         print("  No sale matches the step-up signature. If the stored price is still")
-        print("  wrong, the cause is elsewhere - check the age column above, and the")
-        print("  NOT CONFIRMED list for drops the tolerance now rejects.")
+        print("  wrong, the cause is elsewhere - check the PRECEDING-GAP column")
+        print("  above, and the NOT CONFIRMED list.")
 
 
 def sanitise(confirmed):

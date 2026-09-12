@@ -22,9 +22,11 @@ The system now enforces two strict rules to prevent artificial inflation:
 Do not reintroduce fallback logic based on listing prices, as it compromises the core promise of only providing true deals.
 
 ### Price Association Fix (September 2026)
-The price attached to an inferred sale is now the last history point **strictly before** the offer drop, capped by `PRICE_ASSOCIATION_TOLERANCE_HOURS` (**240h**) in `keepa_deals/stable_calculations.py`. Beyond that age no price is attached and the sale is discarded.
+The price attached to an inferred sale is now the last history point **strictly before** the offer drop, at **any** distance. `merge_asof(direction='backward', allow_exact_matches=False)` in `keepa_deals/stable_calculations.py`.
 
-`csv[1]` / `csv[2]` hold the **lowest** New / Used offer price, not any one copy's price, so when the cheapest copy sells the series steps **up** to the next cheapest listing at essentially the same timestamp. The previous `merge_asof(direction='nearest')` had no tolerance and no tie-break and recorded that asking price on **5 of 7 sales across 3 ASINs** measured live on 2026-09-11 ($124.85 stored as $1,000.00, $49.95 as $499.95, $328.19 as $625.59).
+`csv[1]` / `csv[2]` hold the **lowest** New / Used offer price, not any one copy's price, so when the cheapest copy sells the series steps **up** to the next cheapest listing at essentially the same timestamp. The previous `merge_asof(direction='nearest')` had no tie-break and recorded that asking price on **5 of 7 sales across 3 ASINs** measured live on 2026-09-11 ($124.85 stored as $1,000.00, $49.95 as $499.95, $328.19 as $625.59). 4 of those 7 had a price point on the exact minute of the drop, so `allow_exact_matches=False` does most of the work.
+
+**No time threshold, by owner decision on measured data (2026-09-12).** A 240h tolerance was proposed and rejected: the real preceding-gaps were 3.0, 5.1, 10.2, 252.1, 389.6, 516.4 and 2281.4 hours, bimodal with nothing between 10h and 252h, so the threshold would have discarded 4 of 7 true sales. The series is a change-log, so a long gap means the lowest offer had not changed and the distant point is correct. A stale-price guard, if ever wanted, needs continuity of the series across the gap rather than gap length; that is an open item. Because 0 of 7 drops lacked a prior point, `Deal Trust` and xAI-rescue traffic are effectively unchanged by this fix.
 
 **Heavy path only, and it repairs nothing.** Only newly discovered deals are affected — the light path never recomputes `List_at` or `1yr_Avg`, and `recalculator.py` is API-free. Rows written under the old association keep their inflated values until a heavy re-fetch replaces them. Recovery is a separate, open decision.
 

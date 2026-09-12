@@ -25,32 +25,27 @@ xai_token_manager = XaiTokenManager()
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
 
-# How old the last price point before an offer drop may be and still be treated as
-# the price in force at the moment of that drop. Beyond this, `infer_sale_events`
-# attaches NO price and discards the sale rather than record a stale one.
+# THERE IS DELIBERATELY NO TIME THRESHOLD ON THE PRICE ASSOCIATION.
 #
-# WHY THERE IS A TOLERANCE AT ALL. `csv[1]` / `csv[2]` are change-logs of the lowest
-# New / Used offer price, so in principle a value persists until the next point and
-# any age is "current". In practice a months-old point can predate a stretch with no
-# offers at all, and the live diagnostic of 2026-09-11 found exactly that: on ASIN
-# 1468308963 the nearest price point was 60.3 days from the drop and the recorded
-# $499.95 was an asking price nothing transacted at. An unbounded association has no
-# way to refuse that.
+# A tolerance was proposed and then rejected on evidence, 2026-09-12 (owner decision).
+# Measured on real Keepa history for the three ASINs of the 2026-09-11 diagnostic, the
+# gap between an offer drop and the price point immediately PRECEDING it, across all 7
+# confirmed sales, was:
 #
-# WHY 240. Measured across every Keepa `csv` fixture in `tests/`, the gap between an
-# offer drop and the price point preceding it is 1h (x17), 6h (x15) and 24h (x2) - so
-# 24 hours is a hard floor and the fixtures put no ceiling on it at all, their values
-# being the generators' grid step rather than a property of Keepa data. 240 hours is
-# ten times that floor, matches the magnitude of the rank-confirmation window the
-# system already treats as "the same event", and is six times smaller than the one
-# measured bad gap. It is deliberately NOT read from the confirmation window: these
-# are two different judgements and must be tunable apart.
+#     3.0, 5.1, 10.2, 252.1, 389.6, 516.4, 2281.4 hours    (median 252.1h, max 95.1d)
 #
-# THE COST OF LOWERING IT is true sales discarded on books whose price simply has not
-# changed in a while, which shows up as fewer inferred sales and more NULL prices -
-# never as a wrong price. Owner decision; pinned by
-# `tests/test_price_association.py::TheConstant`.
-PRICE_ASSOCIATION_TOLERANCE_HOURS = 240
+# Bimodal, with nothing at all between 10h and 252h, and 0 of the 7 drops had no prior
+# price point. A 240-hour threshold would have cut the distribution at its median and
+# discarded the majority of real sales.
+#
+# The reason is that `csv[1]` / `csv[2]` are CHANGE-LOGS of the lowest New / Used offer
+# price. A long gap means the lowest offer simply had not changed, which makes the
+# distant point CORRECT rather than stale. Gap length does not measure staleness, so a
+# time threshold is the wrong instrument. Do not add one.
+#
+# OPEN ITEM, not built here: if a stale-price guard is ever wanted, it needs continuity
+# of the price series across the gap (evidence that the series was live and the value
+# genuinely held, rather than absent), not gap length.
 
 def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A", trend_info="N/A", avg_3yr_usd="N/A"):
     """
@@ -336,31 +331,34 @@ def infer_sale_events(product):
                 # live sales (2026-09-11: $124.85 stored as $1,000.00, $49.95 as
                 # $499.95, $328.19 as $625.59).
                 #
-                # `allow_exact_matches=False` matters as much as the direction:
-                # Keepa stamps the offer-count drop and the price step-up at the same
-                # minute, so a zero-distance match is the common case, not the edge.
+                # `allow_exact_matches=False` matters as much as the direction, and
+                # the box measurement showed it doing the real work: 4 of the 7 live
+                # sales had a price point sharing the EXACT minute of the offer drop.
+                # Keepa stamps the offer-count drop and the price step-up together,
+                # so a zero-distance match is the common case, not the edge.
                 #
-                # `tolerance` refuses a price point too old to be a statement about
-                # what was being asked at the drop; no match then yields NaN and the
-                # sale is discarded rather than priced from stale data.
+                # There is NO `tolerance` here, on purpose. See the note at the top of
+                # this module: the series is a change-log, so a months-old point means
+                # the price had not changed and is the correct answer. A 240-hour
+                # threshold would have discarded 4 of those same 7 real sales.
                 price_at_sale_time = pd.merge_asof(
                     pd.DataFrame([drop]),
                     price_df_to_use,
                     on='timestamp',
                     direction='backward',
                     allow_exact_matches=False,
-                    tolerance=pd.Timedelta(hours=PRICE_ASSOCIATION_TOLERANCE_HOURS),
                 )['price_cents'].iloc[0]
 
-                # NaN is what the tolerance returns when nothing qualifies, and
-                # `NaN <= 0` is False, so the guard below cannot catch it on its own.
-                # A NaN reaching confirmed_sales would poison the IQR bounds, the
-                # mean and the mode for the whole ASIN.
+                # NaN is what a backward match returns when the drop precedes every
+                # price point in the series, and `NaN <= 0` is False, so the guard
+                # below cannot catch it on its own. A NaN reaching confirmed_sales
+                # would poison the IQR bounds, the mean and the mode for the whole
+                # ASIN. This is the only case in which a confirmed drop loses its
+                # price; it was 0 of 7 on the live sample.
                 if pd.isna(price_at_sale_time):
                     logger.debug(
                         f"ASIN {asin}: Ignoring inferred sale at {start_time} because "
-                        f"no {drop['offer_type']} price point falls within "
-                        f"{PRICE_ASSOCIATION_TOLERANCE_HOURS}h before it."
+                        f"no {drop['offer_type']} price point exists before it."
                     )
                     continue
 
