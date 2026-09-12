@@ -105,6 +105,10 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`ASIN`**: Directly from Keepa.
 -   **`Title`**: Directly from Keepa.
 -   **`Deal found`**: ISO timestamp of when the deal was processed.
+-   **`last_update`**: Timestamp of the most recent Keepa update for the product, from the Keepa **deal object's** `lastUpdate` (`smart_ingestor.run()` merges the deal into the product before processing). Toronto-local, `'%Y-%m-%d %H:%M:%S'`. `-` when no valid timestamp is available.
+    -   **Written on the heavy path only**, and **NULL on every row written before September 2026.** `stable_deals.last_update` required a second positional argument the generic loop in `processing.py` never passes, so the call raised `TypeError` on every deal, the key was never set, and the upsert bound it as `NULL`. A `@retry(stop_max_attempt_number=3, wait_fixed=5000)` on the function turned that into **10 seconds of sleep per newly discovered deal**. Both fixed 2026-09-12; see `AGENTS.md` §7.3.
+    -   **Not read by the dashboard, any `/api/deals` filter, or any sort.** It is returned in the row payload and unused. Existing rows keep their `NULL` — nothing backfills it.
+
 -   **`last_price_change`**: Timestamp of the most recent price change for any "Used" item. Prioritizes `product.csv` history, falls back to `deal.currentSince`.
     -   **Both sources are absent on the Stale Rescue path.** `history=0` suppresses `csv`, and the rescue has no Keepa deal object to supply `currentSince`. The function returns its `-` sentinel there on every call, so the stored timestamp is preserved instead. See "LIGHTWEIGHT PRESERVATION RULE" above.
 

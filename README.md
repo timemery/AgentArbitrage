@@ -45,6 +45,7 @@ An AI-driven Flask application for Amazon FBA arbitrage, deployed on a Hostinger
     `source venv/bin/activate`
 4.  **Install Dependencies:**
     `pip install -r requirements.txt`
+    For the test suite, also: `pip install -r requirements-dev.txt`, then run `./run_tests.sh`.
 5.  **Create `.env` File:** Create a `.env` file in the root directory and add your API keys (see Core Technologies section below).
 6.  **Run the Application:**
     `python wsgi_handler.py`

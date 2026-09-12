@@ -110,8 +110,18 @@ def deal_found(deal_object, logger_param=None): # Renamed logger to logger_param
         return {'Deal found': '-'}
 # Deal Found ends
 # Last update starts
-@retry(stop_max_attempt_number=3, wait_fixed=5000)
-def last_update(deal_object, logger_param, product_data=None): # Renamed logger to logger_param
+# `logger_param` must keep its default. The generic extraction loop in processing.py
+# calls every FUNCTION_LIST entry as `func(product_data)` with one positional argument,
+# so a required second parameter raises TypeError on every call. That is exactly what
+# happened here from the day this entry was added: the column was never written, and the
+# @retry(stop_max_attempt_number=3, wait_fixed=5000) that used to sit on this function
+# turned the permanent error into two 5-second sleeps per newly discovered deal.
+#
+# The retry is gone with it. This function does no I/O - it reads in-memory dicts and
+# does datetime arithmetic - so it has no transient failure mode for a retry to help
+# with, and its genuine "no usable timestamp" case returns the '-' sentinel rather than
+# raising. `last_price_change` below is the shape of the working case.
+def last_update(deal_object, logger_param=None, product_data=None): # Renamed logger to logger_param
     current_logger = logger_param if logger_param else logger # Use passed logger or module logger
 
     asin = deal_object.get('asin', product_data.get('asin', 'Unknown ASIN') if product_data else 'Unknown ASIN')
