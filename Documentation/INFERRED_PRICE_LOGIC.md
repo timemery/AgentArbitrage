@@ -69,7 +69,72 @@ A sale is inferred by correlating two distinct events within a **240-hour** (10-
     -   Window: If a rank drop occurs within 240 hours *after* an offer count drop, it is flagged as a confirmed sale.
 
 ### b. Price Association
-When a sale is confirmed, the system associates a price with it using `pandas.merge_asof`. It finds the nearest listing price from the history (`new_price_history` or `used_price_history`) at the exact time of the sale.
+
+When a sale is confirmed, the system attaches a price to it from the matching price
+series — `csv[1]` for a New offer drop, `csv[2]` for a Used one.
+
+**It takes the last price point STRICTLY BEFORE the offer drop**, via
+`pandas.merge_asof(direction='backward', allow_exact_matches=False, tolerance=...)`.
+
+**Why "before" and not "nearest".** `csv[1]` and `csv[2]` hold the **lowest** New /
+Used offer price, not the price of any particular copy. When the cheapest copy
+sells, the series does not record what it sold for — it steps **up** to whatever the
+next cheapest listing asks, at essentially the same timestamp as the offer-count
+drop that marks the sale. The price in force immediately *before* the drop is
+therefore the best available estimate of what the copy sold at, and the point *at or
+after* it is the asking price of a copy that did **not** sell.
+
+Until September 2026 this was `merge_asof(direction='nearest')` with no tolerance and
+no tie-break, so it could land on the at-or-after point and store that asking price.
+Because Keepa stamps the offer-count drop and the price step-up at the same minute, a
+zero-distance match was the common case rather than the edge — which is why
+`allow_exact_matches=False` matters as much as the direction does. Confirmed live on
+**5 of 7 sales across 3 ASINs** on 2026-09-11: **$124.85 recorded as $1,000.00**,
+**$49.95 as $499.95**, **$328.19 as $625.59**. The round numbers are the tell — those
+are prices a seller typed into a listing, not prices anything transacted at. See
+`Dev_Logs/2026-09-11b_Remove_1yr_Avg_Listing_Average_Fallback.md` §4b for the
+evidence.
+
+### b.1 The time tolerance
+
+`PRICE_ASSOCIATION_TOLERANCE_HOURS` in `keepa_deals/stable_calculations.py` is
+**240 hours (10 days)**. If the last price point before an offer drop is older than
+that, **no price is attached and the sale is discarded** — it is never priced from a
+distant point.
+
+*   **Why a tolerance exists.** The price series is a change-log, so in principle a
+    value persists until the next point and any age is "current". In practice a
+    months-old point can predate a stretch with no offers at all. The live
+    diagnostic found exactly that on ASIN `1468308963`, where the nearest price
+    point was **60.3 days** from the drop.
+*   **Why 240.** Measured across every Keepa `csv` fixture in `tests/`, the gap
+    between an offer drop and the price point preceding it is **1h (×17), 6h (×15)
+    and 24h (×2)** — so 24 hours is a hard floor (the 24h pair is
+    `tests/test_synchronous_updates.py`) and the fixtures put **no ceiling on it at
+    all**, their values being the generators' grid step rather than a property of
+    Keepa data. 240 hours is ten times that floor, matches the magnitude of the
+    240-hour rank-confirmation window the system already treats as "the same event",
+    and is six times smaller than the one measured bad gap. It is a **named
+    module-level constant**, deliberately not read from the confirmation window:
+    these are two different judgements and must be tunable apart.
+*   **Which way it errs.** Lowering it discards more true sales on books whose price
+    simply has not changed in a while. That shows up as fewer inferred sales, a
+    lower `Deal Trust` and more NULL prices — **never as a wrong price**, which is
+    the direction the Critical Warning above requires.
+*   **The offer drop still counts.** A drop whose price cannot be associated stays
+    in the `Deal Trust` denominator, so the score reflects the loss.
+*   **NaN safety.** `merge_asof` returns `NaN` when the tolerance matches nothing,
+    and `NaN <= 0` is `False`, so the pre-existing `price <= 0` guard cannot catch
+    it on its own. There is an explicit `pd.isna` check ahead of it; without one a
+    `NaN` would poison the IQR bounds, the mean and the mode for the whole ASIN.
+
+> **This changes newly computed prices only.** A fix to the inference repairs no
+> existing row: the light path never recomputes `List_at` or `1yr_Avg`, and
+> `recalculator.py` is API-free and cannot rebuild either. Rows written under the
+> old association keep their inflated values until a heavy re-fetch replaces them.
+> Recovery is a separate decision. `diagnose_inferred_sales.py` reports, for each
+> sale, both what today's code records and what the pre-fix nearest-match would have
+> recorded, so a stored number can still be accounted for.
 
 ------
 
@@ -174,6 +239,12 @@ the algorithmic path, raw on the XAI-rescue path (which returns before sanitisat
 2.  **Mode for Peak:** We use **Mode** for the "List at" price because arbitrage sellers often target a specific "standard" market price that occurs frequently, rather than an average of fluctuations.
 3.  **Strict Validation with Persistence:** The AI check and the "Missing List at" exclusion are the primary filters. If the system cannot confidently determine a safe listing price, it **persists the deal as incomplete** (for potential future recovery) but filters it from the user dashboard to maintain a clean experience.
 4.  **240-Hour Window:** Expanding the correlation window from 168h to 240h significantly improved capture rates for "Near Miss" sales events where rank reporting lagged behind offer drops.
+5.  **The Lowest-Offer Series Is Not A Sale Price (Sept 2026):** `csv[1]` / `csv[2]`
+    record the cheapest *listing*, so the moment a copy sells they describe the copy
+    that did **not** sell. Any "nearest price point" rule therefore has a bias
+    toward the higher number, and the bias is largest exactly where it hurts most —
+    on a cheap copy under an expensive one. Read a change-log series as "the value
+    in force **before** the event", never as "the value at the event".
 
 ------
 

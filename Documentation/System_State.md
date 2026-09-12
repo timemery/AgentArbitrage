@@ -21,6 +21,13 @@ The system now enforces two strict rules to prevent artificial inflation:
 2. An absolute hard ceiling automatically rejects any calculated list price exceeding $1,500, preventing runaway algorithmic math.
 Do not reintroduce fallback logic based on listing prices, as it compromises the core promise of only providing true deals.
 
+### Price Association Fix (September 2026)
+The price attached to an inferred sale is now the last history point **strictly before** the offer drop, capped by `PRICE_ASSOCIATION_TOLERANCE_HOURS` (**240h**) in `keepa_deals/stable_calculations.py`. Beyond that age no price is attached and the sale is discarded.
+
+`csv[1]` / `csv[2]` hold the **lowest** New / Used offer price, not any one copy's price, so when the cheapest copy sells the series steps **up** to the next cheapest listing at essentially the same timestamp. The previous `merge_asof(direction='nearest')` had no tolerance and no tie-break and recorded that asking price on **5 of 7 sales across 3 ASINs** measured live on 2026-09-11 ($124.85 stored as $1,000.00, $49.95 as $499.95, $328.19 as $625.59).
+
+**Heavy path only, and it repairs nothing.** Only newly discovered deals are affected — the light path never recomputes `List_at` or `1yr_Avg`, and `recalculator.py` is API-free. Rows written under the old association keep their inflated values until a heavy re-fetch replaces them. Recovery is a separate, open decision.
+
 ### Dynamic ROI Calculation
 ROI is not a database column. It is calculated dynamically (`(Profit / All_in_Cost) * 100`) on the frontend for display and in backend SQL queries for sorting. `All-in Cost` strictly equals `buy_cost_paid` + prep fee, and excludes Amazon fees to ensure this calculation remains accurate.
 

@@ -25,6 +25,33 @@ xai_token_manager = XaiTokenManager()
 # Keepa epoch is minutes from 2011-01-01
 KEEPA_EPOCH = datetime(2011, 1, 1)
 
+# How old the last price point before an offer drop may be and still be treated as
+# the price in force at the moment of that drop. Beyond this, `infer_sale_events`
+# attaches NO price and discards the sale rather than record a stale one.
+#
+# WHY THERE IS A TOLERANCE AT ALL. `csv[1]` / `csv[2]` are change-logs of the lowest
+# New / Used offer price, so in principle a value persists until the next point and
+# any age is "current". In practice a months-old point can predate a stretch with no
+# offers at all, and the live diagnostic of 2026-09-11 found exactly that: on ASIN
+# 1468308963 the nearest price point was 60.3 days from the drop and the recorded
+# $499.95 was an asking price nothing transacted at. An unbounded association has no
+# way to refuse that.
+#
+# WHY 240. Measured across every Keepa `csv` fixture in `tests/`, the gap between an
+# offer drop and the price point preceding it is 1h (x17), 6h (x15) and 24h (x2) - so
+# 24 hours is a hard floor and the fixtures put no ceiling on it at all, their values
+# being the generators' grid step rather than a property of Keepa data. 240 hours is
+# ten times that floor, matches the magnitude of the rank-confirmation window the
+# system already treats as "the same event", and is six times smaller than the one
+# measured bad gap. It is deliberately NOT read from the confirmation window: these
+# are two different judgements and must be tunable apart.
+#
+# THE COST OF LOWERING IT is true sales discarded on books whose price simply has not
+# changed in a while, which shows up as fewer inferred sales and more NULL prices -
+# never as a wrong price. Owner decision; pinned by
+# `tests/test_price_association.py::TheConstant`.
+PRICE_ASSOCIATION_TOLERANCE_HOURS = 240
+
 def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A", trend_info="N/A", avg_3yr_usd="N/A"):
     """
     Queries the XAI API to act as a reasonableness check for a calculated price,
@@ -299,7 +326,43 @@ def infer_sale_events(product):
                     logger.warning(f"ASIN {asin}: No suitable price data for offer type {drop['offer_type']}.")
                     continue
 
-                price_at_sale_time = pd.merge_asof(pd.DataFrame([drop]), price_df_to_use, on='timestamp', direction='nearest')['price_cents'].iloc[0]
+                # --- Price association ---
+                # Take the last price point STRICTLY BEFORE the offer drop: the price
+                # in force at the moment the copy sold. csv[1] / csv[2] hold the
+                # LOWEST New / Used offer price, not any one copy's price, so the
+                # point AT or AFTER a drop is the next cheapest listing's asking
+                # price - a copy that did not sell. `direction='nearest'` had no
+                # tolerance and no tie-break and recorded exactly that on 5 of 7
+                # live sales (2026-09-11: $124.85 stored as $1,000.00, $49.95 as
+                # $499.95, $328.19 as $625.59).
+                #
+                # `allow_exact_matches=False` matters as much as the direction:
+                # Keepa stamps the offer-count drop and the price step-up at the same
+                # minute, so a zero-distance match is the common case, not the edge.
+                #
+                # `tolerance` refuses a price point too old to be a statement about
+                # what was being asked at the drop; no match then yields NaN and the
+                # sale is discarded rather than priced from stale data.
+                price_at_sale_time = pd.merge_asof(
+                    pd.DataFrame([drop]),
+                    price_df_to_use,
+                    on='timestamp',
+                    direction='backward',
+                    allow_exact_matches=False,
+                    tolerance=pd.Timedelta(hours=PRICE_ASSOCIATION_TOLERANCE_HOURS),
+                )['price_cents'].iloc[0]
+
+                # NaN is what the tolerance returns when nothing qualifies, and
+                # `NaN <= 0` is False, so the guard below cannot catch it on its own.
+                # A NaN reaching confirmed_sales would poison the IQR bounds, the
+                # mean and the mode for the whole ASIN.
+                if pd.isna(price_at_sale_time):
+                    logger.debug(
+                        f"ASIN {asin}: Ignoring inferred sale at {start_time} because "
+                        f"no {drop['offer_type']} price point falls within "
+                        f"{PRICE_ASSOCIATION_TOLERANCE_HOURS}h before it."
+                    )
+                    continue
 
                 if price_at_sale_time <= 0:
                     logger.debug(f"ASIN {asin}: Ignoring inferred sale at {start_time} because its associated price was invalid ({price_at_sale_time}).")
