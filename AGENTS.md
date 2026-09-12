@@ -158,6 +158,26 @@ Do not change configuration values (batch sizes, timeouts, thresholds) unless th
 - New features: write tests defining correct behavior
 - Run the ENTIRE test suite before submitting. A failing test is a hard blocker.
 
+**Run it with `./run_tests.sh`, which needs `pip install -r requirements-dev.txt` (pytest).**
+The suite runs in **one process**, deliberately. Until September 2026 the script ran each
+module in its own `python3 -m unittest` process, which made cross-module interference
+structurally invisible: `tests/test_approve_dedup.py` installed `MagicMock`s into
+`sys.modules` at import time and never restored them, failing 25 tests in-suite —
+including `tests/test_lightweight_upsert_preservation.py`, the §7.12 guard — while
+`run_tests.sh` reported everything green.
+
+**The invariant: every test module produces the same result run alone as it does
+in-suite.** `tests/conftest.py` enforces it and fails the run, naming the module, if any
+test module leaves a mock or a mutated entry behind in `sys.modules`. Scope your mocking
+(`unittest.mock.patch.dict(sys.modules, ...)` restores on exit), or use
+`tests/_real_module.load()` for a private, unregistered copy of a project module.
+
+*In a fresh sandbox `pip install -r requirements.txt` can fail on blinker
+("Cannot uninstall blinker 1.7.0, RECORD file not found"). Use
+`pip install --ignore-installed blinker -r requirements.txt`. Without it 26 of 30 test
+modules error at import on missing celery/pandas/dotenv, which looks like a broken branch
+and is not.*
+
 ### 6.5 Explicit Confirmation for Scope Creep
 
 If a necessary change falls outside the original scope, STOP. Present the finding and proposed change. Do not proceed without explicit permission.
@@ -210,6 +230,43 @@ Most recent time any significant data was updated by Keepa. Take MAX valid times
 1. `product_data['products'][0]['lastUpdate']` (general product data, /product endpoint)
 2. `deal_object.get('lastUpdate')` (general deal data, /deal endpoint)
 3. `product_data.get('stats', {}).get('lastOffersUpdate')` (offers refresh, /product stats)
+
+**The `last_update` DB column is DELIBERATELY UNPOPULATED and always NULL.** Owner
+decision, 2026-09-12. `FUNCTION_LIST[10]` is `None`; the three-source MAX above describes
+`stable_deals.last_update`, which is kept in the file but **is not wired into the
+extraction loop**. Do not wire it back in. Three reasons, all of which would have to be
+resolved first:
+
+1. **Only source 2 is reachable.** The generic loop in `processing.py` calls every field
+   function as `func(product_data)` — **one positional argument**. That binds the merged
+   product dict to `deal_object` and leaves the function's own `product_data` parameter
+   at its default, so sources 1 and 3, which both read that parameter, never run.
+2. **The loop is heavy-path only.** `_process_lightweight_update` does not run it, so the
+   column would be populated on newly discovered rows and NULL on light and Stale Rescue
+   rows — a column whose meaning depends on which path last touched the row.
+3. **Wrong format.** It renders Toronto-local, space-separated time
+   (`'%Y-%m-%d %H:%M:%S'`), where every other timestamp writer in the system uses UTC
+   isoformat. That exact mismatch is what caused the Stale Rescue cutoff defect fixed in
+   PR #332 (see §3.A of `System_Architecture.md`).
+
+A half-populated local-time column that nothing reads is worse than a NULL one. Nothing
+reads this one — not the dashboard, not any `/api/deals` filter, not any sort.
+
+**What it used to do.** `logger_param` had no default, so `func(product_data)` raised
+`TypeError` on every heavy-path deal, `_process_single_deal` swallowed it per field, and
+the upsert bound the missing key as `NULL`. The
+`@retry(stop_max_attempt_number=3, wait_fixed=5000)` then on the function turned that
+permanent error into **two 5-second sleeps per newly discovered deal**. Both the required
+argument and the retry are gone, so a future re-wire cannot repeat that, but the slot
+stays `None` regardless.
+
+**Rule for every `FUNCTION_LIST` entry:** it must be callable as `func(product_data)`,
+and it must not carry a retry decorator unless it actually performs I/O. These functions
+read in-memory dicts; a retry on them cannot fix anything and costs `wait_fixed` per
+attempt on the heavy path. `last_price_change` had the same decorator for the same
+non-reason and it was removed too (it returns `-` rather than raising, so it never
+engaged — no behaviour change). Guarded by
+`tests/test_field_mappings_call_contract.py`.
 
 **For `last_price_change` (Used items, excluding 'Acceptable'):**
 

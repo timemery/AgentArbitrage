@@ -15,7 +15,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Sales Rank**: Extracted from `stats.current[3]`. Falls back to `csv[3]` (history) or `salesRanks` dict if the current stats are missing.
     *   **Amazon Prices**: Extracts `Amazon Current` (using `stats.current[0]`), `Amazon 180-day Avg`, and `Amazon 365-day Avg` for price ceiling logic.
     *   **Batching:** Uses a **Decoupled Batching Strategy** (Smart Ingestor v3.0):
-        *   **Peek (Discovery):** 50 ASINs per batch (reduces to 20 if refill rate < 20/min, and 1 if < 10/min).
+        *   **Peek (Discovery):** 50 ASINs per batch at a refill rate of 30/min or better, scaling down to **15** below 30/min, **20** below 20/min, and **1** below 10/min. *(Corrected 2026-09-12: this line previously omitted the < 30/min tier, which is the one production runs in — the live Keepa plan reports 25/min, so the real peek batch is 15. See `System_Architecture.md` §3.A for the full table and the token arithmetic.)*
         *   **Peek Filter:** Rejects dead inventory, but accepts items with as few as **1 sale rank drop per year** (down from 4) to capture slow-moving "Silver Standard" candidates.
         *   **Commit (Analysis):** 5 ASINs per batch.
 
@@ -105,6 +105,10 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`ASIN`**: Directly from Keepa.
 -   **`Title`**: Directly from Keepa.
 -   **`Deal found`**: ISO timestamp of when the deal was processed.
+-   **`last_update`**: **Intentionally unpopulated. Always `NULL`, on every row, by owner decision (2026-09-12).** `FUNCTION_LIST[10]` is `None`; nothing writes this column. It exists in `headers.json` and therefore in the schema, and it is returned in the `/api/deals` row payload, where nothing reads it — not the dashboard, not any filter, not any sort.
+    -   **Why it is not populated.** `stable_deals.last_update` is still in the file and implements the three-source MAX in `AGENTS.md` §7.3, but wiring it into the extraction loop would produce the wrong value three ways: only 1 of its 3 sources is reachable through a single-positional-argument call; the loop is heavy-path only, so the column would be populated on newly discovered rows and `NULL` on light and Stale Rescue rows; and it renders Toronto-local, space-separated time where every other timestamp writer uses UTC isoformat — the same mismatch behind the Stale Rescue cutoff defect of PR #332. A half-populated local-time column nothing reads is worse than a `NULL` one.
+    -   **It was never populated, and not on purpose until now.** `logger_param` had no default, so the loop's `func(product_data)` raised `TypeError` on every heavy-path deal and the upsert bound the missing key as `NULL`. A `@retry(stop_max_attempt_number=3, wait_fixed=5000)` turned that permanent error into **10 seconds of sleep per newly discovered deal**. Both are gone; the slot stays `None`. Pinned by `tests/test_field_mappings_call_contract.py`.
+
 -   **`last_price_change`**: Timestamp of the most recent price change for any "Used" item. Prioritizes `product.csv` history, falls back to `deal.currentSince`.
     -   **Both sources are absent on the Stale Rescue path.** `history=0` suppresses `csv`, and the rescue has no Keepa deal object to supply `currentSince`. The function returns its `-` sentinel there on every call, so the stored timestamp is preserved instead. See "LIGHTWEIGHT PRESERVATION RULE" above.
 

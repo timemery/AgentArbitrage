@@ -1,0 +1,9 @@
+# Test-only dependencies. Not installed on the production VPS by deploy_update.sh -
+# requirements.txt is the runtime set and this file is additive:
+#
+#     pip install -r requirements.txt -r requirements-dev.txt
+#
+# ./run_tests.sh needs pytest because the suite must run in a single process to catch
+# cross-module interference, and because tests/conftest.py holds the sys.modules
+# pollution guard. See the comment block at the top of run_tests.sh.
+pytest>=7.0
