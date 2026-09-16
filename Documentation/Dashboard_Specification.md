@@ -53,7 +53,7 @@ All sliders utilize a standardized "Any" state logic:
 3.  **Min. ROI (%)**: Filter by `ROI` (Profit / All-in-Cost * 100). *Replaces Min. Margin.*
 4.  **Min. Drops (30d)**: Filter by `Sales_Rank_Drops_last_30_days`.
 5.  **Max. Sales Rank**: Filter by `Sales_Rank_Current`.
-6.  **Min. Deal Trust**: Filter by `Deal_Trust`. **Any non-zero threshold also excludes the `'-'` state** — the XAI no-offer-drops rescue, where there is no denominator to score — because the filter casts the column with `CAST(REPLACE("Deal_Trust", '%', '') AS REAL)` and `'-'` casts to `0.0`. This is the only non-numeric state left; the `"Low (Est.)"` state was retired on 2026-09-11 with the listing-average fallback that produced it.
+6.  **Min. Deal Trust**: Filter by `Deal_Trust`. **Any non-zero threshold also excludes the `'-'` state** — a history with no offer drop anywhere in the 3-year window, so there is no denominator to score — because the filter casts the column with `CAST(REPLACE("Deal_Trust", '%', '') AS REAL)` and `'-'` casts to `0.0`. This is the only non-numeric state left; the `"Low (Est.)"` state was retired on 2026-09-11 with the listing-average fallback that produced it.
 7.  **Min. Seller Trust**: Filter by `Seller_Quality_Score`.
 
 ### Checkbox Filters

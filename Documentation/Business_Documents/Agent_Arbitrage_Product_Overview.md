@@ -201,7 +201,7 @@ The "we use AI" claim is now table-stakes in this category, but actual deploymen
 - **InventoryLab** has minimal AI surface area. Its strength is accounting integration, not reasoning.
 - **ZenArbitrage, SellerAmp, ScoutIQ, BookMine** are calculator and scanner tools. They surface metrics; they do not reason about them.
 
-None of the audited competitors combine: (a) AI reasoning as a *gate* on their own pricing math, (b) a continuously curated niche knowledge base, (c) multi-persona reasoning interfaces, and (d) AI rescue for hidden-sale detection. Agent Arbitrage does all four.
+None of the audited competitors combine: (a) AI reasoning as a *gate* on their own pricing math, (b) a continuously curated niche knowledge base, and (c) multi-persona reasoning interfaces. Agent Arbitrage does all three.
 
 ### Where Competitors Are Stronger
 Honest framing for investor diligence:

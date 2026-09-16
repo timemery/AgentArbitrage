@@ -134,7 +134,8 @@ returns the ASIN to the heavy path.
     persisted fingerprint: the `price_source` flag that drove it is computed but
     never stored, because it is not in `headers.json` and `upsert_deal_rows` drops
     it. The match is exact, so it cannot catch the other non-numeric Deal Trust
-    state, `'-'` (the XAI no-offer-drops rescue), which must survive.
+    state, `'-'` (a history with no offer drop anywhere in the 3-year window),
+    which must survive.
 *   **Invariant:** zero rows with `"Deal_Trust" = 'Low (Est.)' AND "1yr_Avg" IS
     NULL`. The marker was only ever written on the branch where the fallback had
     just returned a value, so that combination would mean the marker is no longer

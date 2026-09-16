@@ -518,11 +518,13 @@ def analyze_sales_performance(product, sale_events):
     # which was deleted from this module in March 2026 and no longer exists.)
     MIN_SALES_FOR_ANALYSIS = 3
 
-    # The sane inferred-sale count for this product, as this function sees it:
-    # post-IQR on the algorithmic path, raw on the XAI-rescue path (which returns
-    # before sanitisation). Returned on EVERY branch so the caller can persist it,
-    # including the zero-sale rejection - 0 is a real reading and must be
-    # distinguishable from a NULL, which means "never computed".
+    # The sane inferred-sale count for this product, as this function sees it.
+    # Always post-IQR: there is one path now. (This used to add "raw on the
+    # XAI-rescue path, which returns before sanitisation" - that path was removed
+    # on 2026-09-16, see the note above `infer_sale_events`.) Returned on EVERY
+    # branch so the caller can persist it, including the zero-sale rejection -
+    # 0 is a real reading and must be distinguishable from a NULL, which means
+    # "never computed".
     inferred_sale_count = len(sale_events) if sale_events else 0
 
     # Initialize variables with defaults

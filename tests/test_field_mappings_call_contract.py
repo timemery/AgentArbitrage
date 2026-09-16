@@ -48,8 +48,9 @@ def _product_fixture():
     product's own `stats` and `csv`.
 
     `csv` is deliberately left as a list of empty slots: `infer_sale_events` returns
-    early on it, which keeps the pricing entries off the xAI rescue branch and makes
-    this test hermetic.
+    early on it, so the pricing entries reach their zero-sale branch immediately and
+    this test stays hermetic. (That early return also used to be what kept them off
+    the xAI rescue branch; the rescue was removed on 2026-09-16.)
     """
     empty_tier = [-1] * 40
     return {
@@ -115,8 +116,10 @@ class FunctionListCallContractTest(unittest.TestCase):
         """Call each entry for real, exactly as the generic loop does."""
         product_data = _product_fixture()
         raised = []
-        # Force the xAI rescue off so the pricing entries cannot reach the network,
-        # whatever the ambient environment holds.
+        # Blank XAI_TOKEN so the pricing entries cannot reach the network whatever
+        # the ambient environment holds. This used to be aimed at the xAI sales
+        # rescue as well; that was removed on 2026-09-16, and the remaining target
+        # is the AI Reasonableness Check, which reads the same variable.
         with patch.dict(os.environ, {'XAI_TOKEN': ''}):
             for index, header, func in self._entries():
                 try:
