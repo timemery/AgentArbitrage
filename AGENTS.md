@@ -334,6 +334,18 @@ The deals table is named with **sanitized** column names (`List_at`, `1yr_Avg`, 
 - **Unrecoverable without tokens:** `recalculator.py` cannot rebuild `List_at`. It derives from `infer_sale_events`, which needs Keepa `csv` history that `deals.db` never stores. Worse, the recalculator writes `Profit`/`Margin`/`Total_AMZ_fees` as NULL for any row where `List_at` is NULL — running it on damaged rows deepens the loss. Recovery is a heavy re-fetch at ~20 tokens/ASIN.
 - **Guarded by:** `tests/test_lightweight_upsert_preservation.py`. It builds the schema from `headers.json` and calls the production upsert, so it cannot be satisfied by a fixture that encodes the wrong convention. If you change key handling in `processing.py` or either upsert site, this test must stay green.
 
+### 7.13 Pricing Logic Version (September 2026)
+
+`Pricing_Logic_Version` (INTEGER) records **which pricing logic wrote a row's prices**. Nothing else in the schema does: `last_seen_utc` and `source` are rewritten by all three paths, so `source` records who touched a row LAST, not who priced it; `Deal_found` is Keepa's `creationDate`; `last_update` is never populated (§7.3); and `Inferred_Sale_Count` is disproved by ASIN 0415009804, which carries a count **and** a pre-fix price.
+
+- **One constant:** `PRICING_LOGIC_VERSION` in `keepa_deals/pricing_version.py`. Bump it by one whenever a change alters the prices the pipeline produces. Do **not** bump it for a refactor that leaves prices identical — a spurious bump schedules a full re-fetch of every row.
+- **Written in ONE place:** `_process_single_deal` (`keepa_deals/processing.py`), beside `Inferred Sale Count`. **Never** by `_process_lightweight_update`, the Stale Rescue, `recalculator.py` or the janitor. A light update that stamped the current version would claim a row's prices are current when nothing recomputed them — worse than having no column, because `repair_pricing.py` would then skip exactly the rows that need repair.
+- **THE NULL RULE:** `Pricing_Logic_Version IS NULL OR < PRICING_LOGIC_VERSION` ⇒ **stale pricing, due a heavy re-fetch.** NULL means "priced by unknown logic", which for scheduling is the same answer as "priced by old logic".
+- **That is deliberately the OPPOSITE of the `Inferred_Sale_Count` NULL rule**, which says NULL means "never computed" and must never be read as zero or used to hide a deal. They answer different questions — *may this deal be shown?* versus *does this row need work scheduled?* — and the cost of being wrong is asymmetric: hiding a deal on a guess costs a subscriber a real opportunity; re-pricing a row that did not need it costs ~7 Keepa tokens. **Do not "harmonise" them.**
+- **No backfill, ever.** A backfill would have to guess which logic wrote a row, and guessing is what the column exists to stop.
+- **Schema:** added to `headers.json` with a matching `None` slot in `FUNCTION_LIST` (index alignment is load-bearing — `processing.py` pairs them by index). `create_deals_table_if_not_exists` auto-ALTERs it as INTEGER on the next ingestor cycle; there is no manual migration.
+- **Guarded by:** `tests/test_pricing_logic_version.py` and `tests/test_repair_pricing.py`.
+
 ### 7.9 Recent Fixes (March 2026)
 
 - **Self-Aware Mentor & Tooltips:** `keepa_deals/platform_knowledge.py` dynamically loads documentation into AI context. Instant speech-bubble tooltips on Deals Dashboard headers/filters.

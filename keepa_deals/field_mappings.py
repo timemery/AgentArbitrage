@@ -731,7 +731,12 @@ FUNCTION_LIST = [
     # slot is None. It must still exist: processing.py pairs FUNCTION_LIST with
     # headers.json BY INDEX (`row_data[headers[i]] = val`), so the two lists have
     # to stay the same length and the same order.
-    None                            # Inferred Sale Count
+    None,                           # Inferred Sale Count
+    # Pricing Logic Version is likewise written explicitly by _process_single_deal,
+    # right beside Inferred Sale Count and from the same module constant. Heavy
+    # path ONLY - see keepa_deals/pricing_version.py for the NULL rule and why a
+    # light-path write would destroy the column's meaning.
+    None                            # Pricing Logic Version
 ]
 # Chunk 2 ends
 

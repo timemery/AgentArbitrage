@@ -229,7 +229,8 @@ def create_deals_table_if_not_exists():
                     col_type = 'TEXT' # Default
                     if any(keyword.lower() in header.lower() for keyword in explicit_real_types):
                         col_type = 'REAL'
-                    elif "Rank" in header or "Count" in header or "Drops" in header:
+                    elif ("Rank" in header or "Count" in header
+                          or "Drops" in header or "Version" in header):
                         col_type = 'INTEGER'
 
                     logger.info(f"Schema Migration: Adding missing column '{sanitized_header}' ({col_type}).")
@@ -317,7 +318,8 @@ def recreate_deals_table():
                 col_type = 'TEXT' # Default
                 if any(keyword.lower() in header.lower() for keyword in explicit_real_types):
                     col_type = 'REAL'
-                elif "Rank" in header or "Count" in header or "Drops" in header:
+                elif ("Rank" in header or "Count" in header or "Drops" in header
+                      or "Version" in header):
                     col_type = 'INTEGER'
 
                 if sanitized_header == 'ASIN':
