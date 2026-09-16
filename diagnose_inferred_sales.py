@@ -42,20 +42,31 @@ they have different fixes:
        existing row - the light path never recomputes `List_at` or `1yr_Avg` and
        the recalculator is API-free.
 
-  (ii) An xAI-rescued "hidden sale". When the algorithmic pass confirms nothing,
-       `infer_sale_events` returns the model's events verbatim, BEFORE the IQR
-       outlier filter. This diagnostic reports whether the history ever held the
-       stored value - but absence is NOT by itself evidence of invention, because
-       `1yr. Avg.` is a mean and the sparse `List at` a median, and an average of
-       real prices is usually not itself a price anyone listed at. The derived
-       values are computed and compared before xAI is named.
+  (ii) An xAI-rescued "hidden sale" - A HISTORICAL MECHANISM ONLY, REMOVED
+       2026-09-16. Until that date, when the algorithmic pass confirmed nothing,
+       `infer_sale_events` called xAI and returned the model's events verbatim,
+       BEFORE the IQR outlier filter. It no longer does: zero confirmed sales is
+       now a final answer on both zero-sale branches (owner decision, Trello #141).
+
+       This still matters for rows ALREADY IN THE DATABASE. Any row written before
+       2026-09-16 may carry a model-asserted price, and no column records which
+       ones - `price_source` was computed but never persisted. So this diagnostic
+       keeps reporting whether the history ever held the stored value.
+
+       Absence is NOT by itself evidence of invention, because `1yr. Avg.` is a
+       mean and the sparse `List at` a median, and an average of real prices is
+       usually not itself a price anyone listed at. The derived values are computed
+       and compared before xAI is named. No NEW row can come from this mechanism.
 
 WHAT IT WILL NOT DO
 -------------------
-  * It does not call xAI. This is the reason it re-implements the correlation loop
-    instead of calling `infer_sale_events` directly: that function calls
-    `infer_sales_with_xai` on both of its zero-sale branches, which would spend xAI
-    budget and, worse, would hide case (i) behind case (ii)'s output.
+  * It does not call xAI. That was originally the reason it re-implements the
+    correlation loop instead of calling `infer_sale_events` directly: that function
+    used to call `infer_sales_with_xai` on both of its zero-sale branches, which
+    would spend xAI budget and, worse, would hide case (i) behind case (ii)'s
+    output. The rescue was removed on 2026-09-16, so that hazard is gone - but the
+    re-implementation stays, because it is what produces the per-stage printout
+    that calling the function cannot give, and the no-xAI guarantee still holds.
   * It does not write any cache. `XaiCache` and `XaiTokenManager` only read on
     construction, so importing `stable_calculations` is safe; nothing here calls a
     method that persists.
@@ -471,10 +482,12 @@ def sanitise(confirmed):
     """Mirror of the symmetrical IQR rejection."""
     _rule("STAGE 2 - IQR OUTLIER REJECTION")
     if not confirmed:
-        print("  No confirmed sales. In production this is the branch at")
-        print("  stable_calculations.py:376-388, which calls xAI and returns the")
-        print("  model's events WITHOUT running this filter at all. If the stored")
-        print("  price is not in the history (see below), that is mechanism (ii).")
+        print("  No confirmed sales. In production this branch now returns an")
+        print("  EMPTY sale list and the deal is persisted with NULL List_at and")
+        print("  NULL 1yr_Avg (Inferred_Sale_Count 0). Until 2026-09-16 it called")
+        print("  xAI and returned the model's events without running this filter")
+        print("  at all; a row written before that date may still carry such a")
+        print("  price, which is mechanism (ii). No new row can.")
         return []
     prices = [c['inferred_sale_price_cents'] for c in confirmed]
     q1, q3 = np.percentile(prices, 25), np.percentile(prices, 75)

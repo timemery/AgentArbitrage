@@ -4,10 +4,13 @@ The diagnostic is read-only and changes no pricing behaviour, but it makes two
 claims that would be worse than useless if they stopped being true:
 
 1.  Its correlation loop MIRRORS `infer_sale_events`. It re-implements rather than
-    calls, because `infer_sale_events` invokes xAI on both of its zero-sale
-    branches. Its own docstring says KEEP IN SYNC; `MirrorsProduction` is what makes
-    that enforceable instead of aspirational. A drifted mirror does not fail loudly,
-    it prints a confident wrong answer.
+    calls. The original reason was that `infer_sale_events` invoked xAI on both of
+    its zero-sale branches, which would have spent budget and hidden the very
+    mechanism the diagnostic exists to expose; that rescue was removed on
+    2026-09-16 (Trello #141), but re-implementing still buys the per-stage printout
+    that calling the function cannot give. Its own docstring says KEEP IN SYNC;
+    `MirrorsProduction` is what makes that enforceable instead of aspirational. A
+    drifted mirror does not fail loudly, it prints a confident wrong answer.
 
 2.  Its PRICE STEP-UP TEST accounts for the leftover-asking-price mechanism.
     `StepUpDetection` builds a history where a copy demonstrably sells at $28.99 and
@@ -244,18 +247,32 @@ class ReadOnlyGuarantees(unittest.TestCase):
     """The promises in the module docstring, checked rather than trusted."""
 
     def test_makes_no_xai_call_while_analysing(self):
-        """The reason the loop is re-implemented at all.
+        """The diagnostic must reach a zero-sale state without spending xAI budget.
 
-        infer_sale_events calls infer_sales_with_xai on both zero-sale branches. The
-        diagnostic must reach the same zero-sale state without doing so.
+        This was originally the reason the correlation loop is re-implemented by
+        hand rather than calling `infer_sale_events`: that function called
+        `infer_sales_with_xai` on both of its zero-sale branches. The rescue was
+        removed on 2026-09-16 (Trello #141), so the hazard is gone, but the
+        guarantee in the module docstring still stands and is still worth checking
+        - nothing here may reach xAI by any route.
+
+        `stable_calculations` no longer binds the name, so it is patched only if
+        present; asserting on a patch target that this PR deliberately removed
+        would test the wrong thing.
         """
         from unittest.mock import patch
+        import keepa_deals.stable_calculations as sc
         product = _plain_product(sales_count=0)
         with patch('keepa_deals.xai_sales_inference.infer_sales_with_xai') as xai, \
-             patch('keepa_deals.stable_calculations.infer_sales_with_xai') as xai2:
-            _run_diagnostic(product)
+             patch('keepa_deals.xai_sales_inference.query_xai_sales_inference') as net:
+            if hasattr(sc, 'infer_sales_with_xai'):
+                with patch.object(sc, 'infer_sales_with_xai') as legacy:
+                    _run_diagnostic(product)
+                legacy.assert_not_called()
+            else:
+                _run_diagnostic(product)
         xai.assert_not_called()
-        xai2.assert_not_called()
+        net.assert_not_called()
 
     def test_module_cannot_reach_the_database(self):
         """No sqlite3, no db_utils, no connection helper - checked in the source.

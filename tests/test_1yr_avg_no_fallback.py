@@ -179,13 +179,13 @@ class NoListingAverageFallback(unittest.TestCase):
     def test_zero_sales_with_stats_returns_none(self):
         """No inferred sale at all, avg365 fully populated.
 
-        FAILS ON MAIN for the same reason. Patches the xAI rescue off so the test
-        exercises the fallback branch rather than the network.
+        FAILS ON MAIN for the same reason. This used to patch the xAI rescue off
+        so the test exercised the fallback branch rather than the network; the
+        rescue was removed on 2026-09-16 (Trello #141), so zero inferred sales is
+        now reached directly. See `tests/test_xai_rescue_excluded.py`.
         """
         product = _mock_product(history_days=500, sales_count=0)
-        with patch('keepa_deals.stable_calculations.infer_sales_with_xai',
-                   return_value=None):
-            result = get_1yr_avg_sale_price(product)
+        result = get_1yr_avg_sale_price(product)
         self.assertIsNone(
             result,
             "Zero inferred sales must yield None, not an estimate. Got {!r}."
@@ -204,15 +204,13 @@ class NoListingAverageFallback(unittest.TestCase):
             _mock_product(history_days=500, sales_count=4, sales_age_days=400),
             _mock_product(history_days=400, sales_count=4, sales_age_days=100),
         ]
-        with patch('keepa_deals.stable_calculations.infer_sales_with_xai',
-                   return_value=None):
-            for product in cases:
-                result = get_1yr_avg_sale_price(product)
-                if result is not None:
-                    self.assertNotIn(
-                        'price_source', result,
-                        "get_1yr_avg_sale_price must not flag a price source; "
-                        "the only flag it ever set was the removed fallback."
+        for product in cases:
+            result = get_1yr_avg_sale_price(product)
+            if result is not None:
+                self.assertNotIn(
+                    'price_source', result,
+                    "get_1yr_avg_sale_price must not flag a price source; "
+                    "the only flag it ever set was the removed fallback."
                     )
 
     def test_recent_sales_still_produce_a_value(self):
@@ -356,9 +354,10 @@ class HeavyPathWritesTheCount(unittest.TestCase):
                           return_value='Year-round'), \
              patch.object(processing, 'get_sells_period', return_value='-'), \
              patch('keepa_deals.stable_calculations._query_xai_for_reasonableness',
-                   return_value=True), \
-             patch('keepa_deals.stable_calculations.infer_sales_with_xai',
-                   return_value=None):
+                   return_value=True):
+            # `infer_sales_with_xai` used to be patched here too. The xAI sales
+            # rescue was removed from `infer_sale_events` on 2026-09-16, so the
+            # zero-sale fixture below reaches the zero-sale branch directly.
             row = processing._process_single_deal(product, {}, 'fake-key')
         self.assertIsNotNone(row, "Fixture must produce a row.")
         return to_db_keys(processing.clean_numeric_values(row))

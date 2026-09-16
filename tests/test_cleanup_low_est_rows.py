@@ -134,11 +134,18 @@ class CleanupPredicate(TempDealsDb):
             self.assertEqual(select_target_asins(conn), ['LOWEST0001', 'LOWEST0002'])
 
     def test_predicate_spares_the_dash_trust_state(self):
-        """The regression that would matter most: deleting the XAI-rescue rows."""
+        """The regression that would matter most: deleting the '-' trust rows.
+
+        (This docstring used to call them "the XAI-rescue rows". The '-' state is
+        not a rescue and never was one on its own - it is what `deal_trust`
+        returns when a history holds no offer drop anywhere in the 3-year window,
+        so there is no denominator to score. The xAI rescue happened to fire on
+        that same branch until it was removed on 2026-09-16.)
+        """
         with self._conn() as conn:
             targets = select_target_asins(conn)
         self.assertNotIn('DASHONLY01', targets,
-                         "Deal Trust '-' is the XAI no-offer-drops rescue, not the "
+                         "Deal Trust '-' means no offer drop in 3 years, not the "
                          "listing-average fallback. It must never be deleted here.")
 
     def test_predicate_and_queries_are_the_documented_ones(self):

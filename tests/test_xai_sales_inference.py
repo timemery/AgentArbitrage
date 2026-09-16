@@ -1,3 +1,27 @@
+"""Tests for `keepa_deals/xai_sales_inference.py` - A MODULE THE LIVE PIPELINE
+DOES NOT USE.
+
+READ THIS BEFORE ACTING ON A FAILURE HERE.
+
+The xAI "hidden sales" rescue was removed from `infer_sale_events` on 2026-09-16
+(owner decision, Trello #141). Nothing in the live pipeline calls this module any
+more. These tests still pass, and they still describe the module's behaviour
+correctly - but a green result here says nothing about production, and a red one
+is not a production incident.
+
+The module is kept because `keepa_deals/Keepa_Deals.py` still references the
+pre-Smart-Ingestor path (dormant: `run_keepa_script` is not in the
+`celery_config.py` beat schedule and its `wsgi_handler.py` triggers are commented
+out). These tests are kept with it so that path is not revived against untested
+code. They must NOT be read as evidence that the rescue is wanted back.
+
+WHAT GUARDS PRODUCTION: `tests/test_xai_rescue_excluded.py`. That file pins the
+absence of the rescue from `infer_sale_events` and is the one to consult if you
+are wondering whether xAI touches inferred sales. It does not.
+
+If the dormant path is ever deleted, delete this module and this file together.
+"""
+
 import unittest
 from unittest.mock import patch, MagicMock
 import sys

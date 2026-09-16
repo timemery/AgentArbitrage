@@ -16,7 +16,12 @@ import time
 import scipy.stats as st
 from .xai_token_manager import XaiTokenManager
 from .xai_cache import XaiCache
-from .xai_sales_inference import infer_sales_with_xai
+
+# `infer_sales_with_xai` is deliberately NOT imported here any more. The xAI sales
+# rescue was removed from this module on 2026-09-16; see the note above
+# `infer_sale_events` for the reasoning and AGENTS.md 7.1. Re-adding this import is
+# how the rescue comes back by accident - it is pinned absent by
+# tests/test_xai_rescue_excluded.py.
 
 # Initialize cache and token manager at the module level
 xai_cache = XaiCache()
@@ -193,11 +198,55 @@ def _convert_ktm_to_datetime(df):
     df['timestamp'] = pd.to_datetime(numeric_timestamps, unit='m', origin=KEEPA_EPOCH)
     return df
 
+# --- THE XAI SALES RESCUE WAS REMOVED HERE (2026-09-16) -----------------------
+#
+# Until this date `infer_sale_events` called `infer_sales_with_xai` on BOTH of its
+# zero-sale branches: "no offer drop anywhere" and "offer drops that all failed
+# correlation". A model-asserted sale was then returned VERBATIM, and the deal
+# proceeded to pricing as though a real sale had been observed.
+#
+# Why it had to go (owner decision, 2026-09-16, Trello #141):
+#
+#   1. It is not a true inferred sale. AGENTS.md 7.1 permits `List at` and
+#      `1yr. Avg.` to rest ONLY on an offer drop correlated with a rank drop. A
+#      rescued price is a number a language model produced; nothing checks that it
+#      ever appeared in the Keepa history at all.
+#   2. It returned BEFORE the IQR filter below, and before the `price <= 0` and NaN
+#      guards in the correlation loop. Its only price check was a truthiness test
+#      (`if date_str and price`), which admits a negative price.
+#   3. The price-association fix of 2026-09-12 (PR #340) never applied to it. A
+#      rescued price is not read from `csv[1]`/`csv[2]`, so it cannot be associated
+#      correctly or incorrectly - it is simply asserted.
+#   4. In production, 2026-08-28 to 2026-09-08, every single rescue returned
+#      exactly ONE sale. At n=1 the Sparse Sales Rescue takes the median of one
+#      number, so `List at` and `1yr. Avg.` became the same single model-asserted
+#      figure - and because a rescued event always fell inside 365 days, such rows
+#      always cleared the dashboard's data-completeness filter. Rescued deals were
+#      precisely the ones subscribers saw.
+#   5. On the second branch it corrupted `Deal Trust`. Returning one model event
+#      over `total_offer_drops_count` read as 1/N - a positive confidence score
+#      derived from offer drops that had just failed to correlate with anything.
+#
+# What happens instead: zero inferred sales is now a final answer on both branches.
+# `analyze_sales_performance` returns `peak_price_mode_cents = -1` and
+# `inferred_sale_count = 0`, `get_1yr_avg_sale_price` returns None, and the deal is
+# PERSISTED with NULL `List_at` and NULL `1yr_Avg` (AGENTS.md 7.8 - it is not
+# rejected, which would re-create the 20-token re-fetch loop). `/api/deals` filters
+# it out of the dashboard. `Inferred_Sale_Count` reads 0, meaning "computed, none
+# found", which is a different answer from NULL ("never computed").
+#
+# `keepa_deals/xai_sales_inference.py` still exists and still works; nothing in the
+# live pipeline calls it. Do not re-wire it here.
+# ------------------------------------------------------------------------------
+
 def infer_sale_events(product):
     """
     Analyzes historical product data to infer sale events using a search-window logic.
     A sale is inferred when a drop in used or new offer count is followed by a drop
     in sales rank within a defined time window.
+
+    Zero confirmed sales is a FINAL answer on both zero-sale branches. There is no
+    xAI rescue - see the note directly above this function.
     """
     asin = product.get('asin', 'N/A')
     logger = logging.getLogger(__name__)
@@ -255,17 +304,10 @@ def infer_sale_events(product):
                 total_offer_drops_count += len(new_drops)
 
         if not all_offer_drops_list:
+            # No offer drop anywhere in the 3-year window. Zero inferred sales is the
+            # final answer. The xAI rescue that used to run here was removed on
+            # 2026-09-16 - see the note above this function.
             logger.info(f"ASIN {asin}: No instances of any offer count decreasing were found.")
-
-            # --- XAI Rescue Attempt (Hidden Sales / Stock Depth) ---
-            try:
-                xai_sales = infer_sales_with_xai(product)
-                if xai_sales:
-                    logger.info(f"ASIN {asin}: XAI rescued {len(xai_sales)} sale events (Hidden Sales)!")
-                    return xai_sales, 0
-            except Exception as e:
-                logger.error(f"ASIN {asin}: Error during XAI rescue attempt: {e}")
-
             return [], 0
 
         offer_drops = pd.concat(all_offer_drops_list).sort_values('timestamp').reset_index(drop=True)
@@ -372,18 +414,16 @@ def infer_sale_events(product):
                 })
         
         if not confirmed_sales:
+            # Offer drops existed and NONE of them correlated with a rank drop. Zero
+            # inferred sales is the final answer. The xAI rescue that used to run here
+            # was removed on 2026-09-16 - see the note above this function.
+            #
+            # `total_offer_drops_count` is returned unchanged, so those drops still
+            # count in the `Deal Trust` denominator and the column reads a truthful
+            # 0%. The rescue used to return its own event over this same denominator,
+            # which read 1/N - a positive confidence score built from drops that had
+            # just failed correlation.
             logger.info(f"ASIN {asin}: Found 0 confirmed sale events out of {total_offer_drops_count} offer drops.")
-
-            # --- XAI Rescue Attempt ---
-            # Try to infer sales using XAI if algorithmic approach failed completely
-            try:
-                xai_sales = infer_sales_with_xai(product)
-                if xai_sales:
-                    logger.info(f"ASIN {asin}: XAI rescued {len(xai_sales)} sale events!")
-                    return xai_sales, total_offer_drops_count
-            except Exception as e:
-                logger.error(f"ASIN {asin}: Error during XAI rescue attempt: {e}")
-
             return [], total_offer_drops_count
 
         # --- Symmetrical Outlier Rejection ---
@@ -478,11 +518,13 @@ def analyze_sales_performance(product, sale_events):
     # which was deleted from this module in March 2026 and no longer exists.)
     MIN_SALES_FOR_ANALYSIS = 3
 
-    # The sane inferred-sale count for this product, as this function sees it:
-    # post-IQR on the algorithmic path, raw on the XAI-rescue path (which returns
-    # before sanitisation). Returned on EVERY branch so the caller can persist it,
-    # including the zero-sale rejection - 0 is a real reading and must be
-    # distinguishable from a NULL, which means "never computed".
+    # The sane inferred-sale count for this product, as this function sees it.
+    # Always post-IQR: there is one path now. (This used to add "raw on the
+    # XAI-rescue path, which returns before sanitisation" - that path was removed
+    # on 2026-09-16, see the note above `infer_sale_events`.) Returned on EVERY
+    # branch so the caller can persist it, including the zero-sale rejection -
+    # 0 is a real reading and must be distinguishable from a NULL, which means
+    # "never computed".
     inferred_sale_count = len(sale_events) if sale_events else 0
 
     # Initialize variables with defaults
