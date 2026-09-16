@@ -137,11 +137,12 @@ def _run_diagnostic(product):
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
         drops, total = D.find_offer_drops(product['csv'], window)
-        confirmed, rejected = (D.confirm_sales(drops, product['csv'], window)
-                               if total else ([], []))
+        confirmed, rejected, legacy_only = (
+            D.confirm_sales(drops, product['csv'], window)
+            if total else ([], [], []))
         sane = D.sanitise(confirmed)
     return {'total_drops': total, 'confirmed': confirmed, 'sane': sane,
-            'output': buf.getvalue()}
+            'legacy_only': legacy_only, 'output': buf.getvalue()}
 
 
 class MirrorsProduction(unittest.TestCase):
@@ -339,3 +340,155 @@ class StoredPriceConclusion(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+# The live case this class exists for. ASIN 0415009804, run 2026-09-16 with
+# --stored-price 500.00. The step-up table reported 'old would' $500.00 on sale 1
+# and $-0.01 on sale 2; today's code recomputes $223.75.
+PREFIX_STORED_USD = 500.00
+PREFIX_LEGACY_ONE_CENTS = 50000     # 'old would' on sale 1
+PREFIX_LEGACY_TWO_CENTS = -1        # 'old would' on sale 2: Keepa's "no offer"
+PREFIX_TODAY_ONE_CENTS = 20000      # what today's association takes on sale 1
+PREFIX_TODAY_TWO_CENTS = 24750      # ...and on sale 2; median 223.75
+
+
+class PreFixReconstruction(unittest.TestCase):
+    """`recompute` must compute the ORDINARY cause before naming an exotic one.
+
+    THE DEFECT, 2026-09-16, ASIN 0415009804. With --stored-price 500.00 the script
+    recomputed $223.75 and concluded "Either the history moved, or the stored value
+    came from the xAI rescue path". Neither was true. The stored $500.00 is exactly
+    what the pre-fix code would have produced: its nearest-match took $500.00 on
+    sale 1 and $-0.01 on sale 2, the `price <= 0` guard discarded the second, and a
+    single remaining sale goes down the sparse branch and stores its median.
+
+    This is the same class of error as the `check_stored_price` fix of 2026-09-11,
+    which blamed xAI for a value that was just the mean of two real prices. Both
+    named an exotic cause without first computing the boring one.
+    """
+
+    def setUp(self):
+        logging.disable(logging.CRITICAL)
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
+
+    @staticmethod
+    def _confirmed(today_cents, legacy_cents, days_ago):
+        """One rank-confirmed sale, as `confirm_sales` emits it."""
+        return {
+            'event_timestamp': datetime.now() - timedelta(days=days_ago),
+            'inferred_sale_price_cents': today_cents,
+            'offer_type': 'Used',
+            'series': 'csv[2] Used',
+            'how': 'direct rank drop within 240h',
+            'price_before_cents': today_cents,
+            'price_after_cents': legacy_cents,
+            'legacy_nearest_cents': legacy_cents,
+            'legacy_chose_at_or_after': True,
+        }
+
+    def _live_case(self):
+        return [
+            self._confirmed(PREFIX_TODAY_ONE_CENTS, PREFIX_LEGACY_ONE_CENTS, 120),
+            self._confirmed(PREFIX_TODAY_TWO_CENTS, PREFIX_LEGACY_TWO_CENTS, 60),
+        ]
+
+    def _run_recompute(self, confirmed, legacy_only=None, stored_usd=None):
+        sane = [{'event_timestamp': c['event_timestamp'],
+                 'inferred_sale_price_cents': c['inferred_sale_price_cents']}
+                for c in confirmed]
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            D.recompute(sane, 2999, stored_usd, confirmed=confirmed,
+                        legacy_only=legacy_only or [])
+        return buf.getvalue()
+
+    # --- the reconstruction itself -------------------------------------------
+
+    def test_the_non_positive_legacy_price_is_discarded(self):
+        """The pre-fix `price <= 0` guard is what leaves one sale standing."""
+        prefix = D.reconstruct_prefix_value(self._live_case(), [])
+        self.assertEqual(len(prefix['kept']), 1)
+        self.assertEqual(prefix['kept'][0]['inferred_sale_price_cents'],
+                         float(PREFIX_LEGACY_ONE_CENTS))
+        self.assertEqual(len(prefix['dropped']), 1)
+        self.assertIn('price <= 0', prefix['dropped'][0][2])
+
+    def test_one_surviving_sale_takes_the_sparse_median(self):
+        prefix = D.reconstruct_prefix_value(self._live_case(), [])
+        self.assertAlmostEqual(prefix['list_at_cents'],
+                               float(PREFIX_LEGACY_ONE_CENTS))
+        self.assertIn('SPARSE', prefix['list_at_branch'])
+
+    def test_a_drop_today_discards_on_price_still_counts_pre_fix(self):
+        """A rank-confirmed drop today's code cannot price still had a pre-fix price.
+
+        Leaving these out would under-count the pre-fix set and could report "no
+        match" for a row that is in fact fully explained.
+        """
+        legacy_only = [{
+            'event_timestamp': datetime.now() - timedelta(days=90),
+            'offer_type': 'Used',
+            'series': 'csv[2] Used',
+            'legacy_nearest_cents': 50000,
+            'dropped_today_because': 'no price point exists before the drop',
+        }]
+        prefix = D.reconstruct_prefix_value(self._live_case(), legacy_only)
+        self.assertEqual(len(prefix['kept']), 2)
+        self.assertAlmostEqual(prefix['list_at_cents'], 50000.0)
+
+    # --- the conclusion ------------------------------------------------------
+
+    def test_a_pre_fix_row_is_named_as_such_and_not_blamed_on_xai(self):
+        """The whole point. This is what the 0415009804 run should have printed."""
+        out = self._run_recompute(self._live_case(),
+                                  stored_usd=PREFIX_STORED_USD)
+        self.assertIn('DIFFERS FROM', out,
+                      "Today's code must still be reported as not reproducing it.")
+        self.assertIn('THIS ROW PREDATES THE PRICE-ASSOCIATION FIX', out)
+        self.assertIn('HEAVY RE-FETCH', out)
+        self.assertNotIn('the history moved since the row was written', out)
+        self.assertNotIn('came from the xAI rescue path', out)
+
+    def test_the_reconstruction_is_shown_not_just_asserted(self):
+        """The reader must be able to check the arithmetic, per the 09-11 lesson."""
+        out = self._run_recompute(self._live_case(),
+                                  stored_usd=PREFIX_STORED_USD)
+        self.assertIn("WHAT THE PRE-FIX CODE WOULD HAVE PRODUCED", out)
+        self.assertIn('DISCARDED', out)
+        self.assertIn('Pre-fix List at', out)
+
+    def test_xai_and_drift_are_named_only_when_nothing_explains_the_value(self):
+        """The escape hatch must still exist, and must still be conditional."""
+        out = self._run_recompute(self._live_case(), stored_usd=987.65)
+        self.assertIn('matches NEITHER', out)
+        self.assertIn('came from the xAI rescue path', out)
+        self.assertIn('the history moved since the row was written', out)
+        self.assertNotIn('THIS ROW PREDATES', out)
+
+    def test_a_value_todays_code_reproduces_draws_no_conclusion_at_all(self):
+        """No reconstruction, no blame: today's code already explains it."""
+        out = self._run_recompute(self._live_case(), stored_usd=223.75)
+        self.assertIn('MATCHES', out)
+        self.assertNotIn('THIS ROW PREDATES', out)
+        self.assertNotIn('came from the xAI rescue path', out)
+        self.assertNotIn('WHAT THE PRE-FIX CODE WOULD HAVE PRODUCED', out)
+
+    def test_a_stored_one_year_average_is_matched_too(self):
+        """--stored-price may be the 1yr Avg rather than List at.
+
+        Two pre-fix sales inside 365 days: List at is their median, 1yr Avg their
+        mean. With two values those coincide, so this fixture uses three so the
+        mean and the median differ and the match is unambiguous.
+        """
+        confirmed = [
+            self._confirmed(10000, 10000, 300),
+            self._confirmed(10000, 20000, 200),
+            self._confirmed(10000, 60000, 100),
+        ]
+        prefix = D.reconstruct_prefix_value(confirmed, [])
+        self.assertAlmostEqual(prefix['yr_avg_cents'], 30000.0)
+        out = self._run_recompute(confirmed, stored_usd=300.00)
+        self.assertIn('THIS ROW PREDATES THE PRICE-ASSOCIATION FIX', out)
+        self.assertIn('1yr Avg', out)

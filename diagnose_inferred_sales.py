@@ -72,6 +72,19 @@ pieces (KEEPA_EPOCH, the timestamp conversion) are imported rather than copied.
 `tests/test_diagnose_inferred_sales.py`'s `MirrorsProduction` is what makes KEEP IN
 SYNC enforceable.
 
+`reconstruct_prefix_value` mirrors the PRE-FIX pipeline for the same reason, and the
+only thing that differed pre-fix was the price association - so it replays the
+`price <= 0` guard, the IQR and the mean/median branch rules unchanged. If any of
+those change, change it too.
+
+THE CONCLUSION RULE: this script must compute the ORDINARY explanation before naming
+an exotic one. A stored value today's code does not reproduce is most often just a
+row written before the 2026-09-12 association fix. That is cheap and deterministic to
+reconstruct, so it is ruled in or out first, and history drift / the xAI rescue /
+ceiling clamping are named only if it is ruled out. This rule exists because the rule
+has been broken twice - see `check_stored_price` (2026-09-11) and `recompute`
+(2026-09-16, ASIN 0415009804).
+
 USAGE
 -----
 Run from the application root, with KEEPA_API_KEY available (it is read from .env
@@ -223,7 +236,7 @@ def confirm_sales(offer_drops, csv_data, window_start):
     df_rank = _to_df(csv_data[3] if len(csv_data) > 3 else None, 'rank')
     if df_rank is None:
         print("  No rank history. No sale can be confirmed.")
-        return [], []
+        return [], [], []
     df_rank = df_rank[df_rank['timestamp'] >= window_start]
     df_rank = df_rank.sort_values('timestamp').reset_index(drop=True)
     df_rank['rank_diff'] = df_rank['rank'].diff()
@@ -234,6 +247,9 @@ def confirm_sales(offer_drops, csv_data, window_start):
     confirm_window = timedelta(hours=CONFIRM_WINDOW_HOURS)
     confirmed = []
     rejected = []
+    # Rank-confirmed drops that today's code discards on price, but which the
+    # pre-fix nearest-match could still have priced. See `_keep_legacy_only`.
+    legacy_only = []
 
     print("  Confirmation window {}h, sparse lookahead {}d, near-miss {}h."
           .format(CONFIRM_WINDOW_HOURS, SPARSE_LOOKAHEAD_DAYS, NEAR_MISS_HOURS))
@@ -308,15 +324,33 @@ def confirm_sales(offer_drops, csv_data, window_start):
         legacy_nearest_cents = legacy_chosen['price_cents']
         legacy_chose_at_or_after = bool(legacy_chosen['timestamp'] >= start_time)
 
+        # These two guards drop a RANK-CONFIRMED sale because today's association
+        # could not attach a price to it. The pre-fix `nearest` match usually
+        # could, so such a drop may well have contributed to a stored pre-fix
+        # value. Keep its legacy candidate before discarding the sale, or the
+        # reconstruction below silently under-counts and can report "no match"
+        # for a row that is in fact fully explained.
+        def _keep_legacy_only(reason):
+            legacy_only.append({
+                'event_timestamp': start_time,
+                'offer_type': drop['offer_type'],
+                'series': series_name,
+                'legacy_nearest_cents': legacy_nearest_cents,
+                'dropped_today_because': reason,
+            })
+
         if pd.isna(price_cents):
             # The only way the association fails now: the drop precedes every point
             # in the series. It was 0 of 7 on the live sample of 2026-09-12.
+            _keep_legacy_only('no price point exists before the drop')
             rejected.append((start_time, drop['offer_type'],
                              'confirmed, but no price point exists before it at all, '
                              'so no price is attached'))
             continue
 
         if price_cents <= 0:
+            _keep_legacy_only('price before the drop was {} (<= 0)'
+                              .format(price_cents))
             rejected.append((start_time, drop['offer_type'],
                              'confirmed, but matched price was {} (<= 0), discarded'
                              .format(price_cents)))
@@ -374,7 +408,7 @@ def confirm_sales(offer_drops, csv_data, window_start):
         print("  Every offer drop was confirmed.")
     if confirmed:
         _print_step_up_analysis(confirmed)
-    return confirmed, rejected
+    return confirmed, rejected, legacy_only
 
 
 
@@ -626,7 +660,140 @@ def amazon_stats(product):
     return used_now
 
 
-def recompute(sane, used_now, stored_price_usd):
+def reconstruct_prefix_value(confirmed, legacy_only):
+    """What the PRE-FIX code would have stored, from the 'old would' prices.
+
+    WHY THIS EXISTS
+    ---------------
+    Live case, ASIN 0415009804, 2026-09-16, `--stored-price 500.00`. The step-up
+    table reported 'old would' $500.00 on sale 1 and $-0.01 on sale 2. Today's code
+    recomputes $223.75. The final section nonetheless concluded "Either the history
+    moved, or the stored value came from the xAI rescue path".
+
+    That was WRONG, and wrong in the same way as the `check_stored_price` defect
+    caught on 2026-09-11: it named an exotic cause without first computing the
+    ordinary one. The stored $500.00 is fully explained as a pre-fix row. The
+    pre-fix code would have taken the two 'old would' prices, discarded $-0.01 on
+    its `price <= 0` guard, and been left with a single sale of $500.00 - which at
+    n=1 goes down the sparse branch and stores its median, $500.00. Exactly the
+    stored value, with no history drift and no xAI anywhere near it.
+
+    A diagnostic that draws a confident wrong conclusion is worse than one that
+    draws none, because it sends the next investigation in the wrong direction.
+    That was recorded on 2026-09-11 and it applies here unchanged.
+
+    WHAT THIS REPLAYS
+    -----------------
+    The pre-fix pipeline, in order, on the `legacy_nearest_cents` of every
+    rank-confirmed drop:
+
+      1.  NaN guard, then the `price <= 0` guard. This is the step that removes the
+          $-0.01 in the live case.
+      2.  The symmetrical IQR (unchanged by the price-association fix).
+      3.  The same branch rules the current code uses: sparse `List at` is the
+          MEDIAN of all sane sales when there are fewer than 3; `1yr Avg` is the
+          MEAN of the sane sales inside 365 days.
+
+    Only the price ASSOCIATION differed pre-fix, so replaying the rest unchanged is
+    the correct reconstruction rather than an approximation.
+
+    `legacy_only` carries rank-confirmed drops that TODAY's code discards on price
+    but the pre-fix match could still price. They belong here; leaving them out
+    would under-count the pre-fix set and could report "no match" for a row that is
+    in fact fully explained.
+    """
+    candidates = []
+    for c in confirmed:
+        candidates.append((c['event_timestamp'], c.get('legacy_nearest_cents'),
+                           None))
+    for c in legacy_only:
+        candidates.append((c['event_timestamp'], c.get('legacy_nearest_cents'),
+                           c.get('dropped_today_because')))
+    candidates.sort(key=lambda row: row[0])
+
+    kept, dropped = [], []
+    for ts, price, note in candidates:
+        if price is None or pd.isna(price):
+            dropped.append((ts, price, 'no nearest price point'))
+        elif price <= 0:
+            dropped.append((ts, price, 'pre-fix `price <= 0` guard'))
+        else:
+            kept.append({'event_timestamp': ts,
+                         'inferred_sale_price_cents': float(price),
+                         'today_note': note})
+
+    trimmed = []
+    if len(kept) >= 2:
+        prices = [k['inferred_sale_price_cents'] for k in kept]
+        q1, q3 = np.percentile(prices, 25), np.percentile(prices, 75)
+        iqr = q3 - q1
+        lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+        sane = [k for k in kept if lo <= k['inferred_sale_price_cents'] <= hi]
+        trimmed = [k for k in kept if k not in sane]
+    else:
+        sane = list(kept)
+
+    prices = [k['inferred_sale_price_cents'] for k in sane]
+    year_ago = datetime.now() - timedelta(days=365)
+    in_year = [k['inferred_sale_price_cents'] for k in sane
+               if k['event_timestamp'] >= year_ago]
+
+    list_at = None
+    list_at_branch = None
+    if prices:
+        if len(prices) < MIN_SALES_FOR_ANALYSIS:
+            list_at = float(np.median(prices))
+            list_at_branch = 'SPARSE branch, median of {} sale(s)'.format(len(prices))
+        else:
+            list_at_branch = ('normal branch (peak-month mode/median) - not '
+                              'reconstructed, this diagnostic does not classify '
+                              'seasons')
+
+    yr_avg = (sum(in_year) / len(in_year)) if in_year else None
+
+    return {'kept': sane, 'dropped': dropped, 'trimmed': trimmed,
+            'list_at_cents': list_at, 'list_at_branch': list_at_branch,
+            'yr_avg_cents': yr_avg, 'candidate_count': len(candidates)}
+
+
+def _print_prefix_reconstruction(prefix):
+    """Print the reconstruction. Called before any conclusion is drawn."""
+    print()
+    print("-" * 78)
+    print("  WHAT THE PRE-FIX CODE WOULD HAVE PRODUCED (from the 'old would' column)")
+    print("-" * 78)
+    if not prefix['candidate_count']:
+        print("  No rank-confirmed drops, so there is nothing to reconstruct.")
+        return
+    print("  Candidates (one per rank-confirmed offer drop): {}"
+          .format(prefix['candidate_count']))
+    for ts, price, why in prefix['dropped']:
+        print("    DISCARDED {:%Y-%m-%d} {:>10}  {}".format(ts, _money(price), why))
+    for k in prefix['trimmed']:
+        print("    IQR-TRIMMED {:%Y-%m-%d} {:>10}".format(
+            k['event_timestamp'], _money(k['inferred_sale_price_cents'])))
+    print("  Survived to pricing: {}".format(len(prefix['kept'])))
+    for k in prefix['kept']:
+        extra = ('  (today discards this sale: {})'.format(k['today_note'])
+                 if k['today_note'] else '')
+        print("    {:%Y-%m-%d} {:>10}{}".format(
+            k['event_timestamp'], _money(k['inferred_sale_price_cents']), extra))
+    print()
+    if prefix['list_at_cents'] is not None:
+        print("  Pre-fix List at = {}  ({})".format(
+            _money(prefix['list_at_cents']), prefix['list_at_branch']))
+    elif prefix['list_at_branch']:
+        print("  Pre-fix List at : {}".format(prefix['list_at_branch']))
+    else:
+        print("  Pre-fix List at = NULL (no sale survived the pre-fix guards)")
+    if prefix['yr_avg_cents'] is not None:
+        print("  Pre-fix 1yr Avg = {}  (mean of the sale(s) inside 365 days)"
+              .format(_money(prefix['yr_avg_cents'])))
+    else:
+        print("  Pre-fix 1yr Avg = NULL (no sale inside 365 days)")
+
+
+def recompute(sane, used_now, stored_price_usd, confirmed=None, legacy_only=None):
     """What the current code would store, minus the AI check (which is not called)."""
     _rule("WHAT THE CURRENT CODE WOULD PRODUCE")
     if not sane:
@@ -663,16 +830,76 @@ def recompute(sane, used_now, stored_price_usd):
             _money(peak), _money(used_now), ratio,
             "-> AI check FORCED" if ratio > 3.0 else "-> under threshold"))
 
-    if stored_price_usd is not None and peak is not None:
-        stored_cents = int(round(stored_price_usd * 100))
+    if stored_price_usd is None:
+        return
+
+    stored_cents = int(round(stored_price_usd * 100))
+
+    if peak is not None:
         match = "MATCHES" if abs(peak - stored_cents) < 1 else "DIFFERS FROM"
         print()
         print("  Recomputed List at {} the stored {}."
               .format(match, _money(stored_cents)))
-        if match.startswith("DIFFERS"):
-            print("  The stored value did not come from today's history through")
-            print("  today's code. Either the history moved, or the stored value")
-            print("  came from the xAI rescue path.")
+        if match.startswith("MATCHES"):
+            return
+    else:
+        print()
+        print("  List at was not recomputed on this branch, so the stored {} is"
+              .format(_money(stored_cents)))
+        print("  compared against the pre-fix reconstruction only.")
+
+    # ------------------------------------------------------------------
+    # BEFORE naming history drift or xAI, compute the ORDINARY explanation.
+    #
+    # A stored value that today's code does not reproduce is most often just a
+    # row written before the 2026-09-12 price-association fix. Reconstructing
+    # that is cheap and it is deterministic, so it must be ruled in or out first.
+    #
+    # This is the second time this section has drawn a conclusion it had not
+    # earned. On 2026-09-11 `check_stored_price` blamed xAI for a value that was
+    # simply the mean of two real prices. On 2026-09-16, on ASIN 0415009804, this
+    # block blamed "history moved, or the xAI rescue" for a stored $500.00 that
+    # was exactly what the pre-fix code would have produced. Same error, same fix:
+    # compute the boring cause before naming the exotic one.
+    # ------------------------------------------------------------------
+    prefix = reconstruct_prefix_value(confirmed or [], legacy_only or [])
+    _print_prefix_reconstruction(prefix)
+
+    prefix_matches = []
+    if (prefix['list_at_cents'] is not None
+            and abs(prefix['list_at_cents'] - stored_cents) < 1):
+        prefix_matches.append('List at')
+    if (prefix['yr_avg_cents'] is not None
+            and abs(prefix['yr_avg_cents'] - stored_cents) < 1):
+        prefix_matches.append('1yr Avg')
+
+    print()
+    if prefix_matches:
+        print("  CONCLUSION: THIS ROW PREDATES THE PRICE-ASSOCIATION FIX.")
+        print("  The stored {} is exactly what the pre-fix code would have"
+              .format(_money(stored_cents)))
+        print("  produced for {} from this same history."
+              .format(' and '.join(prefix_matches)))
+        print("  The history did not move and xAI is not implicated - the row")
+        print("  was simply written before 2026-09-12.")
+        print()
+        print("  ACTION: this row needs a HEAVY RE-FETCH to pick up the corrected")
+        print("  association. Nothing repairs it in place: the light path never")
+        print("  recomputes List_at or 1yr_Avg, and recalculator.py is API-free.")
+    else:
+        print("  The stored value matches NEITHER today's recomputation NOR the")
+        print("  pre-fix reconstruction above. Only now are the remaining")
+        print("  explanations worth considering:")
+        print("    * the history moved since the row was written (Keepa revises")
+        print("      and backfills; a re-run of this diagnostic days apart can")
+        print("      legitimately differ);")
+        print("    * the row came from the xAI rescue path, which returned")
+        print("      model-asserted events verbatim, before the IQR filter, for")
+        print("      any row written while that path existed;")
+        print("    * the value was clamped by the Amazon ceiling or the $1,500")
+        print("      hard ceiling - see the AMAZON CEILING section above.")
+        print("  None of these is established by this run. Check the derived")
+        print("  candidates in STORED PRICE above before settling on one.")
 
 
 def main(argv=None):
@@ -708,8 +935,10 @@ def main(argv=None):
     offer_drops, total_drops = find_offer_drops(csv_data, window_start)
 
     confirmed = []
+    legacy_only = []
     if total_drops:
-        confirmed, _ = confirm_sales(offer_drops, csv_data, window_start)
+        confirmed, _, legacy_only = confirm_sales(offer_drops, csv_data,
+                                                  window_start)
 
     sane = sanitise(confirmed)
 
@@ -721,7 +950,8 @@ def main(argv=None):
 
     check_stored_price(csv_data, args.stored_price, sane)
     used_now = amazon_stats(product)
-    recompute(sane, used_now, args.stored_price)
+    recompute(sane, used_now, args.stored_price,
+              confirmed=confirmed, legacy_only=legacy_only)
 
     _rule("TOKENS")
     print("  Consumed by this run: {}".format(consumed))
