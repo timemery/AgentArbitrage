@@ -154,7 +154,14 @@ discards exactly the slow-moving inventory the system is built to find.
 > old association keep their inflated values until a heavy re-fetch replaces them.
 > Recovery is a separate decision. `diagnose_inferred_sales.py` reports, for each
 > sale, both what today's code records and what the pre-fix nearest-match would have
-> recorded, so a stored number can still be accounted for.
+> recorded, so a stored number can still be accounted for. **It now also replays the
+> whole pre-fix pipeline** — the `price <= 0` guard, the IQR and the mean/median
+> branch rules — and states plainly when a stored value is exactly what the pre-fix
+> code would have produced, i.e. that the row predates the fix and needs a heavy
+> re-fetch. It names history drift or the xAI rescue only when that reconstruction
+> does **not** match. (Added 2026-09-16 after the script drew that conclusion
+> unearned on ASIN 0415009804 — the same class of error as the `check_stored_price`
+> fix of 2026-09-11.)
 
 ------
 
