@@ -1,3 +1,29 @@
+"""xAI "hidden sales" inference - NOT CALLED BY THE LIVE PIPELINE.
+
+REMOVED FROM PRODUCTION 2026-09-16 (owner decision, Trello #141).
+
+`infer_sale_events` in `stable_calculations.py` used to call `infer_sales_with_xai`
+on both of its zero-sale branches. It no longer does, and nothing else in the live
+pipeline calls this module either. The reasoning is recorded in full in the block
+comment above `infer_sale_events`; in short, a model-asserted sale is not a true
+inferred sale, it bypassed the IQR filter and the price guards, and in production
+every rescue returned exactly one event, which became both `List at` and
+`1yr. Avg.` for that deal.
+
+The module is kept rather than deleted because `keepa_deals/Keepa_Deals.py` still
+references the pre-Smart-Ingestor path (dormant - `run_keepa_script` is not in the
+`celery_config.py` beat schedule and its `wsgi_handler.py` triggers are commented
+out). If that path is ever revived, it must NOT re-wire this rescue.
+
+Nothing here is dead in the sense of broken: the functions still work and
+`tests/test_xai_sales_inference.py` still covers them. They are simply unused.
+Importing this module is side-effect-light but not free - it constructs an
+`XaiTokenManager` and an `XaiCache` at module level, both of which read from disk.
+
+DO NOT re-import `infer_sales_with_xai` into `stable_calculations.py`. Its absence
+is pinned by `tests/test_xai_rescue_excluded.py`.
+"""
+
 import logging
 import pandas as pd
 import numpy as np

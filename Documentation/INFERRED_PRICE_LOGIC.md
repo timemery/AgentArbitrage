@@ -135,7 +135,9 @@ discards exactly the slow-moving inventory the system is built to find.
     live and the value genuinely held, rather than absent — not gap length.
 *   **The only way a confirmed drop loses its price** is when it precedes *every*
     point in the series, which yields `NaN`. That was **0 of 7** on the live sample,
-    so the practical effect on `Deal Trust` and on xAI-rescue traffic is negligible.
+    so the practical effect on `Deal Trust` was negligible. *(The same measurement
+    also showed xAI-rescue traffic unchanged by that fix; the rescue has since been
+    removed outright — see §2.5.)*
 *   **The offer drop still counts.** A drop whose price cannot be associated stays
     in the `Deal Trust` denominator, so the score reflects the loss.
 *   **NaN safety.** `merge_asof` returns `NaN` when the backward match finds nothing,
@@ -156,16 +158,59 @@ discards exactly the slow-moving inventory the system is built to find.
 
 ------
 
-## 2.5 Stage 1.5: XAI Rescue Mechanism ("Hidden Sales")
+## 2.5 Stage 1.5: XAI Rescue Mechanism ("Hidden Sales") — REMOVED
 
-**Introduced:** Feb 2026 (`xai_sales_inference.py`)
+**Introduced:** Feb 2026 (`xai_sales_inference.py`). **Removed: 2026-09-16** (owner
+decision, Trello #141).
 
-If the algorithmic approach (Stage 1) finds **0 confirmed sales** or detects **no offer drops** (which is mathematically impossible for a sold item unless stock depth > 1), the system triggers a "Rescue" attempt.
+**There is no Stage 1.5. Zero confirmed sales is a final answer.**
 
-1.  **Context Assembly:** The system constructs a markdown table representing ~365 days of history, aligning Rank, Price, and Offer Count time-series data.
-2.  **AI Analysis:** This table is sent to **xAI (Grok)** with a specific prompt to identify "Hidden Sales"—instances where Sales Rank improved (dropped) significantly without a corresponding drop in Offer Count (implying the seller had multiple units).
-3.  **Integration:** Sales identified by the AI are injected back into the pipeline as valid "Inferred Sales," allowing the deal to proceed to analysis instead of being rejected.
-4.  **Safety:** To preserve tokens, this rescue is skipped if the item's current Sales Rank is > 2,000,000 ("Dead Inventory").
+If the algorithmic approach (Stage 1) found **0 confirmed sales**, or detected **no
+offer drops at all**, `infer_sale_events` used to call xAI to identify "Hidden
+Sales" — rank improvements with no corresponding offer-count drop — and returned the
+model's events **verbatim** into the pricing pipeline. Both call sites are gone.
+
+### Why it was removed
+
+1.  **It is not a true inferred sale.** The whole premise of this document is that a
+    price rests on an offer drop correlated with a rank drop. A rescued price is a
+    number a language model produced; nothing checked that it ever appeared in the
+    Keepa history at all. That is the same class of unverified input as the Keepa
+    Stats Fallback and the `avg365` fallback, both removed for the same reason.
+2.  **It bypassed sanitisation.** It returned before the IQR filter of §3, and before
+    the `price <= 0` and NaN guards in the correlation loop. Its only price check was
+    a truthiness test, which admits a negative price.
+3.  **The price association of §2b never applied to it.** A rescued price is not read
+    from `csv[1]`/`csv[2]`, so it can be neither correctly nor incorrectly
+    associated — it is asserted.
+4.  **In production it always returned exactly one sale.** Measured 2026-08-28 to
+    2026-09-08: 13 rescues, 13 single-sale results. At n=1 the Sparse Sales Rescue
+    (§4.A) takes the median of one number, so `List at` and `1yr. Avg.` became the
+    **same single model-asserted figure**. Because a rescued event always landed
+    inside 365 days, those rows *always* cleared the dashboard's data-completeness
+    filter — rescued deals were precisely the ones subscribers saw.
+5.  **It corrupted `Deal Trust` on the second branch.** One model event over
+    `total_offer_drops` read as **1/N** — a positive confidence score built from
+    offer drops that had just *failed* to correlate with anything. Two failed drops
+    read 50%, clearing the Agent's Choice floor of 40.
+
+### What happens now
+
+Both branches return an empty sale list. `analyze_sales_performance` returns
+`peak_price_mode_cents = -1` and `inferred_sale_count = 0`,
+`get_1yr_avg_sale_price` returns `None`, and the deal is **persisted** with NULL
+`List_at` and NULL `1yr_Avg` — not rejected (`AGENTS.md` §7.8; rejecting re-creates
+the 20-token re-fetch loop). `/api/deals` filters it off the dashboard.
+`Deal Trust` reads `'-'` on the no-offer-drops branch and a truthful `0%` on the
+failed-correlation branch, with those drops still in the denominator.
+
+`keepa_deals/xai_sales_inference.py` still exists and still works — it is retained
+only because the dormant `Keepa_Deals.py` path references it. **Nothing in the live
+pipeline calls it, and it must not be re-wired into `infer_sale_events`.** The
+absence is pinned by `tests/test_xai_rescue_excluded.py`.
+
+This does **not** affect the AI Reasonableness Check in §4.A.4, which is a separate
+mechanism on the pricing stage and is unchanged.
 
 ------
 
@@ -231,8 +276,10 @@ Used for the "Percent Down" and "Trend" calculations.
 > invariant asserted that exact combination never occurs.
 
 ### C. Inferred Sale Count (`Inferred_Sale_Count`)
-The number of sane inferred sale events the pricing branch actually used: post-IQR on
-the algorithmic path, raw on the XAI-rescue path (which returns before sanitisation).
+The number of sane inferred sale events the pricing branch actually used, post-IQR.
+*(Until 2026-09-16 this read "raw on the XAI-rescue path (which returns before
+sanitisation)". That path is gone — see §2.5 — so there is one path and the count is
+always post-IQR.)*
 
 *   **Written by:** `analyze_sales_performance`, on **every** return branch including
     the zero-sale rejection, and persisted by `_process_single_deal`.

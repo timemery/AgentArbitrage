@@ -73,7 +73,7 @@ When both signals occur within a 10-day window, a sale is confirmed. The price a
 
 This methodology was refined through extensive real-world testing. A fallback approach that estimated prices using listing averages — briefly tried as a stopgap — was permanently removed in March 2026 after it consistently produced inflated profit projections. The system now holds a firm line: if it cannot confirm a true sale, it will not project profit.
 
-For books where the standard detection method finds no sales (e.g., sellers with deep inventory whose offer count doesn't drop with each sale), an AI-powered rescue mechanism analyzes historical rank and price data to identify "hidden sales" — rank improvements that signal a purchase even without an observable offer-count change.
+The same line applies to AI. An AI "rescue" that inferred hidden sales from rank movement alone was removed in September 2026 for the same reason the listing-average fallback was: a sale a model asserts is not a sale the data confirms. Where the signals are absent, the book is simply held back rather than priced on an estimate.
 
 The competitive significance: every other tool in the category derives prices from listing averages, Keepa's published statistics, or seller-reported sale data. None reconstruct verified historical transactions at this granularity. This is the technical foundation that makes "curated deals only" possible.
 

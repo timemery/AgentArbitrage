@@ -36,9 +36,11 @@ at exact offsets from the drop - rather than the dense uniform grids the rest of
 suite uses. A dense grid cannot express "the only prior price point is 95 days old",
 which is the shape that carried the widest real gap.
 
-NOTE ON THE ZERO-SALE BRANCHES: `infer_sale_events` calls xAI when it confirms no
-sales, so every test that expects zero sales patches `infer_sales_with_xai`. The
-patch is scoped, per `AGENTS.md` 6.4 and `tests/conftest.py`.
+NOTE ON THE ZERO-SALE BRANCHES: these used to need `infer_sales_with_xai` patched
+out, because `infer_sale_events` called xAI whenever it confirmed no sales. The
+rescue was REMOVED on 2026-09-16 (owner decision, Trello #141), so zero confirmed
+sales is now simply zero and no patch is needed. The absence is pinned by
+`tests/test_xai_rescue_excluded.py`.
 """
 
 import logging
@@ -46,7 +48,8 @@ import os
 import sys
 import unittest
 from datetime import datetime, timedelta
-from unittest.mock import patch
+# No mock import: with the xAI rescue removed (2026-09-16) nothing in this file
+# needs patching.  See tests/test_xai_rescue_excluded.py.
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -133,15 +136,16 @@ class _Silent(unittest.TestCase):
         logging.disable(logging.NOTSET)
 
     def _infer_expecting_no_sales(self, product):
-        """Run the inference with the xAI rescue stubbed out.
+        """Run the inference on a history that confirms no sales.
 
-        The rescue fires on the zero-confirmed-sales branch, and these tests are
-        about the algorithmic association, not about the model.
+        This used to stub `infer_sales_with_xai`, which fired on the
+        zero-confirmed-sales branch. That rescue was removed on 2026-09-16, so the
+        branch now just returns `([], total_offer_drops)` and there is nothing to
+        stub. The third return value is kept as None so the call sites below read
+        unchanged.
         """
-        with patch('keepa_deals.stable_calculations.infer_sales_with_xai',
-                   return_value=[]) as xai:
-            events, drops = infer_sale_events(product)
-        return events, drops, xai
+        events, drops = infer_sale_events(product)
+        return events, drops, None
 
 
 class PriceInForceBeforeTheDrop(_Silent):
@@ -263,7 +267,9 @@ class NoPriorPointYieldsNoPrice(_Silent):
 
     With no time threshold, this is the ONLY way the association fails: the drop
     precedes every point in the series. It was 0 of 7 on the live sample, which is
-    why the Deal Trust and xAI-rescue consequences of this change are negligible.
+    why the Deal Trust consequences of this change are negligible. (The same
+    measurement also showed the xAI-rescue traffic unchanged; that rescue has since
+    been removed outright - see `tests/test_xai_rescue_excluded.py`.)
     """
 
     def test_a_drop_with_no_prior_price_point_at_all_yields_no_sale(self):
