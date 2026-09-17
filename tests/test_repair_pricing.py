@@ -723,3 +723,143 @@ class AnUnboundedDryRunIsRefused(unittest.TestCase):
         """The refusal fires before preflight has validated the database."""
         self.assertIsInstance(R._estimated_full_sweep_tokens(), int)
         self.assertGreater(R._estimated_full_sweep_tokens(), 1000)
+
+
+class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
+    """The 2026-09-17 blocker: past the cap, the price check silently passes.
+
+    `_query_xai_for_reasonableness` does not raise and does not skip the row when
+    the daily cap denies permission - it returns True
+    (`stable_calculations.py:76-78`). The price is accepted unchecked AND stamped
+    `Pricing_Logic_Version = 2`, so it drops out of the predicate and the sweep
+    never revisits it. Continuing past the cap is therefore strictly worse than
+    stopping: it launders exactly the inflated prices this script exists to
+    remove, and leaves nothing in the data to show it happened.
+
+    Measured on the 10-row dry run: ~15 xAI calls for 9 rows, most FORCED by the
+    3x-of-current-used rule, which fires on precisely the rows being repaired.
+    """
+
+    def _with_counter(self, calls_today, limit=1000, reset_today=True):
+        """Patch the in-process manager AND its on-disk state to a known count."""
+        from keepa_deals import stable_calculations as sc
+        state_path = os.path.join(self.tmp, 'xai_token_state.json')
+        with open(state_path, 'w') as fh:
+            json.dump({'last_reset_date': (str(R.date.today()) if reset_today
+                                           else '1970-01-01'),
+                       'calls_today': calls_today}, fh)
+        manager = sc.xai_token_manager
+        return patch.multiple(manager, daily_limit=limit, state_path=state_path,
+                              state={'last_reset_date': str(R.date.today()),
+                                     'calls_today': calls_today})
+
+    def test_remaining_is_reported_against_the_real_limit(self):
+        with self._with_counter(900):
+            spare, used, limit = R.xai_calls_remaining()
+        self.assertEqual((spare, used, limit), (100, 900, 1000))
+
+    def test_the_on_disk_count_is_used_when_it_is_higher(self):
+        """Ingestion burns calls this process cannot see in its own counter.
+
+        Under-reporting would make the guard fire LATE, which is the dangerous
+        direction, so the on-disk value is a floor.
+        """
+        from keepa_deals import stable_calculations as sc
+        state_path = os.path.join(self.tmp, 'xai_token_state.json')
+        with open(state_path, 'w') as fh:
+            json.dump({'last_reset_date': str(R.date.today()),
+                       'calls_today': 980}, fh)
+        with patch.multiple(sc.xai_token_manager, daily_limit=1000,
+                            state_path=state_path,
+                            state={'last_reset_date': str(R.date.today()),
+                                   'calls_today': 10}):
+            spare, used, _ = R.xai_calls_remaining()
+        self.assertEqual(used, 980, "The higher of the two counts must win.")
+        self.assertEqual(spare, 20)
+
+    def test_a_stale_on_disk_count_from_a_previous_day_is_ignored(self):
+        """The counter resets on the local date change; yesterday's total is not ours."""
+        from keepa_deals import stable_calculations as sc
+        state_path = os.path.join(self.tmp, 'xai_token_state.json')
+        with open(state_path, 'w') as fh:
+            json.dump({'last_reset_date': '1970-01-01', 'calls_today': 999}, fh)
+        with patch.multiple(sc.xai_token_manager, daily_limit=1000,
+                            state_path=state_path,
+                            state={'last_reset_date': str(R.date.today()),
+                                   'calls_today': 4}):
+            spare, used, _ = R.xai_calls_remaining()
+        self.assertEqual(used, 4)
+        self.assertEqual(spare, 996)
+
+    def test_a_missing_state_file_is_not_fatal(self):
+        from keepa_deals import stable_calculations as sc
+        with patch.multiple(sc.xai_token_manager, daily_limit=1000,
+                            state_path=os.path.join(self.tmp, 'nope.json'),
+                            state={'last_reset_date': str(R.date.today()),
+                                   'calls_today': 7}):
+            spare, used, _ = R.xai_calls_remaining()
+        self.assertEqual((spare, used), (993, 7))
+
+    def _run_main(self, argv, spare):
+        """Drive main() to the loop with everything but the headroom check stubbed."""
+        with patch.object(R, 'preflight'), \
+             patch.object(R, 'load_dotenv'), \
+             patch.object(R, 'backup_database'), \
+             patch.object(R, '_scalar', return_value=100), \
+             patch.object(R, 'xai_calls_remaining',
+                          return_value=(spare, 1000 - spare, 1000)), \
+             patch.object(R, 'fetch_targets') as targets, \
+             patch.object(R, 'repair_batch') as batch, \
+             patch('keepa_deals.token_manager.TokenManager') as tm, \
+             patch.dict(os.environ, {'KEEPA_API_KEY': 'k'}):
+            tm.return_value.REFILL_RATE_PER_MINUTE = 25.0
+            tm.return_value.tokens = 300.0
+            tm.return_value.should_skip_sync.return_value = True
+            # One batch, then empty. `fetch_targets` is patched, so it cannot
+            # honour the attempted set - without a terminating side_effect the
+            # --apply loop, which has no --limit, would spin forever.
+            targets.side_effect = [
+                [{'ASIN': 'AAAAAAAA', 'tier': 0, 'old_list_at': 900.0,
+                  'old_1yr_avg': '900', 'old_count': None, 'old_trust': '50%'}],
+                [],
+            ]
+            batch.return_value = ([], [], [])
+            code = R.main(argv + ['--log-file',
+                                  os.path.join(self.tmp, 'r.log')])
+        return code, targets, batch
+
+    def test_no_batch_runs_when_headroom_is_insufficient(self):
+        """The whole point: nothing is fetched and nothing is written."""
+        code, targets, batch = self._run_main(['--apply'], spare=10)
+        batch.assert_not_called()
+        targets.assert_not_called()
+        self.assertEqual(code, 0,
+                         "A headroom stop is a clean, resumable pause, not a "
+                         "failure - exit 0 so a wrapper does not treat it as one.")
+
+    def test_a_batch_runs_when_headroom_is_sufficient(self):
+        _, targets, batch = self._run_main(['--apply'], spare=500)
+        batch.assert_called()
+        targets.assert_called()
+
+    def test_the_headroom_is_configurable(self):
+        _, _, batch = self._run_main(['--apply', '--xai-headroom', '5'], spare=10)
+        batch.assert_called()
+
+    def test_the_stop_message_names_the_reset_and_the_reason(self):
+        logging.disable(logging.NOTSET)
+        with self.assertLogs('repair_pricing', level='WARNING') as caught:
+            self._run_main(['--apply'], spare=10)
+        body = '\n'.join(caught.output)
+        self.assertIn('xAI daily limit nearly reached', body)
+        self.assertIn('Re-run the same command after the daily reset', body)
+        self.assertIn('stable_calculations.py:76', body,
+                      "The operator needs to know WHY continuing is worse than "
+                      "stopping, not just that it stopped.")
+
+    def test_the_default_headroom_covers_a_batch_plus_ingestion(self):
+        self.assertGreaterEqual(
+            R.DEFAULT_XAI_HEADROOM,
+            R.DEFAULT_BATCH_SIZE * R.XAI_CALLS_PER_ROW,
+            "Headroom below one batch's worth of calls would let the batch in "
+            "flight cross the cap.")
