@@ -667,8 +667,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Update baseline for notifications
-            if (data.pagination && data.pagination.total_db_records) {
-                currentTotalRecords = data.pagination.total_db_records;
+            if (data.pagination && typeof data.pagination.total_records !== 'undefined') {
+                currentTotalRecords = data.pagination.total_records;
             }
             if (data.pagination && data.pagination.prime_picks_generated_at) {
                 currentPrimePicksGeneratedAt = data.pagination.prime_picks_generated_at;
