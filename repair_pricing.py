@@ -97,6 +97,22 @@ SAFETY
     racing it. It does NOT take the `smart_ingestor` lock - holding that for days
     would block every ingestion cycle.
   * Stops if the Keepa refill rate drops below 20/min.
+  * Stops while xAI calls remain (--xai-headroom, default 50). Past the daily
+    cap the AI Reasonableness Check returns True instead of failing, so an
+    unchecked price would be stamped as current and never revisited.
+
+THE xAI CAP, NOT KEEPA TOKENS, IS WHAT MAKES THIS TAKE DAYS
+-----------------------------------------------------------
+Keepa costs ~7 tokens a row: the whole 4,534-row table is ~42 hours at the live
+refill rate. The binding constraint is xAI. The sweep makes ~1.7 reasonableness
+calls per row (measured: ~15 calls for 9 rows, 2026-09-17), most of them FORCED by
+the 3x-of-current-used rule that fires on exactly the inflated rows being repaired.
+Against `max_xai_calls_per_day` (1000, shared with ingestion) that is roughly
+500-600 rows a day, so a full sweep is about 8-10 calendar days of one run per day.
+
+The daily count resets on the first call after the LOCAL date changes on the box
+(`XaiTokenManager._check_and_reset_daily_count` uses `date.today()`), so re-run
+after local midnight.
 
 DELIBERATELY NOT REQUIRED: that Celery be stopped. This runs for days alongside
 normal ingestion by design. `cleanup_low_est_rows.py` demands a quiet database
@@ -113,7 +129,7 @@ import signal
 import sqlite3
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -145,6 +161,31 @@ DEFAULT_BATCH_SIZE = 5
 DEFAULT_RESERVE_PER_ASIN = 10
 
 MIN_REFILL_RATE = 20.0
+
+# Spare xAI calls that must remain before the next batch is allowed to start.
+#
+# WHY THIS EXISTS - THE BLOCKER FOUND ON 2026-09-17. When the daily cap is hit,
+# `_query_xai_for_reasonableness` does not fail and does not skip the row: it
+# returns True (`stable_calculations.py:76-78`, "Defaulting to reasonable"). The
+# price is then accepted unchecked AND stamped `Pricing_Logic_Version = 2`, so it
+# drops out of the predicate and THIS SWEEP NEVER REVISITS IT.
+#
+# That is the worst possible failure for this script. It would silently launder
+# exactly the inflated prices it exists to remove, and leave no trace in the data
+# that it had done so.
+#
+# It is not hypothetical. On the 10-row dry run the sweep made ~15 xAI calls for 9
+# rows - about 1.7 per row - and most were FORCED by the 3x-of-current-used rule,
+# which fires precisely on the inflated rows this sweep targets. Against
+# `max_xai_calls_per_day` (1000, shared with normal ingestion) the cap arrives
+# after roughly 500-600 rows.
+#
+# So the sweep stops itself while the check still works. 50 leaves room for the
+# batch in flight (5 rows x ~1.7 = ~9 calls) plus concurrent ingestion.
+DEFAULT_XAI_HEADROOM = 50
+
+# Measured on the 2026-09-17 dry run: ~15 calls for 9 rows.
+XAI_CALLS_PER_ROW = 1.7
 
 # For the refusal message only. Measured cost is ~6 tokens for the product call
 # plus 1 for the seller call; the row count is the 2026-09-16 production sizing.
@@ -268,6 +309,55 @@ ORDER BY 1;
 # Preflight, backup
 # --------------------------------------------------------------------------
 
+def xai_calls_remaining():
+    """Spare xAI calls before the daily cap, as conservatively as this can be known.
+
+    Reads the SAME in-process `XaiTokenManager` the reasonableness check uses -
+    `keepa_deals.stable_calculations.xai_token_manager`, constructed at module
+    import (`stable_calculations.py:23`) - so the number reflects the counter that
+    will actually deny the next call.
+
+    TWO CAVEATS, both deliberate and both worth knowing before trusting the number.
+
+    1.  THE IN-PROCESS COUNT UNDER-REPORTS. `XaiTokenManager` reads
+        `xai_token_state.json` once, at construction, and thereafter increments its
+        own in-memory `calls_today`. Three separate instances exist
+        (`stable_calculations.py:23`, `seasonality_classifier.py:14`,
+        `xai_sales_inference.py:12`), and normal ingestion is writing the same file
+        concurrently. So this process's count sees its own calls plus whatever was
+        on disk when it started - never ingestion's since. Under-reporting means
+        the guard would fire LATE, which is the dangerous direction, so the on-disk
+        value is folded in as a floor. That is strictly safer than the in-process
+        count alone and costs one small file read per batch.
+        (The underlying raciness is Trello #143 and is NOT fixed here.)
+
+    2.  THE STATE PATH IS RELATIVE. `XaiTokenManager.__init__` defaults to
+        `state_path='xai_token_state.json'`, resolved against the PROCESS's working
+        directory. Run this script from anywhere but the application root and it
+        reads a different file - one that does not exist - and the count starts at
+        zero while ingestion's real count keeps climbing. Hence the CWD check in
+        `preflight`.
+    """
+    from keepa_deals.stable_calculations import xai_token_manager as manager
+
+    limit = manager.daily_limit
+    in_process = manager.state.get('calls_today', 0)
+
+    on_disk = 0
+    try:
+        with open(manager.state_path) as fh:
+            disk_state = json.load(fh)
+        if disk_state.get('last_reset_date') == str(date.today()):
+            on_disk = disk_state.get('calls_today', 0)
+    except (IOError, OSError, ValueError):
+        # No readable state file: the in-process count is all there is. Not fatal -
+        # it is the value the manager itself will enforce against.
+        pass
+
+    used = max(in_process, on_disk)
+    return max(0, limit - used), used, limit
+
+
 def _estimated_full_sweep_tokens():
     """A rough token figure for the refusal message, from the sizing on record.
 
@@ -307,6 +397,25 @@ def preflight(db_path):
     if not os.path.exists(db_path):
         raise RepairAbort("Database not found at '{}'.".format(db_path))
     logger.info("  Database: %s - OK", db_path)
+
+    # The xAI counter's state path is RELATIVE (`XaiTokenManager.__init__`
+    # defaults to 'xai_token_state.json'), so it resolves against this process's
+    # working directory. Started from elsewhere, the headroom check reads a file
+    # that does not exist, counts zero, and never fires - which is exactly the
+    # silent failure it was added to prevent.
+    if os.path.realpath(os.getcwd()) != os.path.realpath(REPO_ROOT):
+        raise RepairAbort(
+            "Working directory is '{cwd}', not the application root '{root}'.\n"
+            "The xAI daily-call state file is read by a RELATIVE path, so from "
+            "anywhere else the headroom guard silently counts zero calls used "
+            "and never stops the sweep.\n"
+            "Re-run as:  cd {root} && sudo -u {user} venv/bin/python "
+            "repair_pricing.py"
+            .format(cwd=os.getcwd(), root=REPO_ROOT, user=EXPECTED_USER))
+    logger.info("  Working directory is the application root - OK")
+
+    spare, used, limit = xai_calls_remaining()
+    logger.info("  xAI daily calls: %d of %d used, %d spare", used, limit, spare)
 
     if not os.getenv('KEEPA_API_KEY'):
         raise RepairAbort(
@@ -618,6 +727,12 @@ def main(argv=None):
     parser.add_argument('--batch-size', type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument('--reserve-per-asin', type=int,
                         default=DEFAULT_RESERVE_PER_ASIN)
+    parser.add_argument('--xai-headroom', type=int, default=DEFAULT_XAI_HEADROOM,
+                        help='Stop before a batch when fewer than this many xAI '
+                             'calls remain against the daily cap. Past the cap '
+                             'the AI Reasonableness Check silently returns True, '
+                             'so continuing would stamp unchecked prices as '
+                             'current. Default %d.' % DEFAULT_XAI_HEADROOM)
     parser.add_argument('--backup-dir', default=DEFAULT_BACKUP_DIR)
     parser.add_argument('--log-file', default=DEFAULT_LOG_PATH)
     args = parser.parse_args(argv)
@@ -716,6 +831,27 @@ def main(argv=None):
         if args.limit is not None and done >= args.limit:
             logger.info("Reached --limit %d.", args.limit)
             break
+        spare, used, limit = xai_calls_remaining()
+        if spare < args.xai_headroom:
+            logger.warning("=" * 70)
+            logger.warning(
+                "STOPPING: xAI daily limit nearly reached (%d of %d used, %d "
+                "spare, headroom %d).", used, limit, spare, args.xai_headroom)
+            logger.warning(
+                "Continuing would be WORSE than stopping. Past the cap, the AI "
+                "Reasonableness Check does not fail or skip - it returns True "
+                "(stable_calculations.py:76), so an inflated price would be")
+            logger.warning(
+                "accepted unchecked AND stamped Pricing_Logic_Version=%d, which "
+                "drops it out of the predicate. This sweep would never revisit "
+                "it.", PRICING_LOGIC_VERSION)
+            logger.warning(
+                "Nothing has been written for this batch. Re-run the same "
+                "command after the daily reset (local midnight on the box); "
+                "repaired rows are already durable and are not redone.")
+            logger.warning("=" * 70)
+            break
+
         if token_manager.REFILL_RATE_PER_MINUTE < MIN_REFILL_RATE:
             logger.warning(
                 "Refill rate is %.1f/min, below the %.0f/min floor. Stopping so "

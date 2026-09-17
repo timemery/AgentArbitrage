@@ -54,6 +54,10 @@ pkill -f repair_pricing.py                 # clean stop between batches
 
 **Rows it cannot repair** — not returned by Keepa, or rejected by heavy processing — are attempted **once per run**, recorded in a separate SKIPPED manifest with a reason, and excluded from later batches so they cannot loop.
 
+**The xAI daily cap, not Keepa tokens, is what makes the sweep take days.** Keepa costs ~7 tokens a row (~42 hours for the whole table), but the sweep makes **~1.7 AI Reasonableness calls per row** — measured 2026-09-17 — most of them *forced* by the 3x-of-current-used rule, which fires on precisely the inflated rows being repaired. Against `max_xai_calls_per_day` (1000, shared with ingestion) that is roughly **500–600 rows a day**, so a full sweep is about **8–10 calendar days** of one run per day.
+
+The sweep **stops itself while the check still works** (`--xai-headroom`, default 50). This is not politeness: past the cap `_query_xai_for_reasonableness` does not fail and does not skip the row — it returns `True` (`stable_calculations.py:76`), so an inflated price would be accepted unchecked *and* stamped `Pricing_Logic_Version = 2`, dropping it out of the predicate so the sweep never revisits it. Continuing past the cap is strictly worse than stopping. The daily count resets on the first call after the **local date changes on the box**, so re-run after local midnight.
+
 It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short). It stops on its own if the Keepa refill rate falls below 20/min. **When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
 
 **Progress:**
