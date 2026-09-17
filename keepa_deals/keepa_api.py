@@ -2,6 +2,7 @@
 # This file will contain the functions that interact with the Keepa API.
 
 import logging
+import re
 import requests
 import json
 import os
@@ -11,6 +12,38 @@ import time
 
 logger = logging.getLogger(__name__)
 SETTINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'settings.json')
+
+# Matches `key=<value>` in a Keepa URL, up to the next parameter separator.
+# Every Keepa URL in this module embeds the API key as a query parameter, so any
+# text carrying a URL - most importantly `str(requests_exception)` - carries the
+# key with it.
+_KEY_IN_URL = re.compile(r"""((?:key|api_key|apikey)=)[^&\s'"]+""", re.IGNORECASE)
+
+
+def redact(text):
+    """Strip the Keepa API key out of anything before it reaches a log.
+
+    WHY THIS EXISTS. Found 2026-09-17 in production logs:
+
+        HTTP fetch failed for seller batch with status 400: ...
+        url: https://api.keepa.com/seller?key=<THE REAL KEY>&seller=Unknown
+
+    `requests` puts the full request URL into its exception's string form, and
+    every fetcher here logged `{e}` or `{str(e)}` directly. `celery_worker.log`
+    is world-readable on the box, is copied around when debugging, and is the
+    first thing quoted into a bug report - so the key was effectively published
+    on every Keepa HTTP error.
+
+    Redacts by PATTERN rather than by comparing against the configured key, so it
+    also covers a key passed explicitly, a stale key from a previous deploy, and
+    a second account's key. It is applied to the exception text, not only to URLs
+    this module builds, because the leak arrives through the exception.
+
+    Rotate the key if these logs have left the box.
+    """
+    if not text:
+        return text
+    return _KEY_IN_URL.sub(r'\1<REDACTED>', str(text))
 
 
 def validate_asin(asin):
@@ -33,10 +66,10 @@ def get_token_status(api_key):
         logger.info(f"Successfully retrieved token status: {data}")
         return data
     except requests.exceptions.RequestException as e:
-        logger.error(f"Failed to get token status: {e}")
+        logger.error(f"Failed to get token status: {redact(e)}")
         return None
     except Exception as e:
-        logger.error(f"An unexpected error occurred while getting token status: {e}")
+        logger.error(f"An unexpected error occurred while getting token status: {redact(e)}")
         return None
 
 @retry(stop_max_attempt_number=3, wait_fixed=5000)
@@ -167,10 +200,10 @@ def fetch_deals_for_deals(page, api_key, use_deal_settings=False, sort_type=4, t
             raise e
 
         # Non-retryable error
-        logger.error(f"Deal fetch failed: {status_code or 'N/A'}, {e.response.text if e.response else e}")
+        logger.error(f"Deal fetch failed: {status_code or 'N/A'}, {redact(e.response.text if e.response else e)}")
         return None, tokens_consumed, tokens_left
     except Exception as e:
-        logger.error(f"Deal fetch exception: {str(e)}")
+        logger.error(f"Deal fetch exception: {redact(e)}")
         return None, 0, None
 
 
@@ -205,7 +238,7 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response is not None else 'N/A'
-        logger.error(f"HTTP Fetch failed for batch ASINs {','.join(asins_list[:3])}... with status {status_code}: {str(e)}")
+        logger.error(f"HTTP Fetch failed for batch ASINs {','.join(asins_list[:3])}... with status {status_code}: {redact(e)}")
         
         tokens_consumed_on_error = 0
         tokens_left_on_error = None
@@ -223,7 +256,7 @@ def fetch_product_batch(api_key, asins_list, days=365, offers=20, rating=1, hist
         return None, api_info_on_error, tokens_consumed_on_error, tokens_left_on_error
 
     except Exception as e:
-        logger.error(f"Generic Fetch failed for batch ASINs {','.join(asins_list[:3])}...: {str(e)}")
+        logger.error(f"Generic Fetch failed for batch ASINs {','.join(asins_list[:3])}...: {redact(e)}")
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
         return None, api_info_on_error, 0, None
 
@@ -258,7 +291,7 @@ def fetch_current_stats_batch(api_key, asins_list, days=180, offers=20):
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response is not None else 'N/A'
-        logger.error(f"HTTP Fetch (Lightweight) failed for batch ASINs {','.join(asins_list[:3])}... with status {status_code}: {str(e)}")
+        logger.error(f"HTTP Fetch (Lightweight) failed for batch ASINs {','.join(asins_list[:3])}... with status {status_code}: {redact(e)}")
 
         tokens_consumed_on_error = 0
         tokens_left_on_error = None
@@ -276,7 +309,7 @@ def fetch_current_stats_batch(api_key, asins_list, days=180, offers=20):
         return None, api_info_on_error, tokens_consumed_on_error, tokens_left_on_error
 
     except Exception as e:
-        logger.error(f"Generic Fetch (Lightweight) failed: {str(e)}")
+        logger.error(f"Generic Fetch (Lightweight) failed: {redact(e)}")
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
         return None, api_info_on_error, 0, None
 
@@ -312,7 +345,7 @@ def fetch_seller_data(api_key, seller_ids):
 
     except requests.exceptions.RequestException as e:
         status_code = e.response.status_code if e.response is not None else 'N/A'
-        logger.error(f"HTTP fetch failed for seller batch with status {status_code}: {e}")
+        logger.error(f"HTTP fetch failed for seller batch with status {status_code}: {redact(e)}")
         
         tokens_consumed_on_error = 0
         tokens_left_on_error = None
@@ -330,6 +363,6 @@ def fetch_seller_data(api_key, seller_ids):
         return None, api_info_on_error, tokens_consumed_on_error, tokens_left_on_error
         
     except Exception as e:
-        logger.error(f"An unexpected error occurred while fetching seller data: {e}", exc_info=True)
+        logger.error(f"An unexpected error occurred while fetching seller data: {redact(e)}", exc_info=True)
         api_info_on_error = {'error_status_code': 'GENERIC_SCRIPT_ERROR'}
         return None, api_info_on_error, 0, None
