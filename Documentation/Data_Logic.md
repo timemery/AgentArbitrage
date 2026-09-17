@@ -175,6 +175,13 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Written on the heavy path only.** The light path preserves the stored value; recomputing needs Keepa `csv` history a light fetch does not carry.
     -   **`0` vs `NULL`**: `0` means computed-and-none-found; `NULL` means never computed (a legacy row, or one only ever touched by the light path). **`NULL` must never be read as zero, and neither value is used to hide a deal.**
 
+-   **`Pricing_Logic_Version`**
+    -   **Logic**: The value of `PRICING_LOGIC_VERSION` (`keepa_deals/pricing_version.py`) at the moment this row's prices were computed. Written **only** by `_process_single_deal`, beside `Inferred Sale Count`. Heavy path only.
+    -   **Why it exists**: nothing else dates a row's pricing. `last_seen_utc` and `source` are rewritten by the heavy path, the light path and the Stale Rescue alike, so `source` says who touched the row LAST, not who priced it. `Inferred_Sale_Count` looks like it should work and does not — rows priced between 2026-09-11 and 2026-09-12 16:50 UTC carry a count *and* pre-fix prices.
+    -   **NULL rule**: `NULL` or a value below `PRICING_LOGIC_VERSION` means **stale pricing, due a heavy re-fetch**. This is used for SCHEDULING work, and is deliberately the reverse of the `Inferred_Sale_Count` NULL rule above, which governs whether a deal may be SHOWN. Never merge the two.
+    -   **Never written by**: the light path, the Stale Rescue, `recalculator.py`, the janitor. **Never backfilled.**
+    -   **Consumed by**: `repair_pricing.py`, which selects `IS NULL OR < PRICING_LOGIC_VERSION`. A future pricing fix re-uses that script unchanged by bumping the constant.
+
 -   **`Percent Down` (% ⇩)**:
     -   **Source**: `keepa_deals/new_analytics.py`.
     -   **Logic**: `((1yr. Avg. - Price Now) / 1yr. Avg.) * 100`.

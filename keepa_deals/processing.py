@@ -9,6 +9,7 @@ from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_tre
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
 from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score, get_expected_trough_price
+from .pricing_version import PRICING_LOGIC_VERSION, PRICING_VERSION_HEADER
 from .stable_products import sales_rank_drops_last_30_days, sales_rank_drops_last_180_days, amazon_current
 from .field_mappings import FUNCTION_LIST
 from .db_utils import sanitize_col_name
@@ -163,6 +164,20 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         # NULL. NULL means "never computed" - it must never be read as zero and
         # must never be used to hide a deal.
         row_data['Inferred Sale Count'] = sales_perf.get('inferred_sale_count')
+
+        # Pricing Logic Version. Stamped HERE and NOWHERE ELSE, because this is the
+        # only place in the system where List at and 1yr. Avg. are actually
+        # computed. The light path, the Stale Rescue, the recalculator and the
+        # janitor must never write it: a light update that stamped the current
+        # version would claim a row's prices are current when nothing recomputed
+        # them, which is the exact confusion this column exists to remove.
+        #
+        # Display-keyed like the rest of this row; to_db_keys re-keys it to
+        # 'Pricing_Logic_Version' in smart_ingestor before the upsert (AGENTS.md
+        # 7.12). NULL means "priced by unknown logic" and counts as STALE for
+        # scheduling - see keepa_deals/pricing_version.py for why that is the
+        # opposite of the Inferred_Sale_Count NULL rule. There is no backfill.
+        row_data[PRICING_VERSION_HEADER] = PRICING_LOGIC_VERSION
 
         # Ensure Expected Trough Price is numeric float
         if 'expected_trough_price_cents' in sales_perf and sales_perf['expected_trough_price_cents'] > 0:

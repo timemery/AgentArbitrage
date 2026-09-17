@@ -245,5 +245,6 @@
   "Total AMZ fees",
   "last_seen_utc",
   "source",
-  "Inferred Sale Count"
+  "Inferred Sale Count",
+  "Pricing Logic Version"
 ]

@@ -28,6 +28,47 @@ A model-asserted sale is not an offer drop correlated with a rank drop. It retur
 
 Affected rows are **not identifiable by query**: `price_source` was computed but never persisted, so the only markers are the log lines and the weak `List_at == 1yr_Avg` heuristic. Existing rows keep their rescued values until a heavy re-fetch replaces them. `keepa_deals/xai_sales_inference.py` is retained (the dormant `Keepa_Deals.py` path references it) but nothing live calls it; `tests/test_xai_rescue_excluded.py` pins the absence.
 
+### Pricing Logic Version & Repair (September 2026)
+`Pricing_Logic_Version` records which pricing logic wrote a row's prices, because **nothing else in the schema does** — `last_seen_utc` and `source` are rewritten by every path, and `Inferred_Sale_Count` is disproved by rows priced between 2026-09-11 and the 09-12 association fix, which carry a count alongside pre-fix prices.
+
+`NULL` or a value below the current `PRICING_LOGIC_VERSION` means **stale pricing, due a heavy re-fetch**. That is a SCHEDULING rule and is deliberately the opposite of the `Inferred_Sale_Count` NULL rule, which governs whether a deal may be shown. There is no backfill.
+
+`repair_pricing.py` is the only way an existing row reaches the heavy path: the Smart Ingestor routes existing ASINs to the light path unconditionally, and the light path, Stale Rescue and recalculator all leave `List_at`/`1yr_Avg` untouched. It repairs visible rows first, then priced rows by `List_at` DESC, then unpriced. Resumption falls out of the predicate — a repaired row carries the current version and stops matching — so an interrupted multi-day run is restarted with the same command.
+
+**A future pricing fix re-uses the same script by bumping the constant.** No new script, no new predicate.
+
+**Running it** (it runs for days; run it detached, as `www-data`):
+
+```bash
+cd /var/www/agentarbitrage
+# Preview first. A dry run SPENDS Keepa tokens but writes nothing, so --limit is
+# REQUIRED - an unbounded dry run is refused outright.
+sudo -u www-data venv/bin/python repair_pricing.py --limit 10
+# Then let it go.
+sudo -u www-data nohup venv/bin/python repair_pricing.py --apply > /dev/null 2>&1 &
+tail -f Diagnostics/repair_pricing.log     # progress
+pkill -f repair_pricing.py                 # clean stop between batches
+```
+
+**Two columns it cannot recompute.** `Deal_found` and `last_price_change` (the dashboard's "Ago") come from the /deal feed object, which the ingestor merges into `product_data` but which cannot be fetched for an arbitrary ASIN. Their stored values are **carried forward** rather than blanked. That is an explicit two-column allowlist established by auditing all 67 non-`None` `FUNCTION_LIST` entries, by source and empirically; every pricing column is still overwritten, including to NULL.
+
+**Rows it cannot repair** — not returned by Keepa, or rejected by heavy processing — are attempted **once per run**, recorded in a separate SKIPPED manifest with a reason, and excluded from later batches so they cannot loop.
+
+It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short). It stops on its own if the Keepa refill rate falls below 20/min. **When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
+
+**Progress:**
+
+```sql
+SELECT COALESCE(CAST("Pricing_Logic_Version" AS TEXT), 'NULL (stale)') AS version,
+       COUNT(*)                                                        AS rows,
+       SUM(CASE WHEN "List_at" > 0 THEN 1 ELSE 0 END)                  AS priced,
+       ROUND(AVG(CASE WHEN "List_at" > 0 THEN "List_at" END), 2)       AS avg_list_at,
+       SUM(CASE WHEN "List_at" >= 1000 THEN 1 ELSE 0 END)              AS four_figure
+FROM deals GROUP BY 1 ORDER BY 1;
+```
+
+Baseline at 2026-09-16: 4,534 rows, 3,070 priced, 1,100 visible, 17 at or above $1,000 (avg $1,155.91). Expect `four_figure` to reach 0 and the stale row count to fall to 0.
+
 ### Price Association Fix (September 2026)
 The price attached to an inferred sale is now the last history point **strictly before** the offer drop, at **any** distance. `merge_asof(direction='backward', allow_exact_matches=False)` in `keepa_deals/stable_calculations.py`.
 
