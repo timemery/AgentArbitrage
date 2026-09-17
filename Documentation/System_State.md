@@ -49,6 +49,10 @@ tail -f Diagnostics/repair_pricing.log     # progress
 pkill -f repair_pricing.py                 # clean stop between batches
 ```
 
+**Two columns it cannot recompute.** `Deal_found` and `last_price_change` (the dashboard's "Ago") come from the /deal feed object, which the ingestor merges into `product_data` but which cannot be fetched for an arbitrary ASIN. Their stored values are **carried forward** rather than blanked. That is an explicit two-column allowlist established by auditing all 67 non-`None` `FUNCTION_LIST` entries, by source and empirically; every pricing column is still overwritten, including to NULL.
+
+**Rows it cannot repair** — not returned by Keepa, or rejected by heavy processing — are attempted **once per run**, recorded in a separate SKIPPED manifest with a reason, and excluded from later batches so they cannot loop.
+
 It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short). It stops on its own if the Keepa refill rate falls below 20/min. **When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
 
 **Progress:**

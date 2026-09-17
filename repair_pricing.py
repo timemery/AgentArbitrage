@@ -71,6 +71,17 @@ Stop it cleanly - it finishes the batch in flight, commits it, and exits:
 Resume - just run the same command again. Repaired rows carry the current version
 and drop out of the predicate by themselves, so nothing is redone.
 
+WHAT IT DOES NOT REPAIR
+-----------------------
+Two columns come from the /deal feed object, which this script cannot fetch for an
+arbitrary ASIN: `Deal_found` and `last_price_change` (the dashboard's "Ago"). Their
+STORED values are carried forward rather than blanked - see CARRY_FORWARD_COLUMNS
+below for the audit that establishes those are the only two.
+
+A row Keepa does not return, or that heavy processing rejects, is left untouched
+and recorded in a SKIPPED manifest beside the repaired one. It is attempted once
+per run, not once per batch, so an unrepairable row cannot loop.
+
 SAFETY
 ------
   * Refuses to run as anyone but www-data.
@@ -155,6 +166,51 @@ VISIBLE_PREDICATE = """
 PRICED_PREDICATE = '"List_at" IS NOT NULL AND "List_at" > 0'
 
 
+# --------------------------------------------------------------------------
+# Deal-feed carry-forward
+# --------------------------------------------------------------------------
+#
+# THE PROBLEM. The ingestor's heavy path does `product_data.update(deal)`
+# (`smart_ingestor.py:573`) before calling `_process_single_deal`, so the merged
+# dict carries the /deal feed object's keys alongside the /product response. This
+# script only has the /product response - the /deal feed cannot be queried for an
+# arbitrary ASIN - so any field function reading a deal-only key gets nothing and
+# returns its `-` sentinel, which the full-column upsert then writes over a
+# perfectly good stored value.
+#
+# THE AUDIT. Every one of the 67 non-None FUNCTION_LIST entries was checked, by
+# source and then empirically by running the whole list twice against the same
+# fixture with and without the deal keys (`creationDate`, `currentSince`,
+# `current`, `lastUpdate`, `deltaPercent`). Exactly TWO columns differ:
+#
+#   Deal_found         `deal_found` (stable_deals.py:88) reads `creationDate`;
+#                      absent -> returns '-'.
+#   last_price_change  `last_price_change` (stable_deals.py:211) is called as
+#                      `func(product_data)` - ONE positional argument - so the
+#                      merged dict binds to its `deal_object` parameter and its
+#                      own `product_data` parameter stays None. Its csv branch
+#                      reads that parameter, so the branch never fires, on the
+#                      ingestor too (AGENTS.md 7.3). It therefore always falls
+#                      back to `deal_object.get('currentSince')` (:252); absent
+#                      -> '-'. That is the dashboard's "Ago" column.
+#
+# `last update` is not affected: FUNCTION_LIST[10] is None and the column is
+# deliberately never populated (AGENTS.md 7.3). Every direct read in
+# `_process_single_deal` itself - asin, title, manufacturer, fbaFees,
+# referralFeePercentage, offers, categoryTree - is a /product key.
+#
+# THE RULE. Carry the stored value forward ONLY for these two, ONLY when the
+# repair could not compute one. This is an explicit allowlist of NON-PRICING
+# columns, not a general preservation pass: `List_at`, `1yr_Avg`, `Deal_Trust`,
+# `Inferred_Sale_Count`, `Pricing_Logic_Version` and every pricing-derived column
+# (`Profit`, `Margin`, `Percent_Down`, ...) must be overwritten, including to
+# NULL. Preserving any of those would make this script an expensive no-op.
+#
+# This is NOT `_merge_db_keyed`. That helper applies the guard to EVERY value it
+# merges, which is right for the light path and exactly wrong here.
+CARRY_FORWARD_COLUMNS = ('Deal_found', 'last_price_change')
+
+
 def build_target_sql(stale_predicate):
     """The ordered target query. Re-run per batch, never snapshotted.
 
@@ -163,25 +219,28 @@ def build_target_sql(stale_predicate):
     taken at the start of a multi-day run would send tokens after ASINs that no
     longer exist. And normal ingestion keeps writing, so the visible set moves.
     """
+    carried = ''.join('               "{c}" AS stored_{c},\n'.format(c=c)
+                      for c in CARRY_FORWARD_COLUMNS)
     return """
         SELECT "ASIN",
                "List_at"              AS old_list_at,
                "1yr_Avg"              AS old_1yr_avg,
                "Inferred_Sale_Count"  AS old_count,
                "Deal_Trust"           AS old_trust,
-               CASE
+{carried}               CASE
                    WHEN {visible} THEN 0
                    WHEN {priced}  THEN 1
                    ELSE 2
                END AS tier
         FROM {table}
         WHERE {stale}
+          AND "ASIN" NOT IN (SELECT asin FROM attempted_this_run)
         ORDER BY tier ASC,
                  CASE WHEN {priced} THEN "List_at" ELSE 0 END DESC,
                  "ASIN" ASC
         LIMIT ?
-    """.format(visible=VISIBLE_PREDICATE.strip(), priced=PRICED_PREDICATE,
-               table=TABLE_NAME, stale=stale_predicate)
+    """.format(carried=carried, visible=VISIBLE_PREDICATE.strip(),
+               priced=PRICED_PREDICATE, table=TABLE_NAME, stale=stale_predicate)
 
 
 PROGRESS_SQL = """
@@ -319,10 +378,29 @@ class GracefulStop:
 # The repair itself
 # --------------------------------------------------------------------------
 
-def fetch_targets(db_path, sql, limit):
+def fetch_targets(db_path, sql, limit, attempted=()):
+    """Next `limit` stale rows, excluding every ASIN already attempted this run.
+
+    WHY THE EXCLUSION EXISTS. A target that Keepa does not return, or whose
+    processing raises, or which `_process_single_deal` rejects (no used offer, say)
+    is left untouched - so it stays stale and sorts straight back to the TOP of the
+    next batch. Without this set an unlimited `--apply` run re-fetches the same
+    unrepairable rows forever, burning ~7 tokens each time round, and a dry run with
+    `--limit 20` previews the same 5 rows four times.
+
+    The set lives in a TEMP table rather than in bound parameters. Temp tables work
+    fine against a read-only main database (they live in a separate temp store), and
+    unlike a `NOT IN (?,?,...)` list they have no variable-count ceiling - which
+    matters because in the worst case (Keepa unreachable) every row in the table
+    ends up in this set.
+    """
     con = sqlite3.connect('file:{}?mode=ro'.format(db_path), uri=True)
     con.row_factory = sqlite3.Row
     try:
+        con.execute('CREATE TEMP TABLE attempted_this_run (asin TEXT PRIMARY KEY)')
+        if attempted:
+            con.executemany('INSERT OR IGNORE INTO attempted_this_run VALUES (?)',
+                            [(a,) for a in attempted])
         return [dict(r) for r in con.execute(sql, (limit,)).fetchall()]
     finally:
         con.close()
@@ -355,17 +433,19 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
         token_manager.update_after_call(tokens_left)
 
     if not resp or 'products' not in resp:
-        logger.warning("  Fetch returned nothing for %s. Skipping batch.", asins)
-        return [], []
+        logger.warning("  Fetch returned nothing for %s.", asins)
+        return [], [], [(a, 'Keepa returned no products for the batch')
+                        for a in asins]
 
     products = {p['asin']: p for p in resp['products']}
-    rows, outcomes = [], []
+    rows, outcomes, skipped = [], [], []
 
     for target in targets:
         asin = target['ASIN']
         product = products.get(asin)
         if not product:
             logger.warning("  %s: not returned by Keepa. Left untouched.", asin)
+            skipped.append((asin, 'not returned by Keepa'))
             continue
         try:
             seller_cache = get_seller_info_for_single_deal(
@@ -374,11 +454,14 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
             if not row:
                 logger.warning("  %s: heavy processing returned nothing. "
                                "Left untouched.", asin)
+                skipped.append((asin, 'heavy processing returned nothing '
+                                      '(usually: no used offer)'))
                 continue
             row = clean_numeric_values(row)
             row = to_db_keys(row)
             row['last_seen_utc'] = datetime.now(timezone.utc).isoformat()
             row['source'] = SOURCE_MARKER
+            carry_forward_deal_feed_columns(row, target)
             rows.append(row)
             outcomes.append({
                 'ASIN': asin,
@@ -395,6 +478,7 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
         except Exception as exc:
             logger.error("  %s: heavy processing failed (%s). Left untouched.",
                          asin, exc, exc_info=True)
+            skipped.append((asin, 'heavy processing raised: {}'.format(exc)))
 
     if apply_changes and rows:
         from keepa_deals.db_utils import (get_db_connection, upsert_deal_rows,
@@ -406,7 +490,34 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
             upsert_deal_rows(cur, rows, headers)
             con.commit()
 
-    return rows, outcomes
+    return rows, outcomes, skipped
+
+
+def carry_forward_deal_feed_columns(row, target):
+    """Put back the stored value for the two deal-feed-only columns.
+
+    Only when the repair could not compute one: the heavy path reports "no value"
+    in band, under the column's own key, as the string `-`. Writing that through
+    the full-column upsert would blank a good stored `Deal_found` or the
+    dashboard's "Ago" column on every repaired row.
+
+    Scope is the explicit `CARRY_FORWARD_COLUMNS` allowlist and nothing else. It
+    reuses `_is_no_data` from `processing.py` for the sentinel test - that is the
+    shared definition of "the field function had nothing", NOT `_merge_db_keyed`,
+    which applies the same guard to every column and would preserve the stale
+    prices this script exists to replace.
+    """
+    from keepa_deals.processing import _is_no_data
+
+    for column in CARRY_FORWARD_COLUMNS:
+        computed = row.get(column)
+        if not _is_no_data(computed):
+            continue                      # the repair worked; keep what it found
+        stored = target.get('stored_{}'.format(column))
+        if _is_no_data(stored):
+            continue                      # nothing better to fall back to
+        row[column] = stored
+    return row
 
 
 def _fmt(value):
@@ -435,6 +546,24 @@ def write_manifest(backup_dir, timestamp, mode, asins):
     with open(path, 'w') as fh:
         fh.write('\n'.join(asins) + ('\n' if asins else ''))
     logger.info("  ASIN manifest: %s (%d)", path, len(asins))
+    return path
+
+
+def write_skip_manifest(backup_dir, timestamp, mode, skipped):
+    """Skipped and failed ASINs, with the reason, in their own file.
+
+    Kept separate from the repaired manifest because these rows are still stale
+    after the run: they are the follow-up list, not the record of work done.
+    """
+    if not skipped:
+        return None
+    os.makedirs(backup_dir, exist_ok=True)
+    path = os.path.join(
+        backup_dir, 'pricing_repair_skipped_{}_{}.txt'.format(mode, timestamp))
+    with open(path, 'w') as fh:
+        for asin, reason in skipped:
+            fh.write('{}\t{}\n'.format(asin, reason))
+    logger.info("  SKIPPED manifest: %s (%d)", path, len(skipped))
     return path
 
 
@@ -534,7 +663,11 @@ def main(argv=None):
 
     stop = GracefulStop()
     sql = build_target_sql(STALE_PRICING_PREDICATE)
-    done, all_asins = 0, []
+    done, all_asins, all_skipped = 0, [], []
+    # Every ASIN this run has spent tokens on, repaired or not. Excluded from the
+    # target query so an unrepairable row is fetched ONCE per run instead of
+    # sorting back to the top of every batch forever.
+    attempted = set()
 
     while True:
         if stop.requested:
@@ -552,14 +685,24 @@ def main(argv=None):
 
         remaining = (args.batch_size if args.limit is None
                      else min(args.batch_size, args.limit - done))
-        targets = fetch_targets(DB_PATH, sql, remaining)
+        targets = fetch_targets(DB_PATH, sql, remaining, attempted)
         if not targets:
-            logger.info("No stale-pricing rows left.")
+            if all_skipped:
+                logger.info("No stale-pricing rows left that this run has not "
+                            "already attempted. %d row(s) could not be repaired "
+                            "- see the SKIPPED manifest.", len(all_skipped))
+            else:
+                logger.info("No stale-pricing rows left.")
             break
 
-        logger.info("Batch of %d (done %d / %d)", len(targets), done, total_stale)
+        logger.info("Batch of %d (attempted %d / %d, repaired %d, skipped %d)",
+                    len(targets), done, total_stale, len(all_asins),
+                    len(all_skipped))
+        # Mark BEFORE the fetch: a crash mid-batch must not put these rows back at
+        # the top of the next batch within this same run.
+        attempted.update(t['ASIN'] for t in targets)
         try:
-            _, outcomes = repair_batch(
+            _, outcomes, skipped = repair_batch(
                 targets, api_key, xai_api_key, token_manager,
                 args.reserve_per_asin, args.apply)
         except Exception as exc:
@@ -569,21 +712,19 @@ def main(argv=None):
 
         print_outcomes(outcomes, args.apply)
         all_asins.extend(o['ASIN'] for o in outcomes)
+        all_skipped.extend(skipped)
+        for asin, reason in skipped:
+            logger.warning("  SKIPPED %s: %s", asin, reason)
         done += len(targets)
 
-        if not args.apply:
-            # The dry run cannot rely on the predicate to advance: nothing was
-            # written, so the same rows come back. --limit is what ends it.
-            if args.limit is None:
-                logger.warning("Dry run with no --limit would loop forever on the "
-                               "same rows. Stopping after one batch.")
-                break
-
     write_manifest(args.backup_dir, timestamp, mode, all_asins)
+    write_skip_manifest(args.backup_dir, timestamp, mode, all_skipped)
 
     logger.info("=" * 70)
-    logger.info("%s: %d row(s) %s.", mode.upper(), len(all_asins),
-                'repaired' if args.apply else 'previewed')
+    logger.info("%s: %d row(s) %s, %d skipped, %d attempted.",
+                mode.upper(), len(all_asins),
+                'repaired' if args.apply else 'previewed',
+                len(all_skipped), len(attempted))
     remaining_stale = _scalar(
         DB_PATH, 'SELECT COUNT(*) FROM {} WHERE {}'.format(
             TABLE_NAME, STALE_PRICING_PREDICATE))

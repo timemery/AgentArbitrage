@@ -96,8 +96,13 @@ def _build_db(path, rows):
     con.close()
 
 
-def _row(asin, version=None, list_at=None, yr_avg=None, profit=None, count=None):
+def _row(asin, version=None, list_at=None, yr_avg=None, profit=None, count=None,
+         deal_found=None, last_price_change=None):
     row = {'ASIN': asin}
+    if deal_found is not None:
+        row['Deal_found'] = deal_found
+    if last_price_change is not None:
+        row['last_price_change'] = last_price_change
     if version is not None:
         row[PRICING_VERSION_COLUMN] = version
     if list_at is not None:
@@ -248,7 +253,8 @@ class TheDryRunWritesNothing(_Silent):
                 {'products': [{'asin': t['ASIN']} for t in targets]},
                 {}, 0, 100)
             heavy.return_value = dict(processed)
-            return R.repair_batch(targets, 'key', None, _TM(), 10, apply_changes)
+            return R.repair_batch(targets, 'key', None, _TM(), 10,
+                                  apply_changes)
 
     def test_dry_run_leaves_every_stored_value_unchanged(self):
         _build_db(self.db, [_row('DRYRUN01', list_at='999.0', yr_avg='999.0')])
@@ -265,7 +271,7 @@ class TheDryRunWritesNothing(_Silent):
 
     def test_dry_run_still_reports_what_it_would_have_written(self):
         _build_db(self.db, [_row('DRYRUN01', list_at='999.0', yr_avg='999.0')])
-        _, outcomes = self._run_batch(apply_changes=False)
+        _, outcomes, _ = self._run_batch(apply_changes=False)
         self.assertEqual(len(outcomes), 1)
         self.assertEqual(outcomes[0]['old_list_at'], 999.0)
         self.assertEqual(outcomes[0]['new_list_at'], 42.0)
@@ -395,3 +401,262 @@ class OperatorAffordances(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class DealFeedColumnsAreCarriedForward(_Silent):
+    """The two columns the repair structurally cannot compute.
+
+    The ingestor merges the /deal feed object into product_data before the heavy
+    path (`smart_ingestor.py:573`). This script has only the /product response, so
+    `deal_found` (reads `creationDate`) and `last_price_change` (falls back to
+    `deal_object.currentSince`, because its csv branch never fires under a
+    single-positional call) both return their `-` sentinel - which the full-column
+    upsert would then write over good stored values, blanking the dashboard's
+    "Ago" column on every repaired row.
+
+    Pinned here BOTH ways: the two are carried forward, and the pricing columns
+    are still overwritten, including to NULL.
+    """
+
+    def _apply(self, computed, stored):
+        """Run the carry-forward helper with one computed row and one stored row."""
+        target = {'ASIN': 'CARRY001'}
+        target.update({'stored_{}'.format(k): v for k, v in stored.items()})
+        row = dict(computed)
+        R.carry_forward_deal_feed_columns(row, target)
+        return row
+
+    def test_a_dash_from_the_repair_is_replaced_by_the_stored_value(self):
+        row = self._apply({'Deal_found': '-', 'last_price_change': '-'},
+                          {'Deal_found': '2026-09-01T10:00:00-04:00',
+                           'last_price_change': '2026-09-14 08:00:00'})
+        self.assertEqual(row['Deal_found'], '2026-09-01T10:00:00-04:00')
+        self.assertEqual(row['last_price_change'], '2026-09-14 08:00:00')
+
+    def test_a_value_the_repair_did_compute_is_kept(self):
+        """Carry-forward is a fallback, never an override."""
+        row = self._apply({'Deal_found': 'FRESH', 'last_price_change': 'FRESH'},
+                          {'Deal_found': 'STALE', 'last_price_change': 'STALE'})
+        self.assertEqual(row['Deal_found'], 'FRESH')
+        self.assertEqual(row['last_price_change'], 'FRESH')
+
+    def test_nothing_stored_means_nothing_to_carry(self):
+        row = self._apply({'Deal_found': '-'}, {'Deal_found': None})
+        self.assertEqual(row['Deal_found'], '-')
+
+    def test_the_allowlist_holds_only_non_pricing_columns(self):
+        forbidden = {'List_at', '1yr_Avg', 'Deal_Trust', 'Inferred_Sale_Count',
+                     PRICING_VERSION_COLUMN, 'Profit', 'Margin', 'Percent_Down',
+                     'Total_AMZ_fees', 'All_in_Cost', 'Min_Listing_Price'}
+        self.assertEqual(set(R.CARRY_FORWARD_COLUMNS) & forbidden, set(),
+                         "Carrying forward a pricing column would make the whole "
+                         "script an expensive no-op.")
+        self.assertEqual(set(R.CARRY_FORWARD_COLUMNS),
+                         {'Deal_found', 'last_price_change'},
+                         "The audit found exactly these two. Adding to this list "
+                         "needs the audit re-run, not a guess.")
+
+    def test_pricing_columns_are_still_overwritten_even_to_null(self):
+        """The carry-forward must not creep into the pricing columns.
+
+        A zero-sale re-fetch produces List_at=None and no 1yr_Avg key at all; both
+        must reach the database as NULL even though the stored row has values.
+        """
+        target = {'ASIN': 'CARRY001',
+                  'stored_Deal_found': '2026-09-01T10:00:00-04:00',
+                  'stored_last_price_change': '2026-09-14 08:00:00'}
+        row = {'ASIN': 'CARRY001', 'List_at': None, 'Deal_Trust': '0%',
+               'Inferred_Sale_Count': 0, 'Deal_found': '-',
+               'last_price_change': '-'}
+        R.carry_forward_deal_feed_columns(row, target)
+        self.assertIsNone(row['List_at'])
+        self.assertNotIn('1yr_Avg', row)
+        self.assertEqual(row['Inferred_Sale_Count'], 0)
+        self.assertEqual(row['Deal_found'], '2026-09-01T10:00:00-04:00')
+
+    def test_the_target_query_selects_the_stored_values(self):
+        """The helper cannot carry anything the query did not fetch."""
+        _build_db(self.db, [_row('CARRY001', list_at='10.0',
+                                 deal_found='2026-09-01T10:00:00-04:00',
+                                 last_price_change='2026-09-14 08:00:00')])
+        target = self._targets()[0]
+        self.assertEqual(target['stored_Deal_found'],
+                         '2026-09-01T10:00:00-04:00')
+        self.assertEqual(target['stored_last_price_change'],
+                         '2026-09-14 08:00:00')
+
+    def test_end_to_end_a_repaired_row_keeps_both_and_loses_its_price(self):
+        """The whole defect, through the real upsert."""
+        from keepa_deals import db_utils
+        with open(HEADERS_PATH) as fh:
+            headers = json.load(fh)
+        _build_db(self.db, [_row('CARRY001', list_at='999.0', yr_avg='999.0',
+                                 count=7,
+                                 deal_found='2026-09-01T10:00:00-04:00',
+                                 last_price_change='2026-09-14 08:00:00')])
+        target = self._targets()[0]
+
+        # What the heavy path produces here: no deal feed, and zero sales now.
+        row = {'ASIN': 'CARRY001', 'List_at': None, 'Deal_found': '-',
+               'last_price_change': '-', 'Inferred_Sale_Count': 0,
+               'Deal_Trust': '0%', PRICING_VERSION_COLUMN: PRICING_LOGIC_VERSION}
+        R.carry_forward_deal_feed_columns(row, target)
+
+        con = sqlite3.connect(self.db)
+        cur = con.cursor()
+        db_utils.upsert_deal_rows(cur, [row], headers)
+        con.commit()
+        got = cur.execute(
+            'SELECT "Deal_found", "last_price_change", "List_at", "1yr_Avg", '
+            '"Inferred_Sale_Count" FROM deals WHERE "ASIN" = ?',
+            ('CARRY001',)).fetchone()
+        con.close()
+
+        self.assertEqual(got[0], '2026-09-01T10:00:00-04:00',
+                         "Deal_found must survive the repair.")
+        self.assertEqual(got[1], '2026-09-14 08:00:00',
+                         "The Ago column must survive the repair.")
+        self.assertIsNone(got[2], "List_at must still be overwritten to NULL.")
+        self.assertIsNone(got[3], "1yr_Avg must still be overwritten to NULL.")
+        self.assertEqual(got[4], 0)
+
+
+class UnrepairableRowsAreAttemptedOncePerRun(_Silent):
+    """A row Keepa never returns must not sort back to the top of every batch.
+
+    Without the attempted set an unlimited `--apply` run re-fetches the same
+    unrepairable rows forever at ~7 tokens a time, and a dry run with `--limit 20`
+    previews the same 5 rows four times.
+    """
+
+    def test_an_attempted_asin_is_excluded_from_the_next_batch(self):
+        _build_db(self.db, [_row('STUCK001', list_at='900.0'),
+                            _row('GOOD0001', list_at='100.0')])
+        first = [t['ASIN'] for t in self._targets(limit=1)]
+        self.assertEqual(first, ['STUCK001'])
+
+        sql = R.build_target_sql(STALE_PRICING_PREDICATE)
+        second = [t['ASIN'] for t in
+                  R.fetch_targets(self.db, sql, 1, attempted=set(first))]
+        self.assertEqual(second, ['GOOD0001'],
+                         "A stuck row must not be re-selected within the run.")
+
+    def test_the_run_ends_when_only_attempted_rows_remain(self):
+        _build_db(self.db, [_row('STUCK001', list_at='900.0'),
+                            _row('STUCK002', list_at='800.0')])
+        sql = R.build_target_sql(STALE_PRICING_PREDICATE)
+        rest = R.fetch_targets(self.db, sql, 50,
+                               attempted={'STUCK001', 'STUCK002'})
+        self.assertEqual(rest, [],
+                         "With every stale row attempted, the loop must end "
+                         "rather than spin.")
+
+    def test_a_dry_run_previews_distinct_rows_across_batches(self):
+        """`--limit 2*batch` must preview 2*batch DISTINCT rows, not one batch twice."""
+        batch = 5
+        _build_db(self.db, [_row('ASIN%05d' % i, list_at=str(1000 - i))
+                            for i in range(batch * 2)])
+        sql = R.build_target_sql(STALE_PRICING_PREDICATE)
+        attempted, seen = set(), []
+        for _ in range(2):
+            got = R.fetch_targets(self.db, sql, batch, attempted)
+            seen.extend(t['ASIN'] for t in got)
+            attempted.update(t['ASIN'] for t in got)
+        self.assertEqual(len(seen), batch * 2)
+        self.assertEqual(len(set(seen)), batch * 2,
+                         "A dry run must not re-preview the same rows: {}"
+                         .format(seen))
+
+    def test_the_exclusion_scales_past_the_bound_parameter_ceiling(self):
+        """The attempted set can reach every row in the table if Keepa is down.
+
+        A `NOT IN (?,?,...)` list would hit SQLITE_MAX_VARIABLE_NUMBER; the temp
+        table does not.
+        """
+        _build_db(self.db, [_row('ASIN%05d' % i, list_at='10.0')
+                            for i in range(50)])
+        sql = R.build_target_sql(STALE_PRICING_PREDICATE)
+        attempted = {'ASIN%05d' % i for i in range(49)}
+        got = R.fetch_targets(self.db, sql, 50, attempted)
+        self.assertEqual([t['ASIN'] for t in got], ['ASIN00049'])
+
+    def test_skipped_asins_are_written_to_their_own_manifest(self):
+        path = R.write_skip_manifest(
+            self.tmp, '20260917000000', 'apply',
+            [('STUCK001', 'not returned by Keepa'),
+             ('STUCK002', 'heavy processing returned nothing')])
+        body = open(path).read()
+        self.assertIn('STUCK001\tnot returned by Keepa', body)
+        self.assertIn('STUCK002\t', body)
+        self.assertIn('skipped', os.path.basename(path))
+
+    def test_no_skip_manifest_is_written_when_nothing_was_skipped(self):
+        self.assertIsNone(R.write_skip_manifest(self.tmp, '1', 'apply', []))
+
+    def test_repair_batch_itself_applies_the_carry_forward(self):
+        """Wiring check: the helper is called from repair_batch, not just testable.
+
+        The other carry-forward tests drive the helper directly. This one proves
+        `repair_batch` invokes it, which is what the production path depends on.
+        """
+        _build_db(self.db, [_row('CARRY001', list_at='999.0',
+                                 deal_found='2026-09-01T10:00:00-04:00',
+                                 last_price_change='2026-09-14 08:00:00')])
+        targets = self._targets()
+
+        class _TM:
+            REFILL_RATE_PER_MINUTE = 25.0
+
+            def request_permission_for_call(self, cost):
+                pass
+
+            def update_after_call(self, left):
+                pass
+
+        # The heavy path's real output when the deal feed is missing.
+        heavy_row = {'ASIN': 'CARRY001', 'List_at': 42.0, 'Deal_found': '-',
+                     'last_price_change': '-', 'Inferred_Sale_Count': 3}
+
+        with patch('keepa_deals.keepa_api.fetch_product_batch') as fetch, \
+             patch('keepa_deals.processing._process_single_deal') as heavy, \
+             patch('keepa_deals.processing.clean_numeric_values',
+                   side_effect=lambda r: r), \
+             patch('keepa_deals.db_utils.to_db_keys', side_effect=lambda r: r), \
+             patch('keepa_deals.seller_info.get_seller_info_for_single_deal',
+                   return_value={}), \
+             patch('keepa_deals.db_utils.DB_PATH', self.db):
+            fetch.return_value = ({'products': [{'asin': 'CARRY001'}]}, {}, 0, 100)
+            heavy.return_value = dict(heavy_row)
+            rows, _, skipped = R.repair_batch(targets, 'key', None, _TM(), 10,
+                                             False)
+
+        self.assertEqual(skipped, [])
+        self.assertEqual(rows[0]['Deal_found'], '2026-09-01T10:00:00-04:00',
+                         "repair_batch must apply the carry-forward.")
+        self.assertEqual(rows[0]['last_price_change'], '2026-09-14 08:00:00')
+        self.assertEqual(rows[0]['List_at'], 42.0,
+                         "The recomputed price must survive untouched.")
+
+    def test_a_row_keepa_does_not_return_is_reported_as_skipped(self):
+        _build_db(self.db, [_row('MISSING1', list_at='900.0')])
+        targets = self._targets()
+
+        class _TM:
+            REFILL_RATE_PER_MINUTE = 25.0
+
+            def request_permission_for_call(self, cost):
+                pass
+
+            def update_after_call(self, left):
+                pass
+
+        with patch('keepa_deals.keepa_api.fetch_product_batch') as fetch, \
+             patch('keepa_deals.db_utils.DB_PATH', self.db):
+            fetch.return_value = ({'products': []}, {}, 0, 100)
+            rows, outcomes, skipped = R.repair_batch(targets, 'key', None, _TM(),
+                                                    10, False)
+
+        self.assertEqual(rows, [])
+        self.assertEqual(outcomes, [])
+        self.assertEqual([a for a, _ in skipped], ['MISSING1'])
+        self.assertIn('not returned by Keepa', skipped[0][1])
