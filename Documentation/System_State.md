@@ -41,7 +41,8 @@ Affected rows are **not identifiable by query**: `price_source` was computed but
 
 ```bash
 cd /var/www/agentarbitrage
-# Preview first. A dry run SPENDS Keepa tokens but writes nothing, so cap it.
+# Preview first. A dry run SPENDS Keepa tokens but writes nothing, so --limit is
+# REQUIRED - an unbounded dry run is refused outright.
 sudo -u www-data venv/bin/python repair_pricing.py --limit 10
 # Then let it go.
 sudo -u www-data nohup venv/bin/python repair_pricing.py --apply > /dev/null 2>&1 &

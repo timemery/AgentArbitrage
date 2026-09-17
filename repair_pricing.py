@@ -60,6 +60,10 @@ IT RUNS FOR DAYS. RUN IT DETACHED.
     sudo -u www-data nohup venv/bin/python repair_pricing.py --apply \\
         > /dev/null 2>&1 &
 
+A dry run REQUIRES --limit and is refused without it: it spends Keepa tokens on
+every row it touches and writes nothing, so an unbounded one is pure waste.
+`--apply` with no --limit is the intended full sweep and is allowed.
+
 Progress (the script keeps its own log, NOT celery_worker.log):
 
     tail -f Diagnostics/repair_pricing.log
@@ -141,6 +145,11 @@ DEFAULT_BATCH_SIZE = 5
 DEFAULT_RESERVE_PER_ASIN = 10
 
 MIN_REFILL_RATE = 20.0
+
+# For the refusal message only. Measured cost is ~6 tokens for the product call
+# plus 1 for the seller call; the row count is the 2026-09-16 production sizing.
+REAL_TOKENS_PER_ASIN = 7
+TYPICAL_ROW_COUNT = 4534
 
 logger = logging.getLogger('repair_pricing')
 
@@ -258,6 +267,16 @@ ORDER BY 1;
 # --------------------------------------------------------------------------
 # Preflight, backup
 # --------------------------------------------------------------------------
+
+def _estimated_full_sweep_tokens():
+    """A rough token figure for the refusal message, from the sizing on record.
+
+    Deliberately a constant rather than a query: the refusal fires BEFORE
+    preflight, so the database has not been validated yet and must not be touched.
+    An order of magnitude is all this number needs to convey.
+    """
+    return TYPICAL_ROW_COUNT * REAL_TOKENS_PER_ASIN
+
 
 def _running_user():
     return pwd.getpwuid(os.geteuid()).pw_name
@@ -591,9 +610,11 @@ def main(argv=None):
     parser.add_argument('--apply', action='store_true',
                         help='Actually write. Without this, nothing is written.')
     parser.add_argument('--limit', type=int, default=None,
-                        help='Stop after this many rows. Use it for a small first '
-                             'run. A dry run NEEDS it: every row costs Keepa '
-                             'tokens even though nothing is written.')
+                        help='Stop after this many rows. REQUIRED for a dry run, '
+                             'which is refused without it: every row costs Keepa '
+                             'tokens even though nothing is written. Optional '
+                             'with --apply, where omitting it means the full '
+                             'sweep.')
     parser.add_argument('--batch-size', type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument('--reserve-per-asin', type=int,
                         default=DEFAULT_RESERVE_PER_ASIN)
@@ -616,13 +637,32 @@ def main(argv=None):
                 mode.upper(), PRICING_LOGIC_VERSION)
     logger.info("=" * 70)
 
+    # A dry run with no --limit is refused outright, BEFORE preflight and before
+    # anything is read. It would heavy-fetch every stale row - roughly 32,000 Keepa
+    # tokens at the 2026-09-16 sizing - and write nothing at all, which is the
+    # worst possible combination: maximum spend for zero effect.
+    #
+    # This used to be survivable by accident, because the dry run stopped after one
+    # batch. That workaround only existed to paper over the stuck-row loop; once
+    # the attempted set fixed that properly, the dry run began walking the whole
+    # table, so the guard has to be explicit.
+    #
+    # --apply with no --limit is the INTENDED full-sweep invocation and stays
+    # allowed: it spends the same tokens but repairs every row it touches.
+    if not args.apply and args.limit is None:
+        logger.error(
+            "REFUSED: a dry run with no --limit would heavy-fetch EVERY stale "
+            "row (~%d Keepa tokens at ~7/ASIN) and write nothing.\n"
+            "  Preview a sample instead:\n"
+            "      repair_pricing.py --limit 10\n"
+            "  Or run the real sweep, which writes what it fetches:\n"
+            "      repair_pricing.py --apply",
+            _estimated_full_sweep_tokens())
+        return 1
+
     if not args.apply:
-        logger.info("DRY RUN. Nothing will be written. Keepa tokens ARE spent - "
-                    "use --limit.")
-        if args.limit is None:
-            logger.warning("No --limit on a dry run: this will heavy-fetch EVERY "
-                           "stale row and write nothing. Ctrl-C now unless that "
-                           "is what you meant.")
+        logger.info("DRY RUN. Nothing will be written. Keepa tokens ARE spent, "
+                    "capped by --limit %d.", args.limit)
 
     try:
         preflight(DB_PATH)

@@ -660,3 +660,66 @@ class UnrepairableRowsAreAttemptedOncePerRun(_Silent):
         self.assertEqual(outcomes, [])
         self.assertEqual([a for a, _ in skipped], ['MISSING1'])
         self.assertIn('not returned by Keepa', skipped[0][1])
+
+
+class AnUnboundedDryRunIsRefused(unittest.TestCase):
+    """A dry run with no --limit is the one invocation with no upside.
+
+    It heavy-fetches every stale row - ~32,000 Keepa tokens at the 2026-09-16
+    sizing - and writes nothing. Maximum spend, zero effect.
+
+    It used to be survivable by accident: the dry run stopped after one batch.
+    That workaround existed only to paper over the stuck-row loop, and once the
+    attempted set fixed that properly the dry run began walking the whole table.
+    So the guard has to be explicit, and it has to fire BEFORE preflight - before
+    anything is read, and before a single token can be spent.
+
+    `--apply` without --limit is the INTENDED full sweep and stays allowed.
+    """
+
+    def setUp(self):
+        logging.disable(logging.CRITICAL)
+        self.tmp = tempfile.mkdtemp()
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
+
+    def _main(self, argv):
+        """Run main() with preflight stubbed, so only the guard can stop it.
+
+        Preflight always fails in the sandbox (not www-data), which would mask the
+        difference between "refused by the guard" and "refused by preflight".
+        Stubbing it means `pf.called` cleanly separates the two.
+        """
+        with patch.object(R, 'preflight') as pf, \
+             patch.object(R, 'load_dotenv'):
+            pf.side_effect = R.RepairAbort('preflight stub')
+            return R.main(argv + ['--log-file', os.path.join(self.tmp, 'r.log')]), pf
+
+    def test_a_dry_run_without_limit_exits_one_before_preflight(self):
+        code, pf = self._main([])
+        self.assertEqual(code, 1)
+        pf.assert_not_called()
+
+    def test_the_message_tells_the_operator_what_to_do(self):
+        logging.disable(logging.NOTSET)
+        with self.assertLogs('repair_pricing', level='ERROR') as caught:
+            self._main([])
+        body = '\n'.join(caught.output)
+        self.assertIn('REFUSED', body)
+        self.assertIn('--limit', body)
+        self.assertIn('--apply', body)
+
+    def test_a_dry_run_with_limit_is_allowed_through_to_preflight(self):
+        _, pf = self._main(['--limit', '10'])
+        pf.assert_called_once()
+
+    def test_apply_without_limit_is_allowed_through_to_preflight(self):
+        """The full sweep is the intended invocation and must not be blocked."""
+        _, pf = self._main(['--apply'])
+        pf.assert_called_once()
+
+    def test_the_estimate_does_not_touch_the_database(self):
+        """The refusal fires before preflight has validated the database."""
+        self.assertIsInstance(R._estimated_full_sweep_tokens(), int)
+        self.assertGreater(R._estimated_full_sweep_tokens(), 1000)
