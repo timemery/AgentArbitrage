@@ -863,3 +863,284 @@ class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
             R.DEFAULT_BATCH_SIZE * R.XAI_CALLS_PER_ROW,
             "Headroom below one batch's worth of calls would let the batch in "
             "flight cross the cap.")
+
+
+class ARechargeIsWaitedOutNotStopped(_Silent):
+    """The 2026-09-17 stop: a 130-second token dip ended a multi-day sweep.
+
+        ERROR Batch failed (Recharge needed: 130s). Stopping; nothing in this
+        batch was written.
+
+    That is a `TokenRechargeError` out of `token_manager.py`, which raises rather
+    than sleeping whenever the calculated wait exceeds 60s. Correct for the Smart
+    Ingestor - it runs every 5 minutes under a lock, so exiting frees the worker -
+    and wrong for this script, which holds no lock, has nothing else to do, and has
+    no scheduler to bring it back. xAI was nowhere near its cap (79 of 5000 calls
+    used), so nothing but the dip ended the run.
+
+    Keepa refills at 25/min into a bucket SHARED with ingestion, so these dips
+    recur every run. The sweep now waits them out. Every other exception still
+    stops it, and every pre-existing stop condition still applies between retries.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.fetch_calls = []
+        self.slept = []
+
+    # -- the wait itself ---------------------------------------------------
+
+    def test_the_wait_comes_from_the_exception_the_manager_raises(self):
+        """Both raise sites embed the figure in the message, not on the exception."""
+        from keepa_deals.token_manager import TokenRechargeError
+        self.assertEqual(
+            R.recharge_wait_seconds(TokenRechargeError('Recharge needed: 130s')),
+            130 + R.RECHARGE_WAIT_MARGIN_SECONDS)
+        self.assertEqual(
+            R.recharge_wait_seconds(
+                TokenRechargeError('Insufficient tokens: wait 130s')),
+            130 + R.RECHARGE_WAIT_MARGIN_SECONDS)
+
+    def test_a_margin_is_added_so_the_retry_does_not_arrive_empty(self):
+        """The manager's wait reaches BURST_THRESHOLD exactly - no slack."""
+        self.assertGreater(R.RECHARGE_WAIT_MARGIN_SECONDS, 0)
+        self.assertGreater(R.recharge_wait_seconds(Exception('wait 10s')), 10)
+
+    def test_an_unparsable_message_still_waits_instead_of_stopping(self):
+        """The wording belongs to token_manager.py; a reword must not stop the sweep."""
+        self.assertEqual(
+            R.recharge_wait_seconds(Exception('tokens are low, come back later')),
+            R.DEFAULT_RECHARGE_WAIT_SECONDS + R.RECHARGE_WAIT_MARGIN_SECONDS)
+
+    def test_a_nonsense_figure_is_clamped(self):
+        self.assertEqual(R.recharge_wait_seconds(Exception('wait 999999s')),
+                         R.MAX_RECHARGE_WAIT_SECONDS)
+
+    def test_the_wait_is_sliced_so_sigterm_is_still_noticed(self):
+        """`pkill -f repair_pricing.py` is the documented clean stop."""
+        calls = []
+        done = R.sleep_through_recharge(12, stop=None, sleep=calls.append)
+        self.assertTrue(done)
+        self.assertEqual(sum(calls), 12)
+        self.assertTrue(all(c <= R.RECHARGE_POLL_SECONDS for c in calls))
+
+    def test_a_stop_during_the_wait_cuts_it_short(self):
+        class _Stop:
+            requested = False
+        stop = _Stop()
+        calls = []
+
+        def _sleep(seconds):
+            calls.append(seconds)
+            stop.requested = True
+
+        self.assertFalse(R.sleep_through_recharge(600, stop=stop, sleep=_sleep))
+        self.assertEqual(len(calls), 1, "It must not sleep out the full wait.")
+
+    # -- the retry ---------------------------------------------------------
+
+    def _fetch_targets_honouring_attempted(self, batches):
+        """A `fetch_targets` stub that excludes attempted ASINs, as the real one does.
+
+        This is what makes the retry assertions mean something. The real selection
+        excludes `attempted_this_run` in SQL, and a batch's ASINs are added to that
+        set BEFORE the fetch - so a retry routed back through selection would find
+        nothing and the batch would silently vanish.
+        """
+        queue = [list(b) for b in batches]
+
+        def _fetch(db_path, sql, limit, attempted=()):
+            self.fetch_calls.append(set(attempted))
+            while queue:
+                batch = [t for t in queue.pop(0) if t['ASIN'] not in attempted]
+                if batch:
+                    return batch
+            return []
+
+        return _fetch
+
+    @staticmethod
+    def _target(asin):
+        return {'ASIN': asin, 'tier': 0, 'old_list_at': 900.0,
+                'old_1yr_avg': '900', 'old_count': None, 'old_trust': '50%'}
+
+    def _run(self, argv, batch_side_effect, batches=(('AAAAAAAA',),),
+             spare=500, refill=25.0):
+        """Drive main() to the batch loop with only the recharge path live."""
+        targets = [[self._target(a) for a in b] for b in batches]
+        with patch.object(R, 'preflight'), \
+             patch.object(R, 'load_dotenv'), \
+             patch.object(R, 'backup_database'), \
+             patch.object(R, '_scalar', return_value=100), \
+             patch.object(R, 'xai_calls_remaining',
+                          side_effect=(spare if callable(spare)
+                                       else lambda: (spare, 1000 - spare, 1000))), \
+             patch.object(R, 'sleep_through_recharge',
+                          side_effect=lambda s, stop=None: (self.slept.append(s)
+                                                            or True)), \
+             patch.object(R, 'fetch_targets',
+                          side_effect=self._fetch_targets_honouring_attempted(
+                              targets)), \
+             patch.object(R, 'repair_batch') as batch, \
+             patch('keepa_deals.token_manager.TokenManager') as tm, \
+             patch.dict(os.environ, {'KEEPA_API_KEY': 'k'}):
+            tm.return_value.REFILL_RATE_PER_MINUTE = refill
+            tm.return_value.tokens = 300.0
+            tm.return_value.should_skip_sync.return_value = True
+            batch.side_effect = batch_side_effect
+            code = R.main(argv + ['--log-file', os.path.join(self.tmp, 'r.log')])
+        return code, batch
+
+    def test_a_recharge_is_waited_out_and_the_batch_retried(self):
+        from keepa_deals.token_manager import TokenRechargeError
+        code, batch = self._run(
+            ['--apply'],
+            [TokenRechargeError('Recharge needed: 130s'), ([], [], [])])
+        self.assertEqual(code, 0)
+        self.assertEqual(batch.call_count, 2,
+                         "The batch must be retried, not abandoned.")
+        self.assertEqual(self.slept, [130 + R.RECHARGE_WAIT_MARGIN_SECONDS])
+
+    def test_the_retry_gets_the_same_asins(self):
+        from keepa_deals.token_manager import TokenRechargeError
+        _, batch = self._run(
+            ['--apply'],
+            [TokenRechargeError('Recharge needed: 130s'), ([], [], [])],
+            batches=(('AAAAAAAA', 'BBBBBBBB'),))
+        first, second = [c.args[0] for c in batch.call_args_list]
+        self.assertEqual([t['ASIN'] for t in first], ['AAAAAAAA', 'BBBBBBBB'])
+        self.assertEqual([t['ASIN'] for t in second], ['AAAAAAAA', 'BBBBBBBB'])
+
+    def test_the_retry_is_not_re_selected_past_the_attempted_set(self):
+        """Requirement 3. The rows are already in `attempted` when the retry runs.
+
+        `attempted` is updated BEFORE the fetch, so re-selecting after a recharge
+        would exclude the exact rows being retried and the batch would disappear
+        without a trace. The retry therefore uses the target list already in hand.
+        """
+        from keepa_deals.token_manager import TokenRechargeError
+        _, batch = self._run(
+            ['--apply'],
+            [TokenRechargeError('Recharge needed: 130s'), ([], [], [])])
+        self.assertEqual(batch.call_count, 2)
+        # Selection ran once for the batch and once afterwards (finding nothing
+        # left) - NOT a third time for the retry.
+        self.assertEqual(len(self.fetch_calls), 2)
+        self.assertIn('AAAAAAAA', self.fetch_calls[1],
+                      "The retried ASIN is in the attempted set by then, which is "
+                      "exactly why the retry must not go back through selection.")
+
+    def test_each_wait_is_logged(self):
+        from keepa_deals.token_manager import TokenRechargeError
+        logging.disable(logging.NOTSET)
+        with self.assertLogs('repair_pricing', level='WARNING') as caught:
+            self._run(['--apply'],
+                      [TokenRechargeError('Recharge needed: 130s'),
+                       ([], [], [])])
+        body = '\n'.join(caught.output)
+        self.assertIn('Recharge needed: 130s', body)
+        self.assertIn('Waiting 145s', body)
+        self.assertIn('retrying the same batch', body)
+
+    def test_the_counter_resets_after_a_batch_gets_through(self):
+        """It bounds a STALL, not a long run. A dip an hour must never accumulate."""
+        from keepa_deals.token_manager import TokenRechargeError
+        recharge = TokenRechargeError('Recharge needed: 130s')
+        code, batch = self._run(
+            ['--apply', '--max-recharge-retries', '1'],
+            [recharge, ([], [], []), recharge, ([], [], [])],
+            batches=(('AAAAAAAA',), ('BBBBBBBB',)))
+        self.assertEqual(code, 0)
+        self.assertEqual(batch.call_count, 4,
+                         "Two batches, each waiting out one recharge, must both "
+                         "complete under a cap of 1.")
+
+    # -- the cap -----------------------------------------------------------
+
+    def test_consecutive_retries_are_capped(self):
+        from keepa_deals.token_manager import TokenRechargeError
+        recharge = TokenRechargeError('Recharge needed: 130s')
+        code, batch = self._run(['--apply', '--max-recharge-retries', '3'],
+                                [recharge] * 20)
+        self.assertEqual(batch.call_count, 4, "One attempt plus three retries.")
+        self.assertEqual(len(self.slept), 3)
+        self.assertEqual(code, 0,
+                         "Hitting the cap is a clean, resumable pause - exit 0, "
+                         "like the xAI headroom stop, so a wrapper does not treat "
+                         "it as a failure.")
+
+    def test_the_cap_stop_says_it_is_resumable(self):
+        from keepa_deals.token_manager import TokenRechargeError
+        logging.disable(logging.NOTSET)
+        with self.assertLogs('repair_pricing', level='WARNING') as caught:
+            self._run(['--apply', '--max-recharge-retries', '1'],
+                      [TokenRechargeError('Recharge needed: 130s')] * 5)
+        body = '\n'.join(caught.output)
+        self.assertIn('STOPPING', body)
+        self.assertIn('consecutive Keepa recharge waits', body)
+        self.assertIn('re-run the same command', body.lower())
+
+    def test_the_default_cap_is_a_stall_not_a_hair_trigger(self):
+        self.assertGreaterEqual(R.DEFAULT_MAX_RECHARGE_RETRIES, 3)
+
+    # -- everything else still stops ---------------------------------------
+
+    def test_any_other_exception_still_stops_the_run(self):
+        code, batch = self._run(['--apply'],
+                                [RuntimeError('Keepa returned 500'),
+                                 ([], [], [])])
+        self.assertEqual(batch.call_count, 1,
+                         "Only a TokenRechargeError is retried.")
+        self.assertEqual(self.slept, [])
+        self.assertEqual(code, 0)
+
+    def test_the_xai_headroom_stop_still_applies_between_retries(self):
+        """Requirement 4. The wait returns to the TOP of the loop, not past it."""
+        from keepa_deals.token_manager import TokenRechargeError
+        spares = iter([(500, 500, 1000), (10, 990, 1000), (10, 990, 1000)])
+        code, batch = self._run(
+            ['--apply'],
+            [TokenRechargeError('Recharge needed: 130s'), ([], [], [])],
+            spare=lambda: next(spares))
+        self.assertEqual(batch.call_count, 1,
+                         "The retry must not run once xAI headroom is gone.")
+        self.assertEqual(code, 0)
+
+    def test_the_refill_floor_still_applies_between_retries(self):
+        """The 20/min floor is re-checked before the retry, like every other batch."""
+        from keepa_deals.token_manager import TokenRechargeError
+        recharge = TokenRechargeError('Recharge needed: 130s')
+        code, batch = self._run(['--apply'], [recharge] * 5, refill=5.0)
+        self.assertEqual(batch.call_count, 0,
+                         "Below the floor nothing runs at all - unchanged.")
+        self.assertEqual(code, 0)
+
+    # -- a recharge mid-batch is not a skipped row -------------------------
+
+    def test_a_recharge_inside_the_batch_is_not_recorded_as_unrepairable(self):
+        """`get_seller_info_for_single_deal` reserves tokens of its own (:45).
+
+        Swallowed by the per-row handler, a recharge there would mark a perfectly
+        repairable row as failed AND keep it out of every later batch this run.
+        Once recharges are waited out rather than ending the run, that would happen
+        on every dip instead of once, so it must reach the batch retry instead.
+        """
+        from keepa_deals.token_manager import TokenRechargeError
+
+        class _TM:
+            REFILL_RATE_PER_MINUTE = 25.0
+
+            def request_permission_for_call(self, cost):
+                pass
+
+            def update_after_call(self, left):
+                pass
+
+        with patch('keepa_deals.keepa_api.fetch_product_batch',
+                   return_value=({'products': [{'asin': 'AAAAAAAA'}]},
+                                 None, None, 100.0)), \
+             patch('keepa_deals.seller_info.get_seller_info_for_single_deal',
+                   side_effect=TokenRechargeError('Recharge needed: 130s')):
+            with self.assertRaises(TokenRechargeError):
+                R.repair_batch([self._target('AAAAAAAA')], 'k', 'x', _TM(),
+                               10, False)

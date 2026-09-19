@@ -100,6 +100,10 @@ SAFETY
   * Stops while xAI calls remain (--xai-headroom, default 50). Past the daily
     cap the AI Reasonableness Check returns True instead of failing, so an
     unchecked price would be stamped as current and never revisited.
+  * WAITS OUT a Keepa token recharge rather than stopping. A
+    `TokenRechargeError` is a transient dip in a bucket shared with ingestion,
+    not a reason to end a multi-day sweep - see WAITING OUT A RECHARGE below.
+    Every OTHER exception still stops the run.
 
 THE xAI CAP, NOT KEEPA TOKENS, IS WHAT MAKES THIS TAKE DAYS
 -----------------------------------------------------------
@@ -114,6 +118,36 @@ The daily count resets on the first call after the LOCAL date changes on the box
 (`XaiTokenManager._check_and_reset_daily_count` uses `date.today()`), so re-run
 after local midnight.
 
+WAITING OUT A RECHARGE
+----------------------
+The Keepa bucket is shared with normal ingestion, which refills at 25/min, so a
+sweep that reserves 50 tokens a batch WILL periodically find the bucket empty.
+`TokenManager` does not sleep through a wait longer than 60s: it raises
+`TokenRechargeError` so a Celery task can release its lock and let the worker do
+something else (`token_manager.py:299`, `:440`). That is right for a task that
+runs every 5 minutes. It is wrong for this script, which has nothing else to do
+and no scheduler to bring it back.
+
+On 2026-09-17 the live sweep ended after about an hour on
+`Recharge needed: 130s` - a 130-second dip ended a run that had days left. So the
+recharge is now WAITED OUT: sleep the seconds the exception asks for plus
+RECHARGE_WAIT_MARGIN_SECONDS, then retry THE SAME BATCH.
+
+Three properties of that retry matter:
+
+  * The batch is retried from the target list already in memory. It is NOT
+    re-selected, because its ASINs were added to the per-run attempted set before
+    the fetch - re-selecting would exclude exactly the rows being retried and the
+    batch would silently vanish.
+  * Every existing stop condition is re-checked before each retry. The wait
+    returns to the top of the batch loop, so the xAI headroom guard, the 20/min
+    refill floor and SIGTERM all still apply.
+  * Consecutive retries are capped (--max-recharge-retries). Hitting the cap is a
+    clean, resumable stop with exit 0, not a failure: repaired rows are durable
+    and the same command picks up where it left off. The counter resets on the
+    first batch that gets through, so a long sweep that dips once an hour never
+    accumulates towards it.
+
 DELIBERATELY NOT REQUIRED: that Celery be stopped. This runs for days alongside
 normal ingestion by design. `cleanup_low_est_rows.py` demands a quiet database
 because it DELETEs; this one upserts single rows through the same helper the
@@ -123,8 +157,10 @@ ingestor uses, against a WAL database with `busy_timeout=5000`.
 import argparse
 import json
 import logging
+import math
 import os
 import pwd
+import re
 import signal
 import sqlite3
 import sys
@@ -161,6 +197,65 @@ DEFAULT_BATCH_SIZE = 5
 DEFAULT_RESERVE_PER_ASIN = 10
 
 MIN_REFILL_RATE = 20.0
+
+# --------------------------------------------------------------------------
+# Waiting out a Keepa token recharge
+# --------------------------------------------------------------------------
+#
+# WHY THIS EXISTS - THE STOP OBSERVED ON 2026-09-17. The live sweep ended after
+# about an hour with
+#
+#     ERROR Batch failed (Recharge needed: 130s). Stopping; nothing in this
+#     batch was written.
+#
+# a `TokenRechargeError` out of `token_manager.py`. xAI was nowhere near its cap
+# (79 of 5000 calls used), so a 130-second dip in a bucket the sweep SHARES with
+# ingestion ended a run with days of work left in it.
+#
+# `TokenManager` raises rather than sleeping whenever the calculated wait exceeds
+# 60s (`token_manager.py:299`, `:440`). That is deliberate and correct for the
+# Smart Ingestor: it runs every 5 minutes under a Celery lock, so releasing the
+# lock and coming back later frees the worker. This script has no lock to release,
+# nothing else to do, and no scheduler to bring it back - for it, the same
+# exception is just an early exit.
+#
+# Keepa refills at 25/min and the sweep reserves 50 tokens a batch, so these dips
+# recur EVERY run. Waiting them out is the whole difference between a sweep that
+# runs for a day and one that runs for an hour.
+
+# Added to the wait the exception asks for. The wait TokenManager computes is
+# exactly enough to reach BURST_THRESHOLD; arriving with nothing to spare invites
+# an immediate second recharge, and at 25/min this buys ~6 tokens of slack.
+RECHARGE_WAIT_MARGIN_SECONDS = 15
+
+# Used when the exception text carries no parsable figure. Both raise sites
+# currently embed one ("Recharge needed: 130s", "Insufficient tokens: wait 130s"),
+# but the wording is `token_manager.py`'s to change and this script must not stop
+# just because it did.
+DEFAULT_RECHARGE_WAIT_SECONDS = 60
+
+# Sanity ceiling on a SINGLE wait. Real waits are bounded by BURST_THRESHOLD (50,
+# +5 on the reservation path) over the refill rate, and the sweep already stops
+# below 20/min, so the realistic maximum is ~165s. This only guards against a
+# nonsense figure in the exception text.
+MAX_RECHARGE_WAIT_SECONDS = 1800
+
+# The wait is slept in slices this long so SIGTERM is still noticed promptly.
+# `pkill -f repair_pricing.py` is the documented clean stop; a single long sleep
+# would make it look hung.
+RECHARGE_POLL_SECONDS = 5
+
+# Consecutive recharge retries before the sweep gives up and stops CLEANLY.
+#
+# The counter resets on the first batch that gets through, so it bounds a stall,
+# not a long run: a sweep that dips once an hour never accumulates towards it. At
+# ~165s a wait, 10 is roughly half an hour of waiting - past which the bucket is
+# not dipping, something systemic is wrong, and idling burns nothing but wall
+# clock. Stopping then is exit 0 and resumable, exactly like the xAI headroom stop.
+DEFAULT_MAX_RECHARGE_RETRIES = 10
+
+# "Recharge needed: 130s" / "Insufficient tokens: wait 130s".
+RECHARGE_WAIT_PATTERN = re.compile(r'(\d+(?:\.\d+)?)\s*s(?:ec(?:onds?)?)?\b')
 
 # Spare xAI calls that must remain before the next batch is allowed to start.
 #
@@ -502,6 +597,41 @@ class GracefulStop:
             name)
 
 
+def recharge_wait_seconds(exc, margin=RECHARGE_WAIT_MARGIN_SECONDS):
+    """How long to sleep for a `TokenRechargeError`, from the exception text.
+
+    `TokenManager` embeds the figure it calculated in the message rather than on
+    the exception - "Recharge needed: 130s" (`token_manager.py:299`) and
+    "Insufficient tokens: wait 130s" (`:440`). Parsing text is not lovely, but the
+    alternative is changing `token_manager.py`, which is out of scope and shared
+    with ingestion.
+
+    An unparsable message is NOT a reason to stop: it falls back to
+    DEFAULT_RECHARGE_WAIT_SECONDS, waits, and retries like any other recharge.
+    """
+    match = RECHARGE_WAIT_PATTERN.search(str(exc))
+    requested = float(match.group(1)) if match else DEFAULT_RECHARGE_WAIT_SECONDS
+    wait = int(math.ceil(max(0.0, requested))) + margin
+    return min(wait, MAX_RECHARGE_WAIT_SECONDS)
+
+
+def sleep_through_recharge(seconds, stop=None, sleep=time.sleep):
+    """Sleep in short slices, returning False if a stop was requested part way.
+
+    A single `time.sleep(165)` would ignore SIGTERM for the whole wait, and
+    `pkill -f repair_pricing.py` is the documented clean stop. Slicing keeps that
+    responsive without threads or signal gymnastics.
+    """
+    remaining = seconds
+    while remaining > 0:
+        if stop is not None and stop.requested:
+            return False
+        slice_seconds = min(RECHARGE_POLL_SECONDS, remaining)
+        sleep(slice_seconds)
+        remaining -= slice_seconds
+    return True
+
+
 # --------------------------------------------------------------------------
 # The repair itself
 # --------------------------------------------------------------------------
@@ -550,6 +680,7 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
     from keepa_deals.processing import _process_single_deal, clean_numeric_values
     from keepa_deals.db_utils import to_db_keys
     from keepa_deals.seller_info import get_seller_info_for_single_deal
+    from keepa_deals.token_manager import TokenRechargeError
 
     asins = [t['ASIN'] for t in targets]
     token_manager.request_permission_for_call(reserve_per_asin * len(asins))
@@ -603,6 +734,20 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
                 'new_trust': row.get('Deal_Trust'),
                 'tier': target['tier'],
             })
+        except TokenRechargeError:
+            # NOT this row's fault, and not a reason to record it as unrepairable.
+            # `get_seller_info_for_single_deal` reserves tokens of its own
+            # (`seller_info.py:45`), so a recharge can surface here as easily as on
+            # the batch reservation above. Swallowed into `skipped` it would mark a
+            # perfectly repairable row as failed AND keep it out of every later
+            # batch this run - and once the caller waits recharges out instead of
+            # stopping, that would happen on every dip rather than once.
+            #
+            # So it goes back to the caller, which sleeps and retries the whole
+            # batch. The rows gathered so far are discarded unwritten; that costs
+            # their fetch (~7 tokens each, at most a batch's worth) and is the
+            # price of not losing them.
+            raise
         except Exception as exc:
             logger.error("  %s: heavy processing failed (%s). Left untouched.",
                          asin, exc, exc_info=True)
@@ -733,6 +878,13 @@ def main(argv=None):
                              'the AI Reasonableness Check silently returns True, '
                              'so continuing would stamp unchecked prices as '
                              'current. Default %d.' % DEFAULT_XAI_HEADROOM)
+    parser.add_argument('--max-recharge-retries', type=int,
+                        default=DEFAULT_MAX_RECHARGE_RETRIES,
+                        help='Consecutive Keepa recharge waits before the sweep '
+                             'stops cleanly (exit 0, resumable). The counter '
+                             'resets on the first batch that gets through, so '
+                             'this bounds a stall, not a long run. Default %d.'
+                             % DEFAULT_MAX_RECHARGE_RETRIES)
     parser.add_argument('--backup-dir', default=DEFAULT_BACKUP_DIR)
     parser.add_argument('--log-file', default=DEFAULT_LOG_PATH)
     args = parser.parse_args(argv)
@@ -804,7 +956,7 @@ def main(argv=None):
     api_key = os.getenv('KEEPA_API_KEY')
     xai_api_key = os.getenv('XAI_TOKEN')
 
-    from keepa_deals.token_manager import TokenManager
+    from keepa_deals.token_manager import TokenManager, TokenRechargeError
     # Same construction and sync the ingestor uses (smart_ingestor.py:319-325), so
     # this process shares the one Redis bucket rather than keeping its own count.
     token_manager = TokenManager(api_key)
@@ -823,6 +975,11 @@ def main(argv=None):
     # target query so an unrepairable row is fetched ONCE per run instead of
     # sorting back to the top of every batch forever.
     attempted = set()
+    # A batch that hit a Keepa recharge and is waiting to be retried. Held in
+    # memory deliberately: its ASINs are already in `attempted`, so re-selecting
+    # it through `fetch_targets` would exclude the very rows being retried.
+    pending_targets = None
+    consecutive_recharge_waits = 0
 
     while True:
         if stop.requested:
@@ -859,32 +1016,70 @@ def main(argv=None):
                 token_manager.REFILL_RATE_PER_MINUTE, MIN_REFILL_RATE)
             break
 
-        remaining = (args.batch_size if args.limit is None
-                     else min(args.batch_size, args.limit - done))
-        targets = fetch_targets(DB_PATH, sql, remaining, attempted)
-        if not targets:
-            if all_skipped:
-                logger.info("No stale-pricing rows left that this run has not "
-                            "already attempted. %d row(s) could not be repaired "
-                            "- see the SKIPPED manifest.", len(all_skipped))
-            else:
-                logger.info("No stale-pricing rows left.")
-            break
+        if pending_targets is not None:
+            targets = pending_targets
+            logger.info("Retrying the same batch of %d after the recharge wait "
+                        "(retry %d of %d).", len(targets),
+                        consecutive_recharge_waits, args.max_recharge_retries)
+        else:
+            remaining = (args.batch_size if args.limit is None
+                         else min(args.batch_size, args.limit - done))
+            targets = fetch_targets(DB_PATH, sql, remaining, attempted)
+            if not targets:
+                if all_skipped:
+                    logger.info("No stale-pricing rows left that this run has not "
+                                "already attempted. %d row(s) could not be "
+                                "repaired - see the SKIPPED manifest.",
+                                len(all_skipped))
+                else:
+                    logger.info("No stale-pricing rows left.")
+                break
 
-        logger.info("Batch of %d (attempted %d / %d, repaired %d, skipped %d)",
-                    len(targets), done, total_stale, len(all_asins),
-                    len(all_skipped))
-        # Mark BEFORE the fetch: a crash mid-batch must not put these rows back at
-        # the top of the next batch within this same run.
-        attempted.update(t['ASIN'] for t in targets)
+            logger.info("Batch of %d (attempted %d / %d, repaired %d, skipped %d)",
+                        len(targets), done, total_stale, len(all_asins),
+                        len(all_skipped))
+            # Mark BEFORE the fetch: a crash mid-batch must not put these rows back
+            # at the top of the next batch within this same run.
+            attempted.update(t['ASIN'] for t in targets)
+
         try:
             _, outcomes, skipped = repair_batch(
                 targets, api_key, xai_api_key, token_manager,
                 args.reserve_per_asin, args.apply)
+        except TokenRechargeError as exc:
+            # A transient dip in the bucket this sweep shares with ingestion - not
+            # a failure, and not a reason to end a multi-day run. Nothing in this
+            # batch was written, so the same targets can simply be tried again.
+            consecutive_recharge_waits += 1
+            if consecutive_recharge_waits > args.max_recharge_retries:
+                logger.warning("=" * 70)
+                logger.warning(
+                    "STOPPING: %d consecutive Keepa recharge waits (%s). The "
+                    "bucket is not recovering, so this is a stall rather than a "
+                    "dip.", consecutive_recharge_waits - 1, exc)
+                logger.warning(
+                    "Nothing has been written for this batch. Repaired rows are "
+                    "already durable; re-run the same command once tokens are "
+                    "back and it picks up where it left off.")
+                logger.warning("=" * 70)
+                break
+            wait = recharge_wait_seconds(exc)
+            logger.warning(
+                "Keepa recharge needed (%s). Waiting %ds (+%ds margin), then "
+                "retrying the same batch of %d. Recharge wait %d of %d.",
+                exc, wait, RECHARGE_WAIT_MARGIN_SECONDS, len(targets),
+                consecutive_recharge_waits, args.max_recharge_retries)
+            pending_targets = targets
+            if not sleep_through_recharge(wait, stop):
+                logger.info("Stop requested during the recharge wait.")
+            continue
         except Exception as exc:
             logger.error("Batch failed (%s). Stopping; nothing in this batch was "
                          "written.", exc, exc_info=True)
             break
+
+        pending_targets = None
+        consecutive_recharge_waits = 0
 
         print_outcomes(outcomes, args.apply)
         all_asins.extend(o['ASIN'] for o in outcomes)

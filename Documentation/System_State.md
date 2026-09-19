@@ -58,7 +58,23 @@ pkill -f repair_pricing.py                 # clean stop between batches
 
 The sweep **stops itself while the check still works** (`--xai-headroom`, default 50). This is not politeness: past the cap `_query_xai_for_reasonableness` does not fail and does not skip the row — it returns `True` (`stable_calculations.py:76`), so an inflated price would be accepted unchecked *and* stamped `Pricing_Logic_Version = 2`, dropping it out of the predicate so the sweep never revisits it. Continuing past the cap is strictly worse than stopping. The daily count resets on the first call after the **local date changes on the box**, so re-run after local midnight.
 
-It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short). It stops on its own if the Keepa refill rate falls below 20/min. **When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
+It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short).
+
+**Stop conditions, and the one that is not a stop.** The sweep ends a run cleanly (exit 0, resumable by re-running the same command) when any of these hold, all checked before every batch and before every recharge retry:
+
+| condition | why |
+| :--- | :--- |
+| spare xAI calls < `--xai-headroom` (default 50) | past the cap the reasonableness check returns `True`, so an unchecked price would be stamped as current and never revisited |
+| Keepa refill rate < 20/min | the plan has been downgraded or throttled; continuing would starve normal ingestion |
+| `--limit` reached, no stale rows left, or SIGTERM/SIGINT | ordinary completion |
+| `--max-recharge-retries` consecutive recharge waits (default 10) | the bucket is not recovering — a stall, not a dip |
+| any exception other than `TokenRechargeError` | unchanged: the run stops and nothing in that batch is written |
+
+**A `TokenRechargeError` is NOT a stop.** It is waited out. `TokenManager` raises instead of sleeping whenever the calculated wait exceeds 60s (`token_manager.py:299`, `:440`) so a Celery task can release its lock and free the worker — right for the Smart Ingestor, wrong for a script that holds no lock, has nothing else to do and has no scheduler to bring it back. On 2026-09-17 the live sweep ended after about an hour on `Recharge needed: 130s`, with xAI at 79 of 5000 calls: a 130-second dip in a bucket shared with ingestion ended a run with days left. Keepa refills at 25/min and the sweep reserves 50 tokens a batch, so these dips recur every run.
+
+The sweep now sleeps the seconds the exception asks for plus a 15-second margin, logs each wait, and **retries the same batch from the target list already in memory** — not by re-selecting it, because those ASINs entered the per-run attempted set before the fetch and re-selection would exclude the very rows being retried. The consecutive-wait counter resets on the first batch that gets through, so it bounds a stall rather than a long run.
+
+**When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
 
 **Progress:**
 
