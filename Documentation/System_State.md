@@ -97,12 +97,19 @@ Baseline at 2026-09-16: 4,534 rows, 3,070 priced, 1,100 visible, 17 at or above 
 
 `audit_list_at_sources.py` is **read-only measurement**. It changes no pricing logic, writes nothing to `deals.db`, makes no xAI calls, and reaches no conclusion on its own. It exists because `diagnose_inferred_sales.py` explains one ASIN's sale events and then stops exactly where the question starts — *"List at = normal branch (peak-month mode/median). Not recomputed here; this diagnostic does not classify seasons."*
 
-It answers two questions per row, both open as of 2026-09-22 and neither an established defect (see `INFERRED_PRICE_LOGIC.md` §4.A.1):
+It answers three questions per row, all open as of 2026-09-22 and none an established defect (see `INFERRED_PRICE_LOGIC.md` §4.A.1):
 
 1.  **Which sale events fed `List at`, and was the winning value carried by a price point that more than one confirmed sale matched** — and if so, what `List at` becomes when that point contributes once instead of twice. `List at` breaks ties by frequency, and the price association takes the last change-log point strictly before a drop *at any distance*, so two drops with no price change between them legitimately receive the same point.
-2.  **`List at` against the lowest live New offer from any seller**, landed (item + shipping), and how many rows a cap there would catch. The existing Amazon ceiling reads Amazon's own price only, so it is silent whenever Amazon is not selling.
+2.  **`List at` against the lowest New offer from any seller DURING the peak-season window(s) that fed it**, and how many rows a cap there would catch. **Not today's New offer.** The product buys at the trough and sells at the peak, so the price on screen now is the *buy* side: it bounds what an arbitrageur pays, not what the item can be listed at months later, and capping a peak price with it compares two different points in the season. Today's figure is reported beside it, labelled as a comparison.
+    -   The windows are the calendar months holding the sales that actually fed `List at` — plural, because a three-year history can hold the same peak month in several years. `csv[1]` is a change-log, so the price in force in a window is the last point at or before it opens, carried forward, plus every point inside: the same reasoning §2b.1 of `INFERRED_PRICE_LOGIC.md` gives for putting no time threshold on the price association. Rows whose floor came from a carried-forward point are flagged.
+    -   **Basis matters.** `csv[1]` is Keepa's NEW index, an item price with no shipping. The live-offer figure is landed. They are reported in separate columns and are not interchangeable; `stats.current[1]` is carried as the like-for-like current item price.
+3.  **Whether the existing Amazon ceiling clips a peak-season `List at` using a price that is not from the peak season**, and on how many sampled rows. The ceiling is `min(Amazon current, avg180, avg365) × 0.90`. `current` is a single reading taken *today*, which is a trough-time price whenever today is off-season; `avg180` and `avg365` are trailing averages that blend peak and trough. The script reports which of the three was the minimum, whether it engaged, and — for the `current` case only, where the claim is checkable — whether it was measured outside the peak month. The averages are reported as `blended` and **not** claimed to be trough-time.
 
 **It measures production rather than a copy of it.** It calls `infer_sale_events` and `analyze_sales_performance` directly, so the peak-month choice, the mode/median branch, the IQR and both ceilings are production's. Two interventions, both recorded in its output: `pd.merge_asof` is wrapped inside `stable_calculations` for one call so the matched point's own timestamp survives the merge (the matching stays pandas'), and `_query_xai_for_reasonableness` is stubbed to `True` so the run spends no quota and is deterministic. Each row records whether that check is live in production.
+
+**The one mirror, and why it is safe.** The Amazon ceiling is four lines of arithmetic inline in the middle of `analyze_sales_performance`, with no seam to instrument, so it *is* mirrored. It is made safe by being checked rather than trusted: whenever the mirror says the ceiling clipped a price, the row records whether production's own output equals the ceiling, and the summary counts any disagreement. A wrong mirror surfaces as a disagreement instead of a confident wrong number.
+
+**A clipped row is counted separately.** Where the ceiling overwrote the mode, the shared point no longer set the displayed price, so `duplicate_set_the_price` is false for it and the summary reports that count beside the raw one. Phase 2 needs the smaller number to size the real exposure.
 
 **Running it** (it needs read access to `deals.db`, hence `www-data`):
 
@@ -117,7 +124,13 @@ Sampling is the dashboard-visible set — `VISIBLE_PREDICATE`, imported from `re
 
 A summary of 25 lines or fewer goes to **stdout** and nothing else does; progress and library logging go to stderr. Full per-row detail is written to `Diagnostics/`, which is gitignored, so the run prints the `git add -f` needed to get the file off the box.
 
-**Guarded by** `tests/test_audit_list_at_sources.py`. Two of its cases exist to enforce `diagnose_inferred_sales.py`'s conclusion rule — compute the ordinary answer before naming an exotic one: `TwoDistinctPointsAreNotAShare` (two sales at the same price from two *different* points are ordinary repricing) and `TheMedianBranchIsNeverAFinding` (a `List at` from the median branch has no duplicate to blame). Only a mode whose winning price rests on one shared point is reported as the hypothesised artifact, and even then the de-duplicated re-run is reported rather than asserted.
+**Guarded by** `tests/test_audit_list_at_sources.py`. Three groups of cases enforce `diagnose_inferred_sales.py`'s conclusion rule — compute the ordinary answer before naming an exotic one:
+
+-   `TwoDistinctPointsAreNotAShare`: two sales at the same price from two *different* points are ordinary repricing, not the artifact.
+-   `TheMedianBranchIsNeverAFinding`: a `List at` from the median branch has no duplicate to blame.
+-   `TheOverstatementUsesThePeakWindowNotToday`: a cheap price *today* must not shrink the peak-season overstatement, and a row with no New price in its peak window reports no overstatement rather than falling back to today's.
+
+Only a mode whose winning price rests on one shared point is reported as the hypothesised artifact, and even then the de-duplicated re-run is reported rather than asserted.
 
 ### Price Association Fix (September 2026)
 The price attached to an inferred sale is now the last history point **strictly before** the offer drop, at **any** distance. `merge_asof(direction='backward', allow_exact_matches=False)` in `keepa_deals/stable_calculations.py`.

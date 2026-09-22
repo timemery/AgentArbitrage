@@ -49,11 +49,38 @@ WHAT IT MEASURES, AND WHAT IT DOES NOT CLAIM
     at all. A row where the mode is backed by two distinct points is NOT the
     artifact and is counted separately.
 
-(b) `List at` AGAINST THE LOWEST CURRENT NEW OFFER FROM ANY SELLER, and how many
-    rows a cap at that price would catch. This is the OTHER half of 1600910513:
-    the existing Amazon ceiling reads `stats.current[0]`, `avg180[0]`, `avg365[0]`
-    - all AMAZON's own price - so it is silent whenever Amazon is not selling,
-    which is precisely when a third-party New offer is the real market price.
+(b) `List at` AGAINST THE LOWEST NEW OFFER DURING THE PEAK-SEASON WINDOW(S)
+    THAT FED IT, and how many rows a cap there would catch.
+
+    NOT today's New offer. The product buys at the trough and sells at the peak,
+    so the price on screen now is the BUY side - it bounds what an arbitrageur
+    pays, not what the item can be listed at months later, and capping a peak
+    price with it would compare two different points in the season. The bound
+    that means something is what the same item could be had for New AT THE TIME
+    the peak-season sales that set `List at` were happening. Today's figure is
+    reported beside it for comparison and is labelled as such.
+
+    The windows are the calendar months holding the sales that actually fed
+    `List at` - plural, because a three-year history can hold the same peak month
+    in several years. `csv[1]` is a change-log, so the price in force in a window
+    is the last point at or before it opens, carried forward, plus every point
+    inside: the same reasoning `INFERRED_PRICE_LOGIC.md` 2b.1 gives for putting no
+    time threshold on the price association.
+
+(c) WHETHER THE EXISTING AMAZON CEILING CLIPS A PEAK-SEASON `List at` USING A
+    PRICE THAT IS NOT FROM THE PEAK SEASON, and on how many sampled rows.
+
+    The ceiling is `min(Amazon current, avg180, avg365) x 0.90`. `current` is a
+    single reading taken TODAY, which is a trough-time price whenever today is
+    off-season; `avg180` and `avg365` are trailing averages that blend peak and
+    trough. Either way the comparator is measured on a different part of the
+    season from the value it is capping. The script reports which of the three
+    was the minimum, whether it engaged, and - for the `current` case only, where
+    the claim is checkable - whether it was measured outside the peak month. The
+    averages are reported as `blended` and NOT claimed to be trough-time.
+
+    This is also the reason the ceiling is silent on 1600910513: all three inputs
+    are AMAZON's own price, and Amazon is not selling it.
 
 THE CONCLUSION RULE, inherited from `diagnose_inferred_sales.py`
 -----------------------------------------------------------------
@@ -83,6 +110,13 @@ copy. Two deliberate interventions, both recorded in the output:
     `merge_asof`. The matching is entirely pandas'; the wrapper only reads which
     row won. Production reads `['price_cents']` off that frame and ignores extra
     columns, so nothing about the result changes.
+
+    The one exception is the Amazon ceiling, four lines of arithmetic inline in
+    the middle of `analyze_sales_performance` with no seam to instrument. That IS
+    mirrored - and made safe by being CHECKED: whenever the mirror says the
+    ceiling clipped a price, the row records whether production's own output
+    equals the ceiling. A wrong mirror surfaces as a disagreement rather than a
+    confident wrong number.
 
 2.  `_query_xai_for_reasonableness` is stubbed to return True, so the run spends
     no xAI quota and is deterministic. The count of calls it WOULD have made is
@@ -391,7 +425,141 @@ def dedupe_by_source_point(sale_events, sources):
 
 
 # --------------------------------------------------------------------------
-# The lowest current New offer
+# The lowest New offer DURING the peak-season window(s)
+# --------------------------------------------------------------------------
+
+def peak_window_new_floor(product, contributing_sales):
+    """Lowest New offer price while the peak-season sales that set `List at` happened.
+
+    WHY THIS AND NOT TODAY'S PRICE. The product buys at the trough and sells at
+    the peak, so the New offer on screen today is the BUY side. It bounds what an
+    arbitrageur pays, not what the item can be listed at months later, and capping
+    a peak price with it would be comparing two different points in the season.
+    The bound that means something is what the same item could be had for New
+    AT THE TIME the peak-season sales that set `List at` were happening.
+
+    THE WINDOWS are the calendar months that actually contain the sales
+    `classify_list_at` found feeding `List at` - plural because a three-year
+    history can hold the same peak month in two or three different years, and each
+    is its own window with its own New price.
+
+    READING A CHANGE-LOG, NOT A SAMPLE. `csv[1]` records a point only when the
+    lowest New price CHANGES, so a window can contain zero points while a price
+    was in force throughout it. The price in force during a window is therefore
+    the last point at or before the window opens, carried forward, PLUS every
+    point inside it. This is the same reasoning `INFERRED_PRICE_LOGIC.md` 2b.1
+    gives for having no time threshold on the price association: a long gap means
+    the price had not changed, which makes the distant point correct rather than
+    stale. `carried` records when the floor came from such a point.
+
+    BASIS: `csv[1]` is Keepa's NEW index - an item price, with no shipping. It is
+    NOT comparable to the landed figure `lowest_new_offer` returns, and the two
+    are reported in separate columns for that reason.
+    """
+    from keepa_deals import stable_calculations
+
+    pd = stable_calculations.pd
+    blank = {'floor_cents': None, 'median_window_floor_cents': None,
+             'windows': [], 'window_count': 0, 'carried': False, 'points': 0}
+    if not contributing_sales:
+        return blank
+
+    csv_data = product.get('csv') or []
+    history = csv_data[1] if len(csv_data) > 1 and isinstance(csv_data[1], list) \
+        and len(csv_data[1]) > 1 else None
+    if not history:
+        return blank
+
+    import numpy as np
+    frame = pd.DataFrame(np.array(history).reshape(-1, 2),
+                         columns=['timestamp', 'price_cents'])
+    frame = stable_calculations._convert_ktm_to_datetime(frame)
+    frame = frame[frame['price_cents'] > 0].sort_values('timestamp')
+    if frame.empty:
+        return blank
+
+    periods = sorted({(sale['event_timestamp'].year, sale['event_timestamp'].month)
+                      for sale in contributing_sales})
+
+    windows, floors, carried_any, points_seen = [], [], False, 0
+    for year, month in periods:
+        start = datetime(year, month, 1)
+        end = datetime(year + 1, 1, 1) if month == 12 else datetime(year, month + 1, 1)
+
+        inside = frame[(frame['timestamp'] >= start) & (frame['timestamp'] < end)]
+        prior = frame[frame['timestamp'] < start]
+
+        candidates = list(inside['price_cents'])
+        points_seen += len(candidates)
+        carried = None
+        if not prior.empty:
+            carried = float(prior.iloc[-1]['price_cents'])
+            candidates.append(carried)
+
+        if not candidates:
+            windows.append({'year': year, 'month': month, 'floor_cents': None,
+                            'points_inside': 0, 'carried_cents': None})
+            continue
+
+        floor = float(min(candidates))
+        if carried is not None and floor == carried and len(inside) == 0:
+            carried_any = True
+        floors.append(floor)
+        windows.append({'year': year, 'month': month, 'floor_cents': floor,
+                        'points_inside': len(inside), 'carried_cents': carried})
+
+    if not floors:
+        return dict(blank, windows=windows, window_count=len(windows))
+
+    ordered = sorted(floors)
+    return {
+        'floor_cents': ordered[0],
+        'median_window_floor_cents': float(np.median(ordered)),
+        'windows': windows,
+        'window_count': len(windows),
+        'carried': carried_any,
+        'points': points_seen,
+    }
+
+
+# --------------------------------------------------------------------------
+# The Amazon ceiling, mirrored and then checked against what production did
+# --------------------------------------------------------------------------
+
+def amazon_ceiling(product):
+    """The ceiling `analyze_sales_performance` applies: min(current, 180d, 365d) x 0.90.
+
+    Four lines of arithmetic sitting inline in the middle of a long function, with
+    no seam to instrument - so this is the one thing here that IS a mirror. It is
+    made safe by being VERIFIED rather than trusted: when the mirror says the
+    ceiling clipped a price, `audit_row` checks that production's own output equals
+    the ceiling, and records `ceiling_matches_production` when it does not. A wrong
+    mirror shows up as a disagreement instead of a confident wrong number.
+
+    All three inputs are AMAZON's own price. `current` is today's - a single
+    trough-time reading when today is off-season. `avg180` and `avg365` are
+    trailing averages that blend peak and trough rather than being trough figures,
+    so they are reported as `blended` and not claimed to be trough-time.
+    """
+    stats = product.get('stats') or {}
+    candidates = []
+    for basis, key in (('current', 'current'), ('avg180', 'avg180'), ('avg365', 'avg365')):
+        series = stats.get(key) or []
+        value = series[0] if len(series) > 0 else None
+        if value and value > 0:
+            candidates.append((basis, float(value)))
+
+    if not candidates:
+        return None
+    basis, amazon_cents = min(candidates, key=lambda item: item[1])
+    return {'basis': basis, 'amazon_cents': amazon_cents,
+            'ceiling_cents': amazon_cents * 0.90,
+            'is_todays_price': basis == 'current',
+            'blends_seasons': basis in ('avg180', 'avg365')}
+
+
+# --------------------------------------------------------------------------
+# The lowest current New offer - reported for COMPARISON only
 # --------------------------------------------------------------------------
 
 def lowest_new_offer(product, default_shipping_cents):
@@ -565,23 +733,89 @@ def audit_row(stored, product, default_shipping_cents):
         result['dedup_changes_list_at'] = (
             result['dedup_list_at'] != result['recomputed_list_at'])
 
-    # (b) The lowest live New offer.
+    # (b) The lowest New offer DURING the peak-season window(s) - the bound that
+    #     is contemporaneous with the price being set, rather than today's.
+    floor = peak_window_new_floor(product, detail['contributing'])
+    result['peak_new_floor'] = _usd(floor['floor_cents'])
+    result['peak_new_median_window'] = _usd(floor['median_window_floor_cents'])
+    result['peak_windows'] = '; '.join(
+        '{}-{:02d}:{}'.format(w['year'], w['month'],
+                              _fmt_cents(w['floor_cents']))
+        for w in floor['windows']) or None
+    result['peak_window_count'] = floor['window_count']
+    result['peak_new_points'] = floor['points']
+    result['peak_new_carried_forward'] = floor['carried']
+
+    stored_list_at = _as_float(stored.get('list_at'))
+    result['overstatement'] = (
+        round(stored_list_at - result['peak_new_floor'], 2)
+        if stored_list_at is not None and result['peak_new_floor']
+        and stored_list_at > result['peak_new_floor'] else None)
+
+    # Today's New price, for COMPARISON ONLY. This is the buy side: what the item
+    # costs now, not a bound on what it can be listed at in season. Reported on two
+    # bases because they are not interchangeable - `stats.current[1]` is an item
+    # price on the same footing as `csv[1]` above, while the live offer is landed.
     offers = lowest_new_offer(product, default_shipping_cents)
     best = offers['best_new_offer']
     result['new_offer_count'] = offers['new_offer_count']
-    result['stats_new_price'] = (round(offers['stats_new_cents'] / 100.0, 2)
-                                 if offers['stats_new_cents'] else None)
-    result['new_landed'] = round(best['landed_cents'] / 100.0, 2) if best else None
-    result['new_item'] = round(best['item_cents'] / 100.0, 2) if best else None
-    result['new_shipping'] = round(best['shipping_cents'] / 100.0, 2) if best else None
+    result['current_new_item'] = _usd(offers['stats_new_cents'])
+    result['new_landed'] = _usd(best['landed_cents']) if best else None
+    result['new_item'] = _usd(best['item_cents']) if best else None
+    result['new_shipping'] = _usd(best['shipping_cents']) if best else None
     result['new_shipping_estimated'] = best['shipping_estimated'] if best else None
     result['new_is_fba'] = best['is_fba'] if best else None
+    result['above_current_new'] = bool(
+        stored_list_at is not None and result['new_landed']
+        and stored_list_at > result['new_landed'])
 
-    stored_list_at = _as_float(stored.get('list_at'))
-    result['overstatement'] = (round(stored_list_at - result['new_landed'], 2)
-                               if stored_list_at is not None and result['new_landed']
-                               and stored_list_at > result['new_landed'] else None)
+    # (c) Did the Amazon ceiling clip a peak-season price, and with what?
+    ceiling = amazon_ceiling(product)
+    branch_cents = detail['branch_price_cents']
+    result.update({
+        'ceiling_basis': ceiling['basis'] if ceiling else None,
+        'ceiling_amazon_price': _usd(ceiling['amazon_cents']) if ceiling else None,
+        'ceiling_price': _usd(ceiling['ceiling_cents']) if ceiling else None,
+        'ceiling_engaged': False,
+        'ceiling_on_todays_price': False,
+        'ceiling_outside_peak_month': None,
+        'ceiling_blends_seasons': False,
+        'ceiling_matches_production': None,
+    })
+    if ceiling and branch_cents and branch_cents > ceiling['ceiling_cents']:
+        result['ceiling_engaged'] = True
+        result['ceiling_on_todays_price'] = ceiling['is_todays_price']
+        result['ceiling_blends_seasons'] = ceiling['blends_seasons']
+        # A single reading taken today is a trough-time price only when today is
+        # not the peak month. A trailing average is neither, so it stays None.
+        if ceiling['is_todays_price']:
+            result['ceiling_outside_peak_month'] = (
+                datetime.now().month != detail['peak_month']
+                if detail['peak_month'] else None)
+        # The mirror, checked: production should have written exactly the ceiling.
+        result['ceiling_matches_production'] = bool(
+            recomputed_cents and recomputed_cents > 0
+            and abs(recomputed_cents - ceiling['ceiling_cents']) < 1.0)
+
+    # A shared-point mode only SET the displayed price if the ceiling did not then
+    # overwrite it. Counted separately so Phase 2 sizes the real exposure.
+    result['duplicate_set_the_price'] = bool(
+        detail['classification'] == CLASS_MODE_SHARED and not result['ceiling_engaged'])
+
+    # Does the whole reconstruction - branch, then ceiling - land where production
+    # landed? No duplicate finding on a row where this is False may be trusted.
+    result['reconstruction_matches_production'] = bool(
+        result['ceiling_matches_production'] if result['ceiling_engaged']
+        else detail['branch_matches_production'])
     return result
+
+
+def _usd(cents):
+    return round(cents / 100.0, 2) if cents else None
+
+
+def _fmt_cents(cents):
+    return '-' if not cents else '{:.2f}'.format(cents / 100.0)
 
 
 def _progress(message):
@@ -601,20 +835,28 @@ def _as_float(value):
 # --------------------------------------------------------------------------
 
 def summarise(rows, tokens, limit, sampled):
-    """The stdout summary. 25 lines maximum, by contract - see the tests."""
+    """The stdout summary. 25 lines maximum, by contract - see the tests.
+
+    The budget is 14 fixed lines plus the WORST_N table and its header. Blank
+    spacers are deliberately absent: they cost as much as a finding.
+    """
     ok = [r for r in rows if not r.get('error')]
     failed = len(rows) - len(ok)
 
-    mode_rows = [r for r in ok if r['classification'] in (CLASS_MODE_SHARED,
-                                                          CLASS_MODE_DISTINCT)]
     shared = [r for r in ok if r['classification'] == CLASS_MODE_SHARED]
-    trustworthy_shared = [r for r in shared if r['branch_matches_production']]
+    agreed = [r for r in shared if r['reconstruction_matches_production']]
+    uncapped = [r for r in shared if r['duplicate_set_the_price']]
     changed = [r for r in ok if r['dedup_changes_list_at']]
-    with_offer = [r for r in ok if r['new_landed']]
-    over = [r for r in ok if r['overstatement']]
 
-    # The budget is 25 lines: 11 fixed + WORST_N listed rows + the table header.
-    # Blank spacer lines are deliberately absent - they cost as much as a finding.
+    with_floor = [r for r in ok if r['peak_new_floor']]
+    over = [r for r in ok if r['overstatement']]
+    over_today = [r for r in ok if r['above_current_new']]
+
+    clipped = [r for r in ok if r['ceiling_engaged']]
+    clipped_today = [r for r in clipped if r['ceiling_outside_peak_month']]
+    clipped_blend = [r for r in clipped if r['ceiling_blends_seasons']]
+    mirror_off = [r for r in clipped if r['ceiling_matches_production'] is False]
+
     dedup_note = ''
     if changed:
         deltas = sorted(r['recomputed_list_at'] - (r['dedup_list_at'] or 0)
@@ -628,38 +870,47 @@ def summarise(rows, tokens, limit, sampled):
         over_note = ', median ${:.2f}, total ${:.2f}'.format(
             amounts[len(amounts) // 2], sum(amounts))
 
+    mirror_note = (', mirror DISAGREED on {}'.format(len(mirror_off))
+                   if mirror_off else '')
+
     lines = [
         'LIST AT SOURCE AUDIT  {}  |  {} rows, {} Keepa tokens'.format(
             datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%SZ'), len(rows), tokens),
         '  sample: {} (limit {}); processed {}, failed {}'.format(
             sampled, limit, len(ok), failed),
-        '(a) WHAT SET List at',
-        '  median / sparse branch (no duplicate possible) .. {}'.format(
-            sum(1 for r in ok if r['classification'] in (CLASS_MEDIAN, CLASS_SPARSE))),
-        '  mode, backed by DISTINCT price points ........... {}'.format(
-            len(mode_rows) - len(shared)),
-        '  mode, backed by ONE SHARED point ................ {}   <- the hypothesis'.format(
-            len(shared)),
-        '    ...of those, reconstruction == production ..... {}'.format(
-            len(trustworthy_shared)),
-        '  unclassified (price rejected, or no sales) ...... {}'.format(
-            sum(1 for r in ok if r['classification'] == CLASS_UNKNOWN)),
-        '  de-duplicating CHANGES List at on ............... {} row(s){}'.format(
+        '(a) WHAT SET List at   [median/sparse {} | mode-distinct {} | unclassified {}]'
+        .format(sum(1 for r in ok if r['classification'] in (CLASS_MEDIAN, CLASS_SPARSE)),
+                sum(1 for r in ok if r['classification'] == CLASS_MODE_DISTINCT),
+                sum(1 for r in ok if r['classification'] == CLASS_UNKNOWN)),
+        '  mode, backed by ONE SHARED price point ......... {}   <- the hypothesis'
+        .format(len(shared)),
+        '    reconstruction == production {} | ceiling did not overwrite it {}'
+        .format(len(agreed), len(uncapped)),
+        '  de-duplicating CHANGES List at on ............. {} row(s){}'.format(
             len(changed), dedup_note),
-        '(b) LOWEST CURRENT NEW OFFER, ANY SELLER',
-        '  rows with a live New offer ...................... {} of {}'.format(
-            len(with_offer), len(ok)),
-        '  List at ABOVE it, so a cap would catch .......... {}{}'.format(
+        '(b) List at vs LOWEST NEW OFFER IN ITS PEAK WINDOW(S)   csv[1], item price',
+        '  rows with a New price in a peak window ........ {} of {}'.format(
+            len(with_floor), len(ok)),
+        '  List at ABOVE that floor ...................... {}{}'.format(
             len(over), over_note),
+        '  comparison only: List at above TODAY\'s New ... {}  (buy side, not a bound)'
+        .format(len(over_today)),
+        '(c) AMAZON CEILING   min(current, 180d, 365d) x 0.90',
+        '  clipped a peak-season List at on .............. {} row(s){}'.format(
+            len(clipped), mirror_note),
+        '    on TODAY\'s Amazon price, outside the peak month  {}'.format(
+            len(clipped_today)),
+        '    on a trailing average that blends the seasons .. {}'.format(
+            len(clipped_blend)),
     ]
 
     worst = sorted(over, key=lambda r: r['overstatement'], reverse=True)[:WORST_N]
     if worst:
-        lines.append('  WORST {} BY OVERSTATEMENT  ASIN        List_at   newLnd     over  how'
+        lines.append('  WORST {} BY OVERSTATEMENT  ASIN        List_at   pkNew     over  how'
                      .format(len(worst)))
         for r in worst:
             lines.append('    {:<10}  {:>8}  {:>7}  {:>7}  {}'.format(
-                r['ASIN'], _fmt(r.get('list_at')), _fmt(r['new_landed']),
+                r['ASIN'], _fmt(r.get('list_at')), _fmt(r['peak_new_floor']),
                 _fmt(r['overstatement']), r['classification']))
     return lines
 
@@ -672,16 +923,33 @@ def _fmt(value):
 DETAIL_COLUMNS = [
     ('ASIN', 'ASIN'), ('list_at', 'stored List_at'),
     ('recomputed_list_at', 'recomputed List_at'), ('classification', 'how'),
-    ('branch_matches_production', 'branch==prod'), ('peak_season', 'peak'),
+    ('reconstruction_matches_production', 'recon==prod'), ('peak_season', 'peak'),
     ('sane_sale_count', 'sane sales'), ('contributing_sales', 'fed List_at'),
     ('mode_count', 'mode count'), ('distinct_source_points', 'distinct points'),
-    ('shared_point_sales', 'shared dups'), ('dedup_sale_count', 'sales after dedup'),
-    ('dedup_list_at', 'List_at after dedup'), ('dedup_peak_season', 'peak after dedup'),
-    ('dedup_changes_list_at', 'dedup changed'),
-    ('new_item', 'New item'), ('new_shipping', 'New ship'),
-    ('new_landed', 'New landed'), ('new_shipping_estimated', 'ship estimated'),
-    ('new_is_fba', 'New FBA'), ('new_offer_count', 'New offers'),
-    ('stats_new_price', 'stats.current[1]'), ('overstatement', 'List_at - New landed'),
+    ('shared_point_sales', 'shared dups'), ('duplicate_set_the_price', 'dup set price'),
+    ('dedup_sale_count', 'sales after dedup'), ('dedup_list_at', 'List_at after dedup'),
+    ('dedup_peak_season', 'peak after dedup'), ('dedup_changes_list_at', 'dedup changed'),
+    # (b) the contemporaneous bound
+    ('peak_new_floor', 'peak-window New floor'),
+    ('peak_new_median_window', 'median window floor'),
+    ('peak_windows', 'windows (yyyy-mm:floor)'), ('peak_window_count', 'windows'),
+    ('peak_new_points', 'New points in windows'),
+    ('peak_new_carried_forward', 'floor carried forward'),
+    ('overstatement', 'List_at - peak-window New'),
+    # today's price, comparison only - a buy-side figure, not a bound
+    ('current_new_item', "today's New (item)"), ('new_landed', "today's New (landed)"),
+    ('new_item', 'live offer item'), ('new_shipping', 'live offer ship'),
+    ('new_shipping_estimated', 'ship estimated'), ('new_is_fba', 'live offer FBA'),
+    ('new_offer_count', 'live New offers'), ('above_current_new', "above today's New"),
+    # (c) the Amazon ceiling
+    ('ceiling_engaged', 'ceiling clipped'), ('ceiling_basis', 'ceiling basis'),
+    ('ceiling_amazon_price', 'Amazon price used'), ('ceiling_price', 'ceiling value'),
+    ('ceiling_on_todays_price', "ceiling = today's price"),
+    ('ceiling_outside_peak_month', 'measured outside peak month'),
+    ('ceiling_blends_seasons', 'ceiling blends seasons'),
+    ('ceiling_matches_production', 'ceiling mirror == prod'),
+    ('branch_list_at', 'pre-ceiling branch value'),
+    # stored context
     ('avg_1yr', 'stored 1yr_Avg'), ('price_now', 'stored Price_Now'),
     ('stored_sale_count', 'stored sale count'), ('pricing_version', 'version'),
     ('total_offer_drops', 'offer drops'), ('price_source', 'price source'),

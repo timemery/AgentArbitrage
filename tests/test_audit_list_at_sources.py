@@ -80,7 +80,8 @@ def _month_anchor(days_back):
     return datetime(moment.year, moment.month, 10)
 
 
-def build_history(share_the_point=True, asin='AUDITFIXT'):
+def build_history(share_the_point=True, asin='AUDITFIXT', new_price_points=None,
+                  amazon=None):
     """Eleven confirmed sales, the peak month holding a duplicated price.
 
     `share_the_point=True` places ONE price point before the last two drops, so
@@ -132,22 +133,30 @@ def build_history(share_the_point=True, asin='AUDITFIXT'):
         offer_points.append((drop_time, 20 + len(schedule) - index - 1))
 
     csv_data = [None] * 13
+    if new_price_points:
+        csv_data[1] = _flat(new_price_points)
     csv_data[2] = _flat(price_points)
     csv_data[3] = _flat(rank_points)
     csv_data[12] = _flat(offer_points)
 
-    return {
-        'asin': asin,
-        'title': 'List at source fixture',
-        'csv': csv_data,
-        # Amazon absent on every index, exactly like 1600910513, so the 90%
-        # ceiling cannot quietly move the number these tests assert on.
-        'stats': {
-            'current': [-1, -1, CURRENT_USED_CENTS, 500000] + [-1] * 19,
-            'avg90': [-1] * 23, 'avg180': [-1] * 23, 'avg365': [-1] * 23,
-        },
-        'offers': [],
+    # Amazon absent on every index by default, exactly like 1600910513, so the 90%
+    # ceiling cannot quietly move the number these tests assert on. `amazon` is a
+    # {'current'|'avg180'|'avg365': cents} dict for the tests that DO want it to.
+    amazon = amazon or {}
+    stats = {
+        'current': [amazon.get('current', -1), -1, CURRENT_USED_CENTS, 500000] + [-1] * 19,
+        'avg90': [-1] * 23,
+        'avg180': [amazon.get('avg180', -1)] + [-1] * 22,
+        'avg365': [amazon.get('avg365', -1)] + [-1] * 22,
     }
+
+    return {'asin': asin, 'title': 'List at source fixture', 'csv': csv_data,
+            'stats': stats, 'offers': []}
+
+
+def peak_month_anchor():
+    """The month `build_history` uses for the peak. Tests place New prices in it."""
+    return _month_anchor(45)
 
 
 class _Silent(unittest.TestCase):
@@ -302,6 +311,214 @@ def _offer(condition, item_cents, shipping_cents, is_fba=False, seller='S1', age
     moment = _ktm(datetime.now() - timedelta(days=age_days))
     return {'condition': condition, 'isFBA': is_fba, 'sellerId': seller,
             'offerCSV': [moment, item_cents, shipping_cents]}
+
+
+class ThePeakWindowNewFloor(_Silent):
+    """The bound must be contemporaneous with the sales that set `List at`.
+
+    Today's New offer is the BUY side - what the item costs now, months out of
+    season. It bounds what an arbitrageur pays, not what the item can be listed at
+    when its season comes round, so it is reported for comparison and never used
+    as the floor.
+    """
+
+    def _product(self, points):
+        csv_data = [None] * 13
+        csv_data[1] = _flat(points)
+        return {'asin': 'FLOORTEST', 'csv': csv_data, 'stats': {}}
+
+    def _sale(self, moment, cents=DUP_CENTS):
+        return {'event_timestamp': moment, 'inferred_sale_price_cents': cents}
+
+    def test_it_takes_the_lowest_new_price_inside_the_window(self):
+        month = peak_month_anchor()
+        product = self._product([
+            (month - timedelta(days=200), 30000),   # long before: not the floor
+            (month + timedelta(days=3), 9000),      # inside the window
+            (month + timedelta(days=5), 12000),     # inside, but higher
+        ])
+        floor = audit.peak_window_new_floor(product, [self._sale(month + timedelta(days=4))])
+        self.assertEqual(floor['floor_cents'], 9000)
+        self.assertEqual(floor['window_count'], 1)
+        self.assertFalse(floor['carried'])
+
+    def test_a_window_with_no_points_uses_the_price_carried_into_it(self):
+        """`csv[1]` is a change-log: no point in the window means no price CHANGE.
+
+        Same reasoning INFERRED_PRICE_LOGIC.md 2b.1 gives for having no time
+        threshold on the price association - a long gap means the price held.
+        """
+        month = peak_month_anchor()
+        product = self._product([(month - timedelta(days=300), 9000)])
+        floor = audit.peak_window_new_floor(product, [self._sale(month + timedelta(days=4))])
+        self.assertEqual(floor['floor_cents'], 9000)
+        self.assertTrue(floor['carried'])
+        self.assertEqual(floor['peak_new_points'] if 'peak_new_points' in floor
+                         else floor['points'], 0)
+
+    def test_prices_after_the_window_are_ignored(self):
+        month = peak_month_anchor()
+        product = self._product([
+            (month + timedelta(days=3), 30000),
+            (month + timedelta(days=45), 1000),   # a later month, far cheaper
+        ])
+        floor = audit.peak_window_new_floor(product, [self._sale(month + timedelta(days=4))])
+        self.assertEqual(floor['floor_cents'], 30000)
+
+    def test_several_years_of_the_same_month_are_several_windows(self):
+        month = peak_month_anchor()
+        older = datetime(month.year - 1, month.month, 10)
+        product = self._product([
+            (older + timedelta(days=2), 20000),
+            (month + timedelta(days=2), 9000),
+        ])
+        floor = audit.peak_window_new_floor(
+            product, [self._sale(older + timedelta(days=4)),
+                      self._sale(month + timedelta(days=4))])
+        self.assertEqual(floor['window_count'], 2)
+        self.assertEqual(floor['floor_cents'], 9000, 'the floor is the lowest window')
+        self.assertEqual(floor['median_window_floor_cents'], 14500.0)
+
+    def test_no_new_history_is_reported_as_no_floor(self):
+        product = {'asin': 'X', 'csv': [None] * 13, 'stats': {}}
+        floor = audit.peak_window_new_floor(product, [self._sale(datetime.now())])
+        self.assertIsNone(floor['floor_cents'])
+
+    def test_no_contributing_sales_is_reported_as_no_floor(self):
+        month = peak_month_anchor()
+        product = self._product([(month + timedelta(days=3), 9000)])
+        self.assertIsNone(audit.peak_window_new_floor(product, [])['floor_cents'])
+
+    def test_non_positive_prices_are_skipped(self):
+        month = peak_month_anchor()
+        product = self._product([(month + timedelta(days=2), -1),
+                                 (month + timedelta(days=3), 9000)])
+        self.assertEqual(
+            audit.peak_window_new_floor(
+                product, [self._sale(month + timedelta(days=4))])['floor_cents'], 9000)
+
+
+class TheAmazonCeiling(_Silent):
+    """Which Amazon figure caps a peak price, and whether it is a peak-season one."""
+
+    def _product(self, current=-1, avg180=-1, avg365=-1):
+        return {'asin': 'CEILTEST', 'stats': {
+            'current': [current] + [-1] * 22,
+            'avg180': [avg180] + [-1] * 22,
+            'avg365': [avg365] + [-1] * 22}}
+
+    def test_it_takes_the_minimum_of_the_three(self):
+        ceiling = audit.amazon_ceiling(self._product(current=20000, avg180=15000,
+                                                     avg365=18000))
+        self.assertEqual(ceiling['basis'], 'avg180')
+        self.assertEqual(ceiling['amazon_cents'], 15000)
+        self.assertEqual(ceiling['ceiling_cents'], 13500.0)
+
+    def test_todays_price_is_flagged_as_todays(self):
+        ceiling = audit.amazon_ceiling(self._product(current=10000, avg365=20000))
+        self.assertTrue(ceiling['is_todays_price'])
+        self.assertFalse(ceiling['blends_seasons'])
+
+    def test_a_trailing_average_is_flagged_as_blended_not_as_trough(self):
+        """It spans peak and trough, so calling it a trough-time price overclaims."""
+        ceiling = audit.amazon_ceiling(self._product(current=20000, avg365=10000))
+        self.assertFalse(ceiling['is_todays_price'])
+        self.assertTrue(ceiling['blends_seasons'])
+
+    def test_absent_amazon_prices_mean_no_ceiling(self):
+        self.assertIsNone(audit.amazon_ceiling(self._product()))
+
+    def test_it_still_fires_when_amazon_is_not_selling_today(self):
+        """current is -1 but a 365-day average survives from when Amazon did sell."""
+        ceiling = audit.amazon_ceiling(self._product(current=-1, avg365=10000))
+        self.assertEqual(ceiling['basis'], 'avg365')
+
+
+class TheCeilingIsMeasuredNotAssumed(_Silent):
+    """End to end: a clipped row, with the mirror checked against production."""
+
+    def _audit(self, amazon):
+        month = peak_month_anchor()
+        product = build_history(
+            share_the_point=True, asin='CLIPPED001', amazon=amazon,
+            new_price_points=[(month + timedelta(days=3), 9000)])
+        stored = {'ASIN': 'CLIPPED001', 'list_at': 375.66}
+        return audit.audit_row(stored, product, 200)
+
+    def test_an_unclipped_row_reports_no_ceiling(self):
+        row = self._audit({})
+        self.assertFalse(row['ceiling_engaged'])
+        self.assertIsNone(row['ceiling_basis'])
+        self.assertEqual(row['recomputed_list_at'], 375.66)
+        self.assertTrue(row['duplicate_set_the_price'])
+
+    def test_a_trailing_average_clips_the_peak_price(self):
+        row = self._audit({'avg365': 20000})       # ceiling = $180.00
+        self.assertTrue(row['ceiling_engaged'])
+        self.assertEqual(row['ceiling_basis'], 'avg365')
+        self.assertEqual(row['ceiling_price'], 180.00)
+        self.assertEqual(row['recomputed_list_at'], 180.00)
+        self.assertTrue(row['ceiling_blends_seasons'])
+        self.assertIsNone(row['ceiling_outside_peak_month'],
+                          'an average is not a trough-time reading; do not claim it is')
+
+    def test_the_mirror_is_checked_against_what_production_wrote(self):
+        row = self._audit({'avg365': 20000})
+        self.assertTrue(row['ceiling_matches_production'])
+        self.assertTrue(row['reconstruction_matches_production'])
+
+    def test_a_clipped_row_does_not_count_as_the_duplicate_setting_the_price(self):
+        """The shared point still made the mode; the ceiling then overwrote it."""
+        row = self._audit({'avg365': 20000})
+        self.assertEqual(row['classification'], audit.CLASS_MODE_SHARED)
+        self.assertFalse(row['duplicate_set_the_price'])
+
+    def test_todays_amazon_price_records_whether_it_is_off_peak(self):
+        row = self._audit({'current': 20000})
+        self.assertTrue(row['ceiling_engaged'])
+        self.assertTrue(row['ceiling_on_todays_price'])
+        expected = datetime.now().month != peak_month_anchor().month
+        self.assertEqual(row['ceiling_outside_peak_month'], expected)
+
+
+class TheOverstatementUsesThePeakWindowNotToday(_Silent):
+
+    def _audit(self, new_points, offers):
+        product = build_history(share_the_point=True, asin='BOUNDTEST',
+                                new_price_points=new_points)
+        product['offers'] = offers
+        stored = {'ASIN': 'BOUNDTEST', 'list_at': 375.66}
+        return audit.audit_row(stored, product, 200)
+
+    def test_overstatement_is_against_the_peak_window_floor(self):
+        month = peak_month_anchor()
+        row = self._audit([(month + timedelta(days=3), 9000)],
+                          [_offer(1, 7499, 399)])
+        self.assertEqual(row['peak_new_floor'], 90.00)
+        self.assertEqual(row['overstatement'], round(375.66 - 90.00, 2))
+
+    def test_todays_price_is_carried_but_never_used_as_the_floor(self):
+        """A cheap price TODAY must not shrink the peak-season overstatement."""
+        month = peak_month_anchor()
+        row = self._audit([(month + timedelta(days=3), 30000)],
+                          [_offer(1, 500, 0)])          # $5.00 today
+        self.assertEqual(row['peak_new_floor'], 300.00)
+        self.assertEqual(row['overstatement'], round(375.66 - 300.00, 2))
+        self.assertEqual(row['new_landed'], 5.00)
+        self.assertTrue(row['above_current_new'],
+                        'still reported, as a comparison')
+
+    def test_a_row_with_no_peak_window_price_has_no_overstatement(self):
+        row = self._audit(None, [_offer(1, 500, 0)])
+        self.assertIsNone(row['peak_new_floor'])
+        self.assertIsNone(row['overstatement'])
+        self.assertTrue(row['above_current_new'])
+
+    def test_the_windows_are_recorded_for_the_reader(self):
+        month = peak_month_anchor()
+        row = self._audit([(month + timedelta(days=3), 9000)], [])
+        self.assertIn('{}-{:02d}:90.00'.format(month.year, month.month),
+                      row['peak_windows'])
 
 
 class TheLowestNewOffer(_Silent):
@@ -507,9 +724,14 @@ class TheRunIsBounded(_Silent):
 def _row(asin, **overrides):
     row = {
         'ASIN': asin, 'list_at': 400.0, 'recomputed_list_at': 400.0,
-        'classification': audit.CLASS_MODE_SHARED, 'branch_matches_production': True,
+        'classification': audit.CLASS_MODE_SHARED,
+        'reconstruction_matches_production': True, 'duplicate_set_the_price': True,
         'dedup_changes_list_at': True, 'dedup_list_at': 300.0,
-        'new_landed': 78.98, 'overstatement': 321.02, 'error': None,
+        'peak_new_floor': 90.0, 'overstatement': 310.0,
+        'new_landed': 78.98, 'above_current_new': True,
+        'ceiling_engaged': False, 'ceiling_outside_peak_month': None,
+        'ceiling_blends_seasons': False, 'ceiling_matches_production': None,
+        'error': None,
     }
     row.update(overrides)
     return row
@@ -544,6 +766,42 @@ class TheSummaryFitsOnScreen(_Silent):
         lines = audit.summarise(rows, tokens=7, limit=2, sampled='test')
         self.assertTrue(any('failed 1' in line for line in lines))
 
+    def test_it_stays_within_25_lines_with_every_section_populated(self):
+        rows = [_row('ASIN%06d' % n, overstatement=float(n) + 1,
+                     ceiling_engaged=(n % 2 == 0),
+                     ceiling_outside_peak_month=(n % 4 == 0),
+                     ceiling_blends_seasons=(n % 3 == 0),
+                     ceiling_matches_production=(n != 4))
+                for n in range(60)]
+        lines = audit.summarise(rows, tokens=420, limit=60, sampled='test')
+        self.assertLessEqual(len(lines), 25, '\n'.join(lines))
+
+    def test_no_line_is_wider_than_a_terminal(self):
+        rows = [_row('ASIN%06d' % n, overstatement=float(n) + 1) for n in range(60)]
+        for line in audit.summarise(rows, tokens=420, limit=60, sampled='test'):
+            self.assertLessEqual(len(line), 100, line)
+
+    def test_the_peak_window_floor_is_the_column_shown_not_todays_price(self):
+        rows = [_row('ASIN000001', peak_new_floor=90.0, new_landed=5.0,
+                     overstatement=310.0)]
+        listed = [l for l in audit.summarise(rows, tokens=7, limit=1, sampled='t')
+                  if l.strip().startswith('ASIN')]
+        self.assertIn('90.00', listed[0])
+        self.assertNotIn('5.00', listed[0])
+
+    def test_a_disagreeing_ceiling_mirror_is_surfaced(self):
+        rows = [_row('ASIN000001', ceiling_engaged=True,
+                     ceiling_matches_production=False)]
+        lines = audit.summarise(rows, tokens=7, limit=1, sampled='test')
+        self.assertTrue(any('mirror DISAGREED on 1' in line for line in lines),
+                        '\n'.join(lines))
+
+    def test_todays_price_is_labelled_as_a_comparison_not_a_bound(self):
+        lines = audit.summarise([_row('ASIN000001')], tokens=7, limit=1, sampled='t')
+        joined = '\n'.join(lines)
+        self.assertIn('comparison only', joined)
+        self.assertIn('not a bound', joined)
+
 
 class TheWholeRunHangsTogether(_Silent):
     """End to end with Keepa and the token bucket faked, because the box is not here.
@@ -565,15 +823,26 @@ class TheWholeRunHangsTogether(_Silent):
             'INSERT INTO deals VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [('1600910513', 375.66, '255.23', 82.97, 11, 2, 'Shared point', 120.0),
              ('DISTINCT001', 375.66, '255.23', 82.97, 11, 2, 'Repriced twice', 120.0),
+             ('CLIPPED0001', 180.00, '255.23', 82.97, 11, 2, 'Amazon clipped', 60.0),
              ('MISSING0001', 200.00, '180.00', 40.00, 4, 2, 'Keepa drops it', 60.0)])
         con.commit()
         con.close()
 
-        shared = build_history(share_the_point=True, asin='1600910513')
+        month = peak_month_anchor()
+        peak_new = [(month + timedelta(days=3), 9000)]
+
+        shared = build_history(share_the_point=True, asin='1600910513',
+                               new_price_points=peak_new)
         shared['offers'] = [_offer(1, 7499, 399, seller='A')]
-        distinct = build_history(share_the_point=False, asin='DISTINCT001')
+        distinct = build_history(share_the_point=False, asin='DISTINCT001',
+                                 new_price_points=peak_new)
         distinct['offers'] = [_offer(1, 44900, -1, is_fba=True, seller='B')]
-        self.products = {p['asin']: p for p in (shared, distinct)}
+        # Amazon is not selling today, but a 365-day average survives from when it
+        # was - so the ceiling engages on a figure that spans both seasons.
+        clipped = build_history(share_the_point=True, asin='CLIPPED0001',
+                                new_price_points=peak_new, amazon={'avg365': 20000})
+        clipped['offers'] = [_offer(1, 7499, 399, seller='C')]
+        self.products = {p['asin']: p for p in (shared, distinct, clipped)}
 
     def tearDown(self):
         for suffix in ('', '-wal', '-shm'):
@@ -633,7 +902,7 @@ class TheWholeRunHangsTogether(_Silent):
         code, _ = self._run(['--limit', '10'])
         self.assertEqual(code, 0)
         written = self._detail()
-        for asin in ('1600910513', 'DISTINCT001', 'MISSING0001'):
+        for asin in ('1600910513', 'DISTINCT001', 'CLIPPED0001', 'MISSING0001'):
             self.assertIn(asin, written)
 
     def test_the_two_shapes_are_told_apart_end_to_end(self):
@@ -647,25 +916,43 @@ class TheWholeRunHangsTogether(_Silent):
         self._run(['--limit', '10'])
         self.assertIn('Keepa returned no product', self._detail())
 
+    def test_the_overstatement_is_measured_against_the_peak_window(self):
+        """$375.66 against the $90.00 New price in its own peak month."""
+        self._run(['--limit', '10'])
+        written = self._detail()
+        self.assertIn('"peak_new_floor": 90.0', written)
+        self.assertIn('"overstatement": 285.66', written)
+
+    def test_a_clipped_row_reports_the_ceiling_and_its_basis(self):
+        self._run(['--limit', '10'])
+        written = self._detail()
+        self.assertIn('"ceiling_basis": "avg365"', written)
+        self.assertIn('"ceiling_blends_seasons": true', written)
+        self.assertIn('"ceiling_matches_production": true', written)
+
+    def test_a_clipped_row_does_not_count_as_the_duplicate_setting_the_price(self):
+        self._run(['--limit', '10'])
+        self.assertIn('ceiling did not overwrite it 1', self._detail())
+
     def test_tokens_are_accumulated_from_keepas_own_figure(self):
         self._run(['--limit', '10'])
-        self.assertIn('Keepa tokens consumed: **21**', self._detail())
+        self.assertIn('Keepa tokens consumed: **28**', self._detail())
 
     def test_it_reserves_before_fetching_and_reconciles_after(self):
         _, calls = self._run(['--limit', '10'])
-        self.assertIn(('reserve', audit.DEFAULT_RESERVE_PER_ASIN * 3), calls)
+        self.assertIn(('reserve', audit.DEFAULT_RESERVE_PER_ASIN * 4), calls)
         self.assertIn(('reconcile', 300.0), calls)
 
     def test_it_fetches_with_the_heavy_path_parameters(self):
         _, calls = self._run(['--limit', '10'])
         fetches = [c for c in calls if isinstance(c[0], list)]
-        self.assertEqual(len(fetches), 1, 'three rows fit in one batch of five')
+        self.assertEqual(len(fetches), 1, 'four rows fit in one batch of five')
         self.assertEqual(fetches[0][1], {'days': 365, 'history': 1, 'offers': 20})
 
     def test_batching_splits_the_sample(self):
         _, calls = self._run(['--limit', '10', '--batch-size', '2'])
         fetches = [c for c in calls if isinstance(c[0], list)]
-        self.assertEqual([len(f[0]) for f in fetches], [2, 1])
+        self.assertEqual([len(f[0]) for f in fetches], [2, 2])
 
     def test_named_asins_skip_the_sample(self):
         _, calls = self._run(['--asin', 'DISTINCT001'])
@@ -680,8 +967,8 @@ class TheWholeRunHangsTogether(_Silent):
             rows = con.execute('SELECT List_at FROM deals ORDER BY ASIN').fetchall()
         finally:
             con.close()
-        # ASIN order: 1600910513, DISTINCT001, MISSING0001.
-        self.assertEqual([r[0] for r in rows], [375.66, 375.66, 200.0])
+        # ASIN order: 1600910513, CLIPPED0001, DISTINCT001, MISSING0001.
+        self.assertEqual([r[0] for r in rows], [375.66, 180.0, 375.66, 200.0])
         self.assertEqual(os.path.getmtime(self.db_path), before)
 
 

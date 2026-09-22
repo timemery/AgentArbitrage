@@ -271,10 +271,22 @@ that measures them, its runbook and its cost are in
     price is distinct, such a pair is the only repeated value and therefore the
     only mode candidate. Whether that is happening, how often, and what `List at`
     becomes when the duplicate contributes once, is what the audit reports.
-2.  **The Amazon ceiling in step A.3 is silent when Amazon is not selling.** It
-    compares against `stats.current[0]`, `avg180[0]` and `avg365[0]` — all
-    *Amazon's own* price. A third-party New offer, which is the real market price
-    whenever Amazon is absent, is not consulted on any path.
+2.  **No New-offer comparator is contemporaneous with the peak.** The Amazon
+    ceiling in step A.3 compares against `stats.current[0]`, `avg180[0]` and
+    `avg365[0]` — all *Amazon's own* price, so it is silent whenever Amazon is
+    not selling, and a third-party New offer is not consulted on any path.
+    -   Separately, none of the three is a peak-season figure. `current` is a
+        single reading taken today, which is a trough-time price whenever today
+        is off-season; the two averages are trailing windows that blend peak and
+        trough. So when the ceiling *does* engage, it caps a peak price with a
+        comparator measured on a different part of the season. The audit reports
+        which of the three was the minimum and how many sampled rows it clipped.
+    -   **Today's New price is the buy side, not a bound on the peak.** The
+        product buys at the trough and sells at the peak. A cap built on the New
+        offer showing today would compare two different points in the season; a
+        contemporaneous one reads the New price during the peak-season windows
+        that produced the sales in step A.2. That is what the audit measures, and
+        it reports today's figure beside it for comparison only.
 
 ### B. 1-Year Average (`1yr. Avg.`)
 Used for the "Percent Down" and "Trend" calculations.
