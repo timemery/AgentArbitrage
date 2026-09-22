@@ -93,6 +93,32 @@ FROM deals GROUP BY 1 ORDER BY 1;
 
 Baseline at 2026-09-16: 4,534 rows, 3,070 priced, 1,100 visible, 17 at or above $1,000 (avg $1,155.91). Expect `four_figure` to reach 0 and the stale row count to fall to 0.
 
+### Auditing where a stored `List at` came from (September 2026)
+
+`audit_list_at_sources.py` is **read-only measurement**. It changes no pricing logic, writes nothing to `deals.db`, makes no xAI calls, and reaches no conclusion on its own. It exists because `diagnose_inferred_sales.py` explains one ASIN's sale events and then stops exactly where the question starts — *"List at = normal branch (peak-month mode/median). Not recomputed here; this diagnostic does not classify seasons."*
+
+It answers two questions per row, both open as of 2026-09-22 and neither an established defect (see `INFERRED_PRICE_LOGIC.md` §4.A.1):
+
+1.  **Which sale events fed `List at`, and was the winning value carried by a price point that more than one confirmed sale matched** — and if so, what `List at` becomes when that point contributes once instead of twice. `List at` breaks ties by frequency, and the price association takes the last change-log point strictly before a drop *at any distance*, so two drops with no price change between them legitimately receive the same point.
+2.  **`List at` against the lowest live New offer from any seller**, landed (item + shipping), and how many rows a cap there would catch. The existing Amazon ceiling reads Amazon's own price only, so it is silent whenever Amazon is not selling.
+
+**It measures production rather than a copy of it.** It calls `infer_sale_events` and `analyze_sales_performance` directly, so the peak-month choice, the mode/median branch, the IQR and both ceilings are production's. Two interventions, both recorded in its output: `pd.merge_asof` is wrapped inside `stable_calculations` for one call so the matched point's own timestamp survives the merge (the matching stays pandas'), and `_query_xai_for_reasonableness` is stubbed to `True` so the run spends no quota and is deterministic. Each row records whether that check is live in production.
+
+**Running it** (it needs read access to `deals.db`, hence `www-data`):
+
+```bash
+cd /var/www/agentarbitrage
+sudo -u www-data venv/bin/python audit_list_at_sources.py --limit 50
+# or a named row, e.g. the one that prompted this:
+sudo -u www-data venv/bin/python audit_list_at_sources.py --asin 1600910513
+```
+
+Sampling is the dashboard-visible set — `VISIBLE_PREDICATE`, imported from `repair_pricing.py` rather than restated — ordered by `List_at` DESC. **`--limit` defaults to 50 and an unbounded run is refused**: every row is a heavy `days=365, history=1, offers=20` fetch at ~7 tokens against the bucket shared with ingestion at 25/min, so 50 rows is roughly 350 tokens and about 14 minutes of refill. The real figure is printed. Fetches go through the same `TokenManager` in batches of 5, and a `TokenRechargeError` is waited out up to three times before the run stops cleanly and asks to be re-run.
+
+A summary of 25 lines or fewer goes to **stdout** and nothing else does; progress and library logging go to stderr. Full per-row detail is written to `Diagnostics/`, which is gitignored, so the run prints the `git add -f` needed to get the file off the box.
+
+**Guarded by** `tests/test_audit_list_at_sources.py`. Two of its cases exist to enforce `diagnose_inferred_sales.py`'s conclusion rule — compute the ordinary answer before naming an exotic one: `TwoDistinctPointsAreNotAShare` (two sales at the same price from two *different* points are ordinary repricing) and `TheMedianBranchIsNeverAFinding` (a `List at` from the median branch has no duplicate to blame). Only a mode whose winning price rests on one shared point is reported as the hypothesised artifact, and even then the de-duplicated re-run is reported rather than asserted.
+
 ### Price Association Fix (September 2026)
 The price attached to an inferred sale is now the last history point **strictly before** the offer drop, at **any** distance. `merge_asof(direction='backward', allow_exact_matches=False)` in `keepa_deals/stable_calculations.py`.
 

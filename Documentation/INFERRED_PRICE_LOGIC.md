@@ -258,6 +258,24 @@ This determines the recommended listing price.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.
     -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
 
+### A.1 Two things step A.2 does not decide on its own
+
+Both are open measurements as of 2026-09-22, not established defects. The script
+that measures them, its runbook and its cost are in
+`System_State.md` → "Auditing where a stored `List at` came from".
+
+1.  **The mode breaks ties by frequency, and §2b can legitimately hand two sales
+    the same price.** The association takes the last change-log point strictly
+    before an offer drop *at any distance*, so two drops with no price change
+    between them receive the **same point**. In a peak month where every other
+    price is distinct, such a pair is the only repeated value and therefore the
+    only mode candidate. Whether that is happening, how often, and what `List at`
+    becomes when the duplicate contributes once, is what the audit reports.
+2.  **The Amazon ceiling in step A.3 is silent when Amazon is not selling.** It
+    compares against `stats.current[0]`, `avg180[0]` and `avg365[0]` — all
+    *Amazon's own* price. A third-party New offer, which is the real market price
+    whenever Amazon is absent, is not consulted on any path.
+
 ### B. 1-Year Average (`1yr. Avg.`)
 Used for the "Percent Down" and "Trend" calculations.
 
