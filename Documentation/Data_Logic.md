@@ -180,7 +180,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Why it exists**: nothing else dates a row's pricing. `last_seen_utc` and `source` are rewritten by the heavy path, the light path and the Stale Rescue alike, so `source` says who touched the row LAST, not who priced it. `Inferred_Sale_Count` looks like it should work and does not — rows priced between 2026-09-11 and 2026-09-12 16:50 UTC carry a count *and* pre-fix prices.
     -   **NULL rule**: `NULL` or a value below `PRICING_LOGIC_VERSION` means **stale pricing, due a heavy re-fetch**. This is used for SCHEDULING work, and is deliberately the reverse of the `Inferred_Sale_Count` NULL rule above, which governs whether a deal may be SHOWN. Never merge the two.
     -   **Never written by**: the light path, the Stale Rescue, `recalculator.py`, the janitor. **Never backfilled.**
-    -   **Consumed by**: `repair_pricing.py`, which selects `IS NULL OR < PRICING_LOGIC_VERSION`. A future pricing fix re-uses that script unchanged by bumping the constant.
+    -   **Consumed by**: `repair_pricing.py`, which selects `IS NULL OR < PRICING_LOGIC_VERSION` (`STALE_PRICING_PREDICATE`). A future pricing fix re-uses that script unchanged by bumping the constant.
+    -   **Also consumed by Prime Picks (Sept 2026)**, through `CURRENT_PRICING_PREDICATE` — the exact negation of the same string, derived in `pricing_version.py` rather than restated. Pass 1 will not select a stale-priced row, `prune_stale_priced_picks` evicts one that is already cached, and the Agent's Choice branch of `/api/deals` will not render one. **This does not make the column a "may this deal be shown?" rule in general** — the main grid is unaffected and still shows stale-priced rows. It is scoped to the one surface that presents a deal as a recommendation. See `AGENTS.md` §7.14.
 
 -   **`Percent Down` (% ⇩)**:
     -   **Source**: `keepa_deals/new_analytics.py`.

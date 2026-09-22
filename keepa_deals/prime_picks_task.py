@@ -10,6 +10,7 @@ from worker import celery_app as celery
 from .db_utils import DB_PATH
 from .ava_advisor import query_xai_api, STRATEGIES_FILE
 from .new_analytics import get_offer_count_trend_from_flat
+from .pricing_version import CURRENT_PRICING_PREDICATE, STALE_PRICING_PREDICATE
 from keepa_deals.db_utils import get_db_connection
 
 logger = logging.getLogger(__name__)
@@ -82,6 +83,41 @@ def get_tiered_strategies(candidates, max_per_core_category=30):
 
     return "\n".join(formatted)
 
+def prune_stale_priced_picks(cursor):
+    """Drop cached picks whose deals row no longer carries current pricing.
+
+    Pass 1 decides what may ENTER the cache. This decides what may STAY in it,
+    and it has to exist because two paths through `generate_prime_picks` return
+    without touching the cache at all, by design (AGENTS.md 7.10, "Graceful
+    Fallback"): Pass 1 finding no eligible candidates, and Pass 2 failing or
+    returning nothing. A pick selected under superseded pricing logic survives
+    every one of those runs, so without this it stays on the dashboard until a
+    run happens to succeed - which is how ASIN 1418548839
+    (`Pricing_Logic_Version` NULL) was still showing as pick #4 on 2026-09-22,
+    a day after the repair sweep had skipped it.
+
+    It runs on EVERY invocation, before Pass 1, rather than only when a pick is
+    chosen, because staleness is not a property a row acquires on its own:
+    bumping `PRICING_LOGIC_VERSION` re-stales the entire table at once, and that
+    bump is the documented mechanism for scheduling the next repair sweep
+    (AGENTS.md 7.13).
+
+    A pick whose deals row has been deleted outright is left alone - the
+    Agent's Choice INNER JOIN in `/api/deals` already makes it unshowable, and
+    reaping it is the Janitor's business, not this function's.
+
+    Returns the number of cached picks removed.
+    """
+    cursor.execute(f"""
+        DELETE FROM prime_picks
+        WHERE EXISTS (
+            SELECT 1 FROM deals
+            WHERE deals."ASIN" = prime_picks.asin
+              AND {STALE_PRICING_PREDICATE}
+        )
+    """)
+    return cursor.rowcount
+
 def get_hours_since(date_str):
     if not date_str:
         return 0
@@ -123,12 +159,29 @@ def generate_prime_picks():
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
+            # Evict anything the last run cached that is no longer current-priced,
+            # before deciding whether this run has anything to replace it with.
+            pruned = prune_stale_priced_picks(cursor)
+            if pruned:
+                logger.info(
+                    f"Evicted {pruned} cached Prime Pick(s) whose pricing is no "
+                    f"longer current ({CURRENT_PRICING_PREDICATE}).")
+
             sanitized_profit = "CAST(REPLACE(REPLACE(\"Profit\", '$', ''), ',', '') AS REAL)"
             sanitized_cost = "CAST(REPLACE(REPLACE(\"All_in_Cost\", '$', ''), ',', '') AS REAL)"
             sanitized_list_at = "CAST(REPLACE(REPLACE(\"List_at\", '$', ''), ',', '') AS REAL)"
 
             # Additional ROI cap at 300% added per requirements
             roi_expr = f"(({sanitized_profit} * 1.0 / {sanitized_cost}) * 100)"
+
+            # CURRENT_PRICING_PREDICATE is the last clause below, and it is not a
+            # quality filter like the others: a stale-priced row's Profit, ROI and
+            # Deal Trust are all computed FROM prices the pipeline has since
+            # superseded, so every threshold above it is being applied to numbers
+            # that are not the ones today's logic would produce. Prime Picks is the
+            # one surface that presents a deal as a recommendation, so it takes the
+            # repair sweep's own definition of stale (keepa_deals/pricing_version.py)
+            # rather than a second copy of the rule.
 
             query = f"""
                 SELECT * FROM deals
@@ -143,6 +196,7 @@ def generate_prime_picks():
                 AND \"1yr_Avg\" IS NOT NULL
                 AND \"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')
                 AND \"1yr_Avg\" != 0
+                AND {CURRENT_PRICING_PREDICATE}
             """
 
             deal_rows = cursor.execute(query).fetchall()

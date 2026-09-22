@@ -97,8 +97,44 @@ The data lifecycle is primarily managed by the **Smart Ingestor**, with supporti
 *   **Trigger:** Automatically chained after the `clean_stale_deals` task, or manually via a `/api/prime_picks/refresh` POST request.
 *   **Mechanism:**
     1.  **Pass 1 (Smart Floor):** SQL/math based filtering and time-decay scoring to select the top 20 candidates. It uses the `Used_Offer_Count_365_days_avg` for safe offer-trend deduplication, and incorporates a 'Year-Round Velocity Cap' (`PASS_1_YEAR_ROUND_VELOCITY_CAP = 2000000`) that explicitly rejects non-seasonal items with a rank > 2,000,000 to drop structurally weak candidates.
+        *   **Current pricing only (Sept 2026).** The SQL also requires `CURRENT_PRICING_PREDICATE` — the exact negation of the stale predicate `repair_pricing.py` selects on, imported from `keepa_deals/pricing_version.py` rather than restated. A row whose `Pricing_Logic_Version` is NULL or below `PRICING_LOGIC_VERSION` was priced by logic the pipeline has since replaced, so its `Profit`, `ROI` and `Deal_Trust` are all derived from numbers today's code would not produce — every other Smart Floor threshold is being applied to the wrong figures. See "Stale pricing is never a Prime Pick" below.
     2.  **Pass 2 (xAI Mastermind):** Passes candidates to `grok-4-fast-reasoning` with heavily filtered strategies to identify the best deals. Includes a 'SEASONAL HIGH-RANK CORRECTION' to explicitly prevent the AI from rejecting seasonal candidates solely based on their current high (off-season) sales rank.
     3.  **Caching:** Saves the final results to the `prime_picks` table atomically. If Pass 2 fails (e.g. xAI API error), the system gracefully skips updating the cache to preserve the previous valid results.
+
+#### Stale pricing is never a Prime Pick (September 2026)
+
+**The invariant: no row with stale pricing is ever shown as a Prime Pick, on any
+path.** Prime Picks is the one surface that presents a deal as a recommendation,
+so it is held to the repair sweep's own definition of "current".
+
+Measured on the box on 2026-09-22, one day after a sweep run: Prime Picks rebuilt
+at 12:00 UTC with four picks, and pick #4 — ASIN `1418548839`, `List_at` 219.66 —
+carried `Pricing_Logic_Version` NULL. The sweep had **skipped** it ("heavy
+processing returned nothing (usually: no used offer)"), and a skipped row keeps
+its old prices indefinitely, so the number on screen came from the pre-2026-09-12
+pricing logic the sweep exists to replace. 231 rows were skipped in that run, so
+this recurs by construction, not by accident.
+
+Filtering Pass 1 alone does not hold the invariant, because **two paths through
+`generate_prime_picks` return without writing to `prime_picks` at all, by
+design**: Pass 1 finding no eligible candidates, and Pass 2 failing or selecting
+nothing (the Graceful Fallback above). A pick chosen before the filter existed
+survives every one of those runs. Three guards, one shared predicate:
+
+| where | what it governs | why it is needed |
+| :--- | :--- | :--- |
+| Pass 1 SQL (`prime_picks_task.py`) | what may **enter** the cache | the selection itself |
+| `prune_stale_priced_picks`, run before Pass 1 on **every** invocation | what may **stay** in the cache | the zero-candidate and Pass 2 failure paths preserve the previous cache untouched |
+| the Agent's Choice branch of `/api/deals` (`wsgi_handler.py`) | what may be **shown** from the cache | the cache is a selection made up to 4 hours ago, and bumping `PRICING_LOGIC_VERSION` re-stales the whole table the moment it deploys |
+
+The eviction deliberately **narrows** the Graceful Fallback rather than removing
+it: a preserved run keeps its current-priced picks and loses only the stale ones.
+If that empties the cache, Agent's Choice shows nothing — correct, because the
+alternative is recommending a price the system already knows is wrong.
+
+**Agent's Choice only.** The main dashboard grid is deliberately *not* filtered on
+pricing version; doing so would empty it while a repair sweep is in flight, and is
+an owner decision, not a consequence of this one.
 
 ### E. One-Time Maintenance Scripts (Manual, Never Scheduled)
 

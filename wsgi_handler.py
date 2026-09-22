@@ -30,6 +30,7 @@ from keepa_deals.db_utils import (
     set_system_state,
     create_system_state_table_if_not_exists
 )
+from keepa_deals.pricing_version import CURRENT_PRICING_PREDICATE
 from keepa_deals.business_calculations import (
     calculate_all_in_cost,
     calculate_profit_and_margin,
@@ -2239,6 +2240,20 @@ def api_deals():
         where_clauses.append("\"1yr_Avg\" IS NOT NULL")
         where_clauses.append("\"1yr_Avg\" NOT IN ('-', 'N/A', '', '0', '0.00', '$0.00')")
         where_clauses.append("\"1yr_Avg\" != 0")
+
+        # Never SHOW a pick whose prices predate the current pricing logic, even if
+        # one is sitting in the cache. prime_picks is a materialized selection made
+        # up to four hours ago, and generate_prime_picks evicts stale entries only
+        # when it runs; a PRICING_LOGIC_VERSION bump re-stales every row in the table
+        # the moment it deploys (AGENTS.md 7.13), and the outer exception handler in
+        # that task can also return with the cache untouched. This clause is what
+        # makes the invariant true at the moment of display rather than at the moment
+        # of the last successful run. Same shared predicate, applied to the join's
+        # deals side; it contains no 'd.' for the alias rewrite below to mangle.
+        #
+        # Agent's Choice only. The main grid is deliberately NOT filtered on pricing
+        # version - it would empty out while a repair sweep is in flight.
+        where_clauses.append(CURRENT_PRICING_PREDICATE)
     else:
         if filters.get("profit_gte") is None or filters["profit_gte"] <= 0:
             where_clauses.append(f"{sanitized_profit} > 0")
