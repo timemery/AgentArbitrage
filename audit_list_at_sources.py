@@ -196,7 +196,25 @@ KEEPA_CONDITION_NEW = 1
 SPARSE_PRICE_SOURCE = 'Inferred Sales (Sparse)'
 
 # How many rows the stdout summary lists. The rest are in the detail file.
-WORST_N = 10
+# 6, not 10, since section (d) took four of the 25 lines (2026-09-22).
+WORST_N = 6
+
+# --- (d) THE THIN PEAK SEASON: the measurement the minimum is chosen from ---
+#
+# Owner decision (2026-09-22): a peak season too thin to price is persisted with
+# List_at NULL and so hidden, never deleted. The minimum is to be CHOSEN from
+# measured removals, so this reports, for each candidate, how many sampled rows
+# would lose their price under two definitions of the season:
+#
+#   (a) the peak month alone, pooled across years - what production groups on
+#       today (`.dt.month`, so every September in the history counts together);
+#   (b) the peak month plus PEAK_WINDOW_HALF_WIDTH_MONTHS either side, pooled
+#       across years, wrapping December into January.
+#
+# The count is DISTINCT PRICE POINTS, not sale events: since Pricing Logic
+# Version 3 a change-log point that priced two sales is one asking price.
+PEAK_SEASON_MIN_CANDIDATES = (2, 3, 4)
+PEAK_WINDOW_HALF_WIDTH_MONTHS = 1
 
 # Classifications for how `List at` was reached. Ordinary first - see THE
 # CONCLUSION RULE above.
@@ -402,6 +420,57 @@ def classify_list_at(sale_events, analysis, sources):
     out['branch_matches_production'] = (
         branch is not None and final_cents is not None and final_cents > 0
         and abs(branch - final_cents) < 1.0)
+    return out
+
+
+def _in_window(month, centre, half_width):
+    """Circular month distance, so a December peak's window includes January."""
+    distance = abs(month - centre) % 12
+    return min(distance, 12 - distance) <= half_width
+
+
+def mirrored_peak_month(sale_events):
+    """Production's peak-month choice, for rows production did not make one on.
+
+    The Sparse Sales Rescue (1-2 sales) returns no peak month at all, but a
+    minimum-sale rule would still have to decide those rows, so the audit needs a
+    centre for them. This is the normal branch's own rule - `groupby(month)`
+    median, `idxmax`, first month on a tie - and it is used ONLY on sparse rows;
+    every other row takes the peak month production itself returned.
+    """
+    from keepa_deals import stable_calculations
+    pd = stable_calculations.pd
+    if not sale_events:
+        return None
+    frame = pd.DataFrame({
+        'month': [pd.to_datetime(s['event_timestamp']).month for s in sale_events],
+        'price': [s['inferred_sale_price_cents'] for s in sale_events]})
+    return int(frame.groupby('month')['price'].median().idxmax())
+
+
+def peak_season_counts(sale_events, analysis):
+    """Distinct price points in the peak season, under both definitions."""
+    from keepa_deals import stable_calculations
+
+    is_sparse = analysis.get('price_source') == SPARSE_PRICE_SOURCE
+    centre = peak_month_number(analysis.get('peak_season'))
+    mirrored = False
+    if centre is None and is_sparse:
+        centre = mirrored_peak_month(sale_events)
+        mirrored = centre is not None
+    out = {'season_centre_month': centre, 'season_centre_mirrored': mirrored,
+           'is_sparse': is_sparse, 'season_points_month': None,
+           'season_points_window': None}
+    if centre is None:
+        return out
+
+    def points(half_width):
+        in_season = [s for s in sale_events
+                     if _in_window(s['event_timestamp'].month, centre, half_width)]
+        return len(stable_calculations._distinct_price_points(in_season))
+
+    out['season_points_month'] = points(0)
+    out['season_points_window'] = points(PEAK_WINDOW_HALF_WIDTH_MONTHS)
     return out
 
 
@@ -639,8 +708,16 @@ def lowest_new_offer(product, default_shipping_cents):
 # Sampling
 # --------------------------------------------------------------------------
 
-def build_sample_sql():
-    """Visible rows by `List_at` DESC.
+SAMPLE_ORDERS = {
+    'list_at': '"List_at" DESC, "ASIN" ASC',
+    # A representative draw, for measurements that must generalise to the whole
+    # dashboard. The List_at DESC default is a WORST-CASE sample.
+    'random': 'RANDOM()',
+}
+
+
+def build_sample_sql(order='list_at'):
+    """Visible rows, by `List_at` DESC (default) or at random.
 
     `VISIBLE_PREDICATE` is imported from `repair_pricing.py`, not restated. It is
     the dashboard's own data-completeness rule plus `Profit > 0`, and a second
@@ -658,12 +735,12 @@ def build_sample_sql():
                "Title"                 AS title
         FROM deals
         WHERE {visible}
-        ORDER BY "List_at" DESC, "ASIN" ASC
+        ORDER BY {order}
         LIMIT ?
-    """.format(visible=VISIBLE_PREDICATE.strip())
+    """.format(visible=VISIBLE_PREDICATE.strip(), order=SAMPLE_ORDERS[order])
 
 
-def fetch_sample(db_path, limit, asins=()):
+def fetch_sample(db_path, limit, asins=(), order='list_at'):
     """Read the sample. Read-only URI connection; this script never writes."""
     uri = 'file:{}?mode=ro'.format(db_path)
     con = sqlite3.connect(uri, uri=True)
@@ -677,7 +754,7 @@ def fetch_sample(db_path, limit, asins=()):
                    'FROM deals WHERE "ASIN" IN ({})'.format(placeholders))
             rows = con.execute(sql, tuple(asins)).fetchall()
         else:
-            rows = con.execute(build_sample_sql(), (limit,)).fetchall()
+            rows = con.execute(build_sample_sql(order), (limit,)).fetchall()
         return [dict(r) for r in rows]
     finally:
         con.close()
@@ -708,6 +785,7 @@ def audit_row(stored, product, default_shipping_cents):
                                     if recomputed_cents and recomputed_cents > 0 else None)
 
     detail = classify_list_at(sane_sales, analysis, sources)
+    result.update(peak_season_counts(sane_sales, analysis))
     result.update({
         'classification': detail['classification'],
         'branch_list_at': (round(detail['branch_price_cents'] / 100.0, 2)
@@ -906,6 +984,7 @@ def summarise(rows, tokens, limit, sampled):
         '    on a trailing average that blends the seasons .. {}'.format(
             len(clipped_blend)),
     ]
+    lines.extend(thin_season_lines(ok))
 
     worst = sorted(over, key=lambda r: r['overstatement'], reverse=True)[:WORST_N]
     if worst:
@@ -915,6 +994,28 @@ def summarise(rows, tokens, limit, sampled):
             lines.append('    {:<10}  {:>8}  {:>7}  {:>7}  {}'.format(
                 r['ASIN'], _fmt(r.get('list_at')), _fmt(r['peak_new_floor']),
                 _fmt(r['overstatement']), r['classification']))
+    return lines
+
+
+def thin_season_lines(ok):
+    """Section (d): rows each candidate minimum would leave unpriced.
+
+    Counted over rows production prices TODAY (recomputed List_at present); a row
+    already unpriced on recompute has nothing left to remove and is reported
+    once, in the header, instead of inflating every candidate.
+    """
+    priced = [r for r in ok if r.get('recomputed_list_at')]
+    lines = ['(d) THIN PEAK SEASON  unpriced if distinct points < min  '
+             '[sparse]  of {} priced ({} already not)'.format(
+                 len(priced), len(ok) - len(priced))]
+    for minimum in PEAK_SEASON_MIN_CANDIDATES:
+        cells = []
+        for key in ('season_points_month', 'season_points_window'):
+            lost = [r for r in priced if (r.get(key) or 0) < minimum]
+            cells.append('{:>3} [{}]'.format(
+                len(lost), sum(1 for r in lost if r.get('is_sparse'))))
+        lines.append('  min {}:  peak month only {}  |  peak month +/-{} {}'.format(
+            minimum, cells[0], PEAK_WINDOW_HALF_WIDTH_MONTHS, cells[1]))
     return lines
 
 
@@ -952,6 +1053,12 @@ DETAIL_COLUMNS = [
     ('ceiling_blends_seasons', 'ceiling blends seasons'),
     ('ceiling_matches_production', 'ceiling mirror == prod'),
     ('branch_list_at', 'pre-ceiling branch value'),
+    # (d) the thin peak season
+    ('season_centre_month', 'season centre'),
+    ('season_centre_mirrored', 'centre mirrored (sparse)'),
+    ('is_sparse', 'sparse rescue'),
+    ('season_points_month', 'points in peak month'),
+    ('season_points_window', 'points in peak +/-1'),
     # stored context
     ('avg_1yr', 'stored 1yr_Avg'), ('price_now', 'stored Price_Now'),
     ('stored_sale_count', 'stored sale count'), ('pricing_version', 'version'),
@@ -1000,6 +1107,9 @@ def main(argv=None):
                              'Default {}. An unbounded run is refused.'.format(DEFAULT_LIMIT))
     parser.add_argument('--asin', action='append', default=[],
                         help='Audit these ASINs instead of sampling. Repeatable.')
+    parser.add_argument('--order', choices=sorted(SAMPLE_ORDERS), default='list_at',
+                        help='Sample order: list_at (DESC, worst case, the default) '
+                             'or random (representative).')
     parser.add_argument('--db', default=DEFAULT_DB_PATH)
     parser.add_argument('--out-dir', default=DEFAULT_OUT_DIR)
     parser.add_argument('--batch-size', type=int, default=DEFAULT_BATCH_SIZE)
@@ -1032,7 +1142,7 @@ def main(argv=None):
         print('Database not found: {}'.format(args.db))
         return 2
 
-    stored_rows = fetch_sample(args.db, args.limit, tuple(args.asin))
+    stored_rows = fetch_sample(args.db, args.limit, tuple(args.asin), args.order)
     if not stored_rows:
         print('No rows matched. Nothing to audit, and no tokens spent.')
         return 0
@@ -1050,7 +1160,8 @@ def main(argv=None):
         token_manager.sync_tokens()
 
     sampled = ('{} named ASIN(s)'.format(len(args.asin)) if args.asin
-               else 'visible rows by List_at DESC')
+               else 'visible rows by List_at DESC' if args.order == 'list_at'
+               else 'visible rows at random')
     _progress('Auditing {} row(s) ({}). Heavy fetch, ~7 tokens each.'.format(
         len(stored_rows), sampled))
 

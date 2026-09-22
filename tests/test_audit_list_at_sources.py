@@ -707,6 +707,96 @@ class ItOnlyOpensTheDatabaseReadOnly(_Silent):
         self.assertIn(VISIBLE_PREDICATE.strip(), audit.build_sample_sql())
 
 
+class TheSampleCanBeRepresentative(_Silent):
+
+    def test_the_default_order_is_still_list_at_desc(self):
+        self.assertIn('"List_at" DESC', audit.build_sample_sql())
+
+    def test_random_order_draws_at_random_from_the_same_visible_set(self):
+        from repair_pricing import VISIBLE_PREDICATE
+        sql = audit.build_sample_sql('random')
+        self.assertIn('RANDOM()', sql)
+        self.assertIn(VISIBLE_PREDICATE.strip(), sql)
+
+
+# --------------------------------------------------------------------------
+# (d) The thin peak season - what each candidate minimum would unprice
+# --------------------------------------------------------------------------
+
+def _season_sale(year, month, cents, point):
+    """A hand-built sale; `point` names its price point, None = unrecorded."""
+    event = {'event_timestamp': datetime(year, month, 10),
+             'inferred_sale_price_cents': cents}
+    if point is not None:
+        event['price_point'] = ('Used', datetime(2020, 1, 1) + timedelta(days=point))
+    return event
+
+
+class TheThinPeakSeasonIsMeasured(_Silent):
+    """Counted in DISTINCT points, pooled across years, under both definitions."""
+
+    NORMAL = {'price_source': 'Inferred Sales', 'peak_season': 'Sep'}
+    SPARSE = {'price_source': audit.SPARSE_PRICE_SOURCE, 'peak_season': '-'}
+
+    def test_the_candidates_and_width_are_named_constants(self):
+        self.assertEqual(audit.PEAK_SEASON_MIN_CANDIDATES, (2, 3, 4))
+        self.assertEqual(audit.PEAK_WINDOW_HALF_WIDTH_MONTHS, 1)
+
+    def test_the_peak_month_is_pooled_across_years(self):
+        sales = [_season_sale(2024, 9, 5000, 1), _season_sale(2025, 9, 5200, 2),
+                 _season_sale(2025, 3, 3000, 3)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_month'], 2)
+
+    def test_the_window_adds_the_neighbouring_months_only(self):
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 8, 4800, 2),
+                 _season_sale(2024, 10, 4900, 3), _season_sale(2025, 7, 4000, 4)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_month'], 1)
+        self.assertEqual(counts['season_points_window'], 3, 'July is two months out')
+
+    def test_a_december_peak_window_wraps_into_january(self):
+        self.assertTrue(audit._in_window(1, 12, 1))
+        self.assertTrue(audit._in_window(11, 12, 1))
+        self.assertFalse(audit._in_window(2, 12, 1))
+
+    def test_a_shared_point_counts_once(self):
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 9, 5000, 1),
+                 _season_sale(2024, 9, 5000, 2)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_month'], 2)
+
+    def test_a_sparse_row_is_centred_on_the_mirrored_peak_month(self):
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 10, 4000, 2)]
+        counts = audit.peak_season_counts(sales, self.SPARSE)
+        self.assertTrue(counts['is_sparse'])
+        self.assertTrue(counts['season_centre_mirrored'])
+        self.assertEqual(counts['season_centre_month'], 9)
+        self.assertEqual(counts['season_points_month'], 1)
+        self.assertEqual(counts['season_points_window'], 2)
+
+    def test_the_summary_counts_unpriced_rows_per_candidate(self):
+        rows = [
+            _row('THIN000001', season_points_month=1, season_points_window=3),
+            _row('THIN000002', season_points_month=2, season_points_window=2,
+                 is_sparse=True),
+            _row('FULL000001', season_points_month=5, season_points_window=7),
+            _row('GONE000001', recomputed_list_at=None),
+        ]
+        lines = audit.thin_season_lines(rows)
+        self.assertIn('of 3 priced (1 already not)', lines[0])
+        # min 2: only THIN000001 by month; nobody by window.
+        self.assertEqual(lines[1], '  min 2:  peak month only   1 [0]  |  peak month +/-1   0 [0]')
+        # min 3: both thin rows by month (one sparse); only the sparse one by window.
+        self.assertEqual(lines[2], '  min 3:  peak month only   2 [1]  |  peak month +/-1   1 [1]')
+
+    def test_section_d_appears_in_the_summary(self):
+        lines = audit.summarise([_row('ASIN000001', season_points_month=1,
+                                      season_points_window=1)],
+                                tokens=7, limit=1, sampled='t')
+        self.assertTrue(any(line.startswith('(d) THIN PEAK SEASON') for line in lines))
+
+
 class TheRunIsBounded(_Silent):
 
     def test_an_unbounded_run_is_refused(self):
