@@ -62,7 +62,7 @@ The sweep **stops itself while the check still works** (`--xai-headroom`, defaul
 
 It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short).
 
-**Stop conditions, and the one that is not a stop.** The sweep ends a run cleanly (exit 0, resumable by re-running the same command) when any of these hold, all checked before every batch and before every recharge retry:
+**Stop conditions, and the one that is not a stop.** The sweep ends a run cleanly (exit 0, resumable by re-running the same command) when any of these hold, all checked before every batch and before every recharge retry — except the missing-`XAI_TOKEN` row, which is a refusal at startup (exit 2) rather than a stop:
 
 | condition | why |
 | :--- | :--- |
