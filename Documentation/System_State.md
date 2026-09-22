@@ -74,7 +74,9 @@ It takes its own verified backup through SQLite's backup API before the first wr
 
 The sweep now sleeps the seconds the exception asks for plus a 15-second margin, logs each wait, and **retries the same batch from the target list already in memory** — not by re-selecting it, because those ASINs entered the per-run attempted set before the fetch and re-selection would exclude the very rows being retried. The consecutive-wait counter resets on the first batch that gets through, so it bounds a stall rather than a long run.
 
-**When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
+**When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices, so it does not reflect repaired rows until it is regenerated. Use the **Refresh Prime Picks** button on `/deals`; the cache is not rewritten on read.
+
+*(Corrected 2026-09-22: this line previously read "is not beat-scheduled, so it will not self-heal." It does rebuild on its own — `generate_prime_picks` is chained after `clean_stale_deals`, which Beat runs on `crontab(minute=0, hour='*/4')`. Confirmed on the box: a rebuild at **12:00:21 UTC** on 2026-09-22 with no manual refresh, matching the Janitor's slot. `System_Architecture.md` §3.D was right. The refresh is still worth doing manually when a sweep ends — it just avoids up to a four-hour wait rather than being the only way.)*
 
 **It can no longer cache an unrepaired row, though (Sept 2026).** Prime Picks now reads `CURRENT_PRICING_PREDICATE` — the negation of this same predicate — in three places: Pass 1 will not select a stale-priced row, `prune_stale_priced_picks` evicts one that is already cached, and the Agent's Choice read path will not render one. So a mid-sweep refresh is safe: Agent's Choice shows fewer picks, never unrepaired ones, and refills as the sweep progresses. This is Agent's Choice only; the main grid is unchanged. See `AGENTS.md` §7.14.
 
