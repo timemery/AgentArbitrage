@@ -10,7 +10,10 @@ PR #346's headroom guard kept `repair_pricing.py` off the cap path; nothing
 covered the error path, so a transient xAI outage passed prices exactly as the
 cap used to.
 
-Now both paths return None - UNVERIFIABLE. `analyze_sales_performance` withholds
+A missing API key was the same failure in a third place: it returned True too.
+Owner decision 2026-09-22: it fails closed as well.
+
+Now all three paths return None - UNVERIFIABLE. `analyze_sales_performance` withholds
 the price (List at NULL, row hidden) and flags `price_unverified`, and
 `_process_single_deal` writes `Pricing_Logic_Version` NULL for that row, so it
 stays in `STALE_PRICING_PREDICATE` and the repair sweep retries it.
@@ -59,6 +62,13 @@ class _Silent(unittest.TestCase):
 
 
 class TheCheckReportsUnverifiableNotReasonable(_Silent):
+
+    def test_a_missing_api_key_is_unverifiable(self):
+        manager = MagicMock()
+        with _uncached(), patch.object(stable_calculations, 'xai_token_manager', manager):
+            self.assertIsNone(stable_calculations._query_xai_for_reasonableness(
+                'A Title', 'Books', 'Sep', 123.45, None))
+        manager.request_permission.assert_not_called()
 
     def test_the_daily_cap_is_unverifiable(self):
         manager = MagicMock()
@@ -121,6 +131,18 @@ class TheAnalysisWithholdsAnUnverifiablePrice(_Silent):
         result = self._analyse(True)
         self.assertEqual(result['peak_price_mode_cents'], 30000.0)
         self.assertFalse(result['price_unverified'])
+
+
+class AMissingKeyWithholdsThePrice(_Silent):
+    """End to end through the real check: no XAI_TOKEN in the environment."""
+
+    def test_no_key_means_no_price_and_a_flag(self):
+        with patch.dict(os.environ, {}, clear=False):
+            os.environ.pop('XAI_TOKEN', None)
+            with _uncached():
+                result = analyze_sales_performance(PRODUCT, _events())
+        self.assertEqual(result['peak_price_mode_cents'], -1)
+        self.assertTrue(result['price_unverified'])
 
 
 class TheHeavyPathLeavesAnUnverifiedRowStale(_Silent):

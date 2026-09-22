@@ -30,7 +30,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     **CRITICAL INTEGRITY CHECK (Feb 2026):**
     *   **Zero Profit & Missing Data Persistence:** Deals with `Profit <= 0` or missing critical fields like `List at` / `1yr. Avg.` are now **persisted** to the database rather than rejected. This allows the system to track potentially valuable items and update them via lightweight scans if prices improve.
     *   **Dashboard Filtering:** While these "unprofitable" or "incomplete" deals exist in the database, they are strictly **filtered out** from the user-facing Dashboard API to ensure a clean user experience.
-    *   **Amazon Ceiling Check (Lightweight Updates):** When a deal is updated via `_process_lightweight_update`, the system enforces a safety cap: If `List at` > (Amazon New Price * 0.90), the list price is clamped down to that ceiling. This prevents deals from retaining unrealistic profit estimates when the market price drops.
+    *   **Amazon Ceiling Check (Lightweight Updates) — OFF.** `_process_lightweight_update` contains a clamp (`List at` > Amazon New × 0.90 → clamp), but it is gated by `ENABLE_LIGHTWEIGHT_CEILING_CLAMP = False` in `processing.py` pending a written spec for `List at` seasonal semantics, and it never fired before that gate either. A light update does **not** change `List at`. The Amazon ceiling that does apply runs on the heavy path, in `analyze_sales_performance` — see "Price Benchmarks" below. *(Corrected 2026-09-22: this entry used to say the clamp was enforced.)*
     *   **Self-Healing Persistence:** The Smart Ingestor previously forced a **Heavy Re-fetch** for "Zombie" deals (missing critical data), often causing infinite loops. Now, these deals are **persisted** as-is and flagged for **Lightweight Updates**, allowing them to be repaired naturally over time without wasting tokens.
 
     **DB COLUMN NAMING CONTRACT (Sept 2026):**
@@ -84,7 +84,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
         1.  **Peak-Window New Cap (Pricing Logic Version 3):** Capped at the median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99. Never today's New price. No New price in the window: uncapped, recorded as unavailable.
         2.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices. **Current counts only when today's month is the peak month** (Pricing Logic Version 3).
-        3.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context. **Fails closed** (Pricing Logic Version 3): daily cap or xAI error withholds the price and leaves the row stale.
+        3.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context. **Fails closed** (Pricing Logic Version 3): no API key, daily cap or xAI error withholds the price and leaves the row stale.
             *   **Exception:** If the price source is **Inferred Sales (Sparse)** (1-2 true sales, thin context), this check is conditionally **SKIPPED**. *(The "Keepa Stats Fallback" half of this exception was removed on 2026-09-11 with the fallback itself — no code path produces that source any more.)*
             *   **Suspiciously High:** If the price is **> 300% (3x)** of the current Used price, the check is **FORCED**, overriding the sparse skip, to prevent accepting manipulated prices.
     *   **Exclusion:** If validation fails, the price is invalidated (potentially leading to persistence as incomplete data).
@@ -177,7 +177,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **`0` vs `NULL`**: `0` means computed-and-none-found; `NULL` means never computed (a legacy row, or one only ever touched by the light path). **`NULL` must never be read as zero, and neither value is used to hide a deal.**
 
 -   **`Pricing_Logic_Version`**
-    -   **Logic**: The value of `PRICING_LOGIC_VERSION` (`keepa_deals/pricing_version.py`) at the moment this row's prices were computed. Written **only** by `_process_single_deal`, beside `Inferred Sale Count`. Heavy path only. **Written NULL** when the AI check could not verify the price (daily cap, xAI error — Pricing Logic Version 3), so the row stays stale and the repair sweep retries it.
+    -   **Logic**: The value of `PRICING_LOGIC_VERSION` (`keepa_deals/pricing_version.py`) at the moment this row's prices were computed. Written **only** by `_process_single_deal`, beside `Inferred Sale Count`. Heavy path only. **Written NULL** when the AI check could not verify the price (no API key, daily cap, xAI error — Pricing Logic Version 3), so the row stays stale and the repair sweep retries it.
     -   **Why it exists**: nothing else dates a row's pricing. `last_seen_utc` and `source` are rewritten by the heavy path, the light path and the Stale Rescue alike, so `source` says who touched the row LAST, not who priced it. `Inferred_Sale_Count` looks like it should work and does not — rows priced between 2026-09-11 and 2026-09-12 16:50 UTC carry a count *and* pre-fix prices.
     -   **NULL rule**: `NULL` or a value below `PRICING_LOGIC_VERSION` means **stale pricing, due a heavy re-fetch**. This is used for SCHEDULING work, and is deliberately the reverse of the `Inferred_Sale_Count` NULL rule above, which governs whether a deal may be SHOWN. Never merge the two.
     -   **Never written by**: the light path, the Stale Rescue, `recalculator.py`, the janitor. **Never backfilled.**
@@ -216,7 +216,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: **Mode** of peak season prices, falling back to the peak-season **Median** when no distinct mode exists. With 1-2 sales, the Sparse Rescue median. **Inferred sales only.** *(This previously read "or `Used - 90d avg` fallback if high velocity" — that fallback was deleted in March 2026 and has not existed since.)*
     -   **Constraint**: Capped at the peak-window New price + $3.99, then at 90% of `Min(Amazon Current, Amazon 180d avg, Amazon 365d avg)`, with Amazon Current counted only in the peak month (Pricing Logic Version 3). Peak-season mode/median counts distinct price points.
-    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, and skipped when the Amazon ceiling clamped the price. Unverifiable (daily cap, xAI error) withholds the price — fails closed.
+    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, and skipped when the Amazon ceiling clamped the price. Unverifiable (no API key, daily cap, xAI error) withholds the price — fails closed.
 
 -   **`Expected Trough Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.

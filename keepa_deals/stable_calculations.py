@@ -190,15 +190,16 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
     Queries the XAI API to act as a reasonableness check for a calculated price,
     now with caching and token management.
 
-    Returns True (reasonable), False (rejected) or None - UNVERIFIABLE: the daily
-    cap was reached or the call failed. None FAILS CLOSED (Trello #144, Pricing
-    Logic Version 3): the caller invalidates the price and the row is left stale
-    for the repair sweep to retry. It used to return True on both paths, so an xAI
-    outage passed every price unchecked and stamped it current.
+    Returns True (reasonable), False (rejected) or None - UNVERIFIABLE: no API
+    key, the daily cap was reached, or the call failed. None FAILS CLOSED (Trello
+    #144, Pricing Logic Version 3): the caller invalidates the price and the row is
+    left stale for the repair sweep to retry. It used to return True on all three
+    paths, so a missing key or an xAI outage passed every price unchecked and
+    stamped it current.
     """
     if not api_key:
-        logging.warning("XAI_API_KEY not provided. Skipping reasonableness check.")
-        return True
+        logging.warning("XAI_TOKEN not provided. Cannot perform reasonableness check for '%s'. Price is UNVERIFIABLE - failing closed.", title)
+        return None
 
     # 1. Create a unique cache key (include new fields to differentiate contexts)
     cache_key = f"reasonableness:{title}|{category}|{season}|{price_usd:.2f}|{binding}|{rank_info}|{trend_info}|{avg_3yr_usd}"

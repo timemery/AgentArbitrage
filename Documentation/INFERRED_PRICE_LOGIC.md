@@ -272,7 +272,7 @@ This determines the recommended listing price.
         -   **Hard Ceiling Safety (Mar 2026):** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.
     -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
-    -   **Fails CLOSED (Pricing Logic Version 3, Trello #144).** If the check cannot run — the xAI daily cap is reached, or the call errors — it returns *unverifiable* (`None`), not *reasonable*. The price is withheld (`List at` NULL, row hidden), the analysis sets `price_unverified`, and `_process_single_deal` writes `Pricing_Logic_Version` **NULL** so the row stays stale and the repair sweep retries it. Before this, both paths returned `True`: the price passed unchecked and was stamped current. (A missing API key still skips the check, as before.)
+    -   **Fails CLOSED (Pricing Logic Version 3, Trello #144).** If the check cannot run — no API key, the xAI daily cap is reached, or the call errors — it returns *unverifiable* (`None`), not *reasonable*. The price is withheld (`List at` NULL, row hidden), the analysis sets `price_unverified`, and `_process_single_deal` writes `Pricing_Logic_Version` **NULL** so the row stays stale and the repair sweep retries it. Before this, all three paths returned `True`: the price passed unchecked and was stamped current.
 
 ### A.1 Two things step A.2 does not decide on its own
 
