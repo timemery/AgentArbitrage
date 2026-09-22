@@ -444,9 +444,11 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
 
     def _audit(self, amazon):
         month = peak_month_anchor()
+        # New at $400 in the peak window: the peak-window New cap ($403.99) stays
+        # out of the way so the Amazon ceiling is what these tests see.
         product = build_history(
             share_the_point=True, asin='CLIPPED001', amazon=amazon,
-            new_price_points=[(month + timedelta(days=3), 9000)])
+            new_price_points=[(month + timedelta(days=3), 40000)])
         stored = {'ASIN': 'CLIPPED001', 'list_at': 375.66}
         return audit.audit_row(stored, product, 200)
 
@@ -478,12 +480,26 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
         self.assertEqual(row['classification'], audit.CLASS_MEDIAN)
         self.assertFalse(row['duplicate_set_the_price'])
 
-    def test_todays_amazon_price_records_whether_it_is_off_peak(self):
+    def test_todays_amazon_price_outside_the_peak_month_is_not_a_ceiling(self):
+        """Pricing Logic Version 3: `current` is read only in the peak month.
+
+        The fixture's peak month is always a past month, so today is off-peak.
+        """
+        self.assertNotEqual(datetime.now().month, peak_month_anchor().month)
         row = self._audit({'current': 20000})
-        self.assertTrue(row['ceiling_engaged'])
-        self.assertTrue(row['ceiling_on_todays_price'])
-        expected = datetime.now().month != peak_month_anchor().month
-        self.assertEqual(row['ceiling_outside_peak_month'], expected)
+        self.assertFalse(row['ceiling_engaged'])
+        self.assertIsNone(row['ceiling_basis'])
+        self.assertEqual(row['recomputed_list_at'], 300.00)
+        self.assertTrue(row['reconstruction_matches_production'])
+
+    def test_a_new_capped_row_is_reconstructed(self):
+        month = peak_month_anchor()
+        product = build_history(share_the_point=True, asin='NEWCAP0001',
+                                new_price_points=[(month + timedelta(days=3), 9000)])
+        row = audit.audit_row({'ASIN': 'NEWCAP0001', 'list_at': 375.66}, product, 200)
+        self.assertEqual(row['peak_new_cap'], 'applied')
+        self.assertEqual(row['recomputed_list_at'], 93.99)
+        self.assertTrue(row['reconstruction_matches_production'])
 
 
 class TheOverstatementUsesThePeakWindowNotToday(_Silent):
@@ -934,8 +950,11 @@ class TheWholeRunHangsTogether(_Silent):
         distinct['offers'] = [_offer(1, 44900, -1, is_fba=True, seller='B')]
         # Amazon is not selling today, but a 365-day average survives from when it
         # was - so the ceiling engages on a figure that spans both seasons.
+        # Its own, higher New price, so the $180 Amazon ceiling - not the
+        # peak-window New cap - is what clips it.
         clipped = build_history(share_the_point=True, asin='CLIPPED0001',
-                                new_price_points=peak_new, amazon={'avg365': 20000})
+                                new_price_points=[(month + timedelta(days=3), 40000)],
+                                amazon={'avg365': 20000})
         clipped['offers'] = [_offer(1, 7499, 399, seller='C')]
         self.products = {p['asin']: p for p in (shared, distinct, clipped)}
 
@@ -1006,7 +1025,8 @@ class TheWholeRunHangsTogether(_Silent):
         written = self._detail()
         self.assertNotIn('"classification": "{}"'.format(audit.CLASS_MODE_SHARED), written)
         self.assertIn(audit.CLASS_MODE_DISTINCT, written)
-        self.assertIn('"recomputed_list_at": 300.0', written)
+        # Both now capped by the $90.00 peak-window New price + $3.99.
+        self.assertIn('"recomputed_list_at": 93.99', written)
 
     def test_a_row_keepa_does_not_return_is_recorded_not_dropped(self):
         self._run(['--limit', '10'])

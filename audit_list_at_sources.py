@@ -503,103 +503,26 @@ def dedupe_by_source_point(sale_events, sources):
 def peak_window_new_floor(product, contributing_sales):
     """Lowest New offer price while the peak-season sales that set `List at` happened.
 
+    Since Pricing Logic Version 3 this is PRODUCTION's function - the peak-window
+    New cap in `analyze_sales_performance` is built on it - so the measurement
+    and the cap cannot drift. See its docstring in `stable_calculations`.
+
     WHY THIS AND NOT TODAY'S PRICE. The product buys at the trough and sells at
-    the peak, so the New offer on screen today is the BUY side. It bounds what an
-    arbitrageur pays, not what the item can be listed at months later, and capping
-    a peak price with it would be comparing two different points in the season.
-    The bound that means something is what the same item could be had for New
-    AT THE TIME the peak-season sales that set `List at` were happening.
-
-    THE WINDOWS are the calendar months that actually contain the sales
-    `classify_list_at` found feeding `List at` - plural because a three-year
-    history can hold the same peak month in two or three different years, and each
-    is its own window with its own New price.
-
-    READING A CHANGE-LOG, NOT A SAMPLE. `csv[1]` records a point only when the
-    lowest New price CHANGES, so a window can contain zero points while a price
-    was in force throughout it. The price in force during a window is therefore
-    the last point at or before the window opens, carried forward, PLUS every
-    point inside it. This is the same reasoning `INFERRED_PRICE_LOGIC.md` 2b.1
-    gives for having no time threshold on the price association: a long gap means
-    the price had not changed, which makes the distant point correct rather than
-    stale. `carried` records when the floor came from such a point.
-
-    BASIS: `csv[1]` is Keepa's NEW index - an item price, with no shipping. It is
-    NOT comparable to the landed figure `lowest_new_offer` returns, and the two
-    are reported in separate columns for that reason.
+    the peak, so the New offer on screen today is the BUY side.
     """
     from keepa_deals import stable_calculations
-
-    pd = stable_calculations.pd
-    blank = {'floor_cents': None, 'median_window_floor_cents': None,
-             'windows': [], 'window_count': 0, 'carried': False, 'points': 0}
-    if not contributing_sales:
-        return blank
-
-    csv_data = product.get('csv') or []
-    history = csv_data[1] if len(csv_data) > 1 and isinstance(csv_data[1], list) \
-        and len(csv_data[1]) > 1 else None
-    if not history:
-        return blank
-
-    import numpy as np
-    frame = pd.DataFrame(np.array(history).reshape(-1, 2),
-                         columns=['timestamp', 'price_cents'])
-    frame = stable_calculations._convert_ktm_to_datetime(frame)
-    frame = frame[frame['price_cents'] > 0].sort_values('timestamp')
-    if frame.empty:
-        return blank
-
-    periods = sorted({(sale['event_timestamp'].year, sale['event_timestamp'].month)
-                      for sale in contributing_sales})
-
-    windows, floors, carried_any, points_seen = [], [], False, 0
-    for year, month in periods:
-        start = datetime(year, month, 1)
-        end = datetime(year + 1, 1, 1) if month == 12 else datetime(year, month + 1, 1)
-
-        inside = frame[(frame['timestamp'] >= start) & (frame['timestamp'] < end)]
-        prior = frame[frame['timestamp'] < start]
-
-        candidates = list(inside['price_cents'])
-        points_seen += len(candidates)
-        carried = None
-        if not prior.empty:
-            carried = float(prior.iloc[-1]['price_cents'])
-            candidates.append(carried)
-
-        if not candidates:
-            windows.append({'year': year, 'month': month, 'floor_cents': None,
-                            'points_inside': 0, 'carried_cents': None})
-            continue
-
-        floor = float(min(candidates))
-        if carried is not None and floor == carried and len(inside) == 0:
-            carried_any = True
-        floors.append(floor)
-        windows.append({'year': year, 'month': month, 'floor_cents': floor,
-                        'points_inside': len(inside), 'carried_cents': carried})
-
-    if not floors:
-        return dict(blank, windows=windows, window_count=len(windows))
-
-    ordered = sorted(floors)
-    return {
-        'floor_cents': ordered[0],
-        'median_window_floor_cents': float(np.median(ordered)),
-        'windows': windows,
-        'window_count': len(windows),
-        'carried': carried_any,
-        'points': points_seen,
-    }
+    return stable_calculations.peak_window_new_floor(product, contributing_sales)
 
 
 # --------------------------------------------------------------------------
 # The Amazon ceiling, mirrored and then checked against what production did
 # --------------------------------------------------------------------------
 
-def amazon_ceiling(product):
+def amazon_ceiling(product, current_in_peak=True):
     """The ceiling `analyze_sales_performance` applies: min(current, 180d, 365d) x 0.90.
+
+    Since Pricing Logic Version 3 production reads `current` only when today's
+    month is the peak month; `audit_row` passes that as `current_in_peak`.
 
     Four lines of arithmetic sitting inline in the middle of a long function, with
     no seam to instrument - so this is the one thing here that IS a mirror. It is
@@ -616,6 +539,8 @@ def amazon_ceiling(product):
     stats = product.get('stats') or {}
     candidates = []
     for basis, key in (('current', 'current'), ('avg180', 'avg180'), ('avg365', 'avg365')):
+        if basis == 'current' and not current_in_peak:
+            continue
         series = stats.get(key) or []
         value = series[0] if len(series) > 0 else None
         if value and value > 0:
@@ -851,8 +776,15 @@ def audit_row(stored, product, default_shipping_cents):
         and stored_list_at > result['new_landed'])
 
     # (c) Did the Amazon ceiling clip a peak-season price, and with what?
-    ceiling = amazon_ceiling(product)
+    ceiling = amazon_ceiling(product, current_in_peak=bool(
+        detail['peak_month'] and datetime.now().month == detail['peak_month']))
     branch_cents = detail['branch_price_cents']
+    # Since Pricing Logic Version 3 the peak-window New cap runs BEFORE the
+    # ceiling. Its value is read off production's own analysis, not mirrored.
+    result['peak_new_cap'] = analysis.get('peak_new_cap')
+    new_cap_cents = analysis.get('peak_new_cap_cents')
+    if branch_cents and new_cap_cents is not None and branch_cents > new_cap_cents:
+        branch_cents = new_cap_cents
     result.update({
         'ceiling_basis': ceiling['basis'] if ceiling else None,
         'ceiling_amazon_price': _usd(ceiling['amazon_cents']) if ceiling else None,
@@ -885,9 +817,11 @@ def audit_row(stored, product, default_shipping_cents):
 
     # Does the whole reconstruction - branch, then ceiling - land where production
     # landed? No duplicate finding on a row where this is False may be trusted.
+    # Branch, then the New cap, then the ceiling (Pricing Logic Version 3).
     result['reconstruction_matches_production'] = bool(
         result['ceiling_matches_production'] if result['ceiling_engaged']
-        else detail['branch_matches_production'])
+        else (branch_cents is not None and recomputed_cents and recomputed_cents > 0
+              and abs(branch_cents - recomputed_cents) < 1.0))
     return result
 
 
@@ -1053,6 +987,7 @@ DETAIL_COLUMNS = [
     ('ceiling_blends_seasons', 'ceiling blends seasons'),
     ('ceiling_matches_production', 'ceiling mirror == prod'),
     ('branch_list_at', 'pre-ceiling branch value'),
+    ('peak_new_cap', 'peak-window New cap'),
     # (d) the thin peak season
     ('season_centre_month', 'season centre'),
     ('season_centre_mirrored', 'centre mirrored (sparse)'),

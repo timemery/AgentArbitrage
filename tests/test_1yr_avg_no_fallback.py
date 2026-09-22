@@ -73,7 +73,8 @@ def _stats_with_avg365():
 
 
 def _mock_product(history_days=500, sales_count=0, sales_age_days=None,
-                  sale_price_cents=1500, with_stats=True, points_per_day=24):
+                  sale_price_cents=1500, with_stats=True, points_per_day=24,
+                  new_price_cents=2000):
     """Synthetic Keepa history with a controllable number of inferred sales.
 
     A sale is manufactured the way the production inference detects one: drop the
@@ -96,7 +97,7 @@ def _mock_product(history_days=500, sales_count=0, sales_age_days=None,
         ts = now - timedelta(hours=i)
         timestamps.append(int((ts - KEEPA_EPOCH).total_seconds() / 60))
         ranks.append(100000)
-        new_prices.append(2000)
+        new_prices.append(new_price_cents)
         used_prices.append(sale_price_cents)
         new_counts.append(5)
         used_counts.append(5)
@@ -304,8 +305,13 @@ class SparseAiSkipSurvives(unittest.TestCase):
 
     def test_suspiciously_high_sparse_price_still_forces_the_ai_check(self):
         """The 3x rule still overrides the sparse skip. Current used is $26.00."""
+        # New held at $400 so the peak-window New cap (Pricing Logic Version 3)
+        # stays out of the way: at the default $20 it would cap the $200 price to
+        # $23.99, which is no longer 3x current used, and the rule under test
+        # would never be reached.
         product = _mock_product(history_days=400, sales_count=2,
-                                sales_age_days=100, sale_price_cents=20000)
+                                sales_age_days=100, sale_price_cents=20000,
+                                new_price_cents=40000)
         events, _ = infer_sale_events(product)
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness',
                    return_value=True) as ai:

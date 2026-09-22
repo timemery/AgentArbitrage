@@ -8,7 +8,7 @@ from .business_calculations import (
 from .new_analytics import get_1yr_avg_sale_price, get_percent_discount, get_trend, analyze_sales_rank_trends, get_offer_count_trend, get_offer_count_trend_180, get_offer_count_trend_365
 from .seasonality_classifier import classify_seasonality, get_sells_period
 from .seller_info import get_used_product_info, CONDITION_CODE_MAP
-from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score, get_expected_trough_price
+from .stable_calculations import analyze_sales_performance, recent_inferred_sale_price, infer_sale_events, calculate_seller_quality_score, get_expected_trough_price, _get_analysis
 from .pricing_version import PRICING_LOGIC_VERSION, PRICING_VERSION_HEADER
 from .stable_products import sales_rank_drops_last_30_days, sales_rank_drops_last_180_days, amazon_current
 from .field_mappings import FUNCTION_LIST
@@ -177,7 +177,18 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         # 7.12). NULL means "priced by unknown logic" and counts as STALE for
         # scheduling - see keepa_deals/pricing_version.py for why that is the
         # opposite of the Inferred_Sale_Count NULL rule. There is no backfill.
-        row_data[PRICING_VERSION_HEADER] = PRICING_LOGIC_VERSION
+        #
+        # EXCEPT when the price could not be verified (Trello #144): the AI check
+        # hit the daily cap or errored, so List at was withheld (fail closed). That
+        # row's prices are NOT current, so it is written NULL - stale - and the
+        # repair sweep retries it. The flag is read from the analysis that produced
+        # List at (`get_list_at_price` -> `_get_analysis`, memoised per ASIN), not
+        # from `sales_perf` above: that is a second call, whose check can succeed
+        # where the first failed, and stamping on it would record a withheld price
+        # as current.
+        list_at_analysis = _get_analysis(product_data)
+        row_data[PRICING_VERSION_HEADER] = (
+            None if list_at_analysis.get('price_unverified') else PRICING_LOGIC_VERSION)
 
         # Ensure Expected Trough Price is numeric float
         if 'expected_trough_price_cents' in sales_perf and sales_perf['expected_trough_price_cents'] > 0:

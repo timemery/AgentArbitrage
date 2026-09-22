@@ -83,10 +83,118 @@ def _distinct_price_points(sale_events):
     return prices
 
 
+# --- The peak-window New cap (Pricing Logic Version 3) -----------------------
+#
+# `List at` may not exceed the median, across the peak-season windows that fed
+# it, of the lowest New offer in each window, plus this allowance. Owner decision
+# 2026-09-22, sized on the audit: 15 of 50 worst-case rows capped, median $155.82.
+#
+# NEVER today's New price. The product buys at the trough and sells at the peak,
+# so the New offer on screen now is the BUY side; capping a peak price with it
+# compares two different points in the season. A row with no New price in any of
+# its windows is left UNCAPPED and says so - there is no fallback.
+PEAK_NEW_CAP_ALLOWANCE_CENTS = 399
+
+# Outcomes recorded on every analysis as `peak_new_cap`.
+NEW_CAP_APPLIED = 'applied'
+NEW_CAP_NOT_NEEDED = 'not needed'
+NEW_CAP_UNAVAILABLE = 'unavailable: no New price in the peak window'
+
+
+def peak_window_new_floor(product, contributing_sales):
+    """Lowest New offer price while the peak-season sales that set `List at` happened.
+
+    Moved here from `audit_list_at_sources.py` (which now calls this) so the cap
+    and the measurement it was sized on are one function.
+
+    THE WINDOWS are the calendar months (year, month) that contain the sales that
+    fed `List at` - plural, because a three-year history can hold the same peak
+    month in two or three different years, and each is its own window with its
+    own New price.
+
+    READING A CHANGE-LOG, NOT A SAMPLE. `csv[1]` records a point only when the
+    lowest New price CHANGES, so a window can contain zero points while a price
+    was in force throughout it. The price in force during a window is therefore
+    the last point before the window opens, carried forward, PLUS every point
+    inside it - the same reasoning as having no time threshold on the price
+    association (INFERRED_PRICE_LOGIC.md 2b.1). `carried` records when a floor
+    came from such a point.
+
+    BASIS: `csv[1]` is Keepa's NEW index, an item price with no shipping.
+    """
+    blank = {'floor_cents': None, 'median_window_floor_cents': None,
+             'windows': [], 'window_count': 0, 'carried': False, 'points': 0}
+    if not contributing_sales:
+        return blank
+
+    csv_data = product.get('csv') or []
+    history = csv_data[1] if len(csv_data) > 1 and isinstance(csv_data[1], list) \
+        and len(csv_data[1]) > 1 else None
+    if not history:
+        return blank
+
+    frame = pd.DataFrame(np.array(history).reshape(-1, 2),
+                         columns=['timestamp', 'price_cents'])
+    frame = _convert_ktm_to_datetime(frame)
+    frame = frame[frame['price_cents'] > 0].sort_values('timestamp')
+    if frame.empty:
+        return blank
+
+    periods = sorted({(pd.to_datetime(sale['event_timestamp']).year,
+                       pd.to_datetime(sale['event_timestamp']).month)
+                      for sale in contributing_sales})
+
+    windows, floors, carried_any, points_seen = [], [], False, 0
+    for year, month in periods:
+        start = datetime(year, month, 1)
+        end = datetime(year + 1, 1, 1) if month == 12 else datetime(year, month + 1, 1)
+
+        inside = frame[(frame['timestamp'] >= start) & (frame['timestamp'] < end)]
+        prior = frame[frame['timestamp'] < start]
+
+        candidates = list(inside['price_cents'])
+        points_seen += len(candidates)
+        carried = None
+        if not prior.empty:
+            carried = float(prior.iloc[-1]['price_cents'])
+            candidates.append(carried)
+
+        if not candidates:
+            windows.append({'year': year, 'month': month, 'floor_cents': None,
+                            'points_inside': 0, 'carried_cents': None})
+            continue
+
+        floor = float(min(candidates))
+        if carried is not None and floor == carried and len(inside) == 0:
+            carried_any = True
+        floors.append(floor)
+        windows.append({'year': year, 'month': month, 'floor_cents': floor,
+                        'points_inside': len(inside), 'carried_cents': carried})
+
+    if not floors:
+        return dict(blank, windows=windows, window_count=len(windows))
+
+    ordered = sorted(floors)
+    return {
+        'floor_cents': ordered[0],
+        'median_window_floor_cents': float(np.median(ordered)),
+        'windows': windows,
+        'window_count': len(windows),
+        'carried': carried_any,
+        'points': points_seen,
+    }
+
+
 def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A", trend_info="N/A", avg_3yr_usd="N/A"):
     """
     Queries the XAI API to act as a reasonableness check for a calculated price,
     now with caching and token management.
+
+    Returns True (reasonable), False (rejected) or None - UNVERIFIABLE: the daily
+    cap was reached or the call failed. None FAILS CLOSED (Trello #144, Pricing
+    Logic Version 3): the caller invalidates the price and the row is left stale
+    for the repair sweep to retry. It used to return True on both paths, so an xAI
+    outage passed every price unchecked and stamped it current.
     """
     if not api_key:
         logging.warning("XAI_API_KEY not provided. Skipping reasonableness check.")
@@ -104,8 +212,8 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
 
     # 3. If not in cache, check for permission to make a call
     if not xai_token_manager.request_permission():
-        logging.warning(f"XAI daily limit reached. Cannot perform reasonableness check for '{title}'. Defaulting to reasonable.")
-        return True
+        logging.warning(f"XAI daily limit reached. Cannot perform reasonableness check for '{title}'. Price is UNVERIFIABLE - failing closed.")
+        return None
 
     # 4. If permission granted, proceed with the API call
     # NOTE: We explicitly explain that the "3-Year Average Price" includes off-season lows and that seasonal items
@@ -157,8 +265,9 @@ def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, b
 
     except (httpx.HTTPStatusError, httpx.RequestError, Exception) as e:
         logging.error(f"An unexpected error occurred during XAI reasonableness check for '{title}': {e}")
-        # Default to reasonable on any API error
-        return True
+        # UNVERIFIABLE, not reasonable: fail closed (Trello #144). Not cached, so
+        # the next attempt asks again.
+        return None
 
 # Percent Down 365 starts
 def percent_down_365(product):
@@ -580,6 +689,11 @@ def analyze_sales_performance(product, sale_events):
     trough_season_str = '-'
     expected_trough_price_cents = -1
     price_source = 'Inferred Sales'
+    # The calendar month the price was set in (None on the Sparse branch, which
+    # has no peak month), and the sales that fed the price. Both are read by the
+    # peak-window New cap and the Amazon ceiling below.
+    peak_month = None
+    contributing_sales = list(sale_events or [])
 
     # --- Check Data Sufficiency ---
     if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
@@ -656,16 +770,40 @@ def analyze_sales_performance(product, sale_events):
             # change-log point that priced two sales is one asking price and
             # counts once in both the mode and the median fallback. See
             # `_distinct_price_points`.
+            peak_month = int(peak_month)
             peak_point_prices = _distinct_price_points(
                 [sale for sale in sale_events
                  if pd.to_datetime(sale['event_timestamp']).month == peak_month])
+            peak_sales = [sale for sale in sale_events
+                          if pd.to_datetime(sale['event_timestamp']).month == peak_month]
             mode_result = st.mode(peak_point_prices)
             if mode_result.count > 1:
                 peak_price_mode_cents = float(mode_result.mode)
+                contributing_sales = [sale for sale in peak_sales
+                                      if float(sale['inferred_sale_price_cents'])
+                                      == peak_price_mode_cents]
                 logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (held by {mode_result.count} distinct price points).")
             else:
                 peak_price_mode_cents = float(np.median(peak_point_prices))
+                contributing_sales = peak_sales
                 logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
+
+    # --- Peak-window New cap (Pricing Logic Version 3) ---
+    # See PEAK_NEW_CAP_ALLOWANCE_CENTS. Measured in the peak-season windows that fed
+    # the price, never today: today's New offer is the buy side.
+    new_floor = peak_window_new_floor(product, contributing_sales)
+    peak_new_cap_cents = None
+    if new_floor['median_window_floor_cents'] is None:
+        peak_new_cap = NEW_CAP_UNAVAILABLE
+        logger.info(f"ASIN {asin}: Peak-window New cap unavailable (no New price in the peak window). List at left uncapped.")
+    else:
+        peak_new_cap_cents = new_floor['median_window_floor_cents'] + PEAK_NEW_CAP_ALLOWANCE_CENTS
+        if peak_price_mode_cents > peak_new_cap_cents:
+            logger.info(f"ASIN {asin}: List at ${peak_price_mode_cents/100:.2f} exceeds the peak-window New cap ${peak_new_cap_cents/100:.2f}. Capping.")
+            peak_price_mode_cents = peak_new_cap_cents
+            peak_new_cap = NEW_CAP_APPLIED
+        else:
+            peak_new_cap = NEW_CAP_NOT_NEEDED
 
     # --- Amazon Ceiling Logic ---
     stats = product.get('stats', {})
@@ -677,8 +815,16 @@ def analyze_sales_performance(product, sale_events):
     amz_365_avg = stats.get('avg365', []) # stats.avg365[0]
     amz_365 = amz_365_avg[0] if amz_365_avg else None
 
+    # The CURRENT reading is a single price taken today. It bounds a peak-season
+    # price only when today IS the peak month; otherwise it is a trough-time
+    # price, the buy side (Pricing Logic Version 3). Both trailing averages stay:
+    # they are the only Amazon rail for books Amazon stocks intermittently, and
+    # they clip downward. The Sparse branch has no peak month, so it never uses
+    # the current reading.
+    current_in_peak = peak_month is not None and datetime.now().month == peak_month
+
     valid_amz_prices = []
-    if amz_current and amz_current > 0: valid_amz_prices.append(amz_current)
+    if current_in_peak and amz_current and amz_current > 0: valid_amz_prices.append(amz_current)
     if amz_180 and amz_180 > 0: valid_amz_prices.append(amz_180)
     if amz_365 and amz_365 > 0: valid_amz_prices.append(amz_365)
 
@@ -773,7 +919,15 @@ def analyze_sales_performance(product, sale_events):
             trend_info=trend_info, avg_3yr_usd=avg_3yr_usd
         )
 
-    if not is_reasonable:
+    price_unverified = is_reasonable is None
+    if price_unverified:
+        # FAIL CLOSED (Trello #144). The check could not run - daily cap or an xAI
+        # error - so the price is neither accepted nor rejected: it is withheld.
+        # `price_unverified` tells `_process_single_deal` not to stamp the current
+        # Pricing Logic Version, so the repair sweep retries the row.
+        logger.warning(f"ASIN {asin}: XAI check UNVERIFIABLE. Price ${peak_price_mode_cents/100:.2f} withheld for '{title}'; row left stale for a retry.")
+        peak_price_mode_cents = -1
+    elif not is_reasonable:
         # If XAI deems the price unreasonable, we invalidate it by setting it to -1.
         # This signals downstream functions to treat it as "N/A" or "Too New".
         logger.warning(f"ASIN {asin}: XAI check FAILED. Price ${peak_price_mode_cents/100:.2f} was deemed unreasonable for '{title}'. Invalidating price.")
@@ -788,6 +942,9 @@ def analyze_sales_performance(product, sale_events):
         'expected_trough_price_cents': expected_trough_price_cents,
         'price_source': price_source,
         'inferred_sale_count': inferred_sale_count,
+        'peak_new_cap': peak_new_cap,
+        'peak_new_cap_cents': peak_new_cap_cents,
+        'price_unverified': price_unverified,
     }
 
 # --- Memoization cache for analysis results ---

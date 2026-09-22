@@ -726,15 +726,14 @@ class AnUnboundedDryRunIsRefused(unittest.TestCase):
 
 
 class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
-    """The 2026-09-17 blocker: past the cap, the price check silently passes.
+    """The 2026-09-17 blocker: past the cap, the price check used to silently pass.
 
-    `_query_xai_for_reasonableness` does not raise and does not skip the row when
-    the daily cap denies permission - it returns True
-    (`stable_calculations.py:76-78`). The price is accepted unchecked AND stamped
-    `Pricing_Logic_Version = 2`, so it drops out of the predicate and the sweep
-    never revisits it. Continuing past the cap is therefore strictly worse than
-    stopping: it launders exactly the inflated prices this script exists to
-    remove, and leaves nothing in the data to show it happened.
+    `_query_xai_for_reasonableness` returned True when the daily cap denied
+    permission, so a price was accepted unchecked AND stamped current, and the
+    sweep never revisited it. Since Pricing Logic Version 3 (Trello #144) it fails
+    CLOSED - see tests/test_xai_fail_closed.py - which ends the laundering but not
+    the case for stopping: past the cap every row would be written unpriced and
+    hidden, its Keepa tokens spent for nothing until a later run retries it.
 
     Measured on the 10-row dry run: ~15 xAI calls for 9 rows, most FORCED by the
     3x-of-current-used rule, which fires on precisely the rows being repaired.
@@ -853,9 +852,10 @@ class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
         body = '\n'.join(caught.output)
         self.assertIn('xAI daily limit nearly reached', body)
         self.assertIn('Re-run the same command after the daily reset', body)
-        self.assertIn('stable_calculations.py:76', body,
+        self.assertIn('fails closed', body,
                       "The operator needs to know WHY continuing is worse than "
                       "stopping, not just that it stopped.")
+        self.assertIn('UNPRICED', body)
 
     def test_the_default_headroom_covers_a_batch_plus_ingestion(self):
         self.assertGreaterEqual(
