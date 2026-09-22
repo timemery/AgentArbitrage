@@ -56,7 +56,11 @@ class TestSparseDataFallback(unittest.TestCase):
                 'current': [None] * 30
             }
         }
-        sale_events = [{'event_timestamp': '2025-01-01', 'inferred_sale_price_cents': 1500}]
+        # Two sales, not one: since Pricing Logic Version 3 a sparse row needs two
+        # distinct price points in its peak season to be priced at all, and this
+        # test must reach the stats handling below the pricing branch.
+        sale_events = [{'event_timestamp': '2025-01-01', 'inferred_sale_price_cents': 1500},
+                       {'event_timestamp': '2025-01-15', 'inferred_sale_price_cents': 1500}]
 
         # This should NOT raise TypeError and should return the rescued price
         try:

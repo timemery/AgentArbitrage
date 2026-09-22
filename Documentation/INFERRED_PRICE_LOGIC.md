@@ -240,16 +240,33 @@ To prevent anomalous prices (e.g., penny books or repricer errors) from skewing 
 This determines the recommended listing price.
 
 1.  **Seasonality Identification:** Groups sane sales by month. Identifies the **Peak Month** (highest median price).
+    -   **The Peak Season (Pricing Logic Version 3)** is the peak month **± 1 month** (`PEAK_SEASON_HALF_WIDTH_MONTHS`), **pooled across every year** of the history; a December peak's season includes January. Steps 2 and 3 work on the season, not the single month.
+    -   **A season too thin to price gets no price.** Fewer than **2 distinct price points** in the season (`PEAK_SEASON_MIN_PRICE_POINTS`) ⇒ `List at` withheld, row persisted unpriced and hidden, **never deleted**; the AI check is not called. This applies to the Sparse Sales Rescue too. Chosen from the audit (100 random visible rows): hides 28; the single month alone would have hidden 65. Why: the single month `idxmax` picked held ONE sale on the median row, so `List at` was the highest single sale in three years.
 2.  **Price Determination:**
-    -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
+    -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Season.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
-    -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
+    -   **Both count DISTINCT PRICE POINTS, not sale events (Pricing Logic Version 3).**
+        Every sale carries `price_point` = (series, timestamp of the change-log point
+        §2b matched). Two offer drops priced by the same point are one asking price
+        and count once; two separate points that happen to hold the same price count
+        twice. Identity is the point's timestamp, never price equality. A sale with no
+        recorded identity counts as its own point. Pinned by
+        `tests/test_distinct_price_points.py`. (Peak-month *selection* and the sale
+        count are unchanged: they still count sale events.)
+    -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales — **provided they are 2 distinct price points in one peak season** (step 1). One sale, two sales in different seasons, or two sales priced by one point: unpriced.
     -   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales.)*
-3.  **Amazon Ceiling Logic:**
+3.  **Peak-Window New Cap (Pricing Logic Version 3):**
+    -   `List at` may not exceed the **median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99** (`PEAK_NEW_CAP_ALLOWANCE_CENTS`).
+    -   A window is a calendar month of one year holding a sale that fed the price; the same peak month in three years is three windows. `csv[1]` is a change-log, so a window's New price is the last point before it opens, carried forward, plus every point inside it.
+    -   **Never today's New price.** The product buys at the trough and sells at the peak, so today's New offer is the *buy* side.
+    -   A row with **no New price in any window is left uncapped** and its analysis records `peak_new_cap = 'unavailable: no New price in the peak window'`. There is no fallback. (Recorded on the analysis and in the log; not persisted to a column.)
+    -   Function: `peak_window_new_floor` in `stable_calculations.py`, which `audit_list_at_sources.py` also calls.
+4.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
+    -   **Amazon Current counts only when today's month is the peak month (Pricing Logic Version 3).** It is a single reading taken today, a trough-time price off-season. The Sparse Sales Rescue has no peak month, so it never uses Current. Both trailing averages always count: they are the only Amazon rail for books Amazon stocks intermittently, and they clip downward. This change shipped only together with step 3, because removing a clamp on its own can only raise prices.
     -   If `List at > Ceiling`, it is reduced to the Ceiling value.
-4.  **AI Reasonableness Check:**
+5.  **AI Reasonableness Check:**
     -   **Primary Check:** For standard inferred prices, the calculated price is sent to **xAI (Grok)** along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**.
     -   **Prompt Context:** The prompt explicitly instructs the AI that for seasonal items (especially Textbooks), a Peak Season price can validly be **200-400% higher** than the 3-Year Average to prevent false positive rejections.
     -   **Fallback Exception (Feb 2026):** If the price source is **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is conditionally **SKIPPED** to prevent false rejections.
@@ -257,14 +274,16 @@ This determines the recommended listing price.
         -   **Hard Ceiling Safety (Mar 2026):** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.
     -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
+    -   **Fails CLOSED (Pricing Logic Version 3, Trello #144).** If the check cannot run — no API key, the xAI daily cap is reached, or the call errors — it returns *unverifiable* (`None`), not *reasonable*. The price is withheld (`List at` NULL, row hidden), the analysis sets `price_unverified`, and `_process_single_deal` writes `Pricing_Logic_Version` **NULL** so the row stays stale and the repair sweep retries it. Before this, all three paths returned `True`: the price passed unchecked and was stamped current.
 
 ### A.1 Two things step A.2 does not decide on its own
 
-Both are open measurements as of 2026-09-22, not established defects. The script
+Both were open measurements as of 2026-09-22. **Both are now addressed in Pricing Logic Version 3** (steps 2, 3 and 4 above); the text is kept for the record. The script
 that measures them, its runbook and its cost are in
 `System_State.md` → "Auditing where a stored `List at` came from".
 
-1.  **The mode breaks ties by frequency, and §2b can legitimately hand two sales
+1.  **RESOLVED in Pricing Logic Version 3** — the mode now counts distinct price
+    points (step A.2 above). Kept for the record: **The mode breaks ties by frequency, and §2b can legitimately hand two sales
     the same price.** The association takes the last change-log point strictly
     before an offer drop *at any distance*, so two drops with no price change
     between them receive the **same point**. In a peak month where every other

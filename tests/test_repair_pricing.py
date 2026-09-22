@@ -692,7 +692,8 @@ class AnUnboundedDryRunIsRefused(unittest.TestCase):
         Stubbing it means `pf.called` cleanly separates the two.
         """
         with patch.object(R, 'preflight') as pf, \
-             patch.object(R, 'load_dotenv'):
+             patch.object(R, 'load_dotenv'), \
+             patch.dict(os.environ, {'XAI_TOKEN': 'x'}):
             pf.side_effect = R.RepairAbort('preflight stub')
             return R.main(argv + ['--log-file', os.path.join(self.tmp, 'r.log')]), pf
 
@@ -726,15 +727,14 @@ class AnUnboundedDryRunIsRefused(unittest.TestCase):
 
 
 class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
-    """The 2026-09-17 blocker: past the cap, the price check silently passes.
+    """The 2026-09-17 blocker: past the cap, the price check used to silently pass.
 
-    `_query_xai_for_reasonableness` does not raise and does not skip the row when
-    the daily cap denies permission - it returns True
-    (`stable_calculations.py:76-78`). The price is accepted unchecked AND stamped
-    `Pricing_Logic_Version = 2`, so it drops out of the predicate and the sweep
-    never revisits it. Continuing past the cap is therefore strictly worse than
-    stopping: it launders exactly the inflated prices this script exists to
-    remove, and leaves nothing in the data to show it happened.
+    `_query_xai_for_reasonableness` returned True when the daily cap denied
+    permission, so a price was accepted unchecked AND stamped current, and the
+    sweep never revisited it. Since Pricing Logic Version 3 (Trello #144) it fails
+    CLOSED - see tests/test_xai_fail_closed.py - which ends the laundering but not
+    the case for stopping: past the cap every row would be written unpriced and
+    hidden, its Keepa tokens spent for nothing until a later run retries it.
 
     Measured on the 10-row dry run: ~15 xAI calls for 9 rows, most FORCED by the
     3x-of-current-used rule, which fires on precisely the rows being repaired.
@@ -811,7 +811,7 @@ class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
              patch.object(R, 'fetch_targets') as targets, \
              patch.object(R, 'repair_batch') as batch, \
              patch('keepa_deals.token_manager.TokenManager') as tm, \
-             patch.dict(os.environ, {'KEEPA_API_KEY': 'k'}):
+             patch.dict(os.environ, {'KEEPA_API_KEY': 'k', 'XAI_TOKEN': 'x'}):
             tm.return_value.REFILL_RATE_PER_MINUTE = 25.0
             tm.return_value.tokens = 300.0
             tm.return_value.should_skip_sync.return_value = True
@@ -853,9 +853,10 @@ class TheSweepStopsBeforeTheXaiCapIsHit(_Silent):
         body = '\n'.join(caught.output)
         self.assertIn('xAI daily limit nearly reached', body)
         self.assertIn('Re-run the same command after the daily reset', body)
-        self.assertIn('stable_calculations.py:76', body,
+        self.assertIn('fails closed', body,
                       "The operator needs to know WHY continuing is worse than "
                       "stopping, not just that it stopped.")
+        self.assertIn('UNPRICED', body)
 
     def test_the_default_headroom_covers_a_batch_plus_ingestion(self):
         self.assertGreaterEqual(
@@ -983,7 +984,7 @@ class ARechargeIsWaitedOutNotStopped(_Silent):
                               targets)), \
              patch.object(R, 'repair_batch') as batch, \
              patch('keepa_deals.token_manager.TokenManager') as tm, \
-             patch.dict(os.environ, {'KEEPA_API_KEY': 'k'}):
+             patch.dict(os.environ, {'KEEPA_API_KEY': 'k', 'XAI_TOKEN': 'x'}):
             tm.return_value.REFILL_RATE_PER_MINUTE = refill
             tm.return_value.tokens = 300.0
             tm.return_value.should_skip_sync.return_value = True
@@ -1144,3 +1145,60 @@ class ARechargeIsWaitedOutNotStopped(_Silent):
             with self.assertRaises(TokenRechargeError):
                 R.repair_batch([self._target('AAAAAAAA')], 'k', 'x', _TM(),
                                10, False)
+
+
+class ItRefusesToRunWithoutAnXaiKey(unittest.TestCase):
+    """Owner decision 2026-09-22 (Pricing Logic Version 3).
+
+    Without XAI_TOKEN the AI Reasonableness Check fails closed, so a sweep would
+    write every checked row UNPRICED and hidden - including rows visible today -
+    for ~7 Keepa tokens each. It must refuse before reading or fetching anything.
+    """
+
+    def setUp(self):
+        logging.disable(logging.CRITICAL)
+        self.tmp = tempfile.mkdtemp()
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
+
+    def _main(self, argv, env):
+        with patch.object(R, 'preflight') as pf, \
+             patch.object(R, 'load_dotenv'), \
+             patch.object(R, 'backup_database') as backup, \
+             patch('keepa_deals.token_manager.TokenManager') as tm, \
+             patch.dict(os.environ, env):
+            if 'XAI_TOKEN' not in env:
+                os.environ.pop('XAI_TOKEN', None)
+            code = R.main(argv + ['--log-file', os.path.join(self.tmp, 'r.log')])
+        return code, pf, backup, tm
+
+    def test_no_key_exits_non_zero_before_anything_is_touched(self):
+        for argv in (['--apply'], ['--limit', '10']):
+            code, pf, backup, tm = self._main(argv, {'KEEPA_API_KEY': 'k'})
+            self.assertNotEqual(code, 0, argv)
+            pf.assert_not_called()
+            backup.assert_not_called()
+            tm.assert_not_called()
+
+    def test_an_empty_key_is_no_key(self):
+        code, pf, _, _ = self._main(['--apply'], {'KEEPA_API_KEY': 'k', 'XAI_TOKEN': ''})
+        self.assertNotEqual(code, 0)
+        pf.assert_not_called()
+
+    def test_the_message_says_why_and_what_to_do(self):
+        logging.disable(logging.NOTSET)
+        with self.assertLogs('repair_pricing', level='ERROR') as caught:
+            self._main(['--apply'], {'KEEPA_API_KEY': 'k'})
+        body = '\n'.join(caught.output)
+        self.assertIn('REFUSED', body)
+        self.assertIn('XAI_TOKEN', body)
+        self.assertIn('UNPRICED', body)
+
+    def test_with_a_key_it_proceeds_to_preflight(self):
+        with patch.object(R, 'preflight') as pf, \
+             patch.object(R, 'load_dotenv'), \
+             patch.dict(os.environ, {'KEEPA_API_KEY': 'k', 'XAI_TOKEN': 'x'}):
+            pf.side_effect = R.RepairAbort('preflight stub')
+            R.main(['--apply', '--log-file', os.path.join(self.tmp, 'r.log')])
+        pf.assert_called_once()

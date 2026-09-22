@@ -196,7 +196,31 @@ KEEPA_CONDITION_NEW = 1
 SPARSE_PRICE_SOURCE = 'Inferred Sales (Sparse)'
 
 # How many rows the stdout summary lists. The rest are in the detail file.
-WORST_N = 10
+# 6, not 10, since section (d) took four of the 25 lines (2026-09-22).
+WORST_N = 6
+
+# --- (d) THE THIN PEAK SEASON: the measurement the minimum is chosen from ---
+#
+# Owner decision (2026-09-22): a peak season too thin to price is persisted with
+# List_at NULL and so hidden, never deleted. The minimum is to be CHOSEN from
+# measured removals, so this reports, for each candidate, how many sampled rows
+# would lose their price under two definitions of the season:
+#
+#   (a) the peak month alone, pooled across years - what production groups on
+#       today (`.dt.month`, so every September in the history counts together);
+#   (b) the peak month plus PEAK_WINDOW_HALF_WIDTH_MONTHS either side, pooled
+#       across years, wrapping December into January.
+#
+# The count is DISTINCT PRICE POINTS, not sale events: since Pricing Logic
+# Version 3 a change-log point that priced two sales is one asking price.
+#
+# Owner decision 2026-09-22 on this section's numbers: minimum 2, peak month +/-1.
+# Production now enforces it (`PEAK_SEASON_MIN_PRICE_POINTS`,
+# `PEAK_SEASON_HALF_WIDTH_MONTHS` in `stable_calculations`), so on a v3 run the
+# rows it hides show up as "already not" priced. The width is production's own.
+PEAK_SEASON_MIN_CANDIDATES = (2, 3, 4)
+from keepa_deals.stable_calculations import (  # noqa: E402
+    PEAK_SEASON_HALF_WIDTH_MONTHS as PEAK_WINDOW_HALF_WIDTH_MONTHS)
 
 # Classifications for how `List at` was reached. Ordinary first - see THE
 # CONCLUSION RULE above.
@@ -364,11 +388,15 @@ def classify_list_at(sale_events, analysis, sources):
         month = out['peak_month']
         if month is None:
             return out
-        peak_sales = [s for s in sale_events
-                      if s['event_timestamp'].month == month]
+        # Production pools the peak SEASON - peak month +/- its half-width, across
+        # years (Pricing Logic Version 3). Its own helper, so this cannot drift.
+        peak_sales = stable_calculations._peak_season_sales(sale_events, month)
         if not peak_sales:
             return out
-        prices = [s['inferred_sale_price_cents'] for s in peak_sales]
+        # Production scores DISTINCT price points, not sale events (Pricing Logic
+        # Version 3): a change-log point that priced two sales counts once. The
+        # reconstruction uses production's own helper so it cannot drift.
+        prices = stable_calculations._distinct_price_points(peak_sales)
         mode_result = st.mode(prices)
         if mode_result.count > 1:
             winner = float(mode_result.mode)
@@ -402,6 +430,57 @@ def classify_list_at(sale_events, analysis, sources):
     return out
 
 
+def _in_window(month, centre, half_width):
+    """Circular month distance, so a December peak's window includes January."""
+    distance = abs(month - centre) % 12
+    return min(distance, 12 - distance) <= half_width
+
+
+def mirrored_peak_month(sale_events):
+    """Production's peak-month choice, for rows production did not make one on.
+
+    The Sparse Sales Rescue (1-2 sales) returns no peak month at all, but a
+    minimum-sale rule would still have to decide those rows, so the audit needs a
+    centre for them. This is the normal branch's own rule - `groupby(month)`
+    median, `idxmax`, first month on a tie - and it is used ONLY on sparse rows;
+    every other row takes the peak month production itself returned.
+    """
+    from keepa_deals import stable_calculations
+    pd = stable_calculations.pd
+    if not sale_events:
+        return None
+    frame = pd.DataFrame({
+        'month': [pd.to_datetime(s['event_timestamp']).month for s in sale_events],
+        'price': [s['inferred_sale_price_cents'] for s in sale_events]})
+    return int(frame.groupby('month')['price'].median().idxmax())
+
+
+def peak_season_counts(sale_events, analysis):
+    """Distinct price points in the peak season, under both definitions."""
+    from keepa_deals import stable_calculations
+
+    is_sparse = analysis.get('price_source') == SPARSE_PRICE_SOURCE
+    centre = peak_month_number(analysis.get('peak_season'))
+    mirrored = False
+    if centre is None and is_sparse:
+        centre = mirrored_peak_month(sale_events)
+        mirrored = centre is not None
+    out = {'season_centre_month': centre, 'season_centre_mirrored': mirrored,
+           'is_sparse': is_sparse, 'season_points_month': None,
+           'season_points_window': None}
+    if centre is None:
+        return out
+
+    def points(half_width):
+        in_season = [s for s in sale_events
+                     if _in_window(s['event_timestamp'].month, centre, half_width)]
+        return len(stable_calculations._distinct_price_points(in_season))
+
+    out['season_points_month'] = points(0)
+    out['season_points_window'] = points(PEAK_WINDOW_HALF_WIDTH_MONTHS)
+    return out
+
+
 def dedupe_by_source_point(sale_events, sources):
     """One sale per matched price point, keeping the earliest.
 
@@ -431,103 +510,26 @@ def dedupe_by_source_point(sale_events, sources):
 def peak_window_new_floor(product, contributing_sales):
     """Lowest New offer price while the peak-season sales that set `List at` happened.
 
+    Since Pricing Logic Version 3 this is PRODUCTION's function - the peak-window
+    New cap in `analyze_sales_performance` is built on it - so the measurement
+    and the cap cannot drift. See its docstring in `stable_calculations`.
+
     WHY THIS AND NOT TODAY'S PRICE. The product buys at the trough and sells at
-    the peak, so the New offer on screen today is the BUY side. It bounds what an
-    arbitrageur pays, not what the item can be listed at months later, and capping
-    a peak price with it would be comparing two different points in the season.
-    The bound that means something is what the same item could be had for New
-    AT THE TIME the peak-season sales that set `List at` were happening.
-
-    THE WINDOWS are the calendar months that actually contain the sales
-    `classify_list_at` found feeding `List at` - plural because a three-year
-    history can hold the same peak month in two or three different years, and each
-    is its own window with its own New price.
-
-    READING A CHANGE-LOG, NOT A SAMPLE. `csv[1]` records a point only when the
-    lowest New price CHANGES, so a window can contain zero points while a price
-    was in force throughout it. The price in force during a window is therefore
-    the last point at or before the window opens, carried forward, PLUS every
-    point inside it. This is the same reasoning `INFERRED_PRICE_LOGIC.md` 2b.1
-    gives for having no time threshold on the price association: a long gap means
-    the price had not changed, which makes the distant point correct rather than
-    stale. `carried` records when the floor came from such a point.
-
-    BASIS: `csv[1]` is Keepa's NEW index - an item price, with no shipping. It is
-    NOT comparable to the landed figure `lowest_new_offer` returns, and the two
-    are reported in separate columns for that reason.
+    the peak, so the New offer on screen today is the BUY side.
     """
     from keepa_deals import stable_calculations
-
-    pd = stable_calculations.pd
-    blank = {'floor_cents': None, 'median_window_floor_cents': None,
-             'windows': [], 'window_count': 0, 'carried': False, 'points': 0}
-    if not contributing_sales:
-        return blank
-
-    csv_data = product.get('csv') or []
-    history = csv_data[1] if len(csv_data) > 1 and isinstance(csv_data[1], list) \
-        and len(csv_data[1]) > 1 else None
-    if not history:
-        return blank
-
-    import numpy as np
-    frame = pd.DataFrame(np.array(history).reshape(-1, 2),
-                         columns=['timestamp', 'price_cents'])
-    frame = stable_calculations._convert_ktm_to_datetime(frame)
-    frame = frame[frame['price_cents'] > 0].sort_values('timestamp')
-    if frame.empty:
-        return blank
-
-    periods = sorted({(sale['event_timestamp'].year, sale['event_timestamp'].month)
-                      for sale in contributing_sales})
-
-    windows, floors, carried_any, points_seen = [], [], False, 0
-    for year, month in periods:
-        start = datetime(year, month, 1)
-        end = datetime(year + 1, 1, 1) if month == 12 else datetime(year, month + 1, 1)
-
-        inside = frame[(frame['timestamp'] >= start) & (frame['timestamp'] < end)]
-        prior = frame[frame['timestamp'] < start]
-
-        candidates = list(inside['price_cents'])
-        points_seen += len(candidates)
-        carried = None
-        if not prior.empty:
-            carried = float(prior.iloc[-1]['price_cents'])
-            candidates.append(carried)
-
-        if not candidates:
-            windows.append({'year': year, 'month': month, 'floor_cents': None,
-                            'points_inside': 0, 'carried_cents': None})
-            continue
-
-        floor = float(min(candidates))
-        if carried is not None and floor == carried and len(inside) == 0:
-            carried_any = True
-        floors.append(floor)
-        windows.append({'year': year, 'month': month, 'floor_cents': floor,
-                        'points_inside': len(inside), 'carried_cents': carried})
-
-    if not floors:
-        return dict(blank, windows=windows, window_count=len(windows))
-
-    ordered = sorted(floors)
-    return {
-        'floor_cents': ordered[0],
-        'median_window_floor_cents': float(np.median(ordered)),
-        'windows': windows,
-        'window_count': len(windows),
-        'carried': carried_any,
-        'points': points_seen,
-    }
+    return stable_calculations.peak_window_new_floor(product, contributing_sales)
 
 
 # --------------------------------------------------------------------------
 # The Amazon ceiling, mirrored and then checked against what production did
 # --------------------------------------------------------------------------
 
-def amazon_ceiling(product):
+def amazon_ceiling(product, current_in_peak=True):
     """The ceiling `analyze_sales_performance` applies: min(current, 180d, 365d) x 0.90.
+
+    Since Pricing Logic Version 3 production reads `current` only when today's
+    month is the peak month; `audit_row` passes that as `current_in_peak`.
 
     Four lines of arithmetic sitting inline in the middle of a long function, with
     no seam to instrument - so this is the one thing here that IS a mirror. It is
@@ -544,6 +546,8 @@ def amazon_ceiling(product):
     stats = product.get('stats') or {}
     candidates = []
     for basis, key in (('current', 'current'), ('avg180', 'avg180'), ('avg365', 'avg365')):
+        if basis == 'current' and not current_in_peak:
+            continue
         series = stats.get(key) or []
         value = series[0] if len(series) > 0 else None
         if value and value > 0:
@@ -636,8 +640,16 @@ def lowest_new_offer(product, default_shipping_cents):
 # Sampling
 # --------------------------------------------------------------------------
 
-def build_sample_sql():
-    """Visible rows by `List_at` DESC.
+SAMPLE_ORDERS = {
+    'list_at': '"List_at" DESC, "ASIN" ASC',
+    # A representative draw, for measurements that must generalise to the whole
+    # dashboard. The List_at DESC default is a WORST-CASE sample.
+    'random': 'RANDOM()',
+}
+
+
+def build_sample_sql(order='list_at'):
+    """Visible rows, by `List_at` DESC (default) or at random.
 
     `VISIBLE_PREDICATE` is imported from `repair_pricing.py`, not restated. It is
     the dashboard's own data-completeness rule plus `Profit > 0`, and a second
@@ -655,12 +667,12 @@ def build_sample_sql():
                "Title"                 AS title
         FROM deals
         WHERE {visible}
-        ORDER BY "List_at" DESC, "ASIN" ASC
+        ORDER BY {order}
         LIMIT ?
-    """.format(visible=VISIBLE_PREDICATE.strip())
+    """.format(visible=VISIBLE_PREDICATE.strip(), order=SAMPLE_ORDERS[order])
 
 
-def fetch_sample(db_path, limit, asins=()):
+def fetch_sample(db_path, limit, asins=(), order='list_at'):
     """Read the sample. Read-only URI connection; this script never writes."""
     uri = 'file:{}?mode=ro'.format(db_path)
     con = sqlite3.connect(uri, uri=True)
@@ -674,7 +686,7 @@ def fetch_sample(db_path, limit, asins=()):
                    'FROM deals WHERE "ASIN" IN ({})'.format(placeholders))
             rows = con.execute(sql, tuple(asins)).fetchall()
         else:
-            rows = con.execute(build_sample_sql(), (limit,)).fetchall()
+            rows = con.execute(build_sample_sql(order), (limit,)).fetchall()
         return [dict(r) for r in rows]
     finally:
         con.close()
@@ -705,6 +717,7 @@ def audit_row(stored, product, default_shipping_cents):
                                     if recomputed_cents and recomputed_cents > 0 else None)
 
     detail = classify_list_at(sane_sales, analysis, sources)
+    result.update(peak_season_counts(sane_sales, analysis))
     result.update({
         'classification': detail['classification'],
         'branch_list_at': (round(detail['branch_price_cents'] / 100.0, 2)
@@ -770,8 +783,15 @@ def audit_row(stored, product, default_shipping_cents):
         and stored_list_at > result['new_landed'])
 
     # (c) Did the Amazon ceiling clip a peak-season price, and with what?
-    ceiling = amazon_ceiling(product)
+    ceiling = amazon_ceiling(product, current_in_peak=bool(
+        detail['peak_month'] and datetime.now().month == detail['peak_month']))
     branch_cents = detail['branch_price_cents']
+    # Since Pricing Logic Version 3 the peak-window New cap runs BEFORE the
+    # ceiling. Its value is read off production's own analysis, not mirrored.
+    result['peak_new_cap'] = analysis.get('peak_new_cap')
+    new_cap_cents = analysis.get('peak_new_cap_cents')
+    if branch_cents and new_cap_cents is not None and branch_cents > new_cap_cents:
+        branch_cents = new_cap_cents
     result.update({
         'ceiling_basis': ceiling['basis'] if ceiling else None,
         'ceiling_amazon_price': _usd(ceiling['amazon_cents']) if ceiling else None,
@@ -804,9 +824,11 @@ def audit_row(stored, product, default_shipping_cents):
 
     # Does the whole reconstruction - branch, then ceiling - land where production
     # landed? No duplicate finding on a row where this is False may be trusted.
+    # Branch, then the New cap, then the ceiling (Pricing Logic Version 3).
     result['reconstruction_matches_production'] = bool(
         result['ceiling_matches_production'] if result['ceiling_engaged']
-        else detail['branch_matches_production'])
+        else (branch_cents is not None and recomputed_cents and recomputed_cents > 0
+              and abs(branch_cents - recomputed_cents) < 1.0))
     return result
 
 
@@ -903,6 +925,7 @@ def summarise(rows, tokens, limit, sampled):
         '    on a trailing average that blends the seasons .. {}'.format(
             len(clipped_blend)),
     ]
+    lines.extend(thin_season_lines(ok))
 
     worst = sorted(over, key=lambda r: r['overstatement'], reverse=True)[:WORST_N]
     if worst:
@@ -912,6 +935,28 @@ def summarise(rows, tokens, limit, sampled):
             lines.append('    {:<10}  {:>8}  {:>7}  {:>7}  {}'.format(
                 r['ASIN'], _fmt(r.get('list_at')), _fmt(r['peak_new_floor']),
                 _fmt(r['overstatement']), r['classification']))
+    return lines
+
+
+def thin_season_lines(ok):
+    """Section (d): rows each candidate minimum would leave unpriced.
+
+    Counted over rows production prices TODAY (recomputed List_at present); a row
+    already unpriced on recompute has nothing left to remove and is reported
+    once, in the header, instead of inflating every candidate.
+    """
+    priced = [r for r in ok if r.get('recomputed_list_at')]
+    lines = ['(d) THIN PEAK SEASON  unpriced if distinct points < min  '
+             '[sparse]  of {} priced ({} already not)'.format(
+                 len(priced), len(ok) - len(priced))]
+    for minimum in PEAK_SEASON_MIN_CANDIDATES:
+        cells = []
+        for key in ('season_points_month', 'season_points_window'):
+            lost = [r for r in priced if (r.get(key) or 0) < minimum]
+            cells.append('{:>3} [{}]'.format(
+                len(lost), sum(1 for r in lost if r.get('is_sparse'))))
+        lines.append('  min {}:  peak month only {}  |  peak month +/-{} {}'.format(
+            minimum, cells[0], PEAK_WINDOW_HALF_WIDTH_MONTHS, cells[1]))
     return lines
 
 
@@ -949,6 +994,13 @@ DETAIL_COLUMNS = [
     ('ceiling_blends_seasons', 'ceiling blends seasons'),
     ('ceiling_matches_production', 'ceiling mirror == prod'),
     ('branch_list_at', 'pre-ceiling branch value'),
+    ('peak_new_cap', 'peak-window New cap'),
+    # (d) the thin peak season
+    ('season_centre_month', 'season centre'),
+    ('season_centre_mirrored', 'centre mirrored (sparse)'),
+    ('is_sparse', 'sparse rescue'),
+    ('season_points_month', 'points in peak month'),
+    ('season_points_window', 'points in peak +/-1'),
     # stored context
     ('avg_1yr', 'stored 1yr_Avg'), ('price_now', 'stored Price_Now'),
     ('stored_sale_count', 'stored sale count'), ('pricing_version', 'version'),
@@ -997,6 +1049,9 @@ def main(argv=None):
                              'Default {}. An unbounded run is refused.'.format(DEFAULT_LIMIT))
     parser.add_argument('--asin', action='append', default=[],
                         help='Audit these ASINs instead of sampling. Repeatable.')
+    parser.add_argument('--order', choices=sorted(SAMPLE_ORDERS), default='list_at',
+                        help='Sample order: list_at (DESC, worst case, the default) '
+                             'or random (representative).')
     parser.add_argument('--db', default=DEFAULT_DB_PATH)
     parser.add_argument('--out-dir', default=DEFAULT_OUT_DIR)
     parser.add_argument('--batch-size', type=int, default=DEFAULT_BATCH_SIZE)
@@ -1029,7 +1084,7 @@ def main(argv=None):
         print('Database not found: {}'.format(args.db))
         return 2
 
-    stored_rows = fetch_sample(args.db, args.limit, tuple(args.asin))
+    stored_rows = fetch_sample(args.db, args.limit, tuple(args.asin), args.order)
     if not stored_rows:
         print('No rows matched. Nothing to audit, and no tokens spent.')
         return 0
@@ -1047,7 +1102,8 @@ def main(argv=None):
         token_manager.sync_tokens()
 
     sampled = ('{} named ASIN(s)'.format(len(args.asin)) if args.asin
-               else 'visible rows by List_at DESC')
+               else 'visible rows by List_at DESC' if args.order == 'list_at'
+               else 'visible rows at random')
     _progress('Auditing {} row(s) ({}). Heavy fetch, ~7 tokens each.'.format(
         len(stored_rows), sampled))
 

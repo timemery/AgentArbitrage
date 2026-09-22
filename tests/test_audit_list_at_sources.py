@@ -80,6 +80,12 @@ def _month_anchor(days_back):
     return datetime(moment.year, moment.month, 10)
 
 
+def _months_before(anchor, count):
+    """The 10th of the month `count` whole months before `anchor`."""
+    index = anchor.year * 12 + (anchor.month - 1) - count
+    return datetime(index // 12, index % 12 + 1, 10)
+
+
 def build_history(share_the_point=True, asin='AUDITFIXT', new_price_points=None,
                   amazon=None):
     """Eleven confirmed sales, the peak month holding a duplicated price.
@@ -91,8 +97,12 @@ def build_history(share_the_point=True, asin='AUDITFIXT', new_price_points=None,
     """
     # Peak month is the most recent one; 60-day spacing guarantees four distinct
     # calendar months whenever this runs.
-    months = [_month_anchor(45), _month_anchor(105), _month_anchor(165),
-              _month_anchor(225)]
+    # Whole calendar months apart, not day offsets: since Pricing Logic Version
+    # 3 production pools the peak month with its neighbours, and 60-day offsets
+    # land in ADJACENT months on some dates (e.g. Jul 1 -> Aug 30), which would
+    # pull an off-peak month into the peak season. Two months is never adjacent.
+    peak = _month_anchor(45)
+    months = [peak] + [_months_before(peak, n) for n in (2, 4, 6)]
     peak_month, *other_months = months
 
     # (drop time, the price the point before it holds)
@@ -215,30 +225,33 @@ class ASharedPointIsReportedAndCanBeRemoved(_Silent):
         self.assertEqual(len(self.sources), 11)
         self.assertEqual(distinct, 10, 'exactly one point should back two sales')
 
-    def test_list_at_is_the_duplicated_price(self):
-        self.assertEqual(self.analysis['peak_price_mode_cents'], float(DUP_CENTS))
+    # Pricing Logic Version 3: production scores DISTINCT price points, so the
+    # shared point is counted once and can no longer win the mode. These three
+    # tests pinned the defect (List at == the duplicated price) until then; they
+    # now pin its absence, through the audit's own reconstruction.
 
-    def test_it_is_classified_as_mode_shared(self):
+    def test_the_duplicated_price_no_longer_sets_list_at(self):
+        # Distinct peak points [280, 300, 375.66]: no repeat, median $300.
+        self.assertEqual(self.analysis['peak_price_mode_cents'], float(PEAK_OTHER[0]))
+
+    def test_it_is_classified_as_median_and_the_share_is_still_reported(self):
         detail = audit.classify_list_at(self.sales, self.analysis, self.sources)
-        self.assertEqual(detail['classification'], audit.CLASS_MODE_SHARED)
-        self.assertEqual(detail['mode_count'], 2)
-        self.assertEqual(detail['contributing_count'] if 'contributing_count' in detail
-                         else len(detail['contributing']), 2)
-        self.assertEqual(detail['distinct_source_points'], 1)
+        self.assertEqual(detail['classification'], audit.CLASS_MEDIAN)
+        self.assertEqual(detail['mode_count'], 0)
+        self.assertEqual(len(detail['contributing']), 4)
+        self.assertEqual(detail['distinct_source_points'], 3)
         self.assertEqual(detail['shared_point_sales'], 1)
         self.assertTrue(detail['branch_matches_production'],
-                        'the reconstruction must agree with the production value '
-                        'before any duplicate finding is trusted')
+                        'the reconstruction must agree with the production value')
 
-    def test_removing_the_duplicate_lowers_list_at(self):
-        """The counterfactual, run through the production function again."""
+    def test_removing_the_duplicate_no_longer_changes_list_at(self):
+        """The counterfactual is now a no-op: production already counts it once."""
         deduped = audit.dedupe_by_source_point(self.sales, self.sources)
         self.assertEqual(len(deduped), 10)
 
         after, _ = audit.analyse_without_xai(self.product, deduped)
-        self.assertEqual(after['peak_price_mode_cents'], float(PEAK_OTHER[0]))
-        self.assertLess(after['peak_price_mode_cents'],
-                        self.analysis['peak_price_mode_cents'])
+        self.assertEqual(after['peak_price_mode_cents'],
+                         self.analysis['peak_price_mode_cents'])
 
     def test_the_kept_sale_is_the_earliest_of_the_pair(self):
         deduped = audit.dedupe_by_source_point(self.sales, self.sources)
@@ -300,7 +313,9 @@ class TheMedianBranchIsNeverAFinding(_Silent):
         analysis, _ = audit.analyse_without_xai(product, sales)
         detail = audit.classify_list_at(sales, analysis, sources={})
         self.assertEqual(detail['shared_point_sales'], 0)
-        self.assertEqual(detail['classification'], audit.CLASS_MODE_DISTINCT)
+        # The branch itself reads production's own `price_point`, so it still
+        # counts the shared point once and lands on the median.
+        self.assertEqual(detail['classification'], audit.CLASS_MEDIAN)
 
 
 # --------------------------------------------------------------------------
@@ -439,9 +454,11 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
 
     def _audit(self, amazon):
         month = peak_month_anchor()
+        # New at $400 in the peak window: the peak-window New cap ($403.99) stays
+        # out of the way so the Amazon ceiling is what these tests see.
         product = build_history(
             share_the_point=True, asin='CLIPPED001', amazon=amazon,
-            new_price_points=[(month + timedelta(days=3), 9000)])
+            new_price_points=[(month + timedelta(days=3), 40000)])
         stored = {'ASIN': 'CLIPPED001', 'list_at': 375.66}
         return audit.audit_row(stored, product, 200)
 
@@ -449,8 +466,9 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
         row = self._audit({})
         self.assertFalse(row['ceiling_engaged'])
         self.assertIsNone(row['ceiling_basis'])
-        self.assertEqual(row['recomputed_list_at'], 375.66)
-        self.assertTrue(row['duplicate_set_the_price'])
+        # Version 3 counts the shared point once: median of $280/$300/$375.66.
+        self.assertEqual(row['recomputed_list_at'], 300.00)
+        self.assertFalse(row['duplicate_set_the_price'])
 
     def test_a_trailing_average_clips_the_peak_price(self):
         row = self._audit({'avg365': 20000})       # ceiling = $180.00
@@ -468,17 +486,30 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
         self.assertTrue(row['reconstruction_matches_production'])
 
     def test_a_clipped_row_does_not_count_as_the_duplicate_setting_the_price(self):
-        """The shared point still made the mode; the ceiling then overwrote it."""
         row = self._audit({'avg365': 20000})
-        self.assertEqual(row['classification'], audit.CLASS_MODE_SHARED)
+        self.assertEqual(row['classification'], audit.CLASS_MEDIAN)
         self.assertFalse(row['duplicate_set_the_price'])
 
-    def test_todays_amazon_price_records_whether_it_is_off_peak(self):
+    def test_todays_amazon_price_outside_the_peak_month_is_not_a_ceiling(self):
+        """Pricing Logic Version 3: `current` is read only in the peak month.
+
+        The fixture's peak month is always a past month, so today is off-peak.
+        """
+        self.assertNotEqual(datetime.now().month, peak_month_anchor().month)
         row = self._audit({'current': 20000})
-        self.assertTrue(row['ceiling_engaged'])
-        self.assertTrue(row['ceiling_on_todays_price'])
-        expected = datetime.now().month != peak_month_anchor().month
-        self.assertEqual(row['ceiling_outside_peak_month'], expected)
+        self.assertFalse(row['ceiling_engaged'])
+        self.assertIsNone(row['ceiling_basis'])
+        self.assertEqual(row['recomputed_list_at'], 300.00)
+        self.assertTrue(row['reconstruction_matches_production'])
+
+    def test_a_new_capped_row_is_reconstructed(self):
+        month = peak_month_anchor()
+        product = build_history(share_the_point=True, asin='NEWCAP0001',
+                                new_price_points=[(month + timedelta(days=3), 9000)])
+        row = audit.audit_row({'ASIN': 'NEWCAP0001', 'list_at': 375.66}, product, 200)
+        self.assertEqual(row['peak_new_cap'], 'applied')
+        self.assertEqual(row['recomputed_list_at'], 93.99)
+        self.assertTrue(row['reconstruction_matches_production'])
 
 
 class TheOverstatementUsesThePeakWindowNotToday(_Silent):
@@ -702,6 +733,96 @@ class ItOnlyOpensTheDatabaseReadOnly(_Silent):
         self.assertIn(VISIBLE_PREDICATE.strip(), audit.build_sample_sql())
 
 
+class TheSampleCanBeRepresentative(_Silent):
+
+    def test_the_default_order_is_still_list_at_desc(self):
+        self.assertIn('"List_at" DESC', audit.build_sample_sql())
+
+    def test_random_order_draws_at_random_from_the_same_visible_set(self):
+        from repair_pricing import VISIBLE_PREDICATE
+        sql = audit.build_sample_sql('random')
+        self.assertIn('RANDOM()', sql)
+        self.assertIn(VISIBLE_PREDICATE.strip(), sql)
+
+
+# --------------------------------------------------------------------------
+# (d) The thin peak season - what each candidate minimum would unprice
+# --------------------------------------------------------------------------
+
+def _season_sale(year, month, cents, point):
+    """A hand-built sale; `point` names its price point, None = unrecorded."""
+    event = {'event_timestamp': datetime(year, month, 10),
+             'inferred_sale_price_cents': cents}
+    if point is not None:
+        event['price_point'] = ('Used', datetime(2020, 1, 1) + timedelta(days=point))
+    return event
+
+
+class TheThinPeakSeasonIsMeasured(_Silent):
+    """Counted in DISTINCT points, pooled across years, under both definitions."""
+
+    NORMAL = {'price_source': 'Inferred Sales', 'peak_season': 'Sep'}
+    SPARSE = {'price_source': audit.SPARSE_PRICE_SOURCE, 'peak_season': '-'}
+
+    def test_the_candidates_and_width_are_named_constants(self):
+        self.assertEqual(audit.PEAK_SEASON_MIN_CANDIDATES, (2, 3, 4))
+        self.assertEqual(audit.PEAK_WINDOW_HALF_WIDTH_MONTHS, 1)
+
+    def test_the_peak_month_is_pooled_across_years(self):
+        sales = [_season_sale(2024, 9, 5000, 1), _season_sale(2025, 9, 5200, 2),
+                 _season_sale(2025, 3, 3000, 3)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_month'], 2)
+
+    def test_the_window_adds_the_neighbouring_months_only(self):
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 8, 4800, 2),
+                 _season_sale(2024, 10, 4900, 3), _season_sale(2025, 7, 4000, 4)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_month'], 1)
+        self.assertEqual(counts['season_points_window'], 3, 'July is two months out')
+
+    def test_a_december_peak_window_wraps_into_january(self):
+        self.assertTrue(audit._in_window(1, 12, 1))
+        self.assertTrue(audit._in_window(11, 12, 1))
+        self.assertFalse(audit._in_window(2, 12, 1))
+
+    def test_a_shared_point_counts_once(self):
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 9, 5000, 1),
+                 _season_sale(2024, 9, 5000, 2)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_month'], 2)
+
+    def test_a_sparse_row_is_centred_on_the_mirrored_peak_month(self):
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 10, 4000, 2)]
+        counts = audit.peak_season_counts(sales, self.SPARSE)
+        self.assertTrue(counts['is_sparse'])
+        self.assertTrue(counts['season_centre_mirrored'])
+        self.assertEqual(counts['season_centre_month'], 9)
+        self.assertEqual(counts['season_points_month'], 1)
+        self.assertEqual(counts['season_points_window'], 2)
+
+    def test_the_summary_counts_unpriced_rows_per_candidate(self):
+        rows = [
+            _row('THIN000001', season_points_month=1, season_points_window=3),
+            _row('THIN000002', season_points_month=2, season_points_window=2,
+                 is_sparse=True),
+            _row('FULL000001', season_points_month=5, season_points_window=7),
+            _row('GONE000001', recomputed_list_at=None),
+        ]
+        lines = audit.thin_season_lines(rows)
+        self.assertIn('of 3 priced (1 already not)', lines[0])
+        # min 2: only THIN000001 by month; nobody by window.
+        self.assertEqual(lines[1], '  min 2:  peak month only   1 [0]  |  peak month +/-1   0 [0]')
+        # min 3: both thin rows by month (one sparse); only the sparse one by window.
+        self.assertEqual(lines[2], '  min 3:  peak month only   2 [1]  |  peak month +/-1   1 [1]')
+
+    def test_section_d_appears_in_the_summary(self):
+        lines = audit.summarise([_row('ASIN000001', season_points_month=1,
+                                      season_points_window=1)],
+                                tokens=7, limit=1, sampled='t')
+        self.assertTrue(any(line.startswith('(d) THIN PEAK SEASON') for line in lines))
+
+
 class TheRunIsBounded(_Silent):
 
     def test_an_unbounded_run_is_refused(self):
@@ -839,8 +960,11 @@ class TheWholeRunHangsTogether(_Silent):
         distinct['offers'] = [_offer(1, 44900, -1, is_fba=True, seller='B')]
         # Amazon is not selling today, but a 365-day average survives from when it
         # was - so the ceiling engages on a figure that spans both seasons.
+        # Its own, higher New price, so the $180 Amazon ceiling - not the
+        # peak-window New cap - is what clips it.
         clipped = build_history(share_the_point=True, asin='CLIPPED0001',
-                                new_price_points=peak_new, amazon={'avg365': 20000})
+                                new_price_points=[(month + timedelta(days=3), 40000)],
+                                amazon={'avg365': 20000})
         clipped['offers'] = [_offer(1, 7499, 399, seller='C')]
         self.products = {p['asin']: p for p in (shared, distinct, clipped)}
 
@@ -906,11 +1030,13 @@ class TheWholeRunHangsTogether(_Silent):
             self.assertIn(asin, written)
 
     def test_the_two_shapes_are_told_apart_end_to_end(self):
-        """Same stored List_at, same recomputed value, different cause."""
+        """Same stored List_at; since version 3 only the distinct one keeps it."""
         self._run(['--limit', '10'])
         written = self._detail()
-        self.assertIn(audit.CLASS_MODE_SHARED, written)
+        self.assertNotIn('"classification": "{}"'.format(audit.CLASS_MODE_SHARED), written)
         self.assertIn(audit.CLASS_MODE_DISTINCT, written)
+        # Both now capped by the $90.00 peak-window New price + $3.99.
+        self.assertIn('"recomputed_list_at": 93.99', written)
 
     def test_a_row_keepa_does_not_return_is_recorded_not_dropped(self):
         self._run(['--limit', '10'])
@@ -932,7 +1058,7 @@ class TheWholeRunHangsTogether(_Silent):
 
     def test_a_clipped_row_does_not_count_as_the_duplicate_setting_the_price(self):
         self._run(['--limit', '10'])
-        self.assertIn('ceiling did not overwrite it 1', self._detail())
+        self.assertIn('ceiling did not overwrite it 0', self._detail())
 
     def test_tokens_are_accumulated_from_keepas_own_figure(self):
         self._run(['--limit', '10'])

@@ -98,8 +98,9 @@ SAFETY
     would block every ingestion cycle.
   * Stops if the Keepa refill rate drops below 20/min.
   * Stops while xAI calls remain (--xai-headroom, default 50). Past the daily
-    cap the AI Reasonableness Check returns True instead of failing, so an
-    unchecked price would be stamped as current and never revisited.
+    cap the AI Reasonableness Check fails CLOSED (Pricing Logic Version 3,
+    Trello #144): every row would come back unpriced, hidden and still stale,
+    for ~7 Keepa tokens each, to be paid again when a later run retries it.
   * WAITS OUT a Keepa token recharge rather than stopping. A
     `TokenRechargeError` is a transient dip in a bucket shared with ingestion,
     not a reason to end a multi-day sweep - see WAITING OUT A RECHARGE below.
@@ -259,15 +260,20 @@ RECHARGE_WAIT_PATTERN = re.compile(r'(\d+(?:\.\d+)?)\s*s(?:ec(?:onds?)?)?\b')
 
 # Spare xAI calls that must remain before the next batch is allowed to start.
 #
-# WHY THIS EXISTS - THE BLOCKER FOUND ON 2026-09-17. When the daily cap is hit,
-# `_query_xai_for_reasonableness` does not fail and does not skip the row: it
-# returns True (`stable_calculations.py:76-78`, "Defaulting to reasonable"). The
-# price is then accepted unchecked AND stamped `Pricing_Logic_Version = 2`, so it
-# drops out of the predicate and THIS SWEEP NEVER REVISITS IT.
+# WHY THIS EXISTS - THE BLOCKER FOUND ON 2026-09-17. When the daily cap was hit,
+# `_query_xai_for_reasonableness` returned True ("Defaulting to reasonable"), so a
+# price was accepted unchecked AND stamped current, dropped out of the predicate,
+# and was never revisited - laundering exactly the inflated prices this script
+# exists to remove.
 #
-# That is the worst possible failure for this script. It would silently launder
-# exactly the inflated prices it exists to remove, and leave no trace in the data
-# that it had done so.
+# SINCE PRICING LOGIC VERSION 3 (Trello #144) the check fails CLOSED instead: it
+# returns None, the price is withheld (List_at NULL, row hidden) and the row is
+# written with `Pricing_Logic_Version` NULL, so it stays stale and a later run
+# retries it. That removes the laundering, but not the reason to stop: past the
+# cap EVERY row in a batch comes back unpriced and hidden - including rows that
+# were visible at their old price - for ~7 Keepa tokens each, paid again on the
+# retry. A retried row also sorts LAST (tier 2: not priced), behind every row
+# still carrying a price.
 #
 # It is not hypothetical. On the 10-row dry run the sweep made ~15 xAI calls for 9
 # rows - about 1.7 per row - and most were FORCED by the 3x-of-current-used rule,
@@ -875,9 +881,9 @@ def main(argv=None):
     parser.add_argument('--xai-headroom', type=int, default=DEFAULT_XAI_HEADROOM,
                         help='Stop before a batch when fewer than this many xAI '
                              'calls remain against the daily cap. Past the cap '
-                             'the AI Reasonableness Check silently returns True, '
-                             'so continuing would stamp unchecked prices as '
-                             'current. Default %d.' % DEFAULT_XAI_HEADROOM)
+                             'the AI Reasonableness Check fails closed, so every '
+                             'further row would be written unpriced and hidden. '
+                             'Default %d.' % DEFAULT_XAI_HEADROOM)
     parser.add_argument('--max-recharge-retries', type=int,
                         default=DEFAULT_MAX_RECHARGE_RETRIES,
                         help='Consecutive Keepa recharge waits before the sweep '
@@ -903,6 +909,19 @@ def main(argv=None):
     logger.info("repair_pricing.py  mode=%s  target version=%d",
                 mode.upper(), PRICING_LOGIC_VERSION)
     logger.info("=" * 70)
+
+    # No xAI key: refused outright, before anything is read or fetched. The AI
+    # Reasonableness Check fails CLOSED without a key (Pricing Logic Version 3,
+    # AGENTS.md 7.15), so every row that reaches it would be written UNPRICED -
+    # List_at NULL, hidden, still stale - including rows visible today at their
+    # old price, for ~7 Keepa tokens each. Owner decision 2026-09-22.
+    if not os.getenv('XAI_TOKEN'):
+        logger.error(
+            "REFUSED: XAI_TOKEN is not set. Without it the AI Reasonableness "
+            "Check fails closed, so this sweep would write every checked row "
+            "UNPRICED and hidden, spending ~7 Keepa tokens on each.\n"
+            "  Run from the application root so .env is found, or set XAI_TOKEN.")
+        return 2
 
     # A dry run with no --limit is refused outright, BEFORE preflight and before
     # anything is read. It would heavy-fetch every stale row - roughly 32,000 Keepa
@@ -996,12 +1015,13 @@ def main(argv=None):
                 "spare, headroom %d).", used, limit, spare, args.xai_headroom)
             logger.warning(
                 "Continuing would be WORSE than stopping. Past the cap, the AI "
-                "Reasonableness Check does not fail or skip - it returns True "
-                "(stable_calculations.py:76), so an inflated price would be")
+                "Reasonableness Check fails closed (_query_xai_for_reasonableness "
+                "returns None), so every row repaired from here would be")
             logger.warning(
-                "accepted unchecked AND stamped Pricing_Logic_Version=%d, which "
-                "drops it out of the predicate. This sweep would never revisit "
-                "it.", PRICING_LOGIC_VERSION)
+                "written UNPRICED - List_at NULL, hidden from the dashboard - and "
+                "left stale (Pricing_Logic_Version NULL, not %d), its Keepa tokens "
+                "spent for nothing until a later run retries it.",
+                PRICING_LOGIC_VERSION)
             logger.warning(
                 "Nothing has been written for this batch. Re-run the same "
                 "command after the daily reset (local midnight on the box); "
