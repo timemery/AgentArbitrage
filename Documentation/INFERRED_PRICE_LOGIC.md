@@ -258,6 +258,36 @@ This determines the recommended listing price.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.
     -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
 
+### A.1 Two things step A.2 does not decide on its own
+
+Both are open measurements as of 2026-09-22, not established defects. The script
+that measures them, its runbook and its cost are in
+`System_State.md` → "Auditing where a stored `List at` came from".
+
+1.  **The mode breaks ties by frequency, and §2b can legitimately hand two sales
+    the same price.** The association takes the last change-log point strictly
+    before an offer drop *at any distance*, so two drops with no price change
+    between them receive the **same point**. In a peak month where every other
+    price is distinct, such a pair is the only repeated value and therefore the
+    only mode candidate. Whether that is happening, how often, and what `List at`
+    becomes when the duplicate contributes once, is what the audit reports.
+2.  **No New-offer comparator is contemporaneous with the peak.** The Amazon
+    ceiling in step A.3 compares against `stats.current[0]`, `avg180[0]` and
+    `avg365[0]` — all *Amazon's own* price, so it is silent whenever Amazon is
+    not selling, and a third-party New offer is not consulted on any path.
+    -   Separately, none of the three is a peak-season figure. `current` is a
+        single reading taken today, which is a trough-time price whenever today
+        is off-season; the two averages are trailing windows that blend peak and
+        trough. So when the ceiling *does* engage, it caps a peak price with a
+        comparator measured on a different part of the season. The audit reports
+        which of the three was the minimum and how many sampled rows it clipped.
+    -   **Today's New price is the buy side, not a bound on the peak.** The
+        product buys at the trough and sells at the peak. A cap built on the New
+        offer showing today would compare two different points in the season; a
+        contemporaneous one reads the New price during the peak-season windows
+        that produced the sales in step A.2. That is what the audit measures, and
+        it reports today's figure beside it for comparison only.
+
 ### B. 1-Year Average (`1yr. Avg.`)
 Used for the "Percent Down" and "Trend" calculations.
 
