@@ -76,6 +76,8 @@ The sweep now sleeps the seconds the exception asks for plus a 15-second margin,
 
 **When it finishes, refresh Prime Picks** — `prime_picks` caches a selection made against the old prices and is not beat-scheduled, so it will not self-heal.
 
+**It can no longer cache an unrepaired row, though (Sept 2026).** Prime Picks now reads `CURRENT_PRICING_PREDICATE` — the negation of this same predicate — in three places: Pass 1 will not select a stale-priced row, `prune_stale_priced_picks` evicts one that is already cached, and the Agent's Choice read path will not render one. So a mid-sweep refresh is safe: Agent's Choice shows fewer picks, never unrepaired ones, and refills as the sweep progresses. This is Agent's Choice only; the main grid is unchanged. See `AGENTS.md` §7.14.
+
 **Progress:**
 
 ```sql

@@ -59,6 +59,14 @@ mechanism for scheduling the next repair sweep: no new script, no new predicate.
 Do NOT bump it for a change that leaves prices identical (a refactor, a log line,
 a docs edit). A spurious bump schedules a full re-fetch of every row in the
 database.
+
+A bump also has an IMMEDIATE, VISIBLE effect as of September 2026: Prime Picks
+reads `CURRENT_PRICING_PREDICATE` below, so the moment a bump deploys, every row
+in the table is stale and Agent's Choice empties out - on the next run, and for
+read-time display straight away. It refills as the sweep repairs rows. That is
+the intended behaviour (an empty Agent's Choice is better than a recommended
+price the system knows is superseded), but it is not a subtle change, so expect
+it rather than diagnosing it. The main dashboard grid is NOT affected.
 """
 
 # 1 = everything before 2026-09-12 16:50 UTC. Never written by any code; it is
@@ -79,3 +87,19 @@ STALE_PRICING_PREDICATE = (
     '("{col}" IS NULL OR "{col}" < {version})'.format(
         col=PRICING_VERSION_COLUMN, version=PRICING_LOGIC_VERSION)
 )
+
+# The selector for "this row's prices ARE current", derived from the rule above
+# rather than restated, so the two can never drift apart.
+#
+# The scheduling rule and the display rule are the same rule read in opposite
+# directions: a row the repair sweep still owes work to is a row whose prices
+# nothing has recomputed under the current logic, so it must not be presented as
+# a recommendation. Used by Prime Picks - by `generate_prime_picks` Pass 1, which
+# decides what may ENTER the cache, and by the Agent's Choice branch of
+# `/api/deals`, which decides what may be SHOWN from it.
+#
+# NOTE this is a display rule for PRIME PICKS ONLY, not for the dashboard at
+# large. The main grid still shows stale-priced rows; suppressing them there
+# would empty it while a sweep is in flight, and is an owner decision, not this
+# predicate's business.
+CURRENT_PRICING_PREDICATE = 'NOT {}'.format(STALE_PRICING_PREDICATE)
