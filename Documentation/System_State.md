@@ -37,7 +37,7 @@ Affected rows are **not identifiable by query**: `price_source` was computed but
 
 **A future pricing fix re-uses the same script by bumping the constant.** No new script, no new predicate.
 
-**Pricing Logic Version 3 — IN PROGRESS on PR #355, not deployed.** Distinct-price-point mode/median, the peak-window New cap, the Amazon ceiling reading today's price only in the peak month, and the AI check failing closed. The thin-peak-season minimum is still to be chosen from `audit_list_at_sources.py` section (d). Deploying it re-stales every row: Agent's Choice empties and refills as the ~8-day sweep runs (`AGENTS.md` §7.14, §7.15).
+**Pricing Logic Version 3 — built on PR #355, not deployed.** Distinct-price-point mode/median; the peak season as peak month ± 1 pooled across years, with fewer than 2 distinct price points left unpriced (sparse rows included); the peak-window New cap; the Amazon ceiling reading today's price only in the peak month; the AI check failing closed; `repair_pricing.py` refusing to run without `XAI_TOKEN`. Measured before building, 100 random visible rows: the thin-season rule hides **28** (6 sparse). Deploying it re-stales every row: Agent's Choice empties and refills as the ~8-day sweep runs (`AGENTS.md` §7.14, §7.15).
 
 **Running it** (it runs for days; run it detached, as `www-data`):
 

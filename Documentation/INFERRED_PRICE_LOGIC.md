@@ -240,8 +240,10 @@ To prevent anomalous prices (e.g., penny books or repricer errors) from skewing 
 This determines the recommended listing price.
 
 1.  **Seasonality Identification:** Groups sane sales by month. Identifies the **Peak Month** (highest median price).
+    -   **The Peak Season (Pricing Logic Version 3)** is the peak month **± 1 month** (`PEAK_SEASON_HALF_WIDTH_MONTHS`), **pooled across every year** of the history; a December peak's season includes January. Steps 2 and 3 work on the season, not the single month.
+    -   **A season too thin to price gets no price.** Fewer than **2 distinct price points** in the season (`PEAK_SEASON_MIN_PRICE_POINTS`) ⇒ `List at` withheld, row persisted unpriced and hidden, **never deleted**; the AI check is not called. This applies to the Sparse Sales Rescue too. Chosen from the audit (100 random visible rows): hides 28; the single month alone would have hidden 65. Why: the single month `idxmax` picked held ONE sale on the median row, so `List at` was the highest single sale in three years.
 2.  **Price Determination:**
-    -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
+    -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Season.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
     -   **Both count DISTINCT PRICE POINTS, not sale events (Pricing Logic Version 3).**
         Every sale carries `price_point` = (series, timestamp of the change-log point
@@ -251,7 +253,7 @@ This determines the recommended listing price.
         recorded identity counts as its own point. Pinned by
         `tests/test_distinct_price_points.py`. (Peak-month *selection* and the sale
         count are unchanged: they still count sale events.)
-    -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
+    -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales — **provided they are 2 distinct price points in one peak season** (step 1). One sale, two sales in different seasons, or two sales priced by one point: unpriced.
     -   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales.)*
 3.  **Peak-Window New Cap (Pricing Logic Version 3):**
     -   `List at` may not exceed the **median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99** (`PEAK_NEW_CAP_ALLOWANCE_CENTS`).

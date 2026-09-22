@@ -77,7 +77,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**, counted over **distinct price points**, not sale events (Pricing Logic Version 3).
-        *   **Rescue (Sparse Sales):** If Inferred Sales < 3 (but > 0), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
+        *   **Peak Season (Pricing Logic Version 3):** the peak month ± 1, pooled across years. Fewer than 2 distinct price points in it ⇒ no price (row persisted unpriced, hidden, never deleted).
+        *   **Rescue (Sparse Sales):** If Inferred Sales < 3 (but > 0), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales — only when they are 2 distinct price points in one peak season; otherwise unpriced.
         *   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales. Deals with 0 inferred sales are rejected.)*
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).

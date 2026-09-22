@@ -76,9 +76,10 @@ it rather than diagnosing it. The main dashboard grid is NOT affected.
 #     (PR #342, live 2026-09-16 20:53 UTC).
 # 3 = Phase 2 of the 2026-09-22 List at audit, all under one bump so the
 #     re-sweep is paid once (AGENTS.md 7.15): the peak-season mode/median scores
-#     DISTINCT price points; the peak-window New cap; the Amazon ceiling reads
-#     today's price only in the peak month; the AI check fails closed. The
-#     thin-peak-season minimum is still to land under this same number.
+#     DISTINCT price points over the peak SEASON (peak month +/-1, pooled
+#     across years), and a season with < 2 distinct points is not priced; the
+#     peak-window New cap; the Amazon ceiling reads today's price only in the
+#     peak month; the AI check fails closed.
 PRICING_LOGIC_VERSION = 3
 
 # The headers.json display name, and the sanitized DB column it becomes. Named
