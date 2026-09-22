@@ -8,7 +8,7 @@
   - `List at` is capped at the median of the lowest New price in each peak-season window, plus $3.99.
   - An AI check that cannot run now hides the price. It used to pass it.
 - **Repair sweep:** started at 21:59 UTC against **5,159 stale rows**, about 8 days at 1000 xAI calls/day. Agent's Choice emptied at deploy and refills as the sweep reprices rows.
-- **Closed:** Trello **#144**. **Open:** Trello **#152**, the follow-up gap. The 7-token cost of re-trying the skip backlog each run (§7.1) is still open.
+- **Closed:** Trello **#144**. **Open:** Trello **#152** (thin-season rows are never re-evaluated as they gain sales). The 7-token cost of re-trying the skip backlog each run (§7.1) is still open.
 
 **Date:** September 22, 2026
 **Files:** see §9
@@ -99,10 +99,9 @@ Iterations after the first "done":
 
 ## 8. Open Items
 
-1. **Trello #152**, the follow-up gap filed at deploy.
+1. **Trello #152: thin-season rows hidden under v3 are never re-evaluated as they gain sales.** They are stamped current, so `repair_pricing.py` never retries them, and light refreshes never recalculate `List at`. They stay hidden until the next version bump or a new full pricing fetch.
 2. **The skip backlog re-sorts to the top of every run** (§7.1 of the prior logs): 7 of the 10 preview rows were skips.
-3. **A hidden thin row stays hidden** until a later version bump or a new full pricing fetch; the light path never re-prices.
-4. Carried forward: #143 (racy xAI counter), #145 (Keepa key rotation), #146 (`backup_db.sh` is a plain `cp`), #151 (main-grid flag and stale-rescue age).
+3. Carried forward: #143 (racy xAI counter), #145 (Keepa key rotation), #146 (`backup_db.sh` is a plain `cp`), #151 (main-grid flag and stale-rescue age).
 
 ## 9. Files Modified (PR #355)
 
