@@ -37,6 +37,8 @@ Affected rows are **not identifiable by query**: `price_source` was computed but
 
 **A future pricing fix re-uses the same script by bumping the constant.** No new script, no new predicate.
 
+**Pricing Logic Version 3 — IN PROGRESS on PR #355, not deployed.** Distinct-price-point mode/median, the peak-window New cap, the Amazon ceiling reading today's price only in the peak month, and the AI check failing closed. The thin-peak-season minimum is still to be chosen from `audit_list_at_sources.py` section (d). Deploying it re-stales every row: Agent's Choice empties and refills as the ~8-day sweep runs (`AGENTS.md` §7.14, §7.15).
+
 **Running it** (it runs for days; run it detached, as `www-data`):
 
 ```bash
@@ -56,7 +58,7 @@ pkill -f repair_pricing.py                 # clean stop between batches
 
 **The xAI daily cap, not Keepa tokens, is what makes the sweep take days.** Keepa costs ~7 tokens a row (~42 hours for the whole table), but the sweep makes **~1.7 AI Reasonableness calls per row** — measured 2026-09-17 — most of them *forced* by the 3x-of-current-used rule, which fires on precisely the inflated rows being repaired. Against `max_xai_calls_per_day` (1000, shared with ingestion) that is roughly **500–600 rows a day**, so a full sweep is about **8–10 calendar days** of one run per day.
 
-The sweep **stops itself while the check still works** (`--xai-headroom`, default 50). This is not politeness: past the cap `_query_xai_for_reasonableness` does not fail and does not skip the row — it returns `True` (`stable_calculations.py:76`), so an inflated price would be accepted unchecked *and* stamped `Pricing_Logic_Version = 2`, dropping it out of the predicate so the sweep never revisits it. Continuing past the cap is strictly worse than stopping. The daily count resets on the first call after the **local date changes on the box**, so re-run after local midnight.
+The sweep **stops itself while the check still works** (`--xai-headroom`, default 50). Until Pricing Logic Version 3, past the cap `_query_xai_for_reasonableness` returned `True`, so an inflated price was accepted unchecked *and* stamped current, and the sweep never revisited it. It now **fails closed** (Trello #144): the price is withheld and the row is written with `List_at` and `Pricing_Logic_Version` NULL, still stale. That ends the laundering, but stopping is still right — past the cap every row in a batch comes back unpriced and hidden, including rows that were visible at their old price, for ~7 Keepa tokens each, paid again when a later run retries it. Such a row sorts **last** in the next run (not priced). The daily count resets on the first call after the **local date changes on the box**, so re-run after local midnight.
 
 It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short).
 
@@ -64,7 +66,7 @@ It takes its own verified backup through SQLite's backup API before the first wr
 
 | condition | why |
 | :--- | :--- |
-| spare xAI calls < `--xai-headroom` (default 50) | past the cap the reasonableness check returns `True`, so an unchecked price would be stamped as current and never revisited |
+| spare xAI calls < `--xai-headroom` (default 50) | past the cap the reasonableness check fails closed, so every further row would be written unpriced and hidden, its tokens spent for nothing |
 | Keepa refill rate < 20/min | the plan has been downgraded or throttled; continuing would starve normal ingestion |
 | `--limit` reached, no stale rows left, or SIGTERM/SIGINT | ordinary completion |
 | `--max-recharge-retries` consecutive recharge waits (default 10) | the bucket is not recovering — a stall, not a dip |

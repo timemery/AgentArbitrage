@@ -253,11 +253,18 @@ This determines the recommended listing price.
         count are unchanged: they still count sale events.)
     -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
     -   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales.)*
-3.  **Amazon Ceiling Logic:**
+3.  **Peak-Window New Cap (Pricing Logic Version 3):**
+    -   `List at` may not exceed the **median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99** (`PEAK_NEW_CAP_ALLOWANCE_CENTS`).
+    -   A window is a calendar month of one year holding a sale that fed the price; the same peak month in three years is three windows. `csv[1]` is a change-log, so a window's New price is the last point before it opens, carried forward, plus every point inside it.
+    -   **Never today's New price.** The product buys at the trough and sells at the peak, so today's New offer is the *buy* side.
+    -   A row with **no New price in any window is left uncapped** and its analysis records `peak_new_cap = 'unavailable: no New price in the peak window'`. There is no fallback. (Recorded on the analysis and in the log; not persisted to a column.)
+    -   Function: `peak_window_new_floor` in `stable_calculations.py`, which `audit_list_at_sources.py` also calls.
+4.  **Amazon Ceiling Logic:**
     -   To ensure competitiveness, the "List at" price is capped at **90%** of the lowest Amazon "New" price.
     -   Comparator: `Min(Amazon Current, Amazon 180-day Avg, Amazon 365-day Avg)`.
+    -   **Amazon Current counts only when today's month is the peak month (Pricing Logic Version 3).** It is a single reading taken today, a trough-time price off-season. The Sparse Sales Rescue has no peak month, so it never uses Current. Both trailing averages always count: they are the only Amazon rail for books Amazon stocks intermittently, and they clip downward. This change shipped only together with step 3, because removing a clamp on its own can only raise prices.
     -   If `List at > Ceiling`, it is reduced to the Ceiling value.
-4.  **AI Reasonableness Check:**
+5.  **AI Reasonableness Check:**
     -   **Primary Check:** For standard inferred prices, the calculated price is sent to **xAI (Grok)** along with the book's title, category, **Binding**, **Page Count**, **Image URL**, and **Rank**.
     -   **Prompt Context:** The prompt explicitly instructs the AI that for seasonal items (especially Textbooks), a Peak Season price can validly be **200-400% higher** than the 3-Year Average to prevent false positive rejections.
     -   **Fallback Exception (Feb 2026):** If the price source is **"Inferred Sales (Sparse)"**, the AI Reasonableness Check is conditionally **SKIPPED** to prevent false rejections.
@@ -265,10 +272,11 @@ This determines the recommended listing price.
         -   **Hard Ceiling Safety (Mar 2026):** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.
     -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
+    -   **Fails CLOSED (Pricing Logic Version 3, Trello #144).** If the check cannot run — the xAI daily cap is reached, or the call errors — it returns *unverifiable* (`None`), not *reasonable*. The price is withheld (`List at` NULL, row hidden), the analysis sets `price_unverified`, and `_process_single_deal` writes `Pricing_Logic_Version` **NULL** so the row stays stale and the repair sweep retries it. Before this, both paths returned `True`: the price passed unchecked and was stamped current. (A missing API key still skips the check, as before.)
 
 ### A.1 Two things step A.2 does not decide on its own
 
-Both are open measurements as of 2026-09-22, not established defects. The script
+Both were open measurements as of 2026-09-22. **Both are now addressed in Pricing Logic Version 3** (steps 2, 3 and 4 above); the text is kept for the record. The script
 that measures them, its runbook and its cost are in
 `System_State.md` → "Auditing where a stored `List at` came from".
 

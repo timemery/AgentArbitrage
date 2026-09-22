@@ -76,14 +76,15 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 5.  **Price Benchmarks ("List at" & "Trough")**:
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
-        *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**.
+        *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**, counted over **distinct price points**, not sale events (Pricing Logic Version 3).
         *   **Rescue (Sparse Sales):** If Inferred Sales < 3 (but > 0), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
         *   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales. Deals with 0 inferred sales are rejected.)*
     *   **Expected Trough Price:**
         *   **Calculation:** Determines the **Median** sale price during the book's calculated **Trough Season** (lowest median price month).
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
-        1.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices.
-        2.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context.
+        1.  **Peak-Window New Cap (Pricing Logic Version 3):** Capped at the median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99. Never today's New price. No New price in the window: uncapped, recorded as unavailable.
+        2.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices. **Current counts only when today's month is the peak month** (Pricing Logic Version 3).
+        3.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context. **Fails closed** (Pricing Logic Version 3): daily cap or xAI error withholds the price and leaves the row stale.
             *   **Exception:** If the price source is **Inferred Sales (Sparse)** (1-2 true sales, thin context), this check is conditionally **SKIPPED**. *(The "Keepa Stats Fallback" half of this exception was removed on 2026-09-11 with the fallback itself — no code path produces that source any more.)*
             *   **Suspiciously High:** If the price is **> 300% (3x)** of the current Used price, the check is **FORCED**, overriding the sparse skip, to prevent accepting manipulated prices.
     *   **Exclusion:** If validation fails, the price is invalidated (potentially leading to persistence as incomplete data).
@@ -176,7 +177,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     -   **`0` vs `NULL`**: `0` means computed-and-none-found; `NULL` means never computed (a legacy row, or one only ever touched by the light path). **`NULL` must never be read as zero, and neither value is used to hide a deal.**
 
 -   **`Pricing_Logic_Version`**
-    -   **Logic**: The value of `PRICING_LOGIC_VERSION` (`keepa_deals/pricing_version.py`) at the moment this row's prices were computed. Written **only** by `_process_single_deal`, beside `Inferred Sale Count`. Heavy path only.
+    -   **Logic**: The value of `PRICING_LOGIC_VERSION` (`keepa_deals/pricing_version.py`) at the moment this row's prices were computed. Written **only** by `_process_single_deal`, beside `Inferred Sale Count`. Heavy path only. **Written NULL** when the AI check could not verify the price (daily cap, xAI error — Pricing Logic Version 3), so the row stays stale and the repair sweep retries it.
     -   **Why it exists**: nothing else dates a row's pricing. `last_seen_utc` and `source` are rewritten by the heavy path, the light path and the Stale Rescue alike, so `source` says who touched the row LAST, not who priced it. `Inferred_Sale_Count` looks like it should work and does not — rows priced between 2026-09-11 and 2026-09-12 16:50 UTC carry a count *and* pre-fix prices.
     -   **NULL rule**: `NULL` or a value below `PRICING_LOGIC_VERSION` means **stale pricing, due a heavy re-fetch**. This is used for SCHEDULING work, and is deliberately the reverse of the `Inferred_Sale_Count` NULL rule above, which governs whether a deal may be SHOWN. Never merge the two.
     -   **Never written by**: the light path, the Stale Rescue, `recalculator.py`, the janitor. **Never backfilled.**
@@ -214,8 +215,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`List at`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: **Mode** of peak season prices, falling back to the peak-season **Median** when no distinct mode exists. With 1-2 sales, the Sparse Rescue median. **Inferred sales only.** *(This previously read "or `Used - 90d avg` fallback if high velocity" — that fallback was deleted in March 2026 and has not existed since.)*
-    -   **Constraint**: Capped at 90% of `Min(Amazon Current, Amazon 180d avg, Amazon 365d avg)`.
-    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, and skipped when the Amazon ceiling clamped the price.
+    -   **Constraint**: Capped at the peak-window New price + $3.99, then at 90% of `Min(Amazon Current, Amazon 180d avg, Amazon 365d avg)`, with Amazon Current counted only in the peak month (Pricing Logic Version 3). Peak-season mode/median counts distinct price points.
+    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, and skipped when the Amazon ceiling clamped the price. Unverifiable (daily cap, xAI error) withholds the price — fails closed.
 
 -   **`Expected Trough Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
