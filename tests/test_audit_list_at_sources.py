@@ -80,6 +80,12 @@ def _month_anchor(days_back):
     return datetime(moment.year, moment.month, 10)
 
 
+def _months_before(anchor, count):
+    """The 10th of the month `count` whole months before `anchor`."""
+    index = anchor.year * 12 + (anchor.month - 1) - count
+    return datetime(index // 12, index % 12 + 1, 10)
+
+
 def build_history(share_the_point=True, asin='AUDITFIXT', new_price_points=None,
                   amazon=None):
     """Eleven confirmed sales, the peak month holding a duplicated price.
@@ -91,8 +97,12 @@ def build_history(share_the_point=True, asin='AUDITFIXT', new_price_points=None,
     """
     # Peak month is the most recent one; 60-day spacing guarantees four distinct
     # calendar months whenever this runs.
-    months = [_month_anchor(45), _month_anchor(105), _month_anchor(165),
-              _month_anchor(225)]
+    # Whole calendar months apart, not day offsets: since Pricing Logic Version
+    # 3 production pools the peak month with its neighbours, and 60-day offsets
+    # land in ADJACENT months on some dates (e.g. Jul 1 -> Aug 30), which would
+    # pull an off-peak month into the peak season. Two months is never adjacent.
+    peak = _month_anchor(45)
+    months = [peak] + [_months_before(peak, n) for n in (2, 4, 6)]
     peak_month, *other_months = months
 
     # (drop time, the price the point before it holds)

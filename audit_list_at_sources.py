@@ -213,8 +213,14 @@ WORST_N = 6
 #
 # The count is DISTINCT PRICE POINTS, not sale events: since Pricing Logic
 # Version 3 a change-log point that priced two sales is one asking price.
+#
+# Owner decision 2026-09-22 on this section's numbers: minimum 2, peak month +/-1.
+# Production now enforces it (`PEAK_SEASON_MIN_PRICE_POINTS`,
+# `PEAK_SEASON_HALF_WIDTH_MONTHS` in `stable_calculations`), so on a v3 run the
+# rows it hides show up as "already not" priced. The width is production's own.
 PEAK_SEASON_MIN_CANDIDATES = (2, 3, 4)
-PEAK_WINDOW_HALF_WIDTH_MONTHS = 1
+from keepa_deals.stable_calculations import (  # noqa: E402
+    PEAK_SEASON_HALF_WIDTH_MONTHS as PEAK_WINDOW_HALF_WIDTH_MONTHS)
 
 # Classifications for how `List at` was reached. Ordinary first - see THE
 # CONCLUSION RULE above.
@@ -382,8 +388,9 @@ def classify_list_at(sale_events, analysis, sources):
         month = out['peak_month']
         if month is None:
             return out
-        peak_sales = [s for s in sale_events
-                      if s['event_timestamp'].month == month]
+        # Production pools the peak SEASON - peak month +/- its half-width, across
+        # years (Pricing Logic Version 3). Its own helper, so this cannot drift.
+        peak_sales = stable_calculations._peak_season_sales(sale_events, month)
         if not peak_sales:
             return out
         # Production scores DISTINCT price points, not sale events (Pricing Logic

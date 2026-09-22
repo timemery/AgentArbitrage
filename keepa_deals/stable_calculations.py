@@ -95,6 +95,49 @@ def _distinct_price_points(sale_events):
 # its windows is left UNCAPPED and says so - there is no fallback.
 PEAK_NEW_CAP_ALLOWANCE_CENTS = 399
 
+# --- The thin peak season (Pricing Logic Version 3) --------------------------
+#
+# The peak SEASON is the peak month plus PEAK_SEASON_HALF_WIDTH_MONTHS either
+# side, pooled across every year of the history (a December peak's season
+# includes January). A season holding fewer than PEAK_SEASON_MIN_PRICE_POINTS
+# DISTINCT price points does not get a price: `List at` is withheld (NULL, row
+# hidden) and the row is PERSISTED, never deleted (AGENTS.md 7.8). This applies
+# to the Sparse Sales Rescue too.
+#
+# Why: `List at` was the mode/median of ONE calendar month chosen by `idxmax` over
+# up to twelve thin monthly medians - on the median row that month held ONE sale,
+# so the price was the highest single sale in three years. Owner decision
+# 2026-09-22, chosen from audit section (d) on 100 random visible rows: min 2
+# over peak month +/-1 hides 28 (6 of them sparse); over the peak month alone it
+# would have hidden 65.
+PEAK_SEASON_MIN_PRICE_POINTS = 2
+PEAK_SEASON_HALF_WIDTH_MONTHS = 1
+
+
+def _in_peak_season(month, centre, half_width=PEAK_SEASON_HALF_WIDTH_MONTHS):
+    """Circular month distance, so a December peak's season includes January."""
+    distance = abs(int(month) - int(centre)) % 12
+    return min(distance, 12 - distance) <= half_width
+
+
+def _peak_season_sales(sale_events, centre):
+    """The sales in the peak season around `centre`, pooled across years."""
+    return [sale for sale in sale_events
+            if _in_peak_season(pd.to_datetime(sale['event_timestamp']).month, centre)]
+
+
+def _peak_month_of(sale_events):
+    """The normal branch's peak-month rule: highest monthly median, first on a tie.
+
+    Used for the Sparse Sales Rescue, which has no peak month of its own but is
+    held to the same peak-season minimum.
+    """
+    frame = pd.DataFrame({
+        'month': [pd.to_datetime(s['event_timestamp']).month for s in sale_events],
+        'price': [s['inferred_sale_price_cents'] for s in sale_events]})
+    return int(frame.groupby('month')['price'].median().idxmax())
+
+
 # Outcomes recorded on every analysis as `peak_new_cap`.
 NEW_CAP_APPLIED = 'applied'
 NEW_CAP_NOT_NEEDED = 'not needed'
@@ -720,6 +763,19 @@ def analyze_sales_performance(product, sale_events):
         # -------------------------------------------------
 
         if sale_events:
+            # Sparse Sales Rescue (1-2 sales), held to the peak-season minimum like
+            # every other row (Pricing Logic Version 3). One sale, or two outside
+            # one season, or two priced by the same point, is too thin to price.
+            sparse_season_points = len(_distinct_price_points(
+                _peak_season_sales(sale_events, _peak_month_of(sale_events))))
+            if sparse_season_points < PEAK_SEASON_MIN_PRICE_POINTS:
+                logger.info(f"ASIN {asin}: Sparse peak season holds {sparse_season_points} distinct price point(s), below {PEAK_SEASON_MIN_PRICE_POINTS}. List at withheld; row persisted unpriced.")
+                return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
+                        'price_source': 'Inferred Sales (Sparse)',
+                        'inferred_sale_count': inferred_sale_count,
+                        'thin_peak_season': True,
+                        'peak_season_points': sparse_season_points,
+                        'price_unverified': False}
             # Sparse Sales Rescue (1-2 sales): We have valid inferred sales, so we use them.
             prices = [s['inferred_sale_price_cents'] for s in sale_events]
             peak_price_mode_cents = float(np.median(prices))  # Use Median for safety on small sample
@@ -771,12 +827,22 @@ def analyze_sales_performance(product, sale_events):
             # change-log point that priced two sales is one asking price and
             # counts once in both the mode and the median fallback. See
             # `_distinct_price_points`.
+            # The price is estimated over the peak SEASON - the peak month +/-
+            # PEAK_SEASON_HALF_WIDTH_MONTHS, pooled across years - not the single
+            # month `idxmax` picked, and a season too thin to price gets none.
             peak_month = int(peak_month)
-            peak_point_prices = _distinct_price_points(
-                [sale for sale in sale_events
-                 if pd.to_datetime(sale['event_timestamp']).month == peak_month])
-            peak_sales = [sale for sale in sale_events
-                          if pd.to_datetime(sale['event_timestamp']).month == peak_month]
+            peak_sales = _peak_season_sales(sale_events, peak_month)
+            peak_point_prices = _distinct_price_points(peak_sales)
+            if len(peak_point_prices) < PEAK_SEASON_MIN_PRICE_POINTS:
+                logger.info(f"ASIN {asin}: Peak season around {peak_season_str} holds {len(peak_point_prices)} distinct price point(s), below {PEAK_SEASON_MIN_PRICE_POINTS}. List at withheld; row persisted unpriced.")
+                return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str,
+                        'trough_season': trough_season_str,
+                        'expected_trough_price_cents': expected_trough_price_cents,
+                        'price_source': price_source,
+                        'inferred_sale_count': inferred_sale_count,
+                        'thin_peak_season': True,
+                        'peak_season_points': len(peak_point_prices),
+                        'price_unverified': False}
             mode_result = st.mode(peak_point_prices)
             if mode_result.count > 1:
                 peak_price_mode_cents = float(mode_result.mode)
@@ -946,6 +1012,7 @@ def analyze_sales_performance(product, sale_events):
         'peak_new_cap': peak_new_cap,
         'peak_new_cap_cents': peak_new_cap_cents,
         'price_unverified': price_unverified,
+        'thin_peak_season': False,
     }
 
 # --- Memoization cache for analysis results ---
