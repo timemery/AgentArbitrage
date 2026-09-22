@@ -74,7 +74,10 @@ it rather than diagnosing it. The main dashboard grid is NOT affected.
 # 2 = price association takes the last point strictly before the offer drop
 #     (PR #340, live 2026-09-12 16:50 UTC), and the xAI sales rescue is gone
 #     (PR #342, live 2026-09-16 20:53 UTC).
-PRICING_LOGIC_VERSION = 2
+# 3 = the peak-season mode/median scores DISTINCT price points, not sale events
+#     (Phase 2 of the 2026-09-22 List at audit). IN PROGRESS on this branch; the
+#     rest of Phase 2 ships under this same number so the re-sweep is paid once.
+PRICING_LOGIC_VERSION = 3
 
 # The headers.json display name, and the sanitized DB column it becomes. Named
 # here so callers and tests cannot drift onto a different spelling.

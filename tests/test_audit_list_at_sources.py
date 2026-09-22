@@ -215,30 +215,33 @@ class ASharedPointIsReportedAndCanBeRemoved(_Silent):
         self.assertEqual(len(self.sources), 11)
         self.assertEqual(distinct, 10, 'exactly one point should back two sales')
 
-    def test_list_at_is_the_duplicated_price(self):
-        self.assertEqual(self.analysis['peak_price_mode_cents'], float(DUP_CENTS))
+    # Pricing Logic Version 3: production scores DISTINCT price points, so the
+    # shared point is counted once and can no longer win the mode. These three
+    # tests pinned the defect (List at == the duplicated price) until then; they
+    # now pin its absence, through the audit's own reconstruction.
 
-    def test_it_is_classified_as_mode_shared(self):
+    def test_the_duplicated_price_no_longer_sets_list_at(self):
+        # Distinct peak points [280, 300, 375.66]: no repeat, median $300.
+        self.assertEqual(self.analysis['peak_price_mode_cents'], float(PEAK_OTHER[0]))
+
+    def test_it_is_classified_as_median_and_the_share_is_still_reported(self):
         detail = audit.classify_list_at(self.sales, self.analysis, self.sources)
-        self.assertEqual(detail['classification'], audit.CLASS_MODE_SHARED)
-        self.assertEqual(detail['mode_count'], 2)
-        self.assertEqual(detail['contributing_count'] if 'contributing_count' in detail
-                         else len(detail['contributing']), 2)
-        self.assertEqual(detail['distinct_source_points'], 1)
+        self.assertEqual(detail['classification'], audit.CLASS_MEDIAN)
+        self.assertEqual(detail['mode_count'], 0)
+        self.assertEqual(len(detail['contributing']), 4)
+        self.assertEqual(detail['distinct_source_points'], 3)
         self.assertEqual(detail['shared_point_sales'], 1)
         self.assertTrue(detail['branch_matches_production'],
-                        'the reconstruction must agree with the production value '
-                        'before any duplicate finding is trusted')
+                        'the reconstruction must agree with the production value')
 
-    def test_removing_the_duplicate_lowers_list_at(self):
-        """The counterfactual, run through the production function again."""
+    def test_removing_the_duplicate_no_longer_changes_list_at(self):
+        """The counterfactual is now a no-op: production already counts it once."""
         deduped = audit.dedupe_by_source_point(self.sales, self.sources)
         self.assertEqual(len(deduped), 10)
 
         after, _ = audit.analyse_without_xai(self.product, deduped)
-        self.assertEqual(after['peak_price_mode_cents'], float(PEAK_OTHER[0]))
-        self.assertLess(after['peak_price_mode_cents'],
-                        self.analysis['peak_price_mode_cents'])
+        self.assertEqual(after['peak_price_mode_cents'],
+                         self.analysis['peak_price_mode_cents'])
 
     def test_the_kept_sale_is_the_earliest_of_the_pair(self):
         deduped = audit.dedupe_by_source_point(self.sales, self.sources)
@@ -300,7 +303,9 @@ class TheMedianBranchIsNeverAFinding(_Silent):
         analysis, _ = audit.analyse_without_xai(product, sales)
         detail = audit.classify_list_at(sales, analysis, sources={})
         self.assertEqual(detail['shared_point_sales'], 0)
-        self.assertEqual(detail['classification'], audit.CLASS_MODE_DISTINCT)
+        # The branch itself reads production's own `price_point`, so it still
+        # counts the shared point once and lands on the median.
+        self.assertEqual(detail['classification'], audit.CLASS_MEDIAN)
 
 
 # --------------------------------------------------------------------------
@@ -449,8 +454,9 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
         row = self._audit({})
         self.assertFalse(row['ceiling_engaged'])
         self.assertIsNone(row['ceiling_basis'])
-        self.assertEqual(row['recomputed_list_at'], 375.66)
-        self.assertTrue(row['duplicate_set_the_price'])
+        # Version 3 counts the shared point once: median of $280/$300/$375.66.
+        self.assertEqual(row['recomputed_list_at'], 300.00)
+        self.assertFalse(row['duplicate_set_the_price'])
 
     def test_a_trailing_average_clips_the_peak_price(self):
         row = self._audit({'avg365': 20000})       # ceiling = $180.00
@@ -468,9 +474,8 @@ class TheCeilingIsMeasuredNotAssumed(_Silent):
         self.assertTrue(row['reconstruction_matches_production'])
 
     def test_a_clipped_row_does_not_count_as_the_duplicate_setting_the_price(self):
-        """The shared point still made the mode; the ceiling then overwrote it."""
         row = self._audit({'avg365': 20000})
-        self.assertEqual(row['classification'], audit.CLASS_MODE_SHARED)
+        self.assertEqual(row['classification'], audit.CLASS_MEDIAN)
         self.assertFalse(row['duplicate_set_the_price'])
 
     def test_todays_amazon_price_records_whether_it_is_off_peak(self):
@@ -906,11 +911,12 @@ class TheWholeRunHangsTogether(_Silent):
             self.assertIn(asin, written)
 
     def test_the_two_shapes_are_told_apart_end_to_end(self):
-        """Same stored List_at, same recomputed value, different cause."""
+        """Same stored List_at; since version 3 only the distinct one keeps it."""
         self._run(['--limit', '10'])
         written = self._detail()
-        self.assertIn(audit.CLASS_MODE_SHARED, written)
+        self.assertNotIn('"classification": "{}"'.format(audit.CLASS_MODE_SHARED), written)
         self.assertIn(audit.CLASS_MODE_DISTINCT, written)
+        self.assertIn('"recomputed_list_at": 300.0', written)
 
     def test_a_row_keepa_does_not_return_is_recorded_not_dropped(self):
         self._run(['--limit', '10'])
@@ -932,7 +938,7 @@ class TheWholeRunHangsTogether(_Silent):
 
     def test_a_clipped_row_does_not_count_as_the_duplicate_setting_the_price(self):
         self._run(['--limit', '10'])
-        self.assertIn('ceiling did not overwrite it 1', self._detail())
+        self.assertIn('ceiling did not overwrite it 0', self._detail())
 
     def test_tokens_are_accumulated_from_keepas_own_figure(self):
         self._run(['--limit', '10'])

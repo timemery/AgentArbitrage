@@ -368,7 +368,10 @@ def classify_list_at(sale_events, analysis, sources):
                       if s['event_timestamp'].month == month]
         if not peak_sales:
             return out
-        prices = [s['inferred_sale_price_cents'] for s in peak_sales]
+        # Production scores DISTINCT price points, not sale events (Pricing Logic
+        # Version 3): a change-log point that priced two sales counts once. The
+        # reconstruction uses production's own helper so it cannot drift.
+        prices = stable_calculations._distinct_price_points(peak_sales)
         mode_result = st.mode(prices)
         if mode_result.count > 1:
             winner = float(mode_result.mode)

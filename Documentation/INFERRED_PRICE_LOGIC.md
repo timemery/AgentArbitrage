@@ -243,6 +243,14 @@ This determines the recommended listing price.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Month.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
+    -   **Both count DISTINCT PRICE POINTS, not sale events (Pricing Logic Version 3).**
+        Every sale carries `price_point` = (series, timestamp of the change-log point
+        §2b matched). Two offer drops priced by the same point are one asking price
+        and count once; two separate points that happen to hold the same price count
+        twice. Identity is the point's timestamp, never price equality. A sale with no
+        recorded identity counts as its own point. Pinned by
+        `tests/test_distinct_price_points.py`. (Peak-month *selection* and the sale
+        count are unchanged: they still count sale events.)
     -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales.
     -   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales.)*
 3.  **Amazon Ceiling Logic:**
@@ -264,7 +272,8 @@ Both are open measurements as of 2026-09-22, not established defects. The script
 that measures them, its runbook and its cost are in
 `System_State.md` → "Auditing where a stored `List at` came from".
 
-1.  **The mode breaks ties by frequency, and §2b can legitimately hand two sales
+1.  **RESOLVED in Pricing Logic Version 3** — the mode now counts distinct price
+    points (step A.2 above). Kept for the record: **The mode breaks ties by frequency, and §2b can legitimately hand two sales
     the same price.** The association takes the last change-log point strictly
     before an offer drop *at any distance*, so two drops with no price change
     between them receive the **same point**. In a peak month where every other

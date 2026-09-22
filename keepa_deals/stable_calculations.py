@@ -52,6 +52,37 @@ KEEPA_EPOCH = datetime(2011, 1, 1)
 # of the price series across the gap (evidence that the series was live and the value
 # genuinely held, rather than absent), not gap length.
 
+# Passthrough column carrying a matched price point's own timestamp through the
+# `merge_asof` in `infer_sale_events`. Read back into each sale's `price_point`.
+PRICE_POINT_TS = 'price_point_timestamp'
+
+
+def _distinct_price_points(sale_events):
+    """One price per DISTINCT change-log point, in first-seen order.
+
+    `infer_sale_events` takes the last price point strictly before an offer drop at
+    any distance (PR #340), so two drops with no price change between them are
+    both priced by the SAME point. That association is correct, but it is one
+    asking price counted twice, and in a month where every other price is distinct
+    that pair used to win the mode uncontested (Dev_Logs 2026-09-22, 4 of 50 rows).
+
+    Identity is the matched point's `(series, timestamp)`, never price equality:
+    two separate points that happen to hold the same price are ordinary repricing
+    and each counts. A sale with no recorded `price_point` (a hand-built event)
+    counts as its own point, so a missing identity can never merge two sales.
+    """
+    seen = set()
+    prices = []
+    for index, sale in enumerate(sale_events):
+        point = sale.get('price_point')
+        key = point if isinstance(point, tuple) else ('unrecorded', index)
+        if key in seen:
+            continue
+        seen.add(key)
+        prices.append(sale['inferred_sale_price_cents'])
+    return prices
+
+
 def _query_xai_for_reasonableness(title, category, season, price_usd, api_key, binding="N/A", page_count="N/A", image_url="N/A", rank_info="N/A", trend_info="N/A", avg_3yr_usd="N/A"):
     """
     Queries the XAI API to act as a reasonableness check for a calculated price,
@@ -383,13 +414,22 @@ def infer_sale_events(product):
                 # this module: the series is a change-log, so a months-old point means
                 # the price had not changed and is the correct answer. A 240-hour
                 # threshold would have discarded 4 of those same 7 real sales.
-                price_at_sale_time = pd.merge_asof(
+                #
+                # The matched point's own timestamp is carried through the merge
+                # (PRICE_POINT_TS) so each sale records WHICH change-log point priced
+                # it. Two offer drops with no price change between them match the
+                # same point; that is correct association, but it is one asking
+                # price, and the peak-season mode must count it once. See
+                # `_distinct_price_points`.
+                matched = pd.merge_asof(
                     pd.DataFrame([drop]),
-                    price_df_to_use,
+                    price_df_to_use.assign(**{PRICE_POINT_TS: price_df_to_use['timestamp']}),
                     on='timestamp',
                     direction='backward',
                     allow_exact_matches=False,
-                )['price_cents'].iloc[0]
+                )
+                price_at_sale_time = matched['price_cents'].iloc[0]
+                price_point_ts = matched[PRICE_POINT_TS].iloc[0]
 
                 # NaN is what a backward match returns when the drop precedes every
                 # price point in the series, and `NaN <= 0` is False, so the guard
@@ -411,6 +451,13 @@ def infer_sale_events(product):
                 confirmed_sales.append({
                     'event_timestamp': start_time,
                     'inferred_sale_price_cents': price_at_sale_time,
+                    # Identity of the change-log point that priced this sale:
+                    # (series, point timestamp). The series is the frame actually
+                    # used, which is Used when a New drop has no New history.
+                    'price_point': (
+                        'New' if price_df_to_use is df_new_price else 'Used',
+                        price_point_ts,
+                    ),
                 })
         
         if not confirmed_sales:
@@ -605,14 +652,19 @@ def analyze_sales_performance(product, sale_events):
                     'trough_season': trough_season_str,
                     'inferred_sale_count': inferred_sale_count}
         else:
-            # Normal calculation
-            # Calculate the mode. Scipy's mode is robust.
-            mode_result = st.mode(peak_season_prices)
+            # Normal calculation, over DISTINCT price points, not sale events: a
+            # change-log point that priced two sales is one asking price and
+            # counts once in both the mode and the median fallback. See
+            # `_distinct_price_points`.
+            peak_point_prices = _distinct_price_points(
+                [sale for sale in sale_events
+                 if pd.to_datetime(sale['event_timestamp']).month == peak_month])
+            mode_result = st.mode(peak_point_prices)
             if mode_result.count > 1:
                 peak_price_mode_cents = float(mode_result.mode)
-                logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (occurred {mode_result.count} times).")
+                logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (held by {mode_result.count} distinct price points).")
             else:
-                peak_price_mode_cents = float(np.median(peak_season_prices))
+                peak_price_mode_cents = float(np.median(peak_point_prices))
                 logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
 
     # --- Amazon Ceiling Logic ---
