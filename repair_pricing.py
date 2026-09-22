@@ -910,6 +910,19 @@ def main(argv=None):
                 mode.upper(), PRICING_LOGIC_VERSION)
     logger.info("=" * 70)
 
+    # No xAI key: refused outright, before anything is read or fetched. The AI
+    # Reasonableness Check fails CLOSED without a key (Pricing Logic Version 3,
+    # AGENTS.md 7.15), so every row that reaches it would be written UNPRICED -
+    # List_at NULL, hidden, still stale - including rows visible today at their
+    # old price, for ~7 Keepa tokens each. Owner decision 2026-09-22.
+    if not os.getenv('XAI_TOKEN'):
+        logger.error(
+            "REFUSED: XAI_TOKEN is not set. Without it the AI Reasonableness "
+            "Check fails closed, so this sweep would write every checked row "
+            "UNPRICED and hidden, spending ~7 Keepa tokens on each.\n"
+            "  Run from the application root so .env is found, or set XAI_TOKEN.")
+        return 2
+
     # A dry run with no --limit is refused outright, BEFORE preflight and before
     # anything is read. It would heavy-fetch every stale row - roughly 32,000 Keepa
     # tokens at the 2026-09-16 sizing - and write nothing at all, which is the

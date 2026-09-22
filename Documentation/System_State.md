@@ -66,6 +66,7 @@ It takes its own verified backup through SQLite's backup API before the first wr
 
 | condition | why |
 | :--- | :--- |
+| `XAI_TOKEN` not set (checked first, exit 2, before anything is read or fetched) | without a key the reasonableness check fails closed, so every checked row would be written unpriced and hidden, including rows visible today |
 | spare xAI calls < `--xai-headroom` (default 50) | past the cap the reasonableness check fails closed, so every further row would be written unpriced and hidden, its tokens spent for nothing |
 | Keepa refill rate < 20/min | the plan has been downgraded or throttled; continuing would starve normal ingestion |
 | `--limit` reached, no stale rows left, or SIGTERM/SIGINT | ordinary completion |
