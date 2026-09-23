@@ -1127,3 +1127,110 @@ class TheDetailFileCarriesEveryRow(_Silent):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+# --------------------------------------------------------------------------
+# --hidden-v3: why did the current logic withhold a price?
+# --------------------------------------------------------------------------
+
+class TheHiddenV3SelectionAndSplit(_Silent):
+    """The pricing path does not record why it withheld a price: a thin peak
+    season and an AI "No" both stamp the current version and leave List_at NULL.
+    `--hidden-v3` re-runs production (AI stubbed True) on exactly those rows and
+    ends stdout with the split."""
+
+    def setUp(self):
+        super().setUp()
+        from keepa_deals.pricing_version import PRICING_LOGIC_VERSION
+        v = PRICING_LOGIC_VERSION
+        self.db_path = os.path.join(REPO_ROOT, 'test_audit_hidden.db')
+        self.out_dir = os.path.join(REPO_ROOT, 'test_audit_hidden_out')
+        con = sqlite3.connect(self.db_path)
+        con.execute('CREATE TABLE deals (ASIN TEXT, List_at REAL, "1yr_Avg" TEXT, '
+                    'Price_Now REAL, Inferred_Sale_Count INTEGER, '
+                    '"Pricing_Logic_Version" INTEGER, Title TEXT, Profit REAL)')
+        con.executemany(
+            'INSERT INTO deals VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [('HIDNULL001', None, '148.60', 20.0, 21, v, 'Null', None),
+             ('HIDZERO001', 0.0, '50.00', 20.0, 3, v, 'Zero', None),
+             ('ONESALE001', None, '50.00', 20.0, 1, v, 'One sale', None),
+             ('PRICED0001', 120.0, '90.00', 20.0, 9, v, 'Priced', 30.0),
+             ('STALE00001', None, '90.00', 20.0, 9, v - 1, 'Old logic', None),
+             ('UNVERIF001', None, '90.00', 20.0, 9, None, 'Unverified', None)])
+        con.commit()
+        con.close()
+
+    def tearDown(self):
+        for suffix in ('', '-wal', '-shm'):
+            if os.path.exists(self.db_path + suffix):
+                os.remove(self.db_path + suffix)
+        if os.path.isdir(self.out_dir):
+            for name in os.listdir(self.out_dir):
+                os.remove(os.path.join(self.out_dir, name))
+            os.rmdir(self.out_dir)
+        super().tearDown()
+
+    def test_it_selects_current_version_withheld_rows_with_two_plus_sales(self):
+        rows = audit.fetch_sample(self.db_path, 100, hidden_v3=True)
+        self.assertEqual([r['ASIN'] for r in rows], ['HIDNULL001', 'HIDZERO001'])
+
+    def test_the_limit_still_bounds_it(self):
+        self.assertEqual(len(audit.fetch_sample(self.db_path, 1, hidden_v3=True)), 1)
+
+    def test_the_split(self):
+        rows = [_row('THIN000001', season_points_window=1, recomputed_list_at=None),
+                _row('THIN000002', season_points_window=None, recomputed_list_at=None),
+                _row('AINO000001', season_points_window=6, recomputed_list_at=24.82),
+                _row('OVER150001', season_points_window=4, recomputed_list_at=None),
+                {'ASIN': 'FAILED0001', 'error': 'Keepa returned no product'}]
+        lines = audit.withheld_split_lines(rows)
+        self.assertIn('thin (< 2 points in peak +/-1): 2', lines[0])
+        self.assertIn('AI No: 1', lines[0])
+        self.assertIn('other: 1', lines[0])
+        self.assertIn('failed: 1', lines[0])
+        self.assertEqual(lines[1], '  AI No: AINO000001')
+        self.assertEqual(lines[2], '  other: OVER150001')
+
+    def test_end_to_end_the_split_ends_stdout(self):
+        import io
+        import keepa_deals.keepa_api as keepa_api
+        import keepa_deals.token_manager as token_manager
+
+        product = build_history(share_the_point=False, asin='HIDNULL001')
+
+        def fake_fetch(api_key, asins, **kwargs):
+            found = [product] if 'HIDNULL001' in asins else []
+            return {'products': found}, {}, 7 * len(asins), 300.0
+
+        class FakeTokenManager:
+            REFILL_RATE_PER_MINUTE = 25.0
+            tokens = 300.0
+
+            def __init__(self, api_key):
+                pass
+
+            def should_skip_sync(self):
+                return True
+
+            def request_permission_for_call(self, cost):
+                pass
+
+            def update_after_call(self, tokens_left):
+                pass
+
+        out = io.StringIO()
+        with patch.dict(os.environ, {'KEEPA_API_KEY': 'test-key'}), \
+                patch.object(keepa_api, 'fetch_product_batch', fake_fetch), \
+                patch.object(token_manager, 'TokenManager', FakeTokenManager), \
+                patch.object(logging, 'basicConfig'), \
+                patch('sys.stdout', out), patch('sys.stderr'):
+            code = audit.main(['--db', self.db_path, '--out-dir', self.out_dir,
+                               '--hidden-v3', '--limit', '100'])
+        self.assertEqual(code, 0)
+        lines = out.getvalue().strip().splitlines()
+        split = [i for i, l in enumerate(lines) if l.startswith('WITHHELD SPLIT')]
+        self.assertEqual(len(split), 1)
+        self.assertIn('2 rows', lines[split[0]])
+        self.assertIn('AI No: 1', lines[split[0]])
+        self.assertIn('failed: 1', lines[split[0]])
+        self.assertEqual(lines[-1], '  AI No: HIDNULL001')

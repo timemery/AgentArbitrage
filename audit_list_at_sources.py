@@ -672,7 +672,41 @@ def build_sample_sql(order='list_at'):
     """.format(visible=VISIBLE_PREDICATE.strip(), order=SAMPLE_ORDERS[order])
 
 
-def fetch_sample(db_path, limit, asins=(), order='list_at'):
+def _current_version():
+    from keepa_deals.pricing_version import PRICING_LOGIC_VERSION
+    return PRICING_LOGIC_VERSION
+
+
+def build_hidden_v3_sql():
+    """Rows the CURRENT pricing logic priced and then withheld, with 2+ sales.
+
+    `Pricing_Logic_Version` = current, `List_at` NULL or <= 0, and
+    `Inferred_Sale_Count` >= 2. The pricing path does not record WHY a price was
+    withheld: a thin peak season and an AI "No" both stamp the current version
+    and leave `List_at` NULL. Re-running production (AI stubbed True) separates
+    them - see `withheld_split_lines`. One-sale rows are left out: they are
+    always thin, and zero-sale rows have nothing to price.
+    """
+    from keepa_deals.pricing_version import (PRICING_LOGIC_VERSION,
+                                             PRICING_VERSION_COLUMN)
+    return """
+        SELECT "ASIN",
+               "List_at"               AS list_at,
+               "1yr_Avg"               AS avg_1yr,
+               "Price_Now"             AS price_now,
+               "Inferred_Sale_Count"   AS stored_sale_count,
+               "Pricing_Logic_Version" AS pricing_version,
+               "Title"                 AS title
+        FROM deals
+        WHERE "{version}" = {current}
+          AND ("List_at" IS NULL OR "List_at" <= 0)
+          AND "Inferred_Sale_Count" >= 2
+        ORDER BY "ASIN" ASC
+        LIMIT ?
+    """.format(version=PRICING_VERSION_COLUMN, current=int(PRICING_LOGIC_VERSION))
+
+
+def fetch_sample(db_path, limit, asins=(), order='list_at', hidden_v3=False):
     """Read the sample. Read-only URI connection; this script never writes."""
     uri = 'file:{}?mode=ro'.format(db_path)
     con = sqlite3.connect(uri, uri=True)
@@ -685,6 +719,8 @@ def fetch_sample(db_path, limit, asins=(), order='list_at'):
                    '"Pricing_Logic_Version" AS pricing_version, "Title" AS title '
                    'FROM deals WHERE "ASIN" IN ({})'.format(placeholders))
             rows = con.execute(sql, tuple(asins)).fetchall()
+        elif hidden_v3:
+            rows = con.execute(build_hidden_v3_sql(), (limit,)).fetchall()
         else:
             rows = con.execute(build_sample_sql(order), (limit,)).fetchall()
         return [dict(r) for r in rows]
@@ -960,6 +996,36 @@ def thin_season_lines(ok):
     return lines
 
 
+def withheld_split_lines(rows):
+    """Why each withheld row was withheld, for a `--hidden-v3` run.
+
+    Production is re-run with the AI check stubbed True, so the only reasons it
+    can still withhold a price are the thin peak season (fewer than
+    `PEAK_SEASON_MIN_PRICE_POINTS` distinct points in the peak season) and the
+    $1,500 hard ceiling. A row that is NOT thin and now prices was therefore
+    withheld by an AI "No" (or, if its data moved since the sweep, by a thin
+    season that has since filled in - the recompute uses today's history).
+    """
+    from keepa_deals.stable_calculations import PEAK_SEASON_MIN_PRICE_POINTS
+    ok = [r for r in rows if not r.get('error')]
+    thin = [r for r in ok
+            if (r.get('season_points_window') or 0) < PEAK_SEASON_MIN_PRICE_POINTS]
+    thin_ids = {id(r) for r in thin}
+    rest = [r for r in ok if id(r) not in thin_ids]
+    ai = [r for r in rest if r.get('recomputed_list_at')]
+    other = [r for r in rest if not r.get('recomputed_list_at')]
+    lines = ['WITHHELD SPLIT  {} rows | thin (< {} points in peak +/-{}): {} | '
+             'AI No: {} | other: {} | failed: {}'.format(
+                 len(rows), PEAK_SEASON_MIN_PRICE_POINTS,
+                 PEAK_WINDOW_HALF_WIDTH_MONTHS, len(thin), len(ai), len(other),
+                 len(rows) - len(ok))]
+    for label, group in (('AI No', ai), ('other', other)):
+        asins = [r['ASIN'] for r in group]
+        for start in range(0, len(asins), 8):
+            lines.append('  {}: {}'.format(label, ' '.join(asins[start:start + 8])))
+    return lines
+
+
 def _fmt(value):
     number = _as_float(value)
     return '-' if number is None else '{:.2f}'.format(number)
@@ -1052,6 +1118,11 @@ def main(argv=None):
     parser.add_argument('--order', choices=sorted(SAMPLE_ORDERS), default='list_at',
                         help='Sample order: list_at (DESC, worst case, the default) '
                              'or random (representative).')
+    parser.add_argument('--hidden-v3', action='store_true',
+                        help='Audit rows the current pricing logic withheld '
+                             '(List_at NULL or <= 0, 2+ sales) and end stdout '
+                             'with the thin-season vs AI-No split. Bounded by '
+                             '--limit.')
     parser.add_argument('--db', default=DEFAULT_DB_PATH)
     parser.add_argument('--out-dir', default=DEFAULT_OUT_DIR)
     parser.add_argument('--batch-size', type=int, default=DEFAULT_BATCH_SIZE)
@@ -1084,7 +1155,8 @@ def main(argv=None):
         print('Database not found: {}'.format(args.db))
         return 2
 
-    stored_rows = fetch_sample(args.db, args.limit, tuple(args.asin), args.order)
+    stored_rows = fetch_sample(args.db, args.limit, tuple(args.asin), args.order,
+                               hidden_v3=args.hidden_v3)
     if not stored_rows:
         print('No rows matched. Nothing to audit, and no tokens spent.')
         return 0
@@ -1102,6 +1174,8 @@ def main(argv=None):
         token_manager.sync_tokens()
 
     sampled = ('{} named ASIN(s)'.format(len(args.asin)) if args.asin
+               else 'withheld v{} rows, 2+ sales'.format(_current_version())
+               if args.hidden_v3
                else 'visible rows by List_at DESC' if args.order == 'list_at'
                else 'visible rows at random')
     _progress('Auditing {} row(s) ({}). Heavy fetch, ~7 tokens each.'.format(
@@ -1161,6 +1235,10 @@ def main(argv=None):
     write_detail(results, out_path, summary_lines, tokens_total, ' '.join(sys.argv))
 
     print('\n'.join(summary_lines))
+    if args.hidden_v3 and not args.asin:
+        # After the 25-line summary, deliberately: it is the answer this mode
+        # exists to give, so it is the last thing on stdout.
+        print('\n'.join(withheld_split_lines(results)))
     _progress('')
     _progress('Detail: {}'.format(out_path))
     relative = os.path.relpath(out_path, REPO_ROOT)
