@@ -488,6 +488,100 @@ def peak_season_counts(sale_events, analysis):
     return out
 
 
+# --- v4 CANDIDATE: measurement only, NOT production logic --------------------
+#
+# Proposed for Pricing Logic Version 4 (2026-09-23) and measured here before any
+# pricing code changes:
+#
+# (1) PEAK BY POOLED SUPPORT. Today the peak month is the highest single-month
+#     median, so one isolated high sale can win and its season then holds one
+#     point (27 of 31 thin rows on the --hidden-v3 run). The candidate looks at
+#     EVERY peak-month +/- PEAK_WINDOW_HALF_WIDTH_MONTHS window, keeps those with
+#     at least PEAK_SEASON_MIN_PRICE_POINTS distinct points, and takes the one
+#     with the highest median (ties: more points, then earlier month).
+# (2) AI-CHECK SKIP. The check is not told the book's own recent sale prices,
+#     and rejected prices at their own 1yr average. The candidate skips it when
+#     the price is <= V4_AI_SKIP_RATIO x the last 365 days of inferred sales -
+#     reported under BOTH the mean (what `1yr_Avg` stores) and the median, since
+#     a mean is inflated by the same lone spikes (1).
+V4_AI_SKIP_RATIO = 1.25
+
+
+def _v4_best_window(sale_events):
+    """(centre month, sales, distinct prices) of the best supported window, or None."""
+    import numpy as np
+    from keepa_deals import stable_calculations
+    best = None
+    for centre in range(1, 13):
+        sales = stable_calculations._peak_season_sales(sale_events, centre)
+        prices = stable_calculations._distinct_price_points(sales)
+        if len(prices) < stable_calculations.PEAK_SEASON_MIN_PRICE_POINTS:
+            continue
+        key = (float(np.median(prices)), len(prices), -centre)
+        if best is None or key > best[0]:
+            best = (key, centre, sales, prices)
+    return None if best is None else best[1:]
+
+
+def v4_candidate(product, sale_events):
+    """What the proposed v4 rules would price this row at. Read-only arithmetic.
+
+    Branch: mode of the window's distinct prices if one repeats, else median -
+    production's own rule. Then production's peak-window New cap, the Amazon
+    ceiling (today's reading only when today's month is the window's centre,
+    as in v3), and the $1,500 hard ceiling. The AI check is not run; its skip
+    decision is reported instead.
+    """
+    import numpy as np
+    from datetime import timedelta
+    from keepa_deals import stable_calculations
+    st = stable_calculations.st
+    out = {'v4_list_at': None, 'v4_window': None, 'v4_window_points': None,
+           'v4_1yr_mean': None, 'v4_1yr_median': None,
+           'v4_skip_mean': None, 'v4_skip_median': None}
+    if not sale_events:
+        return out
+    found = _v4_best_window(sale_events)
+    if found is None:
+        return out
+    centre, sales, prices = found
+    names = [datetime(2000, m, 1).strftime('%b') for m in
+             ((centre - 2) % 12 + 1, centre, centre % 12 + 1)]
+    out['v4_window'] = '-'.join(names)
+    out['v4_window_points'] = len(prices)
+
+    mode = st.mode(prices)
+    if mode.count > 1:
+        cents = float(mode.mode)
+        contributing = [s for s in sales if float(s['inferred_sale_price_cents']) == cents]
+    else:
+        cents = float(np.median(prices))
+        contributing = sales
+    floor = stable_calculations.peak_window_new_floor(product, contributing)
+    if floor['median_window_floor_cents'] is not None:
+        cents = min(cents, floor['median_window_floor_cents']
+                    + stable_calculations.PEAK_NEW_CAP_ALLOWANCE_CENTS)
+    ceiling = amazon_ceiling(product, current_in_peak=datetime.now().month == centre)
+    if ceiling and cents > ceiling['ceiling_cents']:
+        cents = ceiling['ceiling_cents']
+    if cents > 150000:
+        return out
+    out['v4_list_at'] = round(cents / 100.0, 2)
+
+    year_ago = datetime.now() - timedelta(days=365)
+    recent = [float(s['inferred_sale_price_cents']) for s in sale_events
+              if s['event_timestamp'] >= year_ago]
+    if recent:
+        mean, median = float(np.mean(recent)), float(np.median(recent))
+        out['v4_1yr_mean'] = round(mean / 100.0, 2)
+        out['v4_1yr_median'] = round(median / 100.0, 2)
+        out['v4_skip_mean'] = cents <= mean * V4_AI_SKIP_RATIO
+        out['v4_skip_median'] = cents <= median * V4_AI_SKIP_RATIO
+    else:
+        out['v4_skip_mean'] = out['v4_skip_median'] = False
+    return out
+
+
 def dedupe_by_source_point(sale_events, sources):
     """One sale per matched price point, keeping the earliest.
 
@@ -761,6 +855,7 @@ def audit_row(stored, product, default_shipping_cents):
 
     detail = classify_list_at(sane_sales, analysis, sources)
     result.update(peak_season_counts(sane_sales, analysis))
+    result.update(v4_candidate(product, sane_sales))
     result.update({
         'classification': detail['classification'],
         'branch_list_at': (round(detail['branch_price_cents'] / 100.0, 2)
@@ -1030,6 +1125,26 @@ def withheld_split_lines(rows):
         asins = [r['ASIN'] for r in group]
         for start in range(0, len(asins), 8):
             lines.append('  {}: {}'.format(label, ' '.join(asins[start:start + 8])))
+    lines.extend(v4_lines(ok, thin, ai, other))
+    return lines
+
+
+def v4_lines(ok, thin, ai, other):
+    """Per group: priced by v4, of which the AI check is skipped (mean | median).
+
+    A priced row whose check is NOT skipped still goes to the AI, whose answer
+    this script cannot know, so it is counted as undecided rather than shown.
+    """
+    lines = ['V4 CANDIDATE  priced / AI skipped by 1yr mean | median  (x{})'.format(
+        V4_AI_SKIP_RATIO)]
+    for label, group in (('thin', thin), ('AI No', ai), ('other', other), ('all', ok)):
+        priced = [r for r in group if r.get('v4_list_at')]
+        lines.append('  {:<6} {:>3} rows: priced {:>3} | skip mean {:>3} | skip median {:>3} '
+                     '| unpriced {:>3}'.format(
+                         label, len(group), len(priced),
+                         sum(1 for r in priced if r.get('v4_skip_mean')),
+                         sum(1 for r in priced if r.get('v4_skip_median')),
+                         len(group) - len(priced)))
     return lines
 
 
@@ -1076,6 +1191,11 @@ DETAIL_COLUMNS = [
     ('season_points_window', 'points in peak +/-1'),
     ('season_sales_month', 'sales in peak month'),
     ('season_sales_window', 'sales in peak +/-1'),
+    # v4 candidate - measurement only
+    ('v4_list_at', 'v4 List_at'), ('v4_window', 'v4 window'),
+    ('v4_window_points', 'v4 window points'),
+    ('v4_1yr_mean', '1yr mean'), ('v4_1yr_median', '1yr median'),
+    ('v4_skip_mean', 'v4 AI skip (mean)'), ('v4_skip_median', 'v4 AI skip (median)'),
     # stored context
     ('avg_1yr', 'stored 1yr_Avg'), ('price_now', 'stored Price_Now'),
     ('stored_sale_count', 'stored sale count'), ('pricing_version', 'version'),
