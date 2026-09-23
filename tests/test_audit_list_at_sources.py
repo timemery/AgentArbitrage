@@ -786,6 +786,16 @@ class TheThinPeakSeasonIsMeasured(_Silent):
         self.assertTrue(audit._in_window(11, 12, 1))
         self.assertFalse(audit._in_window(2, 12, 1))
 
+    def test_sale_events_are_counted_beside_points(self):
+        """Steady seller: many sales in the season, all on one price point."""
+        sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 9, 5000, 1),
+                 _season_sale(2025, 10, 5000, 1), _season_sale(2024, 8, 5000, 1),
+                 _season_sale(2025, 3, 3000, 2)]
+        counts = audit.peak_season_counts(sales, self.NORMAL)
+        self.assertEqual(counts['season_points_window'], 1)
+        self.assertEqual(counts['season_sales_window'], 4)
+        self.assertEqual(counts['season_sales_month'], 2)
+
     def test_a_shared_point_counts_once(self):
         sales = [_season_sale(2025, 9, 5000, 1), _season_sale(2025, 9, 5000, 1),
                  _season_sale(2024, 9, 5000, 2)]

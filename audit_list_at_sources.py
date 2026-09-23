@@ -467,17 +467,24 @@ def peak_season_counts(sale_events, analysis):
         mirrored = centre is not None
     out = {'season_centre_month': centre, 'season_centre_mirrored': mirrored,
            'is_sparse': is_sparse, 'season_points_month': None,
-           'season_points_window': None}
+           'season_points_window': None, 'season_sales_month': None,
+           'season_sales_window': None}
     if centre is None:
         return out
 
-    def points(half_width):
-        in_season = [s for s in sale_events
-                     if _in_window(s['event_timestamp'].month, centre, half_width)]
-        return len(stable_calculations._distinct_price_points(in_season))
+    def in_season(half_width):
+        return [s for s in sale_events
+                if _in_window(s['event_timestamp'].month, centre, half_width)]
 
-    out['season_points_month'] = points(0)
-    out['season_points_window'] = points(PEAK_WINDOW_HALF_WIDTH_MONTHS)
+    out['season_points_month'] = len(
+        stable_calculations._distinct_price_points(in_season(0)))
+    out['season_points_window'] = len(stable_calculations._distinct_price_points(
+        in_season(PEAK_WINDOW_HALF_WIDTH_MONTHS)))
+    # Sale EVENTS, beside the distinct points: many sales on one point is a
+    # steady seller at one price, one sale is a lone spike. Points alone cannot
+    # tell the two apart.
+    out['season_sales_month'] = len(in_season(0))
+    out['season_sales_window'] = len(in_season(PEAK_WINDOW_HALF_WIDTH_MONTHS))
     return out
 
 
@@ -1067,6 +1074,8 @@ DETAIL_COLUMNS = [
     ('is_sparse', 'sparse rescue'),
     ('season_points_month', 'points in peak month'),
     ('season_points_window', 'points in peak +/-1'),
+    ('season_sales_month', 'sales in peak month'),
+    ('season_sales_window', 'sales in peak +/-1'),
     # stored context
     ('avg_1yr', 'stored 1yr_Avg'), ('price_now', 'stored Price_Now'),
     ('stored_sale_count', 'stored sale count'), ('pricing_version', 'version'),
