@@ -37,7 +37,7 @@ Affected rows are **not identifiable by query**: `price_source` was computed but
 
 **A future pricing fix re-uses the same script by bumping the constant.** No new script, no new predicate.
 
-**Pricing Logic Version 4 — built on this branch, not deployed** (`AGENTS.md` §7.16): the peak season chosen by pooled support, a 2× 1-year-median cap, the AI check skipped at ≤ 1.25× that median, a `withheld: <reason>` on every withheld row in the sweep's log, and thin rows written with a NULL version so the sweep re-evaluates them. The v3 sweep was paused at 22:22 UTC on 2026-09-23; deploying v4 re-stales every row again.
+**Pricing Logic Version 4 — live since 2026-09-23 ~01:57 UTC (PR #360, merge `3ff10ae`); its re-sweep is running** (`AGENTS.md` §7.16): the peak season chosen by pooled support, a 2× 1-year-median cap, the AI check skipped at ≤ 1.25× that median, a `withheld: <reason>` on every withheld row in the sweep's log, and thin rows written with a NULL version so the sweep re-evaluates them. The v3 sweep was paused at 22:22 UTC on 2026-09-22; deploying v4 re-stales every row again.
 
 **Pricing Logic Version 3 — shipped in PR #355, superseded by v4.** Distinct-price-point mode/median; the peak season as peak month ± 1 pooled across years, with fewer than 2 distinct price points left unpriced (sparse rows included); the peak-window New cap; the Amazon ceiling reading today's price only in the peak month; the AI check failing closed; `repair_pricing.py` refusing to run without `XAI_TOKEN`. Measured before building, 100 random visible rows: the thin-season rule hides **28** (6 sparse). Deploying it re-stales every row: Agent's Choice empties and refills as the ~8-day sweep runs (`AGENTS.md` §7.14, §7.15).
 
