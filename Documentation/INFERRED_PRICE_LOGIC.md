@@ -239,9 +239,9 @@ To prevent anomalous prices (e.g., penny books or repricer errors) from skewing 
 ### A. The "List at" Price (Peak Season)
 This determines the recommended listing price.
 
-1.  **Seasonality Identification:** Groups sane sales by month. Identifies the **Peak Month** (highest median price).
-    -   **The Peak Season (Pricing Logic Version 3)** is the peak month **± 1 month** (`PEAK_SEASON_HALF_WIDTH_MONTHS`), **pooled across every year** of the history; a December peak's season includes January. Steps 2 and 3 work on the season, not the single month.
-    -   **A season too thin to price gets no price.** Fewer than **2 distinct price points** in the season (`PEAK_SEASON_MIN_PRICE_POINTS`) ⇒ `List at` withheld, row persisted unpriced and hidden, **never deleted**; the AI check is not called. This applies to the Sparse Sales Rescue too. Chosen from the audit (100 random visible rows): hides 28; the single month alone would have hidden 65. Why: the single month `idxmax` picked held ONE sale on the median row, so `List at` was the highest single sale in three years.
+1.  **Seasonality Identification (Pricing Logic Version 4).** The **Peak Season** is chosen by pooled support: every peak-month **± 1 month** window (`PEAK_SEASON_HALF_WIDTH_MONTHS`), **pooled across every year**, holding at least 2 distinct price points is eligible, and the one with the **highest median** wins (ties: more points, then more points in the centre month, then the earlier month). A December window includes January. Steps 2 and 3 work on that season.
+    -   *Why not the highest single month (v3):* one isolated high sale won that vote and its season then held one point — 27 of the 31 thin rows the v3 sweep hid were such lone spikes.
+    -   **A season too thin to price gets no price.** No window with **2 distinct price points** (`PEAK_SEASON_MIN_PRICE_POINTS`) ⇒ `List at` withheld, row persisted unpriced and hidden, **never deleted**, written with a NULL `Pricing_Logic_Version` so the repair sweep re-evaluates it (v4, #152); the AI check is not called. This applies to the Sparse Sales Rescue too. Chosen from the audit (100 random visible rows): hides 28; the single month alone would have hidden 65. Why: the single month `idxmax` picked held ONE sale on the median row, so `List at` was the highest single sale in three years.
 2.  **Price Determination:**
     -   **Primary:** Calculates the **Mode** (most frequent price) during the Peak Season.
     -   **Fallback 1:** If no distinct mode exists, uses the **Median**.
@@ -255,6 +255,7 @@ This determines the recommended listing price.
         count are unchanged: they still count sale events.)
     -   **Rescue (Sparse Sales):** If Inferred Sales < **3** (insufficient data), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales — **provided they are 2 distinct price points in one peak season** (step 1). One sale, two sales in different seasons, or two sales priced by one point: unpriced.
     -   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales.)*
+2b. **1-Year Median Cap (Pricing Logic Version 4):** after the New cap below, `List at` ≤ **2 × the median of inferred sales in the last 365 days** (`PEAK_MEDIAN_CAP_RATIO`). The best-median window is still a maximum over thin estimates (15 of 61 audited rows were above 2× their own median, up to 20×). No sale in the last year: no median cap. Order: New cap → median cap → Amazon ceiling → $1,500.
 3.  **Peak-Window New Cap (Pricing Logic Version 3):**
     -   `List at` may not exceed the **median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99** (`PEAK_NEW_CAP_ALLOWANCE_CENTS`).
     -   A window is a calendar month of one year holding a sale that fed the price; the same peak month in three years is three windows. `csv[1]` is a change-log, so a window's New price is the last point before it opens, carried forward, plus every point inside it.
@@ -274,6 +275,8 @@ This determines the recommended listing price.
         -   **Hard Ceiling Safety (Mar 2026):** To prevent astronomical fake profits (e.g., a $4,000 "List At" price), any calculated list price exceeding **$1,500** is automatically and immediately rejected without even querying the AI.
         -   *Safety:* The AI prompt explicitly instructs the LLM that any used book price over $500 requires intense scrutiny, and prices over $1,000 are almost always unreasonable.
     -   If the AI rejects a price (either a standard one or a forced fallback check), the deal is invalidated (and subsequently persisted as incomplete data).
+    -   **Skipped when backed by the book's own sales (Pricing Logic Version 4):** `List at` ≤ **1.25 × the 1-year median** (`AI_SKIP_MEDIAN_RATIO`). The check is never shown the book's sale prices and rejected prices at their own 1-year average. This skip takes precedence over the 3× rule.
+    -   **Every withheld price records why** (`withheld_reason`: thin, ai_rejected, unverifiable, over_1500, no_sales); `repair_pricing.py` logs it per row.
     -   **Fails CLOSED (Pricing Logic Version 3, Trello #144).** If the check cannot run — no API key, the xAI daily cap is reached, or the call errors — it returns *unverifiable* (`None`), not *reasonable*. The price is withheld (`List at` NULL, row hidden), the analysis sets `price_unverified`, and `_process_single_deal` writes `Pricing_Logic_Version` **NULL** so the row stays stale and the repair sweep retries it. Before this, all three paths returned `True`: the price passed unchecked and was stamped current.
 
 ### A.1 Two things step A.2 does not decide on its own

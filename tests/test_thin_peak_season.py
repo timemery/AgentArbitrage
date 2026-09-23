@@ -81,15 +81,27 @@ class TheRuleIsNamed(_Silent):
 
 class AThinPeakSeasonIsNotPriced(_Silent):
 
-    def test_one_point_in_the_season_withholds_the_price(self):
-        """The highest single sale in three years, with nothing near it."""
-        events = [_sale(YEAR, 9, 40000), _sale(YEAR, 3, 10000), _sale(YEAR, 4, 11000)]
+    def test_no_season_with_two_points_withholds_the_price(self):
+        """Every sale alone in its season, pooled across years or not."""
+        events = [_sale(YEAR, 1, 10000), _sale(YEAR, 5, 11000), _sale(YEAR, 9, 40000)]
         result, ai = self._analyse(events)
         self.assertEqual(result['peak_price_mode_cents'], -1)
         self.assertTrue(result['thin_peak_season'])
-        self.assertEqual(result['peak_season_points'], 1)
+        self.assertEqual(result['withheld_reason'], stable_calculations.WITHHELD_THIN)
         self.assertEqual(result['inferred_sale_count'], 3)
         ai.assert_not_called()
+
+    def test_a_lone_high_month_no_longer_hides_a_supported_season(self):
+        """v3 hid this row: Sep won the single-month vote and held one point.
+
+        Pricing Logic Version 4 chooses the peak by pooled support, so the
+        Mar-Apr season prices it (the 142249151X shape).
+        """
+        events = [_sale(YEAR, 9, 40000), _sale(YEAR, 3, 10000), _sale(YEAR, 4, 11000)]
+        result, _ = self._analyse(events)
+        self.assertEqual(result['peak_price_mode_cents'], 10500.0)
+        self.assertFalse(result['thin_peak_season'])
+        self.assertIsNone(result['withheld_reason'])
 
     def test_two_sales_on_one_price_point_are_one_point(self):
         events = [_sale(YEAR, 9, 40000, point=900), _sale(YEAR, 9, 40000, point=900),
@@ -121,10 +133,12 @@ class ThePeakSeasonIsPooled(_Silent):
         result, _ = self._analyse(events)
         self.assertEqual(result['peak_price_mode_cents'], 35000.0)
 
-    def test_a_month_two_away_is_not_in_the_season(self):
+    def test_a_month_two_away_is_pooled_by_the_window_between(self):
+        """Sep and Nov are each other's +/-2, but both sit in Oct's window."""
         events = [_sale(YEAR, 9, 40000), _sale(YEAR, 11, 30000), _sale(YEAR, 3, 10000)]
         result, _ = self._analyse(events)
-        self.assertEqual(result['peak_price_mode_cents'], -1)
+        self.assertEqual(result['peak_price_mode_cents'], 35000.0)
+        self.assertEqual(result['peak_window'], 'Sep-Oct-Nov')
 
 
 class TheSparseRescueIsHeldToTheSameMinimum(_Silent):
@@ -154,7 +168,7 @@ class TheSparseRescueIsHeldToTheSameMinimum(_Silent):
 class AThinRowIsPersistedNotDeleted(_Silent):
     """End to end through the real `_process_single_deal` (AGENTS.md 7.8)."""
 
-    def test_the_heavy_path_returns_an_unpriced_row_stamped_current(self):
+    def test_the_heavy_path_returns_an_unpriced_row_left_stale(self):
         from keepa_deals import processing
         stable_calculations.clear_analysis_cache()
         to_db_keys = _load_real('keepa_deals.db_utils').to_db_keys
@@ -177,8 +191,9 @@ class AThinRowIsPersistedNotDeleted(_Silent):
         db_row = to_db_keys(processing.clean_numeric_values(row))
         self.assertIn(db_row.get('List_at'), (None, '-', ''))
         self.assertEqual(db_row['Inferred_Sale_Count'], 1)
-        # A thin season is a real, current answer - not a retry.
-        self.assertEqual(db_row['Pricing_Logic_Version'], PRICING_LOGIC_VERSION)
+        # Pricing Logic Version 4 (#152): written NULL, so the sweep re-evaluates
+        # it as the book gains sales. It was stamped current in v3.
+        self.assertIsNone(db_row['Pricing_Logic_Version'])
 
 
 if __name__ == '__main__':

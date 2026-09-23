@@ -109,8 +109,9 @@ class OnlyTheHeavyPathStampsIt(unittest.TestCase):
         source = open(processing.__file__, encoding='utf-8').read()
         # Current version unless the price could not be verified (Trello #144),
         # in which case NULL - see tests/test_xai_fail_closed.py.
-        self.assertIn("None if list_at_analysis.get('price_unverified') "
-                      "else PRICING_LOGIC_VERSION)",
+        self.assertIn("list_at_analysis.get('price_unverified')", source)
+        self.assertIn("list_at_analysis.get('thin_peak_season')", source)
+        self.assertIn("else PRICING_LOGIC_VERSION)",
                       source,
                       "_process_single_deal must stamp the version beside "
                       "Inferred Sale Count.")

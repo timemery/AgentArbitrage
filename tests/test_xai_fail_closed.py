@@ -99,7 +99,8 @@ class TheCheckReportsUnverifiableNotReasonable(_Silent):
 
 
 def _events(prices=(28000, 30000, 32000)):
-    year = datetime.now().year - 1
+    # Two years back: no 1yr median, so the v4 AI skip never pre-empts the check.
+    year = datetime.now().year - 2
     return [{'event_timestamp': datetime(year, 3, 10 + 2 * i),
              'inferred_sale_price_cents': cents,
              'price_point': ('Used', datetime(2000, 1, 1) + timedelta(days=i))}
@@ -151,7 +152,7 @@ class TheHeavyPathLeavesAnUnverifiedRowStale(_Silent):
     def _run(self, answer, asin):
         from keepa_deals import processing
         to_db_keys = _load_real('keepa_deals.db_utils').to_db_keys
-        product = _mock_product(history_days=400, sales_count=4, sales_age_days=100,
+        product = _mock_product(history_days=500, sales_count=4, sales_age_days=400,
                                 points_per_day=4, new_price_cents=90000)
         product['asin'] = asin
         with patch('retrying.time.sleep'), \
@@ -184,7 +185,7 @@ class TheHeavyPathLeavesAnUnverifiedRowStale(_Silent):
         from keepa_deals import processing
         answers = iter([None, True, True, True])
         to_db_keys = _load_real('keepa_deals.db_utils').to_db_keys
-        product = _mock_product(history_days=400, sales_count=4, sales_age_days=100,
+        product = _mock_product(history_days=500, sales_count=4, sales_age_days=400,
                                 points_per_day=4, new_price_cents=90000)
         product['asin'] = 'FAILCLOSE3'
         with patch('retrying.time.sleep'), \

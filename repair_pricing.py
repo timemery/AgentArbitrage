@@ -729,6 +729,7 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
             carry_forward_deal_feed_columns(row, target)
             rows.append(row)
             outcomes.append({
+                'withheld': withheld_reason(asin),
                 'ASIN': asin,
                 'old_list_at': target['old_list_at'],
                 'new_list_at': row.get('List_at'),
@@ -772,6 +773,19 @@ def repair_batch(targets, api_key, xai_api_key, token_manager, reserve_per_asin,
     return rows, outcomes, skipped
 
 
+def withheld_reason(asin):
+    """Why the pricing that just ran for `asin` withheld its price, or None.
+
+    Pricing Logic Version 4. Read from the analysis `_process_single_deal`
+    already produced and memoised (`stable_calculations._get_analysis`), never
+    recomputed: recomputing could spend another xAI call. The reason is not
+    persisted to a column (owner decision) - this log line is its only record.
+    """
+    from keepa_deals import stable_calculations
+    analysis = stable_calculations._analysis_cache.get(asin) or {}
+    return analysis.get('withheld_reason')
+
+
 def carry_forward_deal_feed_columns(row, target):
     """Put back the stored value for the two deal-feed-only columns.
 
@@ -810,12 +824,15 @@ def print_outcomes(outcomes, apply_changes):
     for o in outcomes:
         logger.info(
             "  %s [tier %d] %s  List_at %s -> %s | 1yr_Avg %s -> %s | "
-            "count %s -> %s | trust %s -> %s",
+            "count %s -> %s | trust %s -> %s%s",
             verb, o['tier'], o['ASIN'],
             _fmt(o['old_list_at']), _fmt(o['new_list_at']),
             _fmt(o['old_1yr_avg']), _fmt(o['new_1yr_avg']),
             _fmt(o['old_count']), _fmt(o['new_count']),
-            _fmt(o['old_trust']), _fmt(o['new_trust']))
+            _fmt(o['old_trust']), _fmt(o['new_trust']),
+            # Pricing Logic Version 4: why a price was withheld - thin,
+            # ai_rejected, unverifiable, over_1500 or no_sales.
+            ' | withheld: {}'.format(o['withheld']) if o.get('withheld') else '')
 
 
 def write_manifest(backup_dir, timestamp, mode, asins):
