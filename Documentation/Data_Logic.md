@@ -77,7 +77,7 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Logic:** `keepa_deals/stable_calculations.py`.
     *   **List at (Peak):**
         *   **Primary:** Determines the **Mode** (most frequent) sale price during the book's calculated **Peak Season**, counted over **distinct price points**, not sale events (Pricing Logic Version 3).
-        *   **Peak Season (Pricing Logic Version 3):** the peak month ± 1, pooled across years. Fewer than 2 distinct price points in it ⇒ no price (row persisted unpriced, hidden, never deleted).
+        *   **Peak Season (Pricing Logic Version 4):** of every peak month ± 1 window pooled across years with ≥ 2 distinct price points, the one with the highest median. None ⇒ no price (row persisted unpriced, hidden, never deleted, version NULL so the sweep re-evaluates it).
         *   **Rescue (Sparse Sales):** If Inferred Sales < 3 (but > 0), the system uses the **Median** of any available inferred sales (1-2 events) because they still represent *true* sales — only when they are 2 distinct price points in one peak season; otherwise unpriced.
         *   *(Note: The previous "Keepa Stats Fallback" to listing averages was entirely removed in March 2026 to guarantee all profits are based on true sales. Deals with 0 inferred sales are rejected.)*
     *   **Expected Trough Price:**
@@ -85,7 +85,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
     *   **Validation Pipeline:** **ALL** prices (Primary or Fallback) must pass safety checks:
         1.  **Peak-Window New Cap (Pricing Logic Version 3):** Capped at the median, across the peak-season windows that fed it, of the lowest New price in each window, + $3.99. Never today's New price. No New price in the window: uncapped, recorded as unavailable.
         2.  **Amazon Ceiling:** Capped at 90% of the lowest Amazon "New" price (Min of Current, 180d avg, 365d avg). This is enforced for ALL prices. **Current counts only when today's month is the peak month** (Pricing Logic Version 3).
-        3.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context. **Fails closed** (Pricing Logic Version 3): no API key, daily cap or xAI error withholds the price and leaves the row stale.
+        3.  **1-Year Median Cap (Pricing Logic Version 4):** capped at 2 × the median of inferred sales in the last 365 days (after the New cap, before the Amazon ceiling). No sale in the last year: no cap.
+        4.  **XAI Reasonableness Check:** Queries AI (`grok-4-fast-reasoning`) with context. **Skipped** when `List at` ≤ 1.25 × the 1-year median (v4; takes precedence over the 3× rule). **Fails closed** (Pricing Logic Version 3): no API key, daily cap or xAI error withholds the price and leaves the row stale.
             *   **Exception:** If the price source is **Inferred Sales (Sparse)** (1-2 true sales, thin context), this check is conditionally **SKIPPED**. *(The "Keepa Stats Fallback" half of this exception was removed on 2026-09-11 with the fallback itself — no code path produces that source any more.)*
             *   **Suspiciously High:** If the price is **> 300% (3x)** of the current Used price, the check is **FORCED**, overriding the sparse skip, to prevent accepting manipulated prices.
     *   **Exclusion:** If validation fails, the price is invalidated (potentially leading to persistence as incomplete data).
@@ -216,8 +217,8 @@ The data for each deal is generated in a multi-stage pipeline orchestrated by th
 -   **`List at`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
     -   **Logic**: **Mode** of peak season prices, falling back to the peak-season **Median** when no distinct mode exists. With 1-2 sales, the Sparse Rescue median. **Inferred sales only.** *(This previously read "or `Used - 90d avg` fallback if high velocity" — that fallback was deleted in March 2026 and has not existed since.)*
-    -   **Constraint**: Capped at the peak-window New price + $3.99, then at 90% of `Min(Amazon Current, Amazon 180d avg, Amazon 365d avg)`, with Amazon Current counted only in the peak month (Pricing Logic Version 3). Peak-season mode/median counts distinct price points.
-    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, and skipped when the Amazon ceiling clamped the price. Unverifiable (no API key, daily cap, xAI error) withholds the price — fails closed.
+    -   **Constraint**: Capped at the peak-window New price + $3.99, then at 2 × the 1-year median of inferred sales (v4), then at 90% of `Min(Amazon Current, Amazon 180d avg, Amazon 365d avg)`, with Amazon Current counted only in the peak month (Pricing Logic Version 3). Peak-season mode/median counts distinct price points.
+    -   **AI Check**: Validated by `grok-4-fast-reasoning`, skipped for `Inferred Sales (Sparse)` unless the 3x-of-current-used rule forces it, skipped when the Amazon ceiling clamped the price, and skipped at ≤ 1.25 × the 1-year median (v4). Unverifiable (no API key, daily cap, xAI error) withholds the price — fails closed.
 
 -   **`Expected Trough Price`**:
     -   **Source**: `keepa_deals/stable_calculations.py`.
