@@ -146,9 +146,10 @@ default, `--apply` to delete, **no `--force`** — every safety check is mandato
 
 Shared guards: preflight aborts if Celery or the `monitor_and_restart` watchdog is
 running, if the `smart_ingestor_lock` Redis key is held, or if the process is not
-`www-data`. Each takes its own backup through SQLite's backup API rather than
-`backup_db.sh` (a plain `cp` that can miss committed pages still sitting in
-`deals.db-wal`) and verifies the copy by row count. The delete runs as one
+`www-data`. Each takes its own backup through SQLite's backup API and verifies the
+copy by row count. (Both predate the Trello #146 fix of 2026-09-23: until then
+`backup_db.sh` was a plain `cp` that could miss committed pages still sitting in
+`deals.db-wal`. See `AGENTS.md` §5.3.) The delete runs as one
 transaction with no `VACUUM` — the Janitor already VACUUMs on large deletions and
 doing it here would rewrite the whole file outside the transaction. Both write a
 verified backup and the target ASIN list to `db_backups/` (gitignored) so the

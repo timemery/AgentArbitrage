@@ -62,7 +62,7 @@ pkill -f repair_pricing.py                 # clean stop between batches
 
 The sweep **stops itself while the check still works** (`--xai-headroom`, default 50). Until Pricing Logic Version 3, past the cap `_query_xai_for_reasonableness` returned `True`, so an inflated price was accepted unchecked *and* stamped current, and the sweep never revisited it. It now **fails closed** (Trello #144): the price is withheld and the row is written with `List_at` and `Pricing_Logic_Version` NULL, still stale. That ends the laundering, but stopping is still right — past the cap every row in a batch comes back unpriced and hidden, including rows that were visible at their old price, for ~7 Keepa tokens each, paid again when a later run retries it. Such a row sorts **last** in the next run (not priced). The daily count resets on the first call after the **local date changes on the box**, so re-run after local midnight.
 
-It takes its own verified backup through SQLite's backup API before the first write (`backup_db.sh` is a plain `cp` of a WAL database and can be silently short).
+It takes its own verified backup through SQLite's backup API before the first write. (It predates the Trello #146 fix of 2026-09-23: until then `backup_db.sh` was a plain `cp` of a WAL database and could be silently short. See `AGENTS.md` §5.3.)
 
 **Stop conditions, and the one that is not a stop.** The sweep ends a run cleanly (exit 0, resumable by re-running the same command) when any of these hold, all checked before every batch and before every recharge retry — except the missing-`XAI_TOKEN` row, which is a refusal at startup (exit 2) rather than a stop:
 

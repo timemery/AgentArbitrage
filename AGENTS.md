@@ -128,7 +128,7 @@ Use the most lightweight, targeted verification possible. Do NOT run resource-in
 ### 5.3 Database Backup and Restore
 
 Before significant changes:
-- `./backup_db.sh` — Creates a timestamped backup
+- `./backup_db.sh` — Creates a timestamped backup (`db_backups/deals.db.<timestamp>.bak`). Run it from the application root. It is safe while the app and the repair sweep are writing: it copies through SQLite's backup API on a **read-only** connection (a plain `cp` of the WAL database could be silently short, Trello #146), then checks the copy itself — `PRAGMA integrity_check` is `ok` and `deals` and `system_state` exist and have rows. A backup that fails prints `ERROR`, exits non-zero and leaves nothing in `db_backups/`. Needs only `python3`.
 - `./restore_db.sh` — Restores from the most recent backup
 
 ---
