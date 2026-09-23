@@ -86,7 +86,7 @@ The guarded pricing tests are unchanged.
 - Deployed `3ff10ae` on 2026-09-23 at about 01:57 UTC (backup, `git pull`, `deploy_update.sh`). The v3 sweep had been paused at 22:22 UTC on 2026-09-22, about 23 minutes after it started.
 - The sweep was relaunched with output to `Diagnostics/repair_pricing.out`. The script's own log stays in `repair_pricing.log`; writing both to one file would duplicate every line.
 - At 14:19 UTC: 950 of 5,202 attempted, 879 repaired, 71 skipped; withheld 68 ai_rejected, 61 thin; about 78 rows/hour.
-- That rate is slower than my 900–1,200 rows/day estimate. At about 1,870 rows/day it is still about 2× v3's rate, and it finishes around Sep 25–26.
+- That rate is faster than my 900–1,200 rows/day estimate. At about 1,870 rows/day it is about 3× v3's rate (about 650 rows/day: 5,159 rows in about 8 days), and it finishes around Sep 25–26.
 
 ## 7. Infrastructure Findings
 
