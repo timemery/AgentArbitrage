@@ -1243,4 +1243,60 @@ class TheHiddenV3SelectionAndSplit(_Silent):
         self.assertIn('2 rows', lines[split[0]])
         self.assertIn('AI No: 1', lines[split[0]])
         self.assertIn('failed: 1', lines[split[0]])
-        self.assertEqual(lines[-1], '  AI No: HIDNULL001')
+        self.assertIn('  AI No: HIDNULL001', lines)
+        v4 = [i for i, l in enumerate(lines) if l.startswith('V4 CANDIDATE')]
+        self.assertEqual(len(v4), 1)
+        self.assertTrue(lines[-1].strip().startswith('all'), lines[-1])
+
+
+# --------------------------------------------------------------------------
+# v4 candidate: measurement only
+# --------------------------------------------------------------------------
+
+def _v4_sale(when, cents, point):
+    return {'event_timestamp': when, 'inferred_sale_price_cents': cents,
+            'price_point': ('Used', datetime(2000, 1, 1) + timedelta(days=point))}
+
+
+class TheV4CandidateIsMeasured(_Silent):
+    """Peak by pooled support, and the AI-skip decision under mean and median."""
+
+    PRODUCT = {'asin': 'V4TEST', 'csv': [None] * 13, 'stats': {}}
+
+    def test_a_lone_spike_month_cannot_win(self):
+        """The 142249151X shape: one high sale alone, the book's real season elsewhere."""
+        y = datetime.now().year - 2
+        sales = [_v4_sale(datetime(y, 6, 10), 90000, 1),          # lone spike, June
+                 _v4_sale(datetime(y, 1, 10), 30000, 2),
+                 _v4_sale(datetime(y, 1, 20), 32000, 3),
+                 _v4_sale(datetime(y, 2, 10), 34000, 4),
+                 _v4_sale(datetime(y, 10, 10), 20000, 5)]
+        out = audit.v4_candidate(self.PRODUCT, sales)
+        self.assertEqual(out['v4_window'], 'Dec-Jan-Feb')
+        self.assertEqual(out['v4_window_points'], 3)
+        self.assertEqual(out['v4_list_at'], 320.0)
+
+    def test_no_supported_window_leaves_it_unpriced(self):
+        y = datetime.now().year - 2
+        sales = [_v4_sale(datetime(y, 1, 10), 30000, 1), _v4_sale(datetime(y, 5, 10), 31000, 2),
+                 _v4_sale(datetime(y, 9, 10), 32000, 3)]
+        self.assertIsNone(audit.v4_candidate(self.PRODUCT, sales)['v4_list_at'])
+
+    def test_the_skip_is_reported_under_mean_and_median(self):
+        """A recent lone spike inflates the 1yr mean, not the median."""
+        now = datetime.now()
+        sales = [_v4_sale(now - timedelta(days=d), c, i) for i, (d, c) in enumerate(
+            [(30, 10000), (31, 11000), (32, 10500), (40, 90000)])]
+        out = audit.v4_candidate(self.PRODUCT, sales)
+        self.assertIsNotNone(out['v4_list_at'])
+        self.assertGreater(out['v4_1yr_mean'], out['v4_1yr_median'])
+        price = out['v4_list_at']
+        self.assertEqual(out['v4_skip_mean'], price <= out['v4_1yr_mean'] * 1.25)
+        self.assertEqual(out['v4_skip_median'], price <= out['v4_1yr_median'] * 1.25)
+
+    def test_the_v4_summary_counts_by_group(self):
+        rows = [_row('A', v4_list_at=100.0, v4_skip_mean=True, v4_skip_median=False),
+                _row('B', v4_list_at=None)]
+        lines = audit.v4_lines(rows, [rows[1]], [rows[0]], [])
+        self.assertIn('priced   1 | skip mean   1 | skip median   0 | unpriced   0', lines[2])
+        self.assertIn('unpriced   1', lines[1])
