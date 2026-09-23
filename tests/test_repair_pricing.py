@@ -1202,3 +1202,46 @@ class ItRefusesToRunWithoutAnXaiKey(unittest.TestCase):
             pf.side_effect = R.RepairAbort('preflight stub')
             R.main(['--apply', '--log-file', os.path.join(self.tmp, 'r.log')])
         pf.assert_called_once()
+
+
+class TheWithheldReasonIsLogged(unittest.TestCase):
+    """Pricing Logic Version 4: every withheld price says why, in the sweep's log.
+
+    Nothing else records it: the reason is not a column (owner decision), and a
+    thin season and an AI "No" otherwise leave identical rows.
+    """
+
+    def setUp(self):
+        from keepa_deals import stable_calculations
+        self.sc = stable_calculations
+        self.sc.clear_analysis_cache()
+
+    def tearDown(self):
+        self.sc.clear_analysis_cache()
+
+    def test_the_reason_is_read_from_the_memoised_analysis(self):
+        self.sc._analysis_cache['WHY0000001'] = {'withheld_reason': 'ai_rejected'}
+        self.assertEqual(R.withheld_reason('WHY0000001'), 'ai_rejected')
+
+    def test_it_never_recomputes_an_analysis(self):
+        with patch.object(self.sc, '_get_analysis') as get:
+            self.assertIsNone(R.withheld_reason('NOTCACHED1'))
+        get.assert_not_called()
+
+    def test_the_log_line_names_the_reason(self):
+        outcome = {'ASIN': 'WHY0000002', 'tier': 0, 'old_list_at': 300.0,
+                   'new_list_at': None, 'old_1yr_avg': '100', 'new_1yr_avg': '100',
+                   'old_count': 5, 'new_count': 5, 'old_trust': '50%',
+                   'new_trust': '50%', 'withheld': 'thin'}
+        with self.assertLogs('repair_pricing', level='INFO') as caught:
+            R.print_outcomes([outcome], True)
+        self.assertIn('withheld: thin', caught.output[0])
+
+    def test_a_priced_row_says_nothing_extra(self):
+        outcome = {'ASIN': 'WHY0000003', 'tier': 0, 'old_list_at': 300.0,
+                   'new_list_at': 250.0, 'old_1yr_avg': '100', 'new_1yr_avg': '100',
+                   'old_count': 5, 'new_count': 5, 'old_trust': '50%',
+                   'new_trust': '50%', 'withheld': None}
+        with self.assertLogs('repair_pricing', level='INFO') as caught:
+            R.print_outcomes([outcome], True)
+        self.assertNotIn('withheld', caught.output[0])

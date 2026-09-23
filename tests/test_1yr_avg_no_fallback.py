@@ -309,8 +309,12 @@ class SparseAiSkipSurvives(unittest.TestCase):
         # stays out of the way: at the default $20 it would cap the $200 price to
         # $23.99, which is no longer 3x current used, and the rule under test
         # would never be reached.
-        product = _mock_product(history_days=400, sales_count=2,
-                                sales_age_days=100, sale_price_cents=20000,
+        # Sales older than a year: Pricing Logic Version 4 skips the check when
+        # the price is <= 1.25x the book's own 1yr median, and that skip takes
+        # precedence over the 3x rule. With no sale in the last year there is no
+        # median, so the 3x rule is what this test still exercises.
+        product = _mock_product(history_days=500, sales_count=2,
+                                sales_age_days=400, sale_price_cents=20000,
                                 new_price_cents=40000)
         events, _ = infer_sale_events(product)
         with patch('keepa_deals.stable_calculations._query_xai_for_reasonableness',

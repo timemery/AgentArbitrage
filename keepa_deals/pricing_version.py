@@ -80,7 +80,11 @@ it rather than diagnosing it. The main dashboard grid is NOT affected.
 #     across years), and a season with < 2 distinct points is not priced; the
 #     peak-window New cap; the Amazon ceiling reads today's price only in the
 #     peak month; the AI check fails closed.
-PRICING_LOGIC_VERSION = 3
+# 4 = the peak season chosen by pooled support (best-median eligible +/-1
+#     window, not the highest single month); List at capped at 2x the 1yr
+#     median of inferred sales; AI check skipped at <= 1.25x that median;
+#     thin rows written NULL so the sweep re-evaluates them (AGENTS.md 7.16).
+PRICING_LOGIC_VERSION = 4
 
 # The headers.json display name, and the sanitized DB column it becomes. Named
 # here so callers and tests cannot drift onto a different spelling.

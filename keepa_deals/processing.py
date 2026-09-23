@@ -186,9 +186,18 @@ def _process_single_deal(product_data, seller_data_cache, xai_api_key):
         # from `sales_perf` above: that is a second call, whose check can succeed
         # where the first failed, and stamping on it would record a withheld price
         # as current.
+        #
+        # A THIN peak season is written NULL too (Pricing Logic Version 4, Trello
+        # #152): stamped current it would never be re-evaluated as the book gains
+        # sales - the light path never recomputes List at and the sweep skips
+        # current rows. NULL puts it back in the repair predicate, where it sorts
+        # last (tier 2, unpriced). The cost is ~7 Keepa tokens per thin row per
+        # sweep, and no xAI call.
         list_at_analysis = _get_analysis(product_data)
         row_data[PRICING_VERSION_HEADER] = (
-            None if list_at_analysis.get('price_unverified') else PRICING_LOGIC_VERSION)
+            None if (list_at_analysis.get('price_unverified')
+                     or list_at_analysis.get('thin_peak_season'))
+            else PRICING_LOGIC_VERSION)
 
         # Ensure Expected Trough Price is numeric float
         if 'expected_trough_price_cents' in sales_perf and sales_perf['expected_trough_price_cents'] > 0:

@@ -126,16 +126,78 @@ def _peak_season_sales(sale_events, centre):
             if _in_peak_season(pd.to_datetime(sale['event_timestamp']).month, centre)]
 
 
-def _peak_month_of(sale_events):
-    """The normal branch's peak-month rule: highest monthly median, first on a tie.
+def _best_peak_window(sale_events):
+    """The peak SEASON chosen by pooled support (Pricing Logic Version 4).
 
-    Used for the Sparse Sales Rescue, which has no peak month of its own but is
-    held to the same peak-season minimum.
+    Every peak-month +/- PEAK_SEASON_HALF_WIDTH_MONTHS window, pooled across
+    years, is a candidate; only those holding at least
+    PEAK_SEASON_MIN_PRICE_POINTS distinct price points are eligible, and the
+    eligible window with the highest median of its distinct prices wins. Ties:
+    more points; then more distinct points in the centre month itself, so a
+    season whose sales all fall in one month is centred ON that month rather than
+    on an empty neighbour whose window happens to contain it; then the earlier
+    centre month. Returns
+    `(centre_month, window_sales, distinct_prices)` or None when no window is
+    eligible - the thin peak season.
+
+    Why: v3 took the single month with the highest median (`idxmax`) and then
+    looked at its neighbours. One isolated high sale won that vote, its season
+    held one point, and the book was hidden - 27 of the 31 thin rows on the
+    2026-09-23 `--hidden-v3` audit (e.g. 142249151X: 23 sales, 1 in "season").
     """
-    frame = pd.DataFrame({
-        'month': [pd.to_datetime(s['event_timestamp']).month for s in sale_events],
-        'price': [s['inferred_sale_price_cents'] for s in sale_events]})
-    return int(frame.groupby('month')['price'].median().idxmax())
+    best = None
+    for centre in range(1, 13):
+        sales = _peak_season_sales(sale_events, centre)
+        prices = _distinct_price_points(sales)
+        if len(prices) < PEAK_SEASON_MIN_PRICE_POINTS:
+            continue
+        in_centre = len(_distinct_price_points(
+            [s for s in sales if pd.to_datetime(s['event_timestamp']).month == centre]))
+        key = (float(np.median(prices)), len(prices), in_centre, -centre)
+        if best is None or key > best[0]:
+            best = (key, centre, sales, prices)
+    return None if best is None else best[1:]
+
+
+def _one_year_median_cents(sale_events, now=None):
+    """Median of the inferred sale prices in the last 365 days, or None.
+
+    Sale EVENTS, not distinct points: this is the book's own recent selling
+    price, which a mean would let a single spike inflate. Used by the 2x
+    median cap and the AI-check skip (Pricing Logic Version 4).
+    """
+    if not sale_events:
+        return None
+    cutoff = (now or datetime.now()) - timedelta(days=365)
+    recent = [float(s['inferred_sale_price_cents']) for s in sale_events
+              if pd.to_datetime(s['event_timestamp']) >= cutoff]
+    return float(np.median(recent)) if recent else None
+
+
+# --- Pricing Logic Version 4: the median cap and the AI-check skip ----------
+#
+# The best-window rule is still a maximum over thin estimates: on the
+# 2026-09-23 audit, 15 of 61 priced rows came out above 2x their own 1yr
+# median, the worst 5-20x, all on 2-3 point windows. `List at` is therefore
+# capped at PEAK_MEDIAN_CAP_RATIO x the 1yr median of inferred sales (owner
+# chose 2 from k = 1.5 / 2 / 3). A row with no sale in the last year gets no
+# median cap; the AI check still applies to it.
+#
+# The AI check is SKIPPED when `List at` <= AI_SKIP_MEDIAN_RATIO x the same
+# median: the price is then backed by the book's own recent sales, and the
+# check - which is never shown them - rejected prices at their own 1yr average
+# (1936164116: $398.99 vs $398.99). Above that the check runs, fail-closed.
+PEAK_MEDIAN_CAP_RATIO = 2.0
+AI_SKIP_MEDIAN_RATIO = 1.25
+
+# Why a price was withheld, recorded on every analysis as `withheld_reason`
+# (None when a price was set). Logged per row by repair_pricing.py; not
+# persisted to a column (owner decision).
+WITHHELD_THIN = 'thin'
+WITHHELD_AI_REJECTED = 'ai_rejected'
+WITHHELD_UNVERIFIABLE = 'unverifiable'
+WITHHELD_OVER_1500 = 'over_1500'
+WITHHELD_NO_SALES = 'no_sales'
 
 
 # Outcomes recorded on every analysis as `peak_new_cap`.
@@ -739,121 +801,80 @@ def analyze_sales_performance(product, sale_events):
     peak_month = None
     contributing_sales = list(sale_events or [])
 
+    one_year_median_cents = _one_year_median_cents(sale_events)
+
     # --- Check Data Sufficiency ---
-    if not sale_events or len(sale_events) < MIN_SALES_FOR_ANALYSIS:
-        logger.debug(f"ASIN {asin}: Not enough sale events ({len(sale_events)}) for robust performance analysis.")
+    if not sale_events:
+        logger.warning(f"ASIN {asin}: No inferred sales found. Deal rejected to maintain strict inferred-only policy.")
+        # If no sales exist, we return early as -1 price, triggering exclusion.
+        return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
+                'price_source': 'None', 'inferred_sale_count': inferred_sale_count,
+                'withheld_reason': WITHHELD_NO_SALES}
 
-        # --- KEEPA STATS FALLBACK REMOVED (MARCH 2026) ---
-        # PREVIOUS LOGIC: The system used to fall back to calculating the minimum of Keepa's
-        # 90-day and 365-day average prices for standard Used conditions (the "Silver Standard")
-        # when it found fewer than 3 inferred sales.
-        #
-        # REASON FOR REMOVAL: The user observed that this fallback logic—while safely preventing
-        # astronomical profits via min()—still essentially relied on *listing prices* rather than
-        # *true inferred sale prices*. This tactic, originally designed to increase the volume of
-        # deals found, compromised the core promise of only providing "true deals."
-        #
-        # NEW POLICY: We now STRICTLY rely on inferred sale prices (derived from offer drops
-        # correlating with rank drops) to calculate profits. We only provide true deals that
-        # can be relied on by subscribers.
-        #
-        # Note: If there are 1 or 2 inferred sales, we still utilize them via "Sparse Sales Rescue",
-        # because those ARE true inferred sales, just limited in quantity.
-        # See Documentation/INFERRED_PRICE_LOGIC.md for historical details.
-        # -------------------------------------------------
-
-        if sale_events:
-            # Sparse Sales Rescue (1-2 sales), held to the peak-season minimum like
-            # every other row (Pricing Logic Version 3). One sale, or two outside
-            # one season, or two priced by the same point, is too thin to price.
-            sparse_season_points = len(_distinct_price_points(
-                _peak_season_sales(sale_events, _peak_month_of(sale_events))))
-            if sparse_season_points < PEAK_SEASON_MIN_PRICE_POINTS:
-                logger.info(f"ASIN {asin}: Sparse peak season holds {sparse_season_points} distinct price point(s), below {PEAK_SEASON_MIN_PRICE_POINTS}. List at withheld; row persisted unpriced.")
-                return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
-                        'price_source': 'Inferred Sales (Sparse)',
-                        'inferred_sale_count': inferred_sale_count,
-                        'thin_peak_season': True,
-                        'peak_season_points': sparse_season_points,
-                        'price_unverified': False}
-            # Sparse Sales Rescue (1-2 sales): We have valid inferred sales, so we use them.
-            prices = [s['inferred_sale_price_cents'] for s in sale_events]
-            peak_price_mode_cents = float(np.median(prices))  # Use Median for safety on small sample
-            price_source = 'Inferred Sales (Sparse)'
-            logger.info(f"ASIN {asin}: Found {len(sale_events)} sparse inferred sales. Rescued using Median: ${peak_price_mode_cents/100:.2f}")
-        else:
-            logger.warning(f"ASIN {asin}: No inferred sales found. Deal rejected to maintain strict inferred-only policy.")
-            # If no sales exist, we return early as -1 price, triggering exclusion.
-            return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
-                    'price_source': 'None', 'inferred_sale_count': inferred_sale_count}
-
+    # --- KEEPA STATS FALLBACK REMOVED (MARCH 2026) ---
+    # The system used to fall back to the minimum of Keepa's 90/365-day Used
+    # listing averages (the "Silver Standard") under 3 inferred sales. Removed:
+    # it rested on listing prices, not true inferred sale prices. 1-2 inferred
+    # sales are still used, via the Sparse Sales Rescue, because they ARE true
+    # sales. See Documentation/INFERRED_PRICE_LOGIC.md.
+    is_sparse = len(sale_events) < MIN_SALES_FOR_ANALYSIS
+    if is_sparse:
+        price_source = 'Inferred Sales (Sparse)'
     else:
-        # --- Normal Logic (Sufficient Sale Events) ---
+        # --- Trough Season (Median of the lowest-median month) ---
         df = pd.DataFrame(sale_events)
         df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
         df['month'] = df['event_timestamp'].dt.month
-
-        # --- Peak/Trough Season Identification ---
         monthly_stats = df.groupby('month')['inferred_sale_price_cents'].agg(['median', 'count'])
-
-        if len(monthly_stats) < 1:
-             return {'peak_price_mode_cents': -1, 'peak_season': '-', 'trough_season': '-',
-                     'inferred_sale_count': inferred_sale_count}
-
-        peak_month = monthly_stats['median'].idxmax()
-        # If only 1 month, peak and trough are the same
         trough_month = monthly_stats['median'].idxmin()
-        peak_season_str = datetime(2000, int(peak_month), 1).strftime('%b')
         trough_season_str = datetime(2000, int(trough_month), 1).strftime('%b')
-
-        # --- "List at" Price Calculation (Mode of Peak Season) ---
-        peak_season_prices = df[df['month'] == peak_month]['inferred_sale_price_cents'].tolist()
-
-        # --- Expected Trough Price Calculation (Median of Trough Season) ---
         trough_season_prices = df[df['month'] == trough_month]['inferred_sale_price_cents'].tolist()
-        if trough_season_prices:
-            expected_trough_price_cents = float(np.median(trough_season_prices))
-            logger.info(f"ASIN {asin}: Calculated expected trough price: {expected_trough_price_cents/100:.2f} (Median of trough month {trough_month}).")
-        else:
-            logger.warning(f"ASIN {asin}: No prices found for trough month {trough_month}.")
+        expected_trough_price_cents = float(np.median(trough_season_prices))
+        logger.info(f"ASIN {asin}: Calculated expected trough price: {expected_trough_price_cents/100:.2f} (Median of trough month {trough_month}).")
+        # Reported when the season is thin, so the row still says where its
+        # highest month was.
+        peak_season_str = datetime(
+            2000, int(monthly_stats['median'].idxmax()), 1).strftime('%b')
 
-        if not peak_season_prices:
-            logger.warning(f"ASIN {asin}: No prices found for the determined peak month ({peak_month}).")
-            return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str,
-                    'trough_season': trough_season_str,
-                    'inferred_sale_count': inferred_sale_count}
-        else:
-            # Normal calculation, over DISTINCT price points, not sale events: a
-            # change-log point that priced two sales is one asking price and
-            # counts once in both the mode and the median fallback. See
-            # `_distinct_price_points`.
-            # The price is estimated over the peak SEASON - the peak month +/-
-            # PEAK_SEASON_HALF_WIDTH_MONTHS, pooled across years - not the single
-            # month `idxmax` picked, and a season too thin to price gets none.
-            peak_month = int(peak_month)
-            peak_sales = _peak_season_sales(sale_events, peak_month)
-            peak_point_prices = _distinct_price_points(peak_sales)
-            if len(peak_point_prices) < PEAK_SEASON_MIN_PRICE_POINTS:
-                logger.info(f"ASIN {asin}: Peak season around {peak_season_str} holds {len(peak_point_prices)} distinct price point(s), below {PEAK_SEASON_MIN_PRICE_POINTS}. List at withheld; row persisted unpriced.")
-                return {'peak_price_mode_cents': -1, 'peak_season': peak_season_str,
-                        'trough_season': trough_season_str,
-                        'expected_trough_price_cents': expected_trough_price_cents,
-                        'price_source': price_source,
-                        'inferred_sale_count': inferred_sale_count,
-                        'thin_peak_season': True,
-                        'peak_season_points': len(peak_point_prices),
-                        'price_unverified': False}
-            mode_result = st.mode(peak_point_prices)
-            if mode_result.count > 1:
-                peak_price_mode_cents = float(mode_result.mode)
-                contributing_sales = [sale for sale in peak_sales
-                                      if float(sale['inferred_sale_price_cents'])
-                                      == peak_price_mode_cents]
-                logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (held by {mode_result.count} distinct price points).")
-            else:
-                peak_price_mode_cents = float(np.median(peak_point_prices))
-                contributing_sales = peak_sales
-                logger.info(f"ASIN {asin}: No distinct mode found. Falling back to peak season median price: {peak_price_mode_cents/100:.2f}.")
+    # --- The Peak Season, chosen by pooled support (Pricing Logic Version 4) ---
+    # See `_best_peak_window`. No eligible window: the thin peak season - List at
+    # withheld, row persisted unpriced and NEVER deleted (AGENTS.md 7.8), written
+    # with a NULL Pricing_Logic_Version so the sweep re-evaluates it (#152).
+    found = _best_peak_window(sale_events)
+    if found is None:
+        logger.info(f"ASIN {asin}: No peak-season window holds {PEAK_SEASON_MIN_PRICE_POINTS} distinct price points. List at withheld; row persisted unpriced.")
+        return {'peak_price_mode_cents': -1,
+                'peak_season': '-' if is_sparse else peak_season_str,
+                'trough_season': trough_season_str,
+                'expected_trough_price_cents': expected_trough_price_cents,
+                'price_source': price_source,
+                'inferred_sale_count': inferred_sale_count,
+                'thin_peak_season': True,
+                'price_unverified': False,
+                'withheld_reason': WITHHELD_THIN}
+
+    window_centre, peak_sales, peak_point_prices = found
+    peak_window = '-'.join(datetime(2000, m, 1).strftime('%b') for m in (
+        (window_centre - 2) % 12 + 1, window_centre, window_centre % 12 + 1))
+    if not is_sparse:
+        # The Sparse Sales Rescue keeps reporting no peak month, and so never
+        # reads Amazon's current price below (as in v3).
+        peak_month = window_centre
+        peak_season_str = datetime(2000, window_centre, 1).strftime('%b')
+
+    # Mode/median over DISTINCT price points, not sale events: a change-log
+    # point that priced two sales is one asking price (`_distinct_price_points`).
+    mode_result = st.mode(peak_point_prices)
+    if mode_result.count > 1:
+        peak_price_mode_cents = float(mode_result.mode)
+        contributing_sales = [sale for sale in peak_sales
+                              if float(sale['inferred_sale_price_cents'])
+                              == peak_price_mode_cents]
+        logger.info(f"ASIN {asin}: Calculated peak price mode: {peak_price_mode_cents/100:.2f} (held by {mode_result.count} distinct price points, window {peak_window}).")
+    else:
+        peak_price_mode_cents = float(np.median(peak_point_prices))
+        contributing_sales = peak_sales
+        logger.info(f"ASIN {asin}: Peak season median price: {peak_price_mode_cents/100:.2f} (window {peak_window}, {len(peak_point_prices)} points).")
 
     # --- Peak-window New cap (Pricing Logic Version 3) ---
     # See PEAK_NEW_CAP_ALLOWANCE_CENTS. Measured in the peak-season windows that fed
@@ -871,6 +892,15 @@ def analyze_sales_performance(product, sale_events):
             peak_new_cap = NEW_CAP_APPLIED
         else:
             peak_new_cap = NEW_CAP_NOT_NEEDED
+
+    # --- 2x 1yr-median cap (Pricing Logic Version 4) ---
+    # See PEAK_MEDIAN_CAP_RATIO. No sale in the last year: no cap.
+    median_cap_cents = None
+    if one_year_median_cents:
+        median_cap_cents = PEAK_MEDIAN_CAP_RATIO * one_year_median_cents
+        if peak_price_mode_cents > median_cap_cents:
+            logger.info(f"ASIN {asin}: List at ${peak_price_mode_cents/100:.2f} exceeds {PEAK_MEDIAN_CAP_RATIO}x the 1yr median (${median_cap_cents/100:.2f}). Capping.")
+            peak_price_mode_cents = median_cap_cents
 
     # --- Amazon Ceiling Logic ---
     stats = product.get('stats', {})
@@ -941,6 +971,7 @@ def analyze_sales_performance(product, sale_events):
 
     # --- Suspiciously High Fallback Check ---
     is_suspiciously_high = False
+    ai_skipped_by_median = False
 
     # HARD CEILING SAFETY CHECK: Any calculated price > $1500 is automatically rejected without AI check
     # to prevent astronomical fake profits (e.g. $4000) from polluting the dashboard.
@@ -970,6 +1001,14 @@ def analyze_sales_performance(product, sale_events):
     elif is_capped_by_ceiling:
         logger.info(f"ASIN {asin}: Price is capped by Amazon Ceiling (Safe). Skipping AI Reasonableness Check.")
         is_reasonable = True
+    elif one_year_median_cents and peak_price_mode_cents <= AI_SKIP_MEDIAN_RATIO * one_year_median_cents:
+        # Backed by the book's own recent sales (Pricing Logic Version 4). This
+        # skip takes precedence over the 3x-of-current-used rule: that rule
+        # compares with today's (trough) Used price, this with what the book
+        # has actually sold for over the last year.
+        logger.info(f"ASIN {asin}: List at ${peak_price_mode_cents/100:.2f} <= {AI_SKIP_MEDIAN_RATIO}x the 1yr median. Skipping AI Reasonableness Check.")
+        is_reasonable = True
+        ai_skipped_by_median = True
     elif price_source == 'Inferred Sales (Sparse)' and not is_suspiciously_high:
         # The 'Keepa Stats Fallback' half of this condition was removed on
         # 2026-09-11 (audit B-6): get_1yr_avg_sale_price no longer produces that
@@ -987,6 +1026,11 @@ def analyze_sales_performance(product, sale_events):
         )
 
     price_unverified = is_reasonable is None
+    withheld_reason = None
+    if price_unverified:
+        withheld_reason = WITHHELD_UNVERIFIABLE
+    elif not is_reasonable:
+        withheld_reason = WITHHELD_OVER_1500 if is_absurdly_high else WITHHELD_AI_REJECTED
     if price_unverified:
         # FAIL CLOSED (Trello #144). The check could not run - daily cap or an xAI
         # error - so the price is neither accepted nor rejected: it is withheld.
@@ -1013,6 +1057,12 @@ def analyze_sales_performance(product, sale_events):
         'peak_new_cap_cents': peak_new_cap_cents,
         'price_unverified': price_unverified,
         'thin_peak_season': False,
+        'peak_window': peak_window,
+        'peak_window_points': len(peak_point_prices),
+        'one_year_median_cents': one_year_median_cents,
+        'median_cap_cents': median_cap_cents,
+        'ai_skipped_by_median': ai_skipped_by_median,
+        'withheld_reason': withheld_reason,
     }
 
 # --- Memoization cache for analysis results ---
