@@ -46,6 +46,64 @@ def redact(text):
     return _KEY_IN_URL.sub(r'\1<REDACTED>', str(text))
 
 
+# The process-wide net under `redact()` (Trello #145). `redact()` only covers the
+# lines that call it; three paths reached the log without passing through one:
+#   - a traceback (`exc_info=True`): `logging` renders the exception text itself,
+#     after the message was redacted;
+#   - `logger.debug(f"Deal URL: {url}")` in `stable_deals.py`;
+#   - urllib3's own DEBUG line for every request ("GET /product?key=..."), which
+#     `wsgi_handler.py` writes to `app.log` because it runs the root logger at
+#     DEBUG and `/api/product/<asin>` fetches from Keepa in the web process.
+# So every log record in any process that imports this module is redacted where it
+# is created, before any handler sees it - Celery's, Apache's, or a script's own.
+#
+# Stricter than `_KEY_IN_URL` on purpose: it only takes a value of 20+ characters
+# (a Keepa key is 64). This hook sees every log line in the process, and
+# `stable_products.py` logs short `key=current` lookups that must stay readable.
+_SECRET_KEY_IN_TEXT = re.compile(r"""((?:key|api_key|apikey)=)[A-Za-z0-9_\-]{20,}""", re.IGNORECASE)
+
+
+def _redact_secrets(text):
+    return _SECRET_KEY_IN_TEXT.sub(r'\1<REDACTED>', text)
+
+
+def _redact_log_record(record):
+    try:
+        message = record.getMessage()
+    except Exception:
+        # A malformed record is logging's to report when it formats it; leave it be.
+        return record
+    clean = _redact_secrets(message)
+    if clean != message:
+        record.msg, record.args = clean, ()
+    if record.exc_info and not record.exc_text:
+        # Formatter.format() uses a pre-set exc_text instead of re-rendering the
+        # traceback, so setting it here is what keeps the redaction.
+        text = logging.Formatter().formatException(record.exc_info)
+        clean = _redact_secrets(text)
+        if clean != text:
+            record.exc_text = clean
+    if record.stack_info:
+        record.stack_info = _redact_secrets(record.stack_info)
+    return record
+
+
+def install_log_redaction():
+    """Wrap the logging record factory so every record is redacted. Idempotent."""
+    current = logging.getLogRecordFactory()
+    if getattr(current, '_keepa_key_redaction', False):
+        return
+
+    def factory(*args, **kwargs):
+        return _redact_log_record(current(*args, **kwargs))
+
+    factory._keepa_key_redaction = True
+    logging.setLogRecordFactory(factory)
+
+
+install_log_redaction()
+
+
 def validate_asin(asin):
     if not isinstance(asin, str) or len(asin) != 10 or not asin.isalnum():
         logger.error(f"Invalid ASIN format: {asin}")
