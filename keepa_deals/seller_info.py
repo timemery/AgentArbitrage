@@ -34,7 +34,11 @@ def get_seller_info_for_single_deal(product, api_key, token_manager: TokenManage
     # Reuse the exact logic from get_used_product_info to ensure consistency
     price_now, seller_id, is_fba, condition_code = get_used_product_info(product)
 
-    if not seller_id:
+    # "Unknown" is get_used_product_info's sentinel for "no live offer matched the
+    # stats price" (Step 3 below). It is truthy, so `not seller_id` let it through
+    # and Keepa was asked about a seller literally named Unknown - a 400 every time
+    # (Trello #145).
+    if not seller_id or seller_id == "Unknown":
         logger.warning(f"ASIN {product.get('asin')}: Could not determine the lowest-priced used seller.")
         return {}
 
@@ -46,7 +50,10 @@ def get_seller_info_for_single_deal(product, api_key, token_manager: TokenManage
 
     # Fetch seller data from Keepa
     seller_data, _, _, tokens_left = fetch_seller_data(api_key, [seller_id])
-    token_manager.update_after_call(tokens_left)
+    # fetch_seller_data returns tokens_left None when the call failed without a
+    # JSON body to read it from; update_after_call does float(tokens_left).
+    if tokens_left is not None:
+        token_manager.update_after_call(tokens_left)
 
     if seller_data and seller_data.get('sellers'):
         return seller_data['sellers']
